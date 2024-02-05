@@ -213,23 +213,6 @@
   <br>
 
   <div class="control-group">
-    <%= f.label :organization, class: "control-label" %>
-    <div class="controls <%= :hide unless @user.pro? %>" id="organization-fieldset">
-      <%= f.collection_select :organization_id, Organization.order("name ASC"), :id, :name, {
-          include_blank: @user.organization_id.present? ? false : "(Aucune)"
-        }, { id: :pro_user }
-      %>
-
-    </div>
-      <% if !@user.pro? %>
-        <div id="change_status">
-          Aucune &mdash; <%= link_to "Donner les droits de maraude", "#" %>
-        </div>
-      <% end %>
-  </div>
-  <br>
-
-  <div class="control-group">
     <%= f.label :subscriptions, class: "control-label" %>
     <% if @user.subscriptions.any? %>
       <% @user.subscriptions.each do |subscription| %>

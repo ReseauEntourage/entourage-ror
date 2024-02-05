@@ -47,20 +47,19 @@ module EntourageServices
       entourage.category = EntourageServices::CategoryLexicon.new(text: text).category
 
       if entourage.save
-        #When you start an entourage you are automatically added to members of the tour
+        #When you start an entourage you are automatically added to members
         join_request = JoinRequest.create(joinable: entourage, user: user)
 
         joinable = entourage
         join_request.role =
           case [joinable.community, joinable.group_type]
-          when ['entourage', 'tour']   then 'creator'
           when ['entourage', 'action'] then 'creator'
           when ['entourage', 'outing'] then 'organizer'
           when ['pfp',       'outing'] then 'organizer'
           else raise 'Unhandled'
           end
 
-        TourServices::JoinRequestStatus.new(join_request: join_request).accept!
+        EntourageServices::JoinRequestStatus.new(join_request: join_request).accept!
         # AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
         AsyncService.new(FollowingService).on_create_entourage(entourage)
         CommunityLogic.for(entourage).group_created(entourage)
@@ -191,6 +190,6 @@ module EntourageServices
     end
 
     private
-    attr_reader :tour, :user, :callback, :params, :recipient_consent_obtained
+    attr_reader :user, :callback, :params, :recipient_consent_obtained
   end
 end

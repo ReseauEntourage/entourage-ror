@@ -15,7 +15,6 @@ describe Api::V1::FeedsController do
       let!(:entourage) { FactoryBot.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
       let(:latitude) { entourage.latitude }
       let(:longitude) { entourage.longitude }
-      let!(:tour) { FactoryBot.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
       let(:announcement) { FactoryBot.build(:announcement) }
       before do
         Storage::Bucket.any_instance.stub(:read_for) { "path/to/portrait_url" }
@@ -81,33 +80,6 @@ describe Api::V1::FeedsController do
                 "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
                 "author"=>nil
               }
-            },
-            {
-              "type"=>"Tour",
-              "data"=>
-              {
-                "id"=>tour.id,
-                "uuid"=>tour.id.to_s,
-                "tour_type"=>"medical",
-                "status"=>"ongoing",
-                "vehicle_type"=>"feet",
-                "distance"=>0,
-                "organization_name"=>tour.organization_name,
-                "organization_description"=>"Association description",
-                "start_time"=>tour.created_at.iso8601(3),
-                "end_time"=>nil,
-                "number_of_people"=>1,
-                "join_status"=>"not_requested",
-                "number_of_unread_messages"=>0,
-                "tour_points"=>[],
-                "author"=>{"id"=>tour.user.id,
-                  "display_name"=>"John D.",
-                  "avatar_url"=>nil,
-                  "partner"=>nil
-                },
-                "updated_at"=>tour.updated_at.iso8601(3)
-              },
-              "heatmap_size" => 20
             }
           ],
           "unread_count" => 0
@@ -146,13 +118,6 @@ describe Api::V1::FeedsController do
         it { expect(result["feeds"][0]["type"]).to eq("Entourage") }
       end
 
-      context "get tour types only" do
-        let!(:tour_alimentary) { FactoryBot.create(:tour, updated_at: 2.hours.ago, created_at: 2.hours.ago, tour_type: "alimentary", latitude: latitude, longitude: longitude) }
-        let!(:tour_barehands) { FactoryBot.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "barehands", latitude: latitude, longitude: longitude) }
-        before { get :index, params: { token: user.token, types: "ta,tb", latitude: latitude, longitude: longitude } }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_alimentary.id, tour_barehands.id]) }
-      end
-
       context "get entourages types only" do
         let!(:entourage_contribution) { FactoryBot.create(:entourage, created_at: 1.hour.ago, entourage_type: "contribution", latitude: latitude, longitude: longitude) }
         before { get :index, params: { token: user.token, types: "cs", latitude: latitude, longitude: longitude } }
@@ -163,15 +128,14 @@ describe Api::V1::FeedsController do
         let(:partner_user) { create :partner_user }
         let!(:partner_entourage) { create(:entourage, latitude: latitude, longitude: longitude, user: partner_user) }
         before { get :index, params: { partners_only: 'true', token: user.token, latitude: latitude, longitude: longitude } }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([partner_entourage.id, tour.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([partner_entourage.id]) }
       end
 
       context "filter by timerange" do
         let!(:entourage1) { FactoryBot.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
         let!(:entourage2) { FactoryBot.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
-        let!(:tour2) { FactoryBot.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
         before { get :index, params: { token: user.token, time_range: 47, latitude: latitude, longitude: longitude } }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id, tour.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id]) }
       end
 
       context "public user doesn't see tours" do
@@ -190,7 +154,6 @@ describe Api::V1::FeedsController do
 
       context "filter by status" do
         let!(:entourage) { nil } # ignore the top-level entourage for clarity
-        let!(:tour) { nil }
 
         let(:latitude) { entourage_open.latitude }
         let(:longitude) { entourage_open.longitude }

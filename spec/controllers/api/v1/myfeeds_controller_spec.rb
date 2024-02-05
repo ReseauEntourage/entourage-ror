@@ -13,7 +13,6 @@ describe Api::V1::MyfeedsController do
 
     context "signed in" do
       let(:user) { FactoryBot.create(:pro_user) }
-      let!(:tour) { FactoryBot.create(:tour, created_at: 5.hours.ago, tour_type: "medical") }
       let!(:entourage) { FactoryBot.create(:entourage, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
 
       context "get entourages i'm not part of" do
@@ -56,22 +55,19 @@ describe Api::V1::MyfeedsController do
       context "last_message i'm accepted in" do
         let(:other_user) { create :public_user }
         let!(:entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: other_user, created_at: 1.hour.ago) }
-        let!(:tour) { FactoryBot.create(:tour, :joined, join_request_user: user, user: other_user, created_at: 1.hour.ago) }
 
         context "has messages" do
           let!(:chat_message1) { FactoryBot.create(:chat_message, messageable: entourage, created_at: DateTime.parse("25/01/2000"), updated_at: DateTime.parse("25/01/2000"), content: "foo") }
           let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: entourage, created_at: DateTime.parse("24/01/2000"), updated_at: DateTime.parse("24/01/2000"), content: "bar") }
-          let!(:chat_message3) { FactoryBot.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2000"), updated_at: DateTime.parse("11/01/2000"), content: "tour_foo") }
           before { get :index, params: { token: user.token } }
           it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([
-            {"text"=>"foo",      "author"=>{"first_name"=>"John", "last_name"=>"D", "display_name"=>"John D.", "id"=>chat_message1.user_id}},
-            {"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"D", "display_name"=>"John D.", "id"=>chat_message3.user_id}}
+            {"text"=>"foo",      "author"=>{"first_name"=>"John", "last_name"=>"D", "display_name"=>"John D.", "id"=>chat_message1.user_id}}
           ]) }
         end
 
         context "has no messages" do
           before { get :index, params: { token: user.token } }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
         end
 
         context "has join_request is not a last_message" do
@@ -79,7 +75,7 @@ describe Api::V1::MyfeedsController do
             entourage.join_requests.last.update(message: "foo_bar")
           end
           before { get :index, params: { token: user.token } }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
         end
 
         context "has join_request and messages" do
@@ -97,7 +93,7 @@ describe Api::V1::MyfeedsController do
                 "display_name" => "John D.",
                 "id" => chat_message1.user_id
               }
-            }, nil]) }
+            }]) }
           end
 
           context "join requests more recent that messages" do
@@ -114,7 +110,7 @@ describe Api::V1::MyfeedsController do
                 "display_name" => "John D.",
                 "id" => chat_message1.user_id
               }
-            }, nil]) }
+            }]) }
           end
         end
       end
@@ -125,18 +121,14 @@ describe Api::V1::MyfeedsController do
         let!(:entourage_blacklisted) { FactoryBot.create(:entourage, :joined, join_request_user: user, updated_at: 3.hour.ago, status: :blacklisted) }
         let!(:entourage_suspended_by_other) { FactoryBot.create(:entourage, :joined, join_request_user: user, updated_at: 4.hour.ago, status: :suspended) }
         let!(:entourage_suspended_by_me) { FactoryBot.create(:entourage, :joined, user: user, updated_at: 5.hour.ago, status: :suspended) }
-        let!(:tour_ongoing) { FactoryBot.create(:tour, :joined, join_request_user: user, updated_at: 6.hours.ago, status: :ongoing) }
-        let!(:tour_closed) { FactoryBot.create(:tour, :joined, join_request_user: user, updated_at: 7.hours.ago, status: :closed) }
-        let!(:tour_freezed) { FactoryBot.create(:tour, :joined, join_request_user: user, updated_at: 8.hours.ago, status: :freezed) }
 
         context "get default feeds" do
           before { get :index, params: { token: user.token } }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, entourage_closed.id, entourage_suspended_by_me.id, tour_ongoing.id, tour_closed.id, tour_freezed.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, entourage_closed.id, entourage_suspended_by_me.id]) }
         end
       end
 
       context "community entourage" do
-        let!(:tour) { nil }
         let!(:entourage) { nil }
         let!(:conversation) { create :conversation, participants: [user] }
         before { get :index, params: { token: user.token, status: "open" } }

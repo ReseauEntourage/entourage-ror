@@ -17,18 +17,6 @@ module FeedServices
       end
     end
 
-    def preload_tour_user_organizations(feeds)
-      organization_ids = feeds.find_all { |feed| feed.feedable.is_a?(Tour) }.map { |feed| feed.feedable.user&.organization_id }.compact.uniq
-      return if organization_ids.empty?
-      organizations = Organization.where(id: organization_ids)
-      organizations = Hash[organizations.map { |o| [o.id, o] }]
-      feeds.each do |feed|
-        next unless feed.feedable.is_a?(Tour)
-        next if feed.feedable.user.nil?
-        feed.feedable.user.organization = organizations[feed.feedable.user.organization_id]
-      end
-    end
-
     def preload_entourage_moderations(feeds)
       entourage_ids = feeds.find_all { |feed| feed.feedable.is_a?(Entourage) && feed.feedable.has_outcome? }.map(&:feedable_id)
       return if entourage_ids.empty?

@@ -70,9 +70,7 @@ class AnonymousUser
   def roles; []; end
   def about; nil; end
   def avatar_key; nil; end
-  def organization; nil; end
-  def tours; []; end
-  def encounters; []; end
+
   def groups; []; end
   def join_requests; JoinRequest.none; end
   def pro?; false; end

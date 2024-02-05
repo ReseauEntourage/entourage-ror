@@ -1,6 +1,5 @@
 module GroupService
   NAME = {
-    tour: ['la ', 'une ', 'maraude', :f],
     action: ['l’', 'une ', 'action', :f],
     outing: ['l’', 'un ', 'évènement', :m],
     group: ['le ', 'un ', 'groupe', :m],
@@ -22,9 +21,7 @@ module GroupService
   end
 
   def self.postal_code group
-    return 'n/a' if group.group_type.to_sym == :tour
-
-    group.postal_code
+    group.try(:postal_code)
   end
 
   def self.g group, word

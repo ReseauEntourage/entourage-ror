@@ -41,9 +41,6 @@ class MemberMailer < MailjetMailer
                   }
   end
 
-  def tour_report(tour)
-  end
-
   def poi_report(poi, user, message)
     if ENV.key? "POI_REPORT_EMAIL"
       @poi = poi

@@ -31,7 +31,6 @@ describe Api::V1::AnonymousUsersController do
         "has_password"=>false,
         "anonymous"=>true,
         "uuid"=>"1_anonymous_#{user.uuid}",
-        "organization"=>nil,
         "stats"=>{
           "tour_count"=>0,
           "encounter_count"=>0,

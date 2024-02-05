@@ -60,12 +60,6 @@ class PushNotificationLinker
           instance_id: object.messageable_id,
           post_id: object.id
         }
-      # @deprecated
-      elsif object.is_a?(Tour)
-        {
-          instance: "tour",
-          instance_id: object.id
-        }
       else
         {}
       end

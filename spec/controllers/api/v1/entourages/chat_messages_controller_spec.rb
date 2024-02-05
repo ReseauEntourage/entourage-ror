@@ -85,7 +85,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(join_request.reload.last_message_read).to eq(DateTime.parse("20/01/2016"))}
       end
 
-      context "i don't belong to the tour" do
+      context "i don't belong to the entourage" do
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
@@ -96,13 +96,13 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(response.status).to eq(401) }
       end
 
-      context "i am rejected from the tour" do
+      context "i am rejected from the entourage" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "rejected") }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
-      context "i quit the tour" do
+      context "i quit the entourage" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }

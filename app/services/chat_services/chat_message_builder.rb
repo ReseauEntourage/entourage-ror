@@ -12,8 +12,6 @@ module ChatServices
     def create
       yield callback if block_given?
 
-      return callback.on_freezed_tour.try(:call, message) if joinable.is_a?(Tour) && joinable.freezed?
-
       if message.message_type == 'status_update'
         message.errors.add(:message_type, :inclusion)
         return callback.on_failure.try(:call, message)
@@ -65,10 +63,5 @@ module ChatServices
   end
 
   class ChatMessageBuilderCallback < Callback
-    attr_accessor :on_freezed_tour
-
-    def freezed_tour(&block)
-      @on_freezed_tour = block
-    end
   end
 end

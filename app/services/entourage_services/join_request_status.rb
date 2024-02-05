@@ -1,4 +1,4 @@
-module TourServices
+module EntourageServices
   class JoinRequestStatus
     def initialize(join_request:)
       @join_request = join_request

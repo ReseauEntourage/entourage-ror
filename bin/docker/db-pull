@@ -45,11 +45,9 @@ excluded_tables=(
 included_tables=(
   users
   addresses
-  organizations
   partners
   join_requests
   entourages
-  tours
   entourage_moderations
   chat_messages
   conversation_messages
