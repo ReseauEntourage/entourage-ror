@@ -48,7 +48,7 @@ module Api
             interests: format_tags(Tag.interests),
             signals: format_tags(Tag.signals),
           },
-          reactions: format_reactions(Reaction.all),
+          reactions: format_reactions(Reaction.all.order(position: :asc)),
         }.to_json, status: 200
       end
 

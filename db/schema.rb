@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_13_150000) do
+ActiveRecord::Schema.define(version: 202401111415004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -698,6 +698,13 @@ ActiveRecord::Schema.define(version: 2023_12_13_150000) do
     t.index ["organization_id"], name: "index_questions_on_organization_id"
   end
 
+  create_table "reactions", force: :cascade do |t|
+    t.string "name"
+    t.string "key"
+    t.string "image_url"
+    t.integer "position", default: 0
+  end
+
   create_table "recommandation_images", force: :cascade do |t|
     t.string "title"
     t.string "image_url"
@@ -1049,6 +1056,17 @@ ActiveRecord::Schema.define(version: 2023_12_13_150000) do
     t.index ["admin_id"], name: "index_user_phone_changes_on_admin_id"
     t.index ["kind"], name: "index_user_phone_changes_on_kind"
     t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
+  end
+
+  create_table "user_reactions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "reaction_id", null: false
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instance_id", "instance_type"], name: "index_user_reactions_on_instance_id_and_instance_type"
+    t.index ["reaction_id"], name: "index_user_reactions_on_reaction_id"
   end
 
   create_table "user_recommandations", force: :cascade do |t|
