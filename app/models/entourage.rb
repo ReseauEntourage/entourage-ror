@@ -50,6 +50,7 @@ class Entourage < ApplicationRecord
   attr_accessor :user_status
   attr_accessor :cancellation_message
   attr_accessor :entourage_image_id
+  attr_accessor :place_limited
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -283,6 +284,12 @@ class Entourage < ApplicationRecord
   def group_type= value
     self.metadata = add_metadata_schema_urn(metadata)
     super(value)
+  end
+
+  def place_limited= value
+    return unless outing?
+
+    self.metadata[:place_limit] = nil unless value
   end
 
   def image_path
