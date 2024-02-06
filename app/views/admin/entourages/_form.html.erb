@@ -48,6 +48,20 @@
 
   <% if @entourage.outing? %>
     <div class="control-group">
+      <label class="control-label">Événement à places limitées</label>
+      <div class="controls">
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :place_limited, true, required: true %>
+          Oui
+        </label>
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :place_limited, false, required: true %>
+          Non
+        </label>
+      </div>
+    </div>
+
+    <div class="control-group" id="place_limit_section">
       <%= f.label :place_limit, "Places limitées", class: "control-label" %>
       <div class="controls">
         <%= text_field_tag "entourage[metadata][place_limit]", @entourage.metadata[:place_limit], placeholder: "Nombre entier positif ou laisser vide", class: "form-control" %>
@@ -247,6 +261,14 @@
       var $endsAt = $('#metadata_ends_at_date')
       if ($endsAt.val() === '') $endsAt.val(this.value)
     })
+
+    $("input[name='entourage[place_limited]']").change(function() {
+      if ($(this).val() == "true") {
+        $("#place_limit_section").show();
+      } else {
+        $("#place_limit_section").hide();
+      }
+    });
   </script>
 <% end %>
 
