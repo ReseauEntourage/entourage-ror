@@ -12,6 +12,12 @@ module Translatable
     has_one :translation, as: :instance
   end
 
+  def translatable?
+    return unless respond_to?(:deleted?)
+
+    !deleted?
+  end
+
   # records translation in translations table
   def translate!
     return unless translation_keys.any?
