@@ -22,7 +22,7 @@ class ActiveModel::Serializer
 
       {
         translation: translation,
-        original: object[field],
+        original: object.send(field),
         from_lang: object.translation&.from_lang || default_lang,
         to_lang: lang || default_lang
       }
