@@ -65,6 +65,7 @@ class Entourage < ApplicationRecord
   validates_inclusion_of :online, in: -> (e) { e.online_setting_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
+  validate :validate_place_limit, if: :outing?
 
   scope :active, -> { where(status: ['open', 'full']) }
   scope :closed, -> { where(status: :closed) }
@@ -340,6 +341,14 @@ class Entourage < ApplicationRecord
     metadata[:ends_at]
   end
 
+  def place_limited
+    return unless outing?
+    return unless metadata
+    return unless metadata[:place_limit].present?
+
+    metadata[:place_limit].to_i > 0
+  end
+
   def outing_image_url?
     return unless outing?
 
@@ -562,13 +571,23 @@ class Entourage < ApplicationRecord
   end
 
   def validate_outings_ends_at
-    return unless group_type == 'outing'
+    return unless outing?
     return unless metadata[:starts_at].present?
     return unless metadata[:ends_at].present?
 
     if metadata[:ends_at] < metadata[:starts_at]
       errors.add(:metadata, "'ends_at' must not be before 'starts_at'")
     end
+  end
+
+  def validate_place_limit
+    return unless outing?
+    return unless metadata
+    return unless metadata[:place_limit].present?
+    return if metadata[:place_limit].is_a?(Integer)
+    return if metadata[:place_limit].is_a?(String) && metadata[:place_limit].match?(/^\d+$/)
+
+    errors.add(:metadata, "Le nombre de places disponibles doit être numérique")
   end
 
   def generate_display_address
