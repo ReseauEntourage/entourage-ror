@@ -50,7 +50,6 @@ class Entourage < ApplicationRecord
   attr_accessor :user_status
   attr_accessor :cancellation_message
   attr_accessor :entourage_image_id
-  attr_accessor :place_limited
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -286,12 +285,6 @@ class Entourage < ApplicationRecord
     super(value)
   end
 
-  def place_limited= value
-    return unless outing?
-
-    self.metadata[:place_limit] = nil unless value
-  end
-
   def image_path
     return unless action?
     return unless contribution?
@@ -346,6 +339,14 @@ class Entourage < ApplicationRecord
     return unless outing?
     return unless metadata
     metadata[:ends_at]
+  end
+
+  def place_limited
+    return unless outing?
+    return unless metadata
+    return unless metadata[:place_limit].present?
+
+    metadata[:place_limit].to_i > 0
   end
 
   def outing_image_url?
@@ -586,7 +587,7 @@ class Entourage < ApplicationRecord
     return if metadata[:place_limit].is_a?(Integer)
     return if metadata[:place_limit].is_a?(String) && metadata[:place_limit].match?(/^\d+$/)
 
-    errors.add(:metadata, "'place_limit' must be an integer or nil")
+    errors.add(:metadata, "Le nombre de places disponibles doit être numérique")
   end
 
   def generate_display_address

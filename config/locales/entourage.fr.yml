@@ -89,6 +89,7 @@ fr:
         starts_at: Commence le
         ends_at: Fini le
         image_url: Image URL
+        place_limit: Nombre de places disponibles
         members_count: Nombre de membres
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation

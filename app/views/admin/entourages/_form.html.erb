@@ -51,18 +51,18 @@
       <label class="control-label">Événement à places limitées</label>
       <div class="controls">
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-          <%= f.radio_button :place_limited, true, required: true %>
+          <%= f.radio_button :place_limited, true, required: true, checked: @entourage.place_limited %>
           Oui
         </label>
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-          <%= f.radio_button :place_limited, false, required: true %>
+          <%= f.radio_button :place_limited, false, required: true, checked: !@entourage.place_limited %>
           Non
         </label>
       </div>
     </div>
 
     <div class="control-group" id="place_limit_section">
-      <%= f.label :place_limit, "Places limitées", class: "control-label" %>
+      <%= f.label :place_limit, class: "control-label" %>
       <div class="controls">
         <%= text_field_tag "entourage[metadata][place_limit]", @entourage.metadata[:place_limit], placeholder: "Nombre entier positif ou laisser vide", class: "form-control" %>
       </div>
@@ -262,13 +262,17 @@
       if ($endsAt.val() === '') $endsAt.val(this.value)
     })
 
-    $("input[name='entourage[place_limited]']").change(function() {
-      if ($(this).val() == "true") {
+    var place_limit_visibility = function() {
+      if ($('input[name="entourage[place_limited]"]:checked').val() === 'true') {
         $("#place_limit_section").show();
       } else {
         $("#place_limit_section").hide();
       }
-    });
+    }
+
+    $("input[name='entourage[place_limited]']").change(place_limit_visibility);
+
+    place_limit_visibility();
   </script>
 <% end %>
 
