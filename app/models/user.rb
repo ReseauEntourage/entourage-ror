@@ -60,7 +60,6 @@ class User < ApplicationRecord
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :feeds
   belongs_to :partner, optional: true
-  has_many :entourage_displays
   has_many :entourage_scores
   has_one :moderation, class_name: 'UserModeration'
   has_many :entourage_moderations, foreign_key: :moderator_id

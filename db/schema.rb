@@ -225,17 +225,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["entourage_id"], name: "index_entourage_denorms_on_entourage_id"
   end
 
-  create_table "entourage_displays", id: :serial, force: :cascade do |t|
-    t.integer "entourage_id"
-    t.float "distance"
-    t.integer "feed_rank"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "source", default: "newsfeed"
-    t.integer "user_id", null: false
-    t.index ["entourage_id"], name: "index_entourage_displays_on_entourage_id"
-  end
-
   create_table "entourage_images", force: :cascade do |t|
     t.string "title"
     t.string "landscape_url"
