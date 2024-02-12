@@ -2,10 +2,7 @@ module SalesforceServices
   class User < Connect
     TABLE_NAME = "Compte_App__c"
 
-    # ProfilDeclare__c inconnu 01JAa00000Gfflx
-    # ProfilDeclare__c riverain 01JAa00000Gffly
-    # ProfilDeclare__c preca 01JAa00000Gfflz
-    # ProfilDeclare__c asso 01JAa00000Gffm0
+    UPDATABLE_FIELDS = [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile]
 
     # ProfilModeration__c inconnu 01JAa00000GfVMt
     # ProfilModeration__c riverain 01JAa00000GfVMu
@@ -57,6 +54,10 @@ module SalesforceServices
         "DateCreationCompte__c" => user.created_at.strftime("%Y-%m-%d"),
         "DateDerniereConnexion__c" => user.last_sign_in_at.strftime("%Y-%m-%d"),
       }
+    end
+
+    def updatable_fields
+      UPDATABLE_FIELDS
     end
 
     def lead_id user
