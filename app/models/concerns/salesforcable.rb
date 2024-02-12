@@ -7,8 +7,10 @@ module Salesforcable
 
   SalesforceStruct = Struct.new(:instance) do
     def initialize(instance: nil)
-      @service = SalesforceServices::User.new
+      service_class = "SalesforceServices::#{instance.class.name}"
+      raise ArgumentError.new("class #{service_class} does not exist") unless @service = service_class.safe_constantize
 
+      @service = @service.new
       @instance = instance
     end
 
@@ -31,6 +33,10 @@ module Salesforcable
     def destroy
       @service.destroy(@instance)
     end
+
+    def updatable_fields
+      @service.updatable_fields
+    end
   end
 
   def salesforce
@@ -40,7 +46,7 @@ module Salesforcable
   def sync_salesforce
     return sync_salesforce_destroy if saved_change_to_validation_status? && deleted?
 
-    return unless [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile].any? { |field| saved_change_to_attribute?(field) }
+    return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
     SalesforceJob.perform_later(id, :upsert)
   end
