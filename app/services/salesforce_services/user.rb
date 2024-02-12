@@ -1,6 +1,16 @@
 module SalesforceServices
   class User < Connect
-    TABLE_NAME = "Contact"
+    TABLE_NAME = "Compte_App__c"
+
+    # ProfilDeclare__c inconnu 01JAa00000Gfflx
+    # ProfilDeclare__c riverain 01JAa00000Gffly
+    # ProfilDeclare__c preca 01JAa00000Gfflz
+    # ProfilDeclare__c asso 01JAa00000Gffm0
+
+    # ProfilModeration__c inconnu 01JAa00000GfVMt
+    # ProfilModeration__c riverain 01JAa00000GfVMu
+    # ProfilModeration__c preca 01JAa00000GfVMv
+    # ProfilModeration__c asso 01JAa00000GfVMw
 
     def id user
       return unless attributes = find_by_external_id(user.id)
@@ -10,11 +20,7 @@ module SalesforceServices
     end
 
     def find_by_external_id user_id
-      client.query("select Id from #{TABLE_NAME} where ID_externe__c = '#{user_id}'").first
-    end
-
-    def create user
-      client.create(TABLE_NAME, user_to_hash(user))
+      client.query("select Id from #{TABLE_NAME} where UserId__c = #{user_id}").first
     end
 
     def update user
@@ -22,12 +28,12 @@ module SalesforceServices
     end
 
     def upsert user
-      client.upsert(
-        TABLE_NAME,
-        "ID_externe__c",
-        "ID_externe__c": user.id,
-        **user_to_hash(user)
-      )
+      fields = user_to_hash(user).merge({
+        "Prospect__c" => lead_id(user),
+        "Contact__c" => contact_id!(user),
+      })
+
+      client.upsert!(TABLE_NAME, "UserId__c", "UserId__c": user.id, **fields)
     end
 
     def destroy user
@@ -36,22 +42,29 @@ module SalesforceServices
 
     # helpers
 
-    def picklist_values type
-      client.picklist_values(TABLE_NAME, type)
-    end
-
     def user_to_hash user
       {
-        "FirstName" => user.first_name,
-        "LastName" => user.last_name,
-        "Email" => user.email,
-        "Phone" => user.phone,
-        "RecordTypeId" => user.is_ask_for_help? ? "012Aa000001EmAfIAK" : "012Aa000001HBL3IAO",
+        "Prenom__c" => user.first_name,
+        "Nom__c" => user.last_name,
+        "Email__c" => user.email,
+        "Telephone__c" => user.phone,
+        "ProfilDeclare__c" => user.ask_for_help? ? "preca" : "riverain",
+        "ProfilModeration__c" => user.is_ask_for_help? ? "preca" : "riverain",
         "Antenne__c" => "National",
-        "Reseaux__c" => "Entourage",
-        # "Statut__c" => user.sf_status,
-        # "Departement__c" => user.departement,
+        "Code_postal__c" => user.postal_code,
+        "Geolocalisation__Latitude__s" => user.latitude,
+        "Geolocalisation__Longitude__s" => user.longitude,
+        "DateCreationCompte__c" => user.created_at.strftime("%Y-%m-%d"),
+        "DateDerniereConnexion__c" => user.last_sign_in_at.strftime("%Y-%m-%d"),
       }
+    end
+
+    def lead_id user
+      Lead.new.find_id_by_user(user)
+    end
+
+    def contact_id! user
+      Contact.new.creasert(user)
     end
   end
 end
