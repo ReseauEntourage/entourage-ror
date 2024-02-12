@@ -53,7 +53,7 @@ module SalesforceServices
         "Telephone__c" => user.phone,
         "ProfilDeclare__c" => profil_declare(user),
         "ProfilModeration__c" => profil_moderation(user),
-        "Antenne__c" => "National",
+        "Antenne__c" => antenne(user),
         "Code_postal__c" => user.postal_code,
         "Geolocalisation__Latitude__s" => user.latitude,
         "Geolocalisation__Longitude__s" => user.longitude,
@@ -92,6 +92,10 @@ module SalesforceServices
       return TARGETING_PROFILE_MAPPING[user.targeting_profile.to_sym] if TARGETING_PROFILE_MAPPING[user.targeting_profile.to_sym]
 
       TARGETING_PROFILE_MAPPING[:default]
+    end
+
+    def antenne user
+      user.sf.from_address_to_antenne(user.address)
     end
   end
 end

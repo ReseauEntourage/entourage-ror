@@ -37,6 +37,25 @@ module Salesforcable
     def updatable_fields
       @service.updatable_fields
     end
+
+    def from_address_to_antenne address
+      return "National" unless address.present? && address.departement.present?
+
+      return "Paris" if address.departement == "75"
+      return "Lille" if address.departement == "59"
+      return "Lyon" if address.departement == "69"
+      return "Rennes" if address.departement == "35"
+      return "Seine Saint Denis" if address.departement == "93"
+      return "Hauts de Seine" if address.departement == "92"
+      return "Marseille" if address.departement == "13"
+      return "IDF" if address.departement == "77" || address.departement == "78" || address.departement == "91" || address.departement == "94" || address.departement == "95"
+      return "Lorient" if address.departement == "56"
+      return "Nantes" if address.departement == "44"
+      return "Bordeaux" if address.departement == "33"
+      return "Saint Etienne" if address.departement == "42"
+
+      "Autre région"
+    end
   end
 
   def salesforce
