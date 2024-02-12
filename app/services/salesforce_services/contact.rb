@@ -20,7 +20,7 @@ module SalesforceServices
       find_id_by_user(user) || client.create(TABLE_NAME, user_to_hash(user))
     end
 
-    # helpers
+    private
 
     def user_to_hash user
       {
@@ -29,9 +29,13 @@ module SalesforceServices
         "Email" => user.email,
         "Phone" => user.phone,
         "RecordTypeId" => user.is_ask_for_help? ? "012Aa000001EmAfIAK" : "012Aa000001HBL3IAO",
-        "Antenne__c" => "National",
+        "Antenne__c" => antenne(user),
         "Reseaux__c" => "Entourage",
       }
+    end
+
+    def antenne user
+      user.sf.from_address_to_antenne(user.address)
     end
   end
 end
