@@ -39,6 +39,8 @@ module Salesforcable
     end
 
     def from_address_to_antenne
+      return "National" unless @instance.present? && @instance.respond_to?(:address)
+
       address = @instance.address
 
       return "National" unless address.present? && address.departement.present?
