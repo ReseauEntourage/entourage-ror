@@ -69,11 +69,11 @@ module Salesforcable
 
     return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
-    SalesforceJob.perform_later(id, :upsert)
+    SalesforceJob.perform_later(id, "upsert")
   end
 
   def sync_salesforce_destroy
-    SalesforceJob.perform_later(id, :destroy)
+    SalesforceJob.perform_later(id, "destroy")
   end
 
   alias_method :sf, :salesforce
