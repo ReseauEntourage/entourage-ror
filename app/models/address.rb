@@ -10,7 +10,7 @@ class Address < ApplicationRecord
   belongs_to :user
 
   after_save :set_user_address_id_if_primary!
-  after_commit :sync_salesforce, if: :saved_changes?
+  after_save :sync_salesforce
 
   def to_s
     display_address
