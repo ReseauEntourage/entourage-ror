@@ -2,7 +2,7 @@ module SalesforceServices
   class User < Connect
     TABLE_NAME = "Compte_App__c"
 
-    UPDATABLE_FIELDS = [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile]
+    UPDATABLE_FIELDS = [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile, :status, :deleted]
 
     GOAL_MAPPING = {
       ask_for_help: "preca",
@@ -17,6 +17,10 @@ module SalesforceServices
       team: "asso",
       ambassador: "riverain",
       default: "inconnu"
+    }
+    DELETED_MAPPING = {
+      true => "supprimé",
+      false => "actif"
     }
 
     def find_id_by_user user
@@ -40,7 +44,7 @@ module SalesforceServices
     end
 
     def destroy user
-      client.destroy(TABLE_NAME, find_id_by_user(user))
+      client.update(TABLE_NAME, Id: find_id_by_user(user), Status__c: "supprimé")
     end
 
     # helpers
@@ -59,6 +63,7 @@ module SalesforceServices
         "Geolocalisation__Longitude__s" => user.longitude,
         "DateCreationCompte__c" => user.created_at.strftime("%Y-%m-%d"),
         "DateDerniereConnexion__c" => user.last_sign_in_at.strftime("%Y-%m-%d"),
+        "Status__c" => status(user),
       }
     end
 
@@ -96,6 +101,10 @@ module SalesforceServices
 
     def antenne user
       user.sf.from_address_to_antenne
+    end
+
+    def status user
+      DELETED_MAPPING[user.deleted]
     end
   end
 end

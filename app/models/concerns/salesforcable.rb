@@ -65,15 +65,17 @@ module Salesforcable
   end
 
   def sync_salesforce
-    return sync_salesforce_destroy if saved_change_to_validation_status? && deleted?
+    if has_attribute?(:deleted)
+      return SalesforceJob.perform_later(id, "destroy") if saved_change_to_deleted? && deleted?
+    end
+
+    if has_attribute?(:status)
+      return SalesforceJob.perform_later(id, "destroy") if saved_change_to_status? && status == "deleted"
+    end
 
     return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
     SalesforceJob.perform_later(id, "upsert")
-  end
-
-  def sync_salesforce_destroy
-    SalesforceJob.perform_later(id, "destroy")
   end
 
   alias_method :sf, :salesforce
