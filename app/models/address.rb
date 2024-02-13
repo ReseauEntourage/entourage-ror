@@ -50,7 +50,7 @@ class Address < ApplicationRecord
   end
 
   def sync_salesforce
-    SalesforceJob.perform_later(user_id, :upsert)
+    SalesforceJob.perform_later(user_id, "upsert")
   end
 
   private

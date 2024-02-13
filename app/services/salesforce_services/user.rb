@@ -66,11 +66,11 @@ module SalesforceServices
       UPDATABLE_FIELDS
     end
 
-    private
-
     def find_by_external_id user_id
       client.query("select Id from #{TABLE_NAME} where UserId__c = #{user_id}").first
     end
+
+    private
 
     def lead_id user
       Lead.new.find_id_by_user(user)
