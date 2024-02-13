@@ -38,7 +38,9 @@ module Salesforcable
       @service.updatable_fields
     end
 
-    def from_address_to_antenne address
+    def from_address_to_antenne
+      address = @instance.address
+
       return "National" unless address.present? && address.departement.present?
 
       return "Paris" if address.departement == "75"

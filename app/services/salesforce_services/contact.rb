@@ -35,7 +35,7 @@ module SalesforceServices
     end
 
     def antenne user
-      user.sf.from_address_to_antenne(user.address)
+      user.sf.from_address_to_antenne
     end
   end
 end
