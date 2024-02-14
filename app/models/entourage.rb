@@ -566,7 +566,7 @@ class Entourage < ApplicationRecord
 
   def set_outings_place_limit
     return unless outing?
-    return unless metadata[:place_limit].nil?
+    return unless metadata[:place_limit].blank?
     self.metadata[:place_limit] = nil
   end
 
