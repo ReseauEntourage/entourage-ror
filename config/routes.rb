@@ -82,7 +82,7 @@ Rails.application.routes.draw do
       end
 
       resources :messages, only: [:index, :destroy]
-      resources :partners, except: [:create, :update] do
+      resources :partners do
         collection do
           post :change_admin_role
         end
