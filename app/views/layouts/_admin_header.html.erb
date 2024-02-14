@@ -56,7 +56,6 @@
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
             <li><%= link_to "Demandes de changement de téléphone", admin_users_path(status: :pending) %></li>
             <% if EnvironmentHelper.staging? %>
-              <li><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
               <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
             <% end %>
           </ul>

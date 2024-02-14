@@ -60,17 +60,7 @@ module FeedServices
         FeedServices::Types::TYPES['entourage'].values.find_all { |type| type.starts_with?(prefix) }
       end
 
-      if show_tours != "true"
-        tour_types = []
-      elsif tour_types.nil?
-        tour_types = Tour::TOUR_TYPES
-      else
-        tour_types = tour_types.gsub(' ', '').split(',') & Tour::TOUR_TYPES
-      end
-
-      tour_types = tour_types.map { |tour_type| "tour_#{tour_type}" }
-
-      return (entourage_types + tour_types).join(",").presence
+      return entourage_types.join(",").presence
     end
   end
 end

@@ -7,10 +7,6 @@ class UserPresenter < ApplicationPresenter
     @user = user
   end
 
-  def organization_members
-    @user.organization.users.order(Arel.sql("upper(first_name) ASC"))
-  end
-
   def can_send_push?
     user.device_id.present?
   end
@@ -38,10 +34,6 @@ class UserPresenter < ApplicationPresenter
     else
       link_to("Valider", Rails.application.routes.url_helpers.validate_admin_user_path(user), method: :put, class: "custom-button custom-primary-inverted green")
     end
-  end
-
-  def coordinated_organizations
-    (user.coordinated_organizations + [user.organization]).compact.sort_by(&:name)
   end
 
   def self.format_first_name first_name

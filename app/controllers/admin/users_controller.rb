@@ -10,7 +10,7 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:organization).order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.order("created_at DESC").page(params[:page]).per(25)
     end
 
     def show
@@ -70,14 +70,7 @@ module Admin
     end
 
     def create
-      if user_params[:organization_id].present?
-        organization = Organization.find(user_params[:organization_id])
-        builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
-      else
-        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
-      end
-
-      builder.create(send_sms: params[:send_sms].present?) do |on|
+      UserServices::PublicUserBuilder.new(params: user_params, community: community).create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
           return redirect_to admin_users_path, notice: "utilisateur créé"
         end
@@ -97,11 +90,6 @@ module Admin
     end
 
     def update
-      if !user.pro? && user_params[:organization_id].present?
-        user.user_type = 'pro'
-        user.organization_id = user_params[:organization_id]
-      end
-
       email_prefs_success = EmailPreferencesService.update(user: user, preferences: email_preferences_params.to_h)
 
       user.assign_attributes(user_params)
@@ -264,14 +252,7 @@ module Admin
 
     def generate
       @users = []
-      @users << UserServices::FakeUser.new.user_without_tours
-      user_with_tours = UserServices::FakeUser.new.user_with_tours
-      ongoing_tour = user_with_tours.tours.where(status: "ongoing").first
-      @users << user_with_tours
-      @users << UserServices::FakeUser.new.user_joining_tour(tour: ongoing_tour)
-      @users << UserServices::FakeUser.new.user_accepted_in_tour(tour: ongoing_tour)
-      @users << UserServices::FakeUser.new.user_rejected_of_tour(tour: ongoing_tour)
-      @users << UserServices::FakeUser.new.user_quitting_tour(tour: ongoing_tour)
+
       render :fake
     end
 
@@ -287,7 +268,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :slack_id, :interest_list, interests: [])
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :slack_id, :interest_list, interests: [])
     end
 
     def email_preferences_params
@@ -326,7 +307,6 @@ module Admin
       @users = @users.unknown if profile == :goal_not_known
       @users = @users.ask_for_help if profile == :ask_for_help
       @users = @users.offer_help if profile == :offer_help
-      @users = @users.organization if profile == :organization
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')

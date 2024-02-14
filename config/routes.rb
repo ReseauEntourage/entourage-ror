@@ -11,8 +11,6 @@ Rails.application.routes.draw do
       get 'logout' => 'sessions#logout'
       get '/sessions/new', to: redirect('/admin/sessions/new')
 
-      resources :generate_tours, only: [:index, :create]
-
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
           get 'moderate'
@@ -83,10 +81,8 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
-      resources :organizations, only: [:show, :index, :edit, :update]
-      resources :partners do
+      resources :partners, except: [:create, :update] do
         collection do
           post :change_admin_role
         end
@@ -110,7 +106,6 @@ Rails.application.routes.draw do
           patch 'update_community_builder'
         end
       end
-      resources :tour_areas
 
       resources :uploads, only: :new
       namespace :uploads do
@@ -206,8 +201,6 @@ Rails.application.routes.draw do
 
     resources :password_resets, only: [:new, :create, :edit, :update]
 
-    resources :generate_tours, only: [:index, :create]
-
     resources :users, only: [:index, :edit, :update, :new, :create] do
       collection do
         get 'moderate'
@@ -275,9 +268,7 @@ Rails.application.routes.draw do
     end
 
     resources :pois
-    resources :registration_requests, only: [:index, :show, :update, :destroy]
     resources :messages, only: [:index, :destroy]
-    resources :organizations, only: [:index, :edit, :update]
     resources :newsletter_subscriptions, only: [:index]
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
@@ -339,33 +330,16 @@ Rails.application.routes.draw do
       end
 
       resources :myfeeds, only: [:index]
-      resources :tours, only: [:index, :create, :show, :update] do
-        resources :tour_points, only:[:create]
-        resources :encounters, only: [:index, :create, :update], :shallow => true
-        resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
-        resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
-
-        member do
-          put :read
-        end
-      end
 
       resources :stats, only: [:index]
       resources :messages, only: [:create]
-      resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :contact_subscriptions, only: [:create]
+
       resources :newsletter_subscriptions, only: [:create] do
         collection do
           get :show
           delete :destroy
-        end
-      end
-      resources :questions, only: [:index]
-
-      resources :tour_areas, only: [:index, :show] do
-        member do
-          post :request, action: :tour_request
         end
       end
 
@@ -394,7 +368,6 @@ Rails.application.routes.draw do
           post :following
         end
 
-        resources :tours, :controller => 'users/tours', only: [:index]
         resources :entourages, :controller => 'users/entourages', only: [:index]
         resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
         resources :outings, :controller => 'users/outings', only: [:index] do
@@ -735,36 +708,12 @@ Rails.application.routes.draw do
       get 'switch_user' => 'admin/sessions#switch_user'
     end
   end
-  resources :organizations, only: [:new, :create, :edit, :update] do
-    collection do
-      get 'dashboard'
-      get 'statistics'
-      get 'tours'
-      get 'simplified_tours'
-      get 'encounters'
-      get 'map_center'
-      post 'send_message'
-    end
-  end
+
   resources :users, only: [:index, :edit, :create, :update, :destroy] do
     member do
       post 'send_sms'
     end
   end
-  resources :tours, only: [:show, :destroy] do
-    member do
-      get :map_center
-      get :map_data
-    end
-  end
-
-  resources :scheduled_pushes, only: [:index] do
-    collection do
-      delete :destroy
-    end
-  end
-
-  resources :questions, only: [:create, :destroy]
 
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'

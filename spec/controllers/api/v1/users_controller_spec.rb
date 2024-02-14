@@ -37,13 +37,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "address" => nil,
               "address_2" => nil,
               "avatar_url" => "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
-              "organization" => {
-                "name" => user.organization.name,
-                "description" => "Association description",
-                "phone" => user.organization.phone,
-                "address" => user.organization.address,
-                "logo_url" => nil
-              },
               "stats" => {
                 "tour_count" => 0,
                 "encounter_count" => 0,
@@ -248,84 +241,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let(:not_deleted_user) { FactoryBot.create(:pro_user, deleted: false, sms_code: "123456") }
       before { post 'login', params: { user: {phone: not_deleted_user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(200) }
-    end
-    context "user with tours and encounters" do
-      let!(:user) { create :pro_user, sms_code: "123456", validation_status: "validated", avatar_key: "avatar" }
-      let!(:tour1) { create :tour, user: user }
-      let!(:tour2) { create :tour }
-      let!(:tour3) { create :tour, user: user }
-      let!(:encounter1) { create :encounter, tour: tour1 }
-      let!(:encounter2) { create :encounter, tour: tour1 }
-      let!(:encounter3) { create :encounter, tour: tour2 }
-      let!(:encounter4) { create :encounter, tour: tour3 }
-      let!(:entourage) { create :entourage, user: user }
-
-      before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
-      it { expect(JSON.parse(response.body)).to eq({
-        "user" => {
-          "id" => user.id,
-          "uuid" => user.id.to_s,
-          "email" => user.email,
-          "lang" => user.lang,
-          "display_name" => "John D.",
-          "first_name" => "John",
-          "last_name" => "Doe",
-          "roles" => [],
-          "about" => nil,
-          "user_type" => "pro",
-          "token" => user.token,
-          "has_password" => false,
-          "address" => nil,
-          "address_2" => nil,
-          "avatar_url" => "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
-          "organization" => {
-            "name" => user.organization.name,
-            "description" => "Association description",
-            "phone" => user.organization.phone,
-            "address" => user.organization.address,
-            "logo_url" => nil
-          },
-          "stats" => {
-            "tour_count" => 2,
-            "encounter_count" => 3,
-            "entourage_count" => 1,
-            "actions_count" => 0,
-            "ask_for_help_creation_count" => 1,
-            "contribution_creation_count" => 0,
-            "events_count" => 0,
-            "outings_count" => 0,
-            "neighborhoods_count" => 0,
-            "good_waves_participation" => false,
-          },
-          "partner" => nil,
-          "memberships" => [],
-          "conversation" => {
-            "uuid" => "1_list_#{user.id}"
-          },
-          "firebase_properties" => {
-            "ActionZoneDep" => "not_set",
-            "ActionZoneCP" => "not_set",
-            "Goal" => "no_set",
-            "Interests" => "none"
-          },
-          "anonymous" => false,
-          "feature_flags" => {
-            "organization_admin" => false
-          },
-          "engaged" => true,
-          "goal" => nil,
-          "phone" => user.phone,
-          "unread_count" => 0,
-          "interests" => [],
-          "travel_distance" => 40,
-          "birthday" => nil,
-          "permissions" => {
-            "outing" => { "creation" => false }
-          },
-          "created_at" => user.created_at.iso8601(3),
-        },
-        "first_sign_in" => true
-      })}
     end
 
     context "blocked user" do
@@ -812,13 +727,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "has_password" => false,
             "address" => nil,
             "address_2" => nil,
-            "organization" => {
-              "name" => user.organization.name,
-              "description" => "Association description",
-              "phone" => user.organization.phone,
-              "address" => user.organization.address,
-              "logo_url" => nil
-            },
             "stats" => {
                "tour_count" => 0,
                "encounter_count" => 0,
@@ -907,13 +815,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "has_password" => false,
             "address" => nil,
             "address_2" => nil,
-            "organization" => {
-              "name" => user.organization.name,
-              "description" => "Association description",
-              "phone" => user.organization.phone,
-              "address" => user.organization.address,
-              "logo_url"=>nil
-            },
             "stats" => {
                "tour_count" => 0,
                "encounter_count" => 0,
@@ -993,13 +894,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "about" => "about",
             "avatar_url" => nil,
             "user_type" => "pro",
-            "organization" => {
-              "name" => other_user.organization.name,
-              "description" => "Association description",
-              "phone" => other_user.organization.phone,
-              "address" => other_user.organization.address,
-              "logo_url" => nil
-            },
             "stats" => {
               "tour_count" => 0,
               "encounter_count" => 0,

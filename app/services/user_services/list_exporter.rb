@@ -4,7 +4,6 @@ module UserServices
     FIELDS = %w{
       first_name
       last_name
-      organization_name
       created_at
       last_sign_in_at
       goal

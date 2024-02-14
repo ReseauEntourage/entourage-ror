@@ -72,13 +72,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_goals"], name: "index_announcements_on_user_goals", using: :gin
   end
 
-  create_table "answers", id: :serial, force: :cascade do |t|
-    t.integer "question_id", null: false
-    t.integer "encounter_id", null: false
-    t.string "value", null: false
-    t.index ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id"
-  end
-
   create_table "categories", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -223,21 +216,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true
   end
 
-  create_table "encounters", id: :serial, force: :cascade do |t|
-    t.datetime "date"
-    t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "street_person_name"
-    t.float "latitude"
-    t.float "longitude"
-    t.string "voice_message_url"
-    t.integer "tour_id"
-    t.string "encrypted_message"
-    t.string "address"
-    t.index ["tour_id"], name: "index_encounters_on_tour_id"
-  end
-
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
     t.integer "entourage_id", null: false
     t.datetime "max_chat_message_created_at"
@@ -245,17 +223,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "updated_at", null: false
     t.boolean "has_image_url", default: false
     t.index ["entourage_id"], name: "index_entourage_denorms_on_entourage_id"
-  end
-
-  create_table "entourage_displays", id: :serial, force: :cascade do |t|
-    t.integer "entourage_id"
-    t.float "distance"
-    t.integer "feed_rank"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "source", default: "newsfeed"
-    t.integer "user_id", null: false
-    t.index ["entourage_id"], name: "index_entourage_displays_on_entourage_id"
   end
 
   create_table "entourage_images", force: :cascade do |t|
@@ -562,6 +529,13 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id"], name: "index_notification_permissions_on_user_id"
   end
 
+  create_table "old_answers", id: :integer, default: -> { "nextval('answers_id_seq'::regclass)" }, force: :cascade do |t|
+    t.integer "question_id", null: false
+    t.integer "encounter_id", null: false
+    t.string "value", null: false
+    t.index ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id"
+  end
+
   create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|
     t.string "filename", null: false
     t.datetime "created_at", null: false
@@ -579,16 +553,22 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["atd_id", "user_id"], name: "index_old_atd_users_on_atd_id_and_user_id", unique: true
   end
 
-  create_table "options", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "description"
-    t.boolean "active", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["key"], name: "index_options_on_key"
+  create_table "old_encounters", id: :integer, default: -> { "nextval('encounters_id_seq'::regclass)" }, force: :cascade do |t|
+    t.datetime "date"
+    t.integer "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "street_person_name"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "voice_message_url"
+    t.integer "tour_id"
+    t.string "encrypted_message"
+    t.string "address"
+    t.index ["tour_id"], name: "index_encounters_on_tour_id"
   end
 
-  create_table "organizations", id: :serial, force: :cascade do |t|
+  create_table "old_organizations", id: :integer, default: -> { "nextval('organizations_id_seq'::regclass)" }, force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "phone"
@@ -602,6 +582,81 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.boolean "test_organization", default: false, null: false
     t.text "tour_report_cc"
     t.index ["name"], name: "index_organizations_on_name", unique: true
+  end
+
+  create_table "old_questions", id: :integer, default: -> { "nextval('questions_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.string "answer_type", null: false
+    t.integer "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_questions_on_organization_id"
+  end
+
+  create_table "old_registration_requests", id: :integer, default: -> { "nextval('registration_requests_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "status", default: "pending", null: false
+    t.string "extra", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "old_simplified_tour_points", id: :integer, default: -> { "nextval('simplified_tour_points_id_seq'::regclass)" }, force: :cascade do |t|
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.integer "tour_id", null: false
+    t.datetime "created_at"
+    t.index ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id"
+    t.index ["tour_id"], name: "index_simplified_tour_points_on_tour_id"
+  end
+
+  create_table "old_tour_areas", id: :integer, default: -> { "nextval('tour_areas_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "departement", limit: 5
+    t.string "area", null: false
+    t.string "status", default: "inactive", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area"], name: "index_tour_areas_on_area"
+    t.index ["status"], name: "index_tour_areas_on_status"
+  end
+
+  create_table "old_tour_points", id: :integer, default: -> { "nextval('tour_points_id_seq'::regclass)" }, force: :cascade do |t|
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.integer "tour_id", null: false
+    t.datetime "passing_time", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["tour_id", "created_at"], name: "index_tour_points_on_tour_id_and_created_at"
+    t.index ["tour_id", "id"], name: "index_tour_points_on_tour_id_and_id"
+    t.index ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude"
+  end
+
+  create_table "old_tours", id: :integer, default: -> { "nextval('tours_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "tour_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "status"
+    t.integer "vehicle_type", default: 0
+    t.integer "user_id"
+    t.datetime "closed_at"
+    t.integer "length", default: 0
+    t.integer "encounters_count", default: 0, null: false
+    t.integer "number_of_people", default: 0, null: false
+    t.float "latitude"
+    t.float "longitude"
+    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_tours_on_coordinates", using: :gist
+    t.index ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude"
+    t.index ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type"
+  end
+
+  create_table "options", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "description"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_options_on_key"
   end
 
   create_table "outing_recurrences", force: :cascade do |t|
@@ -689,15 +744,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["textsearch"], name: "index_pois_on_textsearch", using: :gin
   end
 
-  create_table "questions", id: :serial, force: :cascade do |t|
-    t.string "title", null: false
-    t.string "answer_type", null: false
-    t.integer "organization_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["organization_id"], name: "index_questions_on_organization_id"
-  end
-
   create_table "reactions", force: :cascade do |t|
     t.string "name"
     t.string "key"
@@ -732,13 +778,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
     t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_for_help", where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
-  end
-
-  create_table "registration_requests", id: :serial, force: :cascade do |t|
-    t.string "status", default: "pending", null: false
-    t.string "extra", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "resource_images", force: :cascade do |t|
@@ -862,15 +901,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true
   end
 
-  create_table "simplified_tour_points", id: :serial, force: :cascade do |t|
-    t.float "latitude", null: false
-    t.float "longitude", null: false
-    t.integer "tour_id", null: false
-    t.datetime "created_at"
-    t.index ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id"
-    t.index ["tour_id"], name: "index_simplified_tour_points_on_tour_id"
-  end
-
 # Could not dump table "sms_deliveries" because of following StandardError
 #   Unknown type 'sms_delivery_status' for column 'status'
 
@@ -911,48 +941,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "updated_at"
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true
-  end
-
-  create_table "tour_areas", id: :serial, force: :cascade do |t|
-    t.string "departement", limit: 5
-    t.string "area", null: false
-    t.string "status", default: "inactive", null: false
-    t.string "email", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["area"], name: "index_tour_areas_on_area"
-    t.index ["status"], name: "index_tour_areas_on_status"
-  end
-
-  create_table "tour_points", id: :serial, force: :cascade do |t|
-    t.float "latitude", null: false
-    t.float "longitude", null: false
-    t.integer "tour_id", null: false
-    t.datetime "passing_time", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["tour_id", "created_at"], name: "index_tour_points_on_tour_id_and_created_at"
-    t.index ["tour_id", "id"], name: "index_tour_points_on_tour_id_and_id"
-    t.index ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude"
-  end
-
-  create_table "tours", id: :serial, force: :cascade do |t|
-    t.string "tour_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "status"
-    t.integer "vehicle_type", default: 0
-    t.integer "user_id"
-    t.datetime "closed_at"
-    t.integer "length", default: 0
-    t.integer "encounters_count", default: 0, null: false
-    t.integer "number_of_people", default: 0, null: false
-    t.float "latitude"
-    t.float "longitude"
-    t.datetime "feed_updated_at"
-    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_tours_on_coordinates", using: :gist
-    t.index ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude"
-    t.index ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type"
   end
 
   create_table "tours_users", id: :serial, force: :cascade do |t|

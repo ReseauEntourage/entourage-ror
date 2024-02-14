@@ -4,7 +4,7 @@ module CommunityLogic
       case object
       when Community
         object
-      when User, ::Entourage, Tour
+      when User, ::Entourage
         object.community
       else
         Community.new(object)

@@ -5,26 +5,12 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:public_user, phone: nil).save).to be false }
     it { expect(FactoryBot.build(:public_user, sms_code: nil).save).to be false }
     it { expect(FactoryBot.build(:public_user, token: nil).save).to be false }
-    it { expect(FactoryBot.build(:public_user, organization: nil).save).to be true }
+    it { expect(FactoryBot.build(:public_user).save).to be true }
     it { expect(FactoryBot.build(:public_user, first_name: nil).save).to be true }
     it { expect(FactoryBot.build(:public_user, last_name: nil).save).to be true }
     it { expect(FactoryBot.build(:public_user, email: nil).save).to be true }
     it { expect(FactoryBot.build(:public_user, device_type: nil).save).to be true }
     it { expect(FactoryBot.build(:public_user, device_id: nil).save).to be true }
-    it { expect(FactoryBot.build(:public_user, validation_status: nil).save).to be false }
-  end
-
-  describe "pro user" do
-    it { expect(FactoryBot.build(:pro_user, phone: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, sms_code: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, token: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, organization: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, first_name: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, last_name: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, email: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, device_type: nil).save).to be true }
-    it { expect(FactoryBot.build(:pro_user, device_id: nil).save).to be true }
-    it { expect(FactoryBot.build(:pro_user, device_id: nil).save).to be true }
     it { expect(FactoryBot.build(:public_user, validation_status: nil).save).to be false }
   end
 
@@ -37,11 +23,8 @@ describe User, :type => :model do
   it { should define_enum_for(:device_type) }
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
-  it { should have_many :tours }
-  it { should have_many :encounters }
   it { should have_many :entourages }
   it { should have_many :user_applications }
-  it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
 
   describe "community" do
     let(:user) { create :public_user }
@@ -52,83 +35,81 @@ describe User, :type => :model do
   end
 
   describe "birthday" do
-    it { expect(FactoryBot.build(:pro_user, birthday: nil).save).to be true }
-    it { expect(FactoryBot.build(:pro_user, birthday: '').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, birthday: '11').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, birthday: '1-1').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, birthday: '0-1').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, birthday: '01-1').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, birthday: '01-12').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, birthday: '01-13').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, birthday: '31-01').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, birthday: '31-02').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: nil).save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '11').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '1-1').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '0-1').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '01-1').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '01-12').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '01-13').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '31-01').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '31-02').save).to be false }
   end
 
   describe "phone number" do
-    it { expect(FactoryBot.build(:pro_user, phone: '+33623456789').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '0623456789').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '+33 6 23 45 67 89').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '06 23 45 67 89').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '06.23.45.67.89').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '+336.23.45.67.89').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '+336-23-45-67-89').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '06-23-45-67-89').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+33600000000').save).to be true } #Apple account
+    it { expect(FactoryBot.build(:public_user, phone: '+33623456789').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '0623456789').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '+33 6 23 45 67 89').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '06 23 45 67 89').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '06.23.45.67.89').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '+336.23.45.67.89').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '+336-23-45-67-89').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '06-23-45-67-89').save).to be true }
+    it { expect(FactoryBot.build(:public_user, phone: '').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+33600000000').save).to be true } #Apple account
     # only mobile
-    it { expect(FactoryBot.build(:pro_user, phone: '+33123456789').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '0123456789').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+33123456789').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '0123456789').save).to be false }
 
     # foreign countries
-    it { expect(FactoryBot.build(:pro_user, phone: '+32425551212').save).to be true } #belgian number as international (mobile)
-    it { expect(FactoryBot.build(:pro_user, phone: '+32225551212').save).to be false } #belgian number as international (local)
-    it { expect(FactoryBot.build(:pro_user, phone: '+1-999-999-9999').save).to be false } #canadian number
-    it { expect(FactoryBot.build(:pro_user, phone: '+40 (724) 593 579').save).to be false } #Apple formatted
+    it { expect(FactoryBot.build(:public_user, phone: '+32425551212').save).to be true } #belgian number as international (mobile)
+    it { expect(FactoryBot.build(:public_user, phone: '+32225551212').save).to be false } #belgian number as international (local)
+    it { expect(FactoryBot.build(:public_user, phone: '+1-999-999-9999').save).to be false } #canadian number
+    it { expect(FactoryBot.build(:public_user, phone: '+40 (724) 593 579').save).to be false } #Apple formatted
     # wrongs
-    it { expect(FactoryBot.build(:pro_user, phone: '0425551212').save).to be false } #belgian number no international
-    it { expect(FactoryBot.build(:pro_user, phone: '+33912345678').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '23-45-67-89').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+3323456789').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+33000000000').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '0425551212').save).to be false } #belgian number no international
+    it { expect(FactoryBot.build(:public_user, phone: '+33912345678').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '23-45-67-89').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+3323456789').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+33000000000').save).to be false }
     # using spamming numbers
-    it { expect(FactoryBot.build(:pro_user, phone: '+923480000000').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+6282333333000').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+40768888800').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+529322222200').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+923480000000').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+6282333333000').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+40768888800').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+529322222200').save).to be false }
     # starting with 06 but too long
-    it { expect(FactoryBot.build(:pro_user, phone: '+336060606060616').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+336090909090919').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+336161616161616').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+336191919191919').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+336060606060616').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+336090909090919').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+336161616161616').save).to be false }
+    it { expect(FactoryBot.build(:public_user, phone: '+336191919191919').save).to be false }
   end
 
   describe "sms_code" do
-    it { expect(FactoryBot.build(:pro_user, sms_code: '123456').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, sms_code: '12345').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, sms_code: '12345678901').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, sms_code: '1234567').save).to be true }
+    it { expect(FactoryBot.build(:public_user, sms_code: '123456').save).to be true }
+    it { expect(FactoryBot.build(:public_user, sms_code: '12345').save).to be false }
+    it { expect(FactoryBot.build(:public_user, sms_code: '12345678901').save).to be true }
+    it { expect(FactoryBot.build(:public_user, sms_code: '1234567').save).to be true }
   end
 
   describe "sms_code_password" do
-    it { expect(FactoryBot.build(:pro_user, sms_code_password: '123456').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, sms_code_password: '12345').save).to be false }
+    it { expect(FactoryBot.build(:public_user, sms_code_password: '123456').save).to be true }
+    it { expect(FactoryBot.build(:public_user, sms_code_password: '12345').save).to be false }
   end
 
   it "validates uniqueness of token" do
-    expect(FactoryBot.build(:pro_user, token: 'foo').save).to be true
-    expect(FactoryBot.build(:pro_user, token: 'foo').save).to be false
+    expect(FactoryBot.build(:public_user, token: 'foo').save).to be true
+    expect(FactoryBot.build(:public_user, token: 'foo').save).to be false
   end
 
   it "doesn't validate uniqueness of email" do
-    expect(FactoryBot.build(:pro_user, email: 'foo@bar.com').save).to be true
-    expect(FactoryBot.build(:pro_user, email: 'foo@bar.com').save).to be true
     expect(FactoryBot.build(:public_user, email: 'foo@bar.com').save).to be true
     expect(FactoryBot.build(:public_user, email: 'foo@bar.com').save).to be true
   end
 
   it "validates uniqueness of phone" do
-    expect(FactoryBot.build(:pro_user, token: '+33123456789').save).to be true
-    expect(FactoryBot.build(:pro_user, token: '+33123456789').save).to be false
+    expect(FactoryBot.build(:public_user, token: '+33123456789').save).to be true
+    expect(FactoryBot.build(:public_user, token: '+33123456789').save).to be false
   end
 
   it "allows reuse of phone for different communities" do
@@ -150,54 +131,46 @@ describe User, :type => :model do
 
   describe "search_by" do
     context "wrong search" do
-      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo", last_name: "Bar") }
+      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
       it { expect(User.search_by("Foobar").pluck(:id)).to eq([]) }
     end
 
     context "without trailing spaces" do
-      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo", last_name: "Bar") }
+      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
       it { expect(User.search_by("Foo Bar").pluck(:id)).to eq([user.id]) }
     end
 
     context "with trailing spaces" do
-      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo ", last_name: "Bar ") }
+      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo ", last_name: "Bar ") }
       it { expect(User.search_by("Foo Bar").pluck(:id)).to eq([user.id]) }
     end
 
     context "without trailing spaces on first_name" do
-      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo", last_name: "Bar") }
+      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
       it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
       it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
     end
 
     context "with trailing spaces on first_name" do
-      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo ", last_name: "Bar ") }
+      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo ", last_name: "Bar ") }
       it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
       it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
     end
   end
 
-  describe "organization association" do
-    let(:valid_organization) { FactoryBot.build(:organization) }
-    let(:invalid_organization) { FactoryBot.build(:organization, name: nil) }
-    it { expect(FactoryBot.build(:pro_user, organization: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, organization: invalid_organization).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, organization: valid_organization).save).to be true }
-  end
-
   describe "set_phone" do
-    it { expect(FactoryBot.create(:pro_user, phone: "0612345678").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "06 12 34 56 78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+336 12 34 56 78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "06.12.34.56.78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+336.12.34.56.78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "06-12-34-56-78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+336-12-34-56-78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+33612345678").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+32455512121").phone).to eq('+32455512121') } #belgian number
+    it { expect(FactoryBot.create(:public_user, phone: "0612345678").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "06 12 34 56 78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "+336 12 34 56 78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "06.12.34.56.78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "+336.12.34.56.78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "06-12-34-56-78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "+336-12-34-56-78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "+33612345678").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: "+32455512121").phone).to eq('+32455512121') } #belgian number
 
     context "updates with invalid phone number" do
-      let(:user) { FactoryBot.create(:pro_user, phone: "+33612345678") }
+      let(:user) { FactoryBot.create(:public_user, phone: "+33612345678") }
       it { user.update(phone: "92345"); expect(user.reload.phone).to eq('+33612345678') }
       it { user.update(phone: ""); expect(user.reload.phone).to eq('+33612345678') }
       it { user.update(phone: "nil"); expect(user.reload.phone).to eq('+33612345678') }
@@ -223,17 +196,10 @@ describe User, :type => :model do
   end
 
   it "has many entourage_participations" do
-    user = FactoryBot.create(:pro_user)
+    user = FactoryBot.create(:public_user)
     entourage = FactoryBot.create(:entourage)
     create(:join_request, user: user, joinable: entourage)
     expect(user.entourage_participations).to eq([entourage])
-  end
-
-  it "has many tour_participations" do
-    user = FactoryBot.create(:pro_user)
-    tour = FactoryBot.create(:tour)
-    create(:join_request, user: user, joinable: tour)
-    expect(user.tour_participations).to eq([tour])
   end
 
   it "has many relations" do
@@ -305,7 +271,7 @@ describe User, :type => :model do
   end
 
   describe 'pending_phone_change_request' do
-    let(:user) { FactoryBot.create(:pro_user, phone: '+33600000000', token: 'mytoken') }
+    let(:user) { FactoryBot.create(:public_user, phone: '+33600000000', token: 'mytoken') }
     let(:admin) { FactoryBot.create(:admin_user, token: 'hertoken') }
 
     context 'user with no phone_change' do

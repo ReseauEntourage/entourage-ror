@@ -32,7 +32,6 @@ module V1
     attribute :created_at
 
     has_one :stats
-    has_one :organization, serializer: ::V1::OrganizationSerializer
     has_one :address,      serializer: AddressSerializer, if: :me?
     has_one :address_2,    serializer: AddressSerializer, if: :me?
 
@@ -53,8 +52,8 @@ module V1
       groups.default = 0
 
       {
-          tour_count: object.tours.count,
-          encounter_count: object.encounters.count,
+          tour_count: 0,
+          encounter_count: 0,
           entourage_count: object.groups.count,
           actions_count: groups['action'],
           ask_for_help_creation_count: object.ask_for_help_creation_count,

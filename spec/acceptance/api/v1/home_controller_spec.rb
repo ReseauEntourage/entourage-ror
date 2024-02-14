@@ -19,7 +19,6 @@ resource Api::V1::HomeController do
     let!(:outing) { FactoryBot.create(:outing) }
     let!(:announcement) { FactoryBot.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
     let!(:announcement_ask) { FactoryBot.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
-    let!(:tour) { FactoryBot.create(:tour) }
 
     context '200' do
       example_request 'Get home' do

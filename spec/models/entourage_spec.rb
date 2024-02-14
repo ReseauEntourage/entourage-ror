@@ -85,13 +85,13 @@ RSpec.describe Entourage, type: :model do
     let(:now) { Time.now.change(sec: 42) }
     let!(:outing) { create(:outing, metadata: {starts_at: now}).reload }
 
-    it { expect(Entourage.where("metadata->>'starts_at' < ?", now + 1)).to eq [outing] }
-    it { expect(Entourage.where("metadata->>'starts_at' > ?", now - 1)).to eq [outing] }
-    it { expect(Entourage.where("metadata->>'starts_at' = ?", now    )).to eq [outing] }
-    it { expect(Entourage.where("metadata->>'starts_at' between ? and ?", now - 1, now + 1)).to eq [outing] }
+    it { expect(Entourage.where("metadata->>'starts_at' < ?", now + 1).pluck(:id)).to eq [outing.id] }
+    it { expect(Entourage.where("metadata->>'starts_at' > ?", now - 1).pluck(:id)).to eq [outing.id] }
+    it { expect(Entourage.where("metadata->>'starts_at' = ?", now    ).pluck(:id)).to eq [outing.id] }
+    it { expect(Entourage.where("metadata->>'starts_at' between ? and ?", now - 1, now + 1).pluck(:id)).to eq [outing.id] }
 
     it { expect(outing.metadata[:starts_at]).to be_a ActiveSupport::TimeWithZone }
-    it { expect(outing.metadata[:starts_at].time_zone).to eq Time.zone }
+    it { expect(outing.metadata[:starts_at].time_zone.name).to eq(Time.zone.name) }
 
     it { expect(outing.metadata).to eq(
       starts_at: now,

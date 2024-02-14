@@ -34,7 +34,7 @@ module JoinRequestsServices
         return callback.on_remove_author.try(:call)
       end
 
-      user_status = TourServices::JoinRequestStatus.new(join_request: @join_request)
+      user_status = EntourageServices::JoinRequestStatus.new(join_request: @join_request)
 
       if join_request.user == current_user
         user_status.quit!
@@ -65,7 +65,7 @@ module JoinRequestsServices
         return callback.on_not_authorised.try(:call)
       end
 
-      user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
+      user_status = EntourageServices::JoinRequestStatus.new(join_request: join_request)
       if user_status.accept!
         callback.on_success.try(:call, join_request)
       else
@@ -82,7 +82,7 @@ module JoinRequestsServices
         return callback.on_not_authorised.try(:call)
       end
 
-      user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
+      user_status = EntourageServices::JoinRequestStatus.new(join_request: join_request)
       if user_status.quit!
         callback.on_success.try(:call, join_request)
       else
@@ -104,7 +104,7 @@ module JoinRequestsServices
         return callback.on_not_authorised.try(:call)
       end
 
-      user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
+      user_status = EntourageServices::JoinRequestStatus.new(join_request: join_request)
       if user_status.pending!
         callback.on_success.try(:call, join_request)
       else
@@ -130,7 +130,7 @@ module JoinRequestsServices
 
     def current_user_authorised?
       current_join_request = JoinRequest.where(joinable: joinable, user: current_user).first
-      current_join_request && TourServices::JoinRequestStatus.new(join_request: current_join_request).accepted?
+      current_join_request && EntourageServices::JoinRequestStatus.new(join_request: current_join_request).accepted?
     end
   end
 

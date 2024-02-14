@@ -21,8 +21,6 @@ describe Api::V1::HomeController do
       # announcements
       let!(:announcement) { FactoryBot.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
       let!(:announcement_ask) { FactoryBot.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
-      # tours
-      let!(:tour) { FactoryBot.create(:tour) }
 
       subject { JSON.parse(response.body) }
 

@@ -20,27 +20,6 @@ class AddFeedUpdatedAtToFeeds < ActiveRecord::Migration[4.2]
           updated_at,
           feed_updated_at
         FROM entourages
-
-        UNION ALL
-
-        SELECT
-          id AS "feedable_id",
-          'Tour' AS "feedable_type",
-          CASE WHEN status=0 THEN 'ongoing' WHEN status=1 THEN 'closed' WHEN status=2 THEN 'freezed' END AS "status",
-          '' AS "TITLE",
-          tour_type as "feed_type",
-          concat('tour_', tour_type) as "feed_category",
-          user_id,
-          'entourage' as "community",
-          'tour' as "group_type",
-          '{}'::jsonb as metadata,
-          latitude,
-          longitude,
-          number_of_people,
-          created_at,
-          updated_at,
-          feed_updated_at
-        FROM tours
     SQL
 
     execute(sql)
@@ -66,26 +45,6 @@ class AddFeedUpdatedAtToFeeds < ActiveRecord::Migration[4.2]
           created_at,
           updated_at
         FROM entourages
-
-        UNION ALL
-
-        SELECT
-          id AS "feedable_id",
-          'Tour' AS "feedable_type",
-          CASE WHEN status=0 THEN 'ongoing' WHEN status=1 THEN 'closed' WHEN status=2 THEN 'freezed' END AS "status",
-          '' AS "TITLE",
-          tour_type as "feed_type",
-          concat('tour_', tour_type) as "feed_category",
-          user_id,
-          'entourage' as "community",
-          'tour' as "group_type",
-          '{}'::jsonb as metadata,
-          latitude,
-          longitude,
-          number_of_people,
-          created_at,
-          updated_at
-        FROM tours
     SQL
 
     execute(sql)

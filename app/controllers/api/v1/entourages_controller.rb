@@ -88,7 +88,7 @@ module Api
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
         ensure_permission! :can_read_public_content?
-        EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user_or_anonymous, params: params).view
+
         is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
         mixpanel.track("Displayed Entourage", mp_params) unless current_user_or_anonymous.anonymous?
         include_last_message = params[:include_last_message] == 'true'
