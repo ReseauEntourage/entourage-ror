@@ -2,7 +2,7 @@ module Api
   module V1
     class EntourageImagesController < Api::V1::BaseController
       def index
-        render json: EntourageImage.order(id: :desc), each_serializer: ::V1::EntourageImageSerializer
+        render json: EntourageImage.includes(:landscape_url_medium, :portrait_url_medium).order(id: :desc), each_serializer: ::V1::EntourageImageSerializer
       end
 
       def show
