@@ -1,6 +1,13 @@
 class NeighborhoodImage < ApplicationRecord
   validates_presence_of :title
 
+  # defines relationships for each image size (ie. image_url_high)
+  [:high, :medium, :small].each do |size|
+    has_one :"image_url_#{size}", -> {
+      where(bucket: BUCKET_NAME, destination_size: size)
+    }, class_name: 'ImageResizeAction', foreign_key: :path, primary_key: :image_url
+  end
+
   def image_url
     return unless self['image_url'].present?
 
@@ -26,4 +33,6 @@ class NeighborhoodImage < ApplicationRecord
       Storage::Client.images
     end
   end
+
+  BUCKET_NAME = self.storage.bucket_name
 end
