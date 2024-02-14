@@ -6,11 +6,15 @@ module V1
                :portrait_url,
 
     def landscape_url
-      object.landscape_url :medium
+      return unless url = object.landscape_url_medium&.path
+
+      EntourageImage::image_url_for(url)
     end
 
     def portrait_url
-      object.portrait_url :medium
+      return unless url = object.portrait_url_medium&.path
+
+      EntourageImage::image_url_for(url)
     end
   end
 end

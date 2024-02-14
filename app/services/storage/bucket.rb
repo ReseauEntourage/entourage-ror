@@ -1,5 +1,7 @@
 module Storage
   class Bucket
+    attr_reader :bucket_name
+
     def initialize(bucket_name)
       Aws.config.update({
         region: 'eu-west-1',
