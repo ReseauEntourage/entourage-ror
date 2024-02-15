@@ -1,7 +1,7 @@
 module Admin
   class NeighborhoodImagesController < Admin::BaseController
     def index
-      @neighborhood_images = NeighborhoodImage.order(title: :asc)
+      @neighborhood_images = NeighborhoodImage.includes(:image_url_medium).order(title: :asc)
     end
 
     def new
