@@ -24,7 +24,7 @@
                 <%= link_to neighborhood_image.title, edit_admin_neighborhood_image_path(neighborhood_image) %>
               </td>
               <td>
-                <%= image_tag(neighborhood_image.image_url_medium.path) if neighborhood_image.image_url_medium.present? %>
+                <%= image_tag(EntourageImage::image_url_for(neighborhood_image.image_url_medium.path)) if neighborhood_image.image_url_medium.present? %>
               </td>
               <td>
                 <%= link_to "Modifier", edit_admin_neighborhood_image_path(neighborhood_image), class: "custom-button custom-primary-inverted" %>

@@ -24,10 +24,10 @@
                 <%= link_to entourage_image.title, edit_admin_entourage_image_path(entourage_image) %>
               </td>
               <td>
-                <%= image_tag(entourage_image.landscape_url_medium.path, size: '288x96') if entourage_image.landscape_url_medium.present? %>
+                <%= image_tag(EntourageImage::image_url_for(entourage_image.landscape_url_medium.path, size: '288x96')) if entourage_image.landscape_url_medium.present? %>
               </td>
               <td>
-                <%= image_tag(entourage_image.portrait_url_medium.path, size: '59x96') if entourage_image.portrait_url_medium.present? %>
+                <%= image_tag(EntourageImage::image_url_for(entourage_image.portrait_url_medium.path, size: '59x96')) if entourage_image.portrait_url_medium.present? %>
               </td>
               <td>
                 <%= link_to "Modifier", edit_admin_entourage_image_path(entourage_image), class: "custom-button custom-primary-inverted" %>
