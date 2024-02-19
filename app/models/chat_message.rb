@@ -5,6 +5,7 @@ class ChatMessage < ApplicationRecord
   include Deeplinkable
   include Translatable
   include Reactionnable
+  include Surveyable
 
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"

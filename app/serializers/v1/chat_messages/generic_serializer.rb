@@ -13,7 +13,8 @@ module V1
                  :image_url,
                  :read,
                  :message_type,
-                 :status
+                 :status,
+                 :survey
 
       def content
         I18nSerializer.new(object, :content, lang).translation
@@ -61,6 +62,12 @@ module V1
         return false unless current_join_request.last_message_read.present?
 
         object.created_at <= current_join_request.last_message_read
+      end
+
+      def survey
+        return unless object.survey
+
+        V1::SurveySerializer.new(object.survey, root: false).as_json
       end
 
       private
