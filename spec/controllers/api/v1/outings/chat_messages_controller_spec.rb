@@ -61,7 +61,8 @@ describe Api::V1::Outings::ChatMessagesController do
           "message_type" => "text",
           "reactions" => [],
           "reaction_id" => nil,
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil,
         }]
       }) }
     end
@@ -144,7 +145,8 @@ describe Api::V1::Outings::ChatMessagesController do
           "message_type" => "text",
           "reactions" => [],
           "reaction_id" => nil,
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil,
         }
       }) }
     end
@@ -293,7 +295,8 @@ describe Api::V1::Outings::ChatMessagesController do
             "image_url" => image_url,
             "read" => nil,
             "message_type" => "text",
-            "status" => "active"
+            "status" => "active",
+            "survey" => nil,
           }
         }}
 
@@ -515,7 +518,8 @@ describe Api::V1::Outings::ChatMessagesController do
           "image_url" => nil,
           "read" => false,
           "message_type" => "text",
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil,
         }]
       }) }
     end
