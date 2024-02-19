@@ -96,4 +96,11 @@ RSpec.describe ChatMessage, type: :model do
       it { expect(chat_message.image_url(true)).to eq("path/to/url") }
     end
   end
+
+  describe "survey" do
+    let(:survey) { create :survey }
+    let(:chat_message) { create :chat_message, survey: survey }
+
+    it { expect(chat_message.survey_id).to eq(survey.id) }
+  end
 end
