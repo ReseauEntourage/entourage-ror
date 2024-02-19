@@ -84,7 +84,8 @@ describe Api::V1::Conversations::ChatMessagesController do
           "image_url" => nil,
           "read" => false,
           "message_type" => "text",
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil
         }]
       }) }
     end
@@ -208,7 +209,8 @@ describe Api::V1::Conversations::ChatMessagesController do
             "image_url" => image_url,
             "read" => nil,
             "message_type" => "text",
-            "status" => "active"
+            "status" => "active",
+            "survey" => nil
           }
         }}
 
