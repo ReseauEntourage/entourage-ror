@@ -14,7 +14,9 @@ module Api
           end
 
           def index
-            render json: { survey_responses: @chat_message.survey_responses.summary }
+            render json: @chat_message.user_survey_responses.includes(:user).page(page).per(per),
+              root: :survey_responses,
+              each_serializer: ::V1::SurveyResponseSerializer
           end
 
           def create

@@ -7,6 +7,35 @@ describe Api::V1::Outings::ChatMessages::SurveyResponsesController do
 
   let(:result) { JSON.parse(response.body) }
 
+  describe 'index' do
+    let!(:survey_response) { create(:survey_response, chat_message: chat_message, responses: [true, false]) }
+
+    context "not signed in" do
+      before { get :index, params: { outing_id: outing.to_param, chat_message_id: chat_message.id } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      before { get :index, params: { outing_id: outing.to_param, token: user.token, chat_message_id: chat_message.id } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('survey_responses')}
+      it { expect(result).to eq({
+        "survey_responses" => [{
+          "responses" => [true, false],
+          "user" => {
+            "id" => survey_response.user_id,
+            "lang" => survey_response.user.lang,
+            "display_name" => "John D.",
+            "avatar_url" => nil,
+            "community_roles" => [],
+          }
+        }]
+      }) }
+    end
+  end
+
   describe 'create' do
     let(:request) { post :create, params: { outing_id: outing.to_param, chat_message_id: chat_message.id, token: user.token, responses: [true, false] } }
 
