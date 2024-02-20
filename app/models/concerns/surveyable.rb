@@ -5,6 +5,30 @@ module Surveyable
     belongs_to :survey, optional: true, dependent: :destroy
     accepts_nested_attributes_for :survey
 
-    has_many :survey_responses
+    has_many :user_survey_responses, class_name: 'SurveyResponse'
+  end
+
+  SurveyResponseStruct = Struct.new(:instance) do
+    def initialize(instance: nil)
+      @instance = instance
+    end
+
+    def summary
+      @instance.user_survey_responses
+    end
+
+    def build user:, responses:
+      @instance.user_survey_responses.build(user: user, responses: responses)
+    end
+
+    def destroy user:
+      return unless survey_response = @instance.user_survey_responses.find_by(user: user)
+
+      survey_response.destroy and return survey_response.responses
+    end
+  end
+
+  def survey_responses
+    SurveyResponseStruct.new(instance: self)
   end
 end

@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(version: 2024_01_31_160700) do
     t.integer "deleter_id"
     t.datetime "deleted_at"
     t.string "uuid_v2", limit: 12, null: false
+    t.integer "survey_id"
     t.index "((metadata -> 'conversation_message_broadcast_id'::text))", name: "chat_messages_conversation_message_broadcast_id", using: :hash
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
     t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
@@ -912,6 +913,23 @@ ActiveRecord::Schema.define(version: 2024_01_31_160700) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["report_date", "app_name", "store_id"], name: "index_store_daily_reports_date_store_app", unique: true
+  end
+
+  create_table "survey_responses", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "chat_message_id", null: false
+    t.jsonb "responses", default: []
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_message_id"], name: "index_survey_responses_on_chat_message_id"
+    t.index ["user_id"], name: "index_survey_responses_on_user_id"
+  end
+
+  create_table "surveys", force: :cascade do |t|
+    t.jsonb "questions", default: []
+    t.boolean "multiple", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
