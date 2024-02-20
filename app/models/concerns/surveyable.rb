@@ -13,10 +13,6 @@ module Surveyable
       @instance = instance
     end
 
-    def summary
-      @instance.user_survey_responses
-    end
-
     def build user:, responses:
       @instance.user_survey_responses.build(user: user, responses: responses)
     end
