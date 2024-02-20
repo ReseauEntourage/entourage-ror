@@ -258,7 +258,8 @@ describe Api::V1::Outings::ChatMessagesController do
         it { expect(result["chat_message"]).to have_key("survey") }
         it { expect(result["chat_message"]["survey"]).to eq({
           "questions" => ["foo", "bar"],
-          "multiple" => true
+          "multiple" => true,
+          "summary" => [],
         }) }
       end
 
