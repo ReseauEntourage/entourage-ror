@@ -3,7 +3,8 @@ require 'rails_helper'
 describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
   let(:user) { create(:pro_user) }
   let(:neighborhood) { create :neighborhood }
-  let(:chat_message) { create(:chat_message, messageable: neighborhood) }
+  let(:survey) { create(:survey) }
+  let(:chat_message) { create(:chat_message, messageable: neighborhood, survey: survey) }
 
   let(:result) { JSON.parse(response.body) }
 
@@ -53,6 +54,7 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
           before { request }
 
           it { expect(response.status).to eq(201) }
+          it { expect(survey.reload.summary).to eq([1, 1]) }
         end
 
         context do
@@ -67,6 +69,8 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
           before { request }
 
           it { expect(response.status).to eq(400) }
+          it { expect(survey_response.reload.responses).to eq([false, true]) }
+          it { expect(survey.reload.summary).to eq([0, 1]) }
         end
 
         context do
