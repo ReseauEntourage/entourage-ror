@@ -1,7 +1,7 @@
 module V1
   class SurveyResponseSerializer < ActiveModel::Serializer
-    attributes :user_id,
-               :chat_message_id,
-               :responses
+    attributes :responses
+
+    has_one :user, serializer: ::V1::Users::BasicSerializer
   end
 end
