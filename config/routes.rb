@@ -425,6 +425,13 @@ Rails.application.routes.draw do
               get :details
             end
           end
+
+          resources :survey_responses, :controller => 'neighborhoods/chat_messages/survey_responses', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+          end
         end
 
         resources :users, :controller => 'neighborhoods/users', only: [:index, :create, :destroy] do
@@ -497,6 +504,13 @@ Rails.application.routes.draw do
 
             member do
               get :details
+            end
+          end
+
+          resources :survey_responses, :controller => 'outings/chat_messages/survey_responses', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
             end
           end
         end
