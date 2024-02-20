@@ -1,6 +1,7 @@
 module V1
   class SurveySerializer < ActiveModel::Serializer
     attributes :questions,
-               :multiple
+               :multiple,
+               :summary
   end
 end

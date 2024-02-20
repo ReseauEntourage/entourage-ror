@@ -930,6 +930,7 @@ ActiveRecord::Schema.define(version: 2024_01_31_160700) do
     t.boolean "multiple", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "summary", default: []
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
