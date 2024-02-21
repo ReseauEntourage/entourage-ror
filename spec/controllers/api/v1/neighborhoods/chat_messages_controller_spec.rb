@@ -218,7 +218,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               content: "foobar",
               message_type: :text,
               survey_attributes: {
-                questions: ["foo", "bar"],
+                choices: ["foo", "bar"],
                 multiple: true
               }
             }
@@ -234,7 +234,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         it { expect(result).to have_key("chat_message") }
         it { expect(result["chat_message"]).to have_key("survey") }
         it { expect(result["chat_message"]["survey"]).to eq({
-          "questions" => ["foo", "bar"],
+          "choices" => ["foo", "bar"],
           "multiple" => true,
           "summary" => [0 ,0]
         }) }

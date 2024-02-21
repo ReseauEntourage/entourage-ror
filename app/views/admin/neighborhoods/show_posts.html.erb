@@ -89,7 +89,7 @@
               <% if message.survey.present? %>
                 <p><strong>Sondage</strong></p>
                 <div class="survey-choices">
-                  <% message.survey.questions.each_with_index do |choice, index| %>
+                  <% message.survey.choices.each_with_index do |choice, index| %>
                     <li><%= "#{choice} (#{message.survey.summary[index]} réponses)" %></li>
                   <% end %>
                 </div>
