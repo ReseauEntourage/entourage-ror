@@ -13,7 +13,7 @@ class Survey < ApplicationRecord
 
     chat_message.user_survey_responses.each do |response|
       response.responses.each_with_index do |answer, index|
-        summary[index] += 1 if answer
+        summary[index] += 1 if answer.to_i.positive?
       end
     end
 
