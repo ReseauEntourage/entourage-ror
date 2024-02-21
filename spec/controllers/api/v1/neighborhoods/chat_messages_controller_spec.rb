@@ -236,7 +236,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         it { expect(result["chat_message"]["survey"]).to eq({
           "questions" => ["foo", "bar"],
           "multiple" => true,
-          "summary" => []
+          "summary" => [0 ,0]
         }) }
       end
 
