@@ -86,6 +86,15 @@
           </div>
         <% end %>
 
+        <% if message.survey.present? %>
+          <p><strong>Sondage</strong></p>
+          <div class="survey-choices">
+            <% message.survey.questions.each_with_index do |choice, index| %>
+              <li><%= "#{choice} (#{message.survey.summary[index]} réponses)" %></li>
+            <% end %>
+          </div>
+        <% end %>
+
         <% if message.image_path(true).present? %>
           <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
             <%= image_tag(message.image_path(true), height: '100') %>

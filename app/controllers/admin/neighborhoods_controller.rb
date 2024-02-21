@@ -125,7 +125,7 @@ module Admin
     end
 
     def show_posts
-      @posts = @neighborhood.posts.order(created_at: :desc).page(page).per(per).includes([:user])
+      @posts = @neighborhood.posts.includes(:survey).order(created_at: :desc).page(page).per(per).includes([:user])
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
     end
 
