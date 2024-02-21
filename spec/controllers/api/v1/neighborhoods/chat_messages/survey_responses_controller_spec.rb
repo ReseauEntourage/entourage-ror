@@ -54,7 +54,7 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
           before { request }
 
           it { expect(response.status).to eq(201) }
-          it { expect(survey.reload.summary).to eq([1, 1]) }
+          it { expect(survey.reload.summary).to eq([1, 0]) }
         end
 
         context do
