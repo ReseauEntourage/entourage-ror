@@ -48,6 +48,27 @@
 
   <% if @entourage.outing? %>
     <div class="control-group">
+      <label class="control-label">Événement à places limitées</label>
+      <div class="controls">
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :place_limited, true, required: true, checked: @entourage.place_limited %>
+          Oui
+        </label>
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :place_limited, false, required: true, checked: !@entourage.place_limited %>
+          Non
+        </label>
+      </div>
+    </div>
+
+    <div class="control-group" id="place_limit_section">
+      <%= f.label :place_limit, class: "control-label" %>
+      <div class="controls">
+        <%= text_field_tag "entourage[metadata][place_limit]", @entourage.metadata[:place_limit], placeholder: "Nombre entier positif ou laisser vide", class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="control-group">
       <%= f.label :outing_image_url %>
       <% if @entourage.new_record? %>
         <div class="text-muted">
@@ -88,7 +109,7 @@
     </div>
   </div>
 
-  <% if @entourage.group_type == 'outing' %>
+  <% if @entourage.outing? %>
     <%
       timestamps = {
         starts_at: "Date et heure de début",
@@ -240,6 +261,18 @@
       var $endsAt = $('#metadata_ends_at_date')
       if ($endsAt.val() === '') $endsAt.val(this.value)
     })
+
+    var place_limit_visibility = function() {
+      if ($('input[name="entourage[place_limited]"]:checked').val() === 'true') {
+        $("#place_limit_section").show();
+      } else {
+        $("#place_limit_section").hide();
+      }
+    }
+
+    $("input[name='entourage[place_limited]']").change(place_limit_visibility);
+
+    place_limit_visibility();
   </script>
 <% end %>
 
