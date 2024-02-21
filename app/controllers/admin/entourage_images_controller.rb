@@ -1,7 +1,7 @@
 module Admin
   class EntourageImagesController < Admin::BaseController
     def index
-      @entourage_images = EntourageImage.order(title: :asc)
+      @entourage_images = EntourageImage.includes(:landscape_url_medium, :portrait_url_medium).order(title: :asc)
     end
 
     def new

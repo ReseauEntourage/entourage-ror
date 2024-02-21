@@ -5,7 +5,9 @@ module V1
                :image_url
 
     def image_url
-      object.image_url_with_size :medium
+      return unless url = object.image_url_medium&.path
+
+      NeighborhoodImage::image_url_for(url)
     end
   end
 end
