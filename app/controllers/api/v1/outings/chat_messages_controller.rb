@@ -125,7 +125,7 @@ module Api
         private
 
         def chat_messages_params
-          params.require(:chat_message).permit(:content, :parent_id, :image_url, survey_attributes: [:multiple, questions: []])
+          params.require(:chat_message).permit(:content, :parent_id, :image_url, survey_attributes: [:multiple, choices: []])
         end
 
         def chat_message_update_params
