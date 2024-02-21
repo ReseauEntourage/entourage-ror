@@ -125,7 +125,7 @@ module Admin
         .includes(:user)
         .to_a
 
-      @chat_messages = @entourage.parent_conversation_messages.order(created_at: :desc)
+      @chat_messages = @entourage.parent_conversation_messages.includes(:survey).order(created_at: :desc)
           .includes(:user)
           .with_content
           .page(params[:page])
@@ -142,7 +142,7 @@ module Admin
               reads.first.last_message_read >= message.created_at &&
               (!next_message ||
                reads.first.last_message_read < next_message.created_at) do
-          @last_reads[message.full_object_id].push reads.shift
+          @last_reads[message.id].push reads.shift
         end
       end
 

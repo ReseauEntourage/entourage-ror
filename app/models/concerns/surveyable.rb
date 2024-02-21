@@ -27,4 +27,8 @@ module Surveyable
   def survey_responses
     SurveyResponseStruct.new(instance: self)
   end
+
+  def survey?
+    survey_id.present?
+  end
 end

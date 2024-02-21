@@ -66,7 +66,7 @@
 
     <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
 
-    <div class="conversation-message" id="<%= [message.full_object_type.underscore, message.full_object_id].join('-') %>">
+    <div class="conversation-message" id="<%= [:ChatMessage, message.id].join('-') %>">
       <div class="conversation-gutter">
         <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
           <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
@@ -77,35 +77,39 @@
           <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
           <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
         </div>
-        <% if message.join_request? && message.user_id == @entourage.user_id %>
-          <b><%= @entourage.title %></b><br/>
-          <%= @entourage.description %>
-        <% end %>
-
         <% if message.deleted? %>
           <p style="color: red;"> Ce message a été supprimé : </p>
           <em><%= simple_format message.content(true) %></em>
         <% else %>
-          <div id="chat-message-<%= message.full_object_id %>">
+          <div id="chat-message-<%= message.id %>">
             <%= simple_format message.content %>
           </div>
         <% end %>
 
+        <% if message.survey.present? %>
+          <p><strong>Sondage</strong></p>
+          <div class="survey-choices">
+            <% message.survey.questions.each_with_index do |choice, index| %>
+              <li><%= "#{choice} (#{message.survey.summary[index]} réponses)" %></li>
+            <% end %>
+          </div>
+        <% end %>
+
         <% if message.image_path(true).present? %>
-          <div id="chat-message-image-<%= message.full_object_id %>" style="margin-bottom: 15px">
+          <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
             <%= image_tag(message.image_path(true), height: '100') %>
           </div>
         <% else %>
-          <div id="chat-message-image-<%= message.full_object_id %>" hidden="hidden"></div>
+          <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
         <% end %>
 
-        <% if message.children.any? %>
-          <div><%= link_to "voir les commentaires", show_comments_admin_entourage_path(@entourage.id, message_id: message.full_object_id) %></div>
+        <% if message.has_children? %>
+          <div><%= link_to "voir les commentaires", show_comments_admin_entourage_path(@entourage.id, message_id: message.id) %></div>
         <% end %>
 
-        <% if @last_reads[message.full_object_id].any? %>
+        <% if @last_reads[message.id].any? %>
           <div style="display: flex; align-items: center; font-size: 12px; margin-top: -10px; margin-right: -40px; justify-content: end; ; padding-right: 2px;">
-            <% @last_reads[message.full_object_id].each do |participation| %>
+            <% @last_reads[message.id].each do |participation| %>
               <% color[participation.user_id] ||= (color.count * 0.381966011 * 360).round %>
 
               <div style="background-color: hsl(<%= color[participation.user_id] %>, 70%, 75%); font-size: 10px; margin-top: 0; margin-left: 2px;" class="conversation-icon" title="Lu par <%= participation.user.full_name %> <%= l participation.last_message_read, format: "%A %-d %B %Y à %H:%M" %>">
@@ -128,22 +132,22 @@
             </li>
 
             <li>
-              <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(message.full_object_id), remote: true %>
+              <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(message.id), remote: true %>
             </li>
 
             <li>
-              <%= link_to "Modifier le message", admin_chat_message_path(message.full_object_id), remote: true %>
+              <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>
             </li>
 
-            <% unless message.children.any? %>
+            <% unless message.has_children? %>
               <li>
-                <%= link_to "Ajouter un commentaire", show_comments_admin_entourage_path(@entourage.id, message_id: message.full_object_id) %>
+                <%= link_to "Ajouter un commentaire", show_comments_admin_entourage_path(@entourage.id, message_id: message.id) %>
               </li>
             <% end %>
 
             <li>
               <%= link_to "Supprimer le message",
-                  destroy_message_admin_entourages_path(type: message.full_object_type, id: message.full_object_id),
+                  destroy_message_admin_entourages_path(type: :ChatMessage, id: message.id),
                   method: :post,
                   data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{message.user.full_name} :\n#{message.content}" },
                   class: "text-danger" %>

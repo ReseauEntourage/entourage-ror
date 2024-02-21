@@ -4,6 +4,8 @@ class Survey < ApplicationRecord
 
   has_one :chat_message
 
+  after_create :update_summary
+
   def update_summary
     summary = [0] * questions.length
 
