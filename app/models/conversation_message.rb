@@ -15,45 +15,4 @@ class ConversationMessage < ApplicationRecord
       )
     ))
   end
-
-  def join_request?
-    full_object_type == 'JoinRequest'
-  end
-
-  def chat_message?
-    full_object_type == 'ChatMessage'
-  end
-
-  def children
-    return [] unless chat_message?
-
-    ChatMessage.find(full_object_id).children
-  end
-
-  def deleted?
-    status.to_sym == :deleted
-  end
-
-  # @param force true to bypass deletion
-  def content force = false
-    return if deleted? && !force
-
-    self[:content]
-  end
-
-  # @param force true to bypass deletion
-  def image_url force = false
-    return if deleted? && !force
-
-    self[:image_url]
-  end
-
-  def image_path force = false
-    @image_path ||= begin
-      return unless chat_message?
-      return unless image_url(force).present?
-
-      ChatMessage.url_for(image_url(force))
-    end
-  end
 end
