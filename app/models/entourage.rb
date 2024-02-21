@@ -627,15 +627,15 @@ class Entourage < ApplicationRecord
 
     address_fragments = metadata[:street_address].split(', ')
 
-    if metadata[:place_name] != address_fragments.first
-      address_fragments.unshift metadata[:place_name]
+    if metadata[:place_name].present? && metadata[:place_name] != address_fragments.first
+      address_fragments.unshift(metadata[:place_name])
     end
 
     if address_fragments.last == 'France'
       address_fragments.pop
     end
 
-    metadata[:display_address] = address_fragments.join(', ')
+    metadata[:display_address] = address_fragments.compact.join(', ')
   rescue
     metadata[:display_address] = ""
   end
