@@ -1,5 +1,5 @@
 class Survey < ApplicationRecord
-  # attr questions (jsonb)
+  # attr choices (jsonb)
   # attr multiple (boolean)
 
   has_one :chat_message
@@ -9,7 +9,7 @@ class Survey < ApplicationRecord
   def update_summary
     return unless chat_message # should not happen
 
-    summary = [0] * questions.length
+    summary = [0] * choices.length
 
     chat_message.user_survey_responses.each do |response|
       response.responses.each_with_index do |answer, index|
