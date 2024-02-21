@@ -16,7 +16,12 @@ module Reactionnable
     end
 
     def user_reaction_id user_id
-      @instance.user_reactions.where(user_id: user_id).pluck(:reaction_id).first
+      # @instance.user_reactions.where(user_id: user_id).pluck(:reaction_id).first
+      return unless matched = @instance.user_reactions.pluck(:user_id, :reaction_id).find do |id, _|
+        id == user_id
+      end
+
+      matched.last
     end
 
     def build user:, reaction_id:
