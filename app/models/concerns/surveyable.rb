@@ -17,6 +17,10 @@ module Surveyable
       @instance.user_survey_responses.build(user: user, responses: responses)
     end
 
+    def response user_id
+      @instance.user_survey_responses.pluck(:user_id, :responses).to_h[user_id]
+    end
+
     def destroy user:
       return unless survey_response = @instance.user_survey_responses.find_by(user: user)
 
