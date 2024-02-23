@@ -59,7 +59,7 @@ describe Api::V1::Conversations::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "status" => "active",
-          "survey" => nil
+          "survey" => nil,
           "survey_response" => nil
         }, {
           "id" => chat_message_2.id,
@@ -87,7 +87,7 @@ describe Api::V1::Conversations::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "status" => "active",
-          "survey" => nil
+          "survey" => nil,
           "survey_response" => nil
         }]
       }) }

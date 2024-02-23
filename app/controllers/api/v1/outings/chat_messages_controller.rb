@@ -15,7 +15,7 @@ module Api
         end
 
         def index
-          messages = @outing.parent_chat_messages.includes(:translation, :user, :chat_message_reactions, :user_reactions, :user_survey_responses).ordered.page(page).per(per)
+          messages = @outing.parent_chat_messages.includes(:translation, :user, :chat_message_reactions, :user_reactions, :survey, :user_survey_responses).ordered.page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user }
         end

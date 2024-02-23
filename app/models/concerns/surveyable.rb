@@ -18,7 +18,7 @@ module Surveyable
     end
 
     def response user_id
-      @instance.user_survey_responses.where(user_id: user_id).pluck(:responses).first
+      @instance.user_survey_responses.pluck(:user_id, :responses).to_h[user_id]
     end
 
     def destroy user:
