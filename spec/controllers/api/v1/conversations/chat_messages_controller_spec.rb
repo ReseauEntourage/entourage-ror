@@ -213,7 +213,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             "read" => nil,
             "message_type" => "text",
             "status" => "active",
-            "survey" => nil
+            "survey" => nil,
             "survey_response" => nil
           }
         }}
