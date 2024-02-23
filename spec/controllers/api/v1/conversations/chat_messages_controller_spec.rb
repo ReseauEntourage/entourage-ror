@@ -59,8 +59,7 @@ describe Api::V1::Conversations::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "status" => "active",
-          "survey" => nil,
-          "survey_response" => nil
+          "survey" => nil
         }, {
           "id" => chat_message_2.id,
           "uuid_v2" => chat_message_2.uuid_v2,
@@ -87,8 +86,7 @@ describe Api::V1::Conversations::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "status" => "active",
-          "survey" => nil,
-          "survey_response" => nil
+          "survey" => nil
         }]
       }) }
     end
@@ -213,8 +211,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             "read" => nil,
             "message_type" => "text",
             "status" => "active",
-            "survey" => nil,
-            "survey_response" => nil
+            "survey" => nil
           }
         }}
 
