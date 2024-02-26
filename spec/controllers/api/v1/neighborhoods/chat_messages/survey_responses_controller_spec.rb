@@ -68,9 +68,9 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
-          it { expect(survey_response.reload.responses).to eq([false, true]) }
-          it { expect(survey.reload.summary).to eq([0, 1]) }
+          it { expect(response.status).to eq(201) }
+          it { expect(survey_response.reload.responses).to eq(["true", "false"]) }
+          it { expect(survey.reload.summary).to eq([1, 0]) }
         end
 
         context do
