@@ -34,7 +34,7 @@ headers = []
   MemberMailer.onboarding_day_8(user),
   MemberMailer.onboarding_day_14(user),
   MemberMailer.reactivation_day_20(user),
-  MemberMailer.action_follow_up_day_10(action),
+  MemberMailer.action_follow_up_day_15(action),
   GroupMailer.event_created_confirmation(event),
   UnreadReminderEmail.delivery(UnreadReminderEmail::Presenter.new(user)),
   DigestEmailService.delivery(user, [action.id, event.id], suggested_postal_code: '75001'),
