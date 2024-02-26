@@ -26,7 +26,7 @@ module Api
               render json: survey, status: 201, serializer: ::V1::SurveyResponseSerializer
             else
               render json: {
-                message: "Could not create survey", reasons: survey.errors.full_messages
+                message: "Could not create or update survey", reasons: survey.errors.full_messages
               }, status: 400
             end
           end

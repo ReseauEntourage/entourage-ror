@@ -14,7 +14,9 @@ module Surveyable
     end
 
     def build user:, responses:
-      @instance.user_survey_responses.build(user: user, responses: responses)
+      survey = @instance.user_survey_responses.find_or_initialize_by(user: user)
+      survey.responses = responses
+      survey
     end
 
     def response user_id
