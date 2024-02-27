@@ -15,9 +15,8 @@ module SalesforceServices
       client.query("select Id from #{TABLE_NAME} where Phone = '#{phone}'").first
     end
 
-    # contraction of "create or insert" (similar meaning than upsert)
-    def creasert user
-      find_id_by_user(user) || client.create(TABLE_NAME, user_to_hash(user))
+    def upsert user
+      find_id_by_user(user) || client.upsert(TABLE_NAME, "Phone", "Phone": user.phone, user_to_hash(user))
     end
 
     private
