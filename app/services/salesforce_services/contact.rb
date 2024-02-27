@@ -16,7 +16,7 @@ module SalesforceServices
     end
 
     def upsert user
-      find_id_by_user(user) || client.upsert(TABLE_NAME, "Phone", "Phone": user.phone, user_to_hash(user))
+      find_id_by_user(user) || client.upsert!(TABLE_NAME, "Phone", "Phone": user.phone, **user_to_hash(user))
     end
 
     private
