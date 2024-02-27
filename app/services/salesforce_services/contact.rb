@@ -32,11 +32,17 @@ module SalesforceServices
         "LastName" => user.last_name,
         "Email" => user.email,
         "Phone" => user.phone,
-        "RecordTypeId" => user.is_ask_for_help? ? "012Aa000001EmAfIAK" : "012Aa000001HBL3IAO",
+        "RecordTypeId" => record_type_id(user),
         "Antenne__c" => antenne(user),
         "Reseaux__c" => "Entourage",
         "Casquettes_r_les__c" => casquette(user),
       }
+    end
+
+    def record_type_id user
+      return unless record_type = SalesforceServices::RecordType.find_for_user(user)
+
+      record_type.salesforce_id
     end
 
     def antenne user
