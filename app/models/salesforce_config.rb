@@ -1,0 +1,2 @@
+class SalesforceConfig < ApplicationRecord
+end
