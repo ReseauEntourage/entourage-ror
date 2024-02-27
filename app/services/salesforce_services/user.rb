@@ -35,9 +35,12 @@ module SalesforceServices
     end
 
     def upsert user
+      lead_id = lead_id(user)
+      contact_id = lead_id ? contact_id(user) : contact_id!(user)
+
       fields = user_to_hash(user).merge({
-        "Prospect__c" => lead_id(user),
-        "Contact__c" => contact_id!(user),
+        "Prospect__c" => lead_id,
+        "Contact__c" => contact_id,
       })
 
       client.upsert!(TABLE_NAME, "UserId__c", "UserId__c": user.id, **fields)
@@ -81,8 +84,12 @@ module SalesforceServices
       Lead.new.find_id_by_user(user)
     end
 
+    def contact_id user
+      Contact.new.find_id_by_user(user)
+    end
+
     def contact_id! user
-      Contact.new.creasert(user)
+      Contact.new.upsert(user)
     end
 
     def profil_declare user
