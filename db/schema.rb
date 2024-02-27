@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_31_160700) do
+ActiveRecord::Schema.define(version: 2024_02_27_120501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -873,6 +873,15 @@ ActiveRecord::Schema.define(version: 2024_01_31_160700) do
     t.boolean "dry_run", default: false, null: false
     t.boolean "sound_is_json", default: false
     t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))"
+  end
+
+  create_table "salesforce_configs", force: :cascade do |t|
+    t.string "klass", null: false
+    t.string "developer_name"
+    t.string "salesforce_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["salesforce_id"], name: "index_salesforce_configs_on_salesforce_id"
   end
 
   create_table "sensitive_words", id: :serial, force: :cascade do |t|

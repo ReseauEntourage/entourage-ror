@@ -24,6 +24,10 @@ module Populate
       end
     end
 
+    def set_salesforce_configs
+      SalesforceServices::RecordType.new.import
+    end
+
     def delete_resources
       Resource.delete_all
     end
@@ -34,6 +38,10 @@ module Populate
 
     def delete_reactions
       Reaction.delete_all
+    end
+
+    def delete_salesforce_configs
+      SalesforceConfig.delete_all
     end
 
     def load_config type
