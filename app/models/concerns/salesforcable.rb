@@ -58,7 +58,7 @@ module Salesforcable
       return "Bordeaux" if address.departement == "33"
       return "Saint Etienne" if address.departement == "42"
 
-      "Autre région"
+      "Hors zone"
     end
   end
 
