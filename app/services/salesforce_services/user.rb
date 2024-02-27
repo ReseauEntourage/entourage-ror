@@ -82,7 +82,7 @@ module SalesforceServices
     end
 
     def contact_id! user
-      Contact.new.creasert(user)
+      Contact.new.upsert(user)
     end
 
     def profil_declare user
