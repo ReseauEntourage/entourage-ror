@@ -14,9 +14,9 @@ module Api
           end
 
           def index
-            render json: @chat_message.user_survey_responses.includes(:user).page(page).per(per),
-              root: :survey_responses,
-              each_serializer: ::V1::SurveyResponseSerializer
+            return render json: { message: 'No survey' }, status: 400 unless @chat_message.survey.present?
+
+            render json: { survey_responses: @chat_message.survey_responses.serialize }, status: 200
           end
 
           def create
