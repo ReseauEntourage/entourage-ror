@@ -444,6 +444,8 @@ class Entourage < ApplicationRecord
   def metadata_with_image_paths size = :medium
     return metadata unless outing?
 
+    metadata[:place_limit] = "" if metadata[:place_limit].nil?
+
     metadata.map do |key, value|
       if value.present? && [:landscape_url, :portrait_url].include?(key)
         [key, EntourageImage.storage.public_url_with_size(key: value, size: size)]

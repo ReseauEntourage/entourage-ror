@@ -451,7 +451,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "street_address" => "44 rue de l’Assomption, 75016 Paris, France",
           "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
           "google_place_id" => "foobar",
-          "place_limit" => nil
+          "place_limit" => ""
         },
         "interests" => ["sport", "other"],
         "neighborhoods" => [
