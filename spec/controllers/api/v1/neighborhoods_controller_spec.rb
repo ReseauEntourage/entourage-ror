@@ -402,7 +402,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'with outing' do
-      let(:outing) { create :outing, :outing_class, interests: [:sport, :other] }
+      let(:outing) { create :outing, :outing_class, interests: [:sport, :other], metadata: { place_limit: "3" } }
       let(:neighborhood) { create :neighborhood, outings: [outing] }
 
       before { get :show, params: { id: neighborhood.id, token: user.token } }
@@ -451,7 +451,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "street_address" => "44 rue de l’Assomption, 75016 Paris, France",
           "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
           "google_place_id" => "foobar",
-          "place_limit" => 0
+          "place_limit" => 3
         },
         "interests" => ["sport", "other"],
         "neighborhoods" => [

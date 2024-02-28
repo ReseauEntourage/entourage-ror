@@ -445,6 +445,7 @@ class Entourage < ApplicationRecord
     return metadata unless outing?
 
     metadata[:place_limit] = 0 if metadata[:place_limit].nil?
+    metadata[:place_limit] = metadata[:place_limit].to_i if metadata[:place_limit].is_a?(String)
 
     metadata.map do |key, value|
       if value.present? && [:landscape_url, :portrait_url].include?(key)
