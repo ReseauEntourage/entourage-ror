@@ -23,6 +23,9 @@ RSpec.configure do |config|
     # deactivate slack_trace notifications
     SlackServices::StackTrace.any_instance.stub(:notify).and_return(nil)
 
+    # deactivate salesforce updates
+    SalesforceJob.any_instance.stub(:perform).and_return(nil)
+
     # deactivate translation on create
     # TranslationObserver.any_instance.stub(:action).and_return(nil)
     [ChatMessage, Entourage, Neighborhood].each do |klass|

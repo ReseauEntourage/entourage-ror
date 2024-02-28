@@ -10,6 +10,7 @@ class Address < ApplicationRecord
   belongs_to :user
 
   after_save :set_user_address_id_if_primary!
+  after_save :sync_salesforce
 
   def to_s
     display_address
@@ -46,6 +47,10 @@ class Address < ApplicationRecord
 
   def paris?
     departement == '75'
+  end
+
+  def sync_salesforce
+    SalesforceJob.perform_later(user_id, "upsert")
   end
 
   private

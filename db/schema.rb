@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 202401111415004) do
+ActiveRecord::Schema.define(version: 2024_02_27_120501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -874,6 +874,15 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))"
   end
 
+  create_table "salesforce_configs", force: :cascade do |t|
+    t.string "klass", null: false
+    t.string "developer_name"
+    t.string "salesforce_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["salesforce_id"], name: "index_salesforce_configs_on_salesforce_id"
+  end
+
   create_table "sensitive_words", id: :serial, force: :cascade do |t|
     t.string "raw", null: false
     t.string "pattern", null: false
@@ -1136,6 +1145,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.json "options", default: {}
     t.string "lang", default: "fr"
     t.string "slack_id"
+    t.string "salesforce_id"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

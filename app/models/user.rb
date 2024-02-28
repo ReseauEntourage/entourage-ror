@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   include Interestable
   include Recommandable
+  include Salesforcable
 
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
