@@ -28,6 +28,21 @@ module Surveyable
 
       survey_response.destroy and return survey_response.responses
     end
+
+    def serialize user_serializer: ::V1::Users::BasicSerializer
+      formatted_responses = Array.new(@instance.survey.choices.size) { [] }
+
+      # see rspecs for expected output
+      @instance.user_survey_responses.includes(:user).each do |survey_response|
+        survey_response.responses.each_with_index do |response, index|
+          unless ActiveModel::Type::Boolean::FALSE_VALUES.include?(response)
+            formatted_responses[index] << user_serializer.new(survey_response.user).as_json
+          end
+        end
+      end
+
+      formatted_responses
+    end
   end
 
   def survey_responses
