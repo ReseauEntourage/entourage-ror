@@ -67,6 +67,8 @@ module Salesforcable
   end
 
   def sync_salesforce
+    return unless last_sign_in_at.present?
+
     if has_attribute?(:deleted)
       return SalesforceJob.perform_later(id, "destroy") if saved_change_to_deleted? && deleted?
     end
