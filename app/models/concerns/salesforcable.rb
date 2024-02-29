@@ -77,7 +77,7 @@ module Salesforcable
       return SalesforceJob.perform_later(id, "destroy") if saved_change_to_status? && status == "deleted"
     end
 
-    return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
+    return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
     SalesforceJob.perform_later(id, "upsert")
   end
