@@ -60,7 +60,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "message_type" => "text",
           "reactions" => [],
           "reaction_id" => nil,
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil,
+          "survey_response" => nil
         }]
       }) }
     end
@@ -143,7 +145,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "message_type" => "text",
           "reactions" => [],
           "reaction_id" => nil,
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil,
+          "survey_response" => nil,
         }
       }) }
     end
@@ -207,6 +211,37 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       let!(:ios_app) { FactoryBot.create(:ios_app, name: 'neighborhood') }
       let!(:android_app) { FactoryBot.create(:android_app, name: 'neighborhood') }
 
+      context "with survey" do
+        let(:request) {
+          post :create, params: {
+            token: user.token,
+            neighborhood_id: neighborhood.to_param,
+            chat_message: {
+              content: "foobar",
+              message_type: :text,
+              survey_attributes: {
+                choices: ["foo", "bar"],
+                multiple: true
+              }
+            }
+          }
+        }
+
+        let!(:join_request) { create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+
+        before { request }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(ChatMessage.count).to eq(1) }
+        it { expect(result).to have_key("chat_message") }
+        it { expect(result["chat_message"]).to have_key("survey") }
+        it { expect(result["chat_message"]["survey"]).to eq({
+          "choices" => ["foo", "bar"],
+          "multiple" => true,
+          "summary" => [0 ,0]
+        }) }
+      end
+
       context "nested chat_messages" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
         let(:content) { "foobar" }
@@ -240,7 +275,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "image_url" => image_url,
             "read" => nil,
             "message_type" => "text",
-            "status" => "active"
+            "status" => "active",
+            "survey" => nil,
           }
         }}
 
@@ -462,7 +498,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "image_url" => nil,
           "read" => false,
           "message_type" => "text",
-          "status" => "active"
+          "status" => "active",
+          "survey" => nil,
         }]
       }) }
     end
