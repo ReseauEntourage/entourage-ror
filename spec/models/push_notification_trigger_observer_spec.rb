@@ -102,10 +102,13 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           let!(:join_request) { create :join_request, user: participant, joinable: entourage, status: :accepted }
 
           context "update title" do
+            let(:subject) {
+              entourage.title = "Thé"
+              entourage.save
+            }
+
             include_examples :call_outing_on_update
             include_examples :no_call_notify
-
-            it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
           end
 
           context "update title and latitude" do
@@ -117,8 +120,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
             include_examples :call_outing_on_update
             include_examples :call_notify
-
-            it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
           end
 
           context "update latitude" do
@@ -129,8 +130,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
             include_examples :call_outing_on_update
             include_examples :call_notify
-
-            it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
           end
 
           context "update starts_at" do

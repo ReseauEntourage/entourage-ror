@@ -230,7 +230,7 @@ class PushNotificationTrigger
     return outing_on_update_status if @changes.keys.include?("status")
     return unless @changes.any? # it happens when neighborhoods_entourage is updated
 
-    return unless (@changes.keys & ["metadata", "latitude", "longitude", "postal_code", "country"]).any?
+    return unless (@changes.keys & ["latitude", "longitude", "postal_code", "country"]).any? || outing_metadata_changes(@changes["metadata"]).any?
 
     users = @record.accepted_members - [@record.user]
 
@@ -551,6 +551,13 @@ class PushNotificationTrigger
     return unless date_str
 
     I18nStruct.new(date: date_str.to_date)
+  end
+
+  def outing_metadata_changes metadata_changes
+    return [] unless metadata_changes
+    return [] unless metadata_changes.size == 2
+
+    metadata_changes.first.slice("starts_at", "ends_at").to_a - metadata_changes.last.slice("starts_at", "ends_at").to_a
   end
 
   def update_outing_message outing, changes
