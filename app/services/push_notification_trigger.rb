@@ -557,7 +557,7 @@ class PushNotificationTrigger
     return [] unless metadata_changes
     return [] unless metadata_changes.size == 2
 
-    metadata_changes.first.slice("starts_at", "ends_at") - metadata_changes.last.slice("starts_at", "ends_at")
+    metadata_changes.first.slice("starts_at", "ends_at").to_a - metadata_changes.last.slice("starts_at", "ends_at").to_a
   end
 
   def update_outing_message outing, changes
