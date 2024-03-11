@@ -15,4 +15,8 @@ class ConversationMessage < ApplicationRecord
       )
     ))
   end
+
+  def deleted?
+    status.to_sym == :deleted
+  end
 end
