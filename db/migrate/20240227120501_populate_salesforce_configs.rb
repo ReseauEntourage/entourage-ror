@@ -4,7 +4,7 @@ class PopulateSalesforceConfigs < ActiveRecord::Migration[6.1]
   def up
     return if EnvironmentHelper.test?
 
-    Populate.set_salesforce_configs
+    # Populate.set_salesforce_configs
   end
 
   def down

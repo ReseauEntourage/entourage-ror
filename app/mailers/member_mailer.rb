@@ -28,7 +28,7 @@ class MemberMailer < MailjetMailer
                   deliver_only_once: true
   end
 
-  def action_follow_up_day_10(action)
+  def action_follow_up_day_15(action)
     mailjet_email to: action.user,
                   template_id: 452754,
                   campaign_name: 'action_suivi_j_10',

@@ -1,7 +1,7 @@
 module V1
   module Users
     class SummarySerializer < BasicSerializer
-      UNCLOSED_ACTION_ALERT = 10.days
+      UNCLOSED_ACTION_ALERT = 15.days
 
       attributes :id,
         :display_name,

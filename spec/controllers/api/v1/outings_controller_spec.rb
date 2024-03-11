@@ -345,7 +345,7 @@ describe Api::V1::OutingsController do
         it { expect(response.status).to eq(200) }
         it { expect(subject).to have_key('outing') }
         it { expect(subject['outing']['title']).to eq('New title') }
-        it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
+        it { expect(subject['outing']['metadata']['place_limit']).to eq(100) }
         it { expect(subject['outing']['interests']).to eq(["animaux", "other"]) }
       end
 

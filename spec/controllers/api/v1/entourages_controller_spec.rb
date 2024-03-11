@@ -402,7 +402,7 @@ describe Api::V1::EntouragesController do
                 "landscape_thumbnail_url"=>"path/to/portrait_url",
                 "portrait_url"=>"path/to/portrait_url",
                 "portrait_thumbnail_url"=>"path/to/portrait_url",
-                "place_limit"=>nil
+                "place_limit"=>0
               },
               "entourage_type"=>"contribution",
               "display_category"=>nil,
@@ -657,7 +657,7 @@ describe Api::V1::EntouragesController do
               "landscape_thumbnail_url"=>nil,
               "portrait_url"=>nil,
               "portrait_thumbnail_url"=>nil,
-              "place_limit"=>nil
+              "place_limit"=>0
             }
           )}
         end
@@ -715,7 +715,7 @@ describe Api::V1::EntouragesController do
               "landscape_thumbnail_url" => "path/to/portrait_url",
               "portrait_url" => "path/to/portrait_url",
               "portrait_thumbnail_url" => "path/to/portrait_url",
-              "place_limit"=>nil
+              "place_limit"=>0
             },
             "entourage_type"=>"ask_for_help",
             "display_category"=>"social",
