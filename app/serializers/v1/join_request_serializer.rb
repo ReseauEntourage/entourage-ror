@@ -7,6 +7,7 @@ module V1
                :community_roles,
                :status,
                :message,
+               :confirmed_at,
                :requested_at,
                :avatar_url,
                :partner,
