@@ -31,6 +31,7 @@ describe Api::V1::Outings::UsersController do
         "community_roles" => [],
         "status" => "accepted",
         "message" => nil,
+        "confirmed_at" => nil,
         "requested_at" => JoinRequest.where(user: outing.user, joinable: outing).first.created_at.iso8601(3),
         "avatar_url" => nil,
         "partner" => nil,
@@ -43,6 +44,7 @@ describe Api::V1::Outings::UsersController do
         "community_roles" => [],
         "status" => "accepted",
         "message" => nil,
+        "confirmed_at" => nil,
         "requested_at" => join_request.created_at.iso8601(3),
         "avatar_url" => nil,
         "partner" => nil,
@@ -71,6 +73,7 @@ describe Api::V1::Outings::UsersController do
             "community_roles" => [],
             "status" => "accepted",
             "message" => nil,
+            "confirmed_at" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
@@ -93,6 +96,7 @@ describe Api::V1::Outings::UsersController do
             "community_roles" => [],
             "status" => "accepted",
             "message" => nil,
+            "confirmed_at" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
@@ -139,6 +143,61 @@ describe Api::V1::Outings::UsersController do
     end
   end
 
+  describe 'POST confirm' do
+    context "not signed in" do
+      before { post :confirm, params: { outing_id: outing.to_param } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      context "not as participant" do
+        before { post :confirm, params: { outing_id: outing.to_param, token: user.token } }
+
+        it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+        it { expect(result).to eq(
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "role" => "participant",
+            "group_role" => "participant",
+            "community_roles" => [],
+            "status" => "accepted",
+            "message" => nil,
+            "requested_at" => JoinRequest.last.created_at.iso8601(3),
+            "confirmed_at" => JoinRequest.last.confirmed_at.iso8601(3),
+            "avatar_url" => nil,
+            "partner" => nil,
+            "partner_role_title" => nil,
+          }
+        )}
+      end
+
+      context "as participant" do
+        let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+        before { post :confirm, params: { outing_id: outing.to_param, token: user.token } }
+
+        it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+        it { expect(result).to eq(
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "role" => "participant",
+            "group_role" => "participant",
+            "community_roles" => [],
+            "status" => "accepted",
+            "message" => nil,
+            "requested_at" => JoinRequest.last.created_at.iso8601(3),
+            "confirmed_at" => JoinRequest.last.confirmed_at.iso8601(3),
+            "avatar_url" => nil,
+            "partner" => nil,
+            "partner_role_title" => nil,
+          }
+        )}
+      end
+    end
+  end
+
   describe "DELETE destroy" do
     context "not signed in" do
       before { delete :destroy, params: { outing_id: outing.to_param, id: user.id } }
@@ -161,6 +220,7 @@ describe Api::V1::Outings::UsersController do
             "community_roles" => [],
             "status" => "not_requested",
             "message" => nil,
+            "confirmed_at" => nil,
             "requested_at" => my_join_request.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
@@ -222,6 +282,7 @@ describe Api::V1::Outings::UsersController do
             "community_roles" => [],
             "status" => "not_requested",
             "message" => nil,
+            "confirmed_at" => nil,
             "requested_at" => my_join_request.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
