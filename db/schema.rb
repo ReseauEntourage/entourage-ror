@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_27_120501) do
+ActiveRecord::Schema.define(version: 202401111415004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -406,6 +406,8 @@ ActiveRecord::Schema.define(version: 2024_02_27_120501) do
     t.datetime "email_notification_sent_at"
     t.datetime "archived_at"
     t.string "report_prompt_status"
+    t.datetime "confirmed_at"
+    t.index ["confirmed_at"], name: "index_join_requests_on_confirmed_at"
     t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
     t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests"
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
