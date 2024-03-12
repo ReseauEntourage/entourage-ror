@@ -39,6 +39,7 @@ class JoinRequest < ApplicationRecord
 
   after_save :joinable_callback
   after_destroy :joinable_callback
+  before_save :reset_confirmed_at_unless_accepted
 
   def entourage?
     joinable_type == 'Entourage'
@@ -179,5 +180,11 @@ class JoinRequest < ApplicationRecord
         )
       end
     end
+  end
+
+  def reset_confirmed_at_unless_accepted
+    return unless confirmed_at.present?
+
+    self.confirmed_at = nil unless status == 'accepted'
   end
 end
