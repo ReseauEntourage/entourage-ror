@@ -3,9 +3,21 @@ class NeighborhoodImage < ApplicationRecord
 
   # defines relationships for each image size (ie. image_url_high)
   [:high, :medium, :small].each do |size|
+    # has_one :image_url_high
+    # has_one :image_url_medium
+    # has_one :image_url_small
     has_one :"image_url_#{size}", -> {
       where(bucket: BUCKET_NAME, destination_size: size)
     }, class_name: 'ImageResizeAction', foreign_key: :path, primary_key: :image_url
+
+    delegate :destination_path, to: :"image_url_#{size}", prefix: true, allow_nil: true
+
+    # image_url_high_or_default
+    # image_url_medium_or_default
+    # image_url_small_or_default
+    define_method "image_url_#{size}_or_default" do
+      send(:"image_url_#{size}_destination_path") || self['image_url']
+    end
   end
 
   def image_url
