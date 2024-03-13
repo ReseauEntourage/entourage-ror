@@ -5,7 +5,7 @@ module V1
                :image_url
 
     def image_url
-      return unless url = object.image_url_medium&.path
+      return unless url = object.image_url_medium_or_default
 
       NeighborhoodImage::image_url_for(url)
     end
