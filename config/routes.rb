@@ -516,7 +516,12 @@ Rails.application.routes.draw do
         end
 
         resources :users, :controller => 'outings/users', only: [:index, :create, :destroy] do
+          member do
+            post :confirm
+          end
+
           collection do
+            post :confirm
             # we want to avoid specific id to unjoin
             delete :destroy
           end

@@ -2,8 +2,9 @@ module Api
   module V1
     module Outings
       class UsersController < Api::V1::BaseController
-        before_action :set_outing, only: [:index, :create, :destroy]
-        before_action :set_join_request, only: [:create, :destroy]
+        before_action :set_outing, only: [:index, :create, :confirm, :destroy]
+        before_action :set_membership, only: [:create, :confirm]
+        before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
 
         def index
@@ -13,21 +14,24 @@ module Api
 
         def create
           # join a outing
-          return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
-            user: current_user
-          } if @join_request.present? && @join_request.accepted?
-
-          if @join_request.present?
-            @join_request.status = :accepted
-          else
-            @join_request = JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
-          end
-
-          if @join_request.save
-            render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          if @membership.save
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
-              message: 'Could not create outing participation request', reasons: @join_request.errors.full_messages
+              message: 'Could not create outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def confirm
+          # confirm participation
+          @membership.confirmed_at = Time.zone.now
+
+          if @membership.save
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          else
+            render json: {
+              message: 'Could not confirm outing participation request', reasons: @membership.errors.full_messages
             }, status: :bad_request
           end
         end
@@ -54,6 +58,13 @@ module Api
 
         def set_join_request
           @join_request = JoinRequest.where(joinable: @outing, user: current_user).first
+        end
+
+        def set_membership
+          @membership = JoinRequest.where(joinable: @outing, user: current_user).first
+          @membership.status = :accepted if @membership.present?
+
+          @membership ||= JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
         end
 
         def authorised_user?
