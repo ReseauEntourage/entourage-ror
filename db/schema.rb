@@ -299,7 +299,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "description"
     t.uuid "uuid"
     t.string "category"
-    t.boolean "use_suggestions", default: false, null: false
     t.string "display_category"
     t.string "uuid_v2", limit: 71, null: false
     t.string "postal_code", limit: 8
@@ -1138,7 +1137,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "marketing_referer_id", default: 1, null: false
     t.datetime "last_sign_in_at"
     t.boolean "old_atd_friend", default: false, null: false
-    t.boolean "use_suggestions", default: false, null: false
     t.string "about", limit: 200
     t.string "community", limit: 9, null: false
     t.string "encrypted_password"
