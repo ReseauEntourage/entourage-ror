@@ -16,6 +16,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     :notify,
     :outing_on_update,
     :outing_on_cancel,
+    :outing_on_day_before,
     :chat_message_on_create,
     :post_on_create,
     :comment_on_create,
@@ -44,6 +45,26 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:async_entourage_on_create) }
     it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:entourage_on_create_for_followers) }
     it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:entourage_on_create_for_neighbors) }
+  end
+
+  describe "outing_on_day_before" do
+    let(:outing) { create :outing }
+    let(:subject) { PushNotificationTrigger.new(Outing.find(outing.id), :day_before, Hash.new).run }
+
+    before { outing }
+    after { subject }
+
+    context "without member" do
+      include_examples :call_outing_on_day_before
+      include_examples :no_call_notify
+    end
+
+    context "with member" do
+      let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+      include_examples :call_outing_on_day_before
+      include_examples :call_notify
+    end
   end
 
   describe "entourage" do
