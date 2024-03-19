@@ -427,6 +427,29 @@ class PushNotificationTrigger
     )
   end
 
+  def user_reaction_on_create
+    return unless @record.respond_to?(:instance)
+    return unless @record.instance.respond_to?(:user_id)
+
+    author_id = @record.instance.user_id
+
+    return if author_id == @record.user_id
+
+    notify(
+      sender_id: @record.user_id,
+      referent: @record.instance.messageable,
+      instance: @record.instance.messageable,
+      users: [@record.instance.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.reaction.create', i18n_args: [username(@record.user), content(@record.instance.messageable)]),
+        content: content(@record.instance),
+        extra: {
+          tracking: :reaction_on_create
+        }
+      }
+    )
+  end
+
   def join_request_on_create
     return unless @record.accepted?
     return if @record.joinable.is_a?(Entourage) && @record.joinable.conversation?
