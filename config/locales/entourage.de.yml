@@ -8,6 +8,9 @@ de:
       cancel: "Die Veranstaltung geplant am %s wurde abgesagt"
       update: "Die am %s geplante Veranstaltung wurde geändert. Sie findet am %s um %s statt"
       update_short: "Die am %s geplante Veranstaltung wurde geändert"
+      day_before:
+        title: "🔔 Erinnerung: „%s“ findet morgen statt!"
+        content: "Vergessen Sie nicht, diese Veranstaltung ist für morgen. Kommen Sie immer noch?"
     post:
       create: "%s hat gerade geteilt: \"%s\""
     comment:
