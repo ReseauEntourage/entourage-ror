@@ -8,6 +8,9 @@ pl:
       cancel: "To wydarzenie zaplanowane na %s zostało odwołane"
       update: "Wydarzenie zaplanowane na %s zostało zmodyfikowane. Odbędzie się %s o %s"
       update_short: "Wydarzenie zaplanowane na %s zostało zmodyfikowane"
+      day_before:
+        title: "🔔 Przypomnienie: „%s” odbędzie się jutro!"
+        content: "Nie zapomnij, że to wydarzenie jest na jutro. Nadal przychodzisz?"
     post:
       create: "%s właśnie udostępnił(a): \"%s\""
     comment:
