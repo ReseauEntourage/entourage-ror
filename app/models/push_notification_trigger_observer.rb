@@ -1,5 +1,5 @@
 class PushNotificationTriggerObserver < ActiveRecord::Observer
-  observe :translation, :entourage, :entourage_moderation, :join_request, :neighborhoods_entourage
+  observe :translation, :entourage, :entourage_moderation, :join_request, :neighborhoods_entourage, :user_reaction
 
   def after_save record
     record.instance_variable_set(:@record_changes, record.saved_changes)
@@ -26,6 +26,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   def skip? verb, record
     return true if verb == :update && record.is_a?(Translation)
+    return true if verb == :update && record.is_a?(UserReaction)
 
     # chat_messages and entourages on creation are triggered when translations are triggered
     return true if verb == :create && record.is_a?(ChatMessage)
