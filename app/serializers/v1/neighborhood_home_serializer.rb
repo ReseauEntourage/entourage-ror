@@ -85,7 +85,7 @@ module V1
     end
 
     def posts
-      object.parent_chat_messages.includes(:user, :translation).preload_comments_count.ordered.limit(POSTS_LIMIT).map do |chat_message|
+      object.parent_chat_messages.includes(:user, :translation).ordered.limit(POSTS_LIMIT).map do |chat_message|
         V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request, user: scope[:user] }).as_json
       end
     end
