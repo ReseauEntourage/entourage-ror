@@ -61,6 +61,8 @@ class ChatMessage < ApplicationRecord
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
 
+  after_commit :update_parent_comments_count
+
   class << self
     def bucket
       Storage::Client.images
@@ -253,6 +255,12 @@ class ChatMessage < ApplicationRecord
     else
       nil
     end
+  end
+
+  def update_parent_comments_count
+    return unless ancestry.present?
+
+    parent.update(comments_count: parent.descendants.where(status: :active).count)
   end
 
   def update_sender_report_prompt_status
