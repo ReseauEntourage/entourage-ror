@@ -320,6 +320,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "recurrency_identifier"
     t.datetime "status_changed_at"
     t.datetime "notification_sent_at"
+    t.datetime "working_hours_sent_at"
+    t.integer "number_of_confirmed_people", default: 0
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"

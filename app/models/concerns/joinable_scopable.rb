@@ -6,6 +6,7 @@ module JoinableScopable
 
     has_many :members, through: :join_requests, source: :user
     has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
+    has_many :confirmed_members, -> { where("join_requests.status = 'accepted'").where("confirmed_at is not null") }, through: :join_requests, source: :user
 
     scope :joined_by, -> (user) {
       joins(:join_requests).where(join_requests: {
@@ -18,15 +19,20 @@ module JoinableScopable
   end
 
   def members_has_changed!
-    return unless has_attribute?(:number_of_people)
-
-    update_column(:number_of_people, accepted_members.count)
+    update_column(:number_of_people, accepted_members.count) if has_attribute?(:number_of_people)
+    update_column(:number_of_confirmed_people, confirmed_members.count) if has_attribute?(:number_of_confirmed_people)
   end
 
   def members_count
     return number_of_people if respond_to?(:number_of_people)
 
     members.length
+  end
+
+  def confirmed_members_count
+    return number_of_confirmed_people if respond_to?(:number_of_confirmed_people)
+
+    confirmed_members.length
   end
 
   def set_forced_join_request_as_member! user
