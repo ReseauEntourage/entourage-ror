@@ -11,14 +11,7 @@ module V1
     end
 
     def has_comments
-      comments_count > 0
-    end
-
-    def comments_count
-      # if chat_message has been loaded using :preload_comments_count scope
-      return object.comments_count if object.respond_to?(:comments_count)
-
-      object.children.count
+      object.comments_count > 0
     end
 
     def image_url
