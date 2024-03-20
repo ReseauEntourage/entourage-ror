@@ -21,6 +21,8 @@ module V1
                :recurrency,
                :member,
                :members_count,
+               :confirmed_member,
+               :confirmed_members_count,
                :created_at,
                :updated_at,
                :status_changed_at,
@@ -67,6 +69,12 @@ module V1
       return false unless scope && scope[:user]
 
       object.members.include? scope[:user]
+    end
+
+    def confirmed_member
+      return false unless scope && scope[:user]
+
+      object.confirmed_members.include? scope[:user]
     end
 
     def metadata
