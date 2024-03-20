@@ -33,6 +33,7 @@ class ChatMessage < ApplicationRecord
 
   scope :ordered, -> { order("created_at DESC") }
   scope :with_content, -> { where("content <> ''") }
+  scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
 
   attribute :metadata, :jsonb_with_schema
 
