@@ -14,18 +14,6 @@ class ChatMessage < ApplicationRecord
 
   has_ancestry
 
-  scope :preload_comments_count, -> {
-    select("chat_messages.*, count(comments.id) as comments_count")
-    .joins(%(
-      left outer join chat_messages as comments on
-        comments.ancestry is not null and
-        comments.ancestry::integer = chat_messages.id and
-        comments.messageable_type = chat_messages.messageable_type and
-        comments.messageable_id = chat_messages.messageable_id
-    ))
-    .group("chat_messages.id")
-  }
-
   belongs_to :messageable, polymorphic: true
   belongs_to :entourage, -> {
     where("chat_messages.messageable_type = 'Entourage'")
