@@ -2,7 +2,7 @@ module SalesforceServices
   class User < Connect
     TABLE_NAME = "Compte_App__c"
 
-    UPDATABLE_FIELDS = [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile, :status, :deleted]
+    UPDATABLE_FIELDS = [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile, :status, :deleted, :last_sign_in_at]
 
     GOAL_MAPPING = {
       ask_for_help: "preca",
