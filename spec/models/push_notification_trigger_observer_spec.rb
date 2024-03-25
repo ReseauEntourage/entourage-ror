@@ -22,6 +22,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     :user_reaction_on_create,
     :public_chat_message_on_create,
     :private_chat_message_on_create,
+    :survey_response_on_create,
   ].each do |method_name|
     shared_examples("call_#{method_name}".to_sym) do
       it { expect_any_instance_of(PushNotificationTrigger).to receive(method_name) }
@@ -545,6 +546,25 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             }
           )
         }
+      end
+    end
+
+    describe "survey_response" do
+      let(:survey) { create(:survey) }
+      let!(:chat_message) { create :chat_message, messageable: neighborhood, user: user, survey: survey }
+
+      context "surveyer is publisher" do
+        after { create(:survey_response, chat_message: chat_message, user: user, responses: [false, true]) }
+
+        include_examples :call_survey_response_on_create
+        include_examples :no_call_notify
+      end
+
+      context "surveyer is not publisher" do
+        after { create(:survey_response, chat_message: chat_message, responses: [false, true]) }
+
+        include_examples :call_survey_response_on_create
+        include_examples :call_notify
       end
     end
   end
