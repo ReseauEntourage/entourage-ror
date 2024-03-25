@@ -4,6 +4,10 @@ describe Onboarding::Timeliner do
   let!(:user) { create(:public_user) }
   let(:subject) { Onboarding::Timeliner.new(user.id, verb).run }
 
+  let!(:neighborhood) { create(:neighborhood) }
+
+  before { User.any_instance.stub(:default_neighborhood).and_return(neighborhood) }
+
   describe "offer_help_on_h1_after_registration" do
     let(:verb) { :h1_after_registration }
 
@@ -40,8 +44,8 @@ describe Onboarding::Timeliner do
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
       Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j2.title'),
       Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j2.offer'),
-      [user], nil, nil,
-      { stage: :j2 }
+      [user], "neighborhood", neighborhood.id,
+      { instance: "neighborhood", instance_id: neighborhood.id, stage: :j2 }
     ) }
   end
 
