@@ -8,8 +8,10 @@
   <div class="btn-group btn-group-sm">
     <%= link_to("Page principale", "#", class: "btn btn-primary") %>
 
-    <% Translation::LANGUAGES.each do |language| %>
-      <%= link_to language, edit_translation_admin_resource_path(@resource, { language: language }), class: "btn btn-default" %>
+    <% unless @resource.new_record? %>
+      <% Translation::LANGUAGES.each do |language| %>
+        <%= link_to language, edit_translation_admin_resource_path(@resource, { language: language }), class: "btn btn-default" %>
+      <% end %>
     <% end %>
   </div>
 </div>
