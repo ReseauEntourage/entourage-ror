@@ -514,6 +514,26 @@ class PushNotificationTrigger
     )
   end
 
+  def survey_response_on_create
+    return unless @record.chat_message.present?
+
+    return if @record.chat_message.user_id == @record.user_id
+
+    notify(
+      sender_id: @record.user_id,
+      referent: @record.chat_message,
+      instance: @record,
+      users: [@record.chat_message.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.survey_response.create', i18n_args: [username(@record.user), title(@record.chat_message.messageable)]),
+        content: I18nStruct.new(instance: @record.chat_message, field: :content),
+        extra: {
+          tracking: :survey_response_on_create,
+        }
+      }
+    )
+  end
+
   # use params[:extra] to be compliant with v7
   def notify sender_id:, referent:, instance:, users:, params: {}
     notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
