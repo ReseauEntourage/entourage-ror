@@ -141,7 +141,7 @@ class Entourage < ApplicationRecord
         # conversations (e.g. first user with itself) may already exist
         # and cause an error.
         join_request.skip_conversation_uuid_update!
-        join_request.save!
+        join_request.save
       end
     end
   end
