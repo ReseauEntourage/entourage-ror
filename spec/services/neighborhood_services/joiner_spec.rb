@@ -7,7 +7,11 @@ describe NeighborhoodServices::Joiner do
   describe "join_default_neighborhood!" do
     let(:subject) { NeighborhoodServices::Joiner.new(user).join_default_neighborhood! }
 
+    before { described_class.any_instance.stub(:default_neighborhood).and_return(neighborhood) }
+
     context "unexisting neighborhood with id 8" do
+      before { described_class.any_instance.stub(:default_neighborhood).and_return(nil) }
+
       it { expect(subject).to be_nil }
       it { expect { subject }.not_to change { JoinRequest.count } }
     end

@@ -11,6 +11,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     let!(:neighborhood) { create :neighborhood }
     let(:result) { JSON.parse(response.body) }
 
+    before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood]) }
+
     describe 'not authorized' do
       before { get :index }
 
