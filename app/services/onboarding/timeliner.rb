@@ -59,6 +59,8 @@ module Onboarding
 
     # j2
     def offer_help_on_j2_after_registration
+      return unless @user.default_neighborhood
+
       notify(
         instance: @user.default_neighborhood,
         params: {
@@ -70,6 +72,8 @@ module Onboarding
     end
 
     def ask_for_help_on_j2_after_registration
+      return unless @user.default_neighborhood
+
       notify(
         instance: @user.default_neighborhood,
         params: {
@@ -89,6 +93,8 @@ module Onboarding
     end
 
     def ask_for_help_on_j5_after_registration
+      return unless @user.default_neighborhood
+
       notify(
         instance: @user.default_neighborhood,
         params: {

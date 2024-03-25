@@ -17,9 +17,9 @@ RSpec.describe Neighborhood, :type => :model do
   end
 
   describe 'members count' do
-    let(:neighborhood) { FactoryBot.create :neighborhood }
-    let(:member) { FactoryBot.create :public_user }
-    let!(:join_request) { FactoryBot.create :join_request, user: member, joinable: neighborhood, status: status }
+    let(:neighborhood) { create :neighborhood }
+    let(:member) { create :public_user }
+    let!(:join_request) { create :join_request, user: member, joinable: neighborhood, status: status }
 
     subject { neighborhood.members.pluck(:id) }
 
@@ -37,7 +37,7 @@ RSpec.describe Neighborhood, :type => :model do
   end
 
   describe 'inside_perimeter' do
-    let!(:neighborhood) { FactoryBot.create :neighborhood, latitude: 48.86, longitude: 2.35 }
+    let!(:neighborhood) { create :neighborhood, latitude: 48.86, longitude: 2.35 }
     let(:travel_distance) { 1 }
 
     # distance is about 26_500 meters
@@ -58,9 +58,48 @@ RSpec.describe Neighborhood, :type => :model do
     end
   end
 
+  describe 'inside_user_perimeter' do
+    let!(:neighborhood) { create :neighborhood, latitude: 48.86, longitude: 2.35 }
+
+    let(:travel_distance) { 1 }
+    let(:address) { create :address, latitude: 48.80, longitude: 2 }
+    let!(:user) { create :user, travel_distance: travel_distance, address: address, addresses: [address] }
+
+    # distance is about 26_500 meters
+    subject { Neighborhood.inside_user_perimeter(user) }
+
+    context 'travel_distance is too low' do
+      it { expect(subject.count).to eq(0) }
+    end
+
+    context 'travel_distance is again too low' do
+      let(:travel_distance) { 25 }
+      it { expect(subject.count).to eq(0) }
+    end
+
+    context 'travel_distance is enough' do
+      let(:travel_distance) { 28 }
+      it { expect(subject.count).to eq(1) }
+    end
+
+    context 'travel_distance is enough but user has no address' do
+      let(:travel_distance) { 28 }
+      let!(:user) { create :user, travel_distance: travel_distance }
+
+      it { expect(subject.count).to eq(0) }
+    end
+
+    context 'travel_distance is enough but user has an address without departement' do
+      let(:address) { create :address, latitude: 48.80, longitude: 2, postal_code: nil }
+      let(:travel_distance) { 28 }
+
+      it { expect(subject.count).to eq(0) }
+    end
+  end
+
   describe 'order_by_distance_from' do
-    let!(:paris) { FactoryBot.create :neighborhood, latitude: 48.86, longitude: 2.35 }
-    let!(:nantes) { FactoryBot.create :neighborhood, latitude: 47.22, longitude: -1.55 }
+    let!(:paris) { create :neighborhood, latitude: 48.86, longitude: 2.35 }
+    let!(:nantes) { create :neighborhood, latitude: 47.22, longitude: -1.55 }
 
     subject { Neighborhood.order_by_distance_from(latitude, longitude).pluck(:id) }
 
@@ -80,11 +119,11 @@ RSpec.describe Neighborhood, :type => :model do
   end
 
   describe 'order_by_interests_matching' do
-    let!(:sport) { FactoryBot.create :neighborhood, name: 'sport', interests: [:sport] }
-    let!(:nature_animals) { FactoryBot.create :neighborhood, name: 'nature_animals', interests: [:nature, :animaux] }
-    let!(:nature_jeux) { FactoryBot.create :neighborhood, name: 'nature_jeux', interests: [:nature, :jeux] }
-    let!(:other) { FactoryBot.create :neighborhood, name: 'other', interests: [:other], other_interest: 'foo' }
-    let!(:none) { FactoryBot.create :neighborhood, name: 'none', interests: [] }
+    let!(:sport) { create :neighborhood, name: 'sport', interests: [:sport] }
+    let!(:nature_animals) { create :neighborhood, name: 'nature_animals', interests: [:nature, :animaux] }
+    let!(:nature_jeux) { create :neighborhood, name: 'nature_jeux', interests: [:nature, :jeux] }
+    let!(:other) { create :neighborhood, name: 'other', interests: [:other], other_interest: 'foo' }
+    let!(:none) { create :neighborhood, name: 'none', interests: [] }
 
     subject { Neighborhood.order_by_interests_matching(interests).pluck(:name) }
 
@@ -114,12 +153,12 @@ RSpec.describe Neighborhood, :type => :model do
   describe 'order_by_outings' do
     subject { Neighborhood.order_by_outings.pluck(:id) }
 
-    let(:outing_1) { FactoryBot.create :outing, :outing_class, created_at: Time.now }
-    let(:outing_2) { FactoryBot.create :outing, :outing_class, created_at: Time.now }
+    let(:outing_1) { create :outing, :outing_class, created_at: Time.now }
+    let(:outing_2) { create :outing, :outing_class, created_at: Time.now }
 
-    let!(:without_outing) { FactoryBot.create :neighborhood, outings: [] }
-    let!(:with_outing) { FactoryBot.create :neighborhood, outings: [outing_1] }
-    let!(:with_outings) { FactoryBot.create :neighborhood, outings: [outing_1, outing_2] }
+    let!(:without_outing) { create :neighborhood, outings: [] }
+    let!(:with_outing) { create :neighborhood, outings: [outing_1] }
+    let!(:with_outings) { create :neighborhood, outings: [outing_1, outing_2] }
 
     it { expect(subject).to eq([with_outings.id, with_outing.id, without_outing.id]) }
   end
@@ -127,20 +166,20 @@ RSpec.describe Neighborhood, :type => :model do
   describe 'order_by_chat_messages' do
     subject { Neighborhood.order_by_chat_messages.pluck(:id) }
 
-    let!(:without_chat_message) { FactoryBot.create :neighborhood }
-    let(:with_chat_message) { FactoryBot.create :neighborhood }
-    let(:with_chat_messages) { FactoryBot.create :neighborhood }
+    let!(:without_chat_message) { create :neighborhood }
+    let(:with_chat_message) { create :neighborhood }
+    let(:with_chat_messages) { create :neighborhood }
 
-    let!(:chat_message_1) { FactoryBot.create :chat_message, created_at: Time.now, messageable: with_chat_message }
-    let!(:chat_message_2) { FactoryBot.create :chat_message, created_at: Time.now, messageable: with_chat_messages }
-    let!(:chat_message_3) { FactoryBot.create :chat_message, created_at: Time.now, messageable: with_chat_messages }
+    let!(:chat_message_1) { create :chat_message, created_at: Time.now, messageable: with_chat_message }
+    let!(:chat_message_2) { create :chat_message, created_at: Time.now, messageable: with_chat_messages }
+    let!(:chat_message_3) { create :chat_message, created_at: Time.now, messageable: with_chat_messages }
 
 
     it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
   end
 
   describe "status_changed_at" do
-    let(:neighborhood) { FactoryBot.create(:neighborhood, status: :open) }
+    let(:neighborhood) { create(:neighborhood, status: :open) }
 
     context 'set status_changed_at' do
       before { neighborhood.update(status: :closed) }

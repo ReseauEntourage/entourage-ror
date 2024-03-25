@@ -16,6 +16,8 @@ module CoordinatesScopable
       end
     }
     scope :inside_user_perimeter, -> (user) {
+      return none unless user.departement.present?
+
       inside_perimeter(user.latitude, user.longitude, user.travel_distance).or(
         with_departement(user.departement)
       )
