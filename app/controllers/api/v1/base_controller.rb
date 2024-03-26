@@ -63,7 +63,8 @@ module Api
             first_session = current_user.last_sign_in_at.nil?
             reactivated = !first_session && current_user.last_sign_in_at <= 2.months.ago
 
-            current_user.update(last_sign_in_at: Time.zone.now)
+            current_user.update_column(:last_sign_in_at, Time.zone.now)
+            current_user.sync_salesforce
 
             mixpanel.track("Opened App", {
               "First Session" => first_session
