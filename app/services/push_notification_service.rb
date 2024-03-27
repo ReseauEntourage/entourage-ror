@@ -25,7 +25,7 @@ class PushNotificationService
   private
 
   def badge(user)
-    UserServices::UnreadMessages.new(user: user).number_of_unread_messages
+    0
   end
 
   def android_notification_service

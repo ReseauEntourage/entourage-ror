@@ -18,6 +18,7 @@ module UserServices
       }
     end
 
+    # this method can be expensive, use it wisely
     def unread_conversations
       JoinRequest.where(user_id: user.id, joinable_type: :Entourage)
         .joins(:entourage)

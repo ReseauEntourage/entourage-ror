@@ -464,14 +464,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "sender is publisher" do
         after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
 
-        include_examples :call_notify
-
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: user.id,
             referent: neighborhood,
             instance: publication,
-            users: [john, jane],
+            users: [kind_of(User)],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
               content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
@@ -479,21 +477,19 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 tracking: :comment_on_create_to_neighborhood
               }
             }
-          )
+          ).twice
         }
       end
 
       context "sender is commentator" do
         after { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: publication }
 
-        include_examples :call_notify
-
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: john.id,
             referent: neighborhood,
             instance: publication,
-            users: [user, jane],
+            users: [kind_of(User)],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
               content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
@@ -501,7 +497,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 tracking: :comment_on_create_to_neighborhood
               }
             }
-          )
+          ).twice
         }
       end
     end
@@ -640,7 +636,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       describe "contribution with neighbor" do
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
-        let!(:notification_permission) { create :notification_permission, user: user_paris }
 
         before { user_paris }
 
@@ -650,6 +645,28 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
         it { expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate) }
         it { expect_any_instance_of(InappNotification).to receive(:save) }
+      end
+
+      describe "contribution with neighbor old last_sign_in_at" do
+        let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+
+        before { user_paris.update_attribute(:last_sign_in_at, 2.years.ago) }
+
+        after { moderation }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "contribution with neighbor recent last_sign_in_at" do
+        let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+
+        before { user_paris.update_attribute(:last_sign_in_at, 2.months.ago) }
+
+        after { moderation }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
       end
 
       describe "contribution with neighbor far away" do

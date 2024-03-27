@@ -71,24 +71,26 @@ class PushNotificationTrigger
     return unless entourage.outing?
     return unless entourage.moderation_validated?
     return unless entourage.first_occurrence?
-    return unless users = (neighborhood.members.uniq - [entourage.user])
+    return unless (user_ids = neighborhood.member_ids.uniq - [entourage.user_id]).any?
 
-    notify(
-      sender_id: entourage.user_id,
-      referent: neighborhood,
-      instance: entourage,
-      users: users,
-      params: {
-        object: I18nStruct.new(instance: neighborhood, field: :name),
-        content: I18nStruct.new(
-          i18n: 'push_notifications.outing.create',
-          i18n_args: [entity_name(neighborhood), title(entourage), to_date(entourage.starts_at)
-          ]),
-        extra: {
-          tracking: :outing_on_add_to_neighborhood
+    user_ids.each do |user_id|
+      notify(
+        sender_id: entourage.user_id,
+        referent: neighborhood,
+        instance: entourage,
+        users: [User.find(user_id)],
+        params: {
+          object: I18nStruct.new(instance: neighborhood, field: :name),
+          content: I18nStruct.new(
+            i18n: 'push_notifications.outing.create',
+            i18n_args: [entity_name(neighborhood), title(entourage), to_date(entourage.starts_at)
+            ]),
+          extra: {
+            tracking: :outing_on_add_to_neighborhood
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   def entourage_moderation_on_create
@@ -186,6 +188,7 @@ class PushNotificationTrigger
     return unless @record.action?
 
     neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+    neighbor_ids = User.where(id: neighbor_ids).where("last_sign_in_at > ?", 1.year.ago).pluck(:id)
 
     return unless neighbor_ids.any?
 
@@ -233,23 +236,23 @@ class PushNotificationTrigger
 
     return unless (@changes.keys & ["latitude", "longitude", "postal_code", "country"]).any? || outing_metadata_changes(@changes["metadata"]).any?
 
-    users = @record.accepted_members - [@record.user]
+    return unless (user_ids = @record.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    return if users.none?
-
-    notify(
-      sender_id: @record.user_id,
-      referent: @record,
-      instance: @record,
-      users: users,
-      params: {
-        object: I18nStruct.new(instance: @record, field: :title),
-        content: update_outing_message(@record, @changes),
-        extra: {
-          tracking: :outing_on_update
+    user_ids.uniq.each do |user_id|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record,
+        instance: @record,
+        users: [User.find(user_id)],
+        params: {
+          object: I18nStruct.new(instance: @record, field: :title),
+          content: update_outing_message(@record, @changes),
+          extra: {
+            tracking: :outing_on_update
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   # initial caller: entourage_on_update
@@ -261,23 +264,23 @@ class PushNotificationTrigger
   end
 
   def outing_on_cancel
-    users = @record.accepted_members - [@record.user]
+    return unless (user_ids = @record.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    return if users.none?
-
-    notify(
-      sender_id: @record.user_id,
-      referent: @record,
-      instance: @record,
-      users: users,
-      params: {
-        object: I18nStruct.new(instance: @record, field: :title),
-        content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: [to_date(@record.starts_at)]),
-        extra: {
-          tracking: :outing_on_cancel
+    user_ids.uniq.each do |user_id|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record,
+        instance: @record,
+        users: [User.find(user_id)],
+        params: {
+          object: I18nStruct.new(instance: @record, field: :title),
+          content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: [to_date(@record.starts_at)]),
+          extra: {
+            tracking: :outing_on_cancel
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   def outing_on_day_before
@@ -314,59 +317,57 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def public_chat_message_on_create
-    users = @record.messageable.accepted_members - [@record.user]
+    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    return if users.none?
-
-    notify(
-      sender_id: @record.user_id,
-      referent: @record.messageable,
-      instance: @record,
-      users: users,
-      params: {
-        object: I18nStruct.new(text: "#{username(@record.user)} - %s", i18n_args: [title(@record.messageable)]), # @requires i18n
-        content: I18nStruct.new(instance: @record, field: :content),
-        extra: {
-          tracking: :public_chat_message_on_create,
-          group_type: group_type(@record.messageable),
-          joinable_id: @record.messageable_id,
-          joinable_type: @record.messageable_type,
-          type: "NEW_CHAT_MESSAGE"
+    user_ids.uniq.each do |user_id|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record,
+        users: [User.find(user_id)],
+        params: {
+          object: I18nStruct.new(text: "#{username(@record.user)} - %s", i18n_args: [title(@record.messageable)]), # @requires i18n
+          content: I18nStruct.new(instance: @record, field: :content),
+          extra: {
+            tracking: :public_chat_message_on_create,
+            group_type: group_type(@record.messageable),
+            joinable_id: @record.messageable_id,
+            joinable_type: @record.messageable_type,
+            type: "NEW_CHAT_MESSAGE"
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   # initial caller: chat_message_on_create
   def private_chat_message_on_create
-    users = @record.messageable.accepted_members - [@record.user]
+    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    return if users.none?
-
-    notify(
-      sender_id: @record.user_id,
-      referent: @record.messageable,
-      instance: @record.messageable,
-      users: users,
-      params: {
-        object: I18nStruct.new(text: username(@record.user)),
-        content: I18nStruct.new(instance: @record, field: :content),
-        extra: {
-          tracking: :private_chat_message_on_create,
-          group_type: group_type(@record.messageable),
-          joinable_id: @record.messageable_id,
-          joinable_type: @record.messageable_type,
-          type: "NEW_CHAT_MESSAGE"
+    user_ids.uniq.each do |user_id|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record.messageable,
+        users: [User.find(user_id)],
+        params: {
+          object: I18nStruct.new(text: username(@record.user)),
+          content: I18nStruct.new(instance: @record, field: :content),
+          extra: {
+            tracking: :private_chat_message_on_create,
+            group_type: group_type(@record.messageable),
+            joinable_id: @record.messageable_id,
+            joinable_type: @record.messageable_type,
+            type: "NEW_CHAT_MESSAGE"
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   # initial caller: chat_message_on_create
   def post_on_create
-    users = @record.messageable.accepted_members - [@record.user]
-
-    return if users.none?
+    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :post_on_create_to_neighborhood
@@ -376,23 +377,25 @@ class PushNotificationTrigger
       :post_on_create
     end
 
-    notify(
-      sender_id: @record.user_id,
-      referent: @record.messageable,
-      instance: @record.messageable,
-      users: users,
-      params: {
-        object: title(@record.messageable),
-        content: I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)]),
-        extra: {
-          tracking: tracking,
-          group_type: group_type(@record.messageable),
-          joinable_id: @record.messageable_id,
-          joinable_type: @record.messageable_type,
-          type: "NEW_CHAT_MESSAGE"
+    user_ids.uniq.each do |user_id|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record.messageable,
+        users: [User.find(user_id)],
+        params: {
+          object: title(@record.messageable),
+          content: I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)]),
+          extra: {
+            tracking: tracking,
+            group_type: group_type(@record.messageable),
+            joinable_id: @record.messageable_id,
+            joinable_type: @record.messageable_type,
+            type: "NEW_CHAT_MESSAGE"
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   # initial caller: chat_message_on_create
@@ -411,20 +414,22 @@ class PushNotificationTrigger
       :comment_on_create
     end
 
-    # should redirect to post
-    notify(
-      sender_id: @record.user_id,
-      referent: @record.messageable,
-      instance: @record.parent,
-      users: User.where(id: user_ids),
-      params: {
-        object: title(@record.messageable),
-        content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
-        extra: {
-          tracking: tracking
+    user_ids.uniq.each do |user_id|
+      # should redirect to post
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record.parent,
+        users: [User.find(user_id)],
+        params: {
+          object: title(@record.messageable),
+          content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
+          extra: {
+            tracking: tracking
+          }
         }
-      }
-    )
+      )
+    end
   end
 
   def user_reaction_on_create

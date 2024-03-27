@@ -10,6 +10,7 @@ class ConversationMessageBroadcastJob
     user = User.find(sender_id)
     conversation_message_broadcast = ConversationMessageBroadcast.find(conversation_message_broadcast_id)
     joinable = nil
+    join_request = nil
 
     if conversation_message_broadcast.entourage_type?
       joinable = ChatServices::ChatMessageBuilder.find_conversation(recipient_id, user_id: sender_id)
@@ -21,7 +22,7 @@ class ConversationMessageBroadcastJob
       end
     elsif conversation_message_broadcast.neighborhood_type?
       joinable = Neighborhood.find(recipient_id)
-      joinable.set_forced_join_request_as_member!(user)
+      join_request = joinable.set_forced_join_request_as_member!(user)
     end
 
     chat_builder = ChatServices::ChatMessageBuilder.new(
@@ -37,8 +38,6 @@ class ConversationMessageBroadcastJob
 
     chat_builder.create do |on|
       on.success do |message|
-        join_request.update_column(:last_message_read, message.created_at)
-
         ApplicationRecord.transaction do
           conversation_message_broadcast.update(
             sent_recipients_count: (ConversationMessageBroadcast.find(conversation_message_broadcast_id).sent_recipients_count || 0) + 1

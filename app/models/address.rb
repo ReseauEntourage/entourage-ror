@@ -42,6 +42,8 @@ class Address < ApplicationRecord
   end
 
   def departement
+    return unless postal_code.present?
+
     postal_code[0..1]
   end
 
