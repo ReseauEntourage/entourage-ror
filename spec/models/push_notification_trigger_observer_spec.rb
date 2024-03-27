@@ -576,7 +576,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       describe "contribution with neighbor" do
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
-        let!(:notification_permission) { create :notification_permission, user: user_paris }
 
         before { user_paris }
 
@@ -586,6 +585,28 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
         it { expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate) }
         it { expect_any_instance_of(InappNotification).to receive(:save) }
+      end
+
+      describe "contribution with neighbor old last_sign_in_at" do
+        let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+
+        before { user_paris.update_attribute(:last_sign_in_at, 2.years.ago) }
+
+        after { moderation }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "contribution with neighbor recent last_sign_in_at" do
+        let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+
+        before { user_paris.update_attribute(:last_sign_in_at, 2.months.ago) }
+
+        after { moderation }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
       end
 
       describe "contribution with neighbor far away" do

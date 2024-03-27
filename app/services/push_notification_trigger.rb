@@ -185,6 +185,7 @@ class PushNotificationTrigger
     return unless @record.action?
 
     neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+    neighbor_ids = User.where(id: neighbor_ids).where("last_sign_in_at > ?", 1.year.ago).pluck(:id)
 
     return unless neighbor_ids.any?
 
