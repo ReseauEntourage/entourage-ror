@@ -352,7 +352,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           FactoryBot.create(:join_request, joinable: neighborhood, status: "pending")
 
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).twice
 
           post :create, params: { neighborhood_id: neighborhood.to_param, chat_message: { content: "foobaz" }, token: user.token }
         end
