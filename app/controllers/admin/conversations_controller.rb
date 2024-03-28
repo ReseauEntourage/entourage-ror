@@ -177,10 +177,13 @@ module Admin
     def find_conversation id, user:
       if ConversationService.list_uuid?(id)
         participant_ids = ConversationService.participant_ids_from_list_uuid(params[:id])
+
         raise ActiveRecord::RecordNotFound unless participant_ids.include?(user.id.to_s)
+
         hash_uuid = ConversationService.hash_for_participants(participant_ids)
+
         Entourage.find_by(uuid_v2: hash_uuid) ||
-          ConversationService.build_conversation(participant_ids: participant_ids)
+          ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_admin.id)
       else
         Entourage.where(group_type: :conversation).findable_by_id_or_uuid(params[:id])
       end
