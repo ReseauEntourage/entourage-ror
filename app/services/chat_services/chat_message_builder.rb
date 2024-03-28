@@ -58,7 +58,7 @@ module ChatServices
       uuid_v2 = ConversationService.hash_for_participants(participants)
 
       Entourage.where(group_type: :conversation).find_by(uuid_v2: uuid_v2) ||
-        ConversationService.build_conversation(participant_ids: participants)
+        ConversationService.build_conversation(participant_ids: participants, creator_id: user_id)
     end
   end
 

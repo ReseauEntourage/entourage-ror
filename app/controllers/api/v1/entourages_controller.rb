@@ -229,11 +229,13 @@ module Api
         end
 
         participant_ids = ConversationService.participant_ids_from_list_uuid(params[:id], current_user: current_user)
+
         raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+
         hash_uuid = ConversationService.hash_for_participants(participant_ids)
-        @entourage =
-          Entourage.findable.find_by(uuid_v2: hash_uuid) ||
-          ConversationService.build_conversation(participant_ids: participant_ids)
+
+        @entourage = Entourage.findable.find_by(uuid_v2: hash_uuid) ||
+          ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_user.id)
       end
 
       def ensure_permission! permission

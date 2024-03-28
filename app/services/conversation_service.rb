@@ -45,10 +45,10 @@ module ConversationService
     uuid.is_a?(String) && uuid.index('1_list_') == 0
   end
 
-  def self.build_conversation participant_ids:
+  def self.build_conversation participant_ids:, creator_id:
     conversation = Entourage.new(group_type: :conversation)
     conversation.send :set_default_attributes
-    conversation.user_id = participant_ids.first
+    conversation.user_id = creator_id
     conversation.join_requests = participant_ids.map do |participant_id|
       JoinRequest.new(joinable: conversation, user_id: participant_id, role: :participant, status: JoinRequest::ACCEPTED_STATUS)
     end

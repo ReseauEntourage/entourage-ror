@@ -20,7 +20,7 @@ module Onboarding
             join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
             chat_message_exists = conversation.chat_messages.where(message_type: :text).exists?
           else
-            conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id])
+            conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id], creator_id: author.id)
             join_request = conversation.join_requests.to_a.find { |r| r.user_id == author.id }
             chat_message_exists = false
           end

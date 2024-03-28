@@ -525,7 +525,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     describe "text chat_message" do
-      let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
+      let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id], creator_id: user.id) }
       let(:chat_message) { build(:chat_message, messageable: conversation, user: user, message_type: :text, content: "foobar") }
       let(:translation) { build :translation, instance: chat_message }
 

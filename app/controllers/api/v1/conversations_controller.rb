@@ -84,7 +84,7 @@ module Api
         participant_ids = [conversation_params[:user_id], current_user.id]
 
         unless @conversation = Entourage.findable.find_by(uuid_v2: ConversationService.hash_for_participants(participant_ids))
-          @conversation = ConversationService.build_conversation(participant_ids: participant_ids)
+          @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_user.id)
           @conversation.public = false
           @conversation.create_from_join_requests!
         end
