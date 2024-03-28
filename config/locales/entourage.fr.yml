@@ -374,7 +374,7 @@ fr:
     comment:
       create: "%s vient de commenter la publication \"%s\""
     reaction:
-      create: "%s a réagi à votre publication dans \"%s\" :"
+      create: "%s a réagi à votre publication : \"%s\""
     join_request:
       new: "Nouveau membre"
       update: "Demande acceptée"
