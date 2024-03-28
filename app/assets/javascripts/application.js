@@ -28,3 +28,6 @@
 //= require_tree ./admin
 //= require select2
 //= require tinymce
+
+//= require chartkick
+//= require Chart.bundle
