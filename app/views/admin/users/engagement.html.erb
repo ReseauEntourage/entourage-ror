@@ -6,6 +6,8 @@
   </div>
 </div>
 
+<%= column_chart @user.engagement.stacked_by(:month), stacked: true %>
+
 <div class="control-group">
   <label class="control-label">Critères d'engagement</label>
   <table class="table" style="width: auto">
