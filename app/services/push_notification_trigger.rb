@@ -420,8 +420,8 @@ class PushNotificationTrigger
       instance: @record.instance.messageable,
       users: [@record.instance.user],
       params: {
-        object: I18nStruct.new(i18n: 'push_notifications.reaction.create', i18n_args: [username(@record.user), title(@record.instance.messageable)]),
-        content: content(@record.instance),
+        object: title(@record.instance.messageable),
+        content: I18nStruct.new(i18n: 'push_notifications.reaction.create', i18n_args: [username(@record.user), content(@record.instance)]),
         extra: {
           tracking: :reaction_on_create
         }
