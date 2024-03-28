@@ -51,7 +51,7 @@ module Api
       end
 
       def destroy
-        SolicitationServices::Deleter.new(user: current_user, solicitation: @solicitation).delete(solicitation_destroy_params) do |on|
+        EntourageServices::Deleter.new(user: current_user, entourage: @solicitation).delete(solicitation_destroy_params) do |on|
           on.success do |solicitation|
             render json: solicitation, root: :solicitation, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end

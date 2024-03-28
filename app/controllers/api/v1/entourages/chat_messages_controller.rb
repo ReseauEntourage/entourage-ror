@@ -61,11 +61,15 @@ module Api
           set_entourage and return unless ConversationService.list_uuid?(params[:entourage_id])
 
           participant_ids = ConversationService.participant_ids_from_list_uuid(params[:entourage_id], current_user: current_user)
+
           raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+
           hash_uuid = ConversationService.hash_for_participants(participant_ids)
+
           @entourage = Entourage.findable.find_by(uuid_v2: hash_uuid)
+
           if @entourage.nil?
-            @entourage = ConversationService.build_conversation(participant_ids: participant_ids)
+            @entourage = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_user.id)
             @join_request = @entourage.join_requests.to_a.find { |r| r.user_id == current_user.id }
           end
         end

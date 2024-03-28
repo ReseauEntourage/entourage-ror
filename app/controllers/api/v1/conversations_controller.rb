@@ -1,8 +1,9 @@
 module Api
   module V1
     class ConversationsController < Api::V1::BaseController
-      before_action :set_conversation, only: [:show, :report]
+      before_action :set_conversation, only: [:show, :report, :destroy]
       before_action :ensure_is_member, only: [:show, :report]
+      before_action :ensure_is_creator, only: [:destroy]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -83,7 +84,7 @@ module Api
         participant_ids = [conversation_params[:user_id], current_user.id]
 
         unless @conversation = Entourage.findable.find_by(uuid_v2: ConversationService.hash_for_participants(participant_ids))
-          @conversation = ConversationService.build_conversation(participant_ids: participant_ids)
+          @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_user.id)
           @conversation.public = false
           @conversation.create_from_join_requests!
         end
@@ -93,6 +94,26 @@ module Api
         }
       rescue => e
         render json: { message: 'unable to create conversation' }, status: :bad_request
+      end
+
+      def destroy
+        EntourageServices::Deleter.new(user: current_user, entourage: @conversation).delete do |on|
+          on.success do |conversation|
+            render json: conversation, root: :conversation, status: 200, serializer: ::V1::ConversationHomeSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |conversation|
+            render json: {
+              message: "Could not delete conversation", reasons: conversation.errors.full_messages
+            }, status: :bad_request
+          end
+
+          on.not_authorized do
+            render json: {
+              message: "You are not authorized to delete this conversation"
+            }, status: :unauthorized
+          end
+        end
       end
 
       def report
@@ -131,6 +152,10 @@ module Api
 
       def ensure_is_member
         render json: { message: 'unauthorized user' }, status: :unauthorized unless join_request
+      end
+
+      def ensure_is_creator
+        render json: { message: 'unauthorized user' }, status: :unauthorized unless @conversation.user_id == current_user.id
       end
 
       def join_request

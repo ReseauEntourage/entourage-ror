@@ -423,6 +423,40 @@ describe Api::V1::ConversationsController do
     end
   end
 
+  describe 'destroy' do
+    let(:creator) { create :pro_user }
+    let(:conversation) { create :conversation, user: creator }
+    let(:params) { { id: conversation.id, token: user.token } }
+    let(:params_without_token) { { id: conversation.id } }
+
+    let(:result) { Entourage.unscoped.find(conversation.id) }
+
+    describe 'not authorized' do
+      before { delete :destroy, params: params_without_token }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'open' }
+    end
+
+    describe 'not authorized cause should be creator' do
+      before { delete :destroy, params: params }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'open' }
+    end
+
+    describe 'authorized' do
+      let(:creator) { user }
+
+      context 'correct params outcome true' do
+        before { delete :destroy, params: params }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result.status).to eq 'closed' }
+      end
+    end
+  end
+
   describe 'POST #report' do
     let(:conversation) { create :conversation }
     let(:params) { { token: user.token, id: conversation.id, report: { signals: signals, message: 'bar' } } }
