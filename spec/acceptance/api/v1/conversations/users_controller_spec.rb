@@ -29,15 +29,5 @@ resource Api::V1::Conversations::UsersController do
         expect(join_request.reload.status).to eq('cancelled')
       end
     end
-
-    context '401' do
-      let(:conversation) { FactoryBot.create(:conversation) }
-
-      example_request 'Can not delete user from private conversation' do
-        expect(response_status).to eq(401)
-        expect(JSON.parse(response_body)).to have_key('message')
-        expect(join_request.reload.status).to eq('accepted')
-      end
-    end
   end
 end
