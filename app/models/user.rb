@@ -253,6 +253,17 @@ class User < ApplicationRecord
     end
   end
 
+
+  def self.find_by_id_or_phone identifier
+    return find_by_id(identifier) unless identifier.is_a?(String)
+
+    if identifier.start_with?('+') || identifier.start_with?('0')
+      return find_by_phone(Phone::PhoneBuilder.new(phone: identifier).format)
+    end
+
+    find_by_id(identifier)
+  end
+
   def status
     return 'deleted' if deleted?
 
