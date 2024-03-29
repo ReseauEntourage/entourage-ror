@@ -162,6 +162,7 @@ Rails.application.routes.draw do
       resources :conversations, only: [:index, :show] do
         member do
           post :message
+          post :invite
           post :read_status
           post :archive_status
         end

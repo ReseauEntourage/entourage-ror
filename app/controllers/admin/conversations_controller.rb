@@ -52,7 +52,8 @@ module Admin
 
     def show
       user = current_admin
-      @conversation = find_conversation params[:id], user: user
+      @conversation = find_conversation(params[:id], user: user)
+
       join_requests = @conversation.join_requests.accepted.to_a
       join_request = join_requests.find { |r| r.user_id == user.id }
       @new_conversation = join_request.nil?
@@ -98,7 +99,7 @@ module Admin
 
     def message
       user = current_admin
-      conversation = find_conversation params[:id], user: user
+      conversation = find_conversation(params[:id], user: user)
 
       join_request =
         if conversation.new_record?
@@ -126,12 +127,33 @@ module Admin
       end
     end
 
+    def invite
+      @conversation = find_conversation(params[:id], user: current_admin)
+
+      user = User.find_by_id_or_phone(params[:user_id])
+      join_request = JoinRequest.where(joinable: @conversation, user: user).first
+
+      return redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' fait déjà partie de la conversation" if join_request.present? && join_request.accepted?
+
+      if join_request.present?
+        join_request.status = :accepted
+      else
+        join_request = JoinRequest.new(joinable: @conversation, user: user, role: :participant, status: :accepted)
+      end
+
+      if join_request.save
+        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation"
+      else
+        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' n'a pas pu être ajouté à la conversation : #{join_request.errors.full_messages}"
+      end
+    end
+
     def read_status
       status = params[:status]&.to_sym
       raise unless status.in?([:read, :unread])
 
       user = current_admin
-      @conversation = find_conversation params[:id], user: user
+      @conversation = find_conversation(params[:id], user: user)
 
       timestamp =
         case status
@@ -153,7 +175,7 @@ module Admin
       raise unless status.in?([:archived, :inbox])
 
       user = current_admin
-      @conversation = find_conversation params[:id], user: user
+      @conversation = find_conversation(params[:id], user: user)
 
       timestamp =
         case status

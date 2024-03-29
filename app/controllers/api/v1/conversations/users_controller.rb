@@ -45,8 +45,6 @@ module Api
           if @join_request.save
             render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: user }
           else
-            puts "-- bad_request"
-
             render json: {
               message: 'Could not create conversation participation request', reasons: @join_request.errors.full_messages
             }, status: :bad_request
