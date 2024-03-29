@@ -544,7 +544,11 @@ Rails.application.routes.draw do
       resources :conversations do
         resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create, :update, :destroy]
 
-        resources :users, :controller => 'conversations/users', only: [] do
+        resources :users, :controller => 'conversations/users', only: [:create] do
+          member do
+            post :invite
+          end
+
           collection do
             # we want to avoid specific id to unjoin
             delete :destroy
