@@ -46,11 +46,7 @@ module V1
       end
 
       def has_comments
-        object.has_children?
-      end
-
-      def comments_count
-        object.children.count
+        object.comments_count > 0
       end
 
       def image_url

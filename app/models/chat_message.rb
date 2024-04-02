@@ -14,18 +14,6 @@ class ChatMessage < ApplicationRecord
 
   has_ancestry
 
-  scope :preload_comments_count, -> {
-    select("chat_messages.*, count(comments.id) as comments_count")
-    .joins(%(
-      left outer join chat_messages as comments on
-        comments.ancestry is not null and
-        comments.ancestry::integer = chat_messages.id and
-        comments.messageable_type = chat_messages.messageable_type and
-        comments.messageable_id = chat_messages.messageable_id
-    ))
-    .group("chat_messages.id")
-  }
-
   belongs_to :messageable, polymorphic: true
   belongs_to :entourage, -> {
     where("chat_messages.messageable_type = 'Entourage'")
@@ -45,6 +33,7 @@ class ChatMessage < ApplicationRecord
 
   scope :ordered, -> { order("created_at DESC") }
   scope :with_content, -> { where("content <> ''") }
+  scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
 
   attribute :metadata, :jsonb_with_schema
 
@@ -60,6 +49,8 @@ class ChatMessage < ApplicationRecord
 
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
+
+  after_commit :update_parent_comments_count
 
   class << self
     def bucket
@@ -253,6 +244,12 @@ class ChatMessage < ApplicationRecord
     else
       nil
     end
+  end
+
+  def update_parent_comments_count
+    return unless ancestry.present?
+
+    parent.update(comments_count: parent.descendants.where(status: :active).count)
   end
 
   def update_sender_report_prompt_status

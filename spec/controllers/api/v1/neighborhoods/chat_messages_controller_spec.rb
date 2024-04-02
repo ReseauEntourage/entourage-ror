@@ -93,6 +93,29 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
       end
     end
+
+    context "deleted post with comments" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+
+      before { chat_message_1.update_attribute(:status, :deleted) }
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_1.id) }
+      it { expect(result["chat_messages"][0]["comments_count"]).to eq(1) }
+    end
+
+    context "deleted post without comments" do
+      let!(:chat_message_2) { nil }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+
+      before { chat_message_1.update_attribute(:status, :deleted) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result["chat_messages"][0]).to be_nil }
+    end
   end
 
   describe 'GET show' do
