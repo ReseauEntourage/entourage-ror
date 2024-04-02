@@ -144,7 +144,7 @@ module Admin
       if join_request.save
         redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation"
       else
-        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' n'a pas pu être ajouté à la conversation : #{join_request.errors.full_messages}"
+        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{params[:user_id]}' n'a pas pu être ajouté à la conversation"
       end
     end
 
