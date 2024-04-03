@@ -19,6 +19,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     :chat_message_on_create,
     :post_on_create,
     :comment_on_create,
+    :user_reaction_on_create,
     :public_chat_message_on_create,
     :private_chat_message_on_create,
   ].each do |method_name|
@@ -481,6 +482,28 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           )
         }
       end
+    end
+
+    context "reaction to post" do
+      let(:publication) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+
+      before { publication }
+
+      after { create :user_reaction, instance: publication }
+
+      include_examples :call_user_reaction_on_create
+      include_examples :call_notify
+    end
+
+    context "reaction to post but reactioner is publisher" do
+      let(:publication) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+
+      before { publication }
+
+      after { create :user_reaction, instance: publication, user: publication.user }
+
+      include_examples :call_user_reaction_on_create
+      include_examples :no_call_notify
     end
 
     describe "text chat_message" do
