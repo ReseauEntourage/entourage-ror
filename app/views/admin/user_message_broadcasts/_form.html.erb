@@ -90,6 +90,23 @@
     </div>
   </div>
 
+  <%= f.fields_for :specific_filters, OpenStruct.new(@user_message_broadcast.specific_filters) do |specific_filters_form| %>
+    <div>
+      <%= specific_filters_form.label :has_engagement %>
+      <%= specific_filters_form.check_box :has_engagement %>
+    </div>
+
+    <div>
+      <%= specific_filters_form.label :last_engagement_date %>
+      <%= specific_filters_form.date_field :last_engagement_date, class: "form-control date-field" %>
+    </div>
+
+    <div>
+      <%= specific_filters_form.label :user_creation_date %>
+      <%= specific_filters_form.date_field :user_creation_date, class: "form-control date-field" %>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :content %>
     <%= f.text_area :content, class: "form-control", rows: 5, required: true %>

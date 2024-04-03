@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_27_120501) do
+ActiveRecord::Schema.define(version: 202401111415004) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -138,6 +139,7 @@ ActiveRecord::Schema.define(version: 2024_02_27_120501) do
     t.jsonb "areas", default: []
     t.string "conversation_type", default: "Entourage"
     t.json "conversation_ids", default: {}
+    t.jsonb "specific_filters", default: {}, null: false
     t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
     t.index ["conversation_type"], name: "index_conversation_message_broadcasts_on_conversation_type"
