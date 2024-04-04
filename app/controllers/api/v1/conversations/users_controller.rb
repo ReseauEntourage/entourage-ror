@@ -5,7 +5,7 @@ module Api
         before_action :set_conversation
         before_action :set_default_join_request, only: [:create, :destroy]
         before_action :set_invite_join_request, only: [:invite]
-        before_action :ensure_is_requested_with_uuid_v2, only: [:create]
+        before_action :ensure_is_requested_with_uuid_or_uuid_v2, only: [:create]
 
         def create
           return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
@@ -69,9 +69,9 @@ module Api
           render json: { message: 'Could not find conversation' }, status: 400 unless @conversation.present?
         end
 
-        # create should be requested using uuid_v2 to avoid users to join private conversations they were not invited in
-        def ensure_is_requested_with_uuid_v2
-          render json: { message: 'conversation uuid_v2 does not match' }, status: :unauthorized unless params[:conversation_id] == @conversation.uuid_v2
+        # create should be requested using uuid or uuid_v2 to avoid users to join private conversations they were not invited in
+        def ensure_is_requested_with_uuid_or_uuid_v2
+          render json: { message: 'conversation uuid or uuid_v2 does not match' }, status: :unauthorized unless [@conversation.uuid, @conversation.uuid_v2].include?(params[:conversation_id])
         end
 
         def set_default_join_request

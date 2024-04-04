@@ -15,7 +15,29 @@ describe Api::V1::Conversations::UsersController do
     end
 
     context "signed in" do
-      context "first request to join conversation" do
+      context "join conversation with uuid" do
+        before { post :create, params: { conversation_id: conversation.uuid, token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(conversation.member_ids).to match_array([conversation.user_id, user.id]) }
+        it { expect(result).to eq(
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "role" => "participant",
+            "group_role" => "participant",
+            "community_roles" => [],
+            "status" => "accepted",
+            "message" => nil,
+            "requested_at" => JoinRequest.last.created_at.iso8601(3),
+            "avatar_url" => nil,
+            "partner" => nil,
+            "partner_role_title" => nil,
+          }
+        )}
+      end
+
+      context "join conversation with uuid_v2" do
         before { post :create, params: { conversation_id: conversation.uuid_v2, token: user.token } }
 
         it { expect(response.status).to eq(201) }
@@ -35,6 +57,13 @@ describe Api::V1::Conversations::UsersController do
             "partner_role_title" => nil,
           }
         )}
+      end
+
+      context "join conversation with id" do
+        before { post :create, params: { conversation_id: conversation.id, token: user.token } }
+
+        it { expect(response.status).to eq(401) }
+        it { expect(conversation.member_ids).to match_array([conversation.user_id]) }
       end
 
       context "duplicate request to join conversation" do
