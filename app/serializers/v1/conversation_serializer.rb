@@ -4,11 +4,13 @@ module V1
     include V1::Entourages::Blockers
 
     attributes :id,
+               :uuid,
                :uuid_v2,
                :status,
                :type,
                :name,
                :image_url,
+               :members_count,
                :last_message,
                :number_of_unread_messages,
                :has_personal_post
