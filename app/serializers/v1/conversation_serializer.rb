@@ -9,6 +9,7 @@ module V1
                :type,
                :name,
                :image_url,
+               :members_count,
                :last_message,
                :number_of_unread_messages,
                :has_personal_post
