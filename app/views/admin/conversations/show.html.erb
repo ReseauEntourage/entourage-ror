@@ -1,32 +1,7 @@
 <div class="container">
-  <%= link_to('<- Retourner à la liste des messages', admin_conversations_path) %>
-  <%
-    def display_name user
-      [user.first_name, user.last_name].map(&:presence).compact.join(' ')
-    end
-  %>
-  <%
-    n = 3
-    recipient_names =
-      @recipients.first(n).map { |u| [display_name(u), u.id] }
-    if @recipients.count == (n + 1)
-      recipient_names.push ["1 autre personne", nil]
-    elsif @recipients.count > (n + 1)
-      recipient_names.push ["#{@recipients.count - n} autres personnes", nil]
-    end
-  %>
-  </br>
-  <style>
-    .hidden-links a {
-      color: inherit;
-    }
-  </style>
-  <h2 class="hidden-links">
-    <% recipient_names.each.with_index(1) do |a, index| %>
-      <% name, id = a %>
-      <%= link_to_if id, name, admin_user_path(id || 0) %><%= ', ' unless index == recipient_names.count %>
-    <% end %>
-  </h2>
+  <%= render 'show_header', tab: :show %>
+
+  <br>
 
   <% if !@new_conversation %>
     <% if @read %>

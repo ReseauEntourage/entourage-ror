@@ -1,0 +1,30 @@
+<ol class="breadcrumb">
+  <li><%= link_to "Liste des messages", admin_conversations_path %></li>
+  <li class="active">Modifier</li>
+</ol>
+
+<h2>
+  <span class="text-muted">#<%= @conversation.id %></span>
+    <% recipient_names = conversation_recipients_display_names(@recipients) %>
+
+    <% recipient_names.each.with_index(1) do |a, index| %>
+      <% name, id = a %>
+
+      <% if id %>
+        <%= link_to_if id, name, admin_user_path(id) %>
+      <% else %>
+        <%= name %>
+      <% end %>
+
+      <%= ', ' unless index == recipient_names.count %>
+    <% end %>
+</h2>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="<%= :active if tab == :show %>">
+    <%= link_to "Modifier", admin_conversation_path(@conversation) %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :show_members %>">
+    <%= link_to "Membres (#{@conversation.members_count})", show_members_admin_conversation_path(@conversation) %>
+  </li>
+</ul>
