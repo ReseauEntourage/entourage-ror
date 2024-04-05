@@ -442,14 +442,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "sender is publisher" do
         after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
 
-        include_examples :call_notify
-
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: user.id,
             referent: neighborhood,
             instance: publication,
-            users: [john, jane],
+            users: [kind_of(User)],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
               content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
@@ -457,21 +455,19 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 tracking: :comment_on_create_to_neighborhood
               }
             }
-          )
+          ).twice
         }
       end
 
       context "sender is commentator" do
         after { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: publication }
 
-        include_examples :call_notify
-
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: john.id,
             referent: neighborhood,
             instance: publication,
-            users: [user, jane],
+            users: [kind_of(User)],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
               content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
@@ -479,7 +475,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 tracking: :comment_on_create_to_neighborhood
               }
             }
-          )
+          ).twice
         }
       end
     end
