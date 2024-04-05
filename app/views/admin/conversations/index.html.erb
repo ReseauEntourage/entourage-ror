@@ -83,7 +83,7 @@
             <% if last_message.user_id == @user.id %>
               Vous :
             <% elsif recipient_ids.count > 1 %>
-              <%= display_name @users[last_message.user_id] %> :
+              <%= display_user_name @users[last_message.user_id] %> :
             <% end %>
 
             <% if last_message.deleted? %>

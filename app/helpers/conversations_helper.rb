@@ -1,4 +1,8 @@
 module ConversationsHelper
+  def display_user_name user
+    [user.first_name, user.last_name].map(&:presence).compact.join(' ')
+  end
+
   def conversation_recipients_display_names recipients, max: 3
     count = recipients.count
 
