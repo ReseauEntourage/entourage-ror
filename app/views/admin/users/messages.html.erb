@@ -9,7 +9,7 @@
           <% if entourage.group_type == 'conversation' %>
             <!-- N+1 issue -->
             <% recipients = ConversationService.recipients conversation: entourage, user: @user %>
-            <%= link_to "Conversation avec #{conversation_recipients_display_names(recipients)}", admin_conversation_path(entourage_id), class: "h4" %>
+            <%= link_to "Conversation avec #{conversation_recipients_display_names(recipients).map(&:first).to_sentence}", admin_conversation_path(entourage_id), class: "h4" %>
           <% else %>
             <%= link_to @entourages[entourage_id].title, admin_entourage_path(entourage_id), class: "h4" %>
           <% end %>

@@ -59,89 +59,56 @@
 
   <div style="margin-bottom: 15px">
     <div class="btn-group btn-group-sm">
-      <%=
-        link_to(
-          "Tous",
-          @params.except(:filter),
-          class: "btn btn-#{params.key?(:filter) ? :default : :primary}"
-        )
-      %>
-      <%=
-        link_to(
-          "Non-lus",
-          @params.merge(filter: :unread),
-          class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}"
-        )
-      %>
+      <%= link_to "Tous", @params.except(:filter), class: "btn btn-#{params.key?(:filter) ? :default : :primary}" %>
+      <%= link_to "Non-lus", @params.merge(filter: :unread), class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}" %>
     </div>
-    <%=
-      link_to(
-        "Archivés",
-        @params.merge(filter: :archived),
-        class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm"
-      )
-    %>
+
+    <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
   </div>
-</div>
 
-<div class="conversations">
-  <% @conversations.each do |conversation| %>
-    <% last_message = @last_message[conversation.id] %>
-    <% recipient_ids = @recipient_ids[conversation.id] %>
-    <%
-      def display_name user
-        [user.first_name, user.last_name].map(&:presence).compact.join(' ')
-      end
-    %>
-    <div class="overlay-container conversation <%= :unread if conversation.unread %>">
-      <div class="cell truncate conversation-recipients">
-        <%
-          n = 3
-          recipient_names =
-            recipient_ids.first(n).map { |id| display_name @users[id] }
-          if recipient_ids.count == (n + 1)
-            recipient_names.push "1 autre personne"
-          elsif recipient_ids.count > (n + 1)
-            recipient_names.push "#{recipient_ids.count - n} autres personnes"
-          end
-        %>
-        <%= recipient_names.join(', ') %>
-      </div>
+  <div class="conversations">
+    <% @conversations.each do |conversation| %>
+      <% last_message = @last_message[conversation.id] %>
+      <% recipient_ids = @recipient_ids[conversation.id] %>
 
-      <div class="cell truncate conversation-content">
-        <% if last_message.nil? %>
-          <span class="text-muted">(pas de messages)</span>
-        <% else %>
-          <% if last_message.user_id == @user.id %>
-            Vous :
-          <% elsif recipient_ids.count > 1 %>
-            <%= display_name @users[last_message.user_id] %> :
-          <% end %>
+      <div class="overlay-container conversation <%= :unread if conversation.unread %>">
+        <div class="cell truncate conversation-recipients">
+          <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
+        </div>
 
-          <% if last_message.deleted? %>
-            <p style="color: red;"> Ce message a été supprimé : </p>
-            <em><%= simple_format last_message.content(true) %></em>
+        <div class="cell truncate conversation-content">
+          <% if last_message.nil? %>
+            <span class="text-muted">(pas de messages)</span>
           <% else %>
-            <%= simple_format last_message.content %>
+            <% if last_message.user_id == @user.id %>
+              Vous :
+            <% elsif recipient_ids.count > 1 %>
+              <%= display_name @users[last_message.user_id] %> :
+            <% end %>
+
+            <% if last_message.deleted? %>
+              <p style="color: red;"> Ce message a été supprimé : </p>
+              <em><%= simple_format last_message.content(true) %></em>
+            <% else %>
+              <%= simple_format last_message.content %>
+            <% end %>
           <% end %>
-        <% end %>
-      </div>
+        </div>
 
-      <div class="cell conversation-timestamp" style="text-align: right">
-        <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>
-        <% timestamp = last_message&.created_at || conversation.created_at %>
-        <% if timestamp.today? %>
-          <%= l timestamp, format: "%H:%M" %>
-        <% elsif timestamp >= 7.days.ago.midnight %>
-          <%= l timestamp, format: "%A" %>
-        <% else  %>
-          <%= l timestamp, format: "%-d %b" %>
-        <% end %>
+        <div class="cell conversation-timestamp" style="text-align: right">
+          <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>
+          <% timestamp = last_message&.created_at || conversation.created_at %>
+          <% if timestamp.today? %>
+            <%= l timestamp, format: "%H:%M" %>
+          <% elsif timestamp >= 7.days.ago.midnight %>
+            <%= l timestamp, format: "%A" %>
+          <% else  %>
+            <%= l timestamp, format: "%-d %b" %>
+          <% end %>
+        </div>
       </div>
-    </div>
-  <% end %>
-</div>
+    <% end %>
+  </div>
 
-<div class="container">
   <%= paginate @conversations %>
 </div>

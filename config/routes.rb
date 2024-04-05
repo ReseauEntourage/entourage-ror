@@ -161,6 +161,7 @@ Rails.application.routes.draw do
       resources :sensitive_words, only: [:show, :destroy]
       resources :conversations, only: [:index, :show] do
         member do
+          get :show_members
           post :message
           post :invite
           post :read_status
