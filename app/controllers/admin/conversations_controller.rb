@@ -92,23 +92,23 @@ module Admin
     end
 
     def message
-      join_request = if conversation.new_record?
-        conversation.join_requests.to_a.find { |r| r.user_id == current_admin.id }
+      join_request = if @conversation.new_record?
+        @conversation.join_requests.to_a.find { |r| r.user_id == current_admin.id }
       else
-        current_admin.join_requests.accepted.find_by!(joinable: conversation)
+        current_admin.join_requests.accepted.find_by!(joinable: @conversation)
       end
 
       chat_builder = ChatServices::ChatMessageBuilder.new(
         params: chat_messages_params,
         user: current_admin,
-        joinable: conversation,
+        joinable: @conversation,
         join_request: join_request
       )
 
       chat_builder.create do |on|
         on.success do |message|
           join_request.update_column(:last_message_read, message.created_at)
-          redirect_to admin_conversation_path(conversation)
+          redirect_to admin_conversation_path(@conversation)
         end
 
         on.failure do |message|
