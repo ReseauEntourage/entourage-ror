@@ -1,4 +1,6 @@
 class UserMessageBroadcast < ConversationMessageBroadcast
+  DEFAULT_FILTER_PERIOD = 1.year
+
   class << self
     def messageable_type
       'Entourage'
