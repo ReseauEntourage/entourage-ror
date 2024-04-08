@@ -2,7 +2,7 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_conversation, only: [:show, :show_members, :message, :invite, :read_status, :archive_status]
+    before_action :set_conversation, only: [:show, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
     before_action :set_recipients, only: [:show, :show_members]
 
     def index
@@ -133,6 +133,19 @@ module Admin
         redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation"
       else
         redirect_to admin_conversation_path(params[:id]), alert: "L'utilisateur '#{params[:user_id]}' n'a pas pu être ajouté à la conversation"
+      end
+    end
+
+    def unjoin
+      user = User.find(params[:user_id])
+      join_request = JoinRequest.where(joinable: @conversation, user: user).first
+
+      return redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' ne fait déjà pas partie de la conversation" unless join_request.present? && join_request.accepted?
+
+      if join_request.update_attribute(:status, :cancelled)
+        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été retiré de la conversation"
+      else
+        redirect_to admin_conversation_path(params[:id]), alert: "L'utilisateur '#{user.full_name}' n'a pas pu être retiré de la conversation"
       end
     end
 
