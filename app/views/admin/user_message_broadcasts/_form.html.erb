@@ -90,6 +90,32 @@
     </div>
   </div>
 
+  <%= f.fields_for :specific_filters, OpenStruct.new(@user_message_broadcast.specific_filters) do |specific_filters_form| %>
+    <div>
+      <%= specific_filters_form.label :has_engagement %>
+      <%= specific_filters_form.select :has_engagement, options_for_select([['Indéfini', ''], ['Non', false], ['Oui', true]], selected: specific_filters_form.object.has_engagement), {} %>
+    </div>
+
+    <div>
+      <% last_engagement_date = @user_message_broadcast.specific_filters['last_engagement_date'] %>
+
+      <%= specific_filters_form.label :last_engagement_date %>
+      <%= specific_filters_form.date_field :last_engagement_date, value: last_engagement_date, class: 'form-control' %>
+    </div>
+
+    <div>
+      <% user_creation_date = @user_message_broadcast.specific_filters['user_creation_date'] %>
+
+      <%= specific_filters_form.label :user_creation_date %>
+      <%= specific_filters_form.date_field :user_creation_date, value: user_creation_date, class: 'form-control' %>
+    </div>
+
+    <div>
+      <%= specific_filters_form.label :interests %>
+      <%= specific_filters_form.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true, id: :interests } %>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :content %>
     <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
@@ -130,5 +156,7 @@
     $areaType.on('change', function(event) {
       toggleAreaType();
     });
+
+    $('select#interests, select#user_message_broadcast_specific_filters_has_engagement').select2({ width: '100%' });
   })
 </script>

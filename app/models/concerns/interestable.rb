@@ -36,6 +36,13 @@ module Interestable
           sum(case when tags.id is not null then 1 else 0 end) desc
         ))
     }
+
+    scope :match_at_least_one_interest, -> (interest_list) {
+      return unless interest_list
+      return unless interest_list.any?
+
+      joins(:interests).where(interests: { name: interest_list })
+    }
   end
 
   def validate_interest_list!
