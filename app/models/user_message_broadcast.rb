@@ -1,22 +1,61 @@
 class UserMessageBroadcast < ConversationMessageBroadcast
   DEFAULT_FILTER_PERIOD = 1.year
 
+  store_accessor :specific_filters, :has_engagement, :user_creation_date, :last_engagement_date, :interests
+
   class << self
     def messageable_type
       'Entourage'
     end
+
+    def with_validated_profiles(users, goal)
+      users.where('users.deleted': false, 'users.validation_status': :validated).with_profile(goal).group('users.id')
+    end
+
+    def in_area(users, area_type, generic_area, areas)
+      return users.in_area(area_type) if generic_area
+
+      users.in_specific_areas(areas)
+    end
+
+    def with_engagement(users, has_engagement)
+      return users if has_engagement.nil?
+      return users.where("users.id in (select user_id from denorm_daily_engagements)") if has_engagement
+
+      users.where("users.id not in (select user_id from denorm_daily_engagements)")
+    end
+
+    def created_after(users, user_creation_date)
+      return users unless user_creation_date
+
+      users.where("users.created_at > ?", user_creation_date)
+    end
+
+    def engaged_after(users, last_engagement_date)
+      return users unless last_engagement_date
+
+      users.where("users.id in (select user_id from denorm_daily_engagements where date > ?)", last_engagement_date)
+    end
+
+    def with_interests(users, interests)
+      return users unless interests.present?
+
+      users.match_at_least_one_interest(interests)
+    end
   end
 
   def recipients
-    return [] unless valid?
+    return UserMessageBroadcast.none unless valid?
 
-    users = User.where('users.deleted': false, 'users.validation_status': :validated)
-      .with_profile(goal)
-      .group('users.id')
+    users = User.all
+    users = self.class.with_validated_profiles(users, goal)
+    users = self.class.in_area(users, area_type, generic_area?, areas)
+    users = self.class.with_engagement(users, has_engagement)
+    users = self.class.created_after(users, user_creation_date)
+    users = self.class.engaged_after(users, last_engagement_date)
+    # users = self.class.with_interests(users, interests)
 
-    return users.in_area(area_type) if generic_area?
-
-    users.in_specific_areas(areas)
+    users
   end
 
   def recipient_ids
@@ -91,5 +130,27 @@ class UserMessageBroadcast < ConversationMessageBroadcast
 
   def specific_area?
     !generic_area?
+  end
+
+  public
+
+  def has_engagement
+    value = self["specific_filters"]["has_engagement"]
+
+    return nil if value.nil?
+
+    value == 'true'
+  end
+
+  def user_creation_date
+    Date.parse(self["specific_filters"]["user_creation_date"]) unless self["specific_filters"]["user_creation_date"].nil?
+  rescue ArgumentError
+    nil
+  end
+
+  def last_engagement_date
+    Date.parse(self["specific_filters"]["last_engagement_date"]) unless self["specific_filters"]["last_engagement_date"].nil?
+  rescue ArgumentError
+    nil
   end
 end
