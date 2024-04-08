@@ -2,6 +2,9 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
+    before_action :set_conversation, only: [:show, :show_members, :message, :invite, :read_status, :archive_status]
+    before_action :set_recipients, only: [:show, :show_members]
+
     def index
       @params = params.permit([:filter])
       @user = current_admin
@@ -51,12 +54,11 @@ module Admin
     end
 
     def show
-      user = current_admin
-      @conversation = find_conversation(params[:id], user: user)
-
       join_requests = @conversation.join_requests.accepted.to_a
-      join_request = join_requests.find { |r| r.user_id == user.id }
+      join_request = join_requests.find { |r| r.user_id == current_admin.id }
+
       @new_conversation = join_request.nil?
+
       @read = join_request.present? &&
               join_request.last_message_read.present? &&
               join_request.last_message_read >= (@conversation.feed_updated_at || @conversation.updated_at)
@@ -64,27 +66,15 @@ module Admin
                   join_request.archived_at.present? &&
                   join_request.archived_at >= (@conversation.feed_updated_at || @conversation.updated_at)
 
-      @recipients =
-        if @conversation.new_record?
-          User.where(id: @conversation.join_requests.map(&:user_id) - [user.id])
-        else
-          @conversation.members.where.not(id: user.id).merge(JoinRequest.accepted)
-        end
-
-      @recipients = @recipients.select(:id, :first_name, :last_name).to_a
-
-      # if no recipient, it must be a conversation with self
-      if @recipients.empty?
-        @recipients = [user]
-      end
-
       @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user)
 
       reads = join_requests
-        .reject { |r| r.last_message_read.nil? || r.user_id == user.id }
+        .reject { |r| r.last_message_read.nil? || r.user_id == current_admin.id }
         .reject { |r| r.last_message_read < @chat_messages.first.created_at if @chat_messages.any? }
         .sort_by(&:last_message_read)
+
       @last_reads = Hash.new { |h, k| h[k] = [] }
+
       (@chat_messages + [nil]).each_cons(2) do |message, next_message|
         while reads.any? &&
               reads.first.last_message_read >= message.created_at &&
@@ -97,28 +87,28 @@ module Admin
       @messages_author = current_admin if join_request.present? || @conversation.new_record?
     end
 
-    def message
-      user = current_admin
-      conversation = find_conversation(params[:id], user: user)
+    def show_members
+      @join_requests = @conversation.join_requests.accepted.includes(:user)
+    end
 
-      join_request =
-        if conversation.new_record?
-          conversation.join_requests.to_a.find { |r| r.user_id == user.id }
-        else
-          user.join_requests.accepted.find_by!(joinable: conversation)
-        end
+    def message
+      join_request = if @conversation.new_record?
+        @conversation.join_requests.to_a.find { |r| r.user_id == current_admin.id }
+      else
+        current_admin.join_requests.accepted.find_by!(joinable: @conversation)
+      end
 
       chat_builder = ChatServices::ChatMessageBuilder.new(
         params: chat_messages_params,
-        user: user,
-        joinable: conversation,
+        user: current_admin,
+        joinable: @conversation,
         join_request: join_request
       )
 
       chat_builder.create do |on|
         on.success do |message|
           join_request.update_column(:last_message_read, message.created_at)
-          redirect_to admin_conversation_path(conversation)
+          redirect_to admin_conversation_path(@conversation)
         end
 
         on.failure do |message|
@@ -128,8 +118,6 @@ module Admin
     end
 
     def invite
-      @conversation = find_conversation(params[:id], user: current_admin)
-
       user = User.find_by_id_or_phone(params[:user_id])
       join_request = JoinRequest.where(joinable: @conversation, user: user).first
 
@@ -152,9 +140,6 @@ module Admin
       status = params[:status]&.to_sym
       raise unless status.in?([:read, :unread])
 
-      user = current_admin
-      @conversation = find_conversation(params[:id], user: user)
-
       timestamp =
         case status
         when :read
@@ -174,9 +159,6 @@ module Admin
       status = params[:status]&.to_sym
       raise unless status.in?([:archived, :inbox])
 
-      user = current_admin
-      @conversation = find_conversation(params[:id], user: user)
-
       timestamp =
         case status
         when :archived
@@ -194,6 +176,25 @@ module Admin
 
     def chat_messages_params
       params.require(:chat_message).permit(:content)
+    end
+
+    def set_conversation
+      @conversation = find_conversation(params[:id], user: current_admin)
+    end
+
+    def set_recipients
+      @recipients = if @conversation.new_record?
+        User.where(id: @conversation.join_requests.map(&:user_id) - [current_admin.id])
+      else
+        @conversation.members.where.not(id: current_admin.id).merge(JoinRequest.accepted)
+      end
+
+      @recipients = @recipients.select(:id, :first_name, :last_name).to_a
+
+      # if no recipient, it must be a conversation with self
+      if @recipients.empty?
+        @recipients = [current_admin]
+      end
     end
 
     def find_conversation id, user:
