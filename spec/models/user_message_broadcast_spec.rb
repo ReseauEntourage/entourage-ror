@@ -157,7 +157,13 @@ RSpec.describe UserMessageBroadcast, type: :model do
     end
 
     context "no common interest" do
-    let(:interests) { ['nature', 'sport'] }
+      let(:interests) { ['nature', 'sport'] }
+
+      it { expect(subject).not_to include(user.id) }
+    end
+
+    context "user has no interest" do
+      let(:interests) { [] }
 
       it { expect(subject).not_to include(user.id) }
     end

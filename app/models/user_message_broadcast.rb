@@ -53,7 +53,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     users = self.class.with_engagement(users, has_engagement)
     users = self.class.created_after(users, user_creation_date)
     users = self.class.engaged_after(users, last_engagement_date)
-    # users = self.class.with_interests(users, interests)
+    users = self.class.with_interests(users, interests)
 
     users
   end
