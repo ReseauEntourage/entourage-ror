@@ -166,6 +166,7 @@ Rails.application.routes.draw do
           post :invite
           post :read_status
           post :archive_status
+          post :unjoin
         end
       end
 

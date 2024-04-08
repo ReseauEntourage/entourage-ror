@@ -6,8 +6,9 @@
     <th>Nom</th>
     <th>Email</th>
     <th>Téléphone</th>
-    <th>Statut</th>
+    <th>Membre</th>
     <th>Membre depuis</th>
+    <th></th>
 
     <% @conversation.join_requests.each do |join_request| %>
       <% user = join_request.user %>
@@ -20,8 +21,18 @@
         </td>
         <td><%= user.email %></td>
         <td><%= user.phone %></td>
-        <td><%= user.status %></td>
+        <td>
+          <span class="badge" style="<%= join_request.accepted? ? 'background: green' : "" %>">
+            <%= join_request.status %>
+          </span>
+        </td>
         <td><%= l join_request.created_at, format: :date_long %></td>
+        <td>
+          <% if join_request.accepted? %>
+            <%= button_to "Supprimer", unjoin_admin_conversation_path(@conversation.id, user_id: user.id), method: :post, class: "btn btn-default btn-sm", form: { style: "display: inline-block" } %></td>
+          <% else %>
+            <%= button_to "Rejoindre", invite_admin_conversation_path(@conversation.id, user_id: user.id), method: :post, class: "btn btn-default btn-sm", form: { style: "display: inline-block" } %></td>
+          <% end %>
       </tr>
     <% end %>
   </table>
