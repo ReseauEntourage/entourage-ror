@@ -167,6 +167,18 @@ RSpec.describe UserMessageBroadcast, type: :model do
 
       it { expect(subject).not_to include(user.id) }
     end
+
+    context "broadcast on no interest" do
+      let(:subject) { UserMessageBroadcast.with_interests(User.all, []).pluck(:id) }
+
+      it { expect(subject).to include(user.id) }
+    end
+
+    context "broadcast on blank interest" do
+      let(:subject) { UserMessageBroadcast.with_interests(User.all, ["", nil]).pluck(:id) }
+
+      it { expect(subject).to include(user.id) }
+    end
   end
 
   describe "users & user_ids" do
