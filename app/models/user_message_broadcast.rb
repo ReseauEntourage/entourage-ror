@@ -39,6 +39,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
 
     def with_interests(users, interests)
       return users unless interests.present?
+      return users unless interests.compact.reject(&:empty?).present?
 
       users.match_at_least_one_interest(interests)
     end
