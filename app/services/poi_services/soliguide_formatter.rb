@@ -408,6 +408,12 @@ module PoiServices
       "food_packages" => 1, # COLIS_ALIMENTAIRE
       "social_grocery_stores" => 1, # EPICERIE_SOCIALE
       "fountain" => 41, # FONTAINE
+      "baby_parcel" => 1, # COLIS_BEBE
+      "food_voucher" => 1, # CHEQUE_ALIMENTAIRE
+      "shared_kitchen" => 1, # CUISINE_PARTAGEE
+      "cooking_workshop" => 1, # ATELIER_CUISINE
+      "community_garden" => 1, # JARDIN_SOLIDAIRE
+      "solidarity_fridge" => 1, # FRIGO_SOLIDAIRE
 
       # Accueil Accueil S'orienter
       "welcome" => 5, # ACCUEIL
