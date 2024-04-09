@@ -28,3 +28,7 @@
     <%= link_to "Membres (#{@conversation.members_count})", show_members_admin_conversation_path(@conversation) %>
   </li>
 </ul>
+
+<% if @conversation.members_count > 2 %>
+  <%= column_chart @conversation.membership.stacked_by(:month), stacked: true %>
+<% end %>
