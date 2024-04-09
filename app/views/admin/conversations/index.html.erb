@@ -61,6 +61,7 @@
     <div class="btn-group btn-group-sm">
       <%= link_to "Tous", @params.except(:filter), class: "btn btn-#{params.key?(:filter) ? :default : :primary}" %>
       <%= link_to "Non-lus", @params.merge(filter: :unread), class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}" %>
+      <%= link_to "POC multiple", @params.merge(filter: :multiple), class: "btn btn-#{params[:filter] == 'multiple' ? :primary : :default}" %>
     </div>
 
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
