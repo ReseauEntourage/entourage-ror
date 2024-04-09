@@ -1,0 +1,1404 @@
+{
+    "_id": "5a58c0c7c1797fe45e37728b",
+    "lieu_id": 1,
+    "name": "PAJ (Permanence Accueil Jeunes)",
+    "description": "<p>La PAJ est un <strong>accueil de jour </strong>qui s’adresse à des <strong>jeunes hommes et jeunes femmes en situation d’errance sur le territoire parisien</strong>. Ce lieu d’écoute a pour objectif d’aider les jeunes à <strong>nouer des liens </strong>sociaux et de leur permettre d’<strong>accéder aux dispositifs de droit commun.</strong></p><p>Les équipes de la PAJ proposent un temps de pause et d’écoute afin:</p><ul><li>de permettre à chaque jeune de connaître ses ressources personnelles</li><li>de ralentir le processus d’errance, d’offrir la possibilité de « rebondir »</li><li>de rendre alors possible l’accès aux structures d’aide et au dispositif de droit commun</li></ul>",
+    "entity": {
+        "mail": "paj@anrs.asso.fr",
+        "facebook": "",
+        "instagram": null,
+        "website": "https://anrs.asso.fr/etablissements-services/insertion/permanence-accueil-ecoute-jeunes-paej/",
+        "fax": null,
+        "phones": [
+            {
+                "label": null,
+                "phoneNumber": "0148050101"
+            }
+        ]
+    },
+    "updatedAt": "2024-02-01T16:29:36.671Z",
+    "seo_url": "paj-permanence-accueil-jeunes-paris-1",
+    "services_all": [
+        {
+            "categorie": 701,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "Accueil inconditionnel, &#233;coute, information et orientation par une &#233;quipe &#233;ducative",
+            "differentHours": false,
+            "differentModalities": false,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": null,
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1230,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1330,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": true,
+                "appointment": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "Accueil de jour",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "",
+                "status": "LOW"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcbd",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "day_hosting"
+        },
+        {
+            "categorie": 602,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "Petits d&#233;jeuners, boissons chaudes.",
+            "differentHours": true,
+            "differentModalities": false,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": "",
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1100,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1100,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1100,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1100,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1100,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": true,
+                "appointment": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "petitdej",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "",
+                "status": "LOW"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcbc",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "seated_catering",
+            "categorySpecificFields": {
+                "mealType": "petitdej"
+            }
+        },
+        {
+            "categorie": 301,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "<p>Douches accessibles jusqu'&#224; 1h avant la fermeture</p>",
+            "differentHours": false,
+            "differentModalities": false,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": null,
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1230,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1330,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": true,
+                "appointment": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "Douche",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "",
+                "status": "LOW"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcba",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "shower"
+        },
+        {
+            "categorie": 302,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "",
+            "differentHours": false,
+            "differentModalities": true,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": null,
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1230,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1330,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": false,
+                "appointment": {
+                    "checked": true,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "Laverie",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "",
+                "status": "LOW"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcb9",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "laundry"
+        },
+        {
+            "categorie": 901,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "<p>Il est n&#233;cessaire d'avoir des papiers pour acc&#233;der &#224; la bagagerie.</p>",
+            "differentHours": false,
+            "differentModalities": true,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": null,
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1230,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1330,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": false,
+                "appointment": {
+                    "checked": true,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "Bagagerie",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "il reste peu de places",
+                "status": "HIGH"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcbb",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "luggage_storage"
+        },
+        {
+            "categorie": 304,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "",
+            "differentHours": false,
+            "differentModalities": false,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": null,
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1230,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1330,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": true,
+                "appointment": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "Hygiène et bien-être",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "",
+                "status": "LOW"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcbf",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "toilets"
+        },
+        {
+            "categorie": 503,
+            "close": {
+                "actif": false,
+                "dateDebut": null,
+                "dateFin": null
+            },
+            "description": "",
+            "differentHours": false,
+            "differentModalities": false,
+            "differentPublics": false,
+            "hours": {
+                "closedHolidays": "UNKNOWN",
+                "description": null,
+                "friday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "monday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "saturday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "sunday": {
+                    "open": false,
+                    "timeslot": []
+                },
+                "thursday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1230,
+                            "start": 930
+                        }
+                    ]
+                },
+                "tuesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1600,
+                            "start": 930
+                        }
+                    ]
+                },
+                "wednesday": {
+                    "open": true,
+                    "timeslot": [
+                        {
+                            "end": 1330,
+                            "start": 930
+                        }
+                    ]
+                }
+            },
+            "isOpenToday": true,
+            "jobsList": "",
+            "modalities": {
+                "inconditionnel": true,
+                "appointment": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "inscription": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "orientation": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "price": {
+                    "checked": false,
+                    "precisions": null
+                },
+                "animal": {
+                    "checked": false
+                },
+                "pmr": {
+                    "checked": false
+                },
+                "docs": [],
+                "other": null
+            },
+            "name": "",
+            "publics": {
+                "accueil": 1,
+                "administrative": [
+                    "regular",
+                    "asylum",
+                    "refugee",
+                    "undocumented"
+                ],
+                "age": {
+                    "max": 25,
+                    "min": 12
+                },
+                "description": null,
+                "familialle": [
+                    "isolated",
+                    "family",
+                    "couple",
+                    "pregnant"
+                ],
+                "gender": [
+                    "men",
+                    "women"
+                ],
+                "other": [
+                    "addiction",
+                    "handicap",
+                    "hiv",
+                    "lgbt",
+                    "prison",
+                    "prostitution",
+                    "student",
+                    "ukraine",
+                    "violence"
+                ]
+            },
+            "saturated": {
+                "precision": "",
+                "status": "LOW"
+            },
+            "serviceObjectId": "6181a6d08ac6b179ffb9fcbe",
+            "createdAt": "2021-11-02T21:00:00.000Z",
+            "category": "electrical_outlets_available"
+        }
+    ],
+    "languages": [
+        "fr"
+    ],
+    "modalities": {
+        "inconditionnel": true,
+        "appointment": {
+            "checked": false,
+            "precisions": "L’accueil à la PAJ se fait sur rendez-vous uniquement pour des créneaux horaires d’une heure. 10 jeunes maximum dans la structure par créneau. Pour prendre rendez-vous : sur place au 24, rue Ramponeau, par tél au 01 48 05 01 01 ou par e-mail : paj@anrs.asso.fr"
+        },
+        "inscription": {
+            "checked": false,
+            "precisions": null
+        },
+        "orientation": {
+            "checked": false,
+            "precisions": null
+        },
+        "price": {
+            "checked": false,
+            "precisions": null
+        },
+        "animal": {
+            "checked": false
+        },
+        "pmr": {
+            "checked": false
+        },
+        "docs": [],
+        "other": null
+    },
+    "publics": {
+        "accueil": 1,
+        "administrative": [
+            "regular",
+            "asylum",
+            "refugee",
+            "undocumented"
+        ],
+        "age": {
+            "max": 25,
+            "min": 12
+        },
+        "description": null,
+        "familialle": [
+            "isolated",
+            "family",
+            "couple",
+            "pregnant"
+        ],
+        "gender": [
+            "men",
+            "women"
+        ],
+        "other": [
+            "addiction",
+            "handicap",
+            "hiv",
+            "lgbt",
+            "prison",
+            "prostitution",
+            "student",
+            "ukraine",
+            "violence"
+        ]
+    },
+    "stepsDone": {
+        "infos": true,
+        "services": true,
+        "horaires": true,
+        "conditions": true,
+        "contacts": true,
+        "emplacement": true,
+        "publics": true
+    },
+    "newhours": {
+        "closedHolidays": "UNKNOWN",
+        "description": "",
+        "friday": {
+            "open": true,
+            "timeslot": [
+                {
+                    "end": 1600,
+                    "start": 930
+                }
+            ]
+        },
+        "monday": {
+            "open": true,
+            "timeslot": [
+                {
+                    "end": 1600,
+                    "start": 930
+                }
+            ]
+        },
+        "saturday": {
+            "open": false,
+            "timeslot": []
+        },
+        "sunday": {
+            "open": false,
+            "timeslot": []
+        },
+        "thursday": {
+            "open": true,
+            "timeslot": [
+                {
+                    "end": 1230,
+                    "start": 930
+                }
+            ]
+        },
+        "tuesday": {
+            "open": true,
+            "timeslot": [
+                {
+                    "end": 1600,
+                    "start": 930
+                }
+            ]
+        },
+        "wednesday": {
+            "open": true,
+            "timeslot": [
+                {
+                    "end": 1330,
+                    "start": 930
+                }
+            ]
+        }
+    },
+    "photos": [
+        {
+            "_id": "5fce618957e7cc6a57f6dbf5",
+            "encoding": "7bit",
+            "mimetype": "image/png",
+            "filename": "paj-permanence-accueil-jeunes-paris-1-1607360905039.png",
+            "path": "5a58c0c7c1797fe45e37728b/paj-permanence-accueil-jeunes-paris-1-1607360905039.png",
+            "size": 527784,
+            "createdAt": "2020-12-07T17:08:25.050Z",
+            "updatedAt": "2020-12-07T17:08:25.050Z",
+            "__v": 0
+        },
+        {
+            "_id": "5fce618e57e7cc6a57f6dbf6",
+            "encoding": "7bit",
+            "mimetype": "image/png",
+            "filename": "paj-permanence-accueil-jeunes-paris-1-1607360910187.png",
+            "path": "5a58c0c7c1797fe45e37728b/paj-permanence-accueil-jeunes-paris-1-1607360910187.png",
+            "size": 52032,
+            "createdAt": "2020-12-07T17:08:30.196Z",
+            "updatedAt": "2020-12-07T17:08:30.196Z",
+            "__v": 0
+        }
+    ],
+    "slugs": {
+        "infos": {
+            "name": "paj permanence accueil jeunes",
+            "description": "la paj est un accueil de jour qui s adresse a des jeunes hommes et jeunes femmes en situation d errance sur le territoire parisien ce lieu d ecoute a pour objectif d aider les jeunes a nouer des liens sociaux et de leur permettre d acceder aux dispositifs de droit commun les equipes de la paj proposent un temps de pause et d ecoute afinde permettre a chaque jeune de connaitre ses ressources personnellesde ralentir le processus d errance d offrir la possibilite de rebondir de rendre alors possible l acces aux structures d aide et au dispositif de droit commun"
+        }
+    },
+    "createdAt": "2018-01-12T14:05:59.000Z",
+    "tempInfos": {
+        "closure": {
+            "actif": false,
+            "dateDebut": null,
+            "dateFin": null,
+            "description": ""
+        },
+        "hours": {
+            "actif": false,
+            "dateDebut": null,
+            "dateFin": null,
+            "description": null,
+            "hours": null
+        },
+        "message": {
+            "actif": false,
+            "dateDebut": null,
+            "dateFin": null,
+            "description": null,
+            "name": null
+        }
+    },
+    "priority": true,
+    "placeType": "LIEU",
+    "position": {
+        "adresse": "24 Rue Ramponeau, 75020 Paris",
+        "codePostal": "75020",
+        "complementAdresse": "",
+        "departement": "Paris",
+        "departementCode": "75",
+        "location": {
+            "coordinates": [
+                2.3799759999999424,
+                48.871202
+            ],
+            "type": "Point"
+        },
+        "pays": "fr",
+        "region": "Île-de-France",
+        "slugs": {
+            "ville": "paris",
+            "departement": "paris",
+            "pays": "fr",
+            "department": "paris",
+            "country": "fr",
+            "region": "ile-de-france",
+            "city": "paris"
+        },
+        "ville": "Paris",
+        "address": "24 Rue Ramponeau, 75020 Paris",
+        "additionalInformation": "",
+        "city": "Paris",
+        "postalCode": "75020",
+        "cityCode": "75020",
+        "department": "Paris",
+        "departmentCode": "75",
+        "country": "fr",
+        "regionCode": "11",
+        "timeZone": "Europe/Paris"
+    },
+    "campaigns": {
+        "UKRAINE_2022": {
+            "changes": false,
+            "date": null,
+            "updated": false
+        },
+        "MAJ_ETE_2022": {
+            "currentStep": 4,
+            "general": {
+                "changes": true,
+                "endDate": "2022-06-27T12:44:54.389Z",
+                "startDate": "2022-06-27T12:44:43.177Z",
+                "updated": true
+            },
+            "remindMeDate": null,
+            "sections": {
+                "closed": {
+                    "changes": true,
+                    "date": "2022-06-27T12:44:43.177Z",
+                    "updated": true
+                },
+                "hours": {
+                    "changes": false,
+                    "date": "2022-06-27T12:44:48.700Z",
+                    "updated": true
+                },
+                "services": {
+                    "changes": false,
+                    "date": "2022-06-27T12:44:51.723Z",
+                    "updated": true
+                },
+                "tempMessage": {
+                    "changes": false,
+                    "date": "2022-06-27T12:44:54.389Z",
+                    "updated": true
+                }
+            },
+            "status": "FINISHED",
+            "toUpdate": true,
+            "autonomy": "NOT_AUTONOMOUS",
+            "source": "CALL"
+        },
+        "MAJ_HIVER_2022": {
+            "autonomy": "NOT_AUTONOMOUS",
+            "currentStep": 4,
+            "general": {
+                "changes": true,
+                "endDate": "2022-11-23T08:36:15.198Z",
+                "startDate": "2022-11-23T08:36:06.642Z",
+                "updated": true
+            },
+            "remindMeDate": null,
+            "sections": {
+                "tempClosure": {
+                    "changes": true,
+                    "date": "2022-11-23T08:36:06.641Z",
+                    "updated": true
+                },
+                "hours": {
+                    "changes": false,
+                    "date": "2022-11-23T08:36:09.696Z",
+                    "updated": true
+                },
+                "services": {
+                    "changes": false,
+                    "date": "2022-11-23T08:36:12.282Z",
+                    "updated": true
+                },
+                "tempMessage": {
+                    "changes": false,
+                    "date": "2022-11-23T08:36:15.198Z",
+                    "updated": true
+                }
+            },
+            "status": "FINISHED",
+            "toUpdate": true
+        },
+        "MAJ_ETE_2023": {
+            "autonomy": "NOT_AUTONOMOUS",
+            "currentStep": 4,
+            "general": {
+                "changes": true,
+                "endDate": "2023-06-08T09:13:28.096Z",
+                "startDate": "2023-06-08T09:13:12.345Z",
+                "updated": true
+            },
+            "remindMeDate": null,
+            "sections": {
+                "hours": {
+                    "changes": false,
+                    "date": "2023-06-08T09:13:18.597Z",
+                    "updated": true
+                },
+                "services": {
+                    "changes": false,
+                    "date": "2023-06-08T09:13:21.374Z",
+                    "updated": true
+                },
+                "tempClosure": {
+                    "changes": true,
+                    "date": "2023-06-08T09:13:12.345Z",
+                    "updated": true
+                },
+                "tempMessage": {
+                    "changes": false,
+                    "date": "2023-06-08T09:13:28.096Z",
+                    "updated": true
+                }
+            },
+            "source": "CALL",
+            "status": "FINISHED",
+            "toUpdate": true
+        },
+        "MAJ_HIVER_2023": {
+            "autonomy": "AUTONOMOUS",
+            "currentStep": 4,
+            "general": {
+                "changes": true,
+                "endDate": "2023-11-28T12:47:34.832Z",
+                "startDate": "2023-11-28T12:47:10.279Z",
+                "updated": true
+            },
+            "remindMeDate": null,
+            "sections": {
+                "hours": {
+                    "changes": false,
+                    "date": "2023-11-28T12:47:21.212Z",
+                    "updated": true
+                },
+                "services": {
+                    "changes": false,
+                    "date": "2023-11-28T12:47:27.565Z",
+                    "updated": true
+                },
+                "tempClosure": {
+                    "changes": true,
+                    "date": "2023-11-28T12:47:10.279Z",
+                    "updated": true
+                },
+                "tempMessage": {
+                    "changes": false,
+                    "date": "2023-11-28T12:47:34.832Z",
+                    "updated": true
+                }
+            },
+            "source": null,
+            "status": "FINISHED",
+            "toUpdate": true
+        }
+    },
+    "geoZones": [],
+    "visibility": "ALL",
+    "isOpenToday": true,
+    "atSync": {
+        "airtableId": "rect3AYSRJqi161QI",
+        "excluded": false,
+        "lastSync": "2024-02-01T16:30:01.735Z"
+    },
+    "status": "ONLINE",
+    "updatedByUserAt": "2024-02-01T16:29:35.153Z",
+    "createdBy": null,
+    "auto": false,
+    "organizations": [
+        {
+            "_id": "5fb62f3f3cb90874d9ab16ee",
+            "organization_id": 1036,
+            "name": "Association Nationale de Réadaptation Sociale"
+        }
+    ]
+}
