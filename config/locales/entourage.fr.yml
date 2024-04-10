@@ -495,6 +495,10 @@ fr:
       hygiene:
         name: Produit d'hygiène
         subname: savon, protection hygiénique...
+    concerns:
+      sharing_time: Temps de partage
+      material_donations: Dons matériels
+      services: Services
     interests:
       activites: Activités manuelles
       animaux: Animaux

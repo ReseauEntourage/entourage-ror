@@ -143,6 +143,13 @@ describe Api::V1::HomeController do
       "id" => "resources",
       "name" => "Apprendre avec des contenus pédagogiques"
     }) }
+    # concerns
+    it { expect(result["tags"]).to have_key("concerns") }
+    it { expect(result["tags"]["concerns"]).to be_a(Array) }
+    it { expect(result["tags"]["concerns"][0]).to eq({
+      "id" => "sharing_time",
+      "name" => "Temps de partage"
+    }) }
     # signals
     it { expect(result["tags"]).to have_key("signals") }
     it { expect(result["tags"]["signals"]).to be_a(Array) }
