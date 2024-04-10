@@ -34,23 +34,23 @@ module UserServices
       def stacked_by group = :month
         [
           {
-            name: :member_outings,
+            name: I18n.t("charts.users.member_outings"),
             data: outings_join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: :member_neighborhoods,
+            name: I18n.t("charts.users.member_neighborhoods"),
             data: neighborhoods_join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: :reactions,
+            name: I18n.t("charts.users.reactions"),
             data: reactions_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: :public_chat_messages,
+            name: I18n.t("charts.users.public_chat_messages"),
             data: public_chat_messages_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: :private_chat_messages,
+            name: I18n.t("charts.users.private_chat_messages"),
             data: private_chat_messages_by(group).map { |date, count| [date.to_date.to_s, count] }
           }
         ]

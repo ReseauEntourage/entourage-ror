@@ -52,7 +52,7 @@ module JoinableScopable
     def stacked_by group = :month
       [
         {
-          name: :memberships,
+          name: I18n.t("charts.conversations.memberships"),
           data: join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
         }
       ]
