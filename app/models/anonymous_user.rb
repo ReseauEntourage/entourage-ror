@@ -91,6 +91,9 @@ class AnonymousUser
   def involvement_list; []; end
   def involvements; []; end
   def involvement_names; []; end
+  def concern_list; []; end
+  def concerns; []; end
+  def concern_names; []; end
   def birthday; nil; end
   def errors; ActiveModel::Errors.new(nil); end
   def entourage_participations; JoinRequest.none; end

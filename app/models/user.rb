@@ -1,6 +1,9 @@
 class User < ApplicationRecord
+  # three types of tags: interests (hobbies), involvements (preference for engagement), concerns (action categories)
   include Interestable
   include Involvable
+  include Concernable
+
   include Recommandable
   include Salesforcable
 
@@ -356,6 +359,12 @@ class User < ApplicationRecord
     return super(involvements) if involvements.is_a?(String)
 
     super(involvements & Tag.involvement_list)
+  end
+
+  def concerns= concerns
+    return super(concerns) if concerns.is_a?(String)
+
+    super(concerns & Tag.concern_list)
   end
 
   def email_preference_newsletter

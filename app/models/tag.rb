@@ -16,6 +16,14 @@ class Tag < ApplicationRecord
       I18n.t('tags.involvements')
     end
 
+    def concern_list
+      concerns.keys.map(&:to_s)
+    end
+
+    def concerns
+      I18n.t('tags.concerns')
+    end
+
     def section_list
       sections.keys.map(&:to_s)
     end
@@ -53,6 +61,10 @@ class Tag < ApplicationRecord
 
     def involvement_list_for record
       tags_for_context_and_taggable(context: :involvements, taggable: record)
+    end
+
+    def concern_list_for record
+      tags_for_context_and_taggable(context: :concerns, taggable: record)
     end
 
     private

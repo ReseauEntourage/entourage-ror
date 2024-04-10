@@ -15,6 +15,7 @@ module V1
     attribute :permissions
     attribute :interests
     attribute :involvements
+    attribute :concerns
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?
@@ -129,6 +130,11 @@ module V1
     def involvements
       # we use "Tag.involvement_list &" to force ordering
       Tag.involvement_list & object.involvement_names
+    end
+
+    def concerns
+      # we use "Tag.concern_list &" to force ordering
+      Tag.concern_list & object.concern_names
     end
 
     # FIXME: the placeholders attribute is a hack. It indicates to the clients
