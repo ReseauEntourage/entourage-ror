@@ -135,7 +135,7 @@ describe PoiServices::Soliguide do
 
     context 'wrong category' do
       let(:poi) { { 'services_all' => [
-        { 'category' => 1 }
+        { 'category' => "foobar" }
       ] } }
       it { expect(subject).to eq([]) }
     end
