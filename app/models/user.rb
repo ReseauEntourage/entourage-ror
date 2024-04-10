@@ -354,6 +354,12 @@ class User < ApplicationRecord
     super(interests & Tag.interest_list)
   end
 
+  def involvements= involvements
+    return super(involvements) if involvements.is_a?(String)
+
+    super(involvements & Tag.involvement_list)
+  end
+
   def email_preference_newsletter
     return false unless email_preferences
     return false unless category_id = EmailPreferencesService.category_id('newsletter')
