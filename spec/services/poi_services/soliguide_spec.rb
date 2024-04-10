@@ -112,7 +112,7 @@ describe PoiServices::Soliguide do
             geoType: "position"
           },
           options: {},
-          categories: [600],
+          categories: ["food"],
         })
       }
     end
