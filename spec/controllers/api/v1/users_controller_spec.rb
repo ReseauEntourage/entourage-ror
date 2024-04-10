@@ -423,22 +423,22 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context 'involvements as an array' do
         context 'good value when other_involvement is missing is also valid' do
-          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "actions"] } } }
+          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "both_actions"] } } }
           it { expect(response.status).to eq(200) }
         end
       end
 
       context 'involvements as an array' do
         context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "actions"] } } }
-          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources', 'actions'])) }
+          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "both_actions"] } } }
+          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources', 'both_actions'])) }
         end
       end
 
       context 'involvements as an array' do
         context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "actions"] } } }
-          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources', 'actions'])) }
+          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "both_actions"] } } }
+          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources', 'both_actions'])) }
         end
       end
 
