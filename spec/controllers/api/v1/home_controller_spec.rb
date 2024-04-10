@@ -136,6 +136,13 @@ describe Api::V1::HomeController do
       "id" => "activites",
       "name" => "Activités manuelles"
     }) }
+    # involvements
+    it { expect(result["tags"]).to have_key("involvements") }
+    it { expect(result["tags"]["involvements"]).to be_a(Array) }
+    it { expect(result["tags"]["involvements"][0]).to eq({
+      "id" => "resources",
+      "name" => "Apprendre avec des contenus pédagogiques"
+    }) }
     # signals
     it { expect(result["tags"]).to have_key("signals") }
     it { expect(result["tags"]["signals"]).to be_a(Array) }

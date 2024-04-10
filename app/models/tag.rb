@@ -8,6 +8,14 @@ class Tag < ApplicationRecord
       I18n.t('tags.interests')
     end
 
+    def involvement_list
+      involvements.keys.map(&:to_s)
+    end
+
+    def involvements
+      I18n.t('tags.involvements')
+    end
+
     def section_list
       sections.keys.map(&:to_s)
     end
@@ -41,6 +49,10 @@ class Tag < ApplicationRecord
 
     def interest_list_for record
       tags_for_context_and_taggable(context: :interests, taggable: record)
+    end
+
+    def involvement_list_for record
+      tags_for_context_and_taggable(context: :involvements, taggable: record)
     end
 
     private
