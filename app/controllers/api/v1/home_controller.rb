@@ -46,6 +46,7 @@ module Api
           tags: {
             sections: format_sections(Tag.sections),
             interests: format_tags(Tag.interests),
+            involvements: format_tags(Tag.involvements),
             signals: format_tags(Tag.signals),
           },
           reactions: format_reactions(Reaction.all.order(position: :asc)),
