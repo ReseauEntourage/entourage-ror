@@ -43,4 +43,34 @@ module JoinableScopable
     join_request.save!
     join_request
   end
+
+  MembershipStruct = Struct.new(:joinable) do
+    def initialize(joinable: nil)
+      @joinable = joinable
+    end
+
+    def stacked_by group = :month
+      [
+        {
+          name: I18n.t("charts.conversations.memberships"),
+          data: join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
+        }
+      ]
+    end
+
+    def join_requests
+      @join_requests ||= JoinRequest.where(joinable_type: :Entourage, joinable_id: @joinable.id)
+    end
+
+    def join_requests_by group
+      join_requests
+        .group("DATE_TRUNC('#{group}', created_at)")
+        .order(Arel.sql("DATE_TRUNC('#{group}', created_at)"))
+        .count
+    end
+  end
+
+  def membership
+    @membership ||= MembershipStruct.new(joinable: self)
+  end
 end

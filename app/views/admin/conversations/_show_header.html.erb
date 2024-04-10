@@ -30,3 +30,7 @@
     </li>
   </ul>
 <% end %>
+
+<% if @conversation.members_count > 2 %>
+  <%= column_chart @conversation.membership.stacked_by(:day), stacked: true %>
+<% end %>

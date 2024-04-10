@@ -123,6 +123,7 @@ GEM
       uniform_notifier (~> 1.11)
     case_transform (0.2)
       activesupport
+    chartkick (5.0.6)
     chronic (0.10.2)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
@@ -522,6 +523,7 @@ DEPENDENCIES
   barnes
   bcrypt (~> 3)
   bullet
+  chartkick
   coffee-rails (~> 5)
   ddtrace (~> 1.0)
   dotenv-rails

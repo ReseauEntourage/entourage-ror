@@ -510,3 +510,14 @@ fr:
       insults: Propos déplacés
       in_danger: Mise en danger
       other: Autre
+
+
+  charts:
+    conversations:
+      memberships: "Membres"
+    users:
+      member_outings: "Membre événement"
+      member_neighborhoods: "Membre groupe de voisins"
+      reactions: "Réactions"
+      public_chat_messages: "Publications/Commentaires"
+      private_chat_messages: "Messages privés"
