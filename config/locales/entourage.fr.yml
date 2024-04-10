@@ -498,6 +498,10 @@ fr:
       hygiene:
         name: Produit d'hygiène
         subname: savon, protection hygiénique...
+    concerns:
+      sharing_time: Temps de partage
+      material_donations: Dons matériels
+      services: Services
     interests:
       activites: Activités manuelles
       animaux: Animaux
@@ -509,9 +513,25 @@ fr:
       sport: Sport
       marauding: Rencontres nomades
       other: Autre
+    involvements:
+      resources: Apprendre avec des contenus pédagogiques
+      outings: Participer à des événements de convivialité
+      actions: Donner ou solliciter un coup de pouce
+      neighborhoods: Rejoindre un groupe de voisins et tisser des liens
     signals:
       spam: Spam
       fraud: Arnaque
       insults: Propos déplacés
       in_danger: Mise en danger
       other: Autre
+
+
+  charts:
+    conversations:
+      memberships: "Membres"
+    users:
+      member_outings: "Membre événement"
+      member_neighborhoods: "Membre groupe de voisins"
+      reactions: "Réactions"
+      public_chat_messages: "Publications/Commentaires"
+      private_chat_messages: "Messages privés"

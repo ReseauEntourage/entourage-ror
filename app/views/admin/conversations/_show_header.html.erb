@@ -20,14 +20,16 @@
     <% end %>
 </h2>
 
-<ul class="nav nav-tabs">
-  <li role="presentation" class="<%= :active if tab == :show %>">
-    <%= link_to "Modifier", admin_conversation_path(@conversation) %>
-  </li>
-  <li role="presentation" class="<%= :active if tab == :show_members %>">
-    <%= link_to "Membres (#{@conversation.members_count})", show_members_admin_conversation_path(@conversation) %>
-  </li>
-</ul>
+<% if @conversation.persisted? %>
+  <ul class="nav nav-tabs">
+    <li role="presentation" class="<%= :active if tab == :show %>">
+      <%= link_to "Modifier", admin_conversation_path(@conversation) %>
+    </li>
+    <li role="presentation" class="<%= :active if tab == :show_members %>">
+      <%= link_to "Membres (#{@conversation.members_count})", show_members_admin_conversation_path(@conversation) %>
+    </li>
+  </ul>
+<% end %>
 
 <% if @conversation.members_count > 2 %>
   <%= column_chart @conversation.membership.stacked_by(:month), stacked: true %>
