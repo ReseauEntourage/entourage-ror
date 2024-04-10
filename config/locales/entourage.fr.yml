@@ -513,8 +513,10 @@ fr:
     involvements:
       resources: Apprendre avec des contenus pédagogiques
       outings: Participer à des événements de convivialité
-      actions: Donner ou solliciter un coup de pouce
+      both_actions: Donner ou solliciter un coup de pouce
+      solicitations: Solliciter un coup de pouce
       neighborhoods: Rejoindre un groupe de voisins et tisser des liens
+      pois: Trouver des structures solidaires à proximité
     signals:
       spam: Spam
       fraud: Arnaque
