@@ -1,4 +1,4 @@
-class User <
+class User < ApplicationRecord
   include Availabilable
   # three types of tags: interests (hobbies), involvements (preference for engagement), concerns (action categories)
   include Interestable
