@@ -10,6 +10,10 @@
   <div style="display: flex">
     <div style="flex-grow: 1">
       <div class="control-group">
+        <%= render 'availability', user: @user %>
+      </div>
+
+      <div class="control-group">
         <%= f.label :first_name,"Prénom", class: "control-label" %>
         <div class="controls">
           <%= f.text_field :first_name, class: "form-control", required: @user.pro? || @user.association? %>
