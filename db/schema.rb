@@ -1166,6 +1166,7 @@ ActiveRecord::Schema.define(version: 2024_02_27_120501) do
     t.string "lang", default: "fr"
     t.string "slack_id"
     t.string "salesforce_id"
+    t.jsonb "availability", default: {}
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

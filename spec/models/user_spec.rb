@@ -435,4 +435,40 @@ describe User, :type => :model do
     it { expect(UserHistory.last.kind).to eq('deleted') }
     it { expect(UserHistory.last.metadata[:email_was]).to eq('foo@bar.com') }
   end
+
+  describe 'availability' do
+    let(:availability) { Hash.new }
+    subject { build(:public_user, availability: availability) }
+
+    context "is valid with valid availability" do
+      let(:availability) {{
+        "1" => ["09:00-12:00", "14:00-18:00"],
+        "2" => ["10:00-12:00"]
+      }}
+
+      it { should be_valid }
+    end
+
+    context "is not valid with an invalid availability day" do
+      let(:availability) {{
+        "8" => ["09:00-12:00"] # Jour invalide (devrait être entre 1 et 7)
+      }}
+
+      it { should_not be_valid }
+    end
+
+    context "is not valid with an invalid availability format" do
+      let(:availability) {{
+        "1" => ["09:00-25:00"] # Format d'heure invalide
+      }}
+
+      it { should_not be_valid }
+    end
+
+    context "is not valid with an invalid availability format" do
+      let(:availability) { "invalid data" }
+
+      it { should_not be_valid }
+    end
+  end
 end

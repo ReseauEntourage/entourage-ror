@@ -1,4 +1,8 @@
 module UsersHelper
+  def day_name(day_number)
+    I18n.t("date.day_names")[day_number.to_i % 7]
+  end
+
   def users_for_select users
     users.map do |user|
       ["#{user.full_name} (#{user.email})", user.id]

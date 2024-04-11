@@ -26,6 +26,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "uuid" => user.id.to_s,
               "email" => user.email,
               "lang" => user.lang,
+              "availability" => user.availability,
               "display_name" => "John D.",
               "first_name" => "John",
               "last_name" => "Doe",
@@ -359,6 +360,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           before { patch 'update', params: { token: user.token, user: { interest_list: "sport, culture" } } }
           it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
         end
+      end
+
+      context 'availability' do
+        before { patch 'update', params: { token: user.token, user: { availability: { "2" => ["10:00-12:00"] } } } }
+
+        it { expect(result['user']).to have_key('availability') }
+        it { expect(result['user']).to include('availability' => { "2" => ["10:00-12:00"] }) }
       end
 
       context 'interests as a string' do
@@ -716,6 +724,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "uuid" => user.id.to_s,
             "email" => user.email,
             "lang" => user.lang,
+            "availability" => user.availability,
             "display_name" => "John D.",
             "first_name" => "John",
             "last_name" => "Doe",
@@ -804,6 +813,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "uuid" => user.id.to_s,
             "email" => user.email,
             "lang" => user.lang,
+            "availability" => user.availability,
             "display_name" => "John D.",
             "first_name" => "John",
             "last_name" => "Doe",
@@ -887,6 +897,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "user" => {
             "id" => other_user.id,
             "lang" => user.lang,
+            "availability" => user.availability,
             "display_name" => "John D.",
             "first_name" => "John",
             "last_name" => "D",

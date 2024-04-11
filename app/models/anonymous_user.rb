@@ -67,6 +67,7 @@ class AnonymousUser
   def first_name; nil; end
   def last_name; nil; end
   def lang; Translation::DEFAULT_LANG; end
+  def availability; Hash.new end
   def roles; []; end
   def about; nil; end
   def avatar_key; nil; end

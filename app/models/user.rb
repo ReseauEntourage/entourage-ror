@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include Availabilable
   include Interestable
   include Recommandable
   include Salesforcable
