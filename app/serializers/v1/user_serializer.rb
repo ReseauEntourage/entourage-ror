@@ -7,6 +7,7 @@ module V1
     attribute :last_name
     attribute :roles
     attribute :about
+    attribute :availability
     attribute :avatar_url
     attribute :user_type
     attribute :partner
