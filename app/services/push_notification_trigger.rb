@@ -504,8 +504,8 @@ class PushNotificationTrigger
 
     notify(
       sender_id: @record.user_id,
-      referent: @record.chat_message,
-      instance: @record,
+      referent: @record.chat_message.messageable,
+      instance: @record.chat_message.messageable,
       users: [@record.chat_message.user],
       params: {
         object: I18nStruct.new(i18n: 'push_notifications.survey_response.create', i18n_args: [username(@record.user), title(@record.chat_message.messageable)]),
