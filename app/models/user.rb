@@ -205,8 +205,10 @@ class User < ApplicationRecord
       ask_for_help
     elsif profile.to_sym == :offer_help
       offer_help
+    elsif profile.to_sym == :partner
+      where(targeting_profile: :partner)
     elsif profile.to_sym == :organization
-      organization
+      where(targeting_profile: :partner)
     elsif profile.to_sym == :goal_not_known
       goal_not_known
     end
