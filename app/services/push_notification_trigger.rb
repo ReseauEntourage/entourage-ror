@@ -284,6 +284,8 @@ class PushNotificationTrigger
   end
 
   def outing_on_day_before
+    return if @record.place_limit?
+
     users = @record.accepted_members - [@record.user]
 
     return if users.none?
