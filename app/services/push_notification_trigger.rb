@@ -525,7 +525,7 @@ class PushNotificationTrigger
     return unless instance.any?
 
     users.map do |user|
-      InappNotificationServices::Builder.new(user).instanciate(
+      ::InappNotificationServices::Builder.new(user).instanciate(
         context: @method,
         sender_id: sender_id,
         instance: instance[:instance],
