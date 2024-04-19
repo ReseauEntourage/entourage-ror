@@ -254,4 +254,8 @@ class Outing < Entourage
     self.uuid = SecureRandom.uuid
     self.uuid_v2 = self.class.generate_uuid_v2
   end
+
+  def place_limit?
+    metadata[:place_limit].present? && metadata[:place_limit].to_i > 0
+  end
 end

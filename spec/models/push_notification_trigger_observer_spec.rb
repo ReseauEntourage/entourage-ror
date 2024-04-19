@@ -64,6 +64,14 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       include_examples :call_outing_on_day_before
       include_examples :call_notify
     end
+
+    context "with member with place_limit" do
+      let(:outing) { create :outing, metadata: { place_limit: 10 } }
+      let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+      include_examples :call_outing_on_day_before
+      include_examples :no_call_notify
+    end
   end
 
   describe "entourage" do
