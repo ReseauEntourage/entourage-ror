@@ -168,6 +168,10 @@ Rails.application.routes.draw do
           post :archive_status
           post :unjoin
         end
+
+        collection do
+          delete :destroy_message
+        end
       end
 
       resources :join_requests, only: [:create]
