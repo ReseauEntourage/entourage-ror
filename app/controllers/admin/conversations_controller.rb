@@ -113,6 +113,26 @@ module Admin
       end
     end
 
+    def destroy_message
+      @chat_message = ChatMessage.find(params[:id])
+
+      ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
+        redirection = admin_conversation_path(@chat_message.messageable)
+
+        on.success do |chat_message|
+          redirect_to redirection
+        end
+
+        on.failure do |chat_message|
+          redirect_to redirection, alert: chat_message.errors.full_messages
+        end
+
+        on.not_authorized do
+          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+        end
+      end
+    end
+
     def invite
       user = User.find_by_id_or_phone(params[:user_id])
       join_request = JoinRequest.where(joinable: @conversation, user: user).first
