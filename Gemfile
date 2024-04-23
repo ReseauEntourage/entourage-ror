@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.1.0'
 
-gem 'rails',                          '~> 6.0'
+gem "rails", "~> 7.0.1"
 
 gem 'sass-rails'
 gem 'uglifier'
@@ -31,7 +31,7 @@ gem 'lograge'
 gem 'logstash-event'
 gem 'aws-sdk-s3',                     '~> 1'
 gem 'faker'
-gem 'activerecord-postgis-adapter',   '~> 6.0'
+gem 'activerecord-postgis-adapter', '~> 8.0'
 gem 'slack-notifier'
 gem 'mailjet'
 gem 'safety_mailer'
@@ -51,11 +51,12 @@ gem 'rails-observers'
 gem 'mini_magick'
 gem 'rspec_api_documentation'
 gem 'ams_lazy_relationships'
-gem 'acts-as-taggable-on',            '~> 8.0'
+gem 'acts-as-taggable-on',            '~> 9.0'
 gem 'ancestry'
 gem 'tinymce-rails'
 gem 'chartkick'
 gem 'restforce', '~> 7.2.0'
+gem "sprockets-rails"
 
 group :development, :test do
   # gem 'annotate'
