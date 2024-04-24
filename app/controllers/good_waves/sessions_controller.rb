@@ -94,7 +94,7 @@ module GoodWaves
       raise "This should never happen" if user.nil?
       raise "blocked|deleted" if user.deleted? || user.blocked?
 
-      UserServices::SMSSender.new(user: user)
+      UserServices::SmsSender.new(user: user)
         .regenerate_sms!(clear_password: true)
 
       context =

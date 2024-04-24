@@ -1,5 +1,5 @@
 module UserServices
-  class SMSSender
+  class SmsSender
     def initialize(user:)
       @user = user
     end

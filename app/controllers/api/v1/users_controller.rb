@@ -123,7 +123,7 @@ module Api
         end
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
-          UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
+          UserServices::SmsSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
           render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
           render json: {error: "Unknown action"}, status: 400
