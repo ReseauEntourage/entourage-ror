@@ -8,14 +8,8 @@ resource Api::V1::UsersController do
   ENV['ADMIN_HOST'] = 'https://this.is.local'
   ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
-  before(:each) {
-    ENV['SLACK_WEBHOOK_URL'] = 'https://url.to.slack.com'
-    stub_request(:post, "https://url.to.slack.com").to_return(status: 200)
-  }
-
-  after(:each) {
-    ENV['SLACK_WEBHOOK_URL'] = nil
-  }
+  before(:each) { ENV['SLACK_WEBHOOK_URL'] = 'https://url.to.slack.com' }
+  after(:each) { ENV['SLACK_WEBHOOK_URL'] = nil }
 
   post '/api/v1/login' do
     route_summary "Login"

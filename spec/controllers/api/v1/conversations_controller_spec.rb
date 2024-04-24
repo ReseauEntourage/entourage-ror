@@ -466,8 +466,6 @@ describe Api::V1::ConversationsController do
 
     ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
-    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
-
     context "valid params" do
       before {
         expect_any_instance_of(SlackServices::SignalConversation).to receive(:notify)
