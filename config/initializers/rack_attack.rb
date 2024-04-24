@@ -105,13 +105,13 @@ class Rack::Attack
 
   ### Notify against matched attack
 
-  self.throttled_response = lambda do |env|
+  self.throttled_responder = lambda do |env|
     request = Rack::Request.new(env)
     ip = request.ip
     attack_type = env['rack.attack.matched']
 
     SlackServices::SignalRackAttack.new(ip: ip, attack_type: env['rack.attack.matched']).notify
 
-    [429, {}, ['Rate limit exceeded.']]
+    [429, {'Content-Type' => 'text/plain'}, ['Rate limit exceeded. Please try again later.']]
   end
 end
