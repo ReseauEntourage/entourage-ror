@@ -161,7 +161,7 @@ module Admin
         ApplicationRecord.transaction do
           UserServices::RequestPhoneChange.record_phone_change!(user: user, admin: current_user) if user.phone_changed?
           user.save! if user.changed?
-          UserServices::SMSSender.new(user: user).send_welcome_sms(user_params[:sms_code_password], 'regenerate') if user.saved_change_to_sms_code?
+          UserServices::SmsSender.new(user: user).send_welcome_sms(user_params[:sms_code_password], 'regenerate') if user.saved_change_to_sms_code?
           moderation.save! if moderation.changed?
           saved = true
         end

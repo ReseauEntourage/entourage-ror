@@ -182,7 +182,7 @@ describe Admin::UsersController do
 
     context 'change sms_code' do
       before {
-        expect_any_instance_of(UserServices::SMSSender).to receive(:send_welcome_sms).with(
+        expect_any_instance_of(UserServices::SmsSender).to receive(:send_welcome_sms).with(
           '123456',
           'regenerate'
         )
@@ -198,7 +198,7 @@ describe Admin::UsersController do
 
     context 'change sms_code does not work for invalid password' do
       before {
-        expect_any_instance_of(UserServices::SMSSender).not_to receive(:send_welcome_sms)
+        expect_any_instance_of(UserServices::SmsSender).not_to receive(:send_welcome_sms)
       }
 
       it {
@@ -211,7 +211,7 @@ describe Admin::UsersController do
 
     context 'dit not change sms_code' do
       before {
-        expect_any_instance_of(UserServices::SMSSender).not_to receive(:send_welcome_sms)
+        expect_any_instance_of(UserServices::SmsSender).not_to receive(:send_welcome_sms)
       }
 
       it {
