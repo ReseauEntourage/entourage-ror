@@ -10,14 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[6.1].define(version: 202401111415004) do
-
+ActiveRecord::Schema[7.0].define(version: 202401111415004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
   enable_extension "unaccent"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.profile.goal.entered", "onboarding.push_notifications.welcome.sent"]
+  create_enum "sms_delivery_provider", ["AWS", "Nexmo", "Slack", "logs"]
+  create_enum "sms_delivery_status", ["Ok", "Provider Error", "Sending Error"]
 
   create_table "active_admin_comments", id: :serial, force: :cascade do |t|
     t.string "namespace"
@@ -26,8 +31,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "resource_type", null: false
     t.string "author_type"
     t.integer "author_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
     t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
@@ -40,8 +45,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.float "longitude", null: false
     t.string "postal_code", limit: 8
     t.string "country", limit: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "google_place_id"
     t.integer "user_id", null: false
     t.integer "position", default: 1, null: false
@@ -73,8 +78,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   end
 
   create_table "categories", id: :serial, force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "name"
   end
 
@@ -90,15 +95,15 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "messageable_type", null: false
     t.text "content"
     t.integer "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "message_type", limit: 20, default: "text", null: false
     t.jsonb "metadata", default: {}, null: false
     t.string "ancestry"
     t.string "image_url"
     t.string "status", default: "active"
     t.integer "deleter_id"
-    t.datetime "deleted_at"
+    t.datetime "deleted_at", precision: nil
     t.string "uuid_v2", limit: 12, null: false
     t.integer "survey_id"
     t.integer "comments_count", default: 0
@@ -118,8 +123,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "profile"
     t.string "subject"
     t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_contact_subscriptions_on_email", unique: true
   end
 
@@ -128,11 +133,11 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.text "content", null: false
     t.string "goal"
     t.string "title", null: false
-    t.datetime "archived_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "archived_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "status", default: "draft", null: false
-    t.datetime "sent_at"
+    t.datetime "sent_at", precision: nil
     t.integer "sent_recipients_count"
     t.string "area_type"
     t.jsonb "areas", default: []
@@ -159,10 +164,10 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   end
 
   create_table "digest_emails", id: :serial, force: :cascade do |t|
-    t.datetime "deliver_at", null: false
+    t.datetime "deliver_at", precision: nil, null: false
     t.jsonb "data", default: {}, null: false
     t.string "status", null: false
-    t.datetime "status_changed_at", null: false
+    t.datetime "status_changed_at", precision: nil, null: false
   end
 
   create_table "donations", id: :serial, force: :cascade do |t|
@@ -206,7 +211,7 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
 
   create_table "email_deliveries", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "sent_at", null: false
+    t.datetime "sent_at", precision: nil, null: false
     t.integer "email_campaign_id", null: false
     t.index ["user_id", "email_campaign_id"], name: "index_email_deliveries_on_user_id_and_email_campaign_id"
   end
@@ -215,15 +220,15 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "email_category_id", null: false
     t.boolean "subscribed", null: false
-    t.datetime "subscription_changed_at", null: false
+    t.datetime "subscription_changed_at", precision: nil, null: false
     t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true
   end
 
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
     t.integer "entourage_id", null: false
-    t.datetime "max_chat_message_created_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "max_chat_message_created_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "has_image_url", default: false
     t.index ["entourage_id"], name: "index_entourage_denorms_on_entourage_id"
   end
@@ -232,8 +237,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "title"
     t.string "landscape_url"
     t.string "portrait_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "landscape_thumbnail_url"
     t.string "portrait_thumbnail_url"
   end
@@ -245,8 +250,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "invitee_id"
     t.string "invitation_mode", null: false
     t.string "phone_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "status", default: "pending", null: false
     t.jsonb "metadata", default: {}, null: false
     t.index ["invitable_id"], name: "index_entourage_invitations_on_invitable_id"
@@ -274,7 +279,7 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "action_failure_reason"
     t.string "action_target_type"
     t.integer "moderator_id"
-    t.datetime "validated_at"
+    t.datetime "validated_at", precision: nil
     t.index ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true
     t.index ["moderator_id"], name: "index_entourage_moderations_on_moderator_id"
   end
@@ -284,8 +289,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.float "base_score", null: false
     t.float "final_score", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["entourage_id"], name: "index_entourage_scores_on_entourage_id"
   end
 
@@ -297,8 +302,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.float "latitude", null: false
     t.float "longitude", null: false
     t.integer "number_of_people", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "description"
     t.uuid "uuid"
     t.string "category"
@@ -311,7 +316,7 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "group_type", limit: 14, null: false
     t.jsonb "metadata", default: {}, null: false
     t.boolean "public", default: false
-    t.datetime "feed_updated_at"
+    t.datetime "feed_updated_at", precision: nil
     t.string "image_url"
     t.boolean "online", default: false
     t.string "event_url"
@@ -321,9 +326,9 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "display_category_copy"
     t.string "other_interest"
     t.string "recurrency_identifier"
-    t.datetime "status_changed_at"
-    t.datetime "notification_sent_at"
-    t.datetime "working_hours_sent_at"
+    t.datetime "status_changed_at", precision: nil
+    t.datetime "notification_sent_at", precision: nil
+    t.datetime "working_hours_sent_at", precision: nil
     t.integer "number_of_confirmed_people", default: 0
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
@@ -340,19 +345,23 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "entourage_id", null: false
     t.string "status", default: "pending", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "last_message_read"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "last_message_read", precision: nil
     t.index ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true
   end
 
-# Could not dump table "events" because of following StandardError
-#   Unknown type 'event_name' for column 'name'
+  create_table "events", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.enum "name", null: false, enum_type: "event_name"
+    t.datetime "created_at", precision: nil, null: false
+    t.index ["user_id", "name"], name: "index_events_on_user_id_and_name", unique: true
+  end
 
   create_table "experimental_pending_request_reminders", id: :serial, force: :cascade do |t|
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["user_id"], name: "index_experimental_pending_request_reminders_on_user_id"
   end
 
@@ -360,8 +369,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "partner_id", null: false
     t.boolean "active", default: true, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["partner_id"], name: "index_followings_on_partner_id"
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
   end
@@ -372,8 +381,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "destination_path", null: false
     t.string "destination_size", default: "medium", null: false
     t.string "status", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["bucket", "path"], name: "index_image_resize_actions_on_bucket_and_path"
   end
 
@@ -381,13 +390,13 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.string "instance"
     t.integer "instance_id"
-    t.datetime "completed_at"
-    t.datetime "skipped_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "completed_at", precision: nil
+    t.datetime "skipped_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "context"
     t.string "content"
-    t.datetime "displayed_at"
+    t.datetime "displayed_at", precision: nil
     t.integer "post_id"
     t.integer "sender_id"
     t.string "title"
@@ -401,40 +410,41 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "joinable_type", null: false
     t.string "status", default: "pending", null: false
     t.text "message"
-    t.datetime "last_message_read"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "last_message_read", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.float "distance"
     t.string "role", limit: 11, null: false
-    t.datetime "requested_at"
-    t.datetime "accepted_at"
-    t.datetime "email_notification_sent_at"
-    t.datetime "archived_at"
+    t.datetime "requested_at", precision: nil
+    t.datetime "accepted_at", precision: nil
+    t.datetime "email_notification_sent_at", precision: nil
+    t.datetime "archived_at", precision: nil
     t.string "report_prompt_status"
     t.datetime "confirmed_at"
     t.integer "unread_messages_count"
     t.index ["confirmed_at"], name: "index_join_requests_on_confirmed_at"
     t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
+    t.index ["requested_at", "created_at"], name: "index_join_requests_on_requested_at_and_created_at"
     t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests"
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
   end
 
   create_table "login_histories", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
-    t.datetime "connected_at", null: false
+    t.datetime "connected_at", precision: nil, null: false
     t.index "date_trunc('hour'::text, connected_at), user_id", name: "index_login_histories_on_connected_at_by_hour", unique: true
   end
 
   create_table "marketing_referers", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "messages", id: :serial, force: :cascade do |t|
     t.string "content", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -467,15 +477,15 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "moderatable_id", null: false
     t.string "moderatable_type", null: false
-    t.datetime "read_at", null: false
+    t.datetime "read_at", precision: nil, null: false
     t.index ["user_id", "moderatable_id", "moderatable_type"], name: "index_moderator_reads_on_user_id_and_moderatable"
   end
 
   create_table "neighborhood_images", force: :cascade do |t|
     t.string "title"
     t.string "image_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "neighborhoods", force: :cascade do |t|
@@ -486,9 +496,9 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "image_url"
     t.float "latitude", null: false
     t.float "longitude", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "feed_updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "feed_updated_at", precision: nil
     t.string "welcome_message"
     t.string "other_interest"
     t.string "google_place_id"
@@ -496,7 +506,7 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "postal_code"
     t.string "street_address"
     t.string "status", default: "active", null: false
-    t.datetime "status_changed_at"
+    t.datetime "status_changed_at", precision: nil
     t.integer "number_of_people", default: 0
     t.string "zone"
     t.boolean "public", default: true
@@ -515,8 +525,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "neighborhoods_entourages", force: :cascade do |t|
     t.bigint "neighborhood_id"
     t.bigint "entourage_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["entourage_id"], name: "index_neighborhoods_entourages_on_entourage_id"
     t.index ["neighborhood_id"], name: "index_neighborhoods_entourages_on_neighborhood_id"
   end
@@ -524,8 +534,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
     t.string "email"
     t.boolean "active"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "zone"
     t.string "status"
     t.index ["email"], name: "index_newsletter_subscriptions_on_email"
@@ -546,8 +556,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
 
   create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|
     t.string "filename", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["filename"], name: "index_old_atd_synchronizations_on_filename", unique: true
   end
 
@@ -556,16 +566,16 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "atd_id", null: false
     t.string "tel_hash"
     t.string "mail_hash"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["atd_id", "user_id"], name: "index_old_atd_users_on_atd_id_and_user_id", unique: true
   end
 
   create_table "old_encounters", id: :integer, default: -> { "nextval('encounters_id_seq'::regclass)" }, force: :cascade do |t|
-    t.datetime "date"
+    t.datetime "date", precision: nil
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "street_person_name"
     t.float "latitude"
     t.float "longitude"
@@ -580,8 +590,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "entourage_id"
     t.float "distance"
     t.integer "feed_rank"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "source", default: "newsfeed"
     t.integer "user_id", null: false
     t.index ["entourage_id"], name: "index_entourage_displays_on_entourage_id"
@@ -592,8 +602,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "description"
     t.string "phone"
     t.string "address"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "logo_url"
     t.string "local_entity"
     t.string "email"
@@ -607,23 +617,23 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "title", null: false
     t.string "answer_type", null: false
     t.integer "organization_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["organization_id"], name: "index_questions_on_organization_id"
   end
 
   create_table "old_registration_requests", id: :integer, default: -> { "nextval('registration_requests_id_seq'::regclass)" }, force: :cascade do |t|
     t.string "status", default: "pending", null: false
     t.string "extra", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "old_simplified_tour_points", id: :integer, default: -> { "nextval('simplified_tour_points_id_seq'::regclass)" }, force: :cascade do |t|
     t.float "latitude", null: false
     t.float "longitude", null: false
     t.integer "tour_id", null: false
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id"
     t.index ["tour_id"], name: "index_simplified_tour_points_on_tour_id"
   end
@@ -633,8 +643,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "area", null: false
     t.string "status", default: "inactive", null: false
     t.string "email", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["area"], name: "index_tour_areas_on_area"
     t.index ["status"], name: "index_tour_areas_on_status"
   end
@@ -643,9 +653,9 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.float "latitude", null: false
     t.float "longitude", null: false
     t.integer "tour_id", null: false
-    t.datetime "passing_time", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "passing_time", precision: nil, null: false
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["tour_id", "created_at"], name: "index_tour_points_on_tour_id_and_created_at"
     t.index ["tour_id", "id"], name: "index_tour_points_on_tour_id_and_id"
     t.index ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude"
@@ -653,12 +663,12 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
 
   create_table "old_tours", id: :integer, default: -> { "nextval('tours_id_seq'::regclass)" }, force: :cascade do |t|
     t.string "tour_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "status"
     t.integer "vehicle_type", default: 0
     t.integer "user_id"
-    t.datetime "closed_at"
+    t.datetime "closed_at", precision: nil
     t.integer "length", default: 0
     t.integer "encounters_count", default: 0, null: false
     t.integer "number_of_people", default: 0, null: false
@@ -673,8 +683,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "key", null: false
     t.string "description"
     t.boolean "active", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["key"], name: "index_options_on_key"
   end
 
@@ -682,8 +692,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "identifier"
     t.integer "recurrency"
     t.boolean "continue"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["identifier"], name: "index_outing_recurrences_on_identifier", unique: true
   end
 
@@ -695,9 +705,9 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "invitee_role_title"
     t.integer "invitee_id"
     t.string "token", null: false
-    t.datetime "invited_at", null: false
-    t.datetime "accepted_at"
-    t.datetime "deleted_at"
+    t.datetime "invited_at", precision: nil, null: false
+    t.datetime "accepted_at", precision: nil
+    t.datetime "deleted_at", precision: nil
     t.string "status", null: false
     t.index ["partner_id", "invitee_email"], name: "index_pending_partner_invitations_on_partner_and_invitee_email", unique: true, where: "((status)::text = 'pending'::text)"
     t.index ["partner_id", "invitee_id"], name: "index_accepted_partner_invitations_on_partner_and_invitee_id", unique: true, where: "((status)::text = 'accepted'::text)"
@@ -710,8 +720,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "postal_code"
     t.string "new_partner_name"
     t.string "partner_role_title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["user_id"], name: "index_partner_join_requests_on_user_id"
   end
 
@@ -719,8 +729,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "name", null: false
     t.string "large_logo_url"
     t.string "small_logo_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "description"
     t.string "phone"
     t.string "address"
@@ -739,8 +749,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.text "description"
     t.float "latitude"
     t.float "longitude"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "adress"
     t.string "phone"
     t.string "website"
@@ -773,8 +783,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "recommandation_images", force: :cascade do |t|
     t.string "title"
     t.string "image_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "recommandations", force: :cascade do |t|
@@ -782,8 +792,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "image_url"
     t.string "instance", null: false
     t.string "action", default: "show", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.jsonb "user_goals", default: [], null: false
     t.string "status", default: "active", null: false
     t.integer "position_offer_help"
@@ -802,8 +812,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "resource_images", force: :cascade do |t|
     t.string "title"
     t.string "image_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "resources", force: :cascade do |t|
@@ -812,8 +822,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "description"
     t.string "image_url"
     t.string "url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "duration"
     t.boolean "is_video", default: false
     t.string "status", default: "active", null: false
@@ -849,9 +859,9 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
 
   create_table "rpush_feedback", force: :cascade do |t|
     t.string "device_token"
-    t.datetime "failed_at", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "failed_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "app_id"
     t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
   end
@@ -864,14 +874,14 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.text "data"
     t.integer "expiry", default: 86400
     t.boolean "delivered", default: false, null: false
-    t.datetime "delivered_at"
+    t.datetime "delivered_at", precision: nil
     t.boolean "failed", default: false, null: false
-    t.datetime "failed_at"
+    t.datetime "failed_at", precision: nil
     t.integer "error_code"
     t.text "error_description"
-    t.datetime "deliver_after"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deliver_after", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "alert_is_json", default: false, null: false
     t.string "type", null: false
     t.string "collapse_key"
@@ -880,7 +890,7 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "app_id", null: false
     t.integer "retries", default: 0
     t.string "uri"
-    t.datetime "fail_after"
+    t.datetime "fail_after", precision: nil
     t.boolean "processing", default: false, null: false
     t.integer "priority"
     t.text "url_args"
@@ -899,8 +909,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "klass", null: false
     t.string "developer_name"
     t.string "salesforce_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["salesforce_id"], name: "index_salesforce_configs_on_salesforce_id"
   end
 
@@ -918,8 +928,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "record_type", null: false
     t.integer "record_id", null: false
     t.text "matches", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true
   end
 
@@ -931,16 +941,22 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.index ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true
   end
 
-# Could not dump table "sms_deliveries" because of following StandardError
-#   Unknown type 'sms_delivery_status' for column 'status'
+  create_table "sms_deliveries", id: :serial, force: :cascade do |t|
+    t.string "phone_number"
+    t.enum "status", enum_type: "sms_delivery_status"
+    t.string "sms_type"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.enum "provider", enum_type: "sms_delivery_provider"
+  end
 
   create_table "store_daily_reports", id: :serial, force: :cascade do |t|
     t.string "store_id"
     t.string "app_name"
     t.date "report_date"
     t.integer "nb_downloads"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["report_date", "app_name", "store_id"], name: "index_store_daily_reports_date_store_app", unique: true
   end
 
@@ -948,8 +964,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "chat_message_id", null: false
     t.jsonb "responses", default: []
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["chat_message_id"], name: "index_survey_responses_on_chat_message_id"
     t.index ["user_id"], name: "index_survey_responses_on_user_id"
   end
@@ -957,8 +973,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "surveys", force: :cascade do |t|
     t.jsonb "choices", default: []
     t.boolean "multiple", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.jsonb "summary", default: []
   end
 
@@ -969,7 +985,7 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "tagger_type"
     t.integer "tagger_id"
     t.string "context", limit: 128
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.string "tenant", limit: 128
     t.index ["context"], name: "index_taggings_on_context"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
@@ -985,8 +1001,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
 
   create_table "tags", id: :serial, force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
@@ -995,17 +1011,17 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "tour_id", null: false
     t.string "status", default: "pending", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "last_message_read"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "last_message_read", precision: nil
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
   end
 
   create_table "translations", force: :cascade do |t|
     t.integer "instance_id", null: false
     t.string "instance_type", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.jsonb "fr", default: {}, null: false
     t.jsonb "en", default: {}, null: false
     t.jsonb "de", default: {}, null: false
@@ -1023,8 +1039,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "device_os", null: false
     t.string "version", null: false
     t.integer "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "device_family"
     t.string "notifications_permissions"
     t.index ["push_token"], name: "index_user_applications_on_push_token", unique: true
@@ -1034,8 +1050,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "user_blocked_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "blocked_user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["blocked_user_id"], name: "index_user_blocked_users_on_blocked_user_id"
     t.index ["user_id", "blocked_user_id"], name: "index_user_blocked_users_on_user_id_and_blocked_user_id", unique: true
     t.index ["user_id"], name: "index_user_blocked_users_on_user_id"
@@ -1047,8 +1063,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "last_join_request_id"
     t.integer "last_private_chat_message_id"
     t.integer "last_group_chat_message_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["last_created_action_id"], name: "index_user_denorms_on_last_created_action_id"
     t.index ["last_group_chat_message_id"], name: "index_user_denorms_on_last_group_chat_message_id"
     t.index ["last_join_request_id"], name: "index_user_denorms_on_last_join_request_id"
@@ -1061,8 +1077,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "updater_id"
     t.string "kind", null: false
     t.jsonb "metadata", default: {}
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["kind"], name: "index_user_histories_on_kind"
     t.index ["updater_id"], name: "index_user_histories_on_updater_id"
     t.index ["user_id"], name: "index_user_histories_on_user_id"
@@ -1087,8 +1103,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "phone_was", null: false
     t.string "phone", null: false
     t.string "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["admin_id"], name: "index_user_phone_changes_on_admin_id"
     t.index ["kind"], name: "index_user_phone_changes_on_kind"
     t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
@@ -1099,8 +1115,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.integer "reaction_id", null: false
     t.integer "instance_id", null: false
     t.string "instance_type", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["instance_id", "instance_type"], name: "index_user_reactions_on_instance_id_and_instance_type"
     t.index ["reaction_id"], name: "index_user_reactions_on_reaction_id"
   end
@@ -1108,17 +1124,17 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   create_table "user_recommandations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "recommandation_id"
-    t.datetime "completed_at"
-    t.datetime "congrats_at"
-    t.datetime "skipped_at"
+    t.datetime "completed_at", precision: nil
+    t.datetime "congrats_at", precision: nil
+    t.datetime "skipped_at", precision: nil
     t.string "name"
     t.string "image_url"
     t.string "action", null: false
     t.string "instance", null: false
     t.integer "instance_id"
     t.string "instance_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "fragment"
     t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
     t.index ["instance"], name: "index_user_recommandations_on_instance"
@@ -1134,8 +1150,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "email"
     t.string "first_name"
     t.string "last_name"
@@ -1154,18 +1170,18 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.string "validation_status", default: "validated", null: false
     t.boolean "deleted", default: false, null: false
     t.integer "marketing_referer_id", default: 1, null: false
-    t.datetime "last_sign_in_at"
+    t.datetime "last_sign_in_at", precision: nil
     t.boolean "old_atd_friend", default: false, null: false
     t.boolean "use_suggestions", default: false, null: false
     t.string "about", limit: 200
     t.string "community", limit: 9, null: false
     t.string "encrypted_password"
     t.jsonb "roles", default: [], null: false
-    t.datetime "first_sign_in_at"
-    t.datetime "onboarding_sequence_start_at"
+    t.datetime "first_sign_in_at", precision: nil
+    t.datetime "onboarding_sequence_start_at", precision: nil
     t.integer "address_id"
     t.boolean "accepts_emails_deprecated", default: true, null: false
-    t.datetime "last_email_sent_at"
+    t.datetime "last_email_sent_at", precision: nil
     t.string "targeting_profile"
     t.integer "partner_id"
     t.boolean "partner_admin", default: false, null: false
@@ -1175,9 +1191,9 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"
     t.string "reset_admin_password_token"
-    t.datetime "reset_admin_password_sent_at"
+    t.datetime "reset_admin_password_sent_at", precision: nil
     t.boolean "super_admin", default: false
-    t.datetime "unblock_at"
+    t.datetime "unblock_at", precision: nil
     t.integer "travel_distance", default: 40
     t.string "birthday", limit: 5
     t.string "other_interest"
@@ -1201,8 +1217,8 @@ ActiveRecord::Schema[6.1].define(version: 202401111415004) do
     t.bigint "user_id"
     t.bigint "resource_id"
     t.boolean "watched", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["resource_id"], name: "index_users_resources_on_resource_id"
     t.index ["user_id", "resource_id"], name: "index_users_resources_on_user_id_and_resource_id", unique: true
     t.index ["user_id"], name: "index_users_resources_on_user_id"
