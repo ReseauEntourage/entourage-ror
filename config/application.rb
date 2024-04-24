@@ -46,7 +46,8 @@ module EntourageBack
     config.action_mailer.default_url_options = { :host => ENV["HOST"] }
 
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#per-form-csrf-tokens
-    # config.action_controller.per_form_csrf_tokens = true
+    config.action_controller.per_form_csrf_tokens = true
+    config.action_controller.forgery_protection_origin_check = true
 
     config.tinymce.install = :copy
 
