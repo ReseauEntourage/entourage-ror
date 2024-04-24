@@ -1,5 +1,5 @@
 module EntourageServices
-  class InviteNewUserBySMS
+  class InviteNewUserBySms
 
     def initialize(phone_number:, entourage:, inviter:)
       @phone_number = phone_number
@@ -22,7 +22,7 @@ module EntourageServices
           invite.save!
           relationship.save!
 
-          Rails.logger.info "InviteNewUserBySMS : sending #{message} to #{phone_number}"
+          Rails.logger.info "InviteNewUserBySms : sending #{message} to #{phone_number}"
           SmsSenderJob.perform_later(phone_number, message, 'invite')
           invite
         end
