@@ -406,8 +406,6 @@ describe Api::V1::ContributionsController, :type => :controller do
 
     ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-contribution"}'
 
-    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
-
     context "valid params" do
       before {
         expect_any_instance_of(SlackServices::SignalContribution).to receive(:notify)
