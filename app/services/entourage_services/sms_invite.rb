@@ -39,7 +39,7 @@ module EntourageServices
     end
 
     def invite_new_user_by_sms
-      EntourageServices::InviteNewUserBySMS.new(phone_number: phone_number, entourage: entourage, inviter: inviter)
+      EntourageServices::InviteNewUserBySms.new(phone_number: phone_number, entourage: entourage, inviter: inviter)
     end
 
     def invitee
