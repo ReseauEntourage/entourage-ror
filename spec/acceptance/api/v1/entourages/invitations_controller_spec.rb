@@ -31,8 +31,6 @@ resource Api::V1::Entourages::InvitationsController do
 
     ENV['SLACK_WEBHOOK_URL'] = "https://url.to.slack.com"
 
-    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
-
     context '201' do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: :accepted) }
 

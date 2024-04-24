@@ -22,7 +22,7 @@ module UserServices
       UserService.sync_roles(user)
 
       if user.save
-        UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
+        UserServices::SmsSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         callback.on_success.try(:call, user)
       else
         return callback.on_duplicate(user) if User.where(phone: params[:phone]).count>0

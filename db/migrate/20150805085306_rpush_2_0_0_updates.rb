@@ -68,12 +68,9 @@ class Rpush200Updates < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     remove_column :rpush_notifications, :processing
   end
 
-  def self.adapter_name
-    env = (defined?(Rails) && Rails.env) ? Rails.env : 'development'
-    Hash[ActiveRecord::Base.configurations[env].map { |k,v| [k.to_sym,v] }][:adapter]
+  def self.postgresql?
+    config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'primary').configuration_hash
+    config[:adapter] =~ /postgresql|postgis/
   end
 
-  def self.postgresql?
-    adapter_name =~ /postgresql|postgis/
-  end
 end

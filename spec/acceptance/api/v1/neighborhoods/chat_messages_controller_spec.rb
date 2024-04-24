@@ -144,8 +144,6 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     ENV['ADMIN_HOST'] = 'https://this.is.local'
     ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
-    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
-
     context '201' do
       example_request 'Report neighborhood' do
         expect(response_status).to eq(201)
