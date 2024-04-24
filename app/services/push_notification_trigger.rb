@@ -578,8 +578,8 @@ class PushNotificationTrigger
       instance: @record.chat_message.messageable,
       users: [@record.chat_message.user],
       params: {
-        object: I18nStruct.new(i18n: 'push_notifications.survey_response.create', i18n_args: [username(@record.user), title(@record.chat_message.messageable)]),
-        content: I18nStruct.new(instance: @record.chat_message, field: :content),
+        object: title(@record.chat_message.messageable),
+        content: I18nStruct.new(i18n: 'push_notifications.survey_response.create', i18n_args: [username(@record.user), I18nStruct.new(instance: @record.chat_message, field: :content)]),
         extra: {
           tracking: :survey_response_on_create,
         }
