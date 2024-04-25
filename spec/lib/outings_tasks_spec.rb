@@ -4,11 +4,13 @@ require 'tasks/outing_tasks'
 describe OutingTasks do
   let(:user) { create :admin_user, partner: create(:partner, staff: true) }
   let(:status) { :open }
+  let(:online) { false }
   let(:notification_sent_at) { nil }
   let(:starts_at) { 1.hour.from_now }
 
   let(:outing) { create :outing,
     status: status,
+    online: online,
     notification_sent_at: notification_sent_at,
     user: user,
     metadata: { starts_at: starts_at }
@@ -57,6 +59,12 @@ describe OutingTasks do
 
     context "outside of upcoming delay" do
       let(:starts_at) { OutingTasks::UPCOMING_DELAY + 1.hour }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context "online" do
+      let(:online) { true }
 
       it { expect(subject).not_to include(outing.id) }
     end
