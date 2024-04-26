@@ -385,6 +385,8 @@ fr:
     solicitation:
       create: "Un voisin recherche une aide"
       create_section: "Un voisin recherche un %s"
+    survey_response:
+      create: "%s a répondu à votre sondage : %s"
 
   timeliner:
     h1:
