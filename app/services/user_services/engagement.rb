@@ -32,7 +32,7 @@ module UserServices
       end
 
       def stacked_by group = :month
-        [
+        fill_in_with_all_dates [
           {
             name: I18n.t("charts.users.member_outings"),
             data: outings_join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
@@ -54,6 +54,20 @@ module UserServices
             data: private_chat_messages_by(group).map { |date, count| [date.to_date.to_s, count] }
           }
         ]
+      end
+
+      # hack to force rendering with ordered dates
+      def fill_in_with_all_dates charts
+        all_dates = charts.flat_map { |category| category[:data].map { |entry| entry[0] } }.uniq.sort
+
+        complete_data = charts.map do |category|
+          complete_dates = all_dates.map do |date|
+            found_entry = category[:data].find { |entry| entry[0] == date }
+            [date, found_entry ? found_entry[1] : 0]
+          end
+
+          { name: category[:name], data: complete_dates }
+        end
       end
 
       # memberships
