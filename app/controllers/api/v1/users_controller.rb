@@ -69,11 +69,6 @@ module Api
         builder = UserServices::PublicUserBuilder.new(params: update_params, community: community)
         builder.update(user: @current_user, platform: api_request.platform) do |on|
           on.success do |user|
-            mixpanel.sync_changes(user, {
-              'first_name' => '$first_name',
-              'email' => '$email'
-            })
-
             render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: user, displayed_user: user)
           end
 
@@ -88,8 +83,6 @@ module Api
         builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
         builder.create(send_sms: true) do |on|
           on.success do |user|
-            mixpanel.distinct_id = user.id
-            mixpanel.track("Created Account")
             render json: user, status: 201, serializer: ::V1::Users::PhoneOnlySerializer
           end
 

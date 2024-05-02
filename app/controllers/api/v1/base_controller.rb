@@ -65,20 +65,6 @@ module Api
 
             current_user.update_column(:last_sign_in_at, Time.zone.now)
             current_user.sync_salesforce
-
-            mixpanel.track("Opened App", {
-              "First Session" => first_session
-            })
-            mixpanel.track("Reactivated", { "Threshold (Months)" => 2 }) if reactivated
-            mixpanel.set_once("First Seen" => current_user.last_sign_in_at)
-            # TODO(partner)
-            # "Partner Badge" => current_user.default_partner.try(:name)
-            mixpanel.set(
-              '$first_name' => current_user.first_name,
-              '$last_name' => current_user.last_name,
-              '$email' => current_user.email,
-              'user_id' => UserServices::EncodedId.encode(current_user.id)
-            )
           end
         else
           render json: {message: 'unauthorized'}, status: :unauthorized
@@ -152,18 +138,6 @@ module Api
 
       def api_request_platform
         @api_request_platform ||= api_request.key_infos.try(:[], :device)
-      end
-
-      def mixpanel
-        @mixpanel ||= MixpanelService.new(
-          distinct_id: current_user.try(:id),
-          default_properties: {
-            'Platform' => api_request_platform,
-            '$app_version_string' => api_request.key_infos.try(:[], :version),
-            'ip' => request.remote_ip
-          },
-          event_prefix: "Backend"
-        )
       end
 
       def per
