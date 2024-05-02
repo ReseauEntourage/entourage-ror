@@ -90,7 +90,6 @@ module Api
         ensure_permission! :can_read_public_content?
 
         is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
-        mixpanel.track("Displayed Entourage", mp_params) unless current_user_or_anonymous.anonymous?
         include_last_message = params[:include_last_message] == 'true'
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user_or_anonymous, include_last_message: include_last_message}
       end
@@ -100,10 +99,6 @@ module Api
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.create do |on|
           on.success do |entourage|
-            mixpanel.track("Displayed Entourage")
-            mixpanel.track("Requested to join Entourage")
-            mixpanel.track("Wrote Message in Entourage")
-            mixpanel.track("Created Entourage")
             render json: entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
           end
 
