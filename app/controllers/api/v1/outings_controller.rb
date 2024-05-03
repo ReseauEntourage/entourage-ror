@@ -137,6 +137,10 @@ module Api
         end
       end
 
+      def monthly_averages
+        render json: OutingsServices::Finder.new(current_user, index_params).monthly_averages
+      end
+
       private
 
       def set_outing

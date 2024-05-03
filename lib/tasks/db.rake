@@ -1,16 +1,7 @@
 namespace :db do
-  task :stats do
-    connection = ActiveRecord::Base.connection
-    counts = {}
-
-    connection.tables.map do |table|
-      result = ActiveRecord::Base.connection.execute("select count(*) from #{table}")
-      counts[table] = result.entries.first['count'].to_i
-      result.clear
-    end
-
-    counts.sort_by(&:last).each do |table, count|
-      puts "#{table}: #{count}"
-    end
+  desc "Refresh materialized view"
+  task refresh_sales_summary: :environment do
+    ActiveRecord::Base.connection.execute("REFRESH MATERIALIZED VIEW monthly_outings")
+    puts "Materialized view monthly_outings has been refreshed."
   end
 end

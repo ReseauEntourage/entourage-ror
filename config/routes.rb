@@ -490,6 +490,7 @@ Rails.application.routes.draw do
           post :duplicate
           post :report
           post :cancel
+          get :monthly_averages
         end
 
         resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :show, :create, :update, :destroy] do
