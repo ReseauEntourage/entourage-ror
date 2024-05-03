@@ -1,8 +1,8 @@
 
 # Prerequisites
 
-Ruby 2.7.1
-Rails 5.2.6
+Ruby 3.1.0
+Rails 6.1.X
 
 rbenv or rvm recommanded
 
@@ -72,6 +72,9 @@ docker-compose exec --env RAILS_ENV=development postgresql psql postgres://guest
 See `docker-compose.yml` for more details.
 
 # Local install
+
+gem install rails -v 6.1
+
 
 ## Resolve dependencies and database migration
 
