@@ -38,8 +38,6 @@ module Api
                   postcode: user.address&.postal_code,
                   utm_term: "db#{UserServices::EncodedId.encode(user.id)}"
                 }.to_query
-
-                mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "dons2019" })
               else
                 url += "&utm_term=anonymous"
               end
