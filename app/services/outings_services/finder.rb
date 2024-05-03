@@ -29,6 +29,10 @@ module OutingsServices
       outings.group(:id)
     end
 
+    def monthly_averages
+      MonthlyOuting.monthly_averages(latitude, longitude)
+    end
+
     private
 
     def box
