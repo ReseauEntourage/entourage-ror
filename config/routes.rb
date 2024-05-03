@@ -484,6 +484,10 @@ Rails.application.routes.draw do
       end
 
       resources :outings do
+        collection do
+          get :monthly_averages
+        end
+
         member do
           put :batch_update
           get :siblings
