@@ -105,7 +105,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "comments_count", default: 0
     t.index "((metadata -> 'conversation_message_broadcast_id'::text))", name: "chat_messages_conversation_message_broadcast_id", using: :hash
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
-    t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
     t.index ["message_type"], name: "index_chat_messages_on_message_type"
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
@@ -325,6 +324,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "notification_sent_at"
     t.datetime "working_hours_sent_at"
     t.integer "number_of_confirmed_people", default: 0
+    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
@@ -391,7 +391,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "post_id"
     t.integer "sender_id"
     t.string "title"
-    t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
@@ -414,7 +413,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "confirmed_at"
     t.index ["confirmed_at"], name: "index_join_requests_on_confirmed_at"
     t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
-    t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests"
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
   end
 
