@@ -53,4 +53,16 @@ describe PoiServices::SoliguideIndex do
       ) }
     end
   end
+
+  # verify async method is reachable
+  # @see app/controllers/api/v1/pois_controller#index
+  describe 'async' do
+    subject { AsyncService.new(described_class).post_only_query(Hash.new) }
+
+    context 'no response' do
+      after { subject }
+
+      it { expect(described_class).to receive(:post_only_query) }
+    end
+  end
 end

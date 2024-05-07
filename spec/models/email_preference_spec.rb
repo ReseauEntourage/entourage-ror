@@ -38,4 +38,18 @@ describe EmailPreference, type: :model do
       end
     end
   end
+
+  # verify async method is reachable
+  # @see app/models/email_preference#sync_newsletter!
+  describe 'async' do
+    let(:email_preference) { create :email_preference }
+
+    subject { AsyncService.new(described_class).sync_newsletter(email_preference.id) }
+
+    context 'no response' do
+      after { subject }
+
+      it { expect(described_class).to receive(:sync_newsletter) }
+    end
+  end
 end

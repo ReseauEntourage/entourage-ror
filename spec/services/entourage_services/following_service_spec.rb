@@ -65,4 +65,18 @@ describe FollowingService do
       }
     end
   end
+
+  # verify async method is reachable
+  # @see app/services/entourage_services/entourage_builder#create
+  describe 'async' do
+    let(:entourage) { create :entourage }
+
+    subject { AsyncService.new(described_class).on_create_entourage(entourage) }
+
+    context 'no response' do
+      after { subject }
+
+      it { expect(described_class).to receive(:on_create_entourage) }
+    end
+  end
 end

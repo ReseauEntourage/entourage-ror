@@ -44,4 +44,18 @@ describe DigestEmailService, type: :service do
       )
     end
   end
+
+  # verify async method is reachable
+  # @see app/services/digest_email_service#deliver_scheduled!
+  describe 'async' do
+    let(:digest_email) { create :digest_email, status: :scheduled }
+
+    subject { AsyncService.new(described_class).deliver(digest_email) }
+
+    context 'no response' do
+      after { subject }
+
+      it { expect(described_class).to receive(:deliver) }
+    end
+  end
 end

@@ -97,4 +97,20 @@ describe UserServices::AddressService do
       it { expect(address.reload.city).to eq('Lille') }
     end
   end
+
+  # verify async method is reachable
+  context "async" do
+    before { described_class.any_instance.stub(:can_update?).with(kind_of(Hash), [:place_name, :latitude, :longitude]).and_return(false) }
+    before { described_class.any_instance.stub(:can_update?).with(kind_of(Address), [:postal_code, :country]).and_return(true) }
+
+    let(:address) { FactoryBot.create(:address) }
+    let(:user) { FactoryBot.create(:public_user, addresses: [address]) }
+    let(:params) { { google_place_id: 'paris_google_place_id' } }
+
+    let(:subject) { described_class.new(user: user, position: 1, params: params).update }
+
+    after { subject }
+
+    it { expect(described_class).to receive(:update_with_google_place_details) }
+  end
 end

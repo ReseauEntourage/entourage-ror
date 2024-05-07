@@ -43,4 +43,20 @@ describe EntourageServices::GeocodingService do
       expect(entourage.metadata[:display_address]).to eq 'Paris (75012)'
     end
   end
+
+  # verify async method is reachable
+  # @see app/services/entourage_services/geocoding_service#geocode_async
+  describe 'async' do
+    before { Geocoder.stub(:search).and_return(Hash.new) }
+
+    let!(:entourage) { create :entourage }
+
+    subject { AsyncService.new(described_class).geocode(entourage) }
+
+    context 'no response' do
+      after { subject }
+
+      it { expect(described_class).to receive(:geocode) }
+    end
+  end
 end
