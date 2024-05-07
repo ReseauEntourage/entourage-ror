@@ -12,7 +12,6 @@
 
 ActiveRecord::Schema[7.0].define(version: 202401111415004) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -225,6 +224,16 @@ ActiveRecord::Schema[7.0].define(version: 202401111415004) do
     t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true
   end
 
+  create_table "entourage_areas", force: :cascade do |t|
+    t.string "postal_code"
+    t.boolean "antenne"
+    t.string "geo_zone"
+    t.string "display_name"
+    t.string "city"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
     t.integer "entourage_id", null: false
     t.datetime "max_chat_message_created_at", precision: nil
@@ -420,10 +429,9 @@ ActiveRecord::Schema[7.0].define(version: 202401111415004) do
     t.datetime "email_notification_sent_at", precision: nil
     t.datetime "archived_at", precision: nil
     t.string "report_prompt_status"
-    t.datetime "confirmed_at"
+    t.datetime "confirmed_at", precision: nil
     t.index ["confirmed_at"], name: "index_join_requests_on_confirmed_at"
     t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
-    t.index ["requested_at", "created_at"], name: "index_join_requests_on_requested_at_and_created_at"
     t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests"
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
   end
