@@ -1,0 +1,2 @@
+class EntourageArea < ApplicationRecord
+end
