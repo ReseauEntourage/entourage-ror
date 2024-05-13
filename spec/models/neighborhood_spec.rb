@@ -200,4 +200,10 @@ RSpec.describe Neighborhood, :type => :model do
 
     it { expect(Experimental::NeighborhoodSlack).to have_received(:notify) }
   end
+
+  describe "share_url" do
+    let(:neighborhood) { create(:neighborhood) }
+
+    it { expect(neighborhood.share_url).to match(/neighborhoods/) }
+  end
 end
