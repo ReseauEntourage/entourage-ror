@@ -1,8 +1,8 @@
 
 # Prerequisites
 
-Ruby 2.7.1
-Rails 5.2.6
+Ruby 3.1.0
+Rails 7.0.8.1
 
 rbenv or rvm recommanded
 
@@ -24,54 +24,7 @@ Note that the `.env` file is used for all Rails environments. If you want to tar
 
 You will find more informations about this in the `dotenv` gem's [README](https://github.com/bkeepers/dotenv/blob/master/README.md).
 
-# Docker
-
-You can run this application using Docker.
-
-There is a wrapper, `bin/d`, that allows you to run command in the correct
-container.
-
-Example :
-
-```bash
-bin/d # Shows help
-bin/d up # Setup needed containers
-# bin/d gem install bundler -v '2.2.16'
-# bin/d bundle install
-bin/d bundle exec rake db:migrate
-bin/d foreman start web
-```
-
-You can run below commands prepending `bin/d` to them and it will run in the
-container !
-
-*Note:* after modifying the `Dockerfile`, you might need to run
-
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml build spring
-```
-
-This commands mirrors what happens in `bin/docker/up` to build the `dev` variant of the Docker image.
-TODO: there has to be a simple way to do this. We should update the `bin/docker/*` script as needed or at least create one for this.
-
-# Docker - Tests
-
-```bash
-RAILS_ENV=test bin/d bundle exec rake db:drop db:create db:migrate
-RAILS_ENV=test bin/d bundle exec rspec
-```
-
-# Docker - Psql
-
-If you want to connect directly to docker psql, use:
-
-```bash
-docker-compose exec --env RAILS_ENV=development postgresql psql postgres://guest:guest@postgresql:5432/entourage-dev
-```
-
-See `docker-compose.yml` for more details.
-
-# Local install
+# Install
 
 ## Resolve dependencies and database migration
 
@@ -126,7 +79,7 @@ Then, browse `admin.entourage.localhost:<port>`.
 Setup database :
 
 ```bash
-rake db:drop db:create db:migrate RAILS_ENV=test
+RAILS_ENV=test rake db:drop db:create db:migrate
 ```
 
 Run tests with
@@ -192,57 +145,6 @@ entourage-dev=# SELECT PostGIS_version();
 To profile a request (in a puma worker):
 ```bash
 bin/d -u root -- rbspy record --pid $(cat tmp/puma.pid) --subprocesses --file flamegraph
-```
-
-# Dredd tests (Deprecated)
-
-Test the API documentation compliance with [Dredd](https://github.com/apiaryio/dredd)
-
-## Install Dredd
-
-```bash
-$ npm install -g dredd
-```
-
-## Setup database for Dredd tests:
-- Reset DB to reset id sequence
-- Populate database with Dredd specific seeds (cf file ./db/seeds/dredd.rb)
-
-```bash
-$ rake db:reset dredd:seeds
-```
-
-### rake dredd:seeds task description:
-- Removes all newsletter subscriptions
-- Removes all users
-- Generates the dredd user
-
-## Run Dredd
-
-```bash
-$ rake dredd
-```
-
-## Dredd config
-
-Dredd options are listed in dredd.yml file
-
-# Guard
-
-## Guard Rspec (default)
-
-Launch automatically tests with:
-
-```bash
-$ bundle exec guard
-```
-
-## Guard Api blueprint
-
-Launch automatically dredd and aglio (static documentation generation) with:
-
-```bash
-$ bundle exec guard -g apib
 ```
 
 ## Redirection to app stores :
