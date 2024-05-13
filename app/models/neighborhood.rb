@@ -304,6 +304,12 @@ class Neighborhood < ApplicationRecord
     self.image_url = nil
   end
 
+  def share_url
+    return unless uuid_v2
+
+    "#{ENV['MOBILE_HOST']}/app/neighborhoods/#{uuid_v2}"
+  end
+
   private
 
   def track_status_change

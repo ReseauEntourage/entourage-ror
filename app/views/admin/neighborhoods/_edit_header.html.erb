@@ -1,6 +1,9 @@
 <ol class="breadcrumb">
   <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
   <li class="active">Modifier</li>
+  <li style="float: right;">
+    <%= link_to nil, @neighborhood.share_url, target: :_blank %>
+  </li>
 </ol>
 
 <h2>
