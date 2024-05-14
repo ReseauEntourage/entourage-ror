@@ -83,6 +83,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "phone" => user.phone,
               "unread_count" => 0,
               "interests" => [],
+              "involvements" => [],
+              "concerns" => [],
               "travel_distance" => 40,
               "birthday" => nil,
               "permissions" => {
@@ -354,17 +356,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      # interest_list
       context 'interest_list' do
         context 'good value' do
           before { patch 'update', params: { token: user.token, user: { interest_list: "sport, culture" } } }
-          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
+          it { expect(result['user']).to include('interests' => match_array(['culture', 'sport'])) }
         end
       end
 
       context 'interests as a string' do
         context 'good value' do
           before { patch 'update', params: { token: user.token, user: { interests: "sport, culture" } } }
-          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
+          it { expect(result['user']).to include('interests' => match_array(['culture', 'sport'])) }
         end
       end
 
@@ -378,14 +381,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context 'interests as an array' do
         context 'good value' do
           before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"], other_interest: 'foo' } } }
-          it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
+          it { expect(result['user']).to include('interests' => match_array(['culture', 'sport', 'other'])) }
         end
       end
 
       context 'interests as an array' do
         context 'good value' do
           before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"], other_interest: 'foo' } } }
-          it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
+          it { expect(result['user']).to include('interests' => match_array(['culture', 'sport', 'other'])) }
         end
       end
 
@@ -400,6 +403,106 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           before { patch 'update', params: { token: user.token, user: { interests: ["event_riverain", "m_informer_riverain"] } } }
           it { expect(response.status).to eq(200) }
           it { expect(result['user']).to include('interests' => []) }
+        end
+      end
+
+      # involvement_list
+      context 'involvement_list' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { involvement_list: "resources, outings" } } }
+          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources'])) }
+        end
+      end
+
+      context 'involvements as a string' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { involvements: "resources, outings" } } }
+          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources'])) }
+        end
+      end
+
+      context 'involvements as an array' do
+        context 'good value when other_involvement is missing is also valid' do
+          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "both_actions"] } } }
+          it { expect(response.status).to eq(200) }
+        end
+      end
+
+      context 'involvements as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "both_actions"] } } }
+          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources', 'both_actions'])) }
+        end
+      end
+
+      context 'involvements as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { involvements: ["resources", "outings", "both_actions"] } } }
+          it { expect(result['user']).to include('involvements' => match_array(['outings', 'resources', 'both_actions'])) }
+        end
+      end
+
+      context 'involvements as an array' do
+        context 'wrong value' do
+          before { patch 'update', params: { token: user.token, user: { involvements: ["foo", "bar"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('involvements' => []) }
+        end
+
+        context 'wrong value as v7 involvements' do
+          before { patch 'update', params: { token: user.token, user: { involvements: ["event_riverain", "m_informer_riverain"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('involvements' => []) }
+        end
+      end
+
+      # concern_list
+      context 'concern_list' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { concern_list: "sharing_time, material_donations" } } }
+          it { expect(result['user']).to include('concerns' => match_array(['material_donations', 'sharing_time'])) }
+        end
+      end
+
+      context 'concerns as a string' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { concerns: "sharing_time, material_donations" } } }
+          it { expect(result['user']).to include('concerns' => match_array(['material_donations', 'sharing_time'])) }
+        end
+      end
+
+      context 'concerns as an array' do
+        context 'good value when other_concern is missing is also valid' do
+          before { patch 'update', params: { token: user.token, user: { concerns: ["sharing_time", "material_donations", "services"] } } }
+          it { expect(response.status).to eq(200) }
+        end
+      end
+
+      context 'concerns as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { concerns: ["sharing_time", "material_donations", "services"] } } }
+          it { expect(result['user']).to include('concerns' => match_array(['material_donations', 'sharing_time', 'services'])) }
+        end
+      end
+
+      context 'concerns as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { concerns: ["sharing_time", "material_donations", "services"] } } }
+          it { expect(result['user']).to include('concerns' => match_array(['material_donations', 'sharing_time', 'services'])) }
+        end
+      end
+
+      context 'concerns as an array' do
+        context 'wrong value' do
+          before { patch 'update', params: { token: user.token, user: { concerns: ["foo", "bar"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('concerns' => []) }
+        end
+
+        context 'wrong value as v7 concerns' do
+          before { patch 'update', params: { token: user.token, user: { concerns: ["event_riverain", "m_informer_riverain"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('concerns' => []) }
         end
       end
 
@@ -772,6 +875,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
+            "involvements" => [],
+            "concerns" => [],
             "travel_distance" => 40,
             "birthday" => nil,
             "permissions" => {
@@ -860,6 +965,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
+            "involvements" => [],
+            "concerns" => [],
             "travel_distance" => 40,
             "birthday" => nil,
             "permissions" => {
@@ -913,6 +1020,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "outing" => { "creation" => false }
             },
             "interests" => [],
+            "involvements" => [],
+            "concerns" => [],
             "memberships" => [],
             "conversation" => {
               "uuid" => "1_list_#{user.id}-#{other_user.id}"
