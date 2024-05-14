@@ -8,6 +8,9 @@ es:
       cancel: "Este evento programado para el %s ha sido cancelado"
       update: "El evento programado para el %s ha sido modificado. Tendrá lugar el %s a las %s"
       update_short: "El evento programado para el %s ha sido modificado"
+      day_before:
+        title: "🔔 Recordatorio: ¡«%s» tendrá lugar mañana!"
+        content: "No olvides, este evento es para mañana. ¿Sigues viniendo?"
     post:
       create: "%s acaba de compartir: \"%s\""
     comment:

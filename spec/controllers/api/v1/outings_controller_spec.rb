@@ -28,6 +28,20 @@ describe Api::V1::OutingsController do
       it { expect(subject['outings'][0]['id']).to eq(outing.id) }
     end
 
+    context "without confirmed members" do
+      before { get :index, params: { token: user.token } }
+
+      it { expect(subject['outings'][0]['confirmed_members_count']).to eq(0) }
+    end
+
+    context "with confirmed members" do
+      let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, confirmed_at: Time.zone.now, role: :organizer) }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(subject['outings'][0]['confirmed_members_count']).to eq(1) }
+    end
+
     describe 'period' do
       let!(:outing) { create :outing, latitude: latitude, longitude: longitude, metadata: { starts_at: starts_at } }
 

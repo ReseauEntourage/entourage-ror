@@ -49,6 +49,7 @@ class PushNotificationTrigger
 
   attr_reader :record, :method, :changes
 
+  # @param verb Either :create, :update or :destroy. "day_before" has been added
   def initialize record, verb, changes
     @record = record
     @method = "#{record.class.name.underscore}_on_#{verb.to_s}".to_sym
@@ -280,6 +281,29 @@ class PushNotificationTrigger
         }
       )
     end
+  end
+
+  def outing_on_day_before
+    return if @record.place_limit?
+
+    users = @record.accepted_members - [@record.user]
+
+    return if users.none?
+
+    notify(
+      sender_id: @record.user_id,
+      referent: @record,
+      instance: @record,
+      users: users,
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.outing.day_before.title', i18n_args: [title(@record)]),
+        content: I18nStruct.new(i18n: 'push_notifications.outing.day_before.content'),
+        extra: {
+          tracking: :outing_on_day_before,
+          popup: :outing_on_day_before
+        }
+      }
+    )
   end
 
   def chat_message_on_create

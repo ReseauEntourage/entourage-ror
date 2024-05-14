@@ -71,6 +71,7 @@ class Outing < Entourage
   scope :starting_after, -> (from) { where("metadata->>'starts_at' >= ?", from) }
   scope :ending_after, -> (from) { where("metadata->>'ends_at' >= ?", from) }
   scope :upcoming, -> (until_at) { where("metadata->>'starts_at' BETWEEN ? AND ?", Time.zone.now, until_at) }
+  scope :between, -> (from, to) { where("metadata->>'starts_at' BETWEEN ? AND ?", from, to) }
 
   scope :recommandable, -> { self.active.future }
   scope :future_or_ongoing, -> { ending_after(Time.zone.now) }
@@ -252,5 +253,9 @@ class Outing < Entourage
   def set_uuid!
     self.uuid = SecureRandom.uuid
     self.uuid_v2 = self.class.generate_uuid_v2
+  end
+
+  def place_limit?
+    metadata[:place_limit].present? && metadata[:place_limit].to_i > 0
   end
 end

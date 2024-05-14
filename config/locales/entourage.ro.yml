@@ -8,6 +8,9 @@ ro:
       cancel: "Acest eveniment programat pentru %s a fost anulat"
       update: "Evenimentul programat pentru %s a fost modificat. Va avea loc la %s la %s"
       update_short: "Evenimentul programat pentru %s a fost modificat"
+      day_before:
+        title: "🔔 Remindere: „%s” are loc mâine!"
+        content: "Nu uitați, acest eveniment este pentru mâine. Mai veniți?"
     post:
       create: "%s tocmai a distribuit: \"%s\""
     comment:

@@ -366,6 +366,9 @@ fr:
       cancel: "Cet événement prévu le %s vient d'être annulé"
       update: "L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
       update_short: "L'événement prévu le %s a été modifié"
+      day_before:
+        title: "🔔 Rappel : «%s» a lieu demain !"
+        content: "N'oubliez pas, cet événement est pour demain. Est-ce que vous venez toujours ?"
     post:
       create: "%s vient de partager : \"%s\""
     comment:
