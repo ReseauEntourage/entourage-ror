@@ -11,9 +11,11 @@ module UserService
 
   def self.sync_roles user
     return unless user.community == :entourage
+
     roles = user.roles - [:ambassador]
     roles.push :ambassador if user.targeting_profile == 'ambassador'
-    user.roles = roles.sort_by { |r| user.community.roles.index(r) }
+
+    user.roles = roles
   end
 
   def self.external_uuid user
