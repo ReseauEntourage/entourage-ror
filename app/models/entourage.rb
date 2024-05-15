@@ -460,6 +460,10 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  def image_url_with_size image_key, size
+    EntourageImage.storage.public_url_with_size(key: metadata[image_key], size: size)
+  end
+
   def close_entourage_from_user_status! user_status
     @user_status = user_status
 

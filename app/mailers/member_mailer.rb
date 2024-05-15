@@ -41,6 +41,26 @@ class MemberMailer < MailjetMailer
                   }
   end
 
+  # MemberMailer.weekly_planning(user).deliver_later
+  def weekly_planning user, outing_ids
+    return unless outing_ids.any?
+
+    mailjet_email to: user,
+                  template_id: 5935421,
+                  campaign_name: 'planning_hebdo',
+                  variables: {
+                    events: Outing.where(id: outing_ids).limit(3).map do |outing|
+                      {
+                        name: outing.title,
+                        address: outing.metadata[:display_address],
+                        date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
+                        hour: outing.metadata[:ends_at].strftime("%Hh"),
+                        image_url: outing.image_url_with_size(:landscape_url, :medium)
+                      }
+                    end
+                  }
+  end
+
   def poi_report(poi, user, message)
     if ENV.key? "POI_REPORT_EMAIL"
       @poi = poi
