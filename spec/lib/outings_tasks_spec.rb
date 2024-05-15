@@ -58,7 +58,7 @@ describe OutingTasks do
     end
 
     context "outside of upcoming delay" do
-      let(:starts_at) { OutingTasks::UPCOMING_DELAY + 1.hour }
+      let(:starts_at) { OutingTasks::POST_UPCOMING_DELAY + 1.hour }
 
       it { expect(subject).not_to include(outing.id) }
     end
