@@ -15,7 +15,7 @@ describe PoiServices::Soliguide do
         'entity' => { 'name' => 'foo' },
         'position' => {
           'location' => { 'coordinates' => [1, 2] },
-          'codePostal' => '75001'
+          'postalCode' => '75001'
         },
         'languages' => ['en'],
         'services_all' => [{
@@ -40,8 +40,8 @@ describe PoiServices::Soliguide do
         email: nil,
         audience: "",
         category_ids: [],
-        source_category_id: nil,
-        source_category_ids: [],
+        source_category: nil,
+        source_categories: [],
         hours: [],
         languages: "Anglais (English)"
       }) }
@@ -76,7 +76,7 @@ describe PoiServices::Soliguide do
       'entity' => { 'name' => 'foo' },
       'position' => {
         'location' => { 'coordinates' => [1, 2] },
-        'codePostal' => '75001'
+        'postalCode' => '75001'
       },
       'languages' => ['en'],
       'services_all' => [{
@@ -133,38 +133,38 @@ describe PoiServices::Soliguide do
       it { expect(subject).to eq([]) }
     end
 
-    context 'wrong categorie' do
+    context 'wrong category' do
       let(:poi) { { 'services_all' => [
-        { 'categorie' => 1 }
+        { 'category' => "foobar" }
       ] } }
       it { expect(subject).to eq([]) }
     end
 
-    context 'soliguide categorie' do
+    context 'soliguide category' do
       let(:poi) { { 'services_all' => [
-        { 'categorie' => 100 }
+        { 'category' => "health" }
       ] } }
       it { expect(subject).to eq([3]) }
     end
 
-    context 'multiple soliguide categorie' do
+    context 'multiple soliguide category' do
       let(:poi) { { 'services_all' => [
-        { 'categorie' => 100 },
-        { 'categorie' => 101 },
-        { 'categorie' => 203 },
-        { 'categorie' => 303 },
-        { 'categorie' => 304 },
+        { 'category' => "health" },
+        { 'category' => "addiction" },
+        { 'category' => "job_coaching" },
+        { 'category' => "wellness" },
+        { 'category' => "toilets" },
       ] } }
       it { expect(subject).to eq([3, 7, 6, 40]) }
     end
 
-    context 'multiple soliguide categorie with other categories' do
+    context 'multiple soliguide category with other categorys' do
       let(:poi) { { 'services_all' => [
-        { 'categorie' => 204 },
-        { 'categorie' => 704 },
-        { 'categorie' => 1302 },
-        { 'categorie' => 1303 },
-        { 'categorie' => 1305 },
+        { 'category' => "integration_through_economic_activity" },
+        { 'category' => "family_area" },
+        { 'category' => "emergency_accommodation" },
+        { 'category' => "long_term_accomodation" },
+        { 'category' => "access_to_housing" },
       ] } }
       it { expect(subject).to match_array([7, 6, 2]) }
     end
@@ -672,7 +672,7 @@ describe PoiServices::Soliguide do
 
     context 'invalid entourage_category' do
       let(:entourage_category) { 1 }
-      it { expect(subject).to eq([600, 601, 602, 603, 604]) }
+      it { expect(subject).to eq(["food", "food_distribution", "seated_catering", "food_packages", "social_grocery_stores", "baby_parcel", "food_voucher", "shared_kitchen", "cooking_workshop", "community_garden", "solidarity_fridge"]) }
     end
   end
 end

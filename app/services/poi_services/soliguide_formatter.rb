@@ -11,7 +11,7 @@ module PoiServices
       return nil unless poi['position']['location']
       return nil unless poi['services_all']
 
-      source_categories = poi['services_all'].map { |service| service['categorie'] }
+      source_categories = poi['services_all'].map { |service| service['category'] }
       phones = poi['entity']['phones'].presence
       languages = poi['languages'] || []
 
@@ -24,16 +24,16 @@ module PoiServices
         description: format_description(poi['description'], lang),
         longitude: poi['position']['location']['coordinates'][0].round(6),
         latitude: poi['position']['location']['coordinates'][1].round(6),
-        address: poi['position']['adresse'].presence,
-        postal_code: poi['position']['codePostal'].presence,
+        address: poi['position']['address'].presence,
+        postal_code: poi['position']['postalCode'].presence,
         phone: format_phones(phones, lang).first,
         phones: format_phones(phones, lang).join(', '),
         website: poi['entity']['website'].presence,
         email:poi['entity']['mail'].presence,
         audience: format_audience(poi['publics'], poi['modalities'], lang),
         category_ids: format_category_ids(poi, lang),
-        source_category_id: source_categories.compact.first,
-        source_category_ids: source_categories.compact.uniq,
+        source_category: source_categories.compact.first,
+        source_categories: source_categories.compact.uniq,
         hours: format_hours(poi['newhours'], lang),
         languages: languages.map { |l| ISO_LANGS[l.to_sym] }.compact.join(', ')
       }
@@ -52,8 +52,8 @@ module PoiServices
         name: format_title(poi['name'], poi['entity']['name'], lang),
         longitude: poi['position']['location']['coordinates'][0].round(6),
         latitude: poi['position']['location']['coordinates'][1].round(6),
-        address: poi['position']['adresse'],
-        postal_code: poi['position']['codePostal'].presence,
+        address: poi['position']['address'],
+        postal_code: poi['position']['postalCode'].presence,
         phone: poi['entity']['phone'],
         category_id: category_ids.any? ? category_ids[0] : 0,
         partner_id: nil
@@ -68,7 +68,7 @@ module PoiServices
       return [] unless poi['services_all']
 
       poi['services_all'].map do |service|
-        service['categorie']
+        service['category']
       end.map do |category_id|
         CATEGORIES_EQUIVALENTS[category_id]
       end.compact.uniq
@@ -353,171 +353,146 @@ module PoiServices
 
     CATEGORIES_EQUIVALENTS = {
       # Santé (toutes)  Se soigner
-      100 => 3, # SANTE
-      101 => 3, # ADDICTION
-      102 => 3, # DEPISTAGE
-      103 => 3, # PSYCHOLOGIE
-      104 => 3, # SOINS_ENFANTS
-      105 => 3, # GENERALISTE
-      106 => 3, # DENTAIRE
-      107 => 3, # SUIVI_GROSSESSE
-      108 => 3, # VACCINATION
-      109 => 3, # INFIRMERIE
-      110 => 3, # VETERINAIRE
+      "health" => 3, # SANTE
+      "addiction" => 3, # ADDICTION
+      "std_testing" => 3, # DEPISTAGE
+      "psychological_support" => 3, # PSYCHOLOGIE
+      "child_care" => 3, # SOINS_ENFANTS
+      "general_practitioner" => 3, # GENERALISTE
+      "dental_care" => 3, # DENTAIRE
+      "pregnancy_care" => 3, # SUIVI_GROSSESSE
+      "vaccination" => 3, # VACCINATION
+      "infirmary" => 3, # INFIRMERIE
+      "vet_care" => 3, # VETERINAIRE
 
       # Formation et emploi (toutes)  Se réinsérer
-      200 => 7, # FORMATION_EMPLOI
-      201 => 7, # FORMATION_NUMERIQUE
-      202 => 7, # FORMATION_FRANCAIS
-      203 => 7, # ACCOMPAGNEMENT_EMPLOI
-      204 => 7, # INSERTION_ACTIVITE_ECONOMIQUE
-      205 => 7, # SOUTIEN_SCOLAIRE
+      "training_and_jobs" => 7, # FORMATION_EMPLOI
+      "digital_tools_training" => 7, # FORMATION_NUMERIQUE
+      "french_course" => 7, # FORMATION_FRANCAIS
+      "job_coaching" => 7, # ACCOMPAGNEMENT_EMPLOI
+      "integration_through_economic_activity" => 7, # INSERTION_ACTIVITE_ECONOMIQUE
+      "tutoring" => 7, # SOUTIEN_SCOLAIRE
 
       # Hygiène et bien-être  Hygiène et bien-être  S'occuper de soi
-      300 => 6, # HYGIENE
-
-      # Hygiène et bien-être  Douche  Douche
-      301 => 42, # DOUCHE
-
-      # Hygiène et bien-être  Laverie Laverie
-      302 => 43, # LAVERIE
-
-      # Hygiène et bien-être  Bien-être S'occuper de soi
-      303 => 6, # BIEN_ETRE
-
-      # Hygiène et bien-être  Toilettes Toilettes
-      304 => 40, # TOILETTES
-
-      # Hygiène et bien-être  Protections périodiques S'occuper de soi
-      305 => 6, # PROTECTIONS_PERIODIQUES
-
-      # Hygiène et bien-être  Masques Se soigner
-      306 => 3, # MASQUES
+      "hygiene_and_wellness" => 6, # HYGIENE
+      "shower" => 42, # DOUCHE
+      "laundry" => 43, # LAVERIE
+      "wellness" => 6, # BIEN_ETRE
+      "toilets" => 40, # TOILETTES
+      "hygiene_products" => 6, # PROTECTIONS_PERIODIQUES
+      "face_masks" => 3, # MASQUES
 
       # Conseil -> S'orienter
-      400 => 5, # CONSEIL
-      401 => 5, # PERMANENCE_JURIDIQUE
-      402 => 5, # DOMICILIATION
-      403 => 5, # ACCOMPAGNEMENT_SOCIAL
-      404 => 5, # ECRIVAIN_PUBLIC
-      405 => 5, # CONSEIL_HANDICAP
-      406 => 5, # CONSEIL_ADMINISTRATIF
-      407 => 5, # CONSEIL_PARENTS
-      408 => 5, # CONSEIL_BUGDET
+      "counseling" => 5, # CONSEIL
+      "legal_advice" => 5, # PERMANENCE_JURIDIQUE
+      "domiciliation" => 5, # DOMICILIATION
+      "social_accompaniment" => 5, # ACCOMPAGNEMENT_SOCIAL
+      "public_writer" => 5, # ECRIVAIN_PUBLIC
+      "disability_advice" => 5, # CONSEIL_HANDICAP
+      "administrative_assistance" => 5, # CONSEIL_ADMINISTRATIF
+      "parent_assistance" => 5, # CONSEIL_PARENTS
+      "budget_advice" => 5, # CONSEIL_BUGDET
 
       # Technologie (toutes)  S'orienter
-      500 => 5, # TECHNOLOGIE
-      501 => 5, # ORDINATEUR
-      502 => 5, # WIFI
-      503 => 5, # PRISE
-      504 => 5, # TELEPHONE
-      505 => 5, # COFFRE_FORT_NUMERIQUE
+      "technology" => 5, # TECHNOLOGIE
+      "computers_at_your_disposal" => 5, # ORDINATEUR
+      "wifi" => 5, # WIFI
+      "electrical_outlets_available" => 5, # PRISE
+      "telephone_at_your_disposal" => 5, # TELEPHONE
+      "digital_safe" => 5, # COFFRE_FORT_NUMERIQUE
 
       # Alimentation (toutes sauf Fontaine)  Se nourrir
-      600 => 1, # ALIMENTATION
-      601 => 1, # DISTRIBUTION_ALIMENTAIRE
-      602 => 1, # RESTAURATION_ASSISE
-      603 => 1, # COLIS_ALIMENTAIRE
-      604 => 1, # EPICERIE_SOCIALE
-
-      # Alimentation  Fontaine  Fontaines à eau
-      605 => 41, # FONTAINE
+      "food" => 1, # ALIMENTATION
+      "food_distribution" => 1, # DISTRIBUTION_ALIMENTAIRE
+      "seated_catering" => 1, # RESTAURATION_ASSISE
+      "food_packages" => 1, # COLIS_ALIMENTAIRE
+      "social_grocery_stores" => 1, # EPICERIE_SOCIALE
+      "fountain" => 41, # FONTAINE
+      "baby_parcel" => 1, # COLIS_BEBE
+      "food_voucher" => 1, # CHEQUE_ALIMENTAIRE
+      "shared_kitchen" => 1, # CUISINE_PARTAGEE
+      "cooking_workshop" => 1, # ATELIER_CUISINE
+      "community_garden" => 1, # JARDIN_SOLIDAIRE
+      "solidarity_fridge" => 1, # FRIGO_SOLIDAIRE
 
       # Accueil Accueil S'orienter
-      700 => 5, # ACCUEIL
-
-      # Accueil Accueil de jour S'orienter
-      701 => 5, # ACCUEIL_JOUR
-
-      # Accueil Espace de repos S'occuper de soi
-      702 => 6,
-
-      # Accueil Garde d'enfants Se réinsérer
-      703 => 7,
-
-      # Accueil Espace famille S'occuper de soi
-      704 => 6,
-
-      # Accueil Point d'information Se réinsérer
-      705 => 7,
+      "welcome" => 5, # ACCUEIL
+      "day_hosting" => 5, # ACCUEIL_JOUR
+      "rest_area" => 6,
+      "babysitting" => 7,
+      "family_area" => 6,
+      "information_point" => 7,
 
       # Activités (Toutes)  S'occuper de soi
-      800 => 6, # ACTIVITES
-      801 => 6, # ACTIVITES_SPORTIVES
-      802 => 6, # MUSEE
-      803 => 6, # BIBLIOTHEQUE
-      804 => 6, # ACTIVITES_DIVERSES
+      "activities" => 6, # ACTIVITES
+      "sport_activities" => 6, # ACTIVITES_SPORTIVES
+      "museums" => 6, # MUSEE
+      "libraries" => 6, # BIBLIOTHEQUE
+      "other_activities" => 6, # ACTIVITES_DIVERSES
       805 => 6, # ANIMATIONS_LOISIRS
 
       # Matériel -> S'occuper de soi
-      900 => 6, # MATERIEL
-
-      # Bagagerie -> Bagageries
-      901 => 63, # BAGAGERIE
-
-      # Matériel -> S'occuper de soi
-      902 => 6, # BOUTIQUE_SOLIDAIRE
-
-      # Matériel  Vêtements Vêtements
-      903 => 61, # VETEMENTS
-
-      # Matériel -> S'occuper de soi
-      904 => 6, # ANIMAUX
+      "equipment" => 6, # MATERIEL
+      "luggage_storage" => 63, # BAGAGERIE
+      "solidarity_store" => 6, # BOUTIQUE_SOLIDAIRE
+      "clothing" => 61, # VETEMENTS
+      "animal_assitance" => 6, # ANIMAUX
 
       # Spécialistes  (Toutes)  Se soigner
-      1100 => 3, # SPECIALISTES
-      1101 => 3, # ALLERGOLOGIE
-      1102 => 3, # CARDIOLOGIE
-      1103 => 3, # DERMATOLOGIE
-      1104 => 3, # ECHOGRAPHIE
-      1105 => 3, # ENDOCRINOLOGIE
-      1106 => 3, # GASTRO_ENTEROLOGIE
-      1107 => 3, # GYNECOLOGIE
-      1108 => 3, # KINESITHERAPIE
-      1109 => 3, # MAMMOGRAPHIE
-      1110 => 3, # OPHTALMOLOGIE
-      1111 => 3, # OTO_RHINO_LARYNGOLOGIE
-      1112 => 3, # NUTRITION
-      1113 => 3, # PEDICURE
-      1114 => 3, # PHLEBOLOGIE
-      1115 => 3, # PNEUMOLOGIE
-      1116 => 3, # RADIOLOGIE
-      1117 => 3, # RHUMATOLOGIE
-      1118 => 3, # UROLOGIE
-      1119 => 3, # ORTHOPHONIE
-      1120 => 3, # STOMATOLOGIE
-      1121 => 3, # OSTEO
-      1122 => 3, # ACUPUNCTURE
+      "health_specialists" => 3, # SPECIALISTES
+      "allergology" => 3, # ALLERGOLOGIE
+      "cardiology" => 3, # CARDIOLOGIE
+      "dermatology" => 3, # DERMATOLOGIE
+      "echography" => 3, # ECHOGRAPHIE
+      "endocrinology" => 3, # ENDOCRINOLOGIE
+      "gastroenterology" => 3, # GASTRO_ENTEROLOGIE
+      "gynecology" => 3, # GYNECOLOGIE
+      "kinesitherapy" => 3, # KINESITHERAPIE
+      "mammography" => 3, # MAMMOGRAPHIE
+      "ophthalmology" => 3, # OPHTALMOLOGIE
+      "otorhinolaryngology" => 3, # OTO_RHINO_LARYNGOLOGIE
+      "nutrition" => 3, # NUTRITION
+      "pedicure" => 3, # PEDICURE
+      "phlebology" => 3, # PHLEBOLOGIE
+      "pneumology" => 3, # PNEUMOLOGIE
+      "radiology" => 3, # RADIOLOGIE
+      "rheumatology" => 3, # RHUMATOLOGIE
+      "urology" => 3, # UROLOGIE
+      "speech_therapy" => 3, # ORTHOPHONIE
+      "stomatology" => 3, # STOMATOLOGIE
+      "osteopathy" => 3, # OSTEO
+      "acupuncture" => 3, # ACUPUNCTURE
 
-      # Nouvelles catégories
-      1200 => 7, # "Transport & mobilité" (se réinsérer)
-      1201 => 7, # "Co-voiturage" (se réinsérer)
-      1202 => 7, # "Mise à disposition de véhicule" (se réinsérer)
-      1203 => 7, # "Transport avec chauffeur" (se réinsérer)
-      1204 => 7, # Aide à la mobilité (se réinsérer)
+      # Mobilité
+      "mobility" => 7, # "Transport & mobilité" (se réinsérer)
+      "carpooling" => 7, # "Co-voiturage" (se réinsérer)
+      "provision_of_vehicles" => 7, # "Mise à disposition de véhicule" (se réinsérer)
+      "chauffeur_driven_transport" => 7, # "Transport avec chauffeur" (se réinsérer)
+      "mobility_assistance" => 7, # Aide à la mobilité (se réinsérer)
 
-      1300 => 2, # HEBERGEMENT_LOGEMENT
-      1301 => 2, # HALTE_NUIT
-      1302 => 2, # HEBERGERMENT_URGENCE
-      1303 => 2, # HEBERGEMENT_LONG_TERME
-      1304 => 2, # HEBERGEMENT_CITOYEN
-      1305 => 2, # CONSEIL_LOGEMENT
+      # Hébergement
+      "accomodation_and_housing" => 2, # HEBERGEMENT_LOGEMENT
+      "overnight_stop" => 2, # HALTE_NUIT
+      "emergency_accommodation" => 2, # HEBERGERMENT_URGENCE
+      "long_term_accomodation" => 2, # HEBERGEMENT_LONG_TERME
+      "citizen_housing" => 2, # HEBERGEMENT_CITOYEN
+      "access_to_housing" => 2, # CONSEIL_LOGEMENT
     }
 
     CATEGORIES_EQUIVALENTS_REVERSED = {
-      1 => [600],
-      2 => [401, 700],
-      3 => [100, 1100],
-      4 => [300],
-      5 => [400, 500, 700],
-      6 => [300, 702, 704, 800, 900],
-      7 => [200, 703, 705],
-      40 => [304],
-      41 => [605],
-      42 => [301],
-      43 => [302],
-      61 => [903],
-      63 => [901],
+      1 => ["food"],
+      2 => ["legal_advice", "welcome"],
+      3 => ["health", "health_specialists"],
+      4 => ["hygiene_and_wellness"],
+      5 => ["counseling", "technology", "welcome"],
+      6 => ["hygiene_and_wellness", "rest_area", "family_area", "activities", "equipment"],
+      7 => ["training_and_jobs", "babysitting", "information_point"],
+      40 => ["toilets"],
+      41 => ["fountain"],
+      42 => ["shower"],
+      43 => ["laundry"],
+      61 => ["clothing"],
+      63 => ["luggage_storage"],
     }
 
     ISO_LANGS = {
