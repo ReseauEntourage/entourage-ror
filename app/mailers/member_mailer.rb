@@ -45,19 +45,27 @@ class MemberMailer < MailjetMailer
   def weekly_planning user, outing_ids
     return unless outing_ids.any?
 
+    moderator = ModerationServices.moderator_for_user(user)
+
     mailjet_email to: user,
                   template_id: 5935421,
                   campaign_name: 'planning_hebdo',
                   variables: {
-                    events: Outing.where(id: outing_ids).limit(3).map do |outing|
+                    events: Outing.where(id: outing_ids).limit(3).map { |outing|
                       {
                         name: outing.title,
                         address: outing.metadata[:display_address],
                         date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
-                        hour: outing.metadata[:ends_at].strftime("%Hh"),
+                        hour: outing.metadata[:ends_at].strftime("%Hh%M"),
                         image_url: outing.image_url_with_size(:landscape_url, :medium)
                       }
-                    end
+                    },
+                    moderator: {
+                      name: moderator.first_name,
+                      email: moderator.email,
+                      phone: moderator.phone,
+                      image_url: UserServices::Avatar.new(user: moderator).thumbnail_url,
+                    }
                   }
   end
 

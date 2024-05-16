@@ -13,7 +13,6 @@ namespace :outings do
 
   desc "send email with upcoming outings"
   task send_email_with_upcoming: :environment do
-    puts "-- send_email_with_upcoming"
     OutingTasks::send_email_with_upcoming
   end
 end
