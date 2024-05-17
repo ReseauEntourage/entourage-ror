@@ -240,10 +240,9 @@ class Entourage < ApplicationRecord
 
   def share_url
     return unless uuid_v2
-    return if group_type == 'conversation'
-    return community.store_short_url unless community.entourage?
-    share_url_prefix = ENV['PUBLIC_SHARE_URL'] || "#{ENV['WEBSITE_APP_URL']}/actions/"
-    "#{share_url_prefix}#{uuid_v2}"
+    return unless ['action', 'outing'].include?(group_type)
+
+    "#{ENV['MOBILE_HOST']}/app/#{group_type.pluralize}/#{uuid_v2}"
   end
 
   def metadata= value

@@ -42,7 +42,7 @@ class MemberMailer < MailjetMailer
   end
 
   # MemberMailer.weekly_planning(user).deliver_later
-  def weekly_planning user, outing_ids
+  def weekly_planning user, action_ids, outing_ids
     return unless outing_ids.any?
 
     moderator = ModerationServices.moderator_for_user(user)
@@ -51,6 +51,14 @@ class MemberMailer < MailjetMailer
                   template_id: 5935421,
                   campaign_name: 'planning_hebdo',
                   variables: {
+                    actions: Action.where(id: action_ids).limit(3).map { |action|
+                      {
+                        name: action.title,
+                        description: action.description,
+                        image_url: action.image_url_with_size(:landscape_url, :medium),
+                        url: action.share_url
+                      }
+                    },
                     events: Outing.where(id: outing_ids).limit(3).map { |outing|
                       {
                         name: outing.title,
