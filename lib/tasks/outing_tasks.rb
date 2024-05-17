@@ -43,13 +43,19 @@ module OutingTasks
     def send_email_with_upcoming_to_user user_id
       user = User.find(user_id)
 
-      return unless (outing_ids = OutingsServices::Finder.new(user, {}).find_all
+      action_ids = ActionServices::Finder.new(user, Hash.new).find_all
+        .filtered_with_user_profile(user)
+        .pluck(:id)
+        .uniq
+
+      outing_ids = OutingsServices::Finder.new(user, Hash.new).find_all
         .upcoming(EMAIL_UPCOMING_DELAY.from_now)
         .pluck(:id)
         .uniq
-      ).any?
 
-      MemberMailer.weekly_planning(user, outing_ids).deliver_later
+      return unless action_ids.any? || outing_ids.any?
+
+      MemberMailer.weekly_planning(user, action_ids, outing_ids).deliver_later
     end
   end
 end
