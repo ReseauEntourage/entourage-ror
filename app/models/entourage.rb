@@ -242,7 +242,15 @@ class Entourage < ApplicationRecord
     return unless uuid_v2
     return unless ['action', 'outing'].include?(group_type)
 
-    "#{ENV['MOBILE_HOST']}/app/#{group_type.pluralize}/#{uuid_v2}"
+    "#{ENV['MOBILE_HOST']}/app/#{share_url_model}/#{uuid_v2}"
+  end
+
+  def share_url_model
+    return :conversations if conversation?
+    return :outings if outing?
+    return :contributions if contribution?
+
+    :solicitations
   end
 
   def metadata= value

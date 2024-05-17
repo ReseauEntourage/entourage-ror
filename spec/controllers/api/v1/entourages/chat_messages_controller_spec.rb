@@ -436,10 +436,10 @@ describe Api::V1::Entourages::ChatMessagesController do
             "chat_message" => {
               "id" => ChatMessage.last.id,
               "uuid_v2" => ChatMessage.last.uuid_v2,
-              "content" => "#{entourage.title}\nhttps://app.entourage.social/actions/#{entourage.uuid_v2}",
+              "content" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
               "content_translations" => {
-                "translation" => "#{entourage.title}\nhttps://app.entourage.social/actions/#{entourage.uuid_v2}",
-                "original" => "#{entourage.title}\nhttps://app.entourage.social/actions/#{entourage.uuid_v2}",
+                "translation" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
+                "original" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
                 "from_lang" => "fr",
                 "to_lang" => "fr",
               },

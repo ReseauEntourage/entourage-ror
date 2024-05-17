@@ -69,7 +69,7 @@ describe Api::V1::HomeController do
             "created_at"=> entourage.created_at.iso8601(3),
             "updated_at"=> entourage.updated_at.iso8601(3),
             "description" => nil,
-            "share_url" => "https://app.entourage.social/actions/#{entourage.uuid_v2}",
+            "share_url" => "#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
             "image_url"=>nil,
             "online"=>false,
             "event_url"=>nil,
