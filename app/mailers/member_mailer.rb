@@ -57,7 +57,8 @@ class MemberMailer < MailjetMailer
                         address: outing.metadata[:display_address],
                         date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
                         hour: outing.metadata[:ends_at].strftime("%Hh%M"),
-                        image_url: outing.image_url_with_size(:landscape_url, :medium)
+                        image_url: outing.image_url_with_size(:landscape_url, :medium),
+                        url: outing.share_url
                       }
                     },
                     moderator: {
