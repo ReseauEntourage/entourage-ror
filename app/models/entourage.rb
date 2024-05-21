@@ -253,6 +253,12 @@ class Entourage < ApplicationRecord
     :solicitations
   end
 
+  class << self
+    def share_url model
+      "#{ENV['MOBILE_HOST']}/app/#{model}"
+    end
+  end
+
   def metadata= value
     value = add_metadata_schema_urn(value)
     value = format_metadata_image_paths(value)

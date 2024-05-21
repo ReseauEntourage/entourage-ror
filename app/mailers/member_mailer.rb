@@ -41,9 +41,16 @@ class MemberMailer < MailjetMailer
                   }
   end
 
-  # MemberMailer.weekly_planning(user).deliver_later
   def weekly_planning user, action_ids, outing_ids
     return unless outing_ids.any?
+
+    user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
+
+    actions = Action.where(id: action_ids).limit(3)
+    outings = Outing.where(id: outing_ids).limit(3)
+
+    action_url = Entourage.share_url(user.is_ask_for_help? ? :contributions : :solicitations)
+    outing_url = Entourage.share_url(:outings)
 
     moderator = ModerationServices.moderator_for_user(user)
 
@@ -51,15 +58,20 @@ class MemberMailer < MailjetMailer
                   template_id: 5935421,
                   campaign_name: 'planning_hebdo',
                   variables: {
-                    actions: Action.where(id: action_ids).limit(3).map { |action|
+                    user_profile: user_profile,
+                    action_count: actions.count,
+                    actions_url: action_url,
+                    actions: actions.map { |action|
                       {
                         name: action.title,
                         description: action.description,
-                        image_url: action.image_url_with_size(:landscape_url, :medium),
+                        image_url: action.metadata[:landscape_url],
                         url: action.share_url
                       }
                     },
-                    events: Outing.where(id: outing_ids).limit(3).map { |outing|
+                    outing_count: outings.count,
+                    outings_url: outing_url,
+                    outings: outings.map { |outing|
                       {
                         name: outing.title,
                         address: outing.metadata[:display_address],
