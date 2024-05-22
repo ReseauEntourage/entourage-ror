@@ -5,6 +5,7 @@ module ChatServices
     included do
       ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
       ACTIVE_HOURS = '09:00'..'18:30'
+      NO_RESENT_DELAY = 1.day
 
       after_create :notify_moderator_not_available, if: :notify_moderator_not_available?
     end
@@ -42,8 +43,9 @@ module ChatServices
 
     def is_notify_moderator_not_sent?
       return false unless messageable
+      return true if messageable.working_hours_sent_at.blank?
 
-      messageable.working_hours_sent_at.blank?
+      messageable.working_hours_sent_at < NO_RESENT_DELAY.ago
     end
 
     def private_message_interlocutor
