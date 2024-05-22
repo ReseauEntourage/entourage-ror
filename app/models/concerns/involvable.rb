@@ -27,4 +27,8 @@ module Involvable
     # optimization to resolve n+1
     involvements.map(&:name)
   end
+
+  def involvement_i18n
+    involvement_names.map { |involvement| I18n.t("tags.involvements.#{involvement}") }
+  end
 end

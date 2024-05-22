@@ -1,5 +1,5 @@
 <%= form_for([:admin, @user], html: { class: "form-horizontal", role: "form" }) do |f| %>
-  <%= render partial: "layouts/errors", locals: {obj: @user} %>
+  <%= render partial: "layouts/errors", locals: { obj: @user } %>
 
   <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
     <div style="flex-grow: 1">
@@ -9,10 +9,6 @@
 
   <div style="display: flex">
     <div style="flex-grow: 1">
-      <div class="control-group">
-        <%= render 'availability', user: @user %>
-      </div>
-
       <div class="control-group">
         <%= f.label :first_name,"Prénom", class: "control-label" %>
         <div class="controls">
@@ -31,13 +27,6 @@
         <%= f.label :about, class: "control-label" %>
         <div class="controls">
           <%= f.text_area :about, class: "form-control", maxlength: 200 %>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <%= f.label :interests, "Centres d'intérêts", class: "control-label" %>
-        <div class="controls">
-          <%= f.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
         </div>
       </div>
 
@@ -175,6 +164,8 @@
       <% end %>
     </div>
   <% end %>
+
+  <%= render 'onboarding_fields', user: @user, form: f %>
 
   <br/>
   <div class="control-group">
@@ -355,6 +346,6 @@
   });
 
   $('select').select2({ width: 200 });
-  $('select#user_interests').select2({ width: '100%' });
+  $('select#user_interests,select#user_involvements,select#user_concerns').select2({ width: '100%' });
 
 </script>
