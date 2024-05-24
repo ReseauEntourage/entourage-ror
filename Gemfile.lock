@@ -508,7 +508,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  active_model_serializers (~> 0.10)
+  active_model_serializers (~> 0.10.0)
   activerecord-postgis-adapter (~> 8.0)
   acts-as-taggable-on (~> 9.0)
   airrecord (~> 1)
@@ -527,7 +527,7 @@ DEPENDENCIES
   fakeredis
   geocoder (~> 1)
   googlestaticmap!
-  handlebars_assets (~> 0)
+  handlebars_assets (~> 0.23)
   httparty
   icalendar
   jquery-rails (~> 4)
