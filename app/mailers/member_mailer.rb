@@ -66,7 +66,7 @@ class MemberMailer < MailjetMailer
                         name: action.title,
                         description: action.description,
                         image_url: action.metadata[:landscape_url],
-                        url: action.share_url
+                        url: action.image_url_with_size(:medium)
                       }
                     },
                     outing_count: outings.count,
