@@ -5,11 +5,6 @@ Sentry.init do |config|
   config.breadcrumbs_logger = [:active_support_logger]
   config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
 
-  config.before_send = lambda do |event, _hint|
-    event.tags[:community] = $server_community.dev_name if defined?($server_community)
-    event
-  end
-
   config.excluded_exceptions += ['Rack::Timeout::RequestTimeoutException']
 end
 
