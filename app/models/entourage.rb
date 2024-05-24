@@ -474,7 +474,13 @@ class Entourage < ApplicationRecord
   end
 
   def image_url_with_size image_key, size
-    EntourageImage.storage.public_url_with_size(key: metadata[image_key], size: size)
+    key = if image_key == :image_url
+      image_url
+    else
+      metadata[image_key]
+    end
+
+    EntourageImage.storage.public_url_with_size(key: key, size: size)
   end
 
   def close_entourage_from_user_status! user_status
