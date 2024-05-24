@@ -4,19 +4,17 @@ ruby '3.1.0'
 
 gem "rails", "~> 7.0.1"
 
-gem 'sass-rails'
-gem 'uglifier'
+gem 'sassc-rails'
 gem 'terser'
 gem 'jquery-rails',                   '~> 4'
-gem 'jquery-ui-rails',                '~> 5'
-gem 'turbolinks',                     '~> 5'
-gem 'coffee-rails',                   '~> 5'
+gem 'jquery-ui-rails',                '~> 6'
+gem 'turbo-rails'
 gem 'active_model_serializers',       '~> 0.10'
 gem 'handlebars_assets',              '~> 0'
 gem 'geocoder',                       '~> 1'
 gem 'rpush',                          '~> 7'
 gem 'aws-sdk-sns',                    '~> 1'
-gem 'nexmo'
+gem 'vonage' # replace nexmo
 gem 'googlestaticmap',                git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
 gem 'momentjs-rails',                 '~> 2'
 gem 'shorturl',                       '~> 1.0.0'
@@ -36,7 +34,7 @@ gem 'mailjet'
 gem 'safety_mailer'
 gem 'ransack',                        '~> 2'
 gem 'httparty'
-gem 'sentry-raven'
+gem 'sentry-ruby'
 gem 'ruby-stemmer'
 gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
@@ -91,8 +89,6 @@ group :test do
 end
 
 group :production do
-  gem 'rails_12factor'
-  gem 'rails_stdout_logging'
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'
   gem 'rack-attack'
