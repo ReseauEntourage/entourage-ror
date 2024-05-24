@@ -11,7 +11,7 @@ module Onboarding
 
       User.where(id: user_ids).find_each do |user|
         begin
-          Raven.user_context(id: user&.id)
+          Sentry.set_user(id: user&.id)
 
           moderation_area = ModerationServices.moderation_area_for_user_with_default(user)
           author = moderation_area.interlocutor_for_user(user)
@@ -67,7 +67,7 @@ module Onboarding
           end
 
         rescue => e
-          Raven.capture_exception(e)
+          Sentry.capture_exception(e)
         end
       end
     end

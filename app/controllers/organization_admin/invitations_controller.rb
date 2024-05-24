@@ -102,7 +102,7 @@ module OrganizationAdmin
         OrganizationAdmin::InvitationService.accept_invitation!(
           invitation: invitation, user: current_user)
       rescue ActiveRecord::RecordInvalid => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
         return redirect_to join_organization_admin_invitation_path(token: invitation.token, error: :unknown)
       end
 

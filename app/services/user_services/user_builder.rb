@@ -83,7 +83,7 @@ module UserServices
             invitee_id: user.id
           )
         else
-          Raven.capture_exception(ActiveRecord::RecordInvalid.new(jr))
+          Sentry.capture_exception(ActiveRecord::RecordInvalid.new(jr))
         end
       end
     end

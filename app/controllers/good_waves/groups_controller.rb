@@ -162,7 +162,7 @@ module GoodWaves
         elsif invitation.save
           # continue below
         else
-          Raven.capture_exception(ActiveRecord::RecordInvalid.new(invitation))
+          Sentry.capture_exception(ActiveRecord::RecordInvalid.new(invitation))
           flash[:error] = invitation.errors.full_messages.to_sentence
           return redirect_to good_waves_group_path(group)
         end
@@ -185,7 +185,7 @@ module GoodWaves
         if join_request.save
           # continue below
         else
-          Raven.capture_exception(ActiveRecord::RecordInvalid.new(join_request))
+          Sentry.capture_exception(ActiveRecord::RecordInvalid.new(join_request))
           flash[:error] = join_request.errors.full_messages.to_sentence
           return redirect_to good_waves_group_path(group)
         end
