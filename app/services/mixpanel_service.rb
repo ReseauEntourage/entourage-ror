@@ -77,7 +77,7 @@ class MixpanelService
           }
         }
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       end
     end
     updates = updates.reject(&:nil?)

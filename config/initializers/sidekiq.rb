@@ -11,7 +11,7 @@ module Rpush
         def handle_response(response)
           _handle_response(response)
         rescue Rpush::DeliveryError => e
-          Raven.capture_exception(
+          Sentry.capture_exception(
             e,
             extra: {
               notification_id: @notification.id,

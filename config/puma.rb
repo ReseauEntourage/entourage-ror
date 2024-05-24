@@ -22,7 +22,7 @@ before_fork do
 end
 
 lowlevel_error_handler do |ex, env|
-  Raven.capture_exception(
+  Sentry.capture_exception(
     ex,
     message: ex.message,
     extra: { puma: env },

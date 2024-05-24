@@ -62,7 +62,7 @@ module DigestEmailService
   def self.deliver email
     now = Time.zone.now
 
-    Raven.extra_context(
+    Sentry.set_extras(
       digest_email_id: email&.id,
       digest_email_data: email&.data,
       now: now
@@ -85,7 +85,7 @@ module DigestEmailService
     config.cities.values.each do |department_code|
       department_code = department_code.to_s
 
-      Raven.extra_context(department_code: department_code)
+      Sentry.set_extras(department_code: department_code)
 
       city_group_ids[department_code] = group_ids_for(
         email, city: department_code, date: now)
@@ -94,7 +94,7 @@ module DigestEmailService
 
       users_for_city(department_code).includes(:address).find_each do |user|
         begin
-          Raven.user_context(id: user&.id)
+          Sentry.set_user(id: user&.id)
 
           user_delivery = delivery(
             user,
@@ -108,7 +108,7 @@ module DigestEmailService
           user_delivery.deliver_now
 
         rescue => e
-          Raven.capture_exception(e)
+          Sentry.capture_exception(e)
         end
       end
     end
