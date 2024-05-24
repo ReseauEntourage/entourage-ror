@@ -9,6 +9,7 @@ gem 'terser'
 gem 'jquery-rails',                   '~> 4'
 gem 'jquery-ui-rails',                '~> 6'
 gem 'turbo-rails'
+gem 'coffee-rails', '~> 5.0'
 gem 'active_model_serializers',       '~> 0.10'
 gem 'handlebars_assets',              '~> 0'
 gem 'geocoder',                       '~> 1'
@@ -52,7 +53,7 @@ gem 'ancestry'
 gem 'tinymce-rails'
 gem 'chartkick'
 gem 'restforce', '~> 7.2.0'
-gem "sprockets-rails"
+gem "sprockets-rails", '>= 3.2.1'
 
 group :development, :test do
   # gem 'annotate'

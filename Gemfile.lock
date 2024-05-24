@@ -130,6 +130,13 @@ GEM
       activesupport
     chartkick (5.0.7)
     chronic (0.10.2)
+    coffee-rails (5.0.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 5.2.0)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.12.2)
     concurrent-ruby (1.3.3)
     connection_pool (2.4.1)
     crack (1.0.0)
@@ -520,6 +527,7 @@ DEPENDENCIES
   bcrypt (~> 3)
   bullet
   chartkick
+  coffee-rails (~> 5.0)
   ddtrace (~> 1.0)
   dotenv-rails
   factory_bot_rails (~> 4)
@@ -567,7 +575,7 @@ DEPENDENCIES
   slack-notifier
   spring (~> 2.1.0)
   spring-commands-rspec
-  sprockets-rails
+  sprockets-rails (>= 3.2.1)
   super_diff
   terser
   timecop
