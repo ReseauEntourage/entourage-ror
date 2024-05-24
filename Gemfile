@@ -2,15 +2,15 @@ source 'https://rubygems.org'
 
 ruby '3.1.0'
 
-gem "rails", "~> 7.0.1"
+gem "rails", "~> 7.0.8"
 
 gem 'sassc-rails'
 gem 'terser'
 gem 'jquery-rails',                   '~> 4'
 gem 'jquery-ui-rails',                '~> 6'
 gem 'turbo-rails'
-gem 'active_model_serializers',       '~> 0.10.0'
-gem 'handlebars_assets',              '~> 0.23'
+gem 'active_model_serializers',       '~> 0.10'
+gem 'handlebars_assets',              '~> 0'
 gem 'geocoder',                       '~> 1'
 gem 'rpush',                          '~> 7'
 gem 'aws-sdk-sns',                    '~> 1'
