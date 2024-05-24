@@ -3,7 +3,16 @@ Sentry.init do |config|
   config.environment = Rails.env
   config.enabled_environments = ['production']
   config.breadcrumbs_logger = [:active_support_logger]
-  config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+
+  config.before_send = lambda do |event, hint|
+    filter_parameters = Rails.application.config.filter_parameters.map(&:to_s)
+    event.request.data.each do |key, value|
+      if filter_parameters.include?(key)
+        event.request.data[key] = '[FILTERED]'
+      end
+    end
+    event
+  end
 
   config.excluded_exceptions += ['Rack::Timeout::RequestTimeoutException']
 end
