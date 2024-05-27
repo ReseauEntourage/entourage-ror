@@ -19,6 +19,7 @@ module UserServices
 
     def destroy
       avatars.destroy(key: thumbnail_key)
+      user.update(avatar_key: nil)
     end
 
     private
