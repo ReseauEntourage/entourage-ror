@@ -13,6 +13,8 @@ namespace :outings do
 
   desc "send email with upcoming outings"
   task send_email_with_upcoming: :environment do
+    return unless Time.zone.now.monday?
+
     OutingTasks::send_email_with_upcoming
   end
 end
