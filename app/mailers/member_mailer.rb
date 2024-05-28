@@ -44,6 +44,7 @@ class MemberMailer < MailjetMailer
   def weekly_planning user, action_ids, outing_ids
     return unless outing_ids.any?
 
+    template_id = user.ask_for_help? ? 5995407 : 5935421
     user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
 
     actions = Action.where(id: action_ids).limit(3)
@@ -55,7 +56,7 @@ class MemberMailer < MailjetMailer
     moderator = ModerationServices.moderator_for_user(user)
 
     mailjet_email to: user,
-                  template_id: 5935421,
+                  template_id: template_id,
                   campaign_name: 'planning_hebdo',
                   variables: {
                     user_profile: user_profile,
