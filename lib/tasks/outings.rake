@@ -10,4 +10,9 @@ namespace :outings do
   task send_post_to_upcoming: :environment do
     OutingTasks::send_post_to_upcoming
   end
+
+  desc "send email with upcoming outings"
+  task send_email_with_upcoming: :environment do
+    OutingTasks::send_email_with_upcoming
+  end
 end

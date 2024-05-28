@@ -240,10 +240,23 @@ class Entourage < ApplicationRecord
 
   def share_url
     return unless uuid_v2
-    return if group_type == 'conversation'
-    return community.store_short_url unless community.entourage?
-    share_url_prefix = ENV['PUBLIC_SHARE_URL'] || "#{ENV['WEBSITE_APP_URL']}/actions/"
-    "#{share_url_prefix}#{uuid_v2}"
+    return unless ['action', 'outing'].include?(group_type)
+
+    "#{ENV['MOBILE_HOST']}/app/#{share_url_model}/#{uuid_v2}"
+  end
+
+  def share_url_model
+    return :conversations if conversation?
+    return :outings if outing?
+    return :contributions if contribution?
+
+    :solicitations
+  end
+
+  class << self
+    def share_url model
+      "#{ENV['MOBILE_HOST']}/app/#{model}"
+    end
   end
 
   def metadata= value
@@ -458,6 +471,12 @@ class Entourage < ApplicationRecord
         [key, value]
       end
     end.to_h
+  end
+
+  def image_url_with_size image_key, size
+    return unless key = image_key == :image_url ? image_url : metadata[image_key]
+
+    EntourageImage.storage.public_url_with_size(key: key, size: size)
   end
 
   def close_entourage_from_user_status! user_status

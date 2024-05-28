@@ -41,6 +41,57 @@ class MemberMailer < MailjetMailer
                   }
   end
 
+  def weekly_planning user, action_ids, outing_ids
+    return unless outing_ids.any?
+
+    template_id = user.ask_for_help? ? 5995407 : 5935421
+    user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
+
+    actions = Action.where(id: action_ids).limit(3)
+    outings = Outing.where(id: outing_ids).limit(3)
+
+    action_url = Entourage.share_url(user.is_ask_for_help? ? :contributions : :solicitations)
+    outing_url = Entourage.share_url(:outings)
+
+    moderator = ModerationServices.moderator_for_user(user)
+
+    mailjet_email to: user,
+                  template_id: template_id,
+                  campaign_name: 'planning_hebdo',
+                  variables: {
+                    user_profile: user_profile,
+                    action_count: actions.count,
+                    actions_url: action_url,
+                    actions: actions.map { |action|
+                      {
+                        name: action.title,
+                        address: action.metadata[:city],
+                        description: action.description,
+                        image_url: action.image_url_with_size(:image_url, :medium),
+                        url: action.share_url
+                      }
+                    },
+                    outing_count: outings.count,
+                    outings_url: outing_url,
+                    outings: outings.map { |outing|
+                      {
+                        name: outing.title,
+                        address: outing.metadata[:display_address],
+                        date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
+                        hour: outing.metadata[:ends_at].strftime("%Hh%M"),
+                        image_url: outing.image_url_with_size(:landscape_url, :medium),
+                        url: outing.share_url
+                      }
+                    },
+                    moderator: {
+                      name: moderator.first_name,
+                      email: moderator.email,
+                      phone: moderator.phone,
+                      image_url: UserServices::Avatar.new(user: moderator).thumbnail_url,
+                    }
+                  }
+  end
+
   def poi_report(poi, user, message)
     if ENV.key? "POI_REPORT_EMAIL"
       @poi = poi
