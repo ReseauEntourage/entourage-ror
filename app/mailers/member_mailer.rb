@@ -65,7 +65,7 @@ class MemberMailer < MailjetMailer
                     actions: actions.map { |action|
                       {
                         name: action.title,
-                        address: action.metadata['city'],
+                        address: action.metadata[:city],
                         description: action.description,
                         image_url: action.image_url_with_size(:image_url, :medium),
                         url: action.share_url
