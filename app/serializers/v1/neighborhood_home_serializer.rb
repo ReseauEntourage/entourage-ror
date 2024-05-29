@@ -24,9 +24,9 @@ module V1
       :public
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
-    has_many :outings, serializer: ::V1::OutingSerializer
-    has_many :future_outings, serializer: ::V1::OutingSerializer
-    has_many :ongoing_outings, serializer: ::V1::OutingSerializer
+    has_many :outings, serializer: ::V1::OutingCoreSerializer
+    has_many :future_outings, serializer: ::V1::OutingCoreSerializer
+    has_many :ongoing_outings, serializer: ::V1::OutingCoreSerializer
 
     def name
       I18nSerializer.new(object, :name, lang).translation
