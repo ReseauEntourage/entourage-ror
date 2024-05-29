@@ -91,7 +91,7 @@ module V1
     end
 
     def outings
-      object.outings_with_admin_online.active.future_or_ongoing.default_order.limit(OUTINGS_LIMIT)
+      Outing.none
     end
 
     def future_outings
@@ -99,7 +99,7 @@ module V1
     end
 
     def ongoing_outings
-      object.outings_with_admin_online(scope: :ongoing_outings).active.default_order.limit(OUTINGS_LIMIT)
+      Outing.none
     end
 
     private
