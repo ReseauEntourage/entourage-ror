@@ -95,7 +95,13 @@ module V1
     end
 
     def future_outings
-      object.outings_with_admin_online.active.future_or_ongoing.default_order.limit(OUTINGS_LIMIT)
+      object
+        .outings_with_admin_online
+        .active
+        .future_or_ongoing
+        .default_order
+        .limit(OUTINGS_LIMIT)
+        .includes(:translation, user: :partner)
     end
 
     def ongoing_outings
