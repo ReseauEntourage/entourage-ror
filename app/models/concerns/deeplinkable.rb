@@ -34,6 +34,12 @@ module Deeplinkable
     end
   end
 
+  def share_url
+    return unless uuid_v2
+
+    "#{ENV['MOBILE_HOST']}/app/#{self.class.name.underscore.pluralize}/#{uuid_v2}"
+  end
+
   private
 
   # If the record creation fails because of an non-unique uuid_v2,
