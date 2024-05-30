@@ -4,14 +4,15 @@ module GeocodingServices
       def get_city_from attributes = {}
         attributes = attributes.symbolize_keys
 
-        if attributes[:google_place_id]
-          geocoder = get_geocoder_from_place_id(attributes[:google_place_id])
-
-          return geocoder.city if geocoder
+        geocoder = if attributes[:google_place_id]
+          get_geocoder_from_place_id(attributes[:google_place_id])
+        elsif attributes[:latitude] && attributes[:longitude]
+          get_geocoder_from_coordinates(attributes[:latitude], attributes[:longitude])
         end
 
-        return unless attributes[:latitude] && attributes[:longitude]
-        get_geocoder_from_coordinates(attributes[:latitude], attributes[:longitude]).city
+        return unless geocoder
+
+        geocoder.city
       end
 
       def get_geocoder_from_place_id place_id
