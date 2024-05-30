@@ -24,9 +24,9 @@ module V1
       :public
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
-    has_many :outings, serializer: ::V1::OutingSerializer
-    has_many :future_outings, serializer: ::V1::OutingSerializer
-    has_many :ongoing_outings, serializer: ::V1::OutingSerializer
+    has_many :outings, serializer: ::V1::OutingCoreSerializer
+    has_many :future_outings, serializer: ::V1::OutingCoreSerializer
+    has_many :ongoing_outings, serializer: ::V1::OutingCoreSerializer
 
     def name
       I18nSerializer.new(object, :name, lang).translation
@@ -91,15 +91,21 @@ module V1
     end
 
     def outings
-      object.outings_with_admin_online.active.future_or_ongoing.default_order.limit(OUTINGS_LIMIT)
+      Outing.none
     end
 
     def future_outings
-      object.outings_with_admin_online.active.future_or_ongoing.default_order.limit(OUTINGS_LIMIT)
+      object
+        .outings_with_admin_online
+        .active
+        .future_or_ongoing
+        .default_order
+        .limit(OUTINGS_LIMIT)
+        .includes(:translation, user: :partner)
     end
 
     def ongoing_outings
-      object.outings_with_admin_online(scope: :ongoing_outings).active.default_order.limit(OUTINGS_LIMIT)
+      Outing.none
     end
 
     private

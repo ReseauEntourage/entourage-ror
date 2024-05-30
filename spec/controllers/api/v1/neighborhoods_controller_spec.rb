@@ -456,18 +456,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "place_limit" => 3
         },
         "interests" => ["sport", "other"],
-        "neighborhoods" => [
-          { "id" => neighborhood.id, "name" => neighborhood.name }
-        ],
         "recurrency" => nil,
-        "members_count" => 1,
-        "member" => false,
-        "confirmed_members_count" => 0,
-        "confirmed_member" => false,
         "created_at" => outing.created_at.iso8601(3),
-        "updated_at" => outing.updated_at.iso8601(3),
-        "status_changed_at" => nil,
-        "distance" => nil
+        "updated_at" => outing.updated_at.iso8601(3)
       }]) }
     end
 
