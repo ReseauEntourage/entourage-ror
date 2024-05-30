@@ -42,7 +42,7 @@ class MemberMailer < MailjetMailer
   end
 
   def weekly_planning user, action_ids, outing_ids
-    return unless outing_ids.any?
+    return unless outing_ids.any? || action_ids.any?
 
     template_id = user.ask_for_help? ? 5995407 : 5935421
     user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
