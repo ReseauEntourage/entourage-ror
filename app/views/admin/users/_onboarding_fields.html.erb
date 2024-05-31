@@ -17,14 +17,21 @@
 
 <div class="control-group">
   <%= form.label :interests, "Centres d'intérêts", class: "control-label" %>
+  <div class="controls">
+    <%= form.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
+  </div>
 </div>
 
 <div class="control-group">
   <%= form.label :involvements, "Envies d'agir", class: "control-label" %>
-  <%= user.involvement_i18n.join(', ') %>
+  <div class="controls">
+    <%= user.involvement_i18n.join(', ') %>
+  </div>
 </div>
 
 <div class="control-group">
   <%= form.label :concerns, "Catégories d’entraides préférées", class: "control-label" %>
-  <%= user.concern_i18n.join(', ') %>
+  <div class="controls">
+    <%= user.concern_i18n.join(', ') %>
+  </div>
 </div>
