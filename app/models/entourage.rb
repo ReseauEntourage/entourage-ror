@@ -109,6 +109,42 @@ class Entourage < ApplicationRecord
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
 
+  attribute :preload_performed, :boolean, default: false
+  attribute :preload_landscape_url, :string, default: nil
+  attribute :preload_landscape_thumbnail_url, :string, default: nil
+  attribute :preload_portrait_url, :string, default: nil
+  attribute :preload_portrait_thumbnail_url, :string, default: nil
+
+  scope :preload_images, -> (size = :medium) {
+    select(%(
+      entourages.*,
+      true as preload_performed,
+      case
+        when metadata->>'landscape_url' = any(array_agg(image_resize_actions.path))
+        then max(case when image_resize_actions.path = metadata->>'landscape_url' then image_resize_actions.destination_path else metadata->>'landscape_url' end)
+        else metadata->>'landscape_url'
+      end as preload_landscape_url,
+      case
+        when metadata->>'portrait_url' = any(array_agg(image_resize_actions.path))
+        then max(case when image_resize_actions.path = metadata->>'portrait_url' then image_resize_actions.destination_path else metadata->>'portrait_url' end)
+        else metadata->>'portrait_url'
+      end as preload_portrait_url,
+      case
+        when metadata->>'landscape_thumbnail_url' = any(array_agg(image_resize_actions.path))
+        then max(case when image_resize_actions.path = metadata->>'landscape_thumbnail_url' then image_resize_actions.destination_path else metadata->>'landscape_thumbnail_url' end)
+        else metadata->>'landscape_thumbnail_url'
+      end as preload_landscape_thumbnail_url,
+      case
+        when metadata->>'portrait_thumbnail_url' = any(array_agg(image_resize_actions.path))
+        then max(case when image_resize_actions.path = metadata->>'portrait_thumbnail_url' then image_resize_actions.destination_path else metadata->>'portrait_thumbnail_url' end)
+        else metadata->>'portrait_thumbnail_url'
+      end as preload_portrait_thumbnail_url
+    ))
+    .joins("left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url', metadata->>'landscape_thumbnail_url', metadata->>'portrait_thumbnail_url')")
+    .where("image_resize_actions.destination_size = ?", size)
+    .group("entourages.id")
+  }
+
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?
   before_validation :set_outings_ends_at
@@ -461,15 +497,16 @@ class Entourage < ApplicationRecord
     metadata[:place_limit] = metadata[:place_limit].to_i if metadata[:place_limit].is_a?(String)
 
     metadata.map do |key, value|
-      if value.present? && [:landscape_url, :portrait_url].include?(key)
-        [key, EntourageImage.storage.public_url_with_size(key: value, size: size)]
-      elsif value.present? && [:landscape_thumbnail_url].include?(key)
-        [key, EntourageImage.storage.public_url_with_size(key: metadata[:landscape_url], size: size)]
-      elsif value.present? && [:portrait_thumbnail_url].include?(key)
-        [key, EntourageImage.storage.public_url_with_size(key: metadata[:portrait_url], size: size)]
+      next([key, value]) unless value.present?
+      next([key, value]) unless [:landscape_url, :portrait_url, :landscape_thumbnail_url, :portrait_thumbnail_url].include?(key)
+
+      path = if preload_performed
+        EntourageImage.storage.public_url(key: send("preload_#{key}"))
       else
-        [key, value]
+        EntourageImage.storage.public_url_with_size(key: value, size: size)
       end
+
+      [key, path]
     end.to_h
   end
 

@@ -95,13 +95,18 @@ module V1
     end
 
     def future_outings
-      object
+      future_outing_ids = object
         .outings_with_admin_online
         .active
         .future_or_ongoing
         .default_order
         .limit(OUTINGS_LIMIT)
-        .includes(:translation, user: :partner)
+        .pluck(:id)
+
+      Outing
+        .preload_images
+        .where(id: future_outing_ids)
+        .includes(:interests, :recurrence, :translation, user: :partner)
     end
 
     def ongoing_outings
