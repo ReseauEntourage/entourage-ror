@@ -118,7 +118,11 @@ module V1
     def current_join_request
       return unless scope[:user]
 
-      @current_join_request ||= JoinRequest.where(joinable: object, user: scope[:user], status: :accepted).first
+      unless defined?(@current_join_request)
+        @current_join_request = JoinRequest.where(joinable: object, user: scope[:user], status: :accepted).first
+      end
+
+      @current_join_request
     end
 
     def lang
