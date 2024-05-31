@@ -140,8 +140,7 @@ class Entourage < ApplicationRecord
         else metadata->>'portrait_thumbnail_url'
       end as preload_portrait_thumbnail_url
     ))
-    .joins("left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url', metadata->>'landscape_thumbnail_url', metadata->>'portrait_thumbnail_url')")
-    .where("image_resize_actions.destination_size = ?", size)
+    .joins(sanitize_sql_array(["left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url', metadata->>'landscape_thumbnail_url', metadata->>'portrait_thumbnail_url') and image_resize_actions.destination_size = ?", size]))
     .group("entourages.id")
   }
 
