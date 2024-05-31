@@ -12,10 +12,14 @@ module V1
     attribute :metadata, if: :metadata?
 
     def content
+      return if object.deleted?
+
       I18nSerializer.new(object, :content, lang).translation
     end
 
     def content_translations
+      return [] if object.deleted?
+
       I18nSerializer.new(object, :content, lang).translations
     end
 
