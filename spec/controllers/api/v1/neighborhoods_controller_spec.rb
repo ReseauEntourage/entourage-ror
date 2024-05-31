@@ -192,12 +192,13 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   end
 
   describe 'PATCH update' do
-    let(:neighborhood) { FactoryBot.create(:neighborhood) }
-    let(:neighborhood_image) { FactoryBot.create(:neighborhood_image) }
+    let(:neighborhood) { create(:neighborhood) }
+    let(:neighborhood_image) { create(:neighborhood_image, image_url: "foobar_url") }
+    let!(:image_resize_action) { create(:image_resize_action, bucket: NeighborhoodImage::BUCKET_NAME, path: "foobar_url", destination_path: "medium/foobar_url", destination_size: :medium) }
     let(:result) { JSON.parse(response.body) }
     let(:subject) { Neighborhood.find(neighborhood.id) }
 
-    before { Storage::Bucket.any_instance.stub(:public_url_with_size).with(key: "foobar_url", size: :medium) { "path/to/foobar_url" } }
+    before { Storage::Bucket.any_instance.stub(:public_url).with(key: "medium/foobar_url") { "https://medium/foobar_url" } }
 
     context "not signed in" do
       before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
@@ -213,7 +214,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       end
 
       context "user is creator" do
-        let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
+        let(:neighborhood) { create(:neighborhood, user: user) }
 
         before { patch :update, params: { id: neighborhood.to_param, neighborhood: {
           name: "new name",
@@ -245,7 +246,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           },
           "welcome_message" => "new welcome_message",
           "ethics" => "new ethics",
-          "image_url" => "path/to/foobar_url",
+          "image_url" => "https://medium/foobar_url",
           "interests" => ["jeux", "nature", "other"],
           "user" => {
             "id" => neighborhood.user_id,

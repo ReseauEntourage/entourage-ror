@@ -291,13 +291,13 @@ class Neighborhood < ApplicationRecord
   end
 
   def image_url_with_size size
-    return unless size.present?
     return unless self['image_url'].present?
-    return unless image_resize_action = image_resize_actions.find do |instance|
-      instance.size == size.to_s
+    return self['image_url'] unless size.present?
+    return self['image_url'] unless image_resize_action = image_resize_actions.find do |instance|
+      instance.destination_size == size.to_s
     end
 
-    NeighborhoodImage.image_url_for(path.destination_path)
+    NeighborhoodImage.image_url_for(image_resize_action.destination_path)
   end
 
   def neighborhood_image_id= neighborhood_image_id
