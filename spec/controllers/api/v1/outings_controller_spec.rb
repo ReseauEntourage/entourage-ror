@@ -107,7 +107,8 @@ describe Api::V1::OutingsController do
       before { request }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject["outings"].count).to eq(0) }
+      # we no longer exclude outing with user membership
+      it { expect(subject["outings"].count).to eq(1) }
     end
 
     context "user being a member along with some users" do
@@ -118,7 +119,8 @@ describe Api::V1::OutingsController do
       before { request }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject["outings"].count).to eq(0) }
+      # we no longer exclude outing with user membership
+      it { expect(subject["outings"].count).to eq(1) }
     end
 
     context "user being a member but not accepted" do

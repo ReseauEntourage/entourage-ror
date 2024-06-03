@@ -17,7 +17,7 @@ module OutingsServices
     end
 
     def find_all
-      outings = Outing.active.future_or_ongoing.where.not(id: user.outing_membership_ids)
+      outings = Outing.active.future_or_ongoing
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
