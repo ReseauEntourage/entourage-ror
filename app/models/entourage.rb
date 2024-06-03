@@ -485,11 +485,15 @@ class Entourage < ApplicationRecord
 
     metadata.map do |key, value|
       next([key, value]) unless value.present?
-      next([:landscape_url, value]) unless [:landscape_url, :landscape_thumbnail_url].include?(key)
-      next([:portrait_url, value]) unless [:portrait_url, :portrait_thumbnail_url].include?(key)
+      next([key, value]) unless value.present?
+      next([key, value]) unless [:landscape_url, :portrait_url, :landscape_thumbnail_url, :portrait_thumbnail_url].include?(key)
+
+      accessor = key
+      accessor = :landscape_url if key == :landscape_thumbnail_url
+      accessor = :portrait_url if key == :portrait_thumbnail_url
 
       path = if preload_performed
-        EntourageImage.storage.public_url(key: send("preload_#{key}"))
+        EntourageImage.storage.public_url(key: send("preload_#{accessor}"))
       else
         EntourageImage.storage.public_url_with_size(key: value, size: size)
       end
