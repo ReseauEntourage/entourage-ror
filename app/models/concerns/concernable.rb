@@ -27,4 +27,8 @@ module Concernable
     # optimization to resolve n+1
     concerns.map(&:name)
   end
+
+  def concern_i18n
+    concern_names.map { |concern| I18n.t("tags.concerns.#{concern}") }
+  end
 end

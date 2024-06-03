@@ -65,4 +65,8 @@ module Interestable
     # optimization to resolve n+1
     interests.map(&:name)
   end
+
+  def interest_i18n
+    interest_names.map { |interest| I18n.t("tags.interests.#{interest}") }
+  end
 end
