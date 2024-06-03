@@ -13,7 +13,7 @@ module Api
             order: metadata_order,
           },
 
-          headlines: get_headlines,
+          headlines: Hash.new,
 
           outings: ActiveModel::Serializer::CollectionSerializer.new(
             get_outings,
@@ -59,24 +59,6 @@ module Api
       end
 
       private
-
-      def get_headlines
-        headlines = {
-          metadata: { order: [] }
-        }
-
-        HomeServices::Headline.new(user: current_user, latitude: params[:latitude], longitude: params[:longitude]).each do |record|
-          headlines[:metadata][:order] << record[:name]
-          headlines[record[:name]] = {
-            type: record[:type],
-            data: record[:type] == 'Announcement' ?
-              ::V1::AnnouncementSerializer.new(record[:instance], scope: { user: current_user, base_url: request.base_url, portrait: true }, root: false).as_json :
-              ::V1::EntourageSerializer.new(record[:instance], {scope: {user: current_user}, root: false}).as_json
-          }
-        end
-
-        headlines
-      end
 
       def get_outings
         return [] unless params[:latitude] && params[:longitude]
