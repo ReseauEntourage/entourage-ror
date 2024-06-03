@@ -111,9 +111,7 @@ class Entourage < ApplicationRecord
 
   attribute :preload_performed, :boolean, default: false
   attribute :preload_landscape_url, :string, default: nil
-  attribute :preload_landscape_thumbnail_url, :string, default: nil
   attribute :preload_portrait_url, :string, default: nil
-  attribute :preload_portrait_thumbnail_url, :string, default: nil
 
   scope :preload_images, -> (size = :medium) {
     select(%(
@@ -128,19 +126,9 @@ class Entourage < ApplicationRecord
         when metadata->>'portrait_url' = any(array_agg(image_resize_actions.path))
         then max(case when image_resize_actions.path = metadata->>'portrait_url' then image_resize_actions.destination_path else metadata->>'portrait_url' end)
         else metadata->>'portrait_url'
-      end as preload_portrait_url,
-      case
-        when metadata->>'landscape_thumbnail_url' = any(array_agg(image_resize_actions.path))
-        then max(case when image_resize_actions.path = metadata->>'landscape_thumbnail_url' then image_resize_actions.destination_path else metadata->>'landscape_thumbnail_url' end)
-        else metadata->>'landscape_thumbnail_url'
-      end as preload_landscape_thumbnail_url,
-      case
-        when metadata->>'portrait_thumbnail_url' = any(array_agg(image_resize_actions.path))
-        then max(case when image_resize_actions.path = metadata->>'portrait_thumbnail_url' then image_resize_actions.destination_path else metadata->>'portrait_thumbnail_url' end)
-        else metadata->>'portrait_thumbnail_url'
-      end as preload_portrait_thumbnail_url
+      end as preload_portrait_url
     ))
-    .joins(sanitize_sql_array(["left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url', metadata->>'landscape_thumbnail_url', metadata->>'portrait_thumbnail_url') and image_resize_actions.destination_size = ? and bucket = ?", size, EntourageImage::BUCKET_NAME]))
+    .joins(sanitize_sql_array(["left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url') and image_resize_actions.destination_size = ? and bucket = ?", size, EntourageImage::BUCKET_NAME]))
     .group("entourages.id")
   }
 
@@ -497,7 +485,8 @@ class Entourage < ApplicationRecord
 
     metadata.map do |key, value|
       next([key, value]) unless value.present?
-      next([key, value]) unless [:landscape_url, :portrait_url, :landscape_thumbnail_url, :portrait_thumbnail_url].include?(key)
+      next([:landscape_url, value]) unless [:landscape_url, :landscape_thumbnail_url].include?(key)
+      next([:portrait_url, value]) unless [:portrait_url, :portrait_thumbnail_url].include?(key)
 
       path = if preload_performed
         EntourageImage.storage.public_url(key: send("preload_#{key}"))
