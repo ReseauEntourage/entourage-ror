@@ -18,7 +18,7 @@ module V1
     end
 
     def content_translations
-      return [] if object.deleted?
+      return Hash.new if object.deleted?
 
       I18nSerializer.new(object, :content, lang).translations
     end
