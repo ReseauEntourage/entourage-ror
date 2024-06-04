@@ -59,6 +59,10 @@ class Neighborhood < ApplicationRecord
     .where("(entourages.metadata->>'starts_at')::date > date_trunc('day', NOW() - interval '1 month')")
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
+  has_many :image_resize_actions, -> {
+    where(bucket: NeighborhoodImage::BUCKET_NAME)
+  }, foreign_key: :path, primary_key: :image_url
+
   reverse_geocoded_by :latitude, :longitude
 
   validates_presence_of [:status, :name, :description, :latitude, :longitude]
@@ -288,8 +292,12 @@ class Neighborhood < ApplicationRecord
 
   def image_url_with_size size
     return unless self['image_url'].present?
+    return self['image_url'] unless size.present?
+    return self['image_url'] unless image_resize_action = image_resize_actions.find do |instance|
+      instance.destination_size == size.to_s
+    end
 
-    NeighborhoodImage.image_url_for_with_size(self['image_url'], size)
+    NeighborhoodImage.image_url_for(image_resize_action.destination_path)
   end
 
   def neighborhood_image_id= neighborhood_image_id

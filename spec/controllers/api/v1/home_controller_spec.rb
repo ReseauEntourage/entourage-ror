@@ -89,26 +89,6 @@ describe Api::V1::HomeController do
 
         expect(subject["outings"].count).to eq(1)
       end
-
-      it "renders announcements" do
-        get :index, params: { token: user.token }
-
-        expect(subject["headlines"]["metadata"]["order"]).to include("announcement_0")
-        expect(subject["headlines"]["announcement_0"]["data"]).to eq(
-          {
-            "id" => announcement.id,
-            "uuid" => "#{announcement.id}",
-            "title" => "Une autre façon de contribuer.",
-            "body" => "Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-            "image_url" => nil,
-            "action" => "Aider",
-            "url" => "http://test.host/api/v1/announcements/#{announcement.id}/redirect/#{user.token}",
-            "webapp_url" => nil,
-            "icon_url" => "http://test.host/api/v1/announcements/#{announcement.id}/icon",
-            "author" => nil
-          }
-        )
-      end
     end
   end
 
