@@ -4,7 +4,7 @@ class MailjetMailer < ActionMailer::Base
   include MailerErrorHandling
 
   def mailjet_email to:, template_id:, campaign_name:,
-                    from: email_with_name("clara@entourage.social", "Le Réseau Entourage"),
+                    from: email_with_name("communaute@entourage.social", "Le Réseau Entourage"),
                     variables: {},
                     payload: {},
                     unsubscribe_category: :default,
