@@ -40,6 +40,7 @@ module PoiServices
     def query_params
       params = {
         location: {
+          areas: { country: :fr },
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
           geoType: "position"
@@ -57,6 +58,7 @@ module PoiServices
     def query_all_params
       params = {
         location: {
+          areas: { country: :fr },
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_ALL_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
           geoType: "position"
