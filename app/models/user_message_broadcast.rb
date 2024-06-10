@@ -139,6 +139,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     value = self["specific_filters"]["has_engagement"]
 
     return nil if value.nil?
+    return nil if value.blank?
 
     value == 'true'
   end
