@@ -268,6 +268,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           }],
           "member" => true,
           "members_count" => 1,
+          "unread_posts_count" => 0,
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,

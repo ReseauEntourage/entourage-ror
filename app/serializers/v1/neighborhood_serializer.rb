@@ -10,6 +10,7 @@ module V1
       :member,
       :members,
       :members_count,
+      :unread_posts_count,
       :image_url,
       :interests,
       :ethics,
@@ -49,6 +50,11 @@ module V1
       # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
       Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
+    end
+
+    def unread_posts_count
+      # fake data: not used in mobile app
+      0
     end
 
     def image_url
