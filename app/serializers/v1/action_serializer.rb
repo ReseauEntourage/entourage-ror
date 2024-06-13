@@ -67,7 +67,7 @@ module V1
     def member
       return false unless scope && scope[:user]
 
-      object.members.include? scope[:user]
+      object.member_ids.include?(scope[:user].id)
     end
 
     def metadata
