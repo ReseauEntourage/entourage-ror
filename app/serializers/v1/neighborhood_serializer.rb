@@ -53,8 +53,9 @@ module V1
     end
 
     def unread_posts_count
-      # fake data: not used in mobile app
-      0
+      return unless member
+
+      object.members.pluck(:user_id, :unread_messages_count).to_h[scope[:user].id]
     end
 
     def image_url

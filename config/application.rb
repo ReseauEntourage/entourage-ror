@@ -40,7 +40,7 @@ module EntourageBack
 
     config.active_job.queue_adapter = :sidekiq
 
-    config.active_record.observers = [:entourage_denorm_observer, :user_denorm_observer, :user_block_observer, :join_request_observer, :push_notification_trigger_observer, :translation_observer]
+    config.active_record.observers = [:entourage_denorm_observer, :user_denorm_observer, :user_block_observer, :join_request_observer, :push_notification_trigger_observer, :translation_observer, :unread_chat_message_observer]
 
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
     config.action_mailer.default_url_options = { :host => ENV["HOST"] }

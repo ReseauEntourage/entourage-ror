@@ -268,7 +268,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           }],
           "member" => true,
           "members_count" => 1,
-          "unread_posts_count" => 0,
+          "unread_posts_count" => nil,
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
@@ -342,6 +342,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "welcome_message" => nil,
           "member" => false,
           "members_count" => 1,
+          "unread_posts_count" => nil,
           "image_url" => nil,
           "interests" => ["sport"],
           "user" => {
