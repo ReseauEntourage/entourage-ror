@@ -69,13 +69,13 @@ module V1
     def member
       return false unless scope && scope[:user]
 
-      object.members.include? scope[:user]
+      object.member_ids.include?(scope[:user].id)
     end
 
     def confirmed_member
       return false unless scope && scope[:user]
 
-      object.confirmed_members.include? scope[:user]
+      object.confirmed_member_ids.include?(scope[:user].id)
     end
 
     def metadata
