@@ -1,0 +1,31 @@
+<%= render 'header', tab: :neighborhoods %>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <%= @user.full_name %> a rejoint <%= @join_requests.count %> groupes de voisins.
+  </div>
+</div>
+
+<div class="row">
+  <label class="control-label">Groupes de voisins</label>
+  <table class="table">
+    <tr>
+      <th>Nom</th>
+      <th>Statut</th>
+      <th>Posts créés</th>
+      <th>Commentaires créés</th>
+      <th>Posts non lus</th>
+    </tr>
+    <% @join_requests.each do |join_request| %>
+      <% next unless neighborhood = join_request.joinable %>
+
+      <tr>
+        <td><%= neighborhood.name %></td>
+        <td><%= join_request.status %></td>
+        <td><%= neighborhood.chat_messages.where(user_id: current_user.id, status: :active, ancestry: nil).count %></td>
+        <td><%= neighborhood.chat_messages.where(user_id: current_user.id, status: :active).where.not(ancestry: nil).count %></td>
+        <td><%= join_request.unread_messages_count %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
