@@ -339,7 +339,7 @@ module Admin
     end
 
     def neighborhood_params
-      params.require(:neighborhood).permit(:status, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
+      params.require(:neighborhood).permit(:status, :public, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
     end
 
     def chat_messages_params
