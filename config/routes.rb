@@ -218,6 +218,7 @@ Rails.application.routes.draw do
       member do
         get 'messages'
         get 'engagement'
+        get 'neighborhoods'
         get 'history'
         put 'destroy_avatar'
         put 'banish'
