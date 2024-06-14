@@ -1,7 +1,7 @@
 class ComputeUnreadMessagesCountOnJoinRequests < ActiveRecord::Migration[6.1]
   def up
     unless Rails.env.test?
-      Neighborhood.all.pluck(:id) do |neighborhood_id|
+      Neighborhood.all.pluck(:id).each do |neighborhood_id|
         UnreadChatMessageJob.perform_later('Neighborhood', neighborhood_id)
       end
     end
