@@ -219,6 +219,7 @@ Rails.application.routes.draw do
         get 'messages'
         get 'engagement'
         get 'neighborhoods'
+        get 'outings'
         get 'history'
         put 'destroy_avatar'
         put 'banish'
