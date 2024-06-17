@@ -1,8 +1,8 @@
-<%= render 'header', tab: :neighborhoods %>
+<%= render 'header', tab: :outings %>
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> a rejoint <%= @join_requests.count %> groupes de voisins.
+    <%= @user.full_name %> a rejoint <%= @join_requests.count %> événements.
   </div>
 </div>
 
@@ -11,22 +11,30 @@
   <table class="table">
     <tr>
       <th>Nom</th>
-      <th>Statut</th>
+      <th>Date de création</th>
+      <th>Date de début d'événement</th>
+      <th>Nombre de membres</th>
+      <th>Statut de l'événement</th>
+      <th>Statut de l'utilisateur</th>
+
       <th>Posts créés</th>
       <th>Commentaires créés</th>
-      <th>Posts non lus</th>
     </tr>
     <% @join_requests.each do |join_request| %>
-      <% next unless neighborhood = join_request.joinable %>
+      <% next unless outing = join_request.joinable %>
 
-      <% chat_messages = neighborhood.chat_messages.pluck(:user_id, :ancestry) %>
+      <% chat_messages = outing.chat_messages.pluck(:user_id, :ancestry) %>
 
       <tr>
-        <td><%= neighborhood.name %></td>
+        <td><%= outing.title %></td>
+        <td><%= l outing.created_at %></td>
+        <td><%= l outing.metadata[:starts_at] %></td>
+        <td><%= outing.number_of_people %></td>
+        <td><%= outing.status %></td>
         <td><%= join_request.status %></td>
+
         <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && ancestry.nil? } %></td>
         <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && !ancestry.nil? } %></td>
-        <td><%= join_request.unread_messages_count %></td>
       </tr>
     <% end %>
   </table>

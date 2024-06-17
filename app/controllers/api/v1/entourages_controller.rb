@@ -134,10 +134,12 @@ module Api
 
       #curl -H "Content-Type: application/json" -X PUT "http://localhost:3000/api/v1/entourages/1184/read.json?token=azerty"
       def read
-        @entourage.join_requests
-                  .accepted
-                  .where(user: current_user)
-                  .update_all(last_message_read: DateTime.now)
+        join_request = @entourage.join_requests
+          .accepted
+          .where(user: current_user)
+          .first
+          &.set_chat_messages_as_read
+
         head :no_content
       end
 

@@ -227,7 +227,7 @@ module Admin
         end
 
         on.success do |message|
-          @join_request.update_column(:last_message_read, message.created_at)
+          @join_request.set_chat_messages_as_read_from(message.created_at)
 
           redirect_to redirection
         end
@@ -255,7 +255,7 @@ module Admin
         end
 
         on.success do |message|
-          @join_request.update_column(:last_message_read, message.created_at)
+          @join_request.set_chat_messages_as_read_from(message.created_at)
 
           redirect_to redirection
         end
