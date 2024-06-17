@@ -4,7 +4,7 @@ namespace :actions do
     Action
       .joins(:user)
       .where(status: :open)
-      .where("users.validation_status in ('blocked', 'deleted', 'anonymized') or users.last_sign_in_at < ?", 6.months.ago)
+      .where("(users.validation_status in ('blocked', 'deleted', 'anonymized') or users.last_sign_in_at < ?)", 6.months.ago)
       .update_all(status: :closed)
   end
 end
