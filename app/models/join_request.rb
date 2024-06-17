@@ -41,6 +41,21 @@ class JoinRequest < ApplicationRecord
   after_destroy :joinable_callback
   before_save :reset_confirmed_at_unless_accepted
 
+  def set_chat_messages_as_read
+    update_column(:last_message_read, DateTime.now)
+    update_column(:unread_messages_count, 0)
+  end
+
+  def set_chat_messages_as_read_from datetime
+    update_column(:last_message_read, datetime)
+    update_column(:unread_messages_count, joinable.chat_messages
+      .where("created_at > ?", datetime)
+      .where(status: [:active, :updated])
+      .where(ancestry: nil)
+      .count
+    )
+  end
+
   def entourage?
     joinable_type == 'Entourage'
   end
