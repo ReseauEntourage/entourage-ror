@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :neighborhoods, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :neighborhoods, :outings, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -51,7 +51,20 @@ module Admin
     end
 
     def neighborhoods
-      @join_requests = current_user.join_requests.where(joinable_type: :Neighborhood).includes(:joinable, joinable: :chat_messages).order(created_at: :desc)
+      @join_requests = current_user
+        .join_requests
+        .where(joinable_type: :Neighborhood)
+        .includes(:joinable, joinable: :chat_messages)
+        .order(created_at: :desc)
+    end
+
+    def outings
+      @join_requests = current_user
+        .join_requests
+        .where(joinable_type: :Entourage)
+        .where("joinable_id in (select entourages.id from entourages where group_type = 'outing')")
+        .includes(:joinable, joinable: :chat_messages)
+        .order(created_at: :desc)
     end
 
     def history
