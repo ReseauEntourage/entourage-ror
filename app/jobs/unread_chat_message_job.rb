@@ -17,7 +17,7 @@ class UnreadChatMessageJob
         FROM chat_messages
         WHERE messageable_id = :neighborhood_id AND messageable_type = 'Neighborhood'
           AND ancestry IS NULL
-          AND status = 'active'
+          AND status IN ('active', 'updated')
       ), filtered_join_requests AS (
         SELECT
           user_id,
