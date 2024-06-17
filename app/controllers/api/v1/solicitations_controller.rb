@@ -120,7 +120,7 @@ module Api
       def set_last_message_read
         return unless join_request
 
-        join_request.update(last_message_read: Time.now)
+        join_request.set_chat_messages_as_read
       end
 
       def page
