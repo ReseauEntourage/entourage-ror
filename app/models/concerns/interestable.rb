@@ -10,7 +10,7 @@ module Interestable
       joins(sanitize_sql_array [%(
         left join taggings on taggable_type = '%s' and taggable_id = %s.id
         left join tags on tags.id = taggings.tag_id
-      ), self.name, self.table_name])
+      ), self.table_name.singularize.camelize, self.table_name])
     }
 
     scope :order_by_interests_matching, -> (interest_list) {
@@ -41,7 +41,7 @@ module Interestable
       return unless interest_list
       return unless interest_list.any?
 
-      joins(:interests).where(interests: { name: interest_list })
+      join_tags.where("tags.name IN (?)", interest_list)
     }
   end
 

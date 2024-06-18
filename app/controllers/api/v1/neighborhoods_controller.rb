@@ -8,7 +8,7 @@ module Api
       def index
         render json: NeighborhoodServices::Finder.search(
           user: current_user,
-          q: params[:q]
+          params: index_params
         )
           .includes(:translation, :members, :image_resize_actions)
           .page(page)
@@ -94,6 +94,10 @@ module Api
         @neighborhood = Neighborhood.find_by_id_through_context(params[:id], params)
 
         render json: { message: 'Could not find neighborhood' }, status: 400 unless @neighborhood.present?
+      end
+
+      def index_params
+        params.permit(:q, interests: [])
       end
 
       def neighborhood_params

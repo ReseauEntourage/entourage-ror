@@ -17,6 +17,28 @@ describe Api::V1::OutingsController do
     let(:outing) { FactoryBot.create(:outing, latitude: latitude, longitude: longitude) }
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
+    describe 'filter by interests' do
+      let!(:outing) { FactoryBot.create(:outing, :outing_class, latitude: latitude, longitude: longitude, interest_list: ["sport"]) }
+      let(:join_request) { nil }
+
+      before { get :index, params: { token: user.token, interests: interests } }
+
+      describe 'find with interest' do
+        let(:interests) { ["sport"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
+
+      describe 'does not find with interest' do
+        let(:interests) { ["jeux"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(0) }
+      end
+    end
+
     describe 'do not get closed' do
       let!(:closed) { create :outing, status: :closed, latitude: latitude, longitude: longitude }
 
