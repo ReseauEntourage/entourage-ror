@@ -34,6 +34,7 @@ class Address < ApplicationRecord
     false
   end
 
+  # to be deprecated
   def mixpanel_sync(synchronous: false)
     return unless self.class.enable_mixpanel_sync?
     return unless (['country', 'postal_code'] & previous_changes.keys).any?
