@@ -19,7 +19,7 @@ module Api
 
           #TODO: move into a LastMessageRead class
           if messages.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.first.created_at)
-            join_request.update(last_message_read: messages.first.created_at)
+            join_request.set_chat_messages_as_read_from(messages.first.created_at)
           end
 
           is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
