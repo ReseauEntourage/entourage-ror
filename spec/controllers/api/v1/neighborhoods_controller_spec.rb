@@ -8,7 +8,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   let(:not_admin) { create(:public_user, admin: false) }
 
   context 'index' do
-    let!(:neighborhood) { create :neighborhood }
+    let!(:neighborhood) { create :neighborhood, interest_list: ["sport"] }
     let(:result) { JSON.parse(response.body) }
 
     before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood]) }
@@ -73,6 +73,25 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(result).to have_key('neighborhoods') }
       it { expect(result['neighborhoods'][0]['user']['community_roles']).to eq(['Ambassadeur']) }
+    end
+
+    describe 'filter by interests' do
+      before { get :index, params: { token: user.token, interests: interests } }
+
+      describe 'find with interest' do
+        let(:interests) { ["sport"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(1) }
+        it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      end
+
+      describe 'does not find with interest' do
+        let(:interests) { ["jeux"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(0) }
+      end
     end
   end
 
