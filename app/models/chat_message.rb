@@ -135,6 +135,10 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  def neighborhood?
+    messageable_type == 'Neighborhood'
+  end
+
   def entourage?
     messageable_type == 'Entourage'
   end

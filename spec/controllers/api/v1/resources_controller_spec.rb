@@ -42,6 +42,50 @@ describe Api::V1::ResourcesController, :type => :controller do
     end
   end
 
+  describe 'home' do
+    let(:result) { JSON.parse(response.body) }
+    let(:user) { create :pro_user, goal: goal }
+    let!(:resource) { create :resource, pin_ask_for_help: pin_ask_for_help, pin_offer_help: pin_offer_help }
+    let(:pin_ask_for_help) { false }
+    let(:pin_offer_help) { false }
+
+    before { get :home, params: { token: user.token } }
+
+    describe 'resource is pinned for ask_for_help user' do
+      let(:goal) { :ask_for_help }
+      let(:pin_ask_for_help) { true }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('resources') }
+      it { expect(result['resources'].count).to eq(1) }
+    end
+
+    describe 'resource is not pinned for ask_for_help user' do
+      let(:goal) { :ask_for_help }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('resources') }
+      it { expect(result['resources'].count).to eq(0) }
+    end
+
+    describe 'resource is pinned for offer_help user' do
+      let(:goal) { :offer_help }
+      let(:pin_offer_help) { true }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('resources') }
+      it { expect(result['resources'].count).to eq(1) }
+    end
+
+    describe 'resource is not pinned for offer_help user' do
+      let(:goal) { :offer_help }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('resources') }
+      it { expect(result['resources'].count).to eq(0) }
+    end
+  end
+
   describe 'show' do
     let(:resource) { create :resource }
 

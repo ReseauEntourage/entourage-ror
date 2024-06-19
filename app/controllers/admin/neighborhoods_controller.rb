@@ -227,7 +227,7 @@ module Admin
         end
 
         on.success do |message|
-          @join_request.update_column(:last_message_read, message.created_at)
+          @join_request.set_chat_messages_as_read_from(message.created_at)
 
           redirect_to redirection
         end
@@ -255,7 +255,7 @@ module Admin
         end
 
         on.success do |message|
-          @join_request.update_column(:last_message_read, message.created_at)
+          @join_request.set_chat_messages_as_read_from(message.created_at)
 
           redirect_to redirection
         end
@@ -339,7 +339,7 @@ module Admin
     end
 
     def neighborhood_params
-      params.require(:neighborhood).permit(:status, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
+      params.require(:neighborhood).permit(:status, :public, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
     end
 
     def chat_messages_params

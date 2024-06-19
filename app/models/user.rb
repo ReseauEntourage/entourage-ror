@@ -658,6 +658,14 @@ class User < ApplicationRecord
     entourage_participations.where(group_type: :conversation).count
   end
 
+  def watched_resource_ids
+    @watched_resource_ids ||= UsersResource.where(user_id: id, watched: true).pluck(:resource_id)
+  end
+
+  def has_watched_resource? resource_id
+    watched_resource_ids.include?(resource_id)
+  end
+
   protected
 
   def slack_id_no_empty
