@@ -14,6 +14,11 @@ class Resource < ApplicationRecord
   has_many :users, through: :users_resources_watched, source: :user
 
   scope :ordered, -> { order(:position, :id) }
+  scope :pin, -> (user) {
+    return where(pin_ask_for_help: true) if user.is_ask_for_help?
+
+    where(pin_offer_help: true)
+  }
 
   # valides :image_url # should be ?x?
   attr_accessor :resource_image_id

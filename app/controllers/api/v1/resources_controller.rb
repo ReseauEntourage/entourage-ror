@@ -9,6 +9,10 @@ module Api
         render json: Resource.all.includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
       end
 
+      def home
+        render json: Resource.pin(current_user).includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
+      end
+
       def show
         render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
