@@ -10,7 +10,11 @@ module Api
       end
 
       def home
-        render json: Resource.pin(current_user).includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
+        render json: Resource.pin(current_user)
+          .where.not(id: current_user.users_resources.pluck(:resource_id))
+          .includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: {
+            user: current_user, nohtml: params[:nohtml].present?
+          }
       end
 
       def show
