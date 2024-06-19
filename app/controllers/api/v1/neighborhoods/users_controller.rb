@@ -9,7 +9,7 @@ module Api
         def index
           # neighborhood members
           render json: @neighborhood.join_requests
-            .includes(:user)
+            .includes(user: :partner)
             .ordered_by_users
             .accepted
             .page(page)
