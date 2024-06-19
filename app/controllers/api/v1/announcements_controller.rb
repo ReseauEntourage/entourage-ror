@@ -45,10 +45,6 @@ module Api
           Raven.capture_exception(e)
         end
 
-        unless current_user_or_anonymous.anonymous?
-          mixpanel.track("Opened Announcement", { "Announcement" => announcement.id })
-        end
-
         redirect_to url
       end
     end

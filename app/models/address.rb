@@ -30,18 +30,6 @@ class Address < ApplicationRecord
     COUNTRIES.find { |c| c[:code] == country }.try(:[], :name) || country
   end
 
-  def self.enable_mixpanel_sync?
-    false
-  end
-
-  # to be deprecated
-  def mixpanel_sync(synchronous: false)
-    return unless self.class.enable_mixpanel_sync?
-    return unless (['country', 'postal_code'] & previous_changes.keys).any?
-    return unless [country, postal_code].all?(&:present?)
-    AsyncService.new(MixpanelService).sync_address(self)
-  end
-
   def departement
     return unless postal_code.present?
 
