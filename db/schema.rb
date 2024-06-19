@@ -819,6 +819,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "status", default: "active", null: false
     t.string "uuid_v2", limit: 12, null: false
     t.string "tag"
+    t.boolean "pin_offer_help", default: false
+    t.boolean "pin_ask_for_help", default: false
     t.index ["name"], name: "index_resources_on_name"
     t.index ["tag"], name: "index_resources_on_tag"
     t.index ["uuid_v2"], name: "index_resources_on_uuid_v2", unique: true
