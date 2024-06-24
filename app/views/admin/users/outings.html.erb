@@ -2,7 +2,7 @@
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> a participé <%= @join_requests.count %> événements.
+    <%= @user.full_name %> a participé à <%= @join_requests.select{ |join_request| join_request.accepted? }.count %> événements.
   </div>
 </div>
 

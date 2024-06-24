@@ -2,7 +2,7 @@
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> est membre de <%= @join_requests.count %> groupes de voisins.
+    <%= @user.full_name %> est membre de <%= @join_requests.select{ |join_request| join_request.accepted? }.count %> groupes de voisins.
   </div>
 </div>
 
@@ -17,7 +17,7 @@
       <th>Posts non lus</th>
     </tr>
     <% @join_requests.each do |join_request| %>
-      <% next unless neighborhood = join_request.joinable %>
+      <% neighborhood = Neighborhood.unscoped.find(join_request.joinable_id) %>
 
       <% chat_messages = neighborhood.chat_messages.pluck(:user_id, :ancestry) %>
 
