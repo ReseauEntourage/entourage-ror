@@ -85,7 +85,7 @@ describe NeighborhoodServices::Finder do
 
       describe "does not find for description" do
         let(:q) { "bar" }
-        it { expect(response).to eq(["ball"]) }
+        it { expect(response).to eq([]) }
       end
     end
 
