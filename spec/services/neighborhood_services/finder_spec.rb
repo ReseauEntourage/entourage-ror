@@ -78,6 +78,11 @@ describe NeighborhoodServices::Finder do
       end
 
       describe "with q on the other" do
+        let(:q) { "bal" }
+        it { expect(response).to eq(["ball"]) }
+      end
+
+      describe "does not find for description" do
         let(:q) { "bar" }
         it { expect(response).to eq(["ball"]) }
       end
