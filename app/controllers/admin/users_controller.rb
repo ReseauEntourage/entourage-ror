@@ -54,7 +54,7 @@ module Admin
       @join_requests = user
         .join_requests
         .where(joinable_type: :Neighborhood)
-        .includes(:joinable, joinable: :chat_messages)
+        .includes(joinable: :chat_messages)
         .order(status: :asc, created_at: :desc)
     end
 
@@ -63,7 +63,7 @@ module Admin
         .join_requests
         .where(joinable_type: :Entourage)
         .where("joinable_id in (select entourages.id from entourages where group_type = 'outing')")
-        .includes(:joinable, joinable: :chat_messages)
+        .includes(joinable: :chat_messages)
         .order(created_at: :desc)
     end
 
