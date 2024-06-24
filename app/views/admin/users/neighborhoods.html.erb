@@ -2,7 +2,7 @@
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> a rejoint <%= @join_requests.count %> groupes de voisins.
+    <%= @user.full_name %> est membre de <%= @join_requests.count %> groupes de voisins.
   </div>
 </div>
 
@@ -11,7 +11,7 @@
   <table class="table">
     <tr>
       <th>Nom</th>
-      <th>Statut</th>
+      <th title="Accepted : l'utilisateur est membre du groupe ; Cancelled : l'utilisateur a quitté le groupe">Statut ⓘ</th>
       <th>Posts créés</th>
       <th>Commentaires créés</th>
       <th>Posts non lus</th>

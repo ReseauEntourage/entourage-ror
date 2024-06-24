@@ -2,7 +2,7 @@
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> a rejoint <%= @join_requests.count %> événements.
+    <%= @user.full_name %> a participé <%= @join_requests.count %> événements.
   </div>
 </div>
 
@@ -11,11 +11,9 @@
   <table class="table">
     <tr>
       <th>Nom</th>
-      <th>Date de création</th>
-      <th>Date de début d'événement</th>
-      <th>Nombre de membres</th>
-      <th>Statut de l'événement</th>
-      <th>Statut de l'utilisateur</th>
+      <th>Date de l'événement</th>
+      <th>Nombre de participants</th>
+      <th title="Accepted : l'utilisateur participe à l'événement ; Cancelled : l'utilisateur ne participe plus à l'événement">Statut de l'utilisateur ⓘ</th>
 
       <th>Posts créés</th>
       <th>Commentaires créés</th>
@@ -26,11 +24,9 @@
       <% chat_messages = outing.chat_messages.pluck(:user_id, :ancestry) %>
 
       <tr>
-        <td><%= outing.title %></td>
-        <td><%= l outing.created_at %></td>
-        <td><%= l outing.metadata[:starts_at] %></td>
+        <td><%= link_to outing.title, admin_entourage_path(outing) %></td>
+        <td><%= l outing.metadata[:starts_at], format: :short %></td>
         <td><%= outing.number_of_people %></td>
-        <td><%= outing.status %></td>
         <td><%= join_request.status %></td>
 
         <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && ancestry.nil? } %></td>
