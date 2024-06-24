@@ -55,7 +55,7 @@ module Admin
         .join_requests
         .where(joinable_type: :Neighborhood)
         .includes(:joinable, joinable: :chat_messages)
-        .order(created_at: :desc)
+        .order(status: :asc, created_at: :desc)
     end
 
     def outings
