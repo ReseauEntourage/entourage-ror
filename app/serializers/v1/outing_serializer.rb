@@ -21,6 +21,7 @@ module V1
                :recurrency,
                :member,
                :members_count,
+               :unread_posts_count,
                :confirmed_member,
                :confirmed_members_count,
                :created_at,
@@ -76,6 +77,12 @@ module V1
       return false unless scope && scope[:user]
 
       object.confirmed_member_ids.include?(scope[:user].id)
+    end
+
+    def unread_posts_count
+      return unless member
+
+      object.members.pluck(:user_id, :unread_messages_count).to_h[scope[:user].id]
     end
 
     def metadata

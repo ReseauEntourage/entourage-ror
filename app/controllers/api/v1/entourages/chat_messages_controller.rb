@@ -27,8 +27,6 @@ module Api
           if is_onboarding &&
              @entourage.chat_messages.where(user_id: current_user.id).empty?
             messages.to_a.push Onboarding::V1.chat_message_for(current_user)
-
-            mixpanel.track("Displayed Entourage Conversation", mp_params)
           end
 
           render json: messages, each_serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
@@ -42,7 +40,6 @@ module Api
           chat_builder.create do |on|
             on.success do |message|
               is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
-              mixpanel.track("Wrote Message in Entourage", mp_params)
               render json: message, status: 201, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
             end
 

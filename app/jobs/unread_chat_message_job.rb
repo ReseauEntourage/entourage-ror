@@ -4,18 +4,21 @@ class UnreadChatMessageJob
   sidekiq_options :retry => true, queue: :default
 
   def perform messageable_type, messageable_id
-    return unless record = messageable_type.constantize.unscoped.find_by(id: messageable_id)
-    return unless record.is_a?(Neighborhood)
+    return unless ['Entourage', 'Neighborhood'].include?(messageable_type)
 
-    compute_unread_on_neighborhood(record.id)
+    if messageable_type == 'Entourage'
+      return unless Outing.find_by_id(messageable_id)
+    end
+
+    compute_unread_on_instance(messageable_type, messageable_id)
   end
 
-  def compute_unread_on_neighborhood neighborhood_id
+  def compute_unread_on_instance messageable_type, messageable_id
     sql = <<-SQL
       WITH filtered_chat_messages AS (
         SELECT created_at
         FROM chat_messages
-        WHERE messageable_id = :neighborhood_id AND messageable_type = 'Neighborhood'
+        WHERE messageable_id = :messageable_id AND messageable_type = :messageable_type
           AND ancestry IS NULL
           AND status IN ('active', 'updated')
       ), filtered_join_requests AS (
@@ -23,7 +26,7 @@ class UnreadChatMessageJob
           user_id,
           last_message_read
         FROM join_requests
-        WHERE joinable_id = :neighborhood_id AND joinable_type = 'Neighborhood'
+        WHERE joinable_id = :messageable_id AND joinable_type = :messageable_type
           AND status = 'accepted'
       ), unread_counts AS (
         SELECT
@@ -40,12 +43,14 @@ class UnreadChatMessageJob
       SET unread_messages_count = unread_counts.unread_messages_count
       FROM unread_counts
       WHERE join_requests.user_id = unread_counts.user_id
-      AND join_requests.joinable_id = :neighborhood_id
-      AND join_requests.joinable_type = 'Neighborhood';
+      AND join_requests.joinable_id = :messageable_id
+      AND join_requests.joinable_type = :messageable_type;
     SQL
 
-    ActiveRecord::Base.connection.execute(ActiveRecord::Base.send(:sanitize_sql_array, [sql, { neighborhood_id: neighborhood_id }]))
-
+    ActiveRecord::Base.connection.execute(ActiveRecord::Base.send(:sanitize_sql_array, [sql, {
+      messageable_type: messageable_type,
+      messageable_id: messageable_id
+    }]))
   end
 
   def self.perform_later messageable_type, messageable_id
