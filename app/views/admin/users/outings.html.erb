@@ -29,8 +29,8 @@
         <td><%= outing.number_of_people %></td>
         <td><%= join_request.status %></td>
 
-        <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && ancestry.nil? } %></td>
-        <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && !ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && !ancestry.nil? } %></td>
       </tr>
     <% end %>
   </table>

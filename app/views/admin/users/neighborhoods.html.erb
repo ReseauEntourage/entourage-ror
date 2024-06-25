@@ -24,8 +24,8 @@
       <tr>
         <td><%= neighborhood.name %></td>
         <td><%= join_request.status %></td>
-        <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && ancestry.nil? } %></td>
-        <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && !ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && !ancestry.nil? } %></td>
         <td><%= join_request.unread_messages_count %></td>
       </tr>
     <% end %>
