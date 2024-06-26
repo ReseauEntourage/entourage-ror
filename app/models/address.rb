@@ -7,6 +7,8 @@ class Address < ApplicationRecord
   validates_presence_of :place_name, :latitude, :longitude, :user_id
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: USER_MAX_ADDRESSES }
 
+  belongs_to :addressable, polymorphic: true
+  # @deprecated
   belongs_to :user
 
   after_save :set_user_address_id_if_primary!

@@ -46,6 +46,10 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "user_id", null: false
     t.integer "position", default: 1, null: false
     t.string "city"
+    t.string "street_number", default: "null"
+    t.string "route", default: "null"
+    t.string "addressable_type", default: "null"
+    t.integer "addressable_id"
     t.index ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true
   end
 
