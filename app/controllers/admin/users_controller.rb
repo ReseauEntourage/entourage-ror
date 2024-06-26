@@ -321,9 +321,9 @@ module Admin
       @users = @users.not_engaged if engagement == :not_engaged
       @users = @users.search_by(params[:search]) if params[:search].present?
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if status == :pending
-      @users = @users.unknown if profile == :goal_not_known
-      @users = @users.ask_for_help if profile == :ask_for_help
-      @users = @users.offer_help if profile == :offer_help
+
+      @users = @users.with_profile(profile.to_s) if profile.present?
+
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')
