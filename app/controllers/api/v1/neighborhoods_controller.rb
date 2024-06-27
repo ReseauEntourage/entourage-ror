@@ -6,15 +6,10 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: NeighborhoodServices::Finder.search(
-          user: current_user,
-          params: index_params
-        )
+        render json: NeighborhoodServices::Finder.search(user: current_user, params: index_params)
           .includes(:translation, :members, :image_resize_actions)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: {
-            user: current_user
-          }
+          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
       end
 
       def default
