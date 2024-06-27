@@ -181,10 +181,6 @@ AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_pa
 # @param id string
 AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..])
 
-# app/models/address
-# @deprecated
-AsyncService.new(MixpanelService).sync_address(self)
-
 # app/models/email_preference
 # @param id integer
 AsyncService.new(self.class).sync_newsletter(self.id)
@@ -225,5 +221,4 @@ AsyncService.new(self).delete_s3_object_with_public_url(previous_logo)
 Some of the previous jobs are not used anymore or should be deprecated. They are listed below:
 
 - `AsyncService.new(IraiserWebhookService).handle_notification(raw_headers, request.raw_post)`
-- `AsyncService.new(MixpanelService).sync_address(self)`
 - `AsyncService.new(self).set(wait_until: join_request.created_at + 15.seconds).accept_now(join_request)`

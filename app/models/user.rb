@@ -211,9 +211,9 @@ class User < ApplicationRecord
     elsif profile.to_sym == :offer_help
       offer_help
     elsif profile.to_sym == :partner
-      where(targeting_profile: :partner)
+      where.not(partner_id: nil)
     elsif profile.to_sym == :organization
-      where(targeting_profile: :partner)
+      where.not(partner_id: nil)
     elsif profile.to_sym == :goal_not_known
       goal_not_known
     end
@@ -656,6 +656,14 @@ class User < ApplicationRecord
 
   def conversation_participations_count
     entourage_participations.where(group_type: :conversation).count
+  end
+
+  def watched_resource_ids
+    @watched_resource_ids ||= UsersResource.where(user_id: id, watched: true).pluck(:resource_id)
+  end
+
+  def has_watched_resource? resource_id
+    watched_resource_ids.include?(resource_id)
   end
 
   protected

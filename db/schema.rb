@@ -2,17 +2,16 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 202405021415000) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -274,6 +273,7 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.string "action_failure_reason"
     t.string "action_target_type"
     t.integer "moderator_id"
+    t.datetime "validated_at"
     t.index ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true
     t.index ["moderator_id"], name: "index_entourage_moderations_on_moderator_id"
   end
@@ -411,6 +411,7 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.datetime "archived_at"
     t.string "report_prompt_status"
     t.datetime "confirmed_at"
+    t.integer "unread_messages_count"
     t.index ["confirmed_at"], name: "index_join_requests_on_confirmed_at"
     t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
     t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests"
@@ -452,11 +453,11 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
     t.string "slack_moderator_id_old"
-    t.boolean "activity", default: false, null: false
     t.integer "animator_id"
     t.integer "mobilisator_id"
     t.integer "sourcing_id"
     t.integer "accompanyist_id"
+    t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
@@ -496,7 +497,6 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.string "status", default: "active", null: false
     t.datetime "status_changed_at"
     t.integer "number_of_people", default: 0
-    t.boolean "is_departement", default: false
     t.string "zone"
     t.boolean "public", default: true
     t.string "uuid_v2", limit: 12, null: false
@@ -521,7 +521,7 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "email", limit: 255
+    t.string "email"
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -602,16 +602,16 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
   end
 
   create_table "pois", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.text "description"
     t.float "latitude"
     t.float "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "adress", limit: 255
-    t.string "phone", limit: 255
+    t.string "adress"
+    t.string "phone"
     t.string "website"
-    t.string "email", limit: 255
+    t.string "email"
     t.string "audience"
     t.integer "category_id"
     t.boolean "validated", default: false, null: false
@@ -686,6 +686,8 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.string "status", default: "active", null: false
     t.string "uuid_v2", limit: 12, null: false
     t.string "tag"
+    t.boolean "pin_offer_help", default: false
+    t.boolean "pin_ask_for_help", default: false
     t.index ["name"], name: "index_resources_on_name"
     t.index ["tag"], name: "index_resources_on_tag"
     t.index ["uuid_v2"], name: "index_resources_on_uuid_v2", unique: true
@@ -697,8 +699,8 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.text "certificate"
     t.string "password"
     t.integer "connections", default: 1, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.string "type", null: false
     t.string "auth_key"
     t.string "client_id"
@@ -715,8 +717,8 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
   create_table "rpush_feedback", force: :cascade do |t|
     t.string "device_token"
     t.datetime "failed_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.integer "app_id"
     t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
   end
@@ -735,8 +737,8 @@ ActiveRecord::Schema[7.0].define(version: 202405021415000) do
     t.integer "error_code"
     t.text "error_description"
     t.datetime "deliver_after"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.boolean "alert_is_json", default: false, null: false
     t.string "type", null: false
     t.string "collapse_key"
