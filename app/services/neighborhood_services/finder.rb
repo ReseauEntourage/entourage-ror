@@ -18,6 +18,20 @@ module NeighborhoodServices
           .order_by_activity
           .order_by_distance_from(user.latitude, user.longitude)
       end
+
+      def search_participations user:, params: {}
+        neighborhoods = if params[:q].present?
+          Neighborhood.like(params[:q])
+        else
+          Neighborhood
+        end
+
+        neighborhoods
+          .joins(:join_requests)
+          .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
+          .match_at_least_one_interest(params[:interests])
+          .order(name: :asc)
+      end
     end
   end
 end
