@@ -154,9 +154,8 @@ class Neighborhood < ApplicationRecord
   scope :like, -> (search) {
     return unless search.present?
 
-    where('(unaccent(neighborhoods.name) ilike unaccent(:name) or unaccent(neighborhoods.description) ilike unaccent(:description))', {
-      name: "%#{search.strip}%",
-      description: "%#{search.strip}%"
+    where('unaccent(neighborhoods.name) ilike unaccent(:name)', {
+      name: "%#{search.strip}%"
     })
   }
 

@@ -78,8 +78,13 @@ describe NeighborhoodServices::Finder do
       end
 
       describe "with q on the other" do
-        let(:q) { "bar" }
+        let(:q) { "bal" }
         it { expect(response).to eq(["ball"]) }
+      end
+
+      describe "with q on the other" do
+        let(:q) { "bar" }
+        it { expect(response).to eq([]) }
       end
     end
   end

@@ -43,7 +43,11 @@
             <% unread_count  = @message_count[neighborhood.id].unread %>
             <% unread_images_count = @message_count[neighborhood.id].unread_images || 0 %>
             <tr class="above-row row-<%= parite %>">
-              <td><%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %></td>
+              <td>
+                <span class="custom-badge <%= neighborhood.public? ? "info" : "warning" %>" title="<%= neighborhood.public? ? "public" : "privé" %>">
+                  <%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %>
+                </span>
+              </td>
               <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
               <td>
                 <% if neighborhood.place_name %>

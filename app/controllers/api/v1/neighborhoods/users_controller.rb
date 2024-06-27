@@ -8,7 +8,14 @@ module Api
 
         def index
           # neighborhood members
-          render json: @neighborhood.join_requests.includes(:user).ordered_by_users.accepted, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          render json: @neighborhood.join_requests
+            .includes(user: :partner)
+            .ordered_by_users
+            .accepted
+            .page(page)
+            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: {
+              user: current_user
+            }
         end
 
         def create
@@ -62,6 +69,14 @@ module Api
           unless current_user == User.find(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per].try(:to_i) || 100
         end
       end
     end

@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :neighborhoods, :outings, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -48,6 +48,23 @@ module Admin
     end
 
     def engagement
+    end
+
+    def neighborhoods
+      @join_requests = user
+        .join_requests
+        .where(joinable_type: :Neighborhood)
+        .includes(joinable: :chat_messages)
+        .order(status: :asc, created_at: :desc)
+    end
+
+    def outings
+      @join_requests = user
+        .join_requests
+        .where(joinable_type: :Entourage)
+        .where("joinable_id in (select entourages.id from entourages where group_type = 'outing')")
+        .includes(joinable: :chat_messages)
+        .order(created_at: :desc)
     end
 
     def history
@@ -304,9 +321,9 @@ module Admin
       @users = @users.not_engaged if engagement == :not_engaged
       @users = @users.search_by(params[:search]) if params[:search].present?
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if status == :pending
-      @users = @users.unknown if profile == :goal_not_known
-      @users = @users.ask_for_help if profile == :ask_for_help
-      @users = @users.offer_help if profile == :offer_help
+
+      @users = @users.with_profile(profile.to_s) if profile.present?
+
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')

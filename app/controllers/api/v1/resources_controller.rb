@@ -6,7 +6,15 @@ module Api
       after_action :set_as_watched, only: [:show, :tag]
 
       def index
-        render json: Resource.all, each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
+        render json: Resource.all.includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
+      end
+
+      def home
+        render json: Resource.pin(current_user)
+          .where.not(id: current_user.users_resources.pluck(:resource_id))
+          .includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: {
+            user: current_user, nohtml: params[:nohtml].present?
+          }
       end
 
       def show
