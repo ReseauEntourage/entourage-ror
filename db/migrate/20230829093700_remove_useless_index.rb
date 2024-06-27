@@ -1,4 +1,4 @@
-class AddIndexToEntouragesMetadataDatesId < ActiveRecord::Migration[5.2]
+class RemoveUselessIndex < ActiveRecord::Migration[5.2]
   def up
     execute <<-SQL
     DROP INDEX IF EXISTS public.index_chat_messages_on_content;
