@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe OutingsServices::Finder do
   let(:user) { create(:public_user, address: address, travel_distance: 200) }
-  let!(:outing_0) { create(:outing, :outing_class, latitude: 0, longitude: 0, title: "Foot", interest_list: ["sport"]) }
-  let!(:outing_1) { create(:outing, :outing_class, latitude: 1, longitude: 1, title: "Ball", interest_list: ["jeux"]) }
+  let!(:outing_foot) { create(:outing, :outing_class, latitude: 0, longitude: 0, title: "Foot", interest_list: ["sport"]) }
+  let!(:outing_ball) { create(:outing, :outing_class, latitude: 1, longitude: 1, title: "Ball", interest_list: ["jeux"]) }
 
   let(:address) { create(:address, place_name: 'address', latitude: latitude, longitude: longitude, postal_code: "75020") }
   let(:interests) { [] }
@@ -28,6 +28,15 @@ describe OutingsServices::Finder do
       let(:longitude) { 10 }
 
       it { expect(response).to eq([]) }
+    end
+
+    describe "not active" do
+      let(:latitude) { 0 }
+      let(:longitude) { 0 }
+
+      before { outing_foot.update_attribute(:status, :closed) }
+
+      it { expect(response).to eq(["Ball"]) }
     end
 
     describe "with interests" do
