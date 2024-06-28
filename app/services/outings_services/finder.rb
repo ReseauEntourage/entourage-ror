@@ -1,6 +1,6 @@
 module OutingsServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :interests
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests
 
     def initialize user, params
       @user = user
@@ -15,11 +15,19 @@ module OutingsServices
 
       @distance = params[:travel_distance] || user.travel_distance
 
+      @q = params[:q]
+
       @interests = params[:interests]
     end
 
     def find_all
-      outings = Outing.active
+      outings = if q.present?
+        Outing.like(q)
+      else
+        Outing
+      end
+
+      outings = outings
         .future_or_ongoing
         .match_at_least_one_interest(interests)
 
@@ -31,6 +39,19 @@ module OutingsServices
 
       # order by starts_at is already in default_scope
       outings.group(:id)
+    end
+
+    def find_all_participations
+      outings = if q.present?
+        Outing.like(q)
+      else
+        Outing
+      end
+
+      outings
+        .joins(:join_requests)
+        .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
+        .match_at_least_one_interest(interests)
     end
 
     private

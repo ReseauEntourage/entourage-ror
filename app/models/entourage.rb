@@ -95,10 +95,7 @@ class Entourage < ApplicationRecord
   scope :like, -> (search) {
     return unless search.present?
 
-    where('(unaccent(title) ilike unaccent(:title) or unaccent(description) ilike unaccent(:description))', {
-      title: "%#{search.strip}%",
-      description: "%#{search.strip}%"
-    })
+    where('(unaccent(title) ilike unaccent(:title))', { title: "%#{search.strip}%" })
   }
   scope :moderator_search, -> (search) {
     return if search == 'any'
