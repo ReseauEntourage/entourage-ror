@@ -108,6 +108,14 @@ describe NeighborhoodServices::Finder do
         let(:interests) { ["cuisine"] }
         it { expect(response).to eq([]) }
       end
+
+      describe "interests not matching neighborhoods with no interest" do
+        let(:interests) { ["cuisine"] }
+
+        before { neighborhood_0.update_attribute(:interest_list, [])}
+
+        it { expect(response).to eq([]) }
+      end
     end
   end
 end

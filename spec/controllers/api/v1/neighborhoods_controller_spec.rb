@@ -8,7 +8,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   let(:not_admin) { create(:public_user, admin: false) }
 
   context 'index' do
-    let!(:neighborhood) { create :neighborhood, interest_list: ["sport"] }
+    let!(:neighborhood) { create :neighborhood, name: "JO Paris", interest_list: ["sport"] }
     let(:result) { JSON.parse(response.body) }
 
     before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood]) }
@@ -88,6 +88,33 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       describe 'does not find with interest' do
         let(:interests) { ["jeux"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(0) }
+      end
+    end
+
+    describe 'filter by q' do
+      before { get :index, params: { token: user.token, q: q } }
+
+      describe 'find with q' do
+        let(:q) { "JO" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(1) }
+        it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      end
+
+      describe 'find with q not case sensitive' do
+        let(:q) { "jo" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(1) }
+        it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      end
+
+      describe 'does not find with q' do
+        let(:q) { "OJ" }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(0) }
