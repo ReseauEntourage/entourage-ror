@@ -188,11 +188,10 @@ describe Api::V1::EntouragesController do
       it { expect(subject["entourages"][0]["id"]).to eq(entourage_2.id) }
     end
 
-    context "filter search term on description" do
+    context "no filter search term on description, only on title" do
       before { get :search, params: { token: user.token, q: 'Bar' } }
 
-      it { expect(subject["entourages"].count).to eq(1) }
-      it { expect(subject["entourages"][0]["id"]).to eq(entourage_1.id) }
+      it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter search term on unknown" do
