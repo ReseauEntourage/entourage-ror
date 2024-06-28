@@ -27,7 +27,8 @@ module OutingsServices
         Outing
       end
 
-      outings = outings.active
+      outings = outings
+        .active
         .future_or_ongoing
         .match_at_least_one_interest(interests)
 
