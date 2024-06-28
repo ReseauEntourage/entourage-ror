@@ -211,9 +211,9 @@ class User < ApplicationRecord
     elsif profile.to_sym == :offer_help
       offer_help
     elsif profile.to_sym == :partner
-      where(targeting_profile: :partner)
+      where.not(partner_id: nil)
     elsif profile.to_sym == :organization
-      where(targeting_profile: :partner)
+      where.not(partner_id: nil)
     elsif profile.to_sym == :goal_not_known
       goal_not_known
     end

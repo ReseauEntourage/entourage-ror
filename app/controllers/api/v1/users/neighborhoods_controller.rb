@@ -5,10 +5,10 @@ module Api
         before_action :set_user
 
         def index
-          render json: NeighborhoodServices::Finder.search_participations(user: current_user, params: index_params)
+          render json: NeighborhoodServices::Finder.search_participations(user: @user, params: index_params)
             .includes(:translation, :members, :image_resize_actions)
             .page(page)
-            .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
+            .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: @user }
         end
 
         private
@@ -23,6 +23,10 @@ module Api
 
         def per
           params[:per] || 50
+        end
+
+        def index_params
+          params.permit(:q, interests: [])
         end
       end
     end

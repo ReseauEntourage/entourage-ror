@@ -2,7 +2,7 @@
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> a rejoint <%= @join_requests.count %> groupes de voisins.
+    <%= @user.full_name %> est membre de <%= @join_requests.select{ |join_request| join_request.accepted? }.count %> groupes de voisins.
   </div>
 </div>
 
@@ -11,21 +11,21 @@
   <table class="table">
     <tr>
       <th>Nom</th>
-      <th>Statut</th>
+      <th title="Accepted : l'utilisateur est membre du groupe ; Cancelled : l'utilisateur a quitté le groupe">Statut ⓘ</th>
       <th>Posts créés</th>
       <th>Commentaires créés</th>
       <th>Posts non lus</th>
     </tr>
     <% @join_requests.each do |join_request| %>
-      <% next unless neighborhood = join_request.joinable %>
+      <% neighborhood = Neighborhood.unscoped.find(join_request.joinable_id) %>
 
       <% chat_messages = neighborhood.chat_messages.pluck(:user_id, :ancestry) %>
 
       <tr>
         <td><%= neighborhood.name %></td>
         <td><%= join_request.status %></td>
-        <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && ancestry.nil? } %></td>
-        <td><%= chat_messages.count { |user_id, ancestry| current_user.id == user_id && !ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && !ancestry.nil? } %></td>
         <td><%= join_request.unread_messages_count %></td>
       </tr>
     <% end %>
