@@ -500,9 +500,11 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.boolean "public", default: true
     t.string "uuid_v2", limit: 12, null: false
     t.string "country", default: "FR"
+    t.boolean "national", default: false
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_neighborhoods_on_coordinates", using: :gist
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
+    t.index ["national"], name: "index_neighborhoods_on_national"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
     t.index ["status"], name: "index_neighborhoods_on_status"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
