@@ -94,6 +94,28 @@ module Api
         render json: payload, status: 200
       end
 
+      def clusters
+        pois = Poi.clustered(coordinates[:latitude], coordinates[:longitude], distance).map do |cluster|
+          if cluster.count == 1
+            {
+              type: :poi,
+              name: cluster.name,
+              latitude: cluster.latitude,
+              longitude: cluster.longitude
+            }
+          else
+            {
+              type: :cluster,
+              count: cluster.count,
+              latitude: cluster.latitude,
+              longitude: cluster.longitude
+            }
+          end
+        end
+
+        render json: pois, status: 200
+      end
+
       def show
         if params[:id].start_with?('s') && current_user && current_user.not_default_lang?
           return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..], current_user.lang) }
@@ -148,6 +170,19 @@ module Api
 
       def soliguide_params
         params.permit(:latitude, :longitude, :distance, :category_ids, :query)
+      end
+
+      def coordinates
+        return {
+          latitude: params[:latitude],
+          longitude: params[:longitude]
+        } if params[:latitude] && params[:longitude]
+
+        { latitude: current_user.latitude, longitude: current_user.longitude }
+      end
+
+      def distance
+        params[:distance] || current_user.travel_distance
       end
 
       def member_mailer
