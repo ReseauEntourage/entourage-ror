@@ -7,6 +7,7 @@ module Api
         def index
           render json: NeighborhoodServices::Finder.new(@user, index_params).find_all_participations
             .includes(:translation, :members, :image_resize_actions)
+            .order(national: :desc, name: :asc)
             .page(page)
             .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: @user }
         end
