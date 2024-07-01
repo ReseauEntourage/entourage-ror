@@ -94,6 +94,28 @@ module Api
         render json: payload, status: 200
       end
 
+      def clusters
+        pois = Poi.clusters.from(params[:latitude], params[:longitude], params[:distance]).map do |cluster|
+          if cluster.count == 1
+            {
+              type: :poi,
+              name: cluster.name,
+              latitude: cluster.latitude,
+              longitude: cluster.longitude
+            }
+          else
+            {
+              type: :cluster,
+              count: cluster.count,
+              latitude: cluster.latitude,
+              longitude: cluster.longitude
+            }
+          end
+        end
+
+        render json: pois, status: 200
+      end
+
       def show
         if params[:id].start_with?('s') && current_user && current_user.not_default_lang?
           return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..], current_user.lang) }
