@@ -19,6 +19,7 @@ module NeighborhoodServices
           .not_joined_by(user)
           .public_only
           .match_at_least_one_interest(params[:interests])
+          .order(national: :desc)
           .order(Arel.sql(%(zone IS NULL DESC)))
           .order_by_activity
           .order_by_distance_from(user.latitude, user.longitude)
@@ -35,6 +36,7 @@ module NeighborhoodServices
           .joins(:join_requests)
           .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
           .match_at_least_one_interest(params[:interests])
+          .order(national: :desc, name: :asc)
           .order(name: :asc)
       end
     end
