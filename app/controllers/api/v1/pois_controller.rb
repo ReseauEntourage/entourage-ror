@@ -95,7 +95,7 @@ module Api
       end
 
       def clusters
-        pois = Poi.clusters.from(params[:latitude], params[:longitude], params[:distance]).map do |cluster|
+        pois = Poi.clustered(coordinates[:latitude], coordinates[:longitude], distance).map do |cluster|
           if cluster.count == 1
             {
               type: :poi,
@@ -170,6 +170,19 @@ module Api
 
       def soliguide_params
         params.permit(:latitude, :longitude, :distance, :category_ids, :query)
+      end
+
+      def coordinates
+        return {
+          latitude: params[:latitude],
+          longitude: params[:longitude]
+        } if params[:latitude] && params[:longitude]
+
+        { latitude: current_user.latitude, longitude: current_user.longitude }
+      end
+
+      def distance
+        params[:distance] || current_user.travel_distance
       end
 
       def member_mailer

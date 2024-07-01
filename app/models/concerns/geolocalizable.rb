@@ -17,8 +17,8 @@ module Geolocalizable
         CASE WHEN COUNT(*) = 1 THEN MIN(id) ELSE NULL END AS id,
         CASE WHEN COUNT(*) = 1 THEN MIN(name) ELSE NULL END AS name,
         COUNT(*) AS count,
-        AVG(latitude) AS avg_latitude,
-        AVG(longitude) AS avg_longitude
+        AVG(latitude) AS latitude,
+        AVG(longitude) AS longitude
       ").from(sanitize_sql_array ["(
         SELECT id, name, latitude, longitude, ST_ClusterKMeans(ST_Transform((ST_SetSRID(ST_MakePoint(longitude, latitude), 4326))::geometry, 4326), LEAST(#{max_clusters}, 30)) OVER () AS cluster_id
         FROM pois
