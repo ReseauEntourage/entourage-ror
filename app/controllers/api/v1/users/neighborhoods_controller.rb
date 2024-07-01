@@ -7,7 +7,7 @@ module Api
         def index
           neighborhoods = Neighborhood.joins(:join_requests)
             .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
-            .order(name: :asc)
+            .order(national: :desc, name: :asc)
             .page(page)
             .per(per)
 

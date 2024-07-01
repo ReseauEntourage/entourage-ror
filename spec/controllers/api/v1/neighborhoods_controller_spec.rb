@@ -74,6 +74,17 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result).to have_key('neighborhoods') }
       it { expect(result['neighborhoods'][0]['user']['community_roles']).to eq(['Ambassadeur']) }
     end
+
+    describe 'national first' do
+      let!(:neighborhood_national) { create :neighborhood, national: true }
+
+      before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood, neighborhood_national]) }
+      before { get :index, params: { token: user.token } }
+
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
+    end
   end
 
   context 'create' do

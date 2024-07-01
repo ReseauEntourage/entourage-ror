@@ -23,5 +23,16 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       it { expect(result["neighborhoods"].count).to eq(2) }
       it { expect(result["neighborhoods"].map {|neighborhoods| neighborhoods["id"]}).to eq([neighborhood_created.id, neighborhood_joined.id]) }
     end
+
+    describe 'national first' do
+      let!(:neighborhood) { create :neighborhood, participants: [user] }
+      let!(:neighborhood_national) { create :neighborhood, national: true, participants: [user] }
+
+      before { get :index, params: { user_id: user.id, token: user.token } }
+
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
+    end
   end
 end
