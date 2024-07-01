@@ -320,7 +320,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
           "status_changed_at" => nil,
-          "public" => true
+          "public" => true,
+          "national" => false
         }) }
       end
 
@@ -419,7 +420,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ongoing_outings" => [],
           "has_ongoing_outing" => false,
           "posts" => [],
-          "public" => true
+          "public" => true,
+          "national" => false
         }
       })}
     end
