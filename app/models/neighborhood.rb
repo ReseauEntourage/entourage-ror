@@ -80,6 +80,8 @@ class Neighborhood < ApplicationRecord
   scope :public_only, -> { where(public: true) }
 
   scope :with_moderation_area, -> (moderation_area) {
+    return where(national: true) if moderation_area.to_sym == :national
+
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
       return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
         where.not(country: :FR)
