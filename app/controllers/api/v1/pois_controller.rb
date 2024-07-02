@@ -100,6 +100,7 @@ module Api
             {
               type: :poi,
               name: cluster.name,
+              category_id: cluster.category_id,
               latitude: cluster.latitude,
               longitude: cluster.longitude
             }
