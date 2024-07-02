@@ -12,15 +12,13 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery-ui/widgets/datepicker
-//= require jquery-ui/i18n/datepicker-fr
-//= require jquery-ui/widgets/autocomplete
+//= require turbolinks
 //= require moment
 //= require daterangepicker
 //= require handlebars.runtime
 //= require handlebars_helpers
 //= require bootstrap-multiselect
-//= require jquery-ui/widget
+//= require jquery.ui.widget
 //= require jquery.fileupload
 //= require_tree ./templates
 //= require_tree .
@@ -30,5 +28,3 @@
 
 //= require chartkick
 //= require Chart.bundle
-
-import { Turbo } from "@hotwired/turbo-rails"

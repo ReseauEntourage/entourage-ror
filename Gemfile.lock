@@ -431,6 +431,8 @@ GEM
     ruby-progressbar (1.13.0)
     ruby-stemmer (3.0.0)
     safety_mailer (0.0.10)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -477,12 +479,13 @@ GEM
     timeout (0.4.1)
     tinymce-rails (7.2.0)
       railties (>= 3.1.1)
-    turbo-rails (2.0.5)
-      actionpack (>= 6.0.0)
-      activejob (>= 6.0.0)
-      railties (>= 6.0.0)
+    turbolinks (5.2.1)
+      turbolinks-source (~> 5.2)
+    turbolinks-source (5.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    uglifier (4.2.0)
+      execjs (>= 0.3.0, < 3)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
     uri (0.13.0)
@@ -565,7 +568,7 @@ DEPENDENCIES
   rubocop-rspec
   ruby-stemmer
   safety_mailer
-  sassc-rails
+  sass-rails
   select2-rails
   sentry-ruby
   shorturl (~> 1.0.0)
@@ -580,7 +583,8 @@ DEPENDENCIES
   terser
   timecop
   tinymce-rails
-  turbo-rails
+  turbolinks
+  uglifier
   vonage
   webmock
   whenever
