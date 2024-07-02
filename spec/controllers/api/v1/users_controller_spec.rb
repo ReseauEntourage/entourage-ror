@@ -548,37 +548,48 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     describe "welcome email" do
-      subject { patch 'update', params: { token: user.token, user: { email:'new@e.mail' } } }
+      subject { patch 'update', params: { token: user.token, user: { email: changed_email } } }
+
+      let(:changed_email) { "new@e.mail" }
       let(:deliveries_campaigns) { ActionMailer::Base.deliveries.map { |e| e['X-Mailjet-Campaign'].value } }
 
-      context "user has no email" do
-        let!(:user) { create :public_user, email: nil, first_sign_in_at: 30.seconds.ago }
-        let(:time) { Time.zone.now.change(sec: 0) }
-        before { Timecop.freeze(time) }
+      context "user had no email" do
         before { subject }
+
         it { expect(deliveries_campaigns).to eq ['welcome'] }
-        it { expect(user.reload.onboarding_sequence_start_at).to eq time }
       end
 
-      context "user has an email" do
-        let!(:user) { create :public_user, email: "foo@bar.com", first_sign_in_at: 30.seconds.ago }
-        before { subject }
-        it { expect(deliveries_campaigns).to be_empty }
-        it { expect(user.onboarding_sequence_start_at).to eq user.reload.onboarding_sequence_start_at }
-      end
+      context "user had no email and changes to none" do
+        let!(:user) { create :public_user, email: "old@e.mail" }
+        let(:changed_email) { nil }
 
-      context "user has no email but signed up more than a week ago" do
-        let!(:user) { create :public_user, email: nil, first_sign_in_at: 10.days.ago }
         before { subject }
+
         it { expect(deliveries_campaigns).to be_empty }
       end
 
-      context "user has no email but already started the onboarding sequence" do
-        let(:onboarding_sequence_start_at) { 3.hours.ago.change(sec: 0) }
-        let!(:user) { create :public_user, email: nil, first_sign_in_at: 30.seconds.ago, onboarding_sequence_start_at: onboarding_sequence_start_at }
+      context "user had an email and changes to none" do
+        let(:changed_email) { nil }
+
         before { subject }
+
         it { expect(deliveries_campaigns).to be_empty }
-        it { expect(user.reload.onboarding_sequence_start_at).to eq onboarding_sequence_start_at }
+      end
+
+      context "user had another email" do
+        let!(:user) { create :public_user, email: "old@e.mail" }
+
+        before { subject }
+
+        it { expect(deliveries_campaigns).to eq ['welcome'] }
+      end
+
+      context "user had the same email" do
+        let!(:user) { create :public_user, email: "new@e.mail" }
+
+        before { subject }
+
+        it { expect(deliveries_campaigns).to be_empty }
       end
     end
 
