@@ -11,7 +11,7 @@ module Rpush
         def handle_response(response)
           _handle_response(response)
         rescue Rpush::DeliveryError => e
-          Raven.capture_exception(
+          Sentry.capture_exception(
             e,
             extra: {
               notification_id: @notification.id,
@@ -62,3 +62,5 @@ Sidekiq.configure_client do |config|
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
   }
 end
+
+Sidekiq.strict_args!

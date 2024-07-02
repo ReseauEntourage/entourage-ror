@@ -20,7 +20,7 @@ module OrganizationAdmin
           on.duplicate { raise "This should never happen" }
 
           on.failure do |user|
-            Raven.capture_exception(ActiveRecord::RecordInvalid.new(user))
+            Sentry.capture_exception(ActiveRecord::RecordInvalid.new(user))
             error = :unknown
           end
 
@@ -88,7 +88,7 @@ module OrganizationAdmin
       raise "This should never happen" if user.nil?
       raise "blocked|deleted" if user.deleted? || user.blocked?
 
-      UserServices::SMSSender.new(user: user)
+      UserServices::SmsSender.new(user: user)
         .regenerate_sms!(clear_password: true)
 
       context =

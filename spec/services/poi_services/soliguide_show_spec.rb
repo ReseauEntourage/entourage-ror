@@ -93,4 +93,16 @@ describe PoiServices::SoliguideShow do
     it { expect(subject).to have_key(:languages) }
     it { expect(subject[:languages]).to match(/Fr/) }
   end
+
+  # verify async method is reachable
+  # @see api/v1/controllers/pois_controller#show
+  describe 'async' do
+    subject { AsyncService.new(described_class).get(:id) }
+
+    context 'no response' do
+      after { subject }
+
+      it { expect(described_class).to receive(:get) }
+    end
+  end
 end

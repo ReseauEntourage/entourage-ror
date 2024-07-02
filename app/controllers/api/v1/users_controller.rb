@@ -116,7 +116,7 @@ module Api
         end
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
-          UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
+          UserServices::SmsSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
           render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
           render json: {error: "Unknown action"}, status: 400
@@ -374,7 +374,7 @@ module Api
         user.roles.push :ethics_charter_signed
         user.save!
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       ensure
         head :ok
       end

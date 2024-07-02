@@ -165,53 +165,80 @@ perform(klass, symbol, *args)
 Concerning Rails 7 migration, this job is the most sensible one to determine whether arguments are basic types or not because it is called in very different ways.
 
 ```ruby
-# app/controllers/iraiser_controller
-# @deprecated
-AsyncService.new(IraiserWebhookService).handle_notification(raw_headers, request.raw_post)
-
+# a hook on mailjet sends notification to record that a user has unsuscribed from the newsletter
 # app/controllers/mailjet_controller
 # @param event json
 AsyncService.new(MailjetService).handle_event(event.as_json)
+```
 
+```ruby
+# send a notification to Soliguide that a user requested to index their POIs
 # app/controllers/api/v1/pois_controller
 # @param query_params hash
 AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_params)
+```
 
+```ruby
+# send a notification to Soliguide that a user requested to show their POIs
 # app/controllers/api/v1/pois_controller
 # @param id string
 AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..])
+```
 
+```ruby
 # app/models/email_preference
 # @param id integer
 AsyncService.new(self.class).sync_newsletter(self.id)
+```
 
+```ruby
 # app/models/concerns/actionable
-# @param entourage Entourage instance
+# @param self Entourage instance
 AsyncService.new(FollowingService).on_create_entourage(self)
+```
 
+```ruby
 # app/services/digest_email_service
-# @param email
+# @param email DigestEmail
 AsyncService.new(self).deliver(email)
+```
 
+```ruby
 # app/services/sensitive_words_service
+# @param self Entourage instance
 AsyncService.new(SensitiveWordsService).analyze_entourage(self)
+```
 
+```ruby
+# record invitations when users follow a partner; PushNotificationTrigger will then be in charge of sending the notifications
 # app/services/entourage_services/entourage_builder
+# @param entourage Entourage instance
 AsyncService.new(FollowingService).on_create_entourage(entourage)
+```
 
+```ruby
 # app/services/entourage_services/geocoding_service
+# @param self Entourage instance
 AsyncService.new(GeocodingService).geocode(self)
+```
 
-# app/services/experimental/auto_accept
-AsyncService.new(self).set(wait_until: join_request.created_at + 15.seconds).accept_now(join_request) # DEPRECATED
-
+```ruby
+# Notify Slack on Entourage creation
 # app/services/experimental/entourage_slack
+# @param self Entourage instance
 AsyncService.new(Experimental::EntourageSlack).notify(self)
+```
 
+```ruby
+# set the user's address from Google Place details
 # app/services/user_services/address_service
+# @param address Address instance
 AsyncService.new(self.class).update_with_google_place_details(address)
+```
 
+```ruby
 # app/uploaders/partner_logo_uploader
+# @param previous_logo string
 AsyncService.new(self).delete_s3_object_with_public_url(previous_logo)
 ```
 
