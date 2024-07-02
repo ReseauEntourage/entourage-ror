@@ -45,7 +45,7 @@ module UserServices
       if user.update(params)
         signal_blocked_user(user)
 
-        MemberMailer.welcome(user).deliver_later if start_onboarding_sequence
+        MemberMailer.welcome(user).deliver_later
 
         callback.on_success.try(:call, user)
       else
