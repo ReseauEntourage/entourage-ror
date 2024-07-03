@@ -5,7 +5,7 @@ module Api
         before_action :set_user
 
         def index
-          render json: NeighborhoodServices::Finder.search_participations(user: @user, params: index_params)
+          render json: NeighborhoodServices::Finder.new(@user, index_params).find_all_participations
             .includes(:translation, :members, :image_resize_actions)
             .page(page)
             .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: @user }

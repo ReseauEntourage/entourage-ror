@@ -10,9 +10,9 @@ describe NeighborhoodServices::Finder do
   let(:interests_1) { [] }
   let(:interests_2) { [] }
 
-  let(:response) { NeighborhoodServices::Finder.search(user: user, params: { q: q, interests: interests }).map(&:name) }
+  let(:response) { NeighborhoodServices::Finder.new(user, { q: q, interests: interests }).find_all.map(&:name) }
 
-  describe "search" do
+  describe "find_all" do
     let(:zone_0) { nil }
     let(:zone_1) { nil }
 

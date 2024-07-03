@@ -1,42 +1,60 @@
 module NeighborhoodServices
   class Finder
-    class << self
-      def search user:, params: {}
-        neighborhoods = if params[:q].present?
-          Neighborhood.like(params[:q])
-        else
-          Neighborhood
-        end
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests
 
-        neighborhoods = if params[:latitude].present? && params[:longitude].present?
-          neighborhoods.where(id: Neighborhood.inside_perimeter(params[:latitude], params[:longitude], user.travel_distance))
-        else
-          neighborhoods.where(id: Neighborhood.inside_user_perimeter(user))
-        end
+    def initialize user, params
+      @user = user
 
-        neighborhoods
-          .includes([:user, :interests, :future_outings])
-          .not_joined_by(user)
-          .public_only
-          .match_at_least_one_interest(params[:interests])
-          .order(Arel.sql(%(zone IS NULL DESC)))
-          .order_by_activity
-          .order_by_distance_from(user.latitude, user.longitude)
+      if params[:latitude].present? && params[:longitude].present?
+        @latitude = params[:latitude]
+        @longitude = params[:longitude]
+      else
+        @latitude = user.latitude
+        @longitude = user.longitude
       end
 
-      def search_participations user:, params: {}
-        neighborhoods = if params[:q].present?
-          Neighborhood.like(params[:q])
-        else
-          Neighborhood
-        end
+      @distance = params[:travel_distance] || user.travel_distance
 
-        neighborhoods
-          .joins(:join_requests)
-          .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
-          .match_at_least_one_interest(params[:interests])
-          .order(name: :asc)
+      @q = params[:q]
+
+      @interests = params[:interests]
+    end
+
+    def find_all
+      neighborhoods = if q.present?
+        Neighborhood.like(q)
+      else
+        Neighborhood
       end
+
+      neighborhoods = if latitude == user.latitude && longitude == user.longitude
+        neighborhoods.where(id: Neighborhood.inside_user_perimeter(user))
+      else
+        neighborhoods.where(id: Neighborhood.inside_perimeter(latitude, longitude, distance))
+      end
+
+      neighborhoods
+        .includes([:user, :interests, :future_outings])
+        .not_joined_by(user)
+        .public_only
+        .match_at_least_one_interest(interests)
+        .order(Arel.sql(%(zone IS NULL DESC)))
+        .order_by_activity
+        .order_by_distance_from(user.latitude, user.longitude)
+    end
+
+    def find_all_participations
+      neighborhoods = if q.present?
+        Neighborhood.like(q)
+      else
+        Neighborhood
+      end
+
+      neighborhoods
+        .joins(:join_requests)
+        .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
+        .match_at_least_one_interest(interests)
+        .order(name: :asc)
     end
   end
 end
