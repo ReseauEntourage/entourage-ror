@@ -98,7 +98,7 @@ module Api
       end
 
       def index_params
-        params.permit(:q, :latitude, :longitude, interests: [])
+        params.permit(:q, :latitude, :longitude, :interest_list, interests: [])
       end
 
       def neighborhood_params

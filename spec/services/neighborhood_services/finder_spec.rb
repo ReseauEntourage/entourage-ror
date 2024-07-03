@@ -7,17 +7,16 @@ describe NeighborhoodServices::Finder do
 
   let(:address) { create(:address, place_name: 'address', latitude: latitude, longitude: longitude, postal_code: "75020") }
   let(:interests) { [] }
-  let(:interests_1) { [] }
-  let(:interests_2) { [] }
+  let(:interest_list) { nil }
+  let(:q) { nil }
 
-  let(:response) { NeighborhoodServices::Finder.new(user, { q: q, interests: interests }).find_all.map(&:name) }
+  let(:response) { NeighborhoodServices::Finder.new(user, { q: q, interests: interests, interest_list: interest_list }).find_all.map(&:name) }
 
   describe "find_all" do
     let(:zone_0) { nil }
     let(:zone_1) { nil }
 
     describe "close to one" do
-      let(:q) { nil }
       let(:latitude) { 0.1 }
       let(:longitude) { 0.1 }
 
@@ -25,7 +24,6 @@ describe NeighborhoodServices::Finder do
     end
 
     describe "close to the other" do
-      let(:q) { nil }
       let(:latitude) { 1.1 }
       let(:longitude) { 1.1 }
 
@@ -33,7 +31,6 @@ describe NeighborhoodServices::Finder do
     end
 
     describe "far from user" do
-      let(:q) { nil }
       let(:latitude) { 10 }
       let(:longitude) { 10 }
 
@@ -41,7 +38,6 @@ describe NeighborhoodServices::Finder do
     end
 
     describe "far from user but with same departement" do
-      let(:q) { nil }
       let(:latitude) { 10 }
       let(:longitude) { 10 }
       let(:zone_0) { :departement }
@@ -50,7 +46,6 @@ describe NeighborhoodServices::Finder do
     end
 
     describe "ordered by no zone" do
-      let(:q) { nil }
       let(:latitude) { 0.1 }
       let(:longitude) { 0.1 }
 
@@ -90,7 +85,6 @@ describe NeighborhoodServices::Finder do
     end
 
     describe "with interests" do
-      let(:q) { nil }
       let(:latitude) { 0 }
       let(:longitude) { 0 }
 
@@ -114,6 +108,31 @@ describe NeighborhoodServices::Finder do
 
         before { neighborhood_0.update_attribute(:interest_list, [])}
 
+        it { expect(response).to eq([]) }
+      end
+    end
+
+    describe "with interest_list" do
+      let(:latitude) { 0 }
+      let(:longitude) { 0 }
+
+      describe "no interest_list filter" do
+        let(:interest_list) { "" }
+        it { expect(response).to eq(["foot", "ball"]) }
+      end
+
+      describe "interest_list matching" do
+        let(:interest_list) { "sport" }
+        it { expect(response).to eq(["foot"]) }
+      end
+
+      describe "interest_list matching one of each" do
+        let(:interest_list) { "sport,jeux" }
+        it { expect(response).to match_array(["foot", "ball"]) }
+      end
+
+      describe "interest_list not matching" do
+        let(:interest_list) { "cuisine" }
         it { expect(response).to eq([]) }
       end
     end
