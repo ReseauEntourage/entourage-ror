@@ -19,5 +19,11 @@ module NeighborhoodServices
     def default_neighborhood
       @default_neighborhood ||= user.default_neighborhood
     end
+
+    def default_neighborhood_as_member
+      return default_neighborhood if JoinRequest.where(joinable: default_neighborhood, user: user, status: :accepted).any?
+
+      nil
+    end
   end
 end

@@ -17,6 +17,12 @@ module Api
           }
       end
 
+      def default
+        return render json: {} unless @neighborhood = default_neighborhood_as_member
+
+        render json: @neighborhood, serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: current_user }
+      end
+
       def show
         render json: @neighborhood, serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: current_user }
       end
@@ -120,6 +126,10 @@ module Api
 
       def report_params
         params.require(:report).permit(:message, signals: [])
+      end
+
+      def default_neighborhood_as_member
+        @default_neighborhood_as_member ||= NeighborhoodServices::Joiner.new(current_user).default_neighborhood_as_member
       end
     end
   end
