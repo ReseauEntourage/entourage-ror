@@ -23,19 +23,14 @@ module NeighborhoodServices
     end
 
     def find_all
-      neighborhoods = if q.present?
-        Neighborhood.like(q)
-      else
-        Neighborhood
-      end
-
       neighborhoods = if latitude == user.latitude && longitude == user.longitude
-        neighborhoods.where(id: Neighborhood.inside_user_perimeter(user))
+        Neighborhood.where(id: Neighborhood.inside_user_perimeter(user))
       else
-        neighborhoods.where(id: Neighborhood.inside_perimeter(latitude, longitude, distance))
+        Neighborhood.where(id: Neighborhood.inside_perimeter(latitude, longitude, distance))
       end
 
       neighborhoods
+        .like(q)
         .includes([:user, :interests, :future_outings])
         .not_joined_by(user)
         .public_only

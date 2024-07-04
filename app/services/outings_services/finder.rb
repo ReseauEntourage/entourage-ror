@@ -23,13 +23,8 @@ module OutingsServices
     end
 
     def find_all
-      outings = if q.present?
-        Outing.like(q)
-      else
-        Outing
-      end
-
-      outings = outings
+      outings = Outing
+        .like(q)
         .active
         .future_or_ongoing
         .match_at_least_one_interest(interests)
