@@ -17,7 +17,7 @@ module OutingsServices
 
       @q = params[:q]
 
-      @interests = params[:interests]
+      @interests = params[:interests] || []
       @interests += params[:interest_list].split(',') if params[:interest_list].present?
       @interests = @interests.compact.uniq if @interests.present?
     end
