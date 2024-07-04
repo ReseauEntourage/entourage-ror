@@ -589,7 +589,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     let(:paris) { create(:address, postal_code: '75001' )}
     let(:user) { create(:public_user, address: paris) }
 
-    let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: 2, longitude: 2 ) }
+    let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: paris.latitude, longitude: paris.longitude ) }
     let!(:neighborhood_not_paris) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
 
     let(:result) { JSON.parse(response.body) }
