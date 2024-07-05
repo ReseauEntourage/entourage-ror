@@ -6,6 +6,13 @@ module Sectionable
 
     validate :validate_section_list!
 
+    scope :join_sections, -> {
+      joins(sanitize_sql_array [%(
+        left join taggings on taggable_type = '%s' and taggable_id = %s.id and context = 'sections'
+        left join tags on tags.id = taggings.tag_id
+      ), self.table_name.singularize.camelize, self.table_name])
+    }
+
     # hack to prevent ActsAsTaggableOn::Taggable::TaggedWithQuery::AnyTagsQuery "select", "order" and "readonly"
     # this hack is required to chain with "or" statement
     scope :tagged_with_any_sections, -> (sections) {
@@ -18,6 +25,13 @@ module Sectionable
       tagged_with_any_sections(sections).or(
         unscope(:order).where(display_category: ActionServices::Mapper.display_categories_from_sections(sections))
       )
+    }
+
+    scope :match_at_least_one_section, -> (section_list) {
+      return unless section_list
+      return unless section_list.any?
+
+      join_sections.where("tags.name IN (?)", section_list)
     }
   end
 

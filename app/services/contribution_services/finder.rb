@@ -32,7 +32,7 @@ module ContributionServices
       end
 
       if sections.any?
-        contributions = contributions.where(id: Contribution.with_sections(sections))
+        contributions = contributions.where(id: Contribution.match_at_least_one_section(sections))
       end
 
       # order by created_at is already in default_scope

@@ -32,7 +32,7 @@ module SolicitationServices
       end
 
       if sections.any?
-        solicitations = solicitations.where(id: Solicitation.with_sections(sections))
+        solicitations = solicitations.where(id: Solicitation.match_at_least_one_section(sections))
       end
 
       # order by created_at is already in default_scope

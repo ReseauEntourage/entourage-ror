@@ -27,7 +27,7 @@ module ActionServices
       end
 
       if sections.any?
-        actions = actions.where(id: Action.with_sections(sections))
+        actions = actions.where(id: Action.match_at_least_one_section(sections))
       end
 
       # order by created_at is already in default_scope
