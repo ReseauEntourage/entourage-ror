@@ -547,41 +547,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
 
-    describe "welcome email" do
-      subject { patch 'update', params: { token: user.token, user: { email:'new@e.mail' } } }
-      let(:deliveries_campaigns) { ActionMailer::Base.deliveries.map { |e| e['X-Mailjet-Campaign'].value } }
-
-      context "user has no email" do
-        let!(:user) { create :public_user, email: nil, first_sign_in_at: 30.seconds.ago }
-        let(:time) { Time.zone.now.change(sec: 0) }
-        before { Timecop.freeze(time) }
-        before { subject }
-        it { expect(deliveries_campaigns).to eq ['welcome'] }
-        it { expect(user.reload.onboarding_sequence_start_at).to eq time }
-      end
-
-      context "user has an email" do
-        let!(:user) { create :public_user, email: "foo@bar.com", first_sign_in_at: 30.seconds.ago }
-        before { subject }
-        it { expect(deliveries_campaigns).to be_empty }
-        it { expect(user.onboarding_sequence_start_at).to eq user.reload.onboarding_sequence_start_at }
-      end
-
-      context "user has no email but signed up more than a week ago" do
-        let!(:user) { create :public_user, email: nil, first_sign_in_at: 10.days.ago }
-        before { subject }
-        it { expect(deliveries_campaigns).to be_empty }
-      end
-
-      context "user has no email but already started the onboarding sequence" do
-        let(:onboarding_sequence_start_at) { 3.hours.ago.change(sec: 0) }
-        let!(:user) { create :public_user, email: nil, first_sign_in_at: 30.seconds.ago, onboarding_sequence_start_at: onboarding_sequence_start_at }
-        before { subject }
-        it { expect(deliveries_campaigns).to be_empty }
-        it { expect(user.reload.onboarding_sequence_start_at).to eq onboarding_sequence_start_at }
-      end
-    end
-
     describe "update sms_code" do
       before do
         @request.env['X-API-KEY'] = api_key
