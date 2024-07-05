@@ -547,52 +547,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
 
-    describe "welcome email" do
-      subject { patch 'update', params: { token: user.token, user: { email: changed_email } } }
-
-      let(:changed_email) { "new@e.mail" }
-      let(:deliveries_campaigns) { ActionMailer::Base.deliveries.map { |e| e['X-Mailjet-Campaign'].value } }
-
-      context "user had no email" do
-        before { subject }
-
-        it { expect(deliveries_campaigns).to eq ['welcome'] }
-      end
-
-      context "user had no email and changes to none" do
-        let!(:user) { create :public_user, email: "old@e.mail" }
-        let(:changed_email) { nil }
-
-        before { subject }
-
-        it { expect(deliveries_campaigns).to be_empty }
-      end
-
-      context "user had an email and changes to none" do
-        let(:changed_email) { nil }
-
-        before { subject }
-
-        it { expect(deliveries_campaigns).to be_empty }
-      end
-
-      context "user had another email" do
-        let!(:user) { create :public_user, email: "old@e.mail" }
-
-        before { subject }
-
-        it { expect(deliveries_campaigns).to eq ['welcome'] }
-      end
-
-      context "user had the same email" do
-        let!(:user) { create :public_user, email: "new@e.mail" }
-
-        before { subject }
-
-        it { expect(deliveries_campaigns).to be_empty }
-      end
-    end
-
     describe "update sms_code" do
       before do
         @request.env['X-API-KEY'] = api_key

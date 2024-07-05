@@ -45,8 +45,6 @@ module UserServices
       if user.update(params)
         signal_blocked_user(user)
 
-        MemberMailer.welcome(user).deliver_later if user.email.present? && user.saved_change_to_email?
-
         callback.on_success.try(:call, user)
       else
         callback.on_failure.try(:call, user)
