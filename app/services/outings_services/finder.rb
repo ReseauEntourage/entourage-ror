@@ -46,10 +46,19 @@ module OutingsServices
         Outing
       end
 
-      outings
+      outings = outings
         .joins(:join_requests)
+        .like(q)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
         .match_at_least_one_interest(interests)
+
+      if latitude && longitude
+        bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
+
+        outings = outings.where(bounding_box_sql)
+      end
+
+      outings
     end
 
     private
