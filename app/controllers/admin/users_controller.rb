@@ -10,7 +10,7 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:address, :accepted_join_requests).order("created_at DESC").page(params[:page]).per(25)
     end
 
     def show

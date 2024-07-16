@@ -94,6 +94,7 @@
       <th>Date de dernière connexion</th>
     <% end %>
 
+    <th>Code postal</th>
     <th>Profil</th>
 
     <% if [:admin, :moderators].include? @role %>
@@ -128,6 +129,7 @@
         </td>
       <% end %>
 
+      <td><%= user.postal_code %></td>
       <td>
         <% if user.targeting_profile.present? %>
           <span class="custom-badge info" title="Profil renseigné par la modération">
