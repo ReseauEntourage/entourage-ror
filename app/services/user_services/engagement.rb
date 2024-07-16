@@ -2,6 +2,20 @@ module UserServices
   module Engagement
     extend ActiveSupport::Concern
 
+    included do
+      has_many :denorm_daily_engagements, foreign_key: :user_id
+
+      scope :engaged, -> {
+        joins(:denorm_daily_engagements).group(:id)
+      }
+
+      scope :not_engaged, -> {
+        left_joins(:denorm_daily_engagements)
+        .where(denorm_daily_engagements: { id: nil })
+        .group(:id)
+      }
+    end
+
     EngagementStruct = Struct.new(:user) do
       def initialize(user: nil)
         @user = user
