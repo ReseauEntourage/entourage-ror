@@ -1,9 +1,10 @@
 module OutingsServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :q, :interests
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :params
 
     def initialize user, params
       @user = user
+      @params = params
 
       if params[:latitude].present? && params[:longitude].present?
         @latitude = params[:latitude]
@@ -40,19 +41,14 @@ module OutingsServices
     end
 
     def find_all_participations
-      outings = if q.present?
-        Outing.like(q)
-      else
-        Outing
-      end
-
-      outings = outings
+      outings = Outing
         .joins(:join_requests)
         .like(q)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
         .match_at_least_one_interest(interests)
 
-      if latitude && longitude
+      # filter by localisation only whenever user filters by distance in the query
+      if latitude && longitude && param_distance?
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
 
         outings = outings.where(bounding_box_sql)
@@ -65,6 +61,10 @@ module OutingsServices
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
+    end
+
+    def param_distance?
+      params[:travel_distance].present?
     end
   end
 end
