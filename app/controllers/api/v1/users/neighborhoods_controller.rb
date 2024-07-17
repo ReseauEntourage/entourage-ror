@@ -5,19 +5,20 @@ module Api
         before_action :set_user
 
         def index
-          neighborhoods = Neighborhood.joins(:join_requests)
-            .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
-            .order(name: :asc)
+          render json: NeighborhoodServices::Finder.new(@user, index_params).find_all_participations
+            .includes(:translation, :members, :image_resize_actions)
             .page(page)
-            .per(per)
-
-          render json: neighborhoods, status: 200, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
+            .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: @user }
         end
 
         private
 
         def set_user
-          @user = User.find(params[:user_id])
+          @user = if params[:user_id] == "me"
+            current_user
+          else
+            User.find(params[:user_id])
+          end
         end
 
         def page
@@ -25,7 +26,11 @@ module Api
         end
 
         def per
-          params[:per] || 200
+          params[:per] || 50
+        end
+
+        def index_params
+          params.permit(:q, :latitude, :longitude, :travel_distance, :interest_list, interests: [])
         end
       end
     end

@@ -6,15 +6,10 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: NeighborhoodServices::Finder.search(
-          user: current_user,
-          q: params[:q]
-        )
+        render json: NeighborhoodServices::Finder.new(current_user, index_params).find_all
           .includes(:translation, :members, :image_resize_actions)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: {
-            user: current_user
-          }
+          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
       end
 
       def default
@@ -100,6 +95,10 @@ module Api
         @neighborhood = Neighborhood.find_by_id_through_context(params[:id], params)
 
         render json: { message: 'Could not find neighborhood' }, status: 400 unless @neighborhood.present?
+      end
+
+      def index_params
+        params.permit(:q, :latitude, :longitude, :travel_distance, :interest_list, interests: [])
       end
 
       def neighborhood_params

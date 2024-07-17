@@ -15,7 +15,7 @@ describe Api::V1::ContributionsController, :type => :controller do
     let(:section) { nil }
     let(:display_category) { nil }
 
-    let!(:contribution) { FactoryBot.create(:contribution, latitude: latitude, longitude: longitude, section: section, display_category: display_category) }
+    let!(:contribution) { create(:contribution, title: "JO 2024", latitude: latitude, longitude: longitude, section: section, display_category: display_category) }
 
     describe 'not authorized' do
       before { get :index }
@@ -170,6 +170,7 @@ describe Api::V1::ContributionsController, :type => :controller do
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["contributions"].count).to eq(1) }
+      it { expect(subject["contributions"][0]["id"]).to eq(contribution.id) }
     end
 
     context "params sections matches any" do
@@ -181,6 +182,31 @@ describe Api::V1::ContributionsController, :type => :controller do
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["contributions"].count).to eq(1) }
+      it { expect(subject["contributions"][0]["id"]).to eq(contribution.id) }
+    end
+
+    context "params section_list matches" do
+      let(:section) { :social }
+
+      let(:request) { get :index, params: { token: user.token, section_list: "social" } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["contributions"].count).to eq(1) }
+      it { expect(subject["contributions"][0]["id"]).to eq(contribution.id) }
+    end
+
+    context "params section_list matches any" do
+      let(:section) { :social }
+
+      let(:request) { get :index, params: { token: user.token, section_list: "clothes,social" } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["contributions"].count).to eq(1) }
+      it { expect(subject["contributions"][0]["id"]).to eq(contribution.id) }
     end
 
     context "params section does not match" do
@@ -192,6 +218,33 @@ describe Api::V1::ContributionsController, :type => :controller do
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["contributions"].count).to eq(0) }
+    end
+
+    describe 'filter by q' do
+      before { get :index, params: { token: user.token, q: q } }
+
+      describe 'find with q' do
+        let(:q) { "JO" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['contributions'].count).to eq(1) }
+        it { expect(subject['contributions'][0]['id']).to eq(contribution.id) }
+      end
+
+      describe 'find with q not case sensitive' do
+        let(:q) { "jo" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['contributions'].count).to eq(1) }
+        it { expect(subject['contributions'][0]['id']).to eq(contribution.id) }
+      end
+
+      describe 'does not find with q' do
+        let(:q) { "OJ" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['contributions'].count).to eq(0) }
+      end
     end
 
     context "ordered by feed_updated_at desc" do
