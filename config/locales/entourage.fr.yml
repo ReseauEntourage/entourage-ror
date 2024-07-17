@@ -425,13 +425,13 @@ fr:
       ask: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
 
   regions:
+    ouest: Ouest
+    sud_ouest: Sud-Ouest
+    sud_est: Sud-Est
     aura: Auvergne-Rhône-Alpes
-    bretagne: Bretagne
-    hdf: Hauts-de-France
+    nord: Nord
     idf: Ile-de-France
-    paca: Provence-Alpes-Côte d'Azur
-    gironde: Gironde
-    digital_community: Communauté digitale
+    centre_est: Centre-Est
 
   pois:
     soliguide:
