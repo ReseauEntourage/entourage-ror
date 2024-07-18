@@ -16,6 +16,9 @@ module JoinableScopable
     scope :not_joined_by, -> (user) {
       where.not(id: joined_by(user))
     }
+    scope :order_by_unread_messages, -> {
+      order(Arel.sql("join_requests.unread_messages_count DESC"))
+    }
   end
 
   def members_has_changed!

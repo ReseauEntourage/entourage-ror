@@ -46,7 +46,7 @@ module NeighborhoodServices
         .joins(:join_requests)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
         .match_at_least_one_interest(interests)
-        .order(name: :asc)
+        .order_by_unread_messages
     end
   end
 end
