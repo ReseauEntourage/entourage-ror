@@ -30,7 +30,7 @@ module Api
         end
 
         def index_params
-          params.permit(:q, :latitude, :longitude, :travel_distance, :interest_list, interests: [])
+          params.permit(:q, :interest_list, interests: [])
         end
       end
     end

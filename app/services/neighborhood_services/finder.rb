@@ -1,10 +1,9 @@
 module NeighborhoodServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :params
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests
 
     def initialize user, params
       @user = user
-      @params = params
 
       if params[:latitude].present? && params[:longitude].present?
         @latitude = params[:latitude]
@@ -42,25 +41,17 @@ module NeighborhoodServices
     end
 
     def find_all_participations
-      neighborhoods = Neighborhood
-        .joins(:join_requests)
-        .like(q)
-        .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
-        .match_at_least_one_interest(interests)
-        .order(name: :asc)
-
-      # filter by localisation only whenever user filters by distance in the query
-      if latitude && longitude && param_distance?
-        neighborhoods = neighborhoods.where(id: Neighborhood.inside_perimeter(latitude, longitude, distance))
+      neighborhoods = if q.present?
+        Neighborhood.like(q)
+      else
+        Neighborhood
       end
 
       neighborhoods
-    end
-
-    private
-
-    def param_distance?
-      params[:travel_distance].present?
+        .joins(:join_requests)
+        .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
+        .match_at_least_one_interest(interests)
+        .order(name: :asc)
     end
   end
 end
