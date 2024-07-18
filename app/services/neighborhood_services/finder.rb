@@ -41,13 +41,8 @@ module NeighborhoodServices
     end
 
     def find_all_participations
-      neighborhoods = if q.present?
-        Neighborhood.like(q)
-      else
-        Neighborhood
-      end
-
-      neighborhoods
+      Neighborhood
+        .like(q)
         .joins(:join_requests)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
         .match_at_least_one_interest(interests)

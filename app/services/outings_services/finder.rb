@@ -40,25 +40,12 @@ module OutingsServices
     end
 
     def find_all_participations
-      outings = if q.present?
-        Outing.like(q)
-      else
-        Outing
-      end
-
-      outings = outings
+      Outing
+        .like(q)
         .joins(:join_requests)
         .like(q)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
         .match_at_least_one_interest(interests)
-
-      if latitude && longitude
-        bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
-
-        outings = outings.where(bounding_box_sql)
-      end
-
-      outings
     end
 
     private
