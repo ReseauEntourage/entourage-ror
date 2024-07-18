@@ -1,45 +1,47 @@
-<ol class="breadcrumb">
-  <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
-  <li class="active">Modifier</li>
-  <li style="float: right;">
-    <%= link_to nil, @neighborhood.share_url, target: :_blank %>
-  </li>
-</ol>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
+      <li class="active">Modifier</li>
+      <li style="float: right;">
+        <%= link_to nil, @neighborhood.share_url, target: :_blank %>
+      </li>
+    </ol>
 
-<h2>
-  <span class="text-muted">#<%= @neighborhood.id %></span>
-  <%= @neighborhood.name %>
-</h2>
+    <h2>
+      <span class="text-muted">#<%= @neighborhood.id %></span>
+      <%= @neighborhood.name %>
+    </h2>
 
-<ul class="nav nav-tabs">
-  <li role="presentation" class="<%= :active if tab == :edit %>">
-    <%= link_to "Modifier", edit_admin_neighborhood_path(@neighborhood) %>
-  </li>
-  <li role="presentation" class="<%= :active if tab == :show_members %>">
-    <%= link_to "Membres (#{@neighborhood.members_count})", show_members_admin_neighborhood_path(@neighborhood) %>
-  </li>
-  <li role="presentation" class="<%= :active if tab == :show_outings %>">
-    <%= link_to "Événements (#{@neighborhood.outings.count})", show_outings_admin_neighborhood_path(@neighborhood) %>
-  </li>
-  <li role="presentation" class="<%= :active if tab == :show_posts %>">
-    <%= link_to "Publications (#{@neighborhood.posts_count})", show_posts_admin_neighborhood_path(@neighborhood) %>
-  </li>
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="<%= :active if tab == :edit %>">
+        <%= link_to "Modifier", edit_admin_neighborhood_path(@neighborhood) %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :show_members %>">
+        <%= link_to "Membres (#{@neighborhood.members_count})", show_members_admin_neighborhood_path(@neighborhood) %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :show_outings %>">
+        <%= link_to "Événements (#{@neighborhood.outings.count})", show_outings_admin_neighborhood_path(@neighborhood) %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :show_posts %>">
+        <%= link_to "Publications (#{@neighborhood.posts_count})", show_posts_admin_neighborhood_path(@neighborhood) %>
+      </li>
 
-  <% if tab == :show_outing_chat_messages || @outing.present? %>
-    <li role="presentation" class="<%= :active if tab == :show_outing_chat_messages %>">
-      <%= link_to "Messages de l'événement (#{@outing.chat_messages.count})", show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: @outing.id) %>
-    </li>
-  <% end %>
+      <% if tab == :show_outing_chat_messages || @outing.present? %>
+        <li role="presentation" class="<%= :active if tab == :show_outing_chat_messages %>">
+          <%= link_to "Messages de l'événement (#{@outing.chat_messages.count})", show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: @outing.id) %>
+        </li>
+      <% end %>
 
-  <% if tab == :show_post_comments %>
-    <li role="presentation" class="active">
-      <%= link_to "Commentaires (#{@post.children.count})", "#" %>
-    </li>
-  <% end %>
+      <% if tab == :show_post_comments %>
+        <li role="presentation" class="active">
+          <%= link_to "Commentaires (#{@post.children.count})", "#" %>
+        </li>
+      <% end %>
 
-  <% if tab == :show_outing_post_comments %>
-    <li role="presentation" class="active">
-      <%= link_to "Commentaires de l'événement (#{@post.children.count})", "#" %>
-    </li>
-  <% end %>
-</ul>
+      <% if tab == :show_outing_post_comments %>
+        <li role="presentation" class="active">
+          <%= link_to "Commentaires de l'événement (#{@post.children.count})", "#" %>
+        </li>
+      <% end %>
+    </ul>
+  </div>

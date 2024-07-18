@@ -1,15 +1,13 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Associations - Demandes d'adhésion", admin_partner_registrations_path %></li>
-      <li class="active">Validation d'un compte association</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Associations - Demandes d'adhésion", admin_partner_registrations_path %></li>
+    <li class="active">Validation d'un compte association</li>
+  </ol>
 
-    <h2>
-      <span class="text-muted"><%= @user.id %></span>
-      <%= @user.full_name %>
-    </h2>
+  <h2>
+    <span class="text-muted"><%= @user.id %></span>
+    <%= @user.full_name %>
+  </h2>
 
-    <%= render partial: 'form' %>
-  </div>
+  <%= render partial: 'form' %>
 </div>

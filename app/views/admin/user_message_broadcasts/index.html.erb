@@ -1,92 +1,90 @@
 <div class="container">
-  <div>
-    <h1>Diffusions de messages privés</h1>
+  <h1>Diffusions de messages privés</h1>
 
-    <div style="margin-bottom: 15px; display: flex">
-      <div class="btn-group btn-group-sm">
-        <%= link_to("Envoyés", @params.merge(status: :sent), class: "btn btn-#{@status == :sent ? :primary : :default}") %>
-        <%= link_to("En cours d'envoi", @params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
-        <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
-        <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
-      </div>
+  <div style="margin-bottom: 15px; display: flex">
+    <div class="btn-group btn-group-sm">
+      <%= link_to("Envoyés", @params.merge(status: :sent), class: "btn btn-#{@status == :sent ? :primary : :default}") %>
+      <%= link_to("En cours d'envoi", @params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
+      <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
+      <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
     </div>
+  </div>
 
-    <div style="margin-bottom: 15px; display: flex">
-      <div class="btn-group btn-group-sm">
-        <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
-        <% ModerationArea.by_slug.sort.each do |slug, area| %>
-          <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
-        <% end %>
-      </div>
-
-      <div class="btn-group btn-group-sm" style="margin-left: 15px">
-        <%= link_to("Tous", @params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}") %>
-        <% UserGoalPresenter.all(current_user.community).each do |goal| %>
-          <%= link_to("", @params.merge(goal: goal.slug), class: "btn btn-#{@goal == goal.slug ? :primary : :default} fa fa-#{goal.icon}", title: "#{goal.name}") %>
-        <% end %>
-      </div>
-
-      <div style="margin-left: 15px">
-        <%= link_to("Nouvelle diffusion", new_admin_user_message_broadcast_path, class: "btn btn-default btn-sm") %>
-      </div>
-    </div>
-
-    <div class="row">
-      <% if @user_message_broadcasts.none? %>
-        Pas de diffusions de MP.
-      <% else %>
-        <table class="custom-table">
-          <thead>
-            <th>Id</th>
-            <th>Titre</th>
-            <th>Archivé</th>
-            <th>Zone de modération</th>
-            <th>Public</th>
-            <th>Dernière mise à jour</th>
-            <% if @status == :sent %>
-              <th>Envoyés</th>
-            <% elsif @status == :sending %>
-              <th>Envoyés</th>
-              <th>En cours</th>
-            <% end %>
-            <th>Actions</th>
-          </thead>
-          <% @user_message_broadcasts.each do |user_message_broadcast| %>
-            <tr>
-              <td><%= user_message_broadcast.id %></td>
-              <td><%= link_to user_message_broadcast.title, edit_admin_user_message_broadcast_path(user_message_broadcast) %></td>
-              <td><%= check_box_tag '', '', user_message_broadcast.archived?, disabled: true %></td>
-              <td>
-                <% user_message_broadcast[:areas].map do |area| %>
-                  <span class="custom-badge"><%= area %></span>
-                <% end %>
-              </td>
-              <td><%= UserGoalPresenter.new(user_message_broadcast.goal, community: current_user.community).name %></td>
-              <td><%= l(user_message_broadcast.updated_at, format: :short) if user_message_broadcast.updated_at %></td>
-              <% if @status == :sent %>
-                <td><%= user_message_broadcast.sent_recipients_count %></td>
-              <% elsif @status == :sending %>
-                <td><%= user_message_broadcast.sent_recipients_count %></td>
-                <td><%= UserMessageBroadcast.pending_jobs[user_message_broadcast.id] %></td>
-              <% end %>
-              <td>
-                <% if @status == :draft %>
-                  <%= link_to "Modifier", edit_admin_user_message_broadcast_path(user_message_broadcast), class: "custom-button custom-primary" %>
-                <% elsif [:sent, :archived].include? @status %>
-                  <%= link_to "Dupliquer", clone_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "custom-button custom-primary red" %>
-                <% elsif @status == :sending %>
-                  <%= link_to "Stopper", kill_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "custom-button custom-primary red" %>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </table>
+  <div style="margin-bottom: 15px; display: flex">
+    <div class="btn-group btn-group-sm">
+      <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+      <% ModerationArea.by_slug.sort.each do |slug, area| %>
+        <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
       <% end %>
+    </div>
 
-      <%= page_entries_info @user_message_broadcasts, entry_name: 'diffusions de MP' %>
-      <div class="container">
-        <%= paginate(@user_message_broadcasts) %>
-      </div>
+    <div class="btn-group btn-group-sm" style="margin-left: 15px">
+      <%= link_to("Tous", @params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}") %>
+      <% UserGoalPresenter.all(current_user.community).each do |goal| %>
+        <%= link_to("", @params.merge(goal: goal.slug), class: "btn btn-#{@goal == goal.slug ? :primary : :default} fa fa-#{goal.icon}", title: "#{goal.name}") %>
+      <% end %>
+    </div>
+
+    <div style="margin-left: 15px">
+      <%= link_to("Nouvelle diffusion", new_admin_user_message_broadcast_path, class: "btn btn-default btn-sm") %>
+    </div>
+  </div>
+
+  <div class="row">
+    <% if @user_message_broadcasts.none? %>
+      Pas de diffusions de MP.
+    <% else %>
+      <table class="custom-table">
+        <thead>
+          <th>Id</th>
+          <th>Titre</th>
+          <th>Archivé</th>
+          <th>Zone de modération</th>
+          <th>Public</th>
+          <th>Dernière mise à jour</th>
+          <% if @status == :sent %>
+            <th>Envoyés</th>
+          <% elsif @status == :sending %>
+            <th>Envoyés</th>
+            <th>En cours</th>
+          <% end %>
+          <th>Actions</th>
+        </thead>
+        <% @user_message_broadcasts.each do |user_message_broadcast| %>
+          <tr>
+            <td><%= user_message_broadcast.id %></td>
+            <td><%= link_to user_message_broadcast.title, edit_admin_user_message_broadcast_path(user_message_broadcast) %></td>
+            <td><%= check_box_tag '', '', user_message_broadcast.archived?, disabled: true %></td>
+            <td>
+              <% user_message_broadcast[:areas].map do |area| %>
+                <span class="custom-badge"><%= area %></span>
+              <% end %>
+            </td>
+            <td><%= UserGoalPresenter.new(user_message_broadcast.goal, community: current_user.community).name %></td>
+            <td><%= l(user_message_broadcast.updated_at, format: :short) if user_message_broadcast.updated_at %></td>
+            <% if @status == :sent %>
+              <td><%= user_message_broadcast.sent_recipients_count %></td>
+            <% elsif @status == :sending %>
+              <td><%= user_message_broadcast.sent_recipients_count %></td>
+              <td><%= UserMessageBroadcast.pending_jobs[user_message_broadcast.id] %></td>
+            <% end %>
+            <td>
+              <% if @status == :draft %>
+                <%= link_to "Modifier", edit_admin_user_message_broadcast_path(user_message_broadcast), class: "custom-button custom-primary" %>
+              <% elsif [:sent, :archived].include? @status %>
+                <%= link_to "Dupliquer", clone_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "custom-button custom-primary red" %>
+              <% elsif @status == :sending %>
+                <%= link_to "Stopper", kill_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "custom-button custom-primary red" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+
+    <%= page_entries_info @user_message_broadcasts, entry_name: 'diffusions de MP' %>
+    <div class="container">
+      <%= paginate(@user_message_broadcasts) %>
     </div>
   </div>
 </div>
