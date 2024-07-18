@@ -17,9 +17,10 @@
       <th style="width: 10px"></th>
       <th>Prénom / Nom</th>
       <th></th>
-      <th>Status</th>
+      <th>Statut</th>
+      <th>Profil</th>
       <th>Email</th>
-      <th>Phone</th>
+      <th>Téléphone</th>
     </tr>
   </thead>
 
@@ -44,6 +45,19 @@
           <% end %>
         </td>
         <td><%= user_state_label(member.validation_status) %></td>
+
+        <td>
+          <% if member.targeting_profile.present? %>
+            <span class="custom-badge info" title="Profil renseigné par la modération">
+              <%= t "community.entourage.targeting_profiles.#{member.targeting_profile}" %>
+            </span>
+          <% elsif member.goal.present? %>
+            <span class="custom-badge info" title="Profil renseigné par l'utilisateur">
+              <%= t "community.entourage.goals_compact.#{member.goal}" %>
+            </span>
+          <% end %>
+        </td>
+
         <td><%= member.email %></td>
         <td><%= member.phone %></td>
       </tr>
