@@ -21,7 +21,7 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
 
       it { expect(response.status).to eq(200) }
       it { expect(result["neighborhoods"].count).to eq(2) }
-      it { expect(result["neighborhoods"].map {|neighborhoods| neighborhoods["id"]}).to eq([neighborhood.id, neighborhood_joined.id]) }
+      it { expect(result["neighborhoods"].map {|neighborhoods| neighborhoods["id"]}).to match_array([neighborhood.id, neighborhood_joined.id]) }
     end
 
     describe 'filter by interests' do

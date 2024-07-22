@@ -9,13 +9,12 @@ describe NeighborhoodServices::Finder do
   let(:interests) { [] }
   let(:interest_list) { nil }
   let(:q) { nil }
+  let(:zone_0) { nil }
+  let(:zone_1) { nil }
 
   let(:response) { NeighborhoodServices::Finder.new(user, { q: q, interests: interests, interest_list: interest_list }).find_all.map(&:name) }
 
   describe "find_all" do
-    let(:zone_0) { nil }
-    let(:zone_1) { nil }
-
     describe "close to one" do
       let(:latitude) { 0.1 }
       let(:longitude) { 0.1 }
@@ -132,6 +131,80 @@ describe NeighborhoodServices::Finder do
       end
 
       describe "interest_list not matching" do
+        let(:interest_list) { "cuisine" }
+        it { expect(response).to eq([]) }
+      end
+    end
+  end
+
+  describe "find_all_participations" do
+    let(:latitude) { 0 }
+    let(:longitude) { 0 }
+
+    let(:user_2) { create(:public_user) }
+    let(:user_3) { create(:public_user) }
+
+    let!(:join_request_0) { create(:join_request, user: user, joinable: neighborhood_0, status: JoinRequest::ACCEPTED_STATUS) }
+    let!(:join_request_1) { create(:join_request, user: user_2, joinable: neighborhood_0, status: JoinRequest::ACCEPTED_STATUS) }
+    let!(:join_request_2) { create(:join_request, user: user_3, joinable: neighborhood_1, status: JoinRequest::ACCEPTED_STATUS) }
+
+    let(:response) { NeighborhoodServices::Finder.new(user, { q: q, interests: interests, interest_list: interest_list }).find_all_participations.map(&:name) }
+
+    it { expect(response).to eq(["foot"]) }
+
+    describe "order" do
+      let!(:join_request_0) { create(:join_request, user: user, joinable: neighborhood_0, status: JoinRequest::ACCEPTED_STATUS, unread_messages_count: unread_messages_count) }
+      let!(:join_request_4) { create(:join_request, user: user, joinable: neighborhood_1, status: JoinRequest::ACCEPTED_STATUS, unread_messages_count: 1) }
+
+      describe "0 vs 1" do
+        let(:unread_messages_count) { 0 }
+        it { expect(response).to eq(["ball", "foot"]) }
+      end
+
+      describe "2 vs 1" do
+        let(:unread_messages_count) { 2 }
+        it { expect(response).to eq(["foot", "ball"]) }
+      end
+
+      describe "2 for another user vs 1" do
+        let(:unread_messages_count) { 0 }
+        let!(:join_request_1) { create(:join_request, user: user_2, joinable: neighborhood_0, status: JoinRequest::ACCEPTED_STATUS, unread_messages_count: 2) }
+
+        it { expect(response).to eq(["ball", "foot"]) }
+      end
+    end
+
+    describe "with q" do
+      describe "correct q" do
+        let(:q) { "foo" }
+        it { expect(response).to eq(["foot"]) }
+      end
+
+      describe "incorrect q" do
+        let(:q) { "bar" }
+        it { expect(response).to eq([]) }
+      end
+    end
+
+    describe "with interests" do
+      describe "correct interest" do
+        let(:interests) { ["sport"] }
+        it { expect(response).to eq(["foot"]) }
+      end
+
+      describe "incorrect interest" do
+        let(:interests) { ["cuisine"] }
+        it { expect(response).to eq([]) }
+      end
+    end
+
+    describe "with interest_list" do
+      describe "correct interest" do
+        let(:interest_list) { "sport" }
+        it { expect(response).to eq(["foot"]) }
+      end
+
+      describe "incorrect interest" do
         let(:interest_list) { "cuisine" }
         it { expect(response).to eq([]) }
       end
