@@ -95,26 +95,10 @@ module Api
       end
 
       def clusters
-        pois = Poi.clustered(coordinates[:latitude], coordinates[:longitude], distance).map do |cluster|
-          if cluster.count == 1
-            {
-              type: :poi,
-              name: cluster.name,
-              category_id: cluster.category_id,
-              latitude: cluster.latitude,
-              longitude: cluster.longitude
-            }
-          else
-            {
-              type: :cluster,
-              count: cluster.count,
-              latitude: cluster.latitude,
-              longitude: cluster.longitude
-            }
-          end
-        end
-
-        render json: pois, status: 200
+        render json: Poi.clustered(coordinates[:latitude], coordinates[:longitude], distance),
+          root: :clusters,
+          each_serializer: ::V1::ClusterSerializer,
+          status: 200
       end
 
       def show
