@@ -113,111 +113,109 @@
 </style>
 
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <h1>Cartes d'annonce</h1>
+  <h1>Cartes d'annonce</h1>
 
-    <div style="margin-bottom: 15px; display: flex">
-      <div class="btn-group btn-group-sm">
-        <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
-        <%= link_to("Actives", @params.except(:status), class: "btn btn-#{@status == :active ? :primary : :default}") %>
-        <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
+  <div style="margin-bottom: 15px; display: flex">
+    <div class="btn-group btn-group-sm">
+      <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
+      <%= link_to("Actives", @params.except(:status), class: "btn btn-#{@status == :active ? :primary : :default}") %>
+      <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
+    </div>
+
+    <div style="margin-left: 15px">
+      <%= link_to("Nouvelle carte", new_admin_announcement_path, class: "btn btn-default btn-sm") %>
+    </div>
+
+    <% if @status == :active %>
+      <div style="margin-left: auto">
+        <a href="#" class="btn btn-default btn-sm" id="start-reorder">Modifier l'ordre des cartes</a>
+        <a href="#" class="btn btn-default btn-sm hide" id="cancel-reorder">Annuler</a>
+        <a href="#" class="btn btn-success btn-sm hide" id="save-reorder">Enregistrer l'ordre des cartes</a>
       </div>
+    <% end %>
+  </div>
 
-      <div style="margin-left: 15px">
-        <%= link_to("Nouvelle carte", new_admin_announcement_path, class: "btn btn-default btn-sm") %>
-      </div>
-
-      <% if @status == :active %>
-        <div style="margin-left: auto">
-          <a href="#" class="btn btn-default btn-sm" id="start-reorder">Modifier l'ordre des cartes</a>
-          <a href="#" class="btn btn-default btn-sm hide" id="cancel-reorder">Annuler</a>
-          <a href="#" class="btn btn-success btn-sm hide" id="save-reorder">Enregistrer l'ordre des cartes</a>
-        </div>
+  <div style="margin-bottom: 15px; display: flex">
+    <div class="btn-group btn-group-sm">
+      <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+      <% ModerationArea.by_slug.sort.each do |slug, area| %>
+        <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
       <% end %>
     </div>
 
-    <div style="margin-bottom: 15px; display: flex">
-      <div class="btn-group btn-group-sm">
-        <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
-        <% ModerationArea.by_slug.sort.each do |slug, area| %>
-          <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
-        <% end %>
-      </div>
-
-      <div class="btn-group btn-group-sm" style="margin-left: 15px">
-        <%= link_to("Tous", @params.merge(user_goal: :all), class: "btn btn-#{@user_goal == :all ? :primary : :default}") %>
-        <% UserGoalPresenter.all(current_user.community).each do |user_goal| %>
-          <%= link_to("", @params.merge(user_goal: user_goal.slug), class: "btn btn-#{@user_goal == user_goal.slug ? :primary : :default} fa fa-#{user_goal.icon}") %>
-        <% end %>
-      </div>
+    <div class="btn-group btn-group-sm" style="margin-left: 15px">
+      <%= link_to("Tous", @params.merge(user_goal: :all), class: "btn btn-#{@user_goal == :all ? :primary : :default}") %>
+      <% UserGoalPresenter.all(current_user.community).each do |user_goal| %>
+        <%= link_to("", @params.merge(user_goal: user_goal.slug), class: "btn btn-#{@user_goal == user_goal.slug ? :primary : :default} fa fa-#{user_goal.icon}") %>
+      <% end %>
     </div>
+  </div>
 
-    <div id="announcements">
-      <% areas = ModerationArea.by_slug %>
-      <% all_areas = areas.keys.sort %>
-      <% @announcements.each do |announcement| %>
-        <div class="announcement overlay-container" data-id="<%= announcement.id %>">
-          <div class="announcement-id text-muted">
-            <div>#<%= announcement.id %></div>
-            <% if announcement.areas != all_areas %>
-              <div>
-                <% announcement.areas.each do |slug| %>
-                  <% area = areas[slug] %>
-                  <span class="label label-default" title="<%= area&.name %>"><%= area&.short_name %></span>
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-          <div class="announcement-content" style="width: 100%">
-            <div style="font-weight: bold"><%= link_to announcement.title, edit_admin_announcement_path(announcement) %></div>
-            <div><%= announcement.body.presence || "(pas de description)" %></div>
-            <div style="display: flex">
-              <span style="text-decoration: underline; flex-shrink: 0">
-                <%= announcement.action.presence || "(pas de CTA)" %>
-              </span>
-              <span class="text-muted">
-                <%
-                  preview =
-                    begin
-                      url = URI(announcement.url)
-                      case url.scheme
-                      when 'mailto' then url.to
-                      when 'http', 'https' then url.host
-                      else url.to_s
-                      end
-                    rescue
-                      preview = announcement.url
-                    end
-                    preview = "(pas de lien)" if announcement.url.blank?
-                %>
-                &nbsp;→ <%= truncate preview, length: 35 %>
-                <span class="invisible-searchable-block">
-                  <%= announcement.url %>
-                </span>
-              </span>
+  <div id="announcements">
+    <% areas = ModerationArea.by_slug %>
+    <% all_areas = areas.keys.sort %>
+    <% @announcements.each do |announcement| %>
+      <div class="announcement overlay-container" data-id="<%= announcement.id %>">
+        <div class="announcement-id text-muted">
+          <div>#<%= announcement.id %></div>
+          <% if announcement.areas != all_areas %>
+            <div>
+              <% announcement.areas.each do |slug| %>
+                <% area = areas[slug] %>
+                <span class="label label-default" title="<%= area&.name %>"><%= area&.short_name %></span>
+              <% end %>
             </div>
-            <% if announcement.category.present? %>
-              <span class="label label-default"><%= I18n.t("activerecord.attributes.announcement.categories.#{announcement.category}") %></span>
-            <% end %>
-          </div>
-          <div class="announcement-image">
-            <%= image_tag(announcement.image_url, size: '225x96') if announcement.image_url.present? %>
-          </div>
-          <div class="announcement-image">
-            <%= image_tag(announcement.image_portrait_url, size: '60x79') if announcement.image_portrait_url.present? %>
-          </div>
-          <%= link_to "", edit_admin_announcement_path(announcement), class: "overlay" %>
+          <% end %>
         </div>
-      <% end %>
+        <div class="announcement-content" style="width: 100%">
+          <div style="font-weight: bold"><%= link_to announcement.title, edit_admin_announcement_path(announcement) %></div>
+          <div><%= announcement.body.presence || "(pas de description)" %></div>
+          <div style="display: flex">
+            <span style="text-decoration: underline; flex-shrink: 0">
+              <%= announcement.action.presence || "(pas de CTA)" %>
+            </span>
+            <span class="text-muted">
+              <%
+                preview =
+                  begin
+                    url = URI(announcement.url)
+                    case url.scheme
+                    when 'mailto' then url.to
+                    when 'http', 'https' then url.host
+                    else url.to_s
+                    end
+                  rescue
+                    preview = announcement.url
+                  end
+                  preview = "(pas de lien)" if announcement.url.blank?
+              %>
+              &nbsp;→ <%= truncate preview, length: 35 %>
+              <span class="invisible-searchable-block">
+                <%= announcement.url %>
+              </span>
+            </span>
+          </div>
+          <% if announcement.category.present? %>
+            <span class="label label-default"><%= I18n.t("activerecord.attributes.announcement.categories.#{announcement.category}") %></span>
+          <% end %>
+        </div>
+        <div class="announcement-image">
+          <%= image_tag(announcement.image_url, size: '225x96') if announcement.image_url.present? %>
+        </div>
+        <div class="announcement-image">
+          <%= image_tag(announcement.image_portrait_url, size: '60x79') if announcement.image_portrait_url.present? %>
+        </div>
+        <%= link_to "", edit_admin_announcement_path(announcement), class: "overlay" %>
+      </div>
+    <% end %>
 
-      <% if @announcements.none? %>
-        <div class="announcement">
-          <div>
-            Pas de cartes d'annonce <%= {draft: "en brouillon", active: "actives", archived: "archivées"}[@status] %>.
-          </div>
+    <% if @announcements.none? %>
+      <div class="announcement">
+        <div>
+          Pas de cartes d'annonce <%= {draft: "en brouillon", active: "actives", archived: "archivées"}[@status] %>.
         </div>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
 </div>
 

@@ -1,12 +1,10 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Photos de recommandation", admin_recommandation_images_path %></li>
-      <li class="active">Créer</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Photos de recommandation", admin_recommandation_images_path %></li>
+    <li class="active">Créer</li>
+  </ol>
 
-    <h1>Nouvelle photo de recommandation</h1>
+  <h1>Nouvelle photo de recommandation</h1>
 
-    <%= render partial: 'form' %>
-  </div>
+  <%= render partial: 'form' %>
 </div>

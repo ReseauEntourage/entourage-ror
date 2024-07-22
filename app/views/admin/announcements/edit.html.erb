@@ -1,15 +1,13 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
-      <li class="active">Modifier une carte</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
+    <li class="active">Modifier une carte</li>
+  </ol>
 
-    <h2>
-      <span class="text-muted">#<%= @announcement.id %></span>
-      <%= @announcement.title&.presence || "(Carte sans titre)" %>
-    </h2>
+  <h2>
+    <span class="text-muted">#<%= @announcement.id %></span>
+    <%= @announcement.title&.presence || "(Carte sans titre)" %>
+  </h2>
 
-    <%= render partial: 'form' %>
-  </div>
+  <%= render partial: 'form' %>
 </div>
