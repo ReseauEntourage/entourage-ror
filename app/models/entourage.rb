@@ -1,4 +1,5 @@
 class Entourage < ApplicationRecord
+  include Bertable
   include FeedsConcern
   include UpdatedAtSkippable
   include EntourageServices::LocationApproximationService::Callback
@@ -140,6 +141,8 @@ class Entourage < ApplicationRecord
   before_validation :set_default_online_attributes, if: :online_changed?
 
   after_create :check_moderation
+
+  alias_attribute :name, :title
 
   def create_from_join_requests!
     ApplicationRecord.connection.transaction do

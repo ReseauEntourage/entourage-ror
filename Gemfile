@@ -55,6 +55,7 @@ gem 'ancestry'
 gem 'tinymce-rails'
 gem 'chartkick'
 gem 'restforce', '~> 7.2.0'
+gem 'pycall'
 
 group :development, :test do
   # gem 'annotate'
