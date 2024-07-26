@@ -1,0 +1,31 @@
+<h4>Liste actions recommandées</h4>
+
+<% unless @entourage.lexical_transformation.present? %>
+  <%#= link_to("Calculer des rapprochements lexicaux", lexical_transformations_admin_entourage_path(@entourage), method: :post, class: "btn btn-primary") %>
+  Pas de rapprochement calculé
+<% else %>
+  <table id="lexical_transformations-list" class="table table-striped">
+    <thead>
+      <tr>
+        <th>type</th>
+        <th>id</th>
+        <th>name</th>
+        <th>date de création</th>
+        <th>Score de similarité</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @similars.each do |similar| %>
+        <% instance_match = similar.instance_type.constantize.find(similar.instance_id) %>
+        <tr>
+          <td><%= instance_match.class.name %></td>
+          <td><%= instance_match.id %></td>
+          <td><%= instance_match.name %></td>
+          <td><%= instance_match.created_at %></td>
+          <td><%= similar.similarity_score %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

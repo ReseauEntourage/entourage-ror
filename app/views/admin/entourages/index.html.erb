@@ -102,6 +102,7 @@
   </div>
 <% end %>
 
+<% action_filter = params[:q] && params[:q][:group_type_eq] == 'action' %>
 <% outing_filter = params[:q] && params[:q][:group_type_eq] == 'outing' %>
 <% pin_filter = params[:q] && params[:q][:pin_eq] %>
 
@@ -119,6 +120,9 @@
     <th></th>
     <th></th>
     <th></th>
+    <% if action_filter %>
+      <th><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></th>
+    <% end %>
   </thead>
   <tbody>
     <% @entourages.each do |entourage| %>
@@ -154,6 +158,15 @@
             <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
           <% end %>
         </td>
+        <% if action_filter %>
+          <td>
+            <% if entourage.lexical_transformation.present? %>
+              <span class="badge" style="background: #5cb85c" title="Correspondances lexicales">●</span>
+            <% else %>
+              <span class="badge" style="background: #d9534f" title="Aucune correspondance">●</span>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
 
