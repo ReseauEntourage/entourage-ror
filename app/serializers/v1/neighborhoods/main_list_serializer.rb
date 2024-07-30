@@ -1,7 +1,26 @@
 module V1
   module Neighborhoods
     class MainListSerializer < ActiveModel::Serializer
+    # les champs qui sont nécessaires sont
+    # #
+    # uuid: Int
+    # name: String
+    # unread_posts_count: Int?
+    # image_url: String?
+    # future_outings_count: Int
+    # members_count: Int
+    # #
+    # et les champs que tu peux fake car non nécessaire, mais que apparement on peut pas changer
+    # #
+    # uuid_v2: String
+    # members: [MemberLight]
+    # creator: MemberLight
+    # past_outings_count: Int
+    # has_ongoing_outing: Bool
+    # isMember: Bool
+    # isSelected: Bool
       attributes :id,
+        :uuid,
         :uuid_v2,
         :name,
         :name_translations,
@@ -13,9 +32,15 @@ module V1
         :unread_posts_count,
         :image_url,
         :past_outings_count,
-        :future_outings_count
+        :future_outings_count,
+        :has_ongoing_outing,
 
       has_one :user, serializer: ::V1::Users::BasicSerializer
+
+      def user
+        # fake data: not used in mobile app
+        {}
+      end
 
       def name
         I18nSerializer.new(object, :name, lang).translation
@@ -57,6 +82,11 @@ module V1
       def past_outings_count
         # fake data: not used in mobile app
         0
+      end
+
+      def has_ongoing_outing
+        # fake data: not used in mobile app
+        false
       end
 
       private

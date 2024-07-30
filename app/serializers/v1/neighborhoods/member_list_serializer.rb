@@ -13,9 +13,15 @@ module V1
         :unread_posts_count,
         :image_url,
         :past_outings_count,
-        :future_outings_count
+        :future_outings_count,
+        :has_ongoing_outing,
 
       has_one :user, serializer: ::V1::Users::BasicSerializer
+
+      def user
+        # fake data: not used in mobile app
+        {}
+      end
 
       def name
         I18nSerializer.new(object, :name, lang).translation
@@ -58,6 +64,11 @@ module V1
       def past_outings_count
         # fake data: not used in mobile app
         0
+      end
+
+      def has_ongoing_outing
+        # fake data: not used in mobile app
+        false
       end
 
       private
