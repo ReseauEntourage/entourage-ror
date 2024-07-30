@@ -46,6 +46,7 @@ module OutingsServices
         .like(q)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
         .match_at_least_one_interest(interests)
+        .group('entourages.id, join_requests.id')
     end
 
     private
