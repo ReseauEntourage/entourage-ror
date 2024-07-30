@@ -12,6 +12,7 @@ module V1
         :members_count,
         :unread_posts_count,
         :image_url,
+        :past_outings_count,
         :future_outings_count
 
       has_one :user, serializer: ::V1::Users::BasicSerializer
@@ -51,6 +52,11 @@ module V1
 
       def image_url
         object.image_url_with_size :medium
+      end
+
+      def past_outings_count
+        # fake data: not used in mobile app
+        0
       end
 
       private
