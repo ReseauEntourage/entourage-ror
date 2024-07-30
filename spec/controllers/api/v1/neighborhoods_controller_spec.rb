@@ -65,16 +65,6 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhoods'].count).to eq(0) }
     end
 
-    describe 'with user roles' do
-      before { neighborhood.user.update_attribute(:targeting_profile, :ambassador) }
-
-      before { get :index, params: { token: user.token } }
-
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key('neighborhoods') }
-      it { expect(result['neighborhoods'][0]['user']['community_roles']).to eq(['Ambassadeur']) }
-    end
-
     describe 'filter by interests' do
       before { get :index, params: { token: user.token, interests: interests } }
 

@@ -6,9 +6,9 @@ module Api
 
         def index
           render json: NeighborhoodServices::Finder.new(@user, index_params).find_all_participations
-            .includes(:translation, :members, :image_resize_actions)
+            .includes(:translation, :image_resize_actions)
             .page(page)
-            .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: @user }
+            .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::MemberListSerializer, scope: { user: @user }
         end
 
         private
