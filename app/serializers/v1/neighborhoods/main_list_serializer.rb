@@ -13,6 +13,8 @@ module V1
         :image_url,
         :future_outings_count
 
+      has_one :user, serializer: ::V1::Users::BasicSerializer
+
       def name
         I18nSerializer.new(object, :name, lang).translation
       end
