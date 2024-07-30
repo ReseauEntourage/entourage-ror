@@ -8,6 +8,7 @@ module V1
         :description,
         :description_translations,
         :member,
+        :members,
         :members_count,
         :unread_posts_count,
         :image_url,
@@ -34,6 +35,13 @@ module V1
       # this serializer is used for neighborhoods in which the user a member
       def member
         true
+      end
+
+      def members
+        # fake data: not really used in mobile app
+        # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
+        # so we want this method to return an array of "members" elements
+        Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
       end
 
       def unread_posts_count
