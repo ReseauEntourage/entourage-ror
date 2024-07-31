@@ -1,4 +1,5 @@
 class Poi < ApplicationRecord
+  include Geolocalizable
   include Recommandable
 
   enum source: { entourage: 0, soliguide: 1 }, _prefix: :source
@@ -14,12 +15,6 @@ class Poi < ApplicationRecord
   scope :validated, -> { where(validated: true) }
   scope :not_source_entourage, -> { where.not(source: Poi.sources[:entourage]) }
   scope :not_source_soliguide, -> { where.not(source: Poi.sources[:soliguide]) }
-
-  scope :around, -> (latitude, longitude, distance) do
-    distance ||= 10
-    box = Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
-    within_bounding_box(box)
-  end
 
   scope :in_departement, -> (departement) do
     if departement.to_sym == :hors_zone

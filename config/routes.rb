@@ -353,6 +353,10 @@ Rails.application.routes.draw do
       end
 
       resources :pois, only: [:index, :show, :create] do
+        collection do
+          get :clusters
+        end
+
         member do
           post 'report'
         end
