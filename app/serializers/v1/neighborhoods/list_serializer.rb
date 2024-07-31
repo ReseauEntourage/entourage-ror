@@ -3,6 +3,7 @@ module V1
     class ListSerializer < ActiveModel::Serializer
       attributes :id,
         :uuid_v2,
+        :user,
         :name,
         :name_translations,
         :member,
@@ -14,11 +15,9 @@ module V1
         :future_outings_count,
         :has_ongoing_outing
 
-      has_one :user, serializer: ::V1::Users::BasicSerializer
-
       def user
         # fake data: not used in mobile app
-        nil
+        { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" }
       end
 
       def name
