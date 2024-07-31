@@ -9,7 +9,7 @@ module Api
         render json: NeighborhoodServices::Finder.new(current_user, index_params).find_all
           .includes(:translation, :image_resize_actions, :user)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::MainListSerializer, scope: { user: current_user }
+          .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NotMemberListSerializer, scope: { user: current_user }
       end
 
       def default

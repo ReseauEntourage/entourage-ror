@@ -42,7 +42,6 @@ module NeighborhoodServices
 
     def find_all_participations
       Neighborhood
-        .select("neighborhoods.*, join_requests.unread_messages_count")
         .like(q)
         .joins(:join_requests)
         .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
