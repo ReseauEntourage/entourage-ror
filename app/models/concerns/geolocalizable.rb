@@ -21,7 +21,7 @@ module Geolocalizable
         AVG(latitude) AS latitude,
         AVG(longitude) AS longitude
       ").from(sanitize_sql_array ["(
-        SELECT id, name, latitude, longitude, ST_ClusterKMeans(ST_Transform((ST_SetSRID(ST_MakePoint(longitude, latitude), 4326))::geometry, 4326), LEAST(#{max_clusters}, 30)) OVER () AS cluster_id
+        SELECT id, name, latitude, longitude, category_id, ST_ClusterKMeans(ST_Transform((ST_SetSRID(ST_MakePoint(longitude, latitude), 4326))::geometry, 4326), LEAST(#{max_clusters}, 30)) OVER () AS cluster_id
         FROM pois
         WHERE #{bounding_box_sql}
       ) AS clusters"]).group("cluster_id")

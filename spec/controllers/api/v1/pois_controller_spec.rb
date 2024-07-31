@@ -305,6 +305,7 @@ describe Api::V1::PoisController, :type => :controller do
 
   describe "clustered" do
     let(:user) { create :pro_user }
+    let(:result) { JSON.parse(response.body) }
 
     let!(:poi1) { create :poi, latitude: 10, longitude: 12 }
     let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1 }
@@ -315,6 +316,8 @@ describe Api::V1::PoisController, :type => :controller do
     before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json } }
 
     it { expect(response.status).to eq(200) }
-    it { expect(assigns[:clusters].map(&:id).sort).to eq [poi3, poi4, poi2].map(&:id).sort }
+    it { expect(result).to have_key("clusters") }
+    it { expect(result["clusters"].length).to eq(3) }
+    it { expect(result["clusters"].map{|cluster| cluster["id"]}).to match_array([poi3.id, poi4.id, poi2.id]) }
   end
 end
