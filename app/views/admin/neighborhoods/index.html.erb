@@ -16,6 +16,7 @@
           <div class="input-group">
             <div class="btn-group btn-group-sm">
               <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+              <%= link_to("National", @params.merge(area: :national), class: "btn btn-#{@area == :national ? :primary : :default}") %>
               <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
                 <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
               <% end %>

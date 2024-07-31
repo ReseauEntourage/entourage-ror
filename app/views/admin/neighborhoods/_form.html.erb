@@ -5,7 +5,14 @@
 <%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
 
 <%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
-  <% if @neighborhood.public? %>
+  <% if @neighborhood.national? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+          <b>National</b><br>
+          Ce groupe de voisins est national. Il sera visible dans toutes les recherches de groupes sur l'app mobile.
+      </div>
+    </div>
+  <% elsif @neighborhood.public? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
           <b>Public</b><br>
