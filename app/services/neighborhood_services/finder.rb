@@ -30,6 +30,7 @@ module NeighborhoodServices
       end
 
       neighborhoods
+        .or(Neighborhood.where(national: true))
         .like(q)
         .includes([:user, :interests, :future_outings])
         .not_joined_by(user)
