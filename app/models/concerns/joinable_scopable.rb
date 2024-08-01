@@ -9,12 +9,10 @@ module JoinableScopable
     has_many :confirmed_members, -> { where("join_requests.status = 'accepted'").where("confirmed_at is not null") }, through: :join_requests, source: :user
 
     scope :joined_by, -> (user) {
-      joins(:join_requests).where(join_requests: {
-        user: user, status: JoinRequest::ACCEPTED_STATUS
-      })
+      where(id: JoinRequest.select(:joinable_id).where(joinable_type: name, user: user, status: JoinRequest::ACCEPTED_STATUS))
     }
     scope :not_joined_by, -> (user) {
-      where.not(id: joined_by(user))
+      where.not(id: JoinRequest.select(:joinable_id).where(joinable_type: name, user: user, status: JoinRequest::ACCEPTED_STATUS))
     }
     scope :order_by_unread_messages, -> {
       order(Arel.sql("join_requests.unread_messages_count DESC"))

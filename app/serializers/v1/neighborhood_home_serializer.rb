@@ -22,7 +22,8 @@ module V1
       :has_ongoing_outing,
       :address,
       :posts,
-      :public
+      :public,
+      :national
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :outings, serializer: ::V1::OutingCoreSerializer

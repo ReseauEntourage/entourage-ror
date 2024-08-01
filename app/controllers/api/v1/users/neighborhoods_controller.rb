@@ -8,6 +8,7 @@ module Api
           render json: NeighborhoodServices::Finder.new(@user, index_params).find_all_participations
             .select("neighborhoods.*, join_requests.unread_messages_count")
             .includes(:translation, :image_resize_actions, :future_outings)
+            .order(national: :desc, name: :asc)
             .page(page)
             .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::MemberListSerializer, scope: { user: @user }
         end

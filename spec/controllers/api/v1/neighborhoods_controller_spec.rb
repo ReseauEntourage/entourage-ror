@@ -110,6 +110,27 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         it { expect(result['neighborhoods'].count).to eq(0) }
       end
     end
+
+    describe 'always find national' do
+      let!(:neighborhood_national) { create :neighborhood, national: true }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
+    end
+
+    describe 'national first' do
+      let!(:neighborhood_national) { create :neighborhood, national: true }
+
+      before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood, neighborhood_national]) }
+      before { get :index, params: { token: user.token } }
+
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
+    end
   end
 
   context 'create' do
@@ -309,7 +330,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
           "status_changed_at" => nil,
-          "public" => true
+          "public" => true,
+          "national" => false
         }) }
       end
 
@@ -408,7 +430,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ongoing_outings" => [],
           "has_ongoing_outing" => false,
           "posts" => [],
-          "public" => true
+          "public" => true,
+          "national" => false
         }
       })}
     end
