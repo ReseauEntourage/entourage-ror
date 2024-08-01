@@ -35,6 +35,7 @@ module NeighborhoodServices
         .not_joined_by(user)
         .public_only
         .where(id: Neighborhood.inside_user_perimeter(user))
+        .or(Neighborhood.where(national: true))
         .match_at_least_one_interest(interests)
         .order(national: :desc)
         .order(Arel.sql(%(zone IS NULL DESC)))
