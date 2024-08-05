@@ -15,7 +15,12 @@ module Geolocalizable
 
       select("
         CASE WHEN COUNT(*) = 1 THEN MIN(id) ELSE NULL END AS id,
+        CASE WHEN COUNT(*) = 1 THEN MIN(uuid) ELSE NULL END AS uuid,
+        CASE WHEN COUNT(*) = 1 THEN MIN(uuid_v2) ELSE NULL END AS uuid_v2,
         CASE WHEN COUNT(*) = 1 THEN MIN(name) ELSE NULL END AS name,
+        CASE WHEN COUNT(*) = 1 THEN MIN(adress) ELSE NULL END AS address,
+        CASE WHEN COUNT(*) = 1 THEN MIN(phone) ELSE NULL END AS phone,
+        CASE WHEN COUNT(*) = 1 THEN MIN(email) ELSE NULL END AS email,
         CASE WHEN COUNT(*) = 1 THEN MIN(category_id) ELSE NULL END AS category_id,
         COUNT(*) AS count,
         AVG(latitude) AS latitude,
