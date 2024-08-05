@@ -5,6 +5,7 @@ module V1
       :latitude,
       :longitude,
       :id,
+      :uuid,
       :name,
       :address,
       :phone,
