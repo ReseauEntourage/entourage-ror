@@ -1,12 +1,17 @@
 module V1
   class ClusterSerializer < ActiveModel::Serializer
-    attributes :id,
-      :type,
+    attributes :type,
       :count,
-      :name,
-      :category_id,
       :latitude,
       :longitude,
+      :id,
+      :uuid,
+      :uuid_v2,
+      :name,
+      :address,
+      :phone,
+      :email,
+      :category_id
 
     def type
       return :poi if poi?
