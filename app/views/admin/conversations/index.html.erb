@@ -97,15 +97,8 @@
         </div>
 
         <div class="cell conversation-timestamp" style="text-align: right">
-          <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>
-          <% timestamp = last_message&.created_at || conversation.created_at %>
-          <% if timestamp.today? %>
-            <%= l timestamp, format: "%H:%M" %>
-          <% elsif timestamp >= 7.days.ago.midnight %>
-            <%= l timestamp, format: "%A" %>
-          <% else  %>
-            <%= l timestamp, format: "%-d %b" %>
-          <% end %>
+          <%= link_to "", admin_conversation_path(conversation) %>
+          <%= smart_date(last_message&.created_at || conversation.created_at) %>
         </div>
       </div>
     <% end %>
