@@ -3,12 +3,16 @@ module Geolocalizable
 
   included do
     scope :around, -> (latitude, longitude, distance) do
+      return unless latitude && longitude
+
       distance ||= 10
       box = Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
       within_bounding_box(box)
     end
 
     scope :clustered, -> (latitude, longitude, distance) {
+      return unless latitude && longitude
+
       max_clusters = self.around(latitude, longitude, distance).count
       box = Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
       bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)

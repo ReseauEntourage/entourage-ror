@@ -16,6 +16,24 @@ class Poi < ApplicationRecord
   scope :not_source_entourage, -> { where.not(source: Poi.sources[:entourage]) }
   scope :not_source_soliguide, -> { where.not(source: Poi.sources[:soliguide]) }
 
+  scope :with_category_ids, -> (category_ids) {
+    return unless category_ids.present?
+    return unless category_ids.any?
+
+    joins(:categories_pois).where(categories_pois: { category_id: category_ids })
+  }
+
+  scope :with_partners_filters, -> (partners_filters) {
+    return unless partners_filters.present?
+    return unless partners_filters.any?
+
+    @pois = @pois.joins("left join partners on partners.id = partner_id")
+    clauses = ["partner_id is null"]
+    clauses << "donations_needs is not null"  if partners_filters.include?(:donations)
+    clauses << "volunteers_needs is not null" if partners_filters.include?(:volunteers)
+    @pois = @pois.where(clauses.join(" OR "))
+  }
+
   scope :in_departement, -> (departement) do
     if departement.to_sym == :hors_zone
       departements = ModerationArea.only_departements.join('|')
@@ -104,5 +122,9 @@ class Poi < ApplicationRecord
 
   after_commit :update_textsearch!
 
-  scope :text_search, -> (query) { where("textsearch @@ plainto_tsquery('french', unaccent(?))", query) }
+  scope :text_search, -> (query) {
+    return unless query.present?
+
+    where("textsearch @@ plainto_tsquery('french', unaccent(?))", query)
+  }
 end
