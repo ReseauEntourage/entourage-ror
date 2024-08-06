@@ -30,7 +30,7 @@ module Geolocalizable
         AVG(latitude) AS latitude,
         AVG(longitude) AS longitude
       ").from(sanitize_sql_array ["(
-        SELECT id, validated, source, source_id, name, adress, latitude, phone, email, longitude, category_id, ST_ClusterKMeans(ST_Transform((ST_SetSRID(ST_MakePoint(longitude, latitude), 4326))::geometry, 4326), LEAST(#{max_clusters}, 30)) OVER () AS cluster_id
+        SELECT id, validated, source, source_id, name, adress, latitude, phone, email, longitude, category_id, ST_ClusterKMeans(ST_Transform((ST_SetSRID(ST_MakePoint(longitude, latitude), 4326))::geometry, 4326), LEAST(#{max_clusters}, 50)) OVER () AS cluster_id
         FROM pois as to_be_clustered
         WHERE #{bounding_box_sql}
       ) AS pois"]).group("cluster_id")
