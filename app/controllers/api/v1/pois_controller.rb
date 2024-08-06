@@ -14,20 +14,9 @@ module Api
 
         @categories = Category.all
 
-        @pois = Poi.validated.text_search(params[:query])
-        @pois = @pois.not_source_soliguide unless Option.soliguide_active?
-
-        if params[:category_ids].present?
-          categories = params[:category_ids].split(",").map(&:to_i).uniq
-
-          if version == :v1
-            @pois = @pois.where(category_id: categories)
-          else
-            @pois = @pois.joins(:categories_pois).where(categories_pois: {category_id: categories})
-          end
-        end
-
-        @pois = @pois
+        @pois = Poi.validated
+          .text_search(params[:query])
+          .with_category_ids(category_ids)
           .around(coordinates[:latitude], coordinates[:longitude], distance)
           .with_partners_filters(partners_filters)
           .order(Arel.sql('random()')).limit(100)
