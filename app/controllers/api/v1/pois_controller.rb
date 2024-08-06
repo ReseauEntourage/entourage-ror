@@ -50,7 +50,12 @@ module Api
       end
 
       def clusters
-        render json: Poi.clustered(coordinates[:latitude], coordinates[:longitude], distance),
+        render json:
+          Poi.validated
+            .with_partners_filters(partners_filters)
+            .clustered(coordinates[:latitude], coordinates[:longitude], distance)
+            .text_search(params[:query])
+            .with_category_ids(category_ids),
           root: :clusters,
           each_serializer: ::V1::ClusterSerializer,
           status: 200

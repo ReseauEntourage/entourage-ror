@@ -51,6 +51,7 @@ module Api
             signals: format_tags(Tag.signals),
           },
           reactions: format_reactions(Reaction.all.order(position: :asc)),
+          poi_categories: Category.all.map { |category| { id: category.id, name: category.name } }
         }.to_json, status: 200
       end
 
