@@ -81,7 +81,6 @@
           <div class="conversation <%= 'unread' if conversation.unread %>">
             <div class="conversation-content">
               <div class="conversation-avatar">
-                <!-- Ajoutez ici le code pour afficher l'avatar de l'utilisateur -->
                 <% if conversation.user.avatar_url.present? %>
                   <%= image_tag conversation.user.avatar_url, alt: conversation.user.full_name, class: "avatar" %>
                 <% end %>
@@ -97,9 +96,9 @@
                   <% else %>
                     <% if last_message.deleted? %>
                       <p style="color: red;">Ce message a été supprimé : </p>
-                      <em><%= simple_format last_message.content(true) %></em>
+                      <em><%= simple_format last_message.content(true)[0..30] %></em>
                     <% else %>
-                      <%= simple_format last_message.content %>
+                      <%= simple_format last_message.content[0..30] %>
                     <% end %>
                   <% end %>
                 </div>
@@ -111,7 +110,6 @@
           </div>
         <% end %>
       <% end %>
-
     </div>
     <div class="conversations-chat-messages col-sm-8">
     </div>

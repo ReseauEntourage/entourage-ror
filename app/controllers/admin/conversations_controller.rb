@@ -10,6 +10,7 @@ module Admin
       @user = current_admin
 
       @conversations = Entourage
+        .includes(:user)
         .where(group_type: :conversation)
         .joins(:join_requests)
         .merge(@user.join_requests.accepted)
@@ -54,13 +55,6 @@ module Admin
       join_request = join_requests.find { |r| r.user_id == current_admin.id }
 
       @new_conversation = join_request.nil?
-
-      @read = join_request.present? &&
-              join_request.last_message_read.present? &&
-              join_request.last_message_read >= (@conversation.feed_updated_at || @conversation.updated_at)
-      @archived = join_request.present? &&
-                  join_request.archived_at.present? &&
-                  join_request.archived_at >= (@conversation.feed_updated_at || @conversation.updated_at)
 
       @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user)
 
@@ -213,7 +207,7 @@ module Admin
 
       JoinRequest.where(joinable: @conversation).update_all(archived_at: timestamp)
 
-      redirect_to admin_conversations_path()
+      redirect_to admin_conversations_path({ filter: :archived })
     end
 
     private
