@@ -18,4 +18,20 @@ module ConversationsHelper
 
     recipient_names
   end
+
+  def read_for_user? conversation, user
+    conversation.join_requests.any? do |join_request|
+      join_request.user_id == user.id &&
+      join_request.last_message_read.present? &&
+      join_request.last_message_read >= (conversation.feed_updated_at || conversation.updated_at)
+    end
+  end
+
+  def archived_for_user? conversation, user
+    conversation.join_requests.any? do |join_request|
+      join_request.user_id == user.id &&
+      join_request.archived_at.present? &&
+      join_request.archived_at >= (conversation.feed_updated_at || conversation.updated_at)
+    end
+  end
 end

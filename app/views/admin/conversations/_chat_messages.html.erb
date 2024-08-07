@@ -125,6 +125,10 @@
   }
 </style>
 
+<%= render partial: 'actions', locals: { conversation: @conversation } %>
+
+<br/>
+
 <% date = nil %>
 <% color = {} %>
 <% chat_messages.each do |message| %>
