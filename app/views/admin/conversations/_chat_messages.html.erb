@@ -125,7 +125,16 @@
   }
 </style>
 
-<%= render partial: 'actions', locals: { conversation: @conversation } %>
+<ul class="nav nav-tabs">
+  <li role="presentation" class="<%= :active if tab == :chat_messages %>">
+    <%= link_to "Messages", chat_messages_admin_conversation_path(conversation), remote: true %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :show_members %>">
+    <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
+  </li>
+</ul>
+
+<%= render partial: 'actions', locals: { conversation: conversation } %>
 
 <br/>
 
