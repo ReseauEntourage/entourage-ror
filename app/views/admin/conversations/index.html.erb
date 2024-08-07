@@ -95,12 +95,6 @@
                   <% if last_message.nil? %>
                     <span class="text-muted">(pas de messages)</span>
                   <% else %>
-                    <% if last_message.user_id == @user.id %>
-                      Vous :
-                    <% elsif recipient_ids.count > 1 %>
-                      <%= display_user_name @users[last_message.user_id] %> :
-                    <% end %>
-
                     <% if last_message.deleted? %>
                       <p style="color: red;">Ce message a été supprimé : </p>
                       <em><%= simple_format last_message.content(true) %></em>
