@@ -2,8 +2,8 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_conversation, only: [:show, :chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
-    before_action :set_recipients, only: [:show, :show_members]
+    before_action :set_conversation, only: [:chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
+    before_action :set_recipients, only: [:show_members]
 
     def index
       @params = params.permit([:filter])
@@ -50,44 +50,22 @@ module Admin
       ).select(:id, :first_name, :last_name).uniq.map { |u| [u.id, u] }]
     end
 
-    def show
-      join_requests = @conversation.join_requests.accepted.to_a
-      join_request = join_requests.find { |r| r.user_id == current_admin.id }
-
-      @new_conversation = join_request.nil?
-
-      @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user)
-
-      reads = join_requests
-        .reject { |r| r.last_message_read.nil? || r.user_id == current_admin.id }
-        .reject { |r| r.last_message_read < @chat_messages.first.created_at if @chat_messages.any? }
-        .sort_by(&:last_message_read)
-
-      @last_reads = Hash.new { |h, k| h[k] = [] }
-
-      (@chat_messages + [nil]).each_cons(2) do |message, next_message|
-        while reads.any? &&
-              reads.first.last_message_read >= message.created_at &&
-              (!next_message ||
-               reads.first.last_message_read < next_message.created_at) do
-          @last_reads[message.id].push reads.shift
-        end
-      end
-
-      @messages_author = current_admin if join_request.present? || @conversation.new_record?
-    end
-
     def chat_messages
       @chat_messages = @conversation.chat_messages.order(created_at: :asc)
 
       respond_to do |format|
         format.js
-        format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages } }
+        format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages, tab: :chat_messages } }
       end
     end
 
     def show_members
       @join_requests = @conversation.join_requests.accepted.includes(:user)
+
+      respond_to do |format|
+        format.js
+        format.html { render partial: 'show_members', locals: { join_requests: @join_requests, tab: :show_members } }
+      end
     end
 
     def message
@@ -155,7 +133,10 @@ module Admin
       end
 
       if join_request.save
-        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation"
+        respond_to do |format|
+          format.js { render :show_members }
+          format.html { redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation" }
+        end
       else
         redirect_to admin_conversation_path(params[:id]), alert: "L'utilisateur '#{params[:user_id]}' n'a pas pu être ajouté à la conversation"
       end
@@ -168,7 +149,10 @@ module Admin
       return redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' ne fait déjà pas partie de la conversation" unless join_request.present? && join_request.accepted?
 
       if join_request.update_attribute(:status, :cancelled)
-        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été retiré de la conversation"
+        respond_to do |format|
+          format.js { render :show_members }
+          format.html { redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été retiré de la conversation" }
+        end
       else
         redirect_to admin_conversation_path(params[:id]), alert: "L'utilisateur '#{user.full_name}' n'a pas pu être retiré de la conversation"
       end

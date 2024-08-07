@@ -159,7 +159,7 @@ Rails.application.routes.draw do
 
       resources :entourage_moderations, only: [:create]
       resources :sensitive_words, only: [:show, :destroy]
-      resources :conversations, only: [:index, :show] do
+      resources :conversations, only: [:index] do
         member do
           get :chat_messages
           get :show_members
