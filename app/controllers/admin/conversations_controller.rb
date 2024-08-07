@@ -2,7 +2,7 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_conversation, only: [:show, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
+    before_action :set_conversation, only: [:show, :chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
     before_action :set_recipients, only: [:show, :show_members]
 
     def index
@@ -33,7 +33,7 @@ module Admin
       @conversations = @conversations.where("number_of_people > 2") if params[:filter] == 'multiple'
 
       @last_message =
-        ChatMessage
+        ChatMessage.no_deleted_without_comments
         .select('distinct on (messageable_id) *')
         .where(messageable_type: :Entourage)
         .where(messageable_id: @conversations.map(&:id))
@@ -83,6 +83,15 @@ module Admin
       @messages_author = current_admin if join_request.present? || @conversation.new_record?
     end
 
+    def chat_messages
+      @chat_messages = @conversation.chat_messages.order(created_at: :asc)
+
+      respond_to do |format|
+        format.js
+        format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages } }
+      end
+    end
+
     def show_members
       @join_requests = @conversation.join_requests.accepted.includes(:user)
     end
@@ -117,10 +126,16 @@ module Admin
       @chat_message = ChatMessage.find(params[:id])
 
       ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
-        redirection = admin_conversation_path(@chat_message.messageable)
+        redirection = chat_messages_admin_conversation_path(@chat_message.messageable)
 
         on.success do |chat_message|
-          redirect_to redirection
+          @conversation = @chat_message.messageable
+          @chat_messages = @conversation.chat_messages.order(created_at: :asc)
+
+          respond_to do |format|
+            format.js { render :chat_messages }
+            format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages } }
+          end
         end
 
         on.failure do |chat_message|

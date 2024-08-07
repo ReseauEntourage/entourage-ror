@@ -1,4 +1,11 @@
 module ApplicationHelper
+  def smart_date datetime
+    return l(datetime, format: "%H:%M") if datetime.today?
+    return l(datetime, format: "%A") if datetime >= 7.days.ago.midnight
+
+    l(datetime, format: "%-d %b")
+  end
+
   def status_label instance
     type_to_class = {
       "active" => "info",
