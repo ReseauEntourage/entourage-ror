@@ -18,17 +18,17 @@ module Geolocalizable
       bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
 
       select("
-        CASE WHEN COUNT(*) = 1 THEN MIN(id) ELSE NULL END AS id,
-        CASE WHEN COUNT(*) = 1 THEN MIN(source) ELSE NULL END AS source,
-        CASE WHEN COUNT(*) = 1 THEN MIN(source_id) ELSE NULL END AS source_id,
-        CASE WHEN COUNT(*) = 1 THEN MIN(name) ELSE NULL END AS name,
-        CASE WHEN COUNT(*) = 1 THEN MIN(adress) ELSE NULL END AS adress,
-        CASE WHEN COUNT(*) = 1 THEN MIN(phone) ELSE NULL END AS phone,
-        CASE WHEN COUNT(*) = 1 THEN MIN(email) ELSE NULL END AS email,
-        CASE WHEN COUNT(*) = 1 THEN MIN(category_id) ELSE NULL END AS category_id,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.id) ELSE NULL END AS id,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.source) ELSE NULL END AS source,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.source_id) ELSE NULL END AS source_id,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.name) ELSE NULL END AS name,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.adress) ELSE NULL END AS adress,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.phone) ELSE NULL END AS phone,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.email) ELSE NULL END AS email,
+        CASE WHEN COUNT(*) = 1 THEN MIN(pois.category_id) ELSE NULL END AS category_id,
         COUNT(*) AS count,
-        AVG(latitude) AS latitude,
-        AVG(longitude) AS longitude
+        AVG(pois.latitude) AS latitude,
+        AVG(pois.longitude) AS longitude
       ").from(sanitize_sql_array ["(
         SELECT id, validated, source, source_id, name, adress, latitude, phone, email, longitude, category_id, ST_ClusterKMeans(ST_Transform((ST_SetSRID(ST_MakePoint(longitude, latitude), 4326))::geometry, 4326), LEAST(#{max_clusters}, 30)) OVER () AS cluster_id
         FROM pois as to_be_clustered
