@@ -2,7 +2,7 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_conversation, only: [:show, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
+    before_action :set_conversation, only: [:show, :chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
     before_action :set_recipients, only: [:show, :show_members]
 
     def index
@@ -81,6 +81,15 @@ module Admin
       end
 
       @messages_author = current_admin if join_request.present? || @conversation.new_record?
+    end
+
+    def chat_messages
+      @chat_messages = @conversation.chat_messages.order(created_at: :asc)
+
+      respond_to do |format|
+        format.js
+        format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages } }
+      end
     end
 
     def show_members

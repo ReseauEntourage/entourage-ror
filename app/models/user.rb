@@ -405,6 +405,10 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def avatar_url
+    UserServices::Avatar.new(user: self).thumbnail_url
+  end
+
   def sms_code=(another_sms_code)
     #Hashing slows down tests a lot
     if Rails.env.test? && ENV["DISABLE_CRYPT"]=="TRUE"

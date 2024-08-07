@@ -1,0 +1,9 @@
+<div class="conversation-detail">
+  <% chat_messages.each do |chat_message| %>
+    <div class="message <%= 'deleted' if chat_message.deleted? %>">
+      <div class="message-user"><%= display_user_name(chat_message.user) %>:</div>
+      <div class="message-content"><%= simple_format(chat_message.content) %></div>
+      <div class="message-date"><%= smart_date(chat_message.created_at) %></div>
+    </div>
+  <% end %>
+</div>

@@ -1,38 +1,4 @@
 <style>
-  .overlay-container {
-    position: relative;
-  }
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  .overlay-container a:not(.overlay) {
-    position: relative;
-    z-index: 2;
-  }
-
-  .conversation {
-    display: flex;
-  }
-
-  .conversation-recipients {
-    width: 250px;
-  }
-
-  .conversation-content {
-    width: 100%;
-  }
-
-  .conversation-timestamp {
-    width: 100px;
-  }
-
   .conversation:hover {
     background-color: rgba(0, 0, 0, .05);
   }
@@ -41,18 +7,56 @@
     font-weight: bold;
   }
 
-  .cell {
-    padding: 8px;
-    line-height: 1.42857143;
-    vertical-align: top;
-    border-top: 1px solid #ddd;
+  .conversation-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+    transition: background-color 0.3s;
   }
 
-  .truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .conversation-link:hover {
+    background-color: #f0f0f0; /* Changez la couleur d'arrière-plan au survol */
+    text-decoration: none;
   }
+
+  .conversation {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px;
+  }
+
+  .conversation-avatar {
+    flex: 0 0 auto;
+    margin-right: 10px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .conversation-details {
+    flex: 1;
+  }
+
+  .conversation-recipients {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .conversation-message {
+    color: #666;
+  }
+
+  .conversation-date {
+    flex: 0 0 auto;
+    font-size: 0.8em;
+    color: #999;
+  }
+
 </style>
 <div class="container">
   <h1>Messages privés</h1>
@@ -67,41 +71,56 @@
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
   </div>
 
-  <div class="conversations">
-    <% @conversations.each do |conversation| %>
-      <% last_message = @last_message[conversation.id] %>
-      <% recipient_ids = @recipient_ids[conversation.id] %>
+  <div class="row">
+    <div class="conversations-menu col-sm-4">
+      <% @conversations.each do |conversation| %>
+        <% last_message = @last_message[conversation.id] %>
+        <% recipient_ids = @recipient_ids[conversation.id] %>
 
-      <div class="overlay-container conversation <%= :unread if conversation.unread %>">
-        <div class="cell truncate conversation-recipients">
-          <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
-        </div>
+        <%= link_to chat_messages_admin_conversation_path(conversation), remote: true, class: "conversation-link", data: { id: conversation.id } do %>
+          <div class="conversation <%= 'unread' if conversation.unread %>">
+            <div class="conversation-content">
+              <div class="conversation-avatar">
+                <!-- Ajoutez ici le code pour afficher l'avatar de l'utilisateur -->
+                <% if conversation.user.avatar_url.present? %>
+                  <%= image_tag conversation.user.avatar_url, alt: conversation.user.full_name, class: "avatar" %>
+                <% end %>
+              </div>
+              <div class="conversation-details">
+                <div class="conversation-recipients">
+                  <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
+                </div>
 
-        <div class="cell truncate conversation-content">
-          <% if last_message.nil? %>
-            <span class="text-muted">(pas de messages)</span>
-          <% else %>
-            <% if last_message.user_id == @user.id %>
-              Vous :
-            <% elsif recipient_ids.count > 1 %>
-              <%= display_user_name @users[last_message.user_id] %> :
-            <% end %>
+                <div class="conversation-message">
+                  <% if last_message.nil? %>
+                    <span class="text-muted">(pas de messages)</span>
+                  <% else %>
+                    <% if last_message.user_id == @user.id %>
+                      Vous :
+                    <% elsif recipient_ids.count > 1 %>
+                      <%= display_user_name @users[last_message.user_id] %> :
+                    <% end %>
 
-            <% if last_message.deleted? %>
-              <p style="color: red;"> Ce message a été supprimé : </p>
-              <em><%= simple_format last_message.content(true) %></em>
-            <% else %>
-              <%= simple_format last_message.content %>
-            <% end %>
-          <% end %>
-        </div>
+                    <% if last_message.deleted? %>
+                      <p style="color: red;">Ce message a été supprimé : </p>
+                      <em><%= simple_format last_message.content(true) %></em>
+                    <% else %>
+                      <%= simple_format last_message.content %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              <div class="conversation-date" style="text-align: right">
+                <%= smart_date(last_message&.created_at || conversation.created_at) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
 
-        <div class="cell conversation-timestamp" style="text-align: right">
-          <%= link_to "", admin_conversation_path(conversation) %>
-          <%= smart_date(last_message&.created_at || conversation.created_at) %>
-        </div>
-      </div>
-    <% end %>
+    </div>
+    <div class="conversations-chat-messages col-sm-8">
+    </div>
   </div>
 
   <%= paginate @conversations %>
