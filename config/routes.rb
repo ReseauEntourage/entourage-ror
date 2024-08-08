@@ -171,6 +171,7 @@ Rails.application.routes.draw do
         end
 
         collection do
+          get :search
           delete :destroy_message
         end
       end
