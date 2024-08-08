@@ -32,14 +32,10 @@ module Admin
 
       @conversations = @conversations.where("last_message_read < feed_updated_at or last_message_read is null") if params[:filter] == 'unread'
       @conversations = @conversations.where("number_of_people > 2") if params[:filter] == 'multiple'
-    end
-
-    def search
-      index
 
       respond_to do |format|
         format.js
-        format.html { render :index }
+        format.html
       end
     end
 
