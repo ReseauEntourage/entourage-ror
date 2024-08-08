@@ -1,4 +1,3 @@
-
 <ul class="nav nav-tabs">
   <li role="presentation" class="<%= :active if tab == :chat_messages %>">
     <%= link_to "Messages", chat_messages_admin_conversation_path(conversation), remote: true %>
@@ -7,8 +6,6 @@
     <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
   </li>
 </ul>
-
-
 
 <table class="table">
   <th>Nom</th>
