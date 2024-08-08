@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
+          get :search
           get 'moderate'
           get 'fake'
           post 'generate'
