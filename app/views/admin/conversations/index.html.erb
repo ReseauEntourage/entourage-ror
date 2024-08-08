@@ -71,9 +71,7 @@
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
 
     <%= form_tag admin_conversations_path, remote: true, method: :get, html: { role: "form" } do |f| %>
-      <%= submit_tag "Rechercher", class: "btn btn-default btn-sm", style: "float: right" %>
-
-      <%= text_field_tag :search, nil, class: "form-control", style: "float: right; width: 200px;", placeholder: "nom", required: true %>
+      <%= text_field_tag :search, nil, class: "form-control", style: "width: 200px;", placeholder: "Recherche par membre", required: true %>
     <% end %>
   </div>
 
