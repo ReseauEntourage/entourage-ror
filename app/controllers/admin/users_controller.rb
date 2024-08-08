@@ -13,6 +13,18 @@ module Admin
       @users = filtered_users.includes(:address, :accepted_join_requests).order("created_at DESC").page(params[:page]).per(25)
     end
 
+    def search
+      if params[:query].present?
+        @users = User.validated.where('first_name LIKE ? OR phone LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%")
+      else
+        @users = User.none
+      end
+
+      respond_to do |format|
+        format.json { render json: @users.map { |user| { id: user.id, first_name: user.first_name, last_name: user.last_name, phone: user.phone } } }
+      end
+    end
+
     def show
       redirect_to edit_admin_user_path(user)
     end

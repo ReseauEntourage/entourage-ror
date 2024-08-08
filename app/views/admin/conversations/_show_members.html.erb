@@ -45,6 +45,31 @@
   <%= form_tag invite_admin_conversation_path(@conversation.id), remote: true, method: :post, html: { role: "form" } do |f| %>
     <%= submit_tag "Ajouter à la conversation", class: "btn btn-default btn-sm", style: "float: right" %>
 
-    <%= text_field_tag :user_id, nil, class: "form-control", style: "float: right; width: 200px;", placeholder: "utilisateur (ID ou téléphone)", required: true %>
+    <%= select_tag :user_id, options_for_select([]), class: "form-control", id: "user-select", placeholder: "utilisateur (ID ou téléphone)", required: true, style: "float: right; width: 200px;" %>
   <% end %>
 <% end %>
+
+<script>
+  $('#user-select').select2({
+    placeholder: 'utilisateur (ID ou téléphone)',
+    minimumInputLength: 1,
+    ajax: {
+      url: '/users/search',
+      dataType: 'json',
+      delay: 250,
+      data: function(params) {
+        return {
+          query: params.term // search term
+        };
+      },
+      processResults: function(data) {
+        return {
+          results: data.map(function(user) {
+            return { id: user.id, text: user.first_name + ' ' + user.last_name + ' (' + user.phone + ')' };
+          })
+        };
+      },
+      cache: true
+    }
+  });
+</script>
