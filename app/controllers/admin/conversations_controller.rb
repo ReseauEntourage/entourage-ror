@@ -7,13 +7,13 @@ module Admin
 
     def index
       @params = params.permit([:filter])
-      @user = current_admin
 
       @conversations = Entourage
         .includes(:user)
-        .where(group_type: :conversation)
         .joins(:join_requests)
-        .merge(@user.join_requests.accepted)
+        .where(group_type: :conversation)
+        .search_by_member(params[:search])
+        .merge(current_admin.join_requests.accepted)
         .select(%(
           entourages.*,
           last_message_read < feed_updated_at or last_message_read is null as unread
@@ -33,21 +33,10 @@ module Admin
       @conversations = @conversations.where("last_message_read < feed_updated_at or last_message_read is null") if params[:filter] == 'unread'
       @conversations = @conversations.where("number_of_people > 2") if params[:filter] == 'multiple'
 
-      @last_message =
-        ChatMessage.no_deleted_without_comments
-        .select('distinct on (messageable_id) *')
-        .where(messageable_type: :Entourage)
-        .where(messageable_id: @conversations.map(&:id))
-        .order(:messageable_id, created_at: :desc)
-
-      @last_message = Hash[@last_message.map { |m| [m.messageable_id, m] }]
-
-      @recipient_ids = JoinRequest.accepted.where(joinable_type: :Entourage, joinable_id: @conversations.map(&:id)).where.not(user_id: @user.id).pluck(:joinable_id, :user_id).group_by(&:first).each { |_, a| a.replace a.map(&:last) }
-      @recipient_ids.default = [@user.id] # if no recipient, it must be a conversation with self
-
-      @users = Hash[User.where(
-        id: @recipient_ids.values.map{ |a| a.first(3) }.flatten + @last_message.values.map(&:user_id)
-      ).select(:id, :first_name, :last_name).uniq.map { |u| [u.id, u] }]
+      respond_to do |format|
+        format.js
+        format.html
+      end
     end
 
     def chat_messages
