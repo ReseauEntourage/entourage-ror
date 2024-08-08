@@ -69,51 +69,15 @@
     </div>
 
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
+
+    <%= form_tag admin_conversations_path, remote: true, method: :get, html: { role: "form" } do |f| %>
+      <%= submit_tag "Rechercher", class: "btn btn-default btn-sm", style: "float: right" %>
+
+      <%= text_field_tag :search, nil, class: "form-control", style: "float: right; width: 200px;", placeholder: "nom", required: true %>
+    <% end %>
   </div>
 
-  <div class="row">
-    <div class="conversations-menu col-sm-4">
-      <% @conversations.each do |conversation| %>
-        <% last_message = @last_message[conversation.id] %>
-        <% recipient_ids = @recipient_ids[conversation.id] %>
-
-        <%= link_to chat_messages_admin_conversation_path(conversation), remote: true, class: "conversation-link", data: { id: conversation.id } do %>
-          <div class="conversation <%= 'unread' if conversation.unread %>">
-            <div class="conversation-content">
-              <div class="conversation-avatar">
-                <% if conversation.user.avatar_url.present? %>
-                  <%= image_tag conversation.user.avatar_url, alt: conversation.user.full_name, class: "avatar" %>
-                <% end %>
-              </div>
-              <div class="conversation-details">
-                <div class="conversation-recipients">
-                  <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
-                </div>
-
-                <div class="conversation-message">
-                  <% if last_message.nil? %>
-                    <span class="text-muted">(pas de messages)</span>
-                  <% else %>
-                    <% if last_message.deleted? %>
-                      <p style="color: red;">Ce message a été supprimé : </p>
-                      <em><%= simple_format last_message.content(true)[0..30] %></em>
-                    <% else %>
-                      <%= simple_format last_message.content[0..30] %>
-                    <% end %>
-                  <% end %>
-                </div>
-              </div>
-              <div class="conversation-date" style="text-align: right">
-                <%= smart_date(last_message&.created_at || conversation.created_at) %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      <% end %>
-    </div>
-    <div class="conversations-chat-messages col-sm-8">
-    </div>
+  <div class="conversations-list">
+    <%= render partial: 'conversations', locals: { conversations: @conversations } %>
   </div>
-
-  <%= paginate @conversations %>
 </div>
