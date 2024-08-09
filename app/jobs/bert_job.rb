@@ -18,7 +18,7 @@ class BertJob
   end
 
   def embedding text
-    command = "python3 pycall/get_embedding.py \"#{Shellwords.escape(text)}\""
+    command = "python3 pycall/huggingface_encoder.py \"#{Shellwords.escape(text)}\""
     result = `#{command}`
 
     JSON.parse(result)

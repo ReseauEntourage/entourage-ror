@@ -1,15 +1,9 @@
-from sentence_transformers import SentenceTransformer
 import psycopg2
 import json
-import os
 from urllib.parse import urlparse
+from huggingface_encoder import get_embeddings
 
-model = SentenceTransformer('distiluse-base-multilingual-cased')
-
-def get_embeddings(text):
-    return model.encode([text]).tolist()[0]
-
-url = urlparse(ENV['DATABASE_URL'])
+url = urlparse(os.getenv('DATABASE_URL'))
 
 conn = psycopg2.connect(
     dbname=url.path[1:],
