@@ -13,6 +13,7 @@ class BertJob
     return unless lexical_transformation.respond_to?(field)
     return unless lexical_transformation[field].present?
     return unless embedded = embedding(lexical_transformation[field])
+    return unless embedded.present?
 
     lexical_transformation.update("#{field}": embedded, performed: true)
   end
