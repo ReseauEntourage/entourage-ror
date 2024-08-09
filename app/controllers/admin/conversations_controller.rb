@@ -74,7 +74,13 @@ module Admin
       chat_builder.create do |on|
         on.success do |message|
           join_request.update_column(:last_message_read, message.created_at)
-          redirect_to admin_conversation_path(@conversation)
+
+          respond_to do |format|
+            @chat_messages = @conversation.chat_messages.order(created_at: :asc)
+
+            format.js { render :chat_messages }
+            format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages, tab: :chat_messages } }
+          end
         end
 
         on.failure do |message|
