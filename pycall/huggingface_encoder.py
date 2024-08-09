@@ -16,7 +16,7 @@ def get_embeddings(sentence):
     data = {'inputs': sentence}
     response = requests.post(api_url, headers=headers, json=data)
     if response.status_code == 200:
-        return response.json()[0]
+        return response.json()
     else:
         print(f"Erreur: {response.status_code}", file=sys.stderr)
         return []
