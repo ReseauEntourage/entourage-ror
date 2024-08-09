@@ -1,3 +1,6 @@
+require 'json'
+require 'open3'
+
 class BertJob
   include Sidekiq::Worker
 
@@ -17,12 +20,20 @@ class BertJob
     BertJob.perform_async(lexical_transformation_id, field)
   end
 
-  def embedding text
+  def embedding(text)
     command = "python3 pycall/huggingface_encoder.py \"#{Shellwords.escape(text)}\""
-    result = `#{command}`
+    stdout, stderr, status = Open3.capture3(command)
 
-    JSON.parse(result)
-  rescue JSON::ParserError
-    nil
+    if status.success?
+      begin
+        JSON.parse(stdout)
+      rescue JSON::ParserError
+        nil
+      end
+    else
+      Rails.logger.error("Error running python script: #{stderr}")
+      nil
+    end
   end
 end
+
