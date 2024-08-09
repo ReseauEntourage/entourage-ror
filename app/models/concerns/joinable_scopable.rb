@@ -28,9 +28,9 @@ module JoinableScopable
           left join users on users.id = join_requests.user_id
           where
             join_requests.joinable_type = '%s'
-            and lower(users.first_name) ilike '%s'
+            and (lower(users.first_name) ilike '%s' or lower(users.phone) ilike '%s')
         )
-      ), self.table_name, self.table_name.singularize.camelize, "%#{search.downcase}%"])
+      ), self.table_name, self.table_name.singularize.camelize, "%#{search.downcase}%", "%#{search.downcase}%"])
     }
   end
 
