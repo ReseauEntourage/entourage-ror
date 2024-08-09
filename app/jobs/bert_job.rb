@@ -9,6 +9,7 @@ class BertJob
   def perform lexical_transformation_id, field
     lexical_transformation = LexicalTransformation.find(lexical_transformation_id)
 
+    return if lexical_transformation.performed?
     return unless lexical_transformation.respond_to?(field)
     return unless lexical_transformation[field].present?
     return unless embedded = embedding(lexical_transformation[field])
