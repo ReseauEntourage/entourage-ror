@@ -1,5 +1,7 @@
 import os
 import requests
+import sys
+import json
 
 # Configuration des headers pour la requête
 headers = {
@@ -14,8 +16,17 @@ def get_embeddings(sentence):
     data = {'inputs': sentence}
     response = requests.post(api_url, headers=headers, json=data)
     if response.status_code == 200:
-        return response.json()[0]
+        return response.json()
     else:
-        print(f"Erreur: {response.status_code}")
+        print(f"Erreur: {response.status_code}", file=sys.stderr)
         return []
 
+if __name__ == "__main__":
+    # Récupérer la phrase passée en argument
+    if len(sys.argv) > 1:
+        sentence = sys.argv[1]
+        embeddings = get_embeddings(sentence)
+        # Retourner le résultat sous forme de JSON
+        print(json.dumps(embeddings))
+    else:
+        print("No sentence provided", file=sys.stderr)
