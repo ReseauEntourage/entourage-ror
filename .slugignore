@@ -1,0 +1,9 @@
+*.log
+*.tmp
+*.bak
+*.swp
+test/
+spec/
+tmp/
+log/
+docs/

@@ -417,6 +417,19 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
   end
 
+  create_table "lexical_transformations", force: :cascade do |t|
+    t.string "instance_type"
+    t.integer "instance_id"
+    t.jsonb "name"
+    t.jsonb "description"
+    t.boolean "performed", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["description"], name: "index_lexical_transformations_on_description", using: :gin
+    t.index ["instance_type", "instance_id"], name: "index_lexical_transformations_on_instance_type_and_instance_id", unique: true
+    t.index ["name"], name: "index_lexical_transformations_on_name", using: :gin
+  end
+
   create_table "login_histories", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.datetime "connected_at", null: false

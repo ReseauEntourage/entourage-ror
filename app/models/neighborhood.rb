@@ -1,4 +1,5 @@
 class Neighborhood < ApplicationRecord
+  include Bertable
   include Interestable
   include CoordinatesScopable
   include JoinableScopable

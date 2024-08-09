@@ -1,4 +1,5 @@
 class Resource < ApplicationRecord
+  include Bertable
   include Recommandable
   include Deeplinkable
   include Translatable

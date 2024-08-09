@@ -127,6 +127,7 @@ Rails.application.routes.draw do
           post :moderator_unread
           post :message
           get :show_members
+          get :show_lexical_matchings
           get :show_messages
           get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments

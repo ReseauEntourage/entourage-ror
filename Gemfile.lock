@@ -296,6 +296,7 @@ GEM
     public_suffix (5.0.3)
     puma (6.3.1)
       nio4r (~> 2.0)
+    pycall (1.5.2)
     racc (1.7.1)
     rack (2.2.8)
     rack-attack (6.7.0)
@@ -547,6 +548,7 @@ DEPENDENCIES
   pg (~> 1)
   phonelib
   puma
+  pycall
   rack-attack
   rack-timeout
   rails (~> 6.0)
