@@ -37,7 +37,7 @@ module Bertable
            instance_type,
            instance_id
         FROM lexical_transformations lm,
-             (SELECT name FROM lexical_transformations WHERE instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
+             (SELECT name FROM lexical_transformations WHERE performed = true and instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
         WHERE lm.name IS NOT NULL
           AND (lm.instance_id != #{@instance.id} OR lm.instance_type != '#{@instance.class.base_class.name}')
           -- AND lm.instance_type = '#{@instance.class.base_class.name}'
