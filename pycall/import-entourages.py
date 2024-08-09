@@ -1,15 +1,10 @@
-from sentence_transformers import SentenceTransformer
 import psycopg2
 import json
 import os
 from urllib.parse import urlparse
+from huggingface_encoder import get_embeddings
 
-model = SentenceTransformer('distiluse-base-multilingual-cased')
-
-def get_embeddings(text):
-    return model.encode([text]).tolist()[0]
-
-url = urlparse(ENV['DATABASE_URL'])
+url = urlparse(os.getenv('DATABASE_URL'))
 
 conn = psycopg2.connect(
     dbname=url.path[1:],
@@ -20,7 +15,7 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-cur.execute("SELECT id, title FROM entourages where id = 495")
+cur.execute("SELECT id, title FROM entourages WHERE created_at > '2023-01-01'")
 rows = cur.fetchall()
 
 for row in rows:
