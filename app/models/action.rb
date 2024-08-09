@@ -1,5 +1,6 @@
 class Action < Entourage
   include Actionable
+  include Bertable
   include Recommandable
   include Sectionable
 
