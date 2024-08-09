@@ -1,4 +1,5 @@
 class Entourage < ApplicationRecord
+  include Bertable
   include FeedsConcern
   include UpdatedAtSkippable
   include EntourageServices::LocationApproximationService::Callback
