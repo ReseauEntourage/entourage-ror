@@ -768,6 +768,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "hours"
     t.string "languages"
     t.string "postal_code"
+    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "pois_geom_idx", using: :gist
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
