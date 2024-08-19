@@ -3,7 +3,7 @@ module Bertable
   extend ActiveSupport::Concern
 
   included do
-    after_create :bert_on_create
+    after_save :bert_on_save, :if => :bertable_field_changed?
 
     has_one :lexical_transformation, as: :instance
   end
@@ -13,17 +13,11 @@ module Bertable
       @instance = instance
     end
 
-    def on_create
+    def on_save
       lexical_transformation = @instance.lexical_transformation || @instance.build_lexical_transformation
 
-      fields.each do |instance_field, relation_field|
-        next unless @instance.has_attribute?(instance_field)
-        next unless lexical_transformation.has_attribute?(relation_field)
-
-        lexical_transformation[relation_field] = @instance[instance_field]
-      end
-
-      lexical_transformation.save!
+      lexical_transformation.save! if lexical_transformation.new_record?
+      lexical_transformation.vectorizes
     end
 
     def similars
@@ -59,6 +53,10 @@ module Bertable
       {}
     end
 
+    def bertable_field_changed?
+      previous_changes.slice(:title, :name, :description).present?
+    end
+
     def relation
       @relation ||= LexicalTransformation.find_or_initialize_by(instance_type: @instance.class.base_class.name, instance_id: @instance.id)
     end
@@ -68,7 +66,7 @@ module Bertable
     @bert ||= BertStruct.new(instance: self)
   end
 
-  def bert_on_create
-    bert.on_create
+  def bert_on_save
+    bert.on_save
   end
 end
