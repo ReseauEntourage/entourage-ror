@@ -27,7 +27,7 @@ RSpec.configure do |config|
     SalesforceJob.any_instance.stub(:perform).and_return(nil)
 
     # deactivate bert command
-    BertJob.any_instance.stub(:embedding).and_return(nil)
+    Open3.stub(:capture3).and_return(['[0.1, 0.2, 0.3]', '', double(success?: true)])
 
     # deactivate translation on create
     # TranslationObserver.any_instance.stub(:action).and_return(nil)

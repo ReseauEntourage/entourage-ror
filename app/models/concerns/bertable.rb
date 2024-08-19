@@ -26,10 +26,15 @@ module Bertable
     end
 
     def on_save
-      lexical_transformation = @instance.lexical_transformation || @instance.build_lexical_transformation
+      ensure_lexical_transformation_exists!
 
-      lexical_transformation.save! if lexical_transformation.new_record?
-      lexical_transformation.vectorizes
+      @instance.lexical_transformation.vectorizes
+    end
+
+    def ensure_lexical_transformation_exists!
+      return if @instance.lexical_transformation && @instance.lexical_transformation.persisted?
+
+      (@instance.lexical_transformation || @instance.build_lexical_transformation).save!
     end
 
     def similars
