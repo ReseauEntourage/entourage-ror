@@ -5,7 +5,6 @@ class CreateLexicalTransformations < ActiveRecord::Migration[6.1]
       t.integer :instance_id, nullable: false
       t.jsonb :name
       t.jsonb :description
-      t.boolean :performed, default: false
 
       t.timestamps null: false
     end

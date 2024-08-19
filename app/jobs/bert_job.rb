@@ -10,14 +10,13 @@ class BertJob
     lexical_transformation = LexicalTransformation.find(lexical_transformation_id)
     instance = lexical_transformation.instance
 
-    return if lexical_transformation.performed?
     return unless instance.respond_to?(field)
     return unless text = instance.send(field)
     return unless lexical_transformation.respond_to?(field)
     return unless embedded = embedding(text)
     return unless embedded.present?
 
-    lexical_transformation.update("#{field}": embedded, performed: true)
+    lexical_transformation.update("#{field}": embedded)
   end
 
   def self.perform_later lexical_transformation_id, field

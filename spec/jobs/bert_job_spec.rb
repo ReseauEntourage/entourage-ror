@@ -9,7 +9,6 @@ RSpec.describe BertJob, type: :job do
     let(:embedded) { [0.1, 0.2, 0.3] }
 
     before do
-      allow_any_instance_of(LexicalTransformation).to receive(:performed?).and_return(false)
       allow_any_instance_of(LexicalTransformation).to receive(:update)
       allow_any_instance_of(LexicalTransformation).to receive(:instance).and_return(neighborhood)
       allow_any_instance_of(neighborhood.class).to receive(field).and_return(text)
@@ -17,15 +16,7 @@ RSpec.describe BertJob, type: :job do
     end
 
     it 'updates the lexical transformation with embedded text' do
-      expect_any_instance_of(LexicalTransformation).to receive(:update).with("#{field}": embedded, performed: true)
-
-      BertJob.new.perform(lexical_transformation.id, field)
-    end
-
-    it 'does not process if the transformation is already performed' do
-      allow_any_instance_of(LexicalTransformation).to receive(:performed?).and_return(true)
-
-      expect_any_instance_of(LexicalTransformation).not_to receive(:update)
+      expect_any_instance_of(LexicalTransformation).to receive(:update).with("#{field}": embedded)
 
       BertJob.new.perform(lexical_transformation.id, field)
     end

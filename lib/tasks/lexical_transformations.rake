@@ -1,19 +1,17 @@
 namespace :lexical_transformations do
   desc "Vectorizes last not performed lexical transformation"
   task perform_last: :environment do
-    lexical_transformation_id = LexicalTransformation.where(performed: false).last.id
+    lexical_transformation_id = LexicalTransformation.where(name: nil).last.id
 
     BertJob.perform_later(lexical_transformation_id, :name)
-    BertJob.perform_later(lexical_transformation_id, :description)
   end
 
   desc "Vectorizes all not performed lexical transformation"
   task perform_all: :environment do
-    LexicalTransformation.where(performed: false).find_each do |lexical_transformation|
+    LexicalTransformation.where(name: nil).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, :name)
-      BertJob.new.perform(lexical_transformation.id, :description)
 
-      sleep 60
+      sleep 30
     end
   end
 
@@ -51,13 +49,12 @@ namespace :lexical_transformations do
 
   def initiate_lexical_transformations_for(instance_type, table_name, additional_conditions = nil)
     sql = <<-SQL
-      INSERT INTO lexical_transformations (instance_type, instance_id, name, description, performed, created_at, updated_at)
+      INSERT INTO lexical_transformations (instance_type, instance_id, name, description, created_at, updated_at)
       SELECT
         '#{instance_type}',
         #{table_name}.id,
         NULL,
         NULL,
-        false,
         NOW(),
         NOW()
       FROM
