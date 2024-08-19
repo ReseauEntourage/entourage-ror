@@ -3,7 +3,11 @@
 
   <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
     <div style="flex-grow: 1">
-      <b>Interlocuteur : <%= ModerationServices.moderator_for_user(@user).full_name %></b>
+      <% if interlocutor = ModerationServices.moderator_for_user(@user) %>
+        <b>Interlocuteur : <%= interlocutor.full_name %></b>
+      <% else %>
+        <b>Pas d'interlocuteur</b>
+      <% end %>
     </div>
   </div>
 
