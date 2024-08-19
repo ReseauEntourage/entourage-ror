@@ -110,10 +110,8 @@ class ModerationArea < ApplicationRecord
       :sans_zone
     when 'FR'
       :national
-    when /\A\d\d\z/
-      "dep_#{departement}".to_sym
     else
-      raise "Unhandled departement #{departement.inspect}"
+      "dep_#{departement}".to_sym
     end
   end
 
