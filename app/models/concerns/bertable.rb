@@ -8,6 +8,18 @@ module Bertable
     has_one :lexical_transformation, as: :instance
   end
 
+  def bertable_field_changed?
+    previous_changes.slice(:title, :name, :description).present?
+  end
+
+  def bert
+    @bert ||= BertStruct.new(instance: self)
+  end
+
+  def bert_on_save
+    bert.on_save
+  end
+
   BertStruct = Struct.new(:instance) do
     def initialize(instance: nil)
       @instance = instance
@@ -42,31 +54,5 @@ module Bertable
 
       LexicalTransformation.find_by_sql(query)
     end
-
-    private
-
-    def fields
-      return { title: :name, description: :description } if @instance.is_a?(Entourage) && @instance.action?
-      return { name: :name, description: :description } if @instance.is_a?(Neighborhood)
-      return { name: :name, description: :description } if @instance.is_a?(Resource)
-
-      {}
-    end
-
-    def bertable_field_changed?
-      previous_changes.slice(:title, :name, :description).present?
-    end
-
-    def relation
-      @relation ||= LexicalTransformation.find_or_initialize_by(instance_type: @instance.class.base_class.name, instance_id: @instance.id)
-    end
-  end
-
-  def bert
-    @bert ||= BertStruct.new(instance: self)
-  end
-
-  def bert_on_save
-    bert.on_save
   end
 end

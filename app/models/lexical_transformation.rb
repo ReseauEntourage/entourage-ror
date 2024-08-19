@@ -2,6 +2,8 @@ class LexicalTransformation < ApplicationRecord
   belongs_to :instance, polymorphic: true
 
   def vectorizes
-    BertJob.perform_later(id, field)
+    [:name, :description].each do |field|
+      BertJob.perform_later(id, field)
+    end
   end
 end
