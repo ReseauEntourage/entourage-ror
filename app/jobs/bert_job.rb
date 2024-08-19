@@ -21,7 +21,9 @@ class BertJob
   end
 
   def self.perform_later lexical_transformation_id, field
-    BertJob.perform_async(lexical_transformation_id, field)
+    return unless field
+
+    BertJob.perform_async(lexical_transformation_id, field.to_s)
   end
 
   def embedding(text)
