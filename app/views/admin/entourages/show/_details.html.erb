@@ -33,17 +33,11 @@
       <% when :validated %>
         <span class="text-success">contenu validé</span>
         –
-        <%= link_to "Signaler des mots sensible",
-                    [:sensitive_words_check, :admin, @entourage,
-                      status: :require_moderation],
-                    method: :post %>
+        <%= link_to "Signaler des mots sensible", sensitive_words_check_admin_entourage_path(status: :require_moderation), method: :post %>
       <% when :require_moderation %>
         <span class="text-danger">détectés</span>
         –
-        <%= link_to "Valider le contenu",
-                    [:sensitive_words_check, :admin, @entourage,
-                      status: :validated],
-                    method: :post %>
+        <%= link_to "Valider le contenu", sensitive_words_check_admin_entourage_path(status: :validated), method: :post %>
         |
         <%= link_to "Détails", [:sensitive_words, :admin, @entourage] %>
       <% end %>
