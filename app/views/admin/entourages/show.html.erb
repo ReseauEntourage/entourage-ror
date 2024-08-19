@@ -36,9 +36,11 @@
         <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
           <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
         </li>
-        <li role="presentation" class="<%= :active if params[:action] == 'show_lexical_matchings' %>">
-          <%= link_to "Matchings", show_lexical_matchings_admin_entourage_path(@entourage, @params) %>
-        </li>
+        <% if @entourage.action? %>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_lexical_matchings' %>">
+            <%= link_to "Matchings", show_lexical_matchings_admin_entourage_path(@entourage, @params) %>
+          </li>
+        <% end %>
         <% if params[:action] == 'show_comments' %>
           <li role="presentation" class="active">
             <%= link_to "Commentaires", "#" %>
