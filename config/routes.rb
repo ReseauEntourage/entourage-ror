@@ -230,7 +230,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
+    resources :neighborhoods do
       member do
         put :reactivate
         put :join

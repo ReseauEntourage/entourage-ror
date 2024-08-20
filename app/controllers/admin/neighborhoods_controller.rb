@@ -55,6 +55,10 @@ module Admin
       @message_count.default = OpenStruct.new(unread: 0, total: 0)
     end
 
+    def show
+      redirect_to edit_admin_neighborhood_path(params[:id])
+    end
+
     def edit
     end
 

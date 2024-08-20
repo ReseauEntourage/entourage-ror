@@ -22,6 +22,10 @@ module Admin
       end
     end
 
+    def show
+      redirect_to edit_admin_resource_path(params[:id])
+    end
+
     def edit
       @language = params[:language]&.to_sym
     end

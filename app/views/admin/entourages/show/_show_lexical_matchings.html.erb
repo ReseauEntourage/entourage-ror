@@ -20,7 +20,7 @@
         <% instance_match = similar.instance_type.constantize.find(similar.instance_id) %>
         <tr>
           <td><%= instance_match.class.name %></td>
-          <td><%= instance_match.id %></td>
+          <td><%= link_to instance_match.id, [:admin, instance_match] %></td>
           <td><%= instance_match.name %></td>
           <td><%= instance_match.created_at %></td>
           <td><%= similar.similarity_score %></td>
