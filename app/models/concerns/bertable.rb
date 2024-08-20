@@ -1,4 +1,3 @@
-# this module handles contributions and solicitations matchings using bert vectors
 module Bertable
   extend ActiveSupport::Concern
 
@@ -18,6 +17,16 @@ module Bertable
 
   def bert_on_save
     bert.on_save
+  end
+
+  def self.bert_concatenated_fields_for instance
+    bert_fields_for(instance).map { |field| instance.send(field) }.join(' ')
+  end
+
+  def self.bert_fields_for instance
+    return [:title, :description] if instance.is_a?(Entourage)
+
+    [:name, :description]
   end
 
   BertStruct = Struct.new(:instance) do
@@ -42,14 +51,14 @@ module Bertable
       query = <<-SQL
         SELECT lm.id,
            cosine_similarity(
-             jsonb_to_float8_array(lm.name::text),
-             jsonb_to_float8_array(q.name::text)
+             jsonb_to_float8_array(lm.vectors::text),
+             jsonb_to_float8_array(q.vectors::text)
            ) AS similarity_score,
            instance_type,
            instance_id
         FROM lexical_transformations lm,
-          (SELECT name FROM lexical_transformations WHERE name is not null and instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
-        WHERE lm.name IS NOT NULL
+          (SELECT vectors FROM lexical_transformations WHERE vectors is not null and instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
+        WHERE lm.vectors IS NOT NULL
           AND (lm.instance_id != #{@instance.id} OR lm.instance_type != '#{@instance.class.base_class.name}')
           -- AND lm.instance_type = '#{@instance.class.base_class.name}'
         ORDER BY similarity_score DESC

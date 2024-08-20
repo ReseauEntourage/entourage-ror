@@ -4,21 +4,20 @@ RSpec.describe BertJob, type: :job do
   describe '#perform' do
     let(:neighborhood) { create(:neighborhood) }
     let(:lexical_transformation) { neighborhood.lexical_transformation }
-    let(:field) { :name }
     let(:text) { "Some text" }
     let(:embedded) { [0.1, 0.2, 0.3] }
 
     before do
       allow_any_instance_of(LexicalTransformation).to receive(:update)
       allow_any_instance_of(LexicalTransformation).to receive(:instance).and_return(neighborhood)
-      allow_any_instance_of(neighborhood.class).to receive(field).and_return(text)
       allow_any_instance_of(BertJob).to receive(:embedding).and_return(embedded)
+      allow(Bertable).to receive(:bert_concatenated_fields_for).and_return(text)
     end
 
     it 'updates the lexical transformation with embedded text' do
-      expect_any_instance_of(LexicalTransformation).to receive(:update).with("#{field}": embedded)
+      expect_any_instance_of(LexicalTransformation).to receive(:update).with(vectors: embedded)
 
-      BertJob.new.perform(lexical_transformation.id, field)
+      BertJob.new.perform(lexical_transformation.id)
     end
   end
 

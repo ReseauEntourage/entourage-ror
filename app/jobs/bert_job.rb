@@ -6,23 +6,19 @@ class BertJob
 
   sidekiq_options :retry => false, queue: :lexical_transformations
 
-  def perform lexical_transformation_id, field
+  def perform lexical_transformation_id
     lexical_transformation = LexicalTransformation.find(lexical_transformation_id)
-    instance = lexical_transformation.instance
 
-    return unless instance.respond_to?(field)
-    return unless text = instance.send(field)
-    return unless lexical_transformation.respond_to?(field)
+    return unless instance = lexical_transformation.instance
+    return unless text = Bertable.bert_concatenated_fields_for(instance)
     return unless embedded = embedding(text)
     return unless embedded.present?
 
-    lexical_transformation.update("#{field}": embedded)
+    lexical_transformation.update(vectors: embedded)
   end
 
-  def self.perform_later lexical_transformation_id, field
-    return unless field
-
-    BertJob.perform_async(lexical_transformation_id, field.to_s)
+  def self.perform_later lexical_transformation_id
+    BertJob.perform_async(lexical_transformation_id)
   end
 
   def embedding(text)
