@@ -47,7 +47,16 @@ module Bertable
     end
 
     def similars
-      # add/remove "AND lm.instance_type = '#{@instance.class.base_class.name}'" whenever we want matchings against different models
+      exclude_conditions = if @instance.is_a?(Entourage)
+        <<-SQL
+          AND (lm.instance_type != 'Entourage' OR lm.instance_id not in (
+            select id from entourages where group_type = 'action' and entourage_type = '#{@instance.entourage_type}'
+          ))
+        SQL
+      else
+        ''
+      end
+
       query = <<-SQL
         SELECT lm.id,
            cosine_similarity(
@@ -59,8 +68,9 @@ module Bertable
         FROM lexical_transformations lm,
           (SELECT vectors FROM lexical_transformations WHERE vectors is not null and instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
         WHERE lm.vectors IS NOT NULL
-          AND (lm.instance_id != #{@instance.id} OR lm.instance_type != '#{@instance.class.base_class.name}')
-          -- AND lm.instance_type = '#{@instance.class.base_class.name}'
+          AND (lm.instance_type != '#{@instance.class.base_class.name}' OR lm.instance_id != #{@instance.id})
+
+          #{exclude_conditions}
         ORDER BY similarity_score DESC
         LIMIT 10
       SQL
