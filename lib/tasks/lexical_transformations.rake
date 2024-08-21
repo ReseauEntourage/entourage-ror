@@ -3,13 +3,13 @@ namespace :lexical_transformations do
   task perform_last: :environment do
     lexical_transformation_id = LexicalTransformation.where(vectors: nil).last.id
 
-    BertJob.perform_later(lexical_transformation_id)
+    BertJob.perform_later(lexical_transformation_id, false)
   end
 
   desc "Vectorizes all not performed lexical transformation"
   task perform_all: :environment do
     LexicalTransformation.where(vectors: nil).find_each do |lexical_transformation|
-      BertJob.new.perform(lexical_transformation.id)
+      BertJob.new.perform(lexical_transformation.id, false)
 
       sleep 30
     end

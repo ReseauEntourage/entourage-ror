@@ -5,6 +5,7 @@ class PushNotificationTrigger
   #  :chat_message
   #  :join_request
   #  :neighborhoods_entourage
+  #  :lexical_transformation
 
   I18nStruct = Struct.new(:i18n, :i18n_args, :instance, :field, :date, :text) do
     def initialize(i18n: nil, i18n_args: [], instance: nil, field: nil, date: nil, text: nil)
@@ -536,6 +537,34 @@ class PushNotificationTrigger
         content: I18nStruct.new(i18n: 'push_notifications.survey_response.create', i18n_args: [username(@record.user), I18nStruct.new(instance: @record.chat_message, field: :content)]),
         extra: {
           tracking: :survey_response_on_create,
+        }
+      }
+    )
+  end
+
+  def lexical_transformation_on_update
+    return unless @record.vectors.present?
+    return unless instance = @record.instance
+
+    instance = Action.find(instance.id) if instance.is_a?(Entourage) # Bertable applies on Action
+
+    return unless instance.respond_to?(:bert)
+    return unless similarity = instance.bert.similars.first
+
+    most_similar = similarity.instance
+
+    return unless moderator_id = ModerationServices.moderator_for_user(instance.user)&.id || most_similar&.user_id
+
+    notify(
+      sender_id: moderator_id,
+      referent: most_similar,
+      instance: most_similar,
+      users: [instance.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.lexical_transformation.update'),
+        content: title(most_similar),
+        extra: {
+          tracking: :lexical_transformation_on_update
         }
       }
     )

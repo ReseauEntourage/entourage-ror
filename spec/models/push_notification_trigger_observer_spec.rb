@@ -24,6 +24,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     :public_chat_message_on_create,
     :private_chat_message_on_create,
     :survey_response_on_create,
+    :lexical_transformation_on_update,
   ].each do |method_name|
     shared_examples("call_#{method_name}".to_sym) do
       it { expect_any_instance_of(PushNotificationTrigger).to receive(method_name) }
@@ -595,6 +596,17 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         include_examples :call_survey_response_on_create
         include_examples :call_notify
       end
+    end
+
+    describe "lexical_transformation" do
+      let(:contribution) { create :contribution }
+      let(:lexical_transformation) { contribution.lexical_transformation }
+
+      let(:subject) { lexical_transformation.update(vectors: [0.1, 0.2, 0.3]) }
+
+      after { subject }
+
+      include_examples :call_lexical_transformation_on_update
     end
   end
 

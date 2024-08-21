@@ -390,6 +390,8 @@ fr:
       create_section: "Un voisin recherche un %s"
     survey_response:
       create: "%s a répondu à votre sondage : %s"
+    lexical_transformation:
+      update: "Ce contenu pourrait vous intéresser"
 
   timeliner:
     h1:
