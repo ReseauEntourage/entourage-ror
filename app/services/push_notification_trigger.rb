@@ -562,7 +562,7 @@ class PushNotificationTrigger
       users: [instance.user],
       params: {
         object: I18nStruct.new(i18n: 'push_notifications.lexical_transformation.update'),
-        content: title(most_similar),
+        content: I18nStruct.new(instance: most_similar, field: :name),
         extra: {
           tracking: :lexical_transformation_on_update
         }
