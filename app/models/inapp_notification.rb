@@ -25,6 +25,13 @@ class InappNotification < ApplicationRecord
     where(context: context)
   }
 
+  scope :lexical_transformation_for, -> (instance) {
+    instance_type = instance.class.name.downcase
+    instance_type = [:outing, :contribution, :solicitation] if instance.is_a?(Entourage)
+
+    where(context: :lexical_transformation_on_update, instance: instance_type, instance_id: instance.id)
+  }
+
   def record
     return unless instance
     return post if post?

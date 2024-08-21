@@ -12,6 +12,7 @@
         <th>name</th>
         <th>date de création</th>
         <th>Score de similarité</th>
+        <th>Inapp</th>
       </tr>
     </thead>
 
@@ -24,6 +25,13 @@
           <td><%= instance_match.name %></td>
           <td><%= instance_match.created_at %></td>
           <td><%= similar.similarity_score %></td>
+          <td>
+            <% if @entourage.user.inapp_notifications.lexical_transformation_for(instance_match).any? %>
+              <span class="label label-success">Reçue</span>
+            <% else %>
+              <span class="label label-danger">Non reçue</span>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
