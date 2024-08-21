@@ -47,8 +47,13 @@ module Bertable
     def similars
       exclude_conditions = if @instance.is_a?(Entourage)
         <<-SQL
-          AND (lm.instance_type != 'Entourage' OR lm.instance_id not in (
-            select id from entourages where group_type = 'action' and entourage_type = '#{@instance.entourage_type}'
+          AND (lm.instance_type != 'Entourage' OR lm.instance_id in (
+            select id
+            from entourages
+            where
+              group_type = 'action'
+              and entourage_type != '#{@instance.entourage_type}'
+              and status = 'open'
           ))
         SQL
       else
