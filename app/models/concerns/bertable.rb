@@ -36,8 +36,6 @@ module Bertable
 
     def on_save
       ensure_lexical_transformation_exists!
-
-      @instance.lexical_transformation.vectorizes
     end
 
     def ensure_lexical_transformation_exists!
