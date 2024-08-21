@@ -543,13 +543,39 @@ class PushNotificationTrigger
   end
 
   def lexical_transformation_on_update
-    return unless @record.vectors.present?
     return unless instance = @record.instance
 
     instance = Action.find(instance.id) if instance.is_a?(Entourage) # Bertable applies on Action
 
     return unless instance.respond_to?(:bert)
     return unless similarity = instance.bert.similars.first
+
+    most_similar = similarity.instance
+
+    return unless moderator_id = ModerationServices.moderator_for_user(instance.user)&.id || most_similar&.user_id
+
+    notify(
+      sender_id: moderator_id,
+      referent: most_similar,
+      instance: most_similar,
+      users: [instance.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.lexical_transformation.update'),
+        content: I18nStruct.new(instance: most_similar, field: :name),
+        extra: {
+          tracking: :lexical_transformation_on_update
+        }
+      }
+    )
+  end
+
+  def lexical_transformation_on_forced_matching
+    return unless instance = @record.instance
+
+    instance = Action.find(instance.id) if instance.is_a?(Entourage) # Bertable applies on Action
+
+    return unless instance.respond_to?(:bert)
+    return unless similarity = @record.forced_matching
 
     most_similar = similarity.instance
 

@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :send_lexical_transformation_matching, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -450,6 +450,18 @@ module Admin
       join_request.save
 
       redirect_to [:admin, join_request.joinable]
+    end
+
+    def send_lexical_transformation_matching
+      @instance_match = LexicalTransformation.find(params[:lexical_transformation_id])
+      @lexical_transformation = Action.find(@entourage.id).lexical_transformation
+      @lexical_transformation.forced_matching = @instance_match
+
+      PushNotificationTrigger.new(@lexical_transformation, :forced_matching, Hash.new).run
+
+      respond_to do |format|
+        format.js
+      end
     end
 
     def sensitive_words

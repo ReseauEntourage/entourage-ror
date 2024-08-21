@@ -13,24 +13,24 @@
         <th>date de création</th>
         <th>Score de similarité</th>
         <th>Inapp</th>
+        <th>Action</th>
       </tr>
     </thead>
 
     <tbody>
       <% @similars.each do |similar| %>
         <% instance_match = similar.instance_type.constantize.find(similar.instance_id) %>
-        <tr>
+        <tr id="lexical-matching-<%= similar.id %>">
           <td><%= instance_match.class.name %></td>
           <td><%= link_to instance_match.id, [:admin, instance_match] %></td>
           <td><%= instance_match.name %></td>
           <td><%= instance_match.created_at %></td>
           <td><%= similar.similarity_score %></td>
+          <td class="inapp-notification">
+            <%= render partial: 'admin/entourages/show/show_lexical_transformation_matching_inapp_notification', :locals => { entourage: @entourage, instance_match: instance_match } %>
+          </td>
           <td>
-            <% if @entourage.user.inapp_notifications.lexical_transformation_for(instance_match).any? %>
-              <span class="label label-success">Reçue</span>
-            <% else %>
-              <span class="label label-danger">Non reçue</span>
-            <% end %>
+            <%= link_to "Envoyer", send_lexical_transformation_matching_admin_entourage_path(@entourage, lexical_transformation_id: similar.id), method: :post, remote: true, class: "btn btn-default btn-sm", data: { confirm: "Etes-vous sûr de vouloir générer une notification pour l'utilisateur ?" } %>
           </td>
         </tr>
       <% end %>

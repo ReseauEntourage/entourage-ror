@@ -1,0 +1,4 @@
+$("#lexical-matching-<%= @instance_match.id %> .inapp-notification").html("<%= j render(
+  partial: "admin/entourages/show/show_lexical_transformation_matching_inapp_notification",
+  locals: { entourage: @entourage, instance_match: @instance_match.instance_type.constantize.find(@instance_match.instance_id) }
+) %>");

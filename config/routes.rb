@@ -125,6 +125,7 @@ Rails.application.routes.draw do
           post :moderator_read
           post :moderator_unread
           post :message
+          post :send_lexical_transformation_matching
           get :show_members
           get :show_lexical_matchings
           get :show_messages

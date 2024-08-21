@@ -3,6 +3,8 @@ class LexicalTransformation < ApplicationRecord
 
   after_commit :vectorizes, on: :create
 
+  attr_accessor :forced_matching
+
   def vectorizes
     BertJob.perform_later(id)
   end

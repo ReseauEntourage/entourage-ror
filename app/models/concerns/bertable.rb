@@ -45,6 +45,9 @@ module Bertable
     end
 
     def similars
+      return [] unless @instance.lexical_transformation.present?
+      return [] unless @instance.lexical_transformation.vectors.present?
+
       exclude_conditions = if @instance.is_a?(Entourage)
         <<-SQL
           AND (lm.instance_type != 'Entourage' OR lm.instance_id in (
