@@ -1,4 +1,5 @@
 class Poi < ApplicationRecord
+  include Bertable
   include Recommandable
 
   enum source: { entourage: 0, soliguide: 1 }, _prefix: :source

@@ -1,13 +1,11 @@
 namespace :lexical_transformations do
-  desc "Vectorizes last not performed lexical transformation"
-  task perform_last: :environment do
-    lexical_transformation_id = LexicalTransformation.where(vectors: nil).last.id
+  #
+  # Compute vectors
+  #
 
-    BertJob.perform_later(lexical_transformation_id, false)
-  end
-
+  # compute not performed
   desc "Vectorizes all not performed lexical transformation"
-  task perform_all: :environment do
+  task perform_all_not_performed: :environment do
     LexicalTransformation.where(vectors: nil).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, false)
 
@@ -15,6 +13,91 @@ namespace :lexical_transformations do
     end
   end
 
+  desc "Vectorizes all not performed lexical transformation for neighborhoods"
+  task perform_all_not_performed_neighborhoods: :environment do
+    LexicalTransformation.where(vectors: nil, instance_type: :Neighborhood).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed lexical transformation for resources"
+  task perform_all_not_performed_resources: :environment do
+    LexicalTransformation.where(vectors: nil, instance_type: :Resource).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed lexical transformation for pois"
+  task perform_all_not_performed_pois: :environment do
+    LexicalTransformation.where(vectors: nil, instance_type: :Poi).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed lexical transformation for actions"
+  task perform_all_not_performed_actions: :environment do
+    LexicalTransformation.where(vectors: nil, instance_type: :Entourage).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  # compute not performed and performed
+  desc "Vectorizes all lexical transformation"
+  task perform_compute_all: :environment do
+    LexicalTransformation.find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all lexical transformation neighborhoods"
+  task perform_compute_all_neighborhoods: :environment do
+    LexicalTransformation.where(instance_type: :Neighborhood).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all lexical transformation resources"
+  task perform_compute_all_resources: :environment do
+    LexicalTransformation.where(instance_type: :Resource).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all lexical transformation pois"
+  task perform_compute_all_pois: :environment do
+    LexicalTransformation.where(instance_type: :Poi).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all lexical transformation actions"
+  task perform_compute_all_actions: :environment do
+    LexicalTransformation.where(instance_type: :Entourage).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  #
+  # Initiate lexical_transformations
+  #
   desc "Initiate all lexical_transformations for neighborhoods"
   task initiate_for_neighborhoods: :environment do
     initiate_lexical_transformations_for('Neighborhood', 'neighborhoods')
@@ -23,6 +106,16 @@ namespace :lexical_transformations do
   desc "Initiate all lexical_transformations for resources"
   task initiate_for_resources: :environment do
     initiate_lexical_transformations_for('Resource', 'resources')
+  end
+
+  desc "Initiate all lexical_transformations for pois"
+  task initiate_for_pois: :environment do
+    additional_conditions = <<-SQL
+      -- filter on pois from Entourage (exclude Soliguide)
+      AND pois.source = 0
+    SQL
+
+    initiate_lexical_transformations_for('Poi', 'pois', additional_conditions)
   end
 
   desc "Initiate all lexical_transformations for contributions"
