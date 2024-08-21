@@ -600,7 +600,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
     describe "lexical_transformation" do
       let(:contribution) { create :contribution }
-      let(:lexical_transformation) { contribution.lexical_transformation }
+      let!(:lexical_transformation) { contribution.lexical_transformation }
 
       let(:subject) { lexical_transformation.update(vectors: [0.1, 0.2, 0.3]) }
 

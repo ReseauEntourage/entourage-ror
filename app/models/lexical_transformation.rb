@@ -1,7 +1,7 @@
 class LexicalTransformation < ApplicationRecord
   belongs_to :instance, polymorphic: true
 
-  after_create :vectorizes
+  after_commit :vectorizes, on: :create
 
   def vectorizes
     BertJob.perform_later(id)
