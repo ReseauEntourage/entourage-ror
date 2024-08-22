@@ -10,6 +10,7 @@
         <th>type</th>
         <th>id</th>
         <th>name</th>
+        <th>distance</th>
         <th>date de création</th>
         <th>Score de similarité</th>
         <th>Inapp</th>
@@ -24,8 +25,9 @@
           <td><%= instance_match.class.name %></td>
           <td><%= link_to instance_match.id, [:admin, instance_match] %></td>
           <td><%= instance_match.name %></td>
-          <td><%= instance_match.created_at %></td>
-          <td><%= similar.similarity_score %></td>
+          <td><%= EntourageServices::GeocodingService.distance_rounded(@entourage.latitude, @entourage.longitude, instance_match.latitude, instance_match.longitude) %> km</td>
+          <td><%= l instance_match.created_at, format: "%A %-d %B %Y" %></td>
+          <td><%= similar.similarity_score.round(3) %></td>
           <td class="inapp-notification">
             <%= render partial: 'admin/entourages/show/show_lexical_transformation_matching_inapp_notification', :locals => { entourage: @entourage, instance_match: instance_match } %>
           </td>
