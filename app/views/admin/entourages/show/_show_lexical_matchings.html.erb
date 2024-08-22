@@ -25,7 +25,13 @@
           <td><%= instance_match.class.name %></td>
           <td><%= link_to instance_match.id, [:admin, instance_match] %></td>
           <td><%= instance_match.name %></td>
-          <td><%= EntourageServices::GeocodingService.distance_rounded(@entourage.latitude, @entourage.longitude, instance_match.latitude, instance_match.longitude) %> km</td>
+          <td>
+            <% if instance_match.respond_to?(:latitude) && instance_match.respond_to?(:longitude) %>
+              <%= EntourageServices::GeocodingService.distance_rounded(@entourage.latitude, @entourage.longitude, instance_match.latitude, instance_match.longitude) %> km
+            <% else %>
+              n/a
+            <% end %>
+          </td>
           <td><%= l instance_match.created_at, format: "%A %-d %B %Y" %></td>
           <td><%= similar.similarity_score.round(3) %></td>
           <td class="inapp-notification">
