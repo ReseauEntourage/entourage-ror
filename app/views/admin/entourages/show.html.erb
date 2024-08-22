@@ -37,8 +37,11 @@
           <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
         </li>
         <% if @entourage.action? %>
-          <li role="presentation" class="<%= :active if params[:action] == 'show_lexical_matchings' %>">
-            <%= link_to "Matchings", show_lexical_matchings_admin_entourage_path(@entourage, @params) %>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_lexical_matchings_minilm_l6' %>">
+            <%= link_to "Matchings MiniLM L6", show_lexical_matchings_minilm_l6_admin_entourage_path(@entourage, @params) %>
+          </li>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_lexical_matchings_minilm_l12' %>">
+            <%= link_to "Matchings MiniLM L12", show_lexical_matchings_minilm_l12_admin_entourage_path(@entourage, @params) %>
           </li>
         <% end %>
         <% if params[:action] == 'show_comments' %>

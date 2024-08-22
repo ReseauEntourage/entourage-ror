@@ -4,45 +4,90 @@ namespace :lexical_transformations do
   #
 
   # compute not performed
-  desc "Vectorizes all not performed lexical transformation"
-  task perform_all_not_performed: :environment do
-    LexicalTransformation.where(vectors: nil).find_each do |lexical_transformation|
+  desc "Vectorizes all not performed L6 lexical transformation"
+  task perform_all_not_performed_l6: :environment do
+    LexicalTransformation.where(vectors_minilm_l6: nil).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, false)
 
       sleep 30
     end
   end
 
-  desc "Vectorizes all not performed lexical transformation for neighborhoods"
-  task perform_all_not_performed_neighborhoods: :environment do
-    LexicalTransformation.where(vectors: nil, instance_type: :Neighborhood).find_each do |lexical_transformation|
+  desc "Vectorizes all not performed L12 lexical transformation"
+  task perform_all_not_performed_l12: :environment do
+    LexicalTransformation.where(vectors_minilm_l12: nil).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, false)
 
       sleep 30
     end
   end
 
-  desc "Vectorizes all not performed lexical transformation for resources"
-  task perform_all_not_performed_resources: :environment do
-    LexicalTransformation.where(vectors: nil, instance_type: :Resource).find_each do |lexical_transformation|
+  desc "Vectorizes all not performed L6 lexical transformation for neighborhoods"
+  task perform_all_not_performed_neighborhoods_l6: :environment do
+    LexicalTransformation.where(vectors_minilm_l6: nil, instance_type: :Neighborhood).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, false)
 
       sleep 30
     end
   end
 
-  desc "Vectorizes all not performed lexical transformation for pois"
-  task perform_all_not_performed_pois: :environment do
-    LexicalTransformation.where(vectors: nil, instance_type: :Poi).find_each do |lexical_transformation|
+  desc "Vectorizes all not performed L12 lexical transformation for neighborhoods"
+  task perform_all_not_performed_neighborhoods_l12: :environment do
+    LexicalTransformation.where(vectors_minilm_l12: nil, instance_type: :Neighborhood).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, false)
 
       sleep 30
     end
   end
 
-  desc "Vectorizes all not performed lexical transformation for actions"
-  task perform_all_not_performed_actions: :environment do
-    LexicalTransformation.where(vectors: nil, instance_type: :Entourage).find_each do |lexical_transformation|
+  desc "Vectorizes all not performed L6 lexical transformation for resources"
+  task perform_all_not_performed_resources_l6: :environment do
+    LexicalTransformation.where(vectors_minilm_l6: nil, instance_type: :Resource).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed L12 lexical transformation for resources"
+  task perform_all_not_performed_resources_l12: :environment do
+    LexicalTransformation.where(vectors_minilm_l12: nil, instance_type: :Resource).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed L6 lexical transformation for pois"
+  task perform_all_not_performed_pois_l6: :environment do
+    LexicalTransformation.where(vectors_minilm_l6: nil, instance_type: :Poi).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed L12 lexical transformation for pois"
+  task perform_all_not_performed_pois_l12: :environment do
+    LexicalTransformation.where(vectors_minilm_l12: nil, instance_type: :Poi).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed L6 lexical transformation for actions"
+  task perform_all_not_performed_actions_l6: :environment do
+    LexicalTransformation.where(vectors_minilm_l6: nil, instance_type: :Entourage).find_each do |lexical_transformation|
+      BertJob.new.perform(lexical_transformation.id, false)
+
+      sleep 30
+    end
+  end
+
+  desc "Vectorizes all not performed L12 lexical transformation for actions"
+  task perform_all_not_performed_actions_l12: :environment do
+    LexicalTransformation.where(vectors_minilm_l12: nil, instance_type: :Entourage).find_each do |lexical_transformation|
       BertJob.new.perform(lexical_transformation.id, false)
 
       sleep 30
@@ -142,10 +187,11 @@ namespace :lexical_transformations do
 
   def initiate_lexical_transformations_for(instance_type, table_name, additional_conditions = nil)
     sql = <<-SQL
-      INSERT INTO lexical_transformations (instance_type, instance_id, vectors, created_at, updated_at)
+      INSERT INTO lexical_transformations (instance_type, instance_id, vectors_minilm_l6, vectors_minilm_l12, created_at, updated_at)
       SELECT
         '#{instance_type}',
         #{table_name}.id,
+        NULL,
         NULL,
         NOW(),
         NOW()

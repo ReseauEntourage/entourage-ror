@@ -128,6 +128,8 @@ Rails.application.routes.draw do
           post :send_lexical_transformation_matching
           get :show_members
           get :show_lexical_matchings
+          get :show_lexical_matchings_minilm_l6
+          get :show_lexical_matchings_minilm_l12
           get :show_messages
           get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments

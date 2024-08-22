@@ -44,9 +44,17 @@ module Bertable
       (@instance.lexical_transformation || @instance.build_lexical_transformation).save!
     end
 
-    def similars
+    def similars_minilm_l6
+      similars :vectors_minilm_l6
+    end
+
+    def similars_minilm_l12
+      similars :vectors_minilm_l12
+    end
+
+    def similars column = :vectors_minilm_l6
       return [] unless @instance.lexical_transformation.present?
-      return [] unless @instance.lexical_transformation.vectors.present?
+      return [] unless @instance.lexical_transformation.send(column).present?
 
       exclude_conditions = if @instance.is_a?(Entourage)
         <<-SQL
@@ -66,14 +74,14 @@ module Bertable
       query = <<-SQL
         SELECT lm.id,
            cosine_similarity(
-             jsonb_to_float8_array(lm.vectors::text),
-             jsonb_to_float8_array(q.vectors::text)
+             jsonb_to_float8_array(lm.#{column}::text),
+             jsonb_to_float8_array(q.#{column}::text)
            ) AS similarity_score,
            instance_type,
            instance_id
         FROM lexical_transformations lm,
-          (SELECT vectors FROM lexical_transformations WHERE vectors is not null and instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
-        WHERE lm.vectors IS NOT NULL
+          (SELECT #{column} FROM lexical_transformations WHERE #{column} is not null and instance_type = '#{@instance.class.base_class.name}' and instance_id = #{@instance.id}) q
+        WHERE lm.#{column} IS NOT NULL
           AND (lm.instance_type != '#{@instance.class.base_class.name}' OR lm.instance_id != #{@instance.id})
 
           #{exclude_conditions}

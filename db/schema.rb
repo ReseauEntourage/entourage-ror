@@ -420,11 +420,13 @@ ActiveRecord::Schema.define(version: 202401111415004) do
   create_table "lexical_transformations", force: :cascade do |t|
     t.string "instance_type"
     t.integer "instance_id"
-    t.jsonb "vectors"
+    t.jsonb "vectors_minilm_l6"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "vectors_minilm_l12"
     t.index ["instance_type", "instance_id"], name: "index_lexical_transformations_on_instance_type_and_instance_id", unique: true
-    t.index ["vectors"], name: "index_lexical_transformations_on_vectors", using: :gin
+    t.index ["vectors_minilm_l12"], name: "index_lexical_transformations_on_vectors_minilm_l12", using: :gin
+    t.index ["vectors_minilm_l6"], name: "index_lexical_transformations_on_vectors_minilm_l6", using: :gin
   end
 
   create_table "login_histories", id: :serial, force: :cascade do |t|

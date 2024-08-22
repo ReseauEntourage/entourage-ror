@@ -124,6 +124,20 @@ module Admin
       render :show
     end
 
+    def show_lexical_matchings_minilm_l6
+      @entourage = Action.find(params[:id])
+      @similars = @entourage.bert.similars_minilm_l6
+
+      render :show
+    end
+
+    def show_lexical_matchings_minilm_l12
+      @entourage = Action.find(params[:id])
+      @similars = @entourage.bert.similars_minilm_l12
+
+      render :show
+    end
+
     def show_messages
       @moderator_read  = @entourage.moderator_read_for(user: current_user)
 

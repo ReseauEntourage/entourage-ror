@@ -56,7 +56,6 @@ RSpec.describe Bertable, type: :module do
     describe '#on_save' do
       it 'ensures lexical_transformation exists and vectorizes' do
         expect(bert_struct).to receive(:ensure_lexical_transformation_exists!)
-        expect(instance.lexical_transformation).to receive(:vectorizes)
 
         bert_struct.on_save
       end

@@ -11,13 +11,16 @@ class BertJob
 
     return unless instance = lexical_transformation.instance
     return unless text = Bertable.bert_concatenated_fields_for(instance)
-    return unless embedded = embedding(text)
-    return unless embedded.present?
 
-    if with_callbacks
-      lexical_transformation.update(vectors: embedded)
-    else
-      lexical_transformation.update_columns(vectors: embedded, updated_at: Time.current)
+    [:vectors_minilm_l6, :vectors_minilm_l12].each do |column|
+      next unless embedded = embedding(column, text)
+      next unless embedded.present?
+
+      if with_callbacks
+        lexical_transformation.update("#{column}": embedded)
+      else
+        lexical_transformation.update_columns("#{column}": embedded, updated_at: Time.current)
+      end
     end
   end
 
@@ -25,8 +28,8 @@ class BertJob
     BertJob.perform_async(lexical_transformation_id, with_callbacks)
   end
 
-  def embedding(text)
-    command = "python3 pycall/huggingface_encoder.py \"#{Shellwords.escape(text)}\""
+  def embedding column, text
+    command = "python3 pycall/#{column}.py \"#{Shellwords.escape(text)}\""
     stdout, stderr, status = Open3.capture3(command)
 
     if status.success?

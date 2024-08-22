@@ -15,17 +15,19 @@ RSpec.describe BertJob, type: :job do
     end
 
     it 'updates the lexical transformation with embedded text' do
-      expect_any_instance_of(LexicalTransformation).to receive(:update).with(vectors: embedded)
+      expect_any_instance_of(LexicalTransformation).to receive(:update).with(vectors_minilm_l6: embedded)
+      expect_any_instance_of(LexicalTransformation).to receive(:update).with(vectors_minilm_l12: embedded)
 
       BertJob.new.perform(lexical_transformation.id)
     end
   end
 
   describe '#embedding' do
-    let(:subject) { BertJob.new.embedding(text) }
+    let(:subject) { BertJob.new.embedding(column, text) }
 
+    let(:column) { :minilm_l6 }
     let(:text) { "Some text" }
-    let(:command) { "python3 pycall/huggingface_encoder.py \"#{Shellwords.escape(text)}\"" }
+    let(:command) { "python3 pycall/#{column}.py \"#{Shellwords.escape(text)}\"" }
 
     it 'parses JSON output from the Python script' do
       allow(Open3).to receive(:capture3).with(command).and_return(['[0.1, 0.2, 0.3]', '', double(success?: true)])
