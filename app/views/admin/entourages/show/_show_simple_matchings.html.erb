@@ -1,0 +1,37 @@
+<h4>Liste actions recommandées</h4>
+
+<% unless @matchings.any? %>
+  Pas d'actions similaires.
+<% else %>
+  <table id="simple-matchings-list" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>distance</th>
+        <th>date de création</th>
+        <th>Inapp</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @matchings.each do |matching| %>
+        <tr id="simple-matching-<%= matching.id %>">
+          <td><%= link_to matching.id, admin_entourage_path(matching) %></td>
+          <td><%= matching.name %></td>
+          <td>
+            <%= EntourageServices::GeocodingService.distance_rounded(@entourage.latitude, @entourage.longitude, matching.latitude, matching.longitude) %> km
+          </td>
+          <td><%= l matching.created_at, format: "%A %-d %B %Y" %></td>
+          <td class="inapp-notification">
+            <%= render partial: 'admin/entourages/show/show_simple_matching_inapp_notification', :locals => { entourage: @entourage, matching: matching } %>
+          </td>
+          <td>
+            <%= link_to "Envoyer", send_simple_matching_admin_entourage_path(@entourage, action_id: matching.id), method: :post, remote: true, class: "btn btn-default btn-sm", data: { confirm: "Etes-vous sûr de vouloir générer une notification pour l'utilisateur ?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

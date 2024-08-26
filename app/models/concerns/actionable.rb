@@ -1,6 +1,8 @@
 module Actionable
   extend ActiveSupport::Concern
 
+  attr_accessor :forced_matching
+
   included do
     after_validation :add_creator_as_member, if: :new_record?
     after_create :after_create_send_mail_to_creator

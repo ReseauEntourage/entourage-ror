@@ -37,6 +37,9 @@
           <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
         </li>
         <% if @entourage.action? %>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_simple_matchings' %>">
+            <%= link_to "Matchings simple", show_simple_matchings_admin_entourage_path(@entourage, @params) %>
+          </li>
           <li role="presentation" class="<%= :active if params[:action] == 'show_lexical_matchings_minilm_l6' %>">
             <%= link_to "Matchings MiniLM L6", show_lexical_matchings_minilm_l6_admin_entourage_path(@entourage, @params) %>
           </li>

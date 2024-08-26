@@ -1,5 +1,4 @@
-
-<% if entourage.user.inapp_notifications.matching_for(instance_match).any? %>
+<% if entourage.user.inapp_notifications.matching_for(matching).any? %>
   <span class="label label-success">Reçue</span>
 <% else %>
   <span class="label label-danger">Non reçue</span>

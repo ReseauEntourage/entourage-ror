@@ -126,7 +126,9 @@ Rails.application.routes.draw do
           post :moderator_unread
           post :message
           post :send_lexical_transformation_matching
+          post :send_simple_matching
           get :show_members
+          get :show_simple_matchings
           get :show_lexical_matchings
           get :show_lexical_matchings_minilm_l6
           get :show_lexical_matchings_minilm_l12

@@ -361,6 +361,7 @@ fr:
   push_notifications:
     action:
       create_for_follower: "%s vous invite à rejoindre %s"
+      forced_matching: "Ce contenu pourrait vous intéresser"
     outing:
       create: "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
       cancel: "Cet événement prévu le %s vient d'être annulé"

@@ -563,7 +563,7 @@ class PushNotificationTrigger
         object: I18nStruct.new(i18n: 'push_notifications.lexical_transformation.update'),
         content: I18nStruct.new(instance: most_similar, field: :name),
         extra: {
-          tracking: :lexical_transformation_on_update
+          tracking: :matching
         }
       }
     )
@@ -590,7 +590,26 @@ class PushNotificationTrigger
         object: I18nStruct.new(i18n: 'push_notifications.lexical_transformation.update'),
         content: I18nStruct.new(instance: most_similar, field: :name),
         extra: {
-          tracking: :lexical_transformation_on_update
+          tracking: :matching
+        }
+      }
+    )
+  end
+
+  def action_on_forced_matching
+    return unless matching = @record.forced_matching
+    return unless moderator_id = ModerationServices.moderator_for_user(@record.user)&.id || matching&.user_id
+
+    notify(
+      sender_id: moderator_id,
+      referent: matching,
+      instance: matching,
+      users: [@record.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.action.forced_matching'),
+        content: I18nStruct.new(instance: matching, field: :name),
+        extra: {
+          tracking: :matching
         }
       }
     )
