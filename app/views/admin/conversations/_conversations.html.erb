@@ -56,6 +56,9 @@
   </div>
 
   <div class="conversations-chat-messages col-sm-8">
+    <% if @conversations.any? %>
+      <%= render partial: 'chat_messages', locals: { conversation: @conversations.first, chat_messages: @conversations.first.chat_messages.order(created_at: :asc), tab: :chat_messages } %>
+    <% end %>
   </div>
 </div>
 
