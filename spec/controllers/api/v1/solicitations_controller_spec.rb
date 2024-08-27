@@ -17,10 +17,11 @@ describe Api::V1::SolicitationsController, :type => :controller do
 
     let!(:solicitation) { create(:solicitation, title: "JO 2024", latitude: latitude, longitude: longitude, section: section, display_category: display_category) }
 
-    describe 'not authorized' do
+    describe 'authorized even not logged in' do
       before { get :index }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('solicitations') }
     end
 
     describe 'authorized' do

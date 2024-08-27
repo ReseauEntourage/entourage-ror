@@ -1,6 +1,8 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
+      skip_before_action :authenticate_user!, only: [:index]
+
       before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :cancel, :destroy, :duplicate, :report]
       before_action :authorised?, only: [:update, :batch_update, :cancel, :destroy]
       before_action :allowed_duplicate?, only: [:duplicate]
@@ -204,11 +206,11 @@ module Api
       end
 
       def latitude
-        params[:latitude] || current_user.latitude
+        params[:latitude] || current_user&.latitude
       end
 
       def longitude
-        params[:longitude] || current_user.longitude
+        params[:longitude] || current_user&.longitude
       end
 
       def authorised?

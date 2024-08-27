@@ -9,11 +9,11 @@ module SolicitationServices
         @latitude = params[:latitude]
         @longitude = params[:longitude]
       else
-        @latitude = user.latitude
-        @longitude = user.longitude
+        @latitude = user&.latitude
+        @longitude = user&.longitude
       end
 
-      @distance = params[:travel_distance] || user.travel_distance
+      @distance = params[:travel_distance] || user&.travel_distance
 
       @q = params[:q]
 

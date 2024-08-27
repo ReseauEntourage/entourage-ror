@@ -17,6 +17,13 @@ describe Api::V1::OutingsController do
     let(:outing) { create(:outing, title: "JO Paris", latitude: latitude, longitude: longitude) }
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
+    describe 'authorized even not logged in' do
+      before { get :index }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('outings') }
+    end
+
     describe 'filter by interests' do
       let!(:outing) { FactoryBot.create(:outing, :outing_class, latitude: latitude, longitude: longitude, interest_list: ["sport"]) }
       let(:join_request) { nil }

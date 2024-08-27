@@ -17,10 +17,11 @@ describe Api::V1::ContributionsController, :type => :controller do
 
     let!(:contribution) { create(:contribution, title: "JO 2024", latitude: latitude, longitude: longitude, section: section, display_category: display_category) }
 
-    describe 'not authorized' do
+    describe 'authorized even not logged in' do
       before { get :index }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('contributions') }
     end
 
     describe 'authorized' do

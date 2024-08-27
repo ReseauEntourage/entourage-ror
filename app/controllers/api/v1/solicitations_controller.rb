@@ -1,6 +1,8 @@
 module Api
   module V1
     class SolicitationsController < Api::V1::BaseController
+      skip_before_action :authenticate_user!, only: [:index]
+
       before_action :set_solicitation, only: [:show, :update, :destroy, :report]
       allow_anonymous_access only: [:report]
 
@@ -128,11 +130,11 @@ module Api
       end
 
       def latitude
-        params[:latitude] || current_user.latitude
+        params[:latitude] || current_user&.latitude
       end
 
       def longitude
-        params[:longitude] || current_user.longitude
+        params[:longitude] || current_user&.longitude
       end
 
       def report_params
