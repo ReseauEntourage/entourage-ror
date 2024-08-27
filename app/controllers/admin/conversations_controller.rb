@@ -22,7 +22,7 @@ module Admin
         .page(params[:page])
         .per(50)
 
-      params.delete(:filter) unless params[:filter].in?(['archived', 'unread', 'multiple'])
+      params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
 
       @conversations = if params[:filter] == 'archived'
         @conversations.where("archived_at >= feed_updated_at")
@@ -31,7 +31,6 @@ module Admin
       end
 
       @conversations = @conversations.where("last_message_read < feed_updated_at or last_message_read is null") if params[:filter] == 'unread'
-      @conversations = @conversations.where("number_of_people > 2") if params[:filter] == 'multiple'
 
       respond_to do |format|
         format.js
