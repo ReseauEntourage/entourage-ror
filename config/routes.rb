@@ -482,6 +482,15 @@ Rails.application.routes.draw do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
+        resources :matchings, :controller => 'entourages/matchings', only: [:index] do
+          collection do
+            get :contributions
+            get :solicitations
+            get :outings
+            get :resources
+            get :pois
+          end
+        end
 
         member do
           put :read

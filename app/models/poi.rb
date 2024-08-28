@@ -34,6 +34,14 @@ class Poi < ApplicationRecord
     @pois = @pois.where(clauses.join(" OR "))
   }
 
+  scope :around, -> (latitude, longitude, distance) do
+    return unless latitude && longitude
+
+    within_bounding_box(
+      Geocoder::Calculations.bounding_box([latitude, longitude], distance || 10, units: :km)
+    )
+  end
+
   scope :in_departement, -> (departement) do
     if departement.to_sym == :hors_zone
       departements = ModerationArea.only_departements.join('|')
