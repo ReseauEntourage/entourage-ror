@@ -17,9 +17,11 @@ class Poi < ApplicationRecord
   scope :not_source_soliguide, -> { where.not(source: Poi.sources[:soliguide]) }
 
   scope :around, -> (latitude, longitude, distance) do
-    distance ||= 10
-    box = Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
-    within_bounding_box(box)
+    return unless latitude && longitude
+
+    within_bounding_box(
+      Geocoder::Calculations.bounding_box([latitude, longitude], distance || 10, units: :km)
+    )
   end
 
   scope :in_departement, -> (departement) do
