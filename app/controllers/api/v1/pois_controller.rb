@@ -4,6 +4,7 @@ module Api
       skip_before_action :authenticate_user!, only: [:index, :show, :create]
 
       before_action :validate_form_signature, only: [:create]
+      after_action :soliguide_search_ping!, only: [:index, :clusters]
 
       attr_writer :member_mailer
 
@@ -14,55 +15,11 @@ module Api
         @categories = Category.all
 
         @pois = Poi.validated
-        @pois = @pois.not_source_soliguide unless Option.soliguide_active?
-
-        if params[:category_ids].present?
-          categories = params[:category_ids].split(",").map(&:to_i).uniq
-          category_count = categories.count
-          if version == :v1
-            @pois = @pois.where(category_id: categories)
-          else
-            @pois = @pois.joins(:categories_pois).where(categories_pois: {category_id: categories})
-          end
-        else
-          category_count = @categories.count
-        end
-
-        # distance was calculated incorrectly on Android before 3.6.0
-        key_infos = api_request.key_infos || {}
-        if key_infos[:device] == 'Android' && ApplicationKey::Version.new(key_infos[:version]) < '3.6.0'
-          params[:distance] = params[:distance].to_f * 2
-        end
-
-        if params[:latitude].present? && params[:longitude].present?
-          min_distance = category_count <= 2 ? 5 : 2
-
-          if params[:distance]
-            distance = params[:distance].to_f / 2
-            distance = min_distance if distance < min_distance
-          else
-            distance = nil
-          end
-
-          @pois = @pois.around params[:latitude], params[:longitude], distance
-
-          partners_filters = (params[:partners_filters] || "").split(",").compact.uniq.map(&:to_sym) & [:donations, :volunteers]
-          if partners_filters.any?
-            @pois = @pois.joins("left join partners on partners.id = partner_id")
-            clauses = ["partner_id is null"]
-            clauses << "donations_needs is not null"  if partners_filters.include?(:donations)
-            clauses << "volunteers_needs is not null" if partners_filters.include?(:volunteers)
-            @pois = @pois.where(clauses.join(" OR "))
-          end
-
-          @pois = @pois.order(Arel.sql('random()')).limit(100)
-        else
-          @pois = @pois.limit(25)
-        end
-
-        if params[:query].present?
-          @pois = @pois.text_search(params[:query])
-        end
+          .text_search(params[:query])
+          .with_category_ids(category_ids)
+          .around(coordinates[:latitude], coordinates[:longitude], distance)
+          .with_partners_filters(partners_filters)
+          .order(Arel.sql('random()')).limit(100)
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = PoiServices::PoiOptimizedSerializer.new(@pois, box_size: params[:distance], version: version) do |pois|
@@ -75,23 +32,22 @@ module Api
           ActiveModel::Serializer::CollectionSerializer.new(pois, serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
 
-        # do not add Soliguide to results
-        # we send this request just for Soliguide stats; Soliguide POIs have already been added from Entourage DB
-        soliguide = PoiServices::Soliguide.new(soliguide_params)
+        payload = { pois: poi_json }
+        payload.merge!({ categories: Category.all.map { |category| { id: category.id, name: category.name } } }) if version == :v1
 
-        if version == :v2 && soliguide.apply?
-          AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_params)
-        end
-
-        payload =
-          case version
-          when :v1
-            categorie_json = ActiveModel::Serializer::CollectionSerializer.new(@categories, serializer: ::V1::CategorySerializer).as_json
-            {pois: poi_json, categories: categorie_json}
-          when :v2
-            {pois: poi_json}
-          end
         render json: payload, status: 200
+      end
+
+      def clusters
+        render json:
+          Poi.validated
+            .with_partners_filters(partners_filters)
+            .clustered(coordinates[:latitude], coordinates[:longitude], distance)
+            .text_search(params[:query])
+            .with_category_ids(category_ids),
+          root: :clusters,
+          each_serializer: ::V1::ClusterSerializer,
+          status: 200
       end
 
       def show
@@ -148,6 +104,36 @@ module Api
 
       def soliguide_params
         params.permit(:latitude, :longitude, :distance, :category_ids, :query)
+      end
+
+      def soliguide_search_ping!
+        # we send this request just for Soliguide stats; Soliguide POIs have already been added from Entourage DB
+        soliguide = PoiServices::Soliguide.new(soliguide_params)
+
+        AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_params) if soliguide.apply?
+      end
+
+      def coordinates
+        return {
+          latitude: params[:latitude],
+          longitude: params[:longitude]
+        } if params[:latitude] && params[:longitude]
+
+        return { latitude: current_user.latitude, longitude: current_user.longitude } if current_user.present?
+
+        Hash.new
+      end
+
+      def distance
+        params[:distance] || current_user&.travel_distance || 1
+      end
+
+      def category_ids
+        @category_ids ||= (params[:category_ids] || "").split(",").map(&:to_i).uniq
+      end
+
+      def partners_filters
+        @partners_filters ||= (params[:partners_filters] || "").split(",").compact.uniq.map(&:to_sym) & [:donations, :volunteers]
       end
 
       def member_mailer
