@@ -143,6 +143,8 @@ class Entourage < ApplicationRecord
 
   after_create :check_moderation
 
+  alias_attribute :name, :title
+
   def create_from_join_requests!
     ApplicationRecord.connection.transaction do
       participations = self.join_requests.to_a
