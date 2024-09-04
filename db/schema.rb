@@ -429,6 +429,18 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "matchings", force: :cascade do |t|
+    t.string "instance_type", null: false
+    t.integer "instance_id", null: false
+    t.string "match_type", null: false
+    t.integer "match_id", null: false
+    t.float "score"
+    t.integer "position"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instance_type", "instance_id"], name: "index_matchings_on_instance_type_and_instance_id"
+  end
+
   create_table "messages", id: :serial, force: :cascade do |t|
     t.string "content", null: false
     t.datetime "created_at", null: false
@@ -667,6 +679,36 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_tours_on_coordinates", using: :gist
     t.index ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude"
     t.index ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type"
+  end
+
+  create_table "old_user_denorms", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "last_created_action_id"
+    t.integer "last_join_request_id"
+    t.integer "last_private_chat_message_id"
+    t.integer "last_group_chat_message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["last_created_action_id"], name: "index_old_user_denorms_on_last_created_action_id"
+    t.index ["last_group_chat_message_id"], name: "index_old_user_denorms_on_last_group_chat_message_id"
+    t.index ["last_join_request_id"], name: "index_old_user_denorms_on_last_join_request_id"
+    t.index ["last_private_chat_message_id"], name: "index_old_user_denorms_on_last_private_chat_message_id"
+    t.index ["user_id"], name: "index_old_user_denorms_on_user_id"
+  end
+
+  create_table "openai_assistants", force: :cascade do |t|
+    t.string "instance_type", null: false
+    t.integer "instance_id", null: false
+    t.string "openai_assistant_id"
+    t.string "openai_thread_id"
+    t.string "openai_run_id"
+    t.string "openai_message_id"
+    t.string "status"
+    t.datetime "run_starts_at"
+    t.datetime "run_ends_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instance_type", "instance_id"], name: "index_openai_assistants_on_instance_type_and_instance_id"
   end
 
   create_table "options", force: :cascade do |t|
