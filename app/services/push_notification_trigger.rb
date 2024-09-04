@@ -545,16 +545,17 @@ class PushNotificationTrigger
   def matching_on_create
     return unless @record.position == 0
     return unless instance = @record.instance
-    return unless moderator_id = ModerationServices.moderator_for_user(instance.user)&.id || @record&.user_id
+    return unless match = @record.match
+    return unless moderator_id = ModerationServices.moderator_for_user(instance.user)&.id || match&.user_id
 
     notify(
       sender_id: moderator_id,
-      referent: @record,
-      instance: @record,
+      referent: match,
+      instance: match,
       users: [instance.user],
       params: {
         object: I18nStruct.new(i18n: 'push_notifications.matching.create'),
-        content: I18nStruct.new(instance: @record, field: :name),
+        content: I18nStruct.new(instance: match, field: :name),
         extra: {
           tracking: :matching
         }
