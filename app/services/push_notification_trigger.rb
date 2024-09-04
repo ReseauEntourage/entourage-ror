@@ -5,6 +5,7 @@ class PushNotificationTrigger
   #  :chat_message
   #  :join_request
   #  :neighborhoods_entourage
+  #  :matching
 
   I18nStruct = Struct.new(:i18n, :i18n_args, :instance, :field, :date, :text) do
     def initialize(i18n: nil, i18n_args: [], instance: nil, field: nil, date: nil, text: nil)
@@ -25,7 +26,7 @@ class PushNotificationTrigger
       return @i18ns[lang] = I18n.t(@i18n, locale: lang) % args_to(lang) if @i18n.present?
 
       if @instance.present? && @field.present?
-        return @i18ns[lang] = @instance.send(@field) unless @instance.translation.present?
+        return @i18ns[lang] = @instance.send(@field) unless @instance.respond_to?(:translation) && @instance.translation.present?
         return @i18ns[lang] = @instance.translation.translate(field: @field, lang: lang) || @instance.send(@field)
       end
 
@@ -536,6 +537,26 @@ class PushNotificationTrigger
         content: I18nStruct.new(i18n: 'push_notifications.survey_response.create', i18n_args: [username(@record.user), I18nStruct.new(instance: @record.chat_message, field: :content)]),
         extra: {
           tracking: :survey_response_on_create,
+        }
+      }
+    )
+  end
+
+  def matching_on_create
+    return unless @record.position == 0
+    return unless instance = @record.instance
+    return unless moderator_id = ModerationServices.moderator_for_user(instance.user)&.id || @record&.user_id
+
+    notify(
+      sender_id: moderator_id,
+      referent: @record,
+      instance: @record,
+      users: [instance.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.matching.create'),
+        content: I18nStruct.new(instance: @record, field: :name),
+        extra: {
+          tracking: :matching
         }
       }
     )
