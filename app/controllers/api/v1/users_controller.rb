@@ -187,6 +187,46 @@ module Api
         end
       end
 
+      def notify
+        return render_error status: 401 unless current_user.super_admin?
+
+        PushNotificationService.new.send_notification("sender", "object", "content", [current_user], "user", current_user.id, {
+          instance: "user",
+          instance_id: current_user.id
+        })
+
+        return render status: 200, json: { message: "Notification sent" }
+      end
+
+      def notify_force
+        return render_error status: 401 unless current_user.super_admin?
+
+        UserServices::UserApplications.new(user: current_user).android_app_tokens.each do |token|
+          app = Rpush::Gcm::App.where(name: current_user.community.slug).first
+          notification = Rpush::Gcm::Notification.new
+          notification.app = app
+          notification.registration_ids = token.push_token
+          notification.data = { sender: "object" || "sender", object: "object", content: { message: "content", extra: Hash.new } }
+
+          NotificationTruncationService.truncate_message!(notification)
+
+          notification.save!
+        end
+
+        UserServices::UserApplications.new(user: current_user).ios_app_tokens.each do |token|
+          Rpush::Apnsp8::App.where(name: current_user.community.slug).each do |app|
+            notification = Rpush::Apnsp8::Notification.new
+            notification.app = app
+            notification.device_token = token.push_token
+            notification.alert = { title: "sender", subtitle: "object", body: "content" }
+            notification.data = { sender: "sender", object: "object", content: { message: "content", extra: Hash.new } }
+            notification.save!
+          end
+        end
+
+        return render status: 200, json: { message: "Notification sent" }
+      end
+
       def presigned_avatar_upload
         user = params[:id] == "me" ? current_user : community.users.find(params[:id])
         if user != current_user
