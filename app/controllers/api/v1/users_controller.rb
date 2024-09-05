@@ -202,11 +202,26 @@ module Api
         return render_error status: 401 unless current_user.super_admin?
 
         UserServices::UserApplications.new(user: current_user).android_app_tokens.each do |token|
-          android_notification_service.send_notification("sender", "object", "content", token.push_token, user.community.slug, Hash.new, 0)
+          app = Rpush::Gcm::App.where(name: current_user.community.slug).first
+          notification = Rpush::Gcm::Notification.new
+          notification.app = app
+          notification.registration_ids = token.push_token
+          notification.data = { sender: "object" || "sender", object: "object", content: { message: "content", extra: Hash.new } }
+
+          NotificationTruncationService.truncate_message!(notification)
+
+          notification.save!
         end
 
         UserServices::UserApplications.new(user: current_user).ios_app_tokens.each do |token|
-          ios_notification_service.send_notification("sender", "object", "content", token.push_token, user.community.slug, Hash.new, 0)
+          Rpush::Apnsp8::App.where(name: current_user.community.slug).each do |app|
+            notification = Rpush::Apnsp8::Notification.new
+            notification.app = app
+            notification.device_token = token.push_token
+            notification.alert = { title: "sender", subtitle: "object", body: "content" }
+            notification.data = { sender: "sender", object: "object", content: { message: "content", extra: Hash.new } }
+            notification.save!
+          end
         end
 
         return render status: 200, json: { message: "Notification sent" }
