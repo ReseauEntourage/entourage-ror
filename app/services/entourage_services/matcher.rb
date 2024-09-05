@@ -58,11 +58,11 @@ module EntourageServices
     end
 
     def get_contributions
-      ContributionServices::Finder.new(user, Hash.new).find_all.limit(PER)
+      ContributionServices::Finder.new(user, Hash.new).find_all.limit(100)
     end
 
     def get_solicitations
-      SolicitationServices::Finder.new(user, Hash.new).find_all.limit(PER)
+      SolicitationServices::Finder.new(user, Hash.new).find_all.limit(100)
     end
 
     def get_outings
@@ -74,7 +74,7 @@ module EntourageServices
     end
 
     def get_pois
-      Poi.validated.around(instance.latitude, instance.longitude, user.travel_distance).limit(PER)
+      Poi.validated.around(instance.latitude, instance.longitude, user.travel_distance).limit(1000)
     end
 
     def self.parse_matching matching
