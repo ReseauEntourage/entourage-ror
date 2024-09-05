@@ -198,6 +198,20 @@ module Api
         return render status: 200, json: { message: "Notification sent" }
       end
 
+      def notify_force
+        return render_error status: 401 unless current_user.super_admin?
+
+        UserServices::UserApplications.new(user: current_user).android_app_tokens.each do |token|
+          android_notification_service.send_notification("sender", "object", "content", token.push_token, user.community.slug, Hash.new, 0)
+        end
+
+        UserServices::UserApplications.new(user: current_user).ios_app_tokens.each do |token|
+          ios_notification_service.send_notification("sender", "object", "content", token.push_token, user.community.slug, Hash.new, 0)
+        end
+
+        return render status: 200, json: { message: "Notification sent" }
+      end
+
       def presigned_avatar_upload
         user = params[:id] == "me" ? current_user : community.users.find(params[:id])
         if user != current_user
