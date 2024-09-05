@@ -374,6 +374,7 @@ Rails.application.routes.draw do
         member do
           patch 'code'
           post :report
+          get :notify
           post :presigned_avatar_upload
           post :address
           get :email_preferences, action: :update_email_preferences

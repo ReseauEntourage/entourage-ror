@@ -187,6 +187,17 @@ module Api
         end
       end
 
+      def notify
+        return render_error status: 401 unless current_user.super_admin?
+
+        PushNotificationService.new.send_notification("sender", "object", "content", [current_user], "user", current_user.id, {
+          instance: "user",
+          instance_id: current_user.id
+        })
+
+        return render status: 200, json: { message: "Notification sent" }
+      end
+
       def presigned_avatar_upload
         user = params[:id] == "me" ? current_user : community.users.find(params[:id])
         if user != current_user
