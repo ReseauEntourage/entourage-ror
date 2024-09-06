@@ -11,7 +11,7 @@ class PushNotificationService
       content = i18nstruct_content.to(user.lang)
 
       UserServices::UserApplications.new(user: user).app_tokens.each do |token|
-        notification_service.send_notification(sender, object, content, token.push_token, user.community.slug, extra, badge(user))
+        NotificationJob.perform_later(sender, object, content, token.push_token, user.community.slug, extra, badge(user))
       end
     end
   end
@@ -20,9 +20,5 @@ class PushNotificationService
 
   def badge(user)
     0
-  end
-
-  def notification_service
-    @notification_service || NotificationService.new
   end
 end
