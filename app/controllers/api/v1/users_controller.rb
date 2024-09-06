@@ -191,10 +191,17 @@ module Api
         return render_error status: 401 unless current_user.super_admin?
         return unless neighborhood = current_user.default_neighborhood
 
-        PushNotificationService.new.send_notification("sender", "object", "content", [current_user], "neighborhood", neighborhood.id, {
-          instance: "neighborhood",
-          instance_id: neighborhood.id
-        })
+        PushNotificationService.new.send_notification(
+          "sender",
+          PushNotificationTrigger::I18nStruct.new(text: "object"),
+          PushNotificationTrigger::I18nStruct.new(text: "object"),
+          [current_user],
+          "neighborhood",
+          neighborhood.id, {
+            instance: "neighborhood",
+            instance_id: neighborhood.id
+          }
+        )
 
         return render status: 200, json: { message: "Notification sent" }
       end
