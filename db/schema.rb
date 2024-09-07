@@ -946,6 +946,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "team_id"
     t.string "bundle_id"
     t.boolean "feedback_enabled", default: true
+    t.string "firebase_project_id"
+    t.text "json_key"
   end
 
   create_table "rpush_feedback", id: :serial, force: :cascade do |t|
