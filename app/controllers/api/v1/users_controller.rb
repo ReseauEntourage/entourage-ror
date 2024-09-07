@@ -208,7 +208,7 @@ module Api
 
       def notify_force
         return render_error status: 401 unless current_user.super_admin?
-        return render_error status: 500 unless app = Rpush::Fcm::App.where(name: user.community.slug).first
+        return render_error status: 500 unless app = Rpush::Fcm::App.where(name: current_user.community.slug).first
 
         UserServices::UserApplications.new(user: current_user).app_tokens.each do |token|
           notification = Rpush::Fcm::Notification.new
