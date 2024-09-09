@@ -214,7 +214,22 @@ module Api
           notification = Rpush::Fcm::Notification.new
           notification.app = app
           notification.device_token = token.push_token
-          notification.data = { sender: "object" || "sender", object: "object", content: { message: "content", extra: Hash.new } }.transform_values(&:to_s)
+          notification.notification = {
+            title: "title",
+            body: "body"
+          }.transform_values(&:to_s)
+
+          notification.data = {
+            sender: "sender",
+            object: "object",
+            content: {
+              message: "content",
+              extra: {
+                instance: "neighborhood",
+                instance_id: current_user.default_neighborhood.id
+              }
+            }
+          }.transform_values(&:to_s)
 
           NotificationTruncationService.truncate_message! notification
 
