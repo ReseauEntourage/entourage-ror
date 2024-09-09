@@ -1,6 +1,6 @@
 class MigrateRpushToFcm < ActiveRecord::Migration[6.1]
   def up
-    if Rpush::Fcm::App.none?
+    if Rpush::Fcm::App.none? && ENV['RPUSH_FCM_JSON_KEY'].present?
       app = Rpush::Fcm::App.new
       app.name = "entourage"
       app.firebase_project_id = "entourage-90011"
