@@ -18,7 +18,17 @@ class NotificationJob
       notification = Rpush::Fcm::Notification.new
       notification.app = app
       notification.device_token = device_ids
-      notification.data = { sender: object || sender, object: object, content: {message: content, extra: extra} }.transform_values(&:to_s)
+      notification.notification = {
+        title: object || sender,
+        body: object
+      }.transform_values(&:to_s)
+
+      notification.data = {
+        content: {
+          message: content,
+          extra: extra
+        }
+      }.transform_values(&:to_s)
 
       NotificationTruncationService.truncate_message! notification
 
