@@ -27,8 +27,8 @@ class NotificationJob
         content: {
           message: content,
           extra: extra
-        }
-      }.transform_values(&:to_s)
+        }.to_json
+      }
 
       NotificationTruncationService.truncate_message! notification
 
