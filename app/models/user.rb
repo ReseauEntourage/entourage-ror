@@ -151,23 +151,22 @@ class User < ApplicationRecord
   scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
   scope :search_by, ->(search) {
-    strip = search && search.strip
-    like = "%#{strip}%"
+    strip = search && search.strip.downcase
 
     where(%(
       users.id = :id OR
-      trim(first_name) ILIKE :first_name OR
-      trim(last_name) ILIKE :last_name OR
-      email ILIKE :email OR
+      lower(first_name) = :first_name OR
+      lower(last_name) = :last_name OR
+      email = :email OR
       phone = :phone OR
-      concat(trim(first_name), ' ', trim(last_name)) ILIKE :full_name OR
-      concat(trim(last_name), ' ', trim(first_name)) ILIKE :full_name
+      concat(lower(first_name), ' ', lower(last_name)) = :full_name OR
+      concat(lower(last_name), ' ', lower(first_name)) = :full_name
     ), {
       id: strip.to_i,
-      first_name: like,
-      last_name: like,
-      email: like,
-      full_name: like,
+      first_name: strip,
+      last_name: strip,
+      email: strip,
+      full_name: strip,
       phone: Phone::PhoneBuilder.new(phone: strip).format,
     })
   }
