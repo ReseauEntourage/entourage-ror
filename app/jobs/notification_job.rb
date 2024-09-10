@@ -17,7 +17,7 @@ class NotificationJob
     else
       notification = Rpush::Fcm::Notification.new
       notification.app = app
-      notification.device_token = device_ids
+      notification.device_token = device_token
       notification.notification = {
         title: object || sender,
         body: object
