@@ -228,8 +228,8 @@ module Api
                 instance: "neighborhood",
                 instance_id: current_user.default_neighborhood.id
               }
-            }
-          }.transform_values(&:to_s)
+            }.to_json
+          }
 
           NotificationTruncationService.truncate_message! notification
 
