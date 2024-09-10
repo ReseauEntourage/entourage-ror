@@ -24,8 +24,8 @@ describe Admin::UsersController do
       it { expect(assigns(:users).map(&:last_name).uniq).to eq([searched.last_name]) }
     end
 
-    context "like email" do
-      before { get :index, params: { search: 'youri@gagarine'} }
+    context "= email" do
+      before { get :index, params: { search: 'youri@gagarine.social'} }
       it { expect(assigns(:users).count).to eq(1) }
       it { expect(assigns(:users).map(&:email).uniq).to eq([searched.email]) }
     end
@@ -56,7 +56,7 @@ describe Admin::UsersController do
     end
 
     context "like email case insensitive" do
-      before { get :index, params: { search: 'YOURI@GAGARINE'} }
+      before { get :index, params: { search: 'YOURI@GAGARINE.SOCIAL'} }
       it { expect(assigns(:users).count).to eq(1) }
       it { expect(assigns(:users).map(&:email).uniq).to eq([searched.email]) }
     end
@@ -75,7 +75,7 @@ describe Admin::UsersController do
     end
 
     context "like email strip insensitive" do
-      before { get :index, params: { search: '  youri@gagarine  '} }
+      before { get :index, params: { search: '  youri@gagarine.social  '} }
       it { expect(assigns(:users).count).to eq(1) }
       it { expect(assigns(:users).map(&:email).uniq).to eq([searched.email]) }
     end

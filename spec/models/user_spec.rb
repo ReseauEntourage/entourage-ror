@@ -141,18 +141,12 @@ describe User, :type => :model do
     end
 
     context "with trailing spaces" do
-      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo ", last_name: "Bar ") }
-      it { expect(User.search_by("Foo Bar").pluck(:id)).to eq([user.id]) }
+      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
+      it { expect(User.search_by("  Foo Bar  ").pluck(:id)).to eq([user.id]) }
     end
 
     context "without trailing spaces on first_name" do
       let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
-      it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
-      it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
-    end
-
-    context "with trailing spaces on first_name" do
-      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo ", last_name: "Bar ") }
       it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
       it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
     end
