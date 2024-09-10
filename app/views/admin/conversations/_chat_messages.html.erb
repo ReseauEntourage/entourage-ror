@@ -125,9 +125,10 @@
   }
 </style>
 
+<% recipient_ids = (conversation.accepted_member_ids - [current_admin.id]).presence || [current_admin.id] %>
+
 <ul class="nav nav-tabs">
-  <li role="presentation" class="<%= :active if tab == :chat_messages %>">
-    <% recipient_ids = (conversation.accepted_member_ids - [current_admin.id]).presence || [current_admin.id] %>
+  <li role="presentation" title="<%= conversation_recipients_display_names(recipient_ids, max: 25).map(&:first).join("\n") %>" class="<%= :active if tab == :chat_messages %>">
     <% recipient_names = conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
 
     <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
@@ -139,6 +140,7 @@
 
 <%= render partial: 'actions', locals: { conversation: conversation } %>
 
+<br/>
 <br/>
 
 <% date = nil %>
