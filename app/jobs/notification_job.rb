@@ -20,7 +20,7 @@ class NotificationJob
       notification.device_token = device_token
       notification.notification = {
         title: object || sender,
-        body: object
+        body: content
       }.transform_values(&:to_s)
 
       notification.data = {
