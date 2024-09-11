@@ -31,6 +31,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Update RubyGems
+      run: |
+        gem update --system
+
+    - name: Update Bundler
+      run: |
+        gem install bundler
+        bundle update --bundler
+
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
