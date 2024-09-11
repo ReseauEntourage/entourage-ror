@@ -34,10 +34,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Update RubyGems
-      run: |
-        gem update --system
-
     - name: Update Bundler
       run: |
         gem install bundler
