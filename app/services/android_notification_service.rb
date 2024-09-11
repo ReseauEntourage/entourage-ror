@@ -1,9 +1,4 @@
 class AndroidNotificationService
-  def send_notification(sender, object, content, device_ids, community, extra={}, badge=nil)
-    return if device_ids.blank?
-    AndroidNotificationJob.perform_later(sender, object, content, device_ids, community, extra, badge)
-  end
-
   def update_canonical_id(old_id, canonical_id)
     ua = UserApplication.find_by(push_token: old_id)
     if ua != nil
