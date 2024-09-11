@@ -55,6 +55,7 @@ gem 'ancestry'
 gem 'tinymce-rails'
 gem 'chartkick'
 gem 'restforce', '~> 7.2.0'
+gem 'ffi', '>= 1.15', '< 1.17'
 
 group :development, :test do
   # gem 'annotate'
