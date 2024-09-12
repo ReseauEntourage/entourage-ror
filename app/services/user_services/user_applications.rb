@@ -8,7 +8,7 @@ module UserServices
 
     def app_tokens
       user.user_applications
-        .select(:push_token)
+        .select(:push_token, :device_family)
         .where(device_family: [UserApplication::ANDROID, UserApplication::IOS])
         .order("updated_at DESC")
         .first(3)

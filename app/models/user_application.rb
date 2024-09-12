@@ -16,4 +16,12 @@ class UserApplication < ApplicationRecord
   def skip_uniqueness_validation_of_push_token?
     @skip_uniqueness_validation_of_push_token == true
   end
+
+  def android?
+    device_family == UserApplication::ANDROID
+  end
+
+  def ios?
+    device_family == UserApplication::IOS
+  end
 end
