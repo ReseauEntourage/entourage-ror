@@ -188,7 +188,6 @@ module Api
       end
 
       def notify
-        return render_error status: 401 unless current_user.super_admin?
         return unless neighborhood = current_user.default_neighborhood
 
         PushNotificationService.new.send_notification(
@@ -203,40 +202,17 @@ module Api
           }
         )
 
-        return render status: 200, json: { message: "Notification sent" }
+        render status: 200, json: { message: "Notification sent" }
       end
 
       def notify_force
-        return render_error status: 401 unless current_user.super_admin?
-        return render_error status: 500 unless app = Rpush::Fcm::App.where(name: current_user.community.slug).first
-
         UserServices::UserApplications.new(user: current_user).app_tokens.each do |token|
-          notification = Rpush::Fcm::Notification.new
-          notification.app = app
-          notification.device_token = token.push_token
-          notification.notification = {
-            title: "title",
-            body: "body"
-          }.transform_values(&:to_s)
-
-          notification.data = {
-            sender: "sender",
-            object: "object",
-            content: {
-              message: "content",
-              extra: {
-                instance: "neighborhood",
-                instance_id: current_user.default_neighborhood.id
-              }
-            }.to_json
-          }
-
-          NotificationTruncationService.truncate_message! notification
-
-          notification.save!
+          NotificationJob.new.perform("sender", "object", "content", token.push_token, current_user.community.slug, {
+            instance: "neighborhood", instance_id: current_user.default_neighborhood.id
+          })
         end
 
-        return render status: 200, json: { message: "Notification sent" }
+        render status: 200, json: { message: "Notification sent" }
       end
 
       def presigned_avatar_upload
