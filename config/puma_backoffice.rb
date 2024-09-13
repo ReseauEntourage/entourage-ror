@@ -32,4 +32,4 @@ lowlevel_error_handler do |ex, env|
 end
 
 # Bind to the admin domain
-bind 'tcp://0.0.0.0:3000' if ENV['BACKOFFICE_DOMAIN'] == 'admin.entourage.social'
+bind 'tcp://0.0.0.0:3000' if ENV['BACKOFFICE_DOMAIN'] == 'admin-preprod.entourage.social'
