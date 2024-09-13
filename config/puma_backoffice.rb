@@ -1,13 +1,15 @@
 require 'barnes'
 
-workers Integer(ENV['WEB_CONCURRENCY'] || 1)
-threads_count = Integer(ENV['MAX_THREADS'] || 10)
+workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+threads_count = Integer(ENV['MAX_THREADS'] || 5)
 threads threads_count, threads_count
 
 preload_app!
 
 port        ENV['PORT']     || 3000
 environment ENV['RACK_ENV'] || 'development'
+
+rackup DefaultRackup
 
 on_worker_boot do
   # Worker specific setup for Rails 4.1+
@@ -28,3 +30,6 @@ lowlevel_error_handler do |ex, env|
   )
   [500, {}, ["An error has occurred, and engineers have been informed. Please reload the page. If you continue to have problems, contact contact@entourage.social\n"]]
 end
+
+# Bind to the admin domain
+bind 'tcp://0.0.0.0:3000' if ENV['BACKOFFICE_DOMAIN'] == 'admin.entourage.social'
