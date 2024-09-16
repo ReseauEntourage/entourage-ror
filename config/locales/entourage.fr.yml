@@ -204,11 +204,8 @@ fr:
       moderation_area:
         name: Nom de la zone
         departement: Département
-        moderator_id: Modérateur
-        animator_id: Com-anim
-        mobilisator_id: Mob-anim
-        sourcing_id: Sourcing
-        accompanyist_id: Accompagnement
+        animator_id: PEC
+        sourcing_id: PI
         community_builder_id: Community builder
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack

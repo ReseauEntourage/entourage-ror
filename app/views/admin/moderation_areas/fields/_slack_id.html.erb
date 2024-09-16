@@ -1,9 +1,0 @@
-<div id="update-slack-id-<%= moderation_area.id %>">
-  <% if moderation_area.slack_moderator_id_with_fallback.present? %>
-    <%= link_to moderation_area.slack_moderator_id_with_fallback, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id_with_fallback}", target: :_blank  %>
-    <p>
-
-    <em><%= moderation_area.slack_moderator_with_fallback.full_name if moderation_area.slack_moderator_with_fallback %></em>
-    </p>
-  <% end %>
-</div>

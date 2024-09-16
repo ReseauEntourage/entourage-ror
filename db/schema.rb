@@ -511,7 +511,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
   create_table "moderation_areas", id: :serial, force: :cascade do |t|
     t.string "departement", limit: 2, null: false
     t.string "name", null: false
-    t.integer "moderator_id"
     t.string "slack_channel", limit: 80
     t.text "welcome_message_1_offer_help"
     t.text "welcome_message_2_offer_help"
@@ -522,11 +521,9 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
     t.string "slack_moderator_id_old"
-    t.boolean "activity", default: false, null: false
     t.integer "animator_id"
-    t.integer "mobilisator_id"
     t.integer "sourcing_id"
-    t.integer "accompanyist_id"
+    t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
