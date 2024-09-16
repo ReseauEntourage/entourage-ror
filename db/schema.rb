@@ -1274,6 +1274,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "slack_id"
     t.string "salesforce_id"
     t.jsonb "availability", default: {}
+    t.boolean "willing_to_engage_locally", default: false
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
