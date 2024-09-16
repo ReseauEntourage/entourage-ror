@@ -58,14 +58,6 @@ module ModerationServices
     moderation_area_query_for_departement(departement, community: community).first
   end
 
-  def self.moderator_for_departement departement, community:
-    moderator_id = moderation_area_query_for_departement(departement, community: community)
-      .pluck(:moderator_id)
-      .first
-
-    User.find_by(id: moderator_id)
-  end
-
   def self.departement_for_object object
     if object.nil? || object.postal_code.nil?
       nil
@@ -88,11 +80,10 @@ module ModerationServices
   end
 
   def self.moderator_for_entourage entourage
-    return unless entourage.group_type.in?(['action', 'outing'])
-    moderator_for_departement(
-      departement_for_object(entourage),
-      community: entourage.community
-    )
+    return ModerationServices.moderator_if_exists(community: :entourage) unless entourage.group_type.in?(['action', 'outing'])
+    return ModerationServices.moderator_if_exists(community: :entourage) unless moderation_area = moderation_area_for_departement(departement_for_object(entourage), community: entourage.community)
+
+    moderation_area.interlocutor_for_user(entourage.user)
   end
 
   def self.moderator_for_user user

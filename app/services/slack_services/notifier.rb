@@ -41,7 +41,7 @@ module SlackServices
 
       return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.present?
 
-      moderation_area.slack_moderator_id_with_fallback
+      moderation_area.slack_moderator_id_with_fallback(object)
     end
 
     def departement object
