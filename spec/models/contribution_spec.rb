@@ -12,7 +12,7 @@ RSpec.describe Contribution, type: :model do
       it { expect { contribution }.to change { Entourage.count }.by 1 }
       it { expect { contribution }.to change { EntourageModeration.count }.by 1 }
       it { expect(contribution.reload.moderation).not_to be_nil }
-      it { expect(contribution.reload.moderation.moderator_id).to eq(moderation_area.moderator_id) }
+      it { expect(contribution.reload.moderation.moderator_id).to eq(moderation_area.animator_id) }
     end
   end
 end
