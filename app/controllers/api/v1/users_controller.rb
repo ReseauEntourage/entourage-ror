@@ -420,11 +420,11 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :willing_to_engage_locally, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
       end
 
       def update_params
-        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :interest_list, :involvement_list, :concern_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
+        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :willing_to_engage_locally, :interest_list, :involvement_list, :concern_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
       end
 
       def user_report_params
