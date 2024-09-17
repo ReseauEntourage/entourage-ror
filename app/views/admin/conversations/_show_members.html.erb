@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs">
   <li role="presentation" class="<%= :active if tab == :chat_messages %>">
     <% recipient_ids = (conversation.accepted_member_ids - [current_admin.id]).presence || [current_admin.id] %>
-    <% recipient_names = conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
+    <% recipient_names = conversation_recipients_display_names(recipient_ids, max: 1).map(&:first).join(', ') %>
 
     <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
   </li>
@@ -12,8 +12,6 @@
 
 <table class="table">
   <th>Nom</th>
-  <th>Email</th>
-  <th>Téléphone</th>
   <th>Membre</th>
   <th>Membre depuis</th>
   <th></th>
@@ -26,8 +24,6 @@
         <%= link_to user.full_name, edit_admin_user_path(user.id) %>
         <% if user == conversation.user %><i>(administrateur)</i><% end %>
       </td>
-      <td><%= user.email %></td>
-      <td><%= user.phone %></td>
       <td>
         <span class="badge" style="<%= join_request.accepted? ? 'background: green' : "" %>">
           <%= join_request.status %>

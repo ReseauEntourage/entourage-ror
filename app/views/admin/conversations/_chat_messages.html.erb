@@ -142,8 +142,17 @@
   <%= render partial: 'actions', locals: { conversation: conversation } %>
 </div>
 
-<br/>
-<br/>
+<div class="conversation-message is-message-form">
+  <div class="conversation-content">
+    <div>
+      <%= link_to UserPresenter.new(user: current_admin).display_name, admin_user_path(current_admin), class: "conversation-sender" %>
+    </div>
+    <%= form_for ChatMessage.new, url: message_admin_conversation_path(conversation), remote: true do |f| %>
+      <%= f.text_area :content, class: "conversation-message-box", rows: 2 %>
+      <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+    <% end %>
+  </div>
+</div>
 
 <% date = nil %>
 <% color = {} %>
@@ -201,23 +210,6 @@
     </div>
   </div>
 <% end %>
-
-<div class="conversation-message is-message-form">
-  <div class="conversation-gutter">
-    <div class="conversation-icon">
-      <%= [current_admin.first_name.try(:first), current_admin.last_name.try(:first)].compact.join.upcase %>
-    </div>
-  </div>
-  <div class="conversation-content">
-    <div>
-      <%= link_to UserPresenter.new(user: current_admin).display_name, admin_user_path(current_admin), class: "conversation-sender" %>
-    </div>
-    <%= form_for ChatMessage.new, url: message_admin_conversation_path(conversation), remote: true do |f| %>
-      <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
-      <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
-    <% end %>
-  </div>
-</div>
 
 <script>
   $('[data-toggle="tooltip"]').tooltip()
