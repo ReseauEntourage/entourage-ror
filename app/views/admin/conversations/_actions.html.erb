@@ -1,28 +1,29 @@
+<div class="conversation-buttons">
+  <% if read_for_user?(conversation, current_admin) %>
+    <%= button_to "Marquer comme non-lu", read_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :unread),
+      method: :post,
+      class: "btn btn-default btn-sm",
+      form: { style: "float: left;" }
+    %>
+  <% else %>
+    <%= button_to "Marquer comme lu", read_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :read),
+      method: :post,
+      class: "btn btn-default btn-sm",
+      form: { style: "float: left;" }
+    %>
+  <% end %>
 
-<% if read_for_user?(conversation, current_admin) %>
-  <%= button_to "Marquer comme non-lu", read_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :unread),
-    method: :post,
-    class: "btn btn-default btn-sm",
-    form: { style: "float: left;" }
-  %>
-<% else %>
-  <%= button_to "Marquer comme lu", read_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :read),
-    method: :post,
-    class: "btn btn-default btn-sm",
-    form: { style: "float: left;" }
-  %>
-<% end %>
-
-<% if archived_for_user?(conversation, current_admin) %>
-  <%= button_to "Désarchiver", archive_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :inbox),
-    method: :post,
-    class: "btn btn-default btn-sm",
-    form: { style: "float: left;" }
-  %>
-<% else %>
-  <%= button_to "Archiver", archive_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :archived),
-    method: :post,
-    class: "btn btn-default btn-sm",
-    form: { style: "float: left;" }
-  %>
-<% end %>
+  <% if archived_for_user?(conversation, current_admin) %>
+    <%= button_to "Désarchiver", archive_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :inbox),
+      method: :post,
+      class: "btn btn-default btn-sm",
+      form: { style: "float: left;" }
+    %>
+  <% else %>
+    <%= button_to "Archiver", archive_status_admin_conversation_path(conversation.id || conversation.uuid_v2, status: :archived),
+      method: :post,
+      class: "btn btn-default btn-sm",
+      form: { style: "float: left;" }
+    %>
+  <% end %>
+</div>
