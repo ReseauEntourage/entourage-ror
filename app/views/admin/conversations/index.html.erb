@@ -53,6 +53,32 @@
     font-size: 0.8em;
     color: #999;
   }
+
+  .nav-tabs-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .conversation-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .nav-tabs {
+    margin-bottom: 0;
+  }
+
+  .conversation-messages-container {
+    max-height: 400px; /* Ajustez selon la hauteur désirée */
+    overflow-y: auto;
+    padding-right: 15px; /* Pour éviter le chevauchement du contenu avec la scrollbar */
+  }
+
+  .conversation-day-divider, .conversation-message {
+    margin-bottom: 15px;
+  }
+
 </style>
 
 <div class="container">
