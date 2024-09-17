@@ -127,18 +127,20 @@
 
 <% recipient_ids = (conversation.accepted_member_ids - [current_admin.id]).presence || [current_admin.id] %>
 
-<ul class="nav nav-tabs">
-  <li role="presentation" title="<%= conversation_recipients_display_names(recipient_ids, max: 25).map(&:first).join("\n") %>" class="<%= :active if tab == :chat_messages %>">
-    <% recipient_names = conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
+<div class="nav-tabs-container">
+  <ul class="nav nav-tabs">
+    <li role="presentation" title="<%= conversation_recipients_display_names(recipient_ids, max: 25).map(&:first).join("\n") %>" class="<%= :active if tab == :chat_messages %>">
+      <% recipient_names = conversation_recipients_display_names(recipient_ids, max: 1).map(&:first).join(', ') %>
 
-    <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
-  </li>
-  <li role="presentation" class="<%= :active if tab == :show_members %>">
-    <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
-  </li>
-</ul>
+      <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
+    </li>
+    <li role="presentation" class="<%= :active if tab == :show_members %>">
+      <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
+    </li>
+  </ul>
 
-<%= render partial: 'actions', locals: { conversation: conversation } %>
+  <%= render partial: 'actions', locals: { conversation: conversation } %>
+</div>
 
 <br/>
 <br/>
