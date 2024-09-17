@@ -12,7 +12,7 @@ RSpec.describe Solicitation, type: :model do
       it { expect { solicitation }.to change { Entourage.count }.by 1 }
       it { expect { solicitation }.to change { EntourageModeration.count }.by 1 }
       it { expect(solicitation.reload.moderation).not_to be_nil }
-      it { expect(solicitation.reload.moderation.moderator_id).to eq(moderation_area.moderator_id) }
+      it { expect(solicitation.reload.moderation.moderator_id).to eq(moderation_area.animator_id) }
       it { expect(solicitation.reload.moderation.action_recipient_consent_obtained).to eq('Oui') }
     end
   end
