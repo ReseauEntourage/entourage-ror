@@ -295,6 +295,23 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      describe 'willing_to_engage_locally' do
+        context 'true' do
+          before { patch 'update', params: { token: user.token, user: { willing_to_engage_locally: true } } }
+          it { expect(user.reload.willing_to_engage_locally).to eq(true) }
+        end
+
+        context 'true as string' do
+          before { patch 'update', params: { token: user.token, user: { willing_to_engage_locally: "true" } } }
+          it { expect(user.reload.willing_to_engage_locally).to eq(true) }
+        end
+
+        context 'false' do
+          before { patch 'update', params: { token: user.token, user: { willing_to_engage_locally: false } } }
+          it { expect(user.reload.willing_to_engage_locally).to eq(false) }
+        end
+      end
+
       context 'strips first_name, last_name and email' do
         before { patch 'update', params: { token:user.token, user: { first_name: 'Claude ', last_name: 'Shannon ', email:'cs@bell.com '} } }
         it { expect(user.reload.first_name).to eq('Claude') }
