@@ -18,8 +18,6 @@
     moderation.action_author_type ||= t("community.#{user_community.slug}.targeting_profiles.#{entourage.user.targeting_profile}")
   end
 
-  # moderation.moderator = "Guillaume" if moderation.moderator.blank?
-
   def safe_options standard_values, current_value
     if current_value.blank? || current_value.in?(standard_values)
       return standard_values, false
