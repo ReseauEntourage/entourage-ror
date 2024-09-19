@@ -612,9 +612,6 @@ Rails.application.routes.draw do
       resources :links, only: [] do
         member do
           get :redirect
-        end
-
-        collection do
           get 'mesure-impact' => :mesure_impact
         end
       end
