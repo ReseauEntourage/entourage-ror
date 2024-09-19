@@ -14,6 +14,7 @@ class ConversationMessageBroadcastJob
 
     if conversation_message_broadcast.entourage_type?
       joinable = ChatServices::ChatMessageBuilder.find_conversation(recipient_id, user_id: sender_id)
+      content = conversation_message_broadcast.content_for_user(User.find(recipient_id))
 
       join_request = if joinable.new_record?
         joinable.join_requests.to_a.find { |r| r.user_id == sender_id }

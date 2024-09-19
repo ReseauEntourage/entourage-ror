@@ -16,6 +16,14 @@ class ConversationMessageBroadcast < ApplicationRecord
     end
   end
 
+  def content_for_user user
+    content
+      .gsub("{{first_name}}", user.first_name || "")
+      .gsub("{{email}}", user.email || "")
+      .gsub("{{phone}}", user.phone || "")
+      .gsub("{{city}}", user.city || "")
+  end
+
   def recipients
     raise NotImplementedError
   end

@@ -82,6 +82,7 @@ class User < ApplicationRecord
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
+  delegate :city, to: :address, allow_nil: true
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
   delegate :departement, to: :address, allow_nil: true
