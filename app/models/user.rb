@@ -148,8 +148,8 @@ class User < ApplicationRecord
   }
   scope :goal_not_known, -> { where(targeting_profile: nil, goal: nil) }
   scope :unknown, -> { goal_not_known }
-  scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
-  scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
+  scope :ask_for_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :ask_for_help, :asks_for_help) }
+  scope :offer_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :offer_help, :offers_help) }
   scope :search_by, ->(search) {
     strip = search && search.strip.downcase
 
