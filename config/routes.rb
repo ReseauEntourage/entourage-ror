@@ -163,7 +163,7 @@ Rails.application.routes.draw do
       resources :conversations, only: [:index, :show] do
         member do
           get :chat_messages
-          get :prepend_chat_messages
+          get :append_chat_messages
           get :show_members
           post :message
           post :invite
