@@ -1,7 +1,7 @@
 module Api
   module V1
     class LinksController < Api::V1::BaseController
-      skip_before_action :authenticate_user!, only: [:redirect]
+      skip_before_action :authenticate_user!
       skip_before_action :ensure_community!
 
       def redirect
@@ -105,7 +105,12 @@ module Api
       end
 
       def mesure_impact
-        redirect_to "https://entourage-asso.typeform.com/to/w1OHXk1E#email=#{current_user.email}&phone=#{current_user.phone}"
+        user = User.find_by_uuid(params[:id])
+
+        url = "https://entourage-asso.typeform.com/to/w1OHXk1E"
+        url = "https://entourage-asso.typeform.com/to/i8dpyRvx" if user && user.is_ask_for_help?
+
+        redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}"
       end
     end
   end

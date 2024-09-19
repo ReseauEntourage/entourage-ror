@@ -18,10 +18,11 @@ class ConversationMessageBroadcast < ApplicationRecord
 
   def content_for_user user
     content
-      .gsub("{{first_name}}", user.first_name || "")
-      .gsub("{{email}}", user.email || "")
-      .gsub("{{phone}}", user.phone || "")
-      .gsub("{{city}}", user.city || "")
+      .gsub("{{first_name}}", user.first_name.to_s)
+      .gsub("{{email}}", user.email.to_s)
+      .gsub("{{phone}}", user.phone.to_s)
+      .gsub("{{city}}", user.city.to_s)
+      .gsub("{{uuid}}", user.uuid.to_s)
   end
 
   def recipients
