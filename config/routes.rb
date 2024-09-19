@@ -613,6 +613,10 @@ Rails.application.routes.draw do
         member do
           get :redirect
         end
+
+        collection do
+          get 'mesure-impact' => :mesure_impact
+        end
       end
 
       resources :announcements, only: [:index] do
