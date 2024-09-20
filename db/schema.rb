@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.json "options", default: {}
     t.integer "survey_id"
     t.integer "comments_count", default: 0
-    t.index "((metadata -> 'conversation_message_broadcast_id'::text))", name: "chat_messages_conversation_message_broadcast_id", using: :hash
+    t.index "((metadata ->> 'conversation_message_broadcast_id'::text))", name: "index_chat_messages_on_conversation_broadcast_id"
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
     t.index ["message_type"], name: "index_chat_messages_on_message_type"
