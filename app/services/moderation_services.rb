@@ -1,4 +1,6 @@
 module ModerationServices
+  DEFAULT_SLACK_MODERATOR_ID = ENV["SLACK_DEFAULT_INTERLOCUTOR"]
+
   def self.moderator_with_error(community:)
     if community != :entourage
       return nil, :no_moderator_for_community
@@ -94,5 +96,14 @@ module ModerationServices
 
   def self.default_moderation_area
     moderation_area_for_departement('*', community: :entourage)
+  end
+
+  def self.slack_moderator_id object
+    moderation_area = ModerationServices.moderation_area_for_departement(departement(object), community: $server_community)
+    moderation_area = ModerationServices.moderation_area_for_departement('*', community: $server_community) unless moderation_area.present?
+
+    return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.present?
+
+    moderation_area.slack_moderator_id_with_fallback(object)
   end
 end

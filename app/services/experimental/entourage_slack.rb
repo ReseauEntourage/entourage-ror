@@ -27,11 +27,13 @@ module Experimental::EntourageSlack
   end
 
   def self.payload entourage
+    slack_moderator = ModerationServices.slack_moderator_id(entourage)
+
     e = entourage
     subtitle =
       case e.group_type
       when 'action'
-        "#{h.entourage_type_phrase(e)} › #{h.entourage_category_phrase(e)} • #{e.metadata[:display_address]}"
+        "#{h.entourage_type_phrase(e)} › #{h.entourage_category_phrase(e)} • #{e.metadata[:display_address]} (<@#{slack_moderator}>)"
       when 'outing'
         address_fragments = e.metadata[:street_address].split(', ')
         address_fragments.pop if address_fragments.last == 'France'
@@ -43,7 +45,7 @@ module Experimental::EntourageSlack
           else
             e.postal_code
           end
-        "Évènement • #{subtitle_place}"
+        "Évènement • #{subtitle_place} (<@#{slack_moderator}>)"
       end
 
     text =
