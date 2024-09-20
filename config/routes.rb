@@ -285,6 +285,7 @@ Rails.application.routes.draw do
     resources :user_message_broadcasts do
       member do
         post 'broadcast'
+        post 'rebroadcast'
         post 'clone'
         post 'kill'
       end
@@ -293,6 +294,7 @@ Rails.application.routes.draw do
       member do
         put :update_neighborhoods
         post 'broadcast'
+        post 'rebroadcast'
         post 'clone'
         post 'kill'
       end

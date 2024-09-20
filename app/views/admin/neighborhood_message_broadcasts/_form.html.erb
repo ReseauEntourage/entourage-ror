@@ -5,7 +5,6 @@
 <%= render partial: 'common/errors', locals: { obj: @neighborhood_message_broadcast } %>
 
 <%= form_for [:admin, @neighborhood_message_broadcast], html: { role: "form" } do |f| %>
-
   <% if @neighborhood_message_broadcast.archived? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -34,6 +33,21 @@
         Si vous souhaitez le renvoyer, vous pouvez dupliquer cette diffusion.
       </div>
       <%= link_to("Dupliquer", clone_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-success") %>
+    </div>
+    <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Compléter l'envoi</b><br>
+        Si la diffusion a lieu mais n'a pas été envoyée à tous les utilisateurs attendus, vous pouvez redéclencher la diffusion.<br>
+
+        Cette diffusion continuera l'envoi aux utilisateurs qui n'ont pas encore reçu le message.
+
+        <ul>
+          <li>diffusion à <%= ConversationMessageBroadcastJob.recipient_ids_to_broadcast(@neighborhood_message_broadcast.id, current_user.id).count %> utilisateurs</li>
+        </ul>
+      </div>
+      <%= link_to("Compléter l'envoi", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
+        confirm: "Êtes vous sûr de vouloir diffuser ces MP ?"
+      }) %>
     </div>
   <% elsif @neighborhood_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
