@@ -121,7 +121,7 @@ module Admin
           respond_to do |format|
             @chat_messages = [message]
 
-            format.js { render :append_chat_messages }
+            format.js { render :prepend_chat_messages }
             format.html { redirect_to admin_conversations_path }
           end
         end
