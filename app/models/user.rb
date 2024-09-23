@@ -488,6 +488,14 @@ class User < ApplicationRecord
     (targeting_profile.blank? && goal.to_s == 'ask_for_help') || targeting_profile.to_s == 'asks_for_help'
   end
 
+  def offer_help?
+    goal.to_s == 'offer_help'
+  end
+
+  def is_offer_help?
+    (targeting_profile.blank? && goal.to_s == 'offer_help') || targeting_profile.to_s == 'offers_help'
+  end
+
   def public?
     user_type=="public"
   end
