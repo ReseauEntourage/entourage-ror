@@ -1,0 +1,203 @@
+<style>
+  .conversation-content {
+    flex-grow: 1;
+  }
+  .conversation-sender {
+    font-weight: bold;
+    color: inherit;
+    text-decoration: none;
+    margin-right: 4px;
+  }
+  .conversation-sender:hover {
+    color: inherit;
+  }
+  .conversation-timestamp {
+    font-size: 12px;
+    color: #717274;
+  }
+  .conversation-message {
+    display: flex;
+    padding: 4px 40px 3px 0;
+    position: relative;
+  }
+  .conversation-message:not(.is-message-form):hover {
+    background: #f5f5f5;
+  }
+  .conversation-gutter {
+    flex-grow: 0;
+    padding-right: 10px;
+  }
+  .conversation-icon {
+    width: 2em;
+    height: 2em;
+    color: #fff;
+    text-align: center;
+    line-height: 2;
+    font-size: 18px;
+    border-radius: 0.2em;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  .conversation-actions {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 0;
+    padding: 6px;
+  }
+  .conversation-message:not(:hover) .conversation-actions {
+    display: none;
+  }
+  .conversation-day-divider {
+    text-align: center;
+    margin-bottom: -13px;
+  }
+  .conversation-day-divider-label {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #fff;
+    font-weight: bold;
+    z-index: 1;
+    position: relative;
+    border-radius: 3px;
+  }
+  .conversation-day-divider+.conversation-message {
+    border-top: 1px solid #e8e8e8;
+    padding-top: 16px;
+  }
+  .conversation-day-divider+.conversation-unread-divider+.conversation-message {
+    padding-top: 16px;
+  }
+  .conversation-unread-divider+.conversation-message {
+    border-top: 1px solid #f26130;
+  }
+  .conversation-unread-status {
+    background: #29B2EE;
+    border-radius: 6px;
+    color: #fff;
+    text-shadow: 0 1px rgba(0,0,0,.15);
+    height: 25px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 6px;
+    cursor: pointer;
+    margin-bottom: 6px;
+  }
+  .conversation-unread-status:hover {
+    background: #3d9cd4;
+  }
+  .conversation-unread-divider {
+    text-align: center;
+  }
+  .conversation-unread-divider-label {
+    background: #fff;
+    margin: -4px 0 -9px 0;
+    float: right;
+    padding: 0 5px 3px;
+    color: #f26130;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 8px;
+    z-index: 1;
+    position: relative;
+    border-radius: 3px;
+  }
+  .conversation-message-form {
+    width: 100%;
+  }
+  .conversation-message-box {
+    border: 2px solid #bcbcbe;
+    border-radius: 6px;
+    padding: 9px;
+    outline: 0;
+    width: 100%;
+    resize: vertical;
+  }
+  .conversation-message-box:focus {
+    border-color: #717274;
+  }
+  .conversation-content .glyphicon-question-sign {
+    color: #717274;
+  }
+  .text-danger {
+    color: #d72b3f !important;
+  }
+</style>
+
+<% recipient_ids = (conversation.accepted_member_ids - [current_admin.id]).presence || [current_admin.id] %>
+
+<div class="nav-tabs-container">
+  <ul class="nav nav-tabs">
+    <li role="presentation" title="<%= conversation_recipients_display_names(recipient_ids, max: 25).map(&:first).join("\n") %>" class="<%= :active if tab == :chat_messages %>">
+      <% recipient_names = conversation_recipients_display_names(recipient_ids, max: 1).map(&:first).join(', ') %>
+
+      <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
+    </li>
+    <li role="presentation" class="<%= :active if tab == :show_members %>">
+      <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
+    </li>
+  </ul>
+
+  <%= render partial: 'actions', locals: { conversation: conversation } %>
+</div>
+
+<div id="conversation-messages" class="conversation-messages-container">
+  <div class="conversation-messages-content">
+    <%= render partial: 'chat_messages_content', locals: { chat_messages: chat_messages } %>
+  </div>
+</div>
+
+<div class="conversation-message is-message-form">
+  <div class="conversation-content">
+    <div>
+      <%= link_to UserPresenter.new(user: current_admin).display_name, admin_user_path(current_admin), class: "conversation-sender" %>
+    </div>
+    <%= form_for ChatMessage.new, url: message_admin_conversation_path(conversation), remote: true do |f| %>
+      <%= f.text_area :content, class: "conversation-message-box", rows: 2 %>
+      <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $('[data-toggle="tooltip"]').tooltip()
+
+  $(function(){
+    var chatMessageSubmit = $('#new_chat_message [type=submit]')[0]
+    $('#chat_message_content').on('input', function() {
+      chatMessageSubmit.disabled = this.textLength === 0;
+    })
+  });
+
+  $(document).ready(function() {
+    var page = 1;
+    var loading = false;
+
+    $('#conversation-messages').scroll(function() {
+      var messagesContainer = $(this);
+
+      // Charger plus de messages lorsque l'utilisateur atteint le bas du conteneur
+      if (messagesContainer.scrollTop() + messagesContainer.innerHeight() >= messagesContainer[0].scrollHeight - 10 && !loading) {
+        loading = true;
+
+        var currentPage = messagesContainer.data('current-page') || 1;
+
+        $.ajax({
+          url: '<%= url_for(action: :append_chat_messages, id: conversation.id) %>',
+          data: { page: currentPage + 1 },
+          type: 'GET',
+          dataType: 'script',
+          success: function() {
+            page += 1;
+
+            loading = false;
+          },
+          error: function() {
+            loading = false;
+          }
+        });
+      }
+    });
+  });
+</script>

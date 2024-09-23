@@ -1,0 +1,74 @@
+<ul class="nav nav-tabs">
+  <li role="presentation" class="<%= :active if tab == :chat_messages %>">
+    <% recipient_ids = (conversation.accepted_member_ids - [current_admin.id]).presence || [current_admin.id] %>
+    <% recipient_names = conversation_recipients_display_names(recipient_ids, max: 1).map(&:first).join(', ') %>
+
+    <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :show_members %>">
+    <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
+  </li>
+</ul>
+
+<table class="table">
+  <th>Nom</th>
+  <th>Membre</th>
+  <th>Membre depuis</th>
+  <th></th>
+
+  <% conversation.join_requests.each do |join_request| %>
+    <% user = join_request.user %>
+
+    <tr>
+      <td>
+        <%= link_to user.full_name, edit_admin_user_path(user.id) %>
+        <% if user == conversation.user %><i>(administrateur)</i><% end %>
+      </td>
+      <td>
+        <span class="badge" style="<%= join_request.accepted? ? 'background: green' : "" %>">
+          <%= join_request.status %>
+        </span>
+      </td>
+      <td><%= l join_request.created_at, format: :date_long %></td>
+      <td>
+        <% if join_request.accepted? %>
+          <%= button_to "Supprimer", unjoin_admin_conversation_path(conversation.id, user_id: user.id), remote: true, method: :post, class: "btn btn-default btn-sm", form: { style: "display: inline-block" } %></td>
+        <% else %>
+        <%= button_to "Rejoindre", invite_admin_conversation_path(conversation.id, user_id: user.id), remote: true, method: :post, class: "btn btn-default btn-sm", form: { style: "display: inline-block" } %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+
+<% unless archived_for_user?(@conversation, current_admin) %>
+  <%= form_tag invite_admin_conversation_path(@conversation.id), remote: true, method: :post, html: { role: "form" } do |f| %>
+    <%= submit_tag "Ajouter à la conversation", class: "btn btn-default btn-sm", style: "float: right" %>
+
+    <%= select_tag :user_id, options_for_select([]), class: "form-control", id: "user-select", placeholder: "utilisateur (ID ou téléphone)", required: true, style: "float: right; width: 200px;" %>
+  <% end %>
+<% end %>
+
+<script>
+  $('#user-select').select2({
+    placeholder: 'utilisateur (ID ou téléphone)',
+    minimumInputLength: 1,
+    ajax: {
+      url: '/users/search',
+      dataType: 'json',
+      delay: 250,
+      data: function(params) {
+        return {
+          query: params.term // search term
+        };
+      },
+      processResults: function(data) {
+        return {
+          results: data.map(function(user) {
+            return { id: user.id, text: user.first_name + ' ' + user.last_name + ' (' + user.phone + ')' };
+          })
+        };
+      },
+      cache: true
+    }
+  });
+</script>

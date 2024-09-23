@@ -1,0 +1,20 @@
+<% date = nil %>
+<% color = {} %>
+<% chat_messages.each do |message| %>
+  <% if date == nil || date != message.created_at.to_date %>
+    <% date = message.created_at.to_date %>
+    <div class="conversation-day-divider">
+      <div class="conversation-day-divider-label">
+        <% if date == Date.today %>
+          aujourd'hui
+        <% else %>
+          <%= l date, format: "%A %-d %B %Y" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+  <%= render partial: "chat_message_content", locals: { chat_message: message, color: color } %>
+<% end %>

@@ -1,0 +1,68 @@
+<% @last_message = ChatMessage.no_deleted_without_comments
+  .select('distinct on (messageable_id) *')
+  .where(messageable_type: :Entourage)
+  .where(messageable_id: @conversations.map(&:id))
+  .order(:messageable_id, created_at: :desc)
+%>
+<% @last_message = Hash[@last_message.map { |m| [m.messageable_id, m] }] %>
+
+<% @recipient_ids = JoinRequest.accepted
+  .where(joinable_type: :Entourage, joinable_id: @conversations.map(&:id))
+  .where.not(user_id: current_admin.id)
+  .pluck(:joinable_id, :user_id)
+  .group_by(&:first).each { |_, a| a.replace a.map(&:last) }
+%>
+<% @recipient_ids.default = [current_admin.id] # if no recipient, it must be a conversation with self %>
+
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="conversations-menu">
+      <% @conversations.each do |conversation| %>
+        <% last_message = @last_message[conversation.id] %>
+        <% recipient_ids = @recipient_ids[conversation.id] %>
+
+        <%= link_to chat_messages_admin_conversation_path(conversation), remote: true, class: "conversation-link", data: { id: conversation.id } do %>
+          <div class="conversation <%= 'unread' if conversation.unread %>">
+            <div class="conversation-content">
+              <div class="conversation-avatar">
+                <% if conversation.user.avatar_url.present? %>
+                  <%= image_tag conversation.user.avatar_url, alt: conversation.user.full_name, class: "avatar" %>
+                <% end %>
+              </div>
+              <div class="conversation-details">
+                <div class="conversation-recipients">
+                  <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
+                </div>
+
+                <div class="conversation-message">
+                  <% if last_message.nil? %>
+                    <span class="text-muted">(pas de messages)</span>
+                  <% else %>
+                    <% if last_message.deleted? %>
+                      <p style="color: red;">Ce message a été supprimé : </p>
+                      <em><%= simple_format last_message.content(true)[0..30] %></em>
+                    <% else %>
+                      <%= simple_format last_message.content[0..30] %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              <div class="conversation-date" style="text-align: right">
+                <%= smart_date(last_message&.created_at || conversation.created_at) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= paginate @conversations %>
+  </div>
+
+  <div class="conversations-chat-messages col-sm-8">
+    <% if @conversations.any? %>
+      <%= render partial: 'chat_messages', locals: { conversation: @conversations.first, chat_messages: @conversations.first.chat_messages.order(created_at: :desc).page(1).per(10), tab: :chat_messages } %>
+    <% end %>
+  </div>
+</div>

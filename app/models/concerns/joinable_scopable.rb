@@ -17,6 +17,21 @@ module JoinableScopable
     scope :order_by_unread_messages, -> {
       order(Arel.sql("join_requests.unread_messages_count DESC"))
     }
+
+    scope :search_by_member, -> (search) {
+      return unless search.present?
+
+      where(sanitize_sql_array [%(
+        %s.id in (
+          select joinable_id
+          from join_requests
+          left join users on users.id = join_requests.user_id
+          where
+            join_requests.joinable_type = '%s'
+            and (lower(users.first_name) ilike '%s' or lower(users.last_name) ilike '%s' or lower(users.phone) ilike '%s')
+        )
+      ), self.table_name, self.table_name.singularize.camelize, "%#{search.downcase}%", "%#{search.downcase}%", "%#{search.downcase}%"])
+    }
   end
 
   def members_has_changed!
