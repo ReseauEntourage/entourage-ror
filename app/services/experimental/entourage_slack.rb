@@ -33,7 +33,7 @@ module Experimental::EntourageSlack
     subtitle =
       case e.group_type
       when 'action'
-        "#{h.entourage_type_phrase(e)} › #{h.entourage_category_phrase(e)} • #{e.metadata[:display_address]} (<@#{slack_moderator}>)"
+        "#{h.entourage_type_phrase(e)} › #{h.entourage_category_phrase(e)} • #{e.metadata[:display_address]}"
       when 'outing'
         address_fragments = e.metadata[:street_address].split(', ')
         address_fragments.pop if address_fragments.last == 'France'
@@ -51,9 +51,9 @@ module Experimental::EntourageSlack
     text =
       case e.group_type
       when 'action'
-        "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_"
+        "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
       when 'outing'
-        "par _#{UserPresenter.new(user: e.user).display_name}_"
+        "par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
       end
 
     event_metadata =
