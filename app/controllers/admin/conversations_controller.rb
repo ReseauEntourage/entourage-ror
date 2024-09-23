@@ -140,7 +140,7 @@ module Admin
 
         on.success do |chat_message|
           @conversation = @chat_message.messageable
-          @chat_messages = @conversation.chat_messages.order(created_at: :asc)
+          @chat_messages = @conversation.chat_messages.order(created_at: :desc)
 
           respond_to do |format|
             format.js { render :chat_messages }
