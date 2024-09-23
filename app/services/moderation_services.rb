@@ -106,4 +106,14 @@ module ModerationServices
 
     moderation_area.slack_moderator_id_with_fallback(object)
   end
+
+  def self.departement object
+    return unless object.respond_to?(:country)
+    return unless object.respond_to?(:postal_code)
+
+    departement_for_object(OpenStruct.new(
+      postal_code: object.postal_code,
+      country: object.country
+    ))
+  end
 end
