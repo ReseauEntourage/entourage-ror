@@ -38,13 +38,7 @@ module SlackServices
     end
 
     def departement object
-      return unless object.respond_to?(:country)
-      return unless object.respond_to?(:postal_code)
-
-      ModerationServices.departement_for_object(OpenStruct.new(
-        postal_code: object.postal_code,
-        country: object.country
-      ))
+      ModerationServices.departement(object)
     end
 
     def payload_adds
