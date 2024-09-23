@@ -105,12 +105,29 @@ describe Api::V1::Outings::UsersController do
         )}
       end
 
+      context "change role to organizer for ambassador" do
+        let(:user) { FactoryBot.create(:public_user, targeting_profile: "ambassador") }
+        let!(:join_request) { create(:join_request, user: user, joinable: outing) }
+        before { post :create, params: { outing_id: outing.to_param, token: user.token, role: :organizer } }
+
+        it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+        it { expect(result["user"]["role"]).to eq("organizer") }
+      end
+
+      context "change role to organizer for not ambassador" do
+        let!(:join_request) { create(:join_request, user: user, joinable: outing) }
+        before { post :create, params: { outing_id: outing.to_param, token: user.token, role: :organizer } }
+
+        it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+        it { expect(result["user"]["role"]).to eq("participant") }
+      end
+
       context "user has community_roles" do
         let(:user) { FactoryBot.create(:public_user, targeting_profile: "ambassador") }
         before { post :create, params: { outing_id: outing.to_param, token: user.token, distance: 123.45 } }
 
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
-        it { expect(result["user"]["community_roles"]).to eq(["Ambassadeur"])}
+        it { expect(result["user"]["community_roles"]).to eq(["Ambassadeur"]) }
       end
 
       context "push notification sent" do
