@@ -27,7 +27,8 @@ class ModerationArea < ApplicationRecord
   end
 
   def slack_moderator_id_with_fallback object
-    return SlackServices::Notifier::DEFAULT_SLACK_MODERATOR_ID unless moderator = slack_moderator_with_fallback(object)
+    return ModerationServices::DEFAULT_SLACK_MODERATOR_ID unless moderator = slack_moderator_with_fallback(object)
+    return ModerationServices::DEFAULT_SLACK_MODERATOR_ID unless moderator.slack_id.present?
 
     moderator.slack_id
   end
