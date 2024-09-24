@@ -32,4 +32,4 @@ lowlevel_error_handler do |ex, env|
 end
 
 # Bind to the API domain
-bind 'tcp://0.0.0.0:3000' if ENV['API_DOMAIN'] == 'api-preprod.entourage.social'
+bind 'tcp://0.0.0.0:3000' if ENV['API_DOMAIN'] == 'api.entourage.social'
