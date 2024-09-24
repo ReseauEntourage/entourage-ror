@@ -18,6 +18,22 @@
       </div>
     </div>
 
+    <% if @default_moderator.present? %>
+      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Modérateur par défaut</b><br>
+          <b><%= @default_moderator.full_name %></b> est le modérateur par défaut. Cela signifie que, si les PEC, PI ne sont pas bien renseignés, ou que les modérateurs associés n'ont pas configuré leur SlackID, alors ce sera la personne qui sera notifiée sur Slack à leur place.
+        </div>
+      </div>
+    <% else %>
+      <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Aucun modérateur par défaut</b><br>
+          Attention ! Aucun modérateur par défaut n'est défini. Actuellement, le SlackID par défaut est : <b><%= @default_slack_id %></b> mais aucun compte admin actif n'est associé à cette valeur. Merci de contacter l'équipe tech pour régler ce problème.
+        </div>
+      </div>
+    <% end %>
+
     <table class="custom-table">
       <thead>
         <th></th>
