@@ -1,3 +1,4 @@
+web: bundle exec puma -C config/puma.rb
 web_backoffice: bundle exec puma -C config/puma_backoffice.rb
 web_api: bundle exec puma -C config/puma_api.rb
 worker_1: bundle exec sidekiq -c ${SIDEKIQ_CONCURRENCY:-2} -q sms -q salesforce -q translation
