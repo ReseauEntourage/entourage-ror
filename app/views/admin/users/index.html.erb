@@ -100,9 +100,6 @@
     <% if [:admin, :moderators].include? @role %>
       <th>Rôle modérateur</th>
     <% end %>
-
-    <th>Groupes</th>
-
   </thead>
 
   <% @users.each do |user| %>
@@ -149,17 +146,6 @@
           <% end %>
         </td>
       <% end %>
-
-      <td>
-        <% if user.neighborhood_memberships.any? %>
-          <% names = user.neighborhood_memberships.pluck(:name) %>
-          <% names_display = names[0..10].join("\n") + (names.length > 10 ? "\n..." : "") %>
-
-          <span class="badge" style="color: #555; background-color: #ddd;" title="Groupes de voisins : <%= "\n" + names_display %>">
-            <%= user.neighborhood_memberships.count %>
-          </span>
-        <% end %>
-      </td>
     </tr>
   <% end %>
 </table>
