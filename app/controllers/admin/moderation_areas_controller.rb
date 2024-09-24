@@ -6,6 +6,8 @@ module Admin
 
     def index
       @params = params.permit(:region)
+      @default_slack_id = ModerationServices::DEFAULT_SLACK_MODERATOR_ID
+      @default_moderator = User.find_by(slack_id: @default_slack_id, admin: true, validation_status: :validated)
 
       @moderation_areas = ModerationArea
         .includes(:animator, :sourcing, :community_builder)
