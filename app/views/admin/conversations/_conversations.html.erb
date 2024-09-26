@@ -40,7 +40,7 @@
                     <span class="text-muted">(pas de messages)</span>
                   <% else %>
                     <% if last_message.deleted? %>
-                      <p style="color: red;">Ce message a été supprimé : </p>
+                      <p style="color: red;">Ce message a été supprimé par <%= last_message.deleter&.full_name %> le <%= l last_message.deleted_at, format: :short %> : </p>
                       <em><%= simple_format last_message.content(true)[0..30] %></em>
                     <% else %>
                       <%= simple_format last_message.content[0..30] %>
