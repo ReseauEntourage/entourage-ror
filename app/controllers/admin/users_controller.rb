@@ -10,7 +10,7 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:address, :accepted_join_requests).order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:address).order("created_at DESC").page(params[:page]).per(25)
     end
 
     def search
@@ -324,7 +324,7 @@ module Admin
       engagement = get_engagement
       profile = get_profile
 
-      @users = current_user.community.users.includes([:neighborhood_memberships])
+      @users = current_user.community.users
 
       @users = @users.status_is(status)
       @users = @users.role_is(role)

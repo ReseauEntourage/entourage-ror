@@ -13,7 +13,7 @@
     </div>
 
     <% if chat_message.deleted? %>
-      <p style="color: red;"> Ce message a été supprimé : </p>
+      <p style="color: red;"> Ce message a été supprimé par <%= chat_message.deleter&.full_name %> le <%= l chat_message.deleted_at, format: :short %> : </p>
       <em><%= simple_format chat_message.content(true) %></em>
     <% else %>
       <%= simple_format chat_message.content %>
