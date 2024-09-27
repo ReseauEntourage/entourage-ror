@@ -2,7 +2,7 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_conversation, only: [:show, :chat_messages, :append_chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
+    before_action :set_conversation, only: [:show, :chat_messages, :prepend_chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
     before_action :set_recipients, only: [:show, :show_members]
 
     def index
@@ -81,13 +81,13 @@ module Admin
       end
     end
 
-    def append_chat_messages
+    def prepend_chat_messages
       @current_page = params[:page] || 1
       @chat_messages = @conversation.chat_messages.order(created_at: :desc).page(@current_page).per(10)
 
       respond_to do |format|
         format.js
-        format.html { render partial: 'append_chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages, tab: :chat_messages } }
+        format.html { render partial: 'prepend_chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages, tab: :chat_messages } }
       end
     end
 
@@ -121,7 +121,7 @@ module Admin
           respond_to do |format|
             @chat_messages = [message]
 
-            format.js { render :prepend_chat_messages }
+            format.js { render :append_chat_messages }
             format.html { redirect_to admin_conversations_path }
           end
         end

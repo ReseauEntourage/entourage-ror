@@ -142,12 +142,6 @@
   <%= render partial: 'actions', locals: { conversation: conversation } %>
 </div>
 
-<div id="conversation-messages" class="conversation-messages-container">
-  <div class="conversation-messages-content">
-    <%= render partial: 'chat_messages_content', locals: { chat_messages: chat_messages } %>
-  </div>
-</div>
-
 <div class="conversation-message is-message-form">
   <div class="conversation-content">
     <div>
@@ -157,6 +151,12 @@
       <%= f.text_area :content, class: "conversation-message-box", rows: 2 %>
       <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
     <% end %>
+  </div>
+</div>
+
+<div id="conversation-messages" class="conversation-messages-container">
+  <div class="conversation-messages-content">
+    <%= render partial: 'chat_messages_content', locals: { chat_messages: chat_messages } %>
   </div>
 </div>
 
@@ -171,25 +171,35 @@
   });
 
   $(document).ready(function() {
+    var messagesContainer = $('#conversation-messages');
+    if (messagesContainer.length) {
+      messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+    }
+  });
+
+  $(document).ready(function() {
     var page = 1;
     var loading = false;
 
     $('#conversation-messages').scroll(function() {
       var messagesContainer = $(this);
 
-      // Charger plus de messages lorsque l'utilisateur atteint le bas du conteneur
-      if (messagesContainer.scrollTop() + messagesContainer.innerHeight() >= messagesContainer[0].scrollHeight - 10 && !loading) {
+      // Check if the scroll is near the top of the container and avoid multiple calls at the same time
+      if (messagesContainer.scrollTop() === 0 && !loading) {
         loading = true;
 
         var currentPage = messagesContainer.data('current-page') || 1;
+        var previousHeight = messagesContainer[0].scrollHeight;
 
         $.ajax({
-          url: '<%= url_for(action: :append_chat_messages, id: conversation.id) %>',
+          url: '<%= url_for(action: :prepend_chat_messages, id: conversation.id) %>',
           data: { page: currentPage + 1 },
           type: 'GET',
           dataType: 'script',
           success: function() {
             page += 1;
+
+            messagesContainer.scrollTop(messagesContainer[0].scrollHeight - previousHeight);
 
             loading = false;
           },
