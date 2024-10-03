@@ -110,6 +110,18 @@ es:
         closed: Cerrado
         at: a las
 
+  onboarding:
+    ethical_charter: |
+      ¡Soy yo otra vez!
+
+      En Entourage, realmente nos importa que todos se sientan seguros, escuchados y bienvenidos. Por eso redactamos esta carta ética, que debe ser leída y aceptada por todos los miembros de la comunidad: https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+
+      Soy la encargada de asegurar el cumplimiento de esta carta en la app y durante los eventos organizados por la asociación, para que la red sea segura y acogedora para todos. ¡Toda la comunidad debe garantizarlo! Contamos con ustedes 💪
+
+      ¡Nos vemos pronto!
+
+      %s
+
   date:
     abbr_day_names:
       - dom
