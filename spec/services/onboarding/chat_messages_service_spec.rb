@@ -47,16 +47,6 @@ describe Onboarding::ChatMessagesService, type: :service do
       }
     end
 
-    describe 'outside of active hours' do
-      let(:run_time) { 1.week.from_now.monday.change(hour: 7, minute: 59) }
-      it { expect { subject }.not_to change { ChatMessage.count } }
-    end
-
-    describe 'outside of active days' do
-      let(:run_time) { 1.week.from_now.sunday.change(hour: 14, minute: 25) }
-      it { expect { subject }.not_to change { ChatMessage.count } }
-    end
-
     describe 'user has already received the message' do
       before { Event.track('onboarding.chat_messages.welcome.sent', user_id: user.id) }
       it { expect { subject }.not_to change { ChatMessage.count } }

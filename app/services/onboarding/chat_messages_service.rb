@@ -1,15 +1,10 @@
 module Onboarding
   module ChatMessagesService
-    WELCOME_MESSAGE_DELAY = 1.hour
-    ETHICAL_CHARTER_DELAY = 1.hour
+    ETHICAL_CHARTER_DELAY = 2.hours
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
 
     def self.deliver_welcome_message
-      now = Time.zone.now
-      return unless now.strftime('%A').in?(ACTIVE_DAYS)
-      return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
-
       User.where(id: welcome_message_user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
@@ -78,7 +73,6 @@ module Onboarding
         .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
         .without_event('onboarding.chat_messages.welcome.sent')
         .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", WELCOME_MESSAGE_DELAY.ago)
         .pluck(:id)
     end
 
