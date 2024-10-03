@@ -27,7 +27,7 @@ module Experimental::EntourageSlack
   end
 
   def self.payload entourage
-    slack_moderator = ModerationServices.slack_moderator_id(entourage)
+    slack_moderator = ModerationServices.slack_moderator_id(entourage.user)
 
     e = entourage
     subtitle =
