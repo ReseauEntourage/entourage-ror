@@ -1,6 +1,7 @@
 module Onboarding
   module ChatMessagesService
-    MIN_DELAY = 1.hour
+    WELCOME_MESSAGE_DELAY = 1.hour
+    ETHICAL_CHARTER_DELAY = 1.hour
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
 
@@ -9,7 +10,7 @@ module Onboarding
       return unless now.strftime('%A').in?(ACTIVE_DAYS)
       return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
-      User.where(id: user_ids).find_each do |user|
+      User.where(id: welcome_message_user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
 
@@ -39,11 +40,10 @@ module Onboarding
           next if messages.empty?
 
           first_name = UserPresenter.format_first_name user.first_name
-          interlocutor = ModerationServices.moderator_for_user(user)
 
           messages.each do |message|
             message = message.gsub(/\{\{\s*first_name\s*\}\}/, first_name)
-            message = message.gsub(/\{\{\s*interlocutor\s*\}\}/, interlocutor.first_name) if interlocutor.present?
+            message = message.gsub(/\{\{\s*interlocutor\s*\}\}/, author.first_name) if author.present?
 
             builder = ChatServices::ChatMessageBuilder.new(
               user: author,
@@ -72,14 +72,56 @@ module Onboarding
       end
     end
 
-    def self.user_ids
+    def self.welcome_message_user_ids
       User.where(community: :entourage, deleted: false)
         .with_event('onboarding.profile.first_name.entered', :name_entered)
         .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
         .without_event('onboarding.chat_messages.welcome.sent')
         .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
+        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", WELCOME_MESSAGE_DELAY.ago)
         .pluck(:id)
+    end
+
+    def self.deliver_ethical_charter
+      now = Time.zone.now
+      return unless now.strftime('%A').in?(ACTIVE_DAYS)
+      return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
+
+      User.where(id: ethical_charter_user_ids).find_each do |user|
+        next unless author = ModerationServices.moderator_for_user(user)
+
+        if conversation = conversation_with([author.id, user.id])
+          join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
+        else
+          conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id], creator_id: author.id)
+          join_request = conversation.join_requests.to_a.find { |r| r.user_id == author.id }
+        end
+
+        ChatServices::ChatMessageBuilder.new(
+          user: author,
+          joinable: conversation,
+          join_request: join_request,
+          params: {
+            content: I18n.t('onboarding.ethical_charter', locale: user.lang) % [author.first_name]
+          }
+        ).create do |on|
+          on.success do
+            Event.track('onboarding.chat_messages.ethical_charter.sent', user_id: user.id)
+          end
+        end
+      end
+    end
+
+    def self.ethical_charter_user_ids
+      User.where(community: :entourage, deleted: false, admin: false)
+        .with_event('onboarding.chat_messages.welcome.sent', :welcome_sent)
+        .without_event('onboarding.chat_messages.ethical_charter.sent')
+        .where("welcome_sent.created_at <= ?", ETHICAL_CHARTER_DELAY.ago)
+        .pluck(:id)
+    end
+
+    def self.ethical_charter_message
+      I18n.t('chat_messages.ethical_charter', default: ETHICAL_CHARTER_TEMPLATE)
     end
 
     def self.conversation_with participant_ids

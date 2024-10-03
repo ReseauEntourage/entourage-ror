@@ -110,6 +110,18 @@ ro:
         closed: Închis
         at: la
 
+  onboarding:
+    ethical_charter: |
+      Sunt eu din nou!
+
+      La Entourage, ne pasă cu adevărat ca fiecare să se simtă bine, în siguranță, ascultat și binevenit. De aceea am redactat această cartă etică, care trebuie citită și acceptată de toți membrii comunității 📜.
+
+      Sunt responsabilă de respectarea acestei carte în aplicație și în timpul evenimentelor organizate de asociație, astfel încât rețeaua să rămână sigură și primitoare pentru toată lumea. Întreaga comunitate trebuie să fie garantul acesteia! Contăm pe voi 💪
+
+      Pe curând!
+
+      %s
+
   date:
     abbr_day_names:
       - dum.
