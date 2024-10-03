@@ -110,6 +110,18 @@ de:
         closed: Geschlossen
         at: um
 
+  onboarding:
+    ethical_charter: |
+      It's me again!
+
+      At Entourage, we truly care about ensuring that everyone feels comfortable, safe, heard, and welcomed. That's why we’ve written this ethical charter, which must be read and accepted by all members of the community 📜.
+
+      I’m responsible for ensuring that this charter is respected on the app and during events organized by the association, so the network remains safe and welcoming for everyone. The entire community must uphold it! We're counting on you 💪
+
+      See you soon!
+
+      %s
+
   date:
     abbr_day_names:
       - So
