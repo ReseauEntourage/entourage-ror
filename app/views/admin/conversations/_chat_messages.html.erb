@@ -142,6 +142,12 @@
   <%= render partial: 'actions', locals: { conversation: conversation } %>
 </div>
 
+<div id="conversation-messages" class="conversation-messages-container">
+  <div class="conversation-messages-content">
+    <%= render partial: 'chat_messages_content', locals: { chat_messages: chat_messages } %>
+  </div>
+</div>
+
 <div class="conversation-message is-message-form">
   <div class="conversation-content">
     <div>
@@ -151,12 +157,6 @@
       <%= f.text_area :content, class: "conversation-message-box", rows: 2 %>
       <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
     <% end %>
-  </div>
-</div>
-
-<div id="conversation-messages" class="conversation-messages-container">
-  <div class="conversation-messages-content">
-    <%= render partial: 'chat_messages_content', locals: { chat_messages: chat_messages } %>
   </div>
 </div>
 
