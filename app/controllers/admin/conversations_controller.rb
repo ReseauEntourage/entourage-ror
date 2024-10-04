@@ -13,6 +13,7 @@ module Admin
         .joins(:join_requests)
         .where(group_type: :conversation)
         .search_by_member(params[:search])
+        .with_chat_messages
         .merge(current_admin.join_requests.accepted)
         .select(%(
           entourages.*,
