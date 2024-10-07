@@ -5,7 +5,7 @@ describe Onboarding::ChatMessagesService, type: :service do
     let(:run_time) { 1.week.from_now.monday.change(hour: 10, minute: rand(60)) }
     let(:onboarding_time) { run_time.advance(seconds: -rand(6.hours..7.hours)) }
     let!(:admin) { create :admin_user, first_name: 'foobar' }
-    let(:moderation_area) { create :moderation_area, moderator: admin, welcome_message_1_offer_help: "Bonjour {{first_name}}, je suis {{interlocutor}}" }
+    let(:moderation_area) { create :moderation_area, animator: admin, welcome_message_1_offer_help: "Bonjour {{first_name}}, je suis {{interlocutor}}" }
     let!(:user) { create :public_user, first_name: nil }
     let(:address) { build :address }
 

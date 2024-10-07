@@ -27,6 +27,8 @@ module Experimental::EntourageSlack
   end
 
   def self.payload entourage
+    slack_moderator = ModerationServices.slack_moderator_id(entourage.user)
+
     e = entourage
     subtitle =
       case e.group_type
@@ -43,15 +45,15 @@ module Experimental::EntourageSlack
           else
             e.postal_code
           end
-        "Évènement • #{subtitle_place}"
+        "Évènement • #{subtitle_place} (<@#{slack_moderator}>)"
       end
 
     text =
       case e.group_type
       when 'action'
-        "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_"
+        "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
       when 'outing'
-        "par _#{UserPresenter.new(user: e.user).display_name}_"
+        "par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
       end
 
     event_metadata =

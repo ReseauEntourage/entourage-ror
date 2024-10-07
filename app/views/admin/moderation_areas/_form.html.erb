@@ -42,11 +42,8 @@
       <%= f.text_field :name, class: "form-control", required: true %>
     </div>
 
-    <%= render_user_selection_field(f, :moderator, @area) %>
     <%= render_user_selection_field(f, :animator, @area) %>
-    <%= render_user_selection_field(f, :mobilisator, @area) %>
     <%= render_user_selection_field(f, :sourcing, @area) %>
-    <%= render_user_selection_field(f, :accompanyist, @area) %>
     <%= render_user_selection_field(f, :community_builder, @area) %>
   <% end %>
 

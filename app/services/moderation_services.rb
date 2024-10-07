@@ -1,4 +1,6 @@
 module ModerationServices
+  DEFAULT_SLACK_MODERATOR_ID = ENV["SLACK_DEFAULT_INTERLOCUTOR"]
+
   def self.moderator_with_error(community:)
     if community != :entourage
       return nil, :no_moderator_for_community
@@ -58,14 +60,6 @@ module ModerationServices
     moderation_area_query_for_departement(departement, community: community).first
   end
 
-  def self.moderator_for_departement departement, community:
-    moderator_id = moderation_area_query_for_departement(departement, community: community)
-      .pluck(:moderator_id)
-      .first
-
-    User.find_by(id: moderator_id)
-  end
-
   def self.departement_for_object object
     if object.nil? || object.postal_code.nil?
       nil
@@ -88,11 +82,10 @@ module ModerationServices
   end
 
   def self.moderator_for_entourage entourage
-    return unless entourage.group_type.in?(['action', 'outing'])
-    moderator_for_departement(
-      departement_for_object(entourage),
-      community: entourage.community
-    )
+    return ModerationServices.moderator_if_exists(community: :entourage) unless entourage.group_type.in?(['action', 'outing'])
+    return ModerationServices.moderator_if_exists(community: :entourage) unless moderation_area = moderation_area_for_departement(departement_for_object(entourage), community: entourage.community)
+
+    moderation_area.interlocutor_for_user(entourage.user)
   end
 
   def self.moderator_for_user user
@@ -103,5 +96,24 @@ module ModerationServices
 
   def self.default_moderation_area
     moderation_area_for_departement('*', community: :entourage)
+  end
+
+  def self.slack_moderator_id object
+    moderation_area = ModerationServices.moderation_area_for_departement(departement(object), community: $server_community)
+    moderation_area = ModerationServices.moderation_area_for_departement('*', community: $server_community) unless moderation_area.present?
+
+    return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.present?
+
+    moderation_area.slack_moderator_id_with_fallback(object)
+  end
+
+  def self.departement object
+    return unless object.respond_to?(:country)
+    return unless object.respond_to?(:postal_code)
+
+    departement_for_object(OpenStruct.new(
+      postal_code: object.postal_code,
+      country: object.country
+    ))
   end
 end

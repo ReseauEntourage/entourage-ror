@@ -1,7 +1,5 @@
 module SlackServices
   class Notifier
-    DEFAULT_SLACK_MODERATOR_ID = ENV["SLACK_DEFAULT_INTERLOCUTOR"]
-
     def notify
       notifier&.ping payload.merge(payload_adds)
     end
@@ -36,22 +34,11 @@ module SlackServices
     end
 
     def slack_moderator_id object
-      moderation_area = ModerationServices.moderation_area_for_departement(departement(object), community: $server_community)
-      moderation_area = ModerationServices.moderation_area_for_departement('*', community: $server_community) unless moderation_area.present?
-
-      return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.present?
-
-      moderation_area.slack_moderator_id_with_fallback
+      ModerationServices.slack_moderator_id(object)
     end
 
     def departement object
-      return unless object.respond_to?(:country)
-      return unless object.respond_to?(:postal_code)
-
-      ModerationServices.departement_for_object(OpenStruct.new(
-        postal_code: object.postal_code,
-        country: object.country
-      ))
+      ModerationServices.departement(object)
     end
 
     def payload_adds

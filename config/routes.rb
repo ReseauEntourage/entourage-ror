@@ -99,11 +99,8 @@ Rails.application.routes.draw do
 
       resources :moderation_areas do
         member do
-          patch 'update_moderator'
           patch 'update_animator'
-          patch 'update_mobilisator'
           patch 'update_sourcing'
-          patch 'update_accompanyist'
           patch 'update_community_builder'
         end
       end
