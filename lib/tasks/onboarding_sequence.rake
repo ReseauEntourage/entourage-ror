@@ -44,4 +44,9 @@ namespace :onboarding_sequence do
   task send_welcome_messages: :environment do
     Onboarding::ChatMessagesService.deliver_welcome_message
   end
+
+  desc "send_ethical_messages"
+  task send_ethical_messages: :environment do
+    Onboarding::ChatMessagesService.deliver_ethical_charter
+  end
 end
