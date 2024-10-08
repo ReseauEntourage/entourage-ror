@@ -40,6 +40,11 @@ namespace :onboarding_sequence do
     $redis.set(redis_key, redis_date)
   end
 
+  desc "send_incomplete_profile_email"
+  task send_incomplete_profile_email: :environment do
+    Onboarding::EmailerService.deliver_incomplete_profile_email
+  end
+
   desc "send_welcome_messages"
   task send_welcome_messages: :environment do
     Onboarding::ChatMessagesService.deliver_welcome_message
