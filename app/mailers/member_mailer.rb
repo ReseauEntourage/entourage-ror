@@ -9,6 +9,12 @@ class MemberMailer < MailjetMailer
                   from: email_with_name("contact@entourage.social", "Le Réseau Entourage")
   end
 
+  def incomplete_profile(user)
+    mailjet_email to: user,
+                  template_id: 6174246,
+                  campaign_name: 'onboarding_incomplete_profile'
+  end
+
   def onboarding_day_8(user)
     mailjet_email to: user,
                   template_id: 452755,
