@@ -42,4 +42,39 @@ RSpec.describe JoinRequest, type: :model do
       end
     end
   end
+
+  let!(:user) { create(:user, first_name: 'User1') }
+  let!(:accepted_creator) { create(:user, first_name: 'Creator') }
+  let!(:rejected_organizer) { create(:user, first_name: 'Organizer') }
+  let!(:participant) { create(:user, first_name: 'Participant') }
+  let!(:neighborhood) { create(:neighborhood, user: accepted_creator, name: 'Test Neighborhood') }
+  let!(:outing) { create(:outing, user: accepted_creator, title: 'Test Entourage') }
+
+
+  describe 'associations' do
+    before do
+      # create(:join_request, user: accepted_creator, joinable: neighborhood, status: :accepted, role: :creator) # automatically created
+      create(:join_request, user: participant, joinable: neighborhood, status: :cancelled, role: :member)
+
+      create(:join_request, user: accepted_creator, joinable: outing, status: :accepted, role: :organizer)
+      create(:join_request, user: rejected_organizer, joinable: outing, status: :cancelled, role: :organizer)
+      create(:join_request, user: participant, joinable: outing, status: :accepted, role: :participant)
+    end
+
+    it 'has many join_requests' do
+      expect(neighborhood.join_requests.map(&:user_id)).to match_array([accepted_creator.id, participant.id])
+      expect(outing.join_requests.map(&:user_id)).to match_array([accepted_creator.id, rejected_organizer.id, participant.id])
+    end
+
+    it 'filters creators_or_organizers correctly' do
+      # Vérifie que seul l'utilisateur avec le statut 'accepted' et le rôle 'creator' est retourné
+      expect(neighborhood.creators_or_organizer_ids).to eq([accepted_creator.id])
+      expect(outing.creators_or_organizer_ids).to eq([accepted_creator.id])
+    end
+
+    it 'does not include rejected or non-creator/organizer users in creators_or_organizers' do
+      expect(neighborhood.creators_or_organizers).not_to include(rejected_organizer)
+      expect(outing.creators_or_organizers).not_to include(rejected_organizer)
+    end
+  end
 end
