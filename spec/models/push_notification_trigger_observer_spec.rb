@@ -849,6 +849,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     describe "join_request on create" do
       let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
 
+      before { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
       after { create :join_request, user: participant, joinable: outing, status: :accepted }
 
       it {
