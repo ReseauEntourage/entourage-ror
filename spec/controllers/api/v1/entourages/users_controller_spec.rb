@@ -92,7 +92,7 @@ describe Api::V1::Entourages::UsersController do
 
       context "public group" do
         let(:entourage) { create :entourage, title: "foobar1", entourage_type: :contribution, public: true }
-        let!(:creator_join_request) { create :join_request, user: entourage.user, joinable: entourage, status: "accepted" }
+        let!(:creator_join_request) { create :join_request, user: entourage.user, joinable: entourage, status: "accepted", role: :creator }
         let(:notif_service) { double }
 
         before do
