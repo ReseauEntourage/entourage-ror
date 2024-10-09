@@ -7,6 +7,9 @@ module JoinableScopable
     has_many :members, through: :join_requests, source: :user
     has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
     has_many :confirmed_members, -> { where("join_requests.status = 'accepted'").where("confirmed_at is not null") }, through: :join_requests, source: :user
+    has_many :creators_or_organizers, -> {
+      where("join_requests.status = 'accepted'").where("join_requests.role in ('creator', 'organizer')")
+    }, through: :join_requests, source: :user
 
     scope :joined_by, -> (user) {
       where(id: JoinRequest.select(:joinable_id).where(joinable_type: name, user: user, status: JoinRequest::ACCEPTED_STATUS))
