@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :pin, :unpin, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -319,16 +319,6 @@ module Admin
       end
     end
 
-    def pin
-      @entourage.update_column(:pin, true)
-      redirect_to [:admin, @entourage]
-    end
-
-    def unpin
-      @entourage.update_column(:pin, false)
-      redirect_to [:admin, @entourage]
-    end
-
     def edit_type
       new_type = params[:to]&.to_sym
       current_type = @entourage.group_type.to_sym
@@ -514,13 +504,13 @@ module Admin
     end
 
     def index_params
-      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
+      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
     end
 
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, pins: [], metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, metadata: metadata_keys)
 
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)

@@ -33,19 +33,6 @@
     </div>
   </div>
 
-  <% if @entourage.pin? %>
-    <div class="control-group">
-      <%= f.label :pins, "À épingler aux codes postaux", class: "control-label" %>
-      <div class="controls">
-        <select multiple data-role="tagsinput" name="entourage[pins][]" id="entourage_pins">
-          <% @entourage.pins.each do |pin| %>
-            <option value="<%= pin %>"><%= pin %></option>
-          <% end %>
-        </select>
-      </div>
-    </div>
-  <% end %>
-
   <% if @entourage.outing? %>
     <div class="control-group">
       <label class="control-label">Événement à places limitées</label>
@@ -339,19 +326,5 @@
     })
 
     toggleOnlineFields()
-  </script>
-<% end %>
-
-<% if @entourage.pin? %>
-  <script>
-    $('#entourage_pins').tagsinput({
-      maxChars: 5,
-      trimValue: true
-    });
-    $('#entourage_pins').on('beforeItemAdd', function(event) {
-      if (!/^[0-9]+$/.test(event.item)) {
-        event.cancel = true;
-      }
-    });
   </script>
 <% end %>

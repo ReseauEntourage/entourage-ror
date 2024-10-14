@@ -116,14 +116,6 @@ module EntourageServices
       preload_user_join_requests(entourages)
       preload_chat_messages_counts(entourages)
 
-      if page == 1
-        pinned = EntourageServices::Pins.find(user, types)
-
-        pinned.compact.uniq.reverse.each do |action|
-          entourages = pin(action, entourages: entourages)
-        end
-      end
-
       entourages
     end
 
@@ -163,24 +155,6 @@ module EntourageServices
       entourages.each do |entourage|
         entourage.current_join_request = user_join_requests[entourage.id]
       end
-    end
-
-    def pin entourage_id, entourages:
-      entourages = entourages.to_a
-
-      index = entourages.index { |e| e.id == entourage_id }
-
-      if index
-        entourage = entourages.delete_at(index)
-      else
-        entourage = Entourage.visible.find_by(id: entourage_id)
-        return entourages unless entourage
-        entourage.current_join_request = nil
-        entourage.number_of_unread_messages = 0
-      end
-
-      entourages.insert(0, entourage)
-      entourages
     end
   end
 end
