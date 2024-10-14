@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :pin, :unpin, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -33,7 +33,6 @@ module Admin
           end
         )))
         .order(Arel.sql(%(
-          admin_pin DESC,
           entourages.created_at DESC
         )))
         .to_a
@@ -318,16 +317,6 @@ module Admin
         @entourage_images = EntourageImage.all
         render :edit_image
       end
-    end
-
-    def admin_pin
-      @entourage.update_column(:admin_pin, true)
-      redirect_to [:admin, @entourage]
-    end
-
-    def admin_unpin
-      @entourage.update_column(:admin_pin, false)
-      redirect_to [:admin, @entourage]
     end
 
     def pin
