@@ -70,7 +70,7 @@
                 —
                 Créée il y a <%= time_ago_in_words @entourage.created_at %>
               </div>
-              <%= link_to "Changer le créateur", edit_owner_admin_entourage_path(@entourage) if @entourage.pin? || @entourage.outing? %>
+              <%= link_to "Changer le créateur", edit_owner_admin_entourage_path(@entourage) if @entourage.outing? %>
             </div>
             <div class='col-sm-4 '>
               <div class='pull-right'>

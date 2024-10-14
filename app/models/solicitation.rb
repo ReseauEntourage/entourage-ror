@@ -5,7 +5,6 @@ class Solicitation < Entourage
 
   default_scope {
     where(group_type: :action, entourage_type: :ask_for_help)
-    .where(pin: false)
     .order(created_at: :desc)
   }
 

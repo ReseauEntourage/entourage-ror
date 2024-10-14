@@ -62,10 +62,7 @@
         </li>
 
         <li class="<%= :active if controller_name == 'entourages' %> custom-nav-item">
-          <%= link_to "Actions et événements", admin_entourages_path(q: {
-            group_type_eq: 'action',
-            pin_eq: 'false',
-            }) %>
+          <%= link_to "Actions et événements", admin_entourages_path(q: { group_type_eq: 'action' }) %>
         </li>
         <li class="<%= :active if controller_name == 'conversations' %> custom-nav-item">
           <%

@@ -8,7 +8,6 @@ class Contribution < Entourage
 
   default_scope {
     where(group_type: :action, entourage_type: :contribution)
-    .where(pin: false)
     .order(created_at: :desc)
   }
 

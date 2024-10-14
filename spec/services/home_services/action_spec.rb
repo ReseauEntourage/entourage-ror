@@ -6,7 +6,6 @@ describe HomeServices::Action do
   # action coordinates: 1.122, 2.345
   let!(:ask_for_help) { FactoryBot.create(:entourage, entourage_type: :ask_for_help, title: 'ask_for_help') }
   let!(:contribution) { FactoryBot.create(:entourage, entourage_type: :contribution, title: 'contribution') }
-  let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: '75', title: 'pin') }
 
   describe 'find_all' do
     # 5,57km from action
