@@ -115,13 +115,13 @@ class EntourageModeration < ApplicationRecord
     return unless default_neighborhood = entourage.user.default_neighborhood
     return unless join_request = JoinRequest.find_by(joinable: default_neighborhood, user: entourage.user, status: :accepted)
 
-    return if auto_post_already_created_on?(default_neighborhood)
+    return if auto_post_already_created_on?(default_neighborhood, entourage)
 
     ChatServices::ChatMessageBuilder.new(
       params: {
         content: "#{entourage.title}\n\n#{entourage.description}",
-        auto_post_type: "Neighborhood",
-        auto_post_id: default_neighborhood.id
+        auto_post_type: "Entourage",
+        auto_post_id: entourage.id
       },
       user: entourage.user,
       joinable: default_neighborhood,
@@ -131,13 +131,13 @@ class EntourageModeration < ApplicationRecord
 
   private
 
-  def auto_post_already_created_on? instance
+  def auto_post_already_created_on? instance, entourage
     return unless instance.respond_to?(:chat_messages)
 
     instance
       .chat_messages
-      .where("options->>'auto_post_type' = ?", instance.class.base_class.to_s)
-      .where("options->>'auto_post_id' = ?", instance.id.to_s)
+      .where("options->>'auto_post_type' = ?", entourage.class.base_class)
+      .where("options->>'auto_post_id' = ?", entourage.id.to_s)
       .exists?
   end
 end
