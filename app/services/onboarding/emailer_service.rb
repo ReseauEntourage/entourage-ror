@@ -17,7 +17,7 @@ module Onboarding
         .with_event('onboarding.profile.first_name.entered', :name_entered)
         .without_event('onboarding.chat_messages.incomplete_profile.sent')
         .where("name_entered.created_at <= ?", MIN_DELAY.ago)
-        .where("(goal is null or postal_code is null)")
+        .where("(goal is null or address_id is null)")
         .pluck(:id)
     end
   end
