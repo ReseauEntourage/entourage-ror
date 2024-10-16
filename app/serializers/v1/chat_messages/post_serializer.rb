@@ -4,6 +4,7 @@ module V1
       attribute :reactions
       attribute :reaction_id
       attribute :survey_response
+      attribute :auto_post_from
 
       def reactions
         object.reactions.summary
@@ -19,6 +20,16 @@ module V1
         return unless scope[:user].present?
 
         object.survey_responses.response(scope[:user].id)
+      end
+
+      def auto_post_from
+        return unless object.options.present?
+        return unless object.options.key?("auto_post_type") && object.options.key?("auto_post_id")
+
+        {
+          instance_type: object.options["auto_post_type"],
+          instance_id: object.options["auto_post_id"]
+        }
       end
 
       def post_id

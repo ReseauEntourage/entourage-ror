@@ -64,6 +64,7 @@ describe Api::V1::Outings::ChatMessagesController do
           "status" => "active",
           "survey" => nil,
           "survey_response" => nil,
+          "auto_post_from" => nil,
         }]
       }) }
     end
@@ -172,6 +173,7 @@ describe Api::V1::Outings::ChatMessagesController do
           "status" => "active",
           "survey" => nil,
           "survey_response" => nil,
+          "auto_post_from" => nil,
         }
       }) }
     end
