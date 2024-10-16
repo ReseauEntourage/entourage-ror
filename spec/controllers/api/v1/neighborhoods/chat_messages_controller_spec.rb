@@ -62,7 +62,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "reaction_id" => nil,
           "status" => "active",
           "survey" => nil,
-          "survey_response" => nil
+          "survey_response" => nil,
+          "auto_post_from" => nil,
         }]
       }) }
     end
@@ -171,6 +172,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "status" => "active",
           "survey" => nil,
           "survey_response" => nil,
+          "auto_post_from" => nil,
         }
       }) }
     end
