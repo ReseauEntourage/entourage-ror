@@ -18,8 +18,8 @@ RSpec.describe Neighborhood, :type => :model do
       context "chat_message has auto_post on default_neighborhood" do
         before { entourage.set_moderation_dates_and_save }
 
-        it { expect(ChatMessage.last.auto_post_type).to eq("Neighborhood") }
-        it { expect(ChatMessage.last.auto_post_id).to eq(neighborhood.id) }
+        it { expect(ChatMessage.last.auto_post_type).to eq("Entourage") }
+        it { expect(ChatMessage.last.auto_post_id).to eq(entourage.id) }
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Neighborhood, :type => :model do
 
     context 'when auto_post chat_message already exists' do
       let(:status) { :open }
-      let!(:chat_message) { create(:chat_message, messageable: neighborhood, auto_post_type: "Neighborhood", auto_post_id: neighborhood.id) }
+      let!(:chat_message) { create(:chat_message, messageable: neighborhood, auto_post_type: "Entourage", auto_post_id: entourage.id) }
 
       it { expect { entourage.set_moderation_dates_and_save }.not_to change { ChatMessage.count } }
     end
