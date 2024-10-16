@@ -340,16 +340,13 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "image_url"
     t.boolean "online", default: false
     t.string "event_url"
-    t.boolean "admin_pin", default: false, null: false
-    t.boolean "pin", default: false
-    t.jsonb "pins", default: [], null: false
-    t.string "display_category_copy"
     t.string "other_interest"
     t.string "recurrency_identifier"
     t.datetime "status_changed_at"
     t.datetime "notification_sent_at"
     t.datetime "working_hours_sent_at"
     t.integer "number_of_confirmed_people", default: 0
+    t.boolean "auto_post_at_create", default: false
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
@@ -358,7 +355,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["created_at"], name: "index_entourages_on_created_at"
     t.index ["description"], name: "index_entourages_on_description", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
-    t.index ["pin"], name: "index_entourages_on_pin"
     t.index ["title"], name: "index_entourages_on_title", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
@@ -511,6 +507,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
   create_table "moderation_areas", id: :serial, force: :cascade do |t|
     t.string "departement", limit: 2, null: false
     t.string "name", null: false
+    t.integer "moderator_id"
     t.string "slack_channel", limit: 80
     t.text "welcome_message_1_offer_help"
     t.text "welcome_message_2_offer_help"
@@ -521,9 +518,9 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
     t.string "slack_moderator_id_old"
+    t.boolean "activity", default: false, null: false
     t.integer "animator_id"
     t.integer "sourcing_id"
-    t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
