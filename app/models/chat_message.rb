@@ -12,8 +12,8 @@ class ChatMessage < ApplicationRecord
 
   STATUSES = [:active, :updated, :deleted]
 
-  store_attribute :options, :auto_post_type, ActiveModel::Type::String.new
-  store_attribute :options, :auto_post_id, ActiveModel::Type::Integer.new
+  store_attribute :options, :auto_post_type, :string
+  store_attribute :options, :auto_post_id, :integer
 
   has_ancestry
 
