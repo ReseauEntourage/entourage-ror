@@ -11,13 +11,13 @@
   q = @params[:q] || {}
   locations = moderation_area_filters
   types = {
-    "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
-    "Événements" => { group_type_eq: 'outing', pin_eq: 'false' },
+    "Actions" => { group_type_eq: 'action' },
+    "Événements" => { group_type_eq: 'outing' },
   }
 %>
 
 <ul class="custom-nav-tabs">
-  <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt] %>
+  <% types_keys = [:group_type_eq, :moderation_action_outcome_blank, :created_at_lt] %>
   <% types.each do |name, options| %>
     <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
     <li>
@@ -57,7 +57,7 @@
           <%= link_to "Exporter", download_list_export_admin_entourages_path(@params), class: "btn btn-default" %>
         <% end %>
 
-        <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: { group_type_eq: 'action', pin_eq: 'false' }), class: "btn btn-danger" %>
+        <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: { group_type_eq: 'action' }), class: "btn btn-danger" %>
       </div>
     </div>
   
@@ -67,7 +67,6 @@
 
       <%= f.hidden_field :postal_code_start if @q.postal_code_start %>
       <%= f.hidden_field :postal_code_not_start_all if @q.postal_code_not_start_all %>
-      <%= f.hidden_field :pin_eq if @q.pin_eq || @q.pin_eq === false %>
       <%= f.hidden_field :group_type_eq if @q.group_type_eq %>
       <%= f.hidden_field :moderation_action_outcome_blank if @q.moderation_action_outcome_blank %>
       <%= f.hidden_field :country_eq if @q.country_eq %>
@@ -103,7 +102,6 @@
 <% end %>
 
 <% outing_filter = params[:q] && params[:q][:group_type_eq] == 'outing' %>
-<% pin_filter = params[:q] && params[:q][:pin_eq] %>
 
 <table class="table admin-table custom-table" style="table-layout: auto">
   <thead>

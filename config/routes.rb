@@ -135,10 +135,6 @@ Rails.application.routes.draw do
           get :edit_owner
           post :close
           post :update_owner
-          post :pin
-          post :unpin
-          post :admin_pin
-          post :admin_unpin
           get :renew
           get :cancellation
           post :cancel

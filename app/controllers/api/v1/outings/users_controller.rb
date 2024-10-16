@@ -67,10 +67,11 @@ module Api
 
         def set_membership
           @membership = JoinRequest.where(joinable: @outing, user: current_user).first
-          @membership.status = :accepted if @membership.present?
-          @membership.role = :organizer if @membership.present? && current_user.ambassador? && params[:role] == 'organizer'
 
           @membership ||= JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
+          @membership.status = :accepted
+          @membership.role = :organizer if current_user.ambassador? && params[:role] == 'organizer'
+          @membership
         end
 
         def authorised_user?

@@ -42,7 +42,6 @@ module EntourageServices
       yield true
     end
 
-
     private
 
     def creator_join_requests
@@ -50,7 +49,7 @@ module EntourageServices
     end
 
     def joinable_is_valid?
-      neighborhood? || pin? || outing?
+      neighborhood? || outing?
     end
 
     def creator_type
@@ -63,10 +62,6 @@ module EntourageServices
       return :participant if outing?
 
       :member
-    end
-
-    def pin?
-      @joinable.is_a?(Entourage) && @joinable.pin?
     end
 
     def outing?

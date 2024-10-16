@@ -104,7 +104,7 @@ module Api
         metadata_keys = params.dig(:solicitation, :metadata).try(:keys) || []
         params.require(:solicitation).permit({
           location: [:longitude, :latitude]
-        }, :postal_code, :title, :description, :section, {
+        }, :postal_code, :title, :description, :section, :auto_post_at_create, {
           metadata: metadata_keys
         }, :recipient_consent_obtained)
       end

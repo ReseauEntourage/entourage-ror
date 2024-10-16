@@ -250,25 +250,4 @@ describe Admin::EntouragesController do
       it { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
     end
   end
-
-  describe "POST update pins" do
-    let(:entourage) { FactoryBot.create(:entourage, pin: true) }
-    before { post :update, params: { id: entourage.to_param, entourage: { pins: ['75000','44'], group_type: :action } } }
-
-    it { expect(assigns(:entourage).pins).to match_array(['75000', '44']) }
-  end
-
-  describe "POST pin" do
-    let(:entourage) { FactoryBot.create(:entourage, pin: false) }
-    before { post :pin, params: { id: entourage.to_param } }
-
-    it { expect(assigns(:entourage).pin?).to eq(true) }
-  end
-
-  describe "POST unpin" do
-    let(:entourage) { FactoryBot.create(:entourage, pin: true) }
-    before { post :unpin, params: { id: entourage.to_param } }
-
-    it { expect(assigns(:entourage).pin?).to eq(false) }
-  end
 end
