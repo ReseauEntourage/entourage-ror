@@ -37,7 +37,7 @@ module V1
     end
 
     def section
-      object.becomes(object.contribution? ? Contribution : Solicitation).section
+      object.becomes(object.action_class).section
     end
 
     lazy_relationship :last_chat_message
