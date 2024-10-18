@@ -120,7 +120,7 @@ class EntourageModeration < ApplicationRecord
     ChatServices::ChatMessageBuilder.new(
       params: {
         content: "#{entourage.title}\n\n#{entourage.description}",
-        auto_post_type: entourage.contribution? ? "Contribution" : "Solicitation",
+        auto_post_type: entourage.action_class.to_s,
         auto_post_id: entourage.id
       },
       user: entourage.user,
@@ -136,7 +136,7 @@ class EntourageModeration < ApplicationRecord
 
     instance
       .chat_messages
-      .where("options->>'auto_post_type' = ?", entourage.class.base_class)
+      .where("options->>'auto_post_type' = ?", entourage.action_class.to_s)
       .where("options->>'auto_post_id' = ?", entourage.id.to_s)
       .exists?
   end
