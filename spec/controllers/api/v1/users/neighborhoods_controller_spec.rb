@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::Users::NeighborhoodsController, :type => :controller do
-  render_views
-
   let(:user) { create(:pro_user) }
   let(:result) { JSON.parse(response.body) }
 
@@ -79,6 +77,26 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       it { expect(result).to have_key('neighborhoods') }
       it { expect(result['neighborhoods'].count).to eq(3) }
       it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
+    end
+  end
+
+  describe 'GET #default' do
+    let(:neighborhood) { create(:neighborhood) }
+
+    before { allow_any_instance_of(User).to receive(:default_neighborhood).and_return(neighborhood) }
+
+    context 'returns default_neighborhood' do
+      before { get :default, params: { user_id: 'me', token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key("neighborhood") }
+      it { expect(result["neighborhood"]["id"]).to eq(neighborhood.id) }
+    end
+
+    context 'joins default_neighborhood' do
+      after { get :default, params: { user_id: 'me', token: user.token } }
+
+      it { expect_any_instance_of(NeighborhoodServices::Joiner).to receive(:join_default_neighborhood!) }
     end
   end
 end

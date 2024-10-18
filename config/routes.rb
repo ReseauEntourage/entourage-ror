@@ -382,7 +382,12 @@ Rails.application.routes.draw do
         end
 
         resources :entourages, :controller => 'users/entourages', only: [:index]
-        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
+        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index] do
+          collection do
+            get :default
+          end
+        end
+
         resources :outings, :controller => 'users/outings', only: [:index] do
           collection do
             get :past
