@@ -120,7 +120,7 @@ class EntourageModeration < ApplicationRecord
     ChatServices::ChatMessageBuilder.new(
       params: {
         content: "#{entourage.title}\n\n#{entourage.description}",
-        auto_post_type: "Entourage",
+        auto_post_type: entourage.contribution? ? "Contribution" : "Solicitation",
         auto_post_id: entourage.id
       },
       user: entourage.user,
