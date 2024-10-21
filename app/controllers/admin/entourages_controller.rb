@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -474,6 +474,17 @@ module Admin
       end
     end
 
+    def update_sf_category
+      @entourage = Outing.find(params[:id])
+      @entourage.sf_category = params[:sf_category]
+      @entourage.save(validation: false)
+
+      respond_to do |format|
+        format.js { render "admin/entourages/update/sf_category" }
+        format.html { redirect_to admin_entourages, notice: 'SfCategory mis à jour avec succès.' }
+      end
+    end
+
     private
 
     def per
@@ -573,9 +584,14 @@ module Admin
         ransack_params = params[:q]
       end
 
-      group_types = (params[:group_type] || 'action,outing').split(',')
+      instances = if params.dig(:q, :group_type_eq) == 'outing'
+        Outing.all
+      else
+        Action.all
+      end
 
-      Entourage.where(group_type: group_types).like(params[:search]).with_moderation
+      instances.like(params[:search])
+        .with_moderation
         .moderator_search(params[:moderator_id])
         .ransack(ransack_params)
     end
