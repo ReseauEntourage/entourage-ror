@@ -117,6 +117,7 @@
     <th></th>
     <th></th>
     <th></th>
+    <th></th>
   </thead>
   <tbody>
     <% @entourages.each do |entourage| %>
@@ -152,6 +153,9 @@
             <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
           <% end %>
         </td>
+        <% if entourage.outing? %>
+          <td><%= render partial: "admin/entourages/update/sf_category_form", locals: { entourage: entourage } %></td>
+        <% end %>
       </tr>
     <% end %>
 
@@ -181,6 +185,10 @@
 
 <script>
   $(function(){
+    $(document).on('change', '.update-select', function() {
+      $(this).closest('form').submit();
+    });
+
     var isChanged = false;
 
     $('#q_status_in').multiselect({
