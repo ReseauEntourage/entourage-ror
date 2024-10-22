@@ -97,8 +97,9 @@ module Api
         NeighborhoodServices::Joiner.new(current_user).join_default_neighborhood!
       end
 
+      # @deprecated
       def set_user_recommandations
-        RecommandationServices::User.new(current_user).initiate
+        # RecommandationServices::User.new(current_user).initiate
       end
 
       def clean_inapp_notifications

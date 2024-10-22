@@ -38,18 +38,24 @@ module V1
         object.neighborhood_memberships.count
       end
 
+      # @deprecated
       def recommandations
-        object.user_recommandations.active.order(:fragment).map do |recommandation|
-          V1::UserRecommandationSerializer.new(recommandation).as_json
-        end
+        # object.user_recommandations.active.order(:fragment).map do |recommandation|
+        #   V1::UserRecommandationSerializer.new(recommandation).as_json
+        # end
+
+        []
       end
 
+      # @deprecated
       def congratulations
-        object.user_recommandations.to_be_congratulated.order(completed_at: :desc).map do |recommandation|
-          recommandation.update_column(:congrats_at, Time.now)
+        # object.user_recommandations.to_be_congratulated.order(completed_at: :desc).map do |recommandation|
+        #   recommandation.update_column(:congrats_at, Time.now)
 
-          V1::UserRecommandationSerializer.new(recommandation).as_json
-        end
+        #   V1::UserRecommandationSerializer.new(recommandation).as_json
+        # end
+
+        []
       end
 
       def unclosed_action

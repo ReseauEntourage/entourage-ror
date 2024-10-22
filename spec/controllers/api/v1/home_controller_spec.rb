@@ -188,16 +188,7 @@ describe Api::V1::HomeController do
             "chat_messages_count" => 0,
             "outing_participations_count" => 0,
             "neighborhood_participations_count" => 0,
-            "recommandations" => [{
-              "name" => "Proposer de l'aide",
-              "type" => "contribution",
-              "action" => "create",
-              "image_url" => nil,
-              "params" => {
-                "id" => nil,
-                "url" => nil
-              }
-            }],
+            "recommandations" => [],
             "congratulations" => [],
             "unclosed_action" => nil,
             "moderator" => {}
