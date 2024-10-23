@@ -524,6 +524,17 @@ fr:
       in_danger: Mise en danger
       other: Autre
 
+  onboarding:
+    ethical_charter: |
+      C'est encore moi !
+
+      Chez Entourage, on a vraiment à cœur que chacun se sente bien, en sécurité, écouté et accueilli. Alors on a rédigé cette charte éthique qui doit être lue et acceptée par tous les membres de la communauté : https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+
+      Je suis chargé.e de veiller au respect de cette charte sur l'app et pendant les événements organisés par l'association, pour que le réseau reste sécurisé et bienveillant pour toutes et pour tous. Toute la communauté doit en être garante ! On compte sur vous 💪
+
+      A très vite !
+
+      %s
 
   charts:
     conversations:

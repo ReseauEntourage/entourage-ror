@@ -62,7 +62,6 @@ en:
       offer: "You're now part of the Entourage community. Let's celebrate!"
       ask: "You're officially part of the Entourage community. Time to celebrate!"
 
-
   pois:
     soliguide:
       public:
@@ -110,6 +109,18 @@ en:
       hours:
         closed: Closed
         at: at
+
+  onboarding:
+    ethical_charter: |
+      It's me again!
+
+      At Entourage, we really care about ensuring everyone feels safe, heard, and welcomed. That's why we wrote this ethical charter, which must be read and accepted by all members of the community: https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+
+      I am responsible for ensuring that this charter is respected on the app and during events organized by the association so that the network remains safe and welcoming for everyone. The entire community must be its guardian! We're counting on you 💪
+
+      See you soon!
+
+      %s
 
   date:
     abbr_day_names:
