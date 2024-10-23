@@ -53,7 +53,7 @@ module Experimental::EntourageSlack
       when 'action'
         "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
       when 'outing'
-        "par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
+        "par _#{UserPresenter.new(user: e.user).display_name}_ #{e.user.ambassador? ? ' - Ambassadeur' : ''} (<@#{slack_moderator}>)"
       end
 
     event_metadata =
