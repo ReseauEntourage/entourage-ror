@@ -5,6 +5,10 @@ module Onboarding
     ACTIVE_HOURS = '09:00'..'18:30'
 
     def self.deliver_welcome_message
+      now = Time.zone.now
+      return unless now.strftime('%A').in?(ACTIVE_DAYS)
+      return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
+
       User.where(id: welcome_message_user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
