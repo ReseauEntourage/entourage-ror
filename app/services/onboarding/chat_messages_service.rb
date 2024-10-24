@@ -107,10 +107,11 @@ module Onboarding
     end
 
     def self.ethical_charter_user_ids
+      # 2024-10-23 is the day when we sent this functionality to production
       User.where(community: :entourage, deleted: false, admin: false)
         .with_event('onboarding.chat_messages.welcome.sent', :welcome_sent)
         .without_event('onboarding.chat_messages.ethical_charter.sent')
-        .where("welcome_sent.created_at <= ?", ETHICAL_CHARTER_DELAY.ago)
+        .where("welcome_sent.created_at between '2024-10-23' and ?", ETHICAL_CHARTER_DELAY.ago)
         .pluck(:id)
     end
 
