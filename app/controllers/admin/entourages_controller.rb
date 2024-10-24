@@ -456,7 +456,7 @@ module Admin
     def update_sf_category
       @entourage = Outing.find(params[:id])
       @entourage.sf_category = params[:sf_category]
-      @entourage.save(validation: false)
+      @entourage.save(validate: false)
 
       respond_to do |format|
         format.js { render "admin/entourages/update/sf_category" }
