@@ -1,5 +1,6 @@
 class Outing < Entourage
   include Interestable
+  include SfCategorizable
   include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
   include Recommandable
 

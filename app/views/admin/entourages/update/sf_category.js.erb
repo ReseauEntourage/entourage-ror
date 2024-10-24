@@ -1,0 +1,3 @@
+$('#update-sf-category-form-<%= @entourage.id %>').html('<%= escape_javascript(
+  render partial: "admin/entourages/update/sf_category_form", locals: { entourage: @entourage }) %>'
+);
