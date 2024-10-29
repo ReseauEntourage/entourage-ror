@@ -7,14 +7,33 @@ module JoinableScopable
     has_many :members, through: :join_requests, source: :user
     has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
     has_many :confirmed_members, -> { where("join_requests.status = 'accepted'").where("confirmed_at is not null") }, through: :join_requests, source: :user
+    has_many :creators_or_organizers, -> {
+      where("join_requests.status = 'accepted'").where("join_requests.role in ('creator', 'organizer')")
+    }, through: :join_requests, source: :user
 
     scope :joined_by, -> (user) {
-      joins(:join_requests).where(join_requests: {
-        user: user, status: JoinRequest::ACCEPTED_STATUS
-      })
+      where(id: JoinRequest.select(:joinable_id).where(joinable_type: name, user: user, status: JoinRequest::ACCEPTED_STATUS))
     }
     scope :not_joined_by, -> (user) {
-      where.not(id: joined_by(user))
+      where.not(id: JoinRequest.select(:joinable_id).where(joinable_type: name, user: user, status: JoinRequest::ACCEPTED_STATUS))
+    }
+    scope :order_by_unread_messages, -> {
+      order(Arel.sql("join_requests.unread_messages_count DESC"))
+    }
+
+    scope :search_by_member, -> (search) {
+      return unless search.present?
+
+      where(sanitize_sql_array [%(
+        %s.id in (
+          select joinable_id
+          from join_requests
+          left join users on users.id = join_requests.user_id
+          where
+            join_requests.joinable_type = '%s'
+            and (lower(users.first_name) ilike '%s' or lower(users.last_name) ilike '%s' or lower(users.phone) ilike '%s')
+        )
+      ), self.table_name, self.table_name.singularize.camelize, "%#{search.downcase}%", "%#{search.downcase}%", "%#{search.downcase}%"])
     }
   end
 

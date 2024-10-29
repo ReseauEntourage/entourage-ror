@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Api::V1::LinksController do
-  let(:user) { FactoryBot.create(:offer_help_user) }
+  let!(:user) { create(:offer_help_user, uuid: "12345678-1234-1234-1234-123456789abc") }
 
   describe 'GET redirect' do
     context "not signed in and wrong id" do
@@ -24,5 +24,12 @@ describe Api::V1::LinksController do
       it { expect(response.status).to eq(302) }
       it { should redirect_to 'https://www.entourage.social/cgu/' }
     end
+  end
+
+  describe 'GET mesure_impact' do
+    before { get :mesure_impact, params: { id: user.uuid } }
+
+    it { expect(response.status).to eq(302) }
+    it { should redirect_to "https://entourage-asso.typeform.com/to/w1OHXk1E#email=#{user.email}&phone=#{user.phone}" }
   end
 end

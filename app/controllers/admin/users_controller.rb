@@ -10,7 +10,19 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:address).order("created_at DESC").page(params[:page]).per(25)
+    end
+
+    def search
+      if params[:query].present?
+        @users = User.validated.where('first_name LIKE ? OR phone LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%")
+      else
+        @users = User.none
+      end
+
+      respond_to do |format|
+        format.json { render json: @users.map { |user| { id: user.id, first_name: user.first_name, last_name: user.last_name, phone: user.phone } } }
+      end
     end
 
     def show
@@ -312,7 +324,7 @@ module Admin
       engagement = get_engagement
       profile = get_profile
 
-      @users = current_user.community.users.includes([:neighborhood_memberships])
+      @users = current_user.community.users
 
       @users = @users.status_is(status)
       @users = @users.role_is(role)

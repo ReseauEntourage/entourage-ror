@@ -1,15 +1,13 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Photos de contenus pédagogiques", admin_resource_images_path %></li>
-      <li class="active">Modification d'une photo</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Photos de contenus pédagogiques", admin_resource_images_path %></li>
+    <li class="active">Modification d'une photo</li>
+  </ol>
 
-    <h2>
-      <span class="text-muted">#<%= @resource_image.id %></span>
-      <%= @resource_image.title %>
-    </h2>
+  <h2>
+    <span class="text-muted">#<%= @resource_image.id %></span>
+    <%= @resource_image.title %>
+  </h2>
 
-    <%= render partial: 'form' %>
-  </div>
+  <%= render partial: 'form' %>
 </div>

@@ -13,156 +13,154 @@
   end
 %>
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <%= render 'edit_header', tab: :show_posts %>
+  <%= render 'edit_header', tab: :show_posts %>
 
-    <div class="row">
-      <% if unread_count > 0 && first_unread %>
-        <div class="conversation-unread-status" id="unreadStatus">
-          <%= pluralize(unread_count, "nouveau message", "nouveaux messages") %>
-          depuis le <%= l first_unread.created_at, format: "%-d %B %Y à %H h %M" %>
-        </div>
-      <% end %>
+  <div class="row">
+    <% if unread_count > 0 && first_unread %>
+      <div class="conversation-unread-status" id="unreadStatus">
+        <%= pluralize(unread_count, "nouveau message", "nouveaux messages") %>
+        depuis le <%= l first_unread.created_at, format: "%-d %B %Y à %H h %M" %>
+      </div>
+    <% end %>
 
-      <% color = {} %>
-      <% color[current_user.id] || (color.count * 0.381966011 * 360).round %>
-      <div class="conversation-message is-message-form">
-        <div class="conversation-gutter">
-          <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
-            <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
-          </div>
-        </div>
-
-        <div class="conversation-content">
-          <div>
-            <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
-          </div>
-          <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
-            <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
-            <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
-          <% end %>
+    <% color = {} %>
+    <% color[current_user.id] || (color.count * 0.381966011 * 360).round %>
+    <div class="conversation-message is-message-form">
+      <div class="conversation-gutter">
+        <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
+          <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
         </div>
       </div>
 
-      <% if @posts.empty? %>
-        Il n'y a pas encore de message.
-      <% else %>
-        <% date = nil %>
+      <div class="conversation-content">
+        <div>
+          <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
+        </div>
+        <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
+          <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+          <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+        <% end %>
+      </div>
+    </div>
 
-        <% @posts.each do |message| %>
-          <% if date.nil? || date != message.created_at.to_date %>
-            <% date = message.created_at.to_date %>
-            <div class="conversation-day-divider">
-              <div class="conversation-day-divider-label">
-                <% if date == Date.today %>
-                  aujourd'hui
-                <% else %>
-                  <%= l date, format: "%A %-d %B %Y" %>
+    <% if @posts.empty? %>
+      Il n'y a pas encore de message.
+    <% else %>
+      <% date = nil %>
+
+      <% @posts.each do |message| %>
+        <% if date.nil? || date != message.created_at.to_date %>
+          <% date = message.created_at.to_date %>
+          <div class="conversation-day-divider">
+            <div class="conversation-day-divider-label">
+              <% if date == Date.today %>
+                aujourd'hui
+              <% else %>
+                <%= l date, format: "%A %-d %B %Y" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+        <div class="conversation-message">
+          <div class="conversation-gutter">
+            <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
+              <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
+            </div>
+          </div>
+          <div class="conversation-content">
+            <div>
+              <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
+              <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
+            </div>
+
+            <% if message.deleted? %>
+              <p style="color: red;"> Ce message a été supprimé par <%= message.deleter&.full_name %> le <%= l message.deleted_at, format: :short %> : </p>
+              <em><%= simple_format message.content(true) %></em>
+            <% else %>
+              <div id="chat-message-<%= message.id %>">
+                <%= simple_format message.content %>
+              </div>
+            <% end %>
+
+            <% if message.survey.present? %>
+              <p><strong>Sondage</strong></p>
+              <div class="survey-choices">
+                <% message.survey.choices.each_with_index do |choice, index| %>
+                  <li><%= "#{choice} (#{message.survey.summary[index]} réponses)" %></li>
                 <% end %>
               </div>
-            </div>
-          <% end %>
+            <% end %>
 
-          <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
-
-          <div class="conversation-message">
-            <div class="conversation-gutter">
-              <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
-                <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
+            <% if message.image_path(true).present? %>
+              <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
+                <%= image_tag(message.image_path(true), height: '100') %>
               </div>
-            </div>
-            <div class="conversation-content">
-              <div>
-                <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
-                <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
-              </div>
+            <% else %>
+              <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
+            <% end %>
 
-              <% if message.deleted? %>
-                <p style="color: red;"> Ce message a été supprimé : </p>
-                <em><%= simple_format message.content(true) %></em>
-              <% else %>
-                <div id="chat-message-<%= message.id %>">
-                  <%= simple_format message.content %>
-                </div>
-              <% end %>
+            <% if message.children.any? %>
+              <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
+            <% end %>
+          </div>
+          <div class="conversation-actions">
+            <div class="dropdown" style="display: inline-block">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                <li>
+                  <%= link_to "Marquer comme non lu",
+                      unread_message_admin_neighborhoods_path(chat_message_id: message.id),
+                      method: :post %>
+                </li>
 
-              <% if message.survey.present? %>
-                <p><strong>Sondage</strong></p>
-                <div class="survey-choices">
-                  <% message.survey.choices.each_with_index do |choice, index| %>
-                    <li><%= "#{choice} (#{message.survey.summary[index]} réponses)" %></li>
-                  <% end %>
-                </div>
-              <% end %>
-
-              <% if message.image_path(true).present? %>
-                <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
-                  <%= image_tag(message.image_path(true), height: '100') %>
-                </div>
-              <% else %>
-                <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
-              <% end %>
-
-              <% if message.children.any? %>
-                <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
-              <% end %>
-            </div>
-            <div class="conversation-actions">
-              <div class="dropdown" style="display: inline-block">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                <% unless message.children.any? %>
                   <li>
-                    <%= link_to "Marquer comme non lu",
-                        unread_message_admin_neighborhoods_path(chat_message_id: message.id),
-                        method: :post %>
+                    <%= link_to "Ajouter un commentaire", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %>
                   </li>
+                <% end %>
 
-                  <% unless message.children.any? %>
-                    <li>
-                      <%= link_to "Ajouter un commentaire", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %>
-                    </li>
-                  <% end %>
+                <li>
+                  <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(message.id), remote: true %>
+                </li>
 
-                  <li>
-                    <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(message.id), remote: true %>
-                  </li>
+                <li>
+                  <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>
+                </li>
 
-                  <li>
-                    <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>
-                  </li>
-
-                  <li>
-                    <%= link_to "Supprimer le message",
-                        destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
-                        method: :delete,
-                        data: { confirm: "Voulez-vous vraiment supprimer ce message ? \n\n#{message.user.full_name} :\n#{message.content}" },
-                        class: "text-danger" %>
-                  </li>
-                </ul>
-              </div>
+                <li>
+                  <%= link_to "Supprimer le message",
+                      destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
+                      method: :delete,
+                      data: { confirm: "Voulez-vous vraiment supprimer ce message ? \n\n#{message.user.full_name} :\n#{message.content}" },
+                      class: "text-danger" %>
+                </li>
+              </ul>
             </div>
           </div>
+        </div>
 
-          <% if message == first_unread %>
-            <div class="conversation-unread-divider" id="unreadDivider">
-              <div class="conversation-unread-divider-label">messages déjà lus</div>
-            </div>
-          <% end %>
+        <% if message == first_unread %>
+          <div class="conversation-unread-divider" id="unreadDivider">
+            <div class="conversation-unread-divider-label">messages déjà lus</div>
+          </div>
         <% end %>
       <% end %>
+    <% end %>
 
-      <div class="row">
-        <%= paginate @posts %>
-      </div>
-
-      <% if @neighborhood.moderator_has_unread_content(user: current_user) %>
-        <div class="text-center">
-          <%= link_to "Marquer comme lu", read_all_messages_admin_neighborhood_path(@neighborhood), method: :post, class: "btn btn-default" %>
-        </div>
-      <% end %>
+    <div class="row">
+      <%= paginate @posts %>
     </div>
+
+    <% if @neighborhood.moderator_has_unread_content(user: current_user) %>
+      <div class="text-center">
+        <%= link_to "Marquer comme lu", read_all_messages_admin_neighborhood_path(@neighborhood), method: :post, class: "btn btn-default" %>
+      </div>
+    <% end %>
   </div>
 </div>
 

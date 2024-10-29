@@ -1,11 +1,6 @@
 class ModerationArea < ApplicationRecord
-  validates :slack_moderator_id, length: { in: 9..11 }, allow_nil: true
-
-  belongs_to :moderator, class_name: :User, optional: true
   belongs_to :animator, class_name: :User, optional: true
-  belongs_to :mobilisator, class_name: :User, optional: true
   belongs_to :sourcing, class_name: :User, optional: true
-  belongs_to :accompanyist, class_name: :User, optional: true
   belongs_to :community_builder, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: "*") }
@@ -21,28 +16,21 @@ class ModerationArea < ApplicationRecord
     ModerationServices::Region.for_department(departement)
   end
 
-  def slack_moderator
-    moderator
+  def slack_moderator_with_fallback object
+    user = object if object.is_a?(User)
+    user = object.user if object.respond_to?(:user)
+
+    return unless user.present?
+    return animator_with_fallback if user.is_offer_help?
+
+    sourcing_with_fallback
   end
 
-  def slack_moderator_with_fallback
-    return slack_moderator if slack_moderator.try(:slack_id)
-    return mobilisator if mobilisator.try(:slack_id)
-    return accompanyist if accompanyist.try(:slack_id)
-    return sourcing if sourcing.try(:slack_id)
-    return default_interlocutor if default_interlocutor.try(:slack_id)
+  def slack_moderator_id_with_fallback object
+    return ModerationServices::DEFAULT_SLACK_MODERATOR_ID unless moderator = slack_moderator_with_fallback(object)
+    return ModerationServices::DEFAULT_SLACK_MODERATOR_ID unless moderator.slack_id.present?
 
-    nil
-  end
-
-  def slack_moderator_id
-    slack_moderator.try(:slack_id)
-  end
-
-  def slack_moderator_id_with_fallback
-    return slack_moderator_with_fallback.slack_id if slack_moderator_with_fallback
-
-    SlackServices::Notifier::DEFAULT_SLACK_MODERATOR_ID
+    moderator.slack_id
   end
 
   def default_interlocutor
@@ -51,31 +39,22 @@ class ModerationArea < ApplicationRecord
 
   def interlocutor_for_user user
     return default_interlocutor unless user.present?
-    return accompanyist_with_fallback if user.is_ask_for_help? && activity?
     return sourcing_with_fallback if user.is_ask_for_help?
     return sourcing_with_fallback if user.association?
 
-    mobilisator_with_fallback
+    animator_with_fallback
   end
 
   def animator_with_fallback
-    animator || mobilisator || community_builder || default_interlocutor
-  end
-
-  def mobilisator_with_fallback
-    mobilisator || accompanyist || community_builder || default_interlocutor
+    animator || default_interlocutor
   end
 
   def sourcing_with_fallback
-    sourcing || accompanyist || mobilisator || community_builder || default_interlocutor
-  end
-
-  def accompanyist_with_fallback
-    accompanyist || sourcing || mobilisator || community_builder || default_interlocutor
+    sourcing || default_interlocutor
   end
 
   def community_builder_with_fallback
-    community_builder || mobilisator || accompanyist || default_interlocutor
+    community_builder || default_interlocutor
   end
 
   def departement_slug
@@ -110,10 +89,8 @@ class ModerationArea < ApplicationRecord
       :sans_zone
     when 'FR'
       :national
-    when /\A\d\d\z/
-      "dep_#{departement}".to_sym
     else
-      raise "Unhandled departement #{departement.inspect}"
+      "dep_#{departement}".to_sym
     end
   end
 

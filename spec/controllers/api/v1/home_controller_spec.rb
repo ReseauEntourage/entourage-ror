@@ -94,6 +94,7 @@ describe Api::V1::HomeController do
 
   describe 'GET metadata' do
     let!(:reaction) { create(:reaction) }
+    let!(:category) { create(:category, name: :alimentaire) }
     let(:result) { JSON.parse(response.body) }
 
     before { get :metadata, params: { token: user.token } }
@@ -146,6 +147,14 @@ describe Api::V1::HomeController do
         "key" => reaction.key,
         "image_url" => reaction.image_url }
     ]) }
+    # poi_categories
+    it { expect(result).to have_key("poi_categories") }
+    it { expect(result["poi_categories"]).to eq([
+      {
+        "id" => category.id,
+        "name" => category.name
+      }
+    ]) }
   end
 
   describe 'GET summary' do
@@ -179,16 +188,7 @@ describe Api::V1::HomeController do
             "chat_messages_count" => 0,
             "outing_participations_count" => 0,
             "neighborhood_participations_count" => 0,
-            "recommandations" => [{
-              "name" => "Proposer de l'aide",
-              "type" => "contribution",
-              "action" => "create",
-              "image_url" => nil,
-              "params" => {
-                "id" => nil,
-                "url" => nil
-              }
-            }],
+            "recommandations" => [],
             "congratulations" => [],
             "unclosed_action" => nil,
             "moderator" => {}

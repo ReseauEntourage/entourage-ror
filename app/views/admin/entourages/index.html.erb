@@ -1,11 +1,9 @@
-
 <div class="title-container">
-
   <h1>Liste des actions et des événements</h1>
 
   <div class="ctas-container">
-          <%= link_to "Nouvelle action", new_admin_entourage_path(group_type: :action), class: "btn btn-success" %>
-          <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
+    <%= link_to "Nouvelle action", new_admin_entourage_path(group_type: :action), class: "btn btn-success" %>
+    <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
   </div>
 </div>
 
@@ -19,59 +17,53 @@
 %>
 
 <ul class="custom-nav-tabs">
-    <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt]
-        types.each do |name, options| 
-        active = types.key q.slice(*types_keys).compact.symbolize_keys %>
-      <li>
-        <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)), class: "#{active == name ? :active : :default}") %>
-      </li>
-    <% end %>
+  <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt] %>
+  <% types.each do |name, options| %>
+    <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
+    <li>
+      <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)), class: "#{active == name ? :active : :default}") %>
+    </li>
+  <% end %>
 </ul>
-
-
-
 
 <%= search_form_for [:admin, @q], class: 'form-inline', id: 'q_form' do |f| %>
   <div class="panel panel-default">
     <div class="panel-body">
-        <div class='input-group'>
-          <%= text_field_tag :search, params[:search], class: "form-control", placeholder: 'Titre, description' %>
-          <span class="input-group-btn">
-            <%= f.submit "Chercher", class: "btn btn-default" %>
-          </span>
-        </div>
+      <div class='input-group'>
+        <%= text_field_tag :search, params[:search], class: "form-control", placeholder: 'Titre, description' %>
+        <span class="input-group-btn">
+          <%= f.submit "Chercher", class: "btn btn-default" %>
+        </span>
+      </div>
 
-        <%
-          current_value = params[:moderator_id]
-          options = current_user.community.users.moderators.map { |u| [u.first_name, u.id] }
-          options.unshift ['Tous (avec ou sans interlocuteur)', :any], ['Non assigné', :none]
-        %>
-        <%= select_tag :moderator_id, options_for_select(options, params[:moderator_id]), class: "form-control" %>
+      <% current_value = params[:moderator_id] %>
+      <% options = current_user.community.users
+        .moderators.validated.order(:first_name)
+        .map { |u| [u.first_name, u.id] }
+      %>
+      <% options.unshift ['Tous (avec ou sans interlocuteur)', :any], ['Non assigné', :none] %>
+      <%= select_tag :moderator_id, options_for_select(options, params[:moderator_id]), class: "form-control" %>
 
       <div class='input-group'>
         <%= f.select :entourage_type_eq, [['Toutes les actions', nil]] + entourage_type_names, {}, class: 'form-control' %>
       </div>
+
       <div class="input-group">
         <%= f.select :status_in, entourage_type_statuses, {}, class: 'form-control', multiple: true, style: "width: 200px" %>
       </div>
+
       <div class="input-group">
         <% if @q.group_type_eq == "outing" %>
           <%= link_to "Exporter", download_list_export_admin_entourages_path(@params), class: "btn btn-default" %>
         <% end %>
 
-          <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: {
-            group_type_eq: 'action',
-            pin_eq: 'false',
-            }), class: "btn btn-danger" %>
+        <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: { group_type_eq: 'action', pin_eq: 'false' }), class: "btn btn-danger" %>
       </div>
     </div>
   
     <div class="panel-body">
-      <%
-        q = @params[:q] || {}
-
-        locations = moderation_area_filters
-      %>
+      <% q = @params[:q] || {} %>
+      <% locations = moderation_area_filters %>
 
       <%= f.hidden_field :postal_code_start if @q.postal_code_start %>
       <%= f.hidden_field :postal_code_not_start_all if @q.postal_code_not_start_all %>
@@ -85,24 +77,17 @@
       <% end %>
 
       <div class="btn-group btn-group-sm">
-
         <% locations_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all] %>
-        <%= link_to("Partout", @params.merge(q: q.except(*locations_keys)), class: "btn btn-#{(!@params["q"].key?("postal_code_start") and !@params["q"].key?("postal_code_not_start_all")) ? :primary : :default}") %>
+        <%= link_to("Partout", @params.merge(q: q.except(*locations_keys)), class: "btn btn-#{(!@params["q"].key?("postal_code_start") && !@params["q"].key?("postal_code_not_start_all")) ? :primary : :default}") %>
         <% locations.sort.each do |name, options, index| %>
           <% if (name != "Partout") %>
             <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
-            <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
-                class: "btn btn-#{active == name ? :primary : :default}"
-            ) %>
+            <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)), class: "btn btn-#{active == name ? :primary : :default }" ) %>
           <% end %>
         <% end %>
       </div>
-
-      
     </div>
   </div>
-
-  
 <% end %>
 
 <% if @q.moderation_action_outcome_blank %>
@@ -110,6 +95,7 @@
     <div class="panel-heading">
       Actions non abouties <b>de plus de trois mois</b>
     </div>
+
     <div class="panel-body">
       Les actions épinglées n'apparaissent pas dans cette liste.
     </div>
@@ -120,11 +106,12 @@
 <% pin_filter = params[:q] && params[:q][:pin_eq] %>
 
 <table class="table admin-table custom-table" style="table-layout: auto">
-  
   <thead>
     <th>Titre</th>
     <th>Date de création</th>
-    <% if outing_filter %><th>Date de l'événement</th><% end %>
+    <% if outing_filter %>
+      <th>Date de l'événement</th>
+    <% end %>
     <th>Description</th>
     <th>Statut</th>
     <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
@@ -135,17 +122,15 @@
   </thead>
   <tbody>
     <% @entourages.each do |entourage| %>
-      <% unread_count  = @message_count[entourage.id].unread %>
+      <% unread_count = @message_count[entourage.id].unread %>
       <% unread_images_count = @message_count[entourage.id].unread_images %>
+
       <tr class="<%= 'not-open' if entourage.status != 'open' %>">
-          <td>
-            <%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
-          <td>
-            <%= l entourage.created_at, format:  :date_short%>
-          </td>
-          <% if outing_filter %>
-            <td><%= l entourage.starts_at, format: :date_short %></td>
-          <% end %>
+        <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
+        <td><%= l entourage.created_at, format:  :date_short %></td>
+        <% if outing_filter %>
+          <td><%= l entourage.starts_at, format: :date_short %></td>
+        <% end %>
         <td><%= entourage_description_excerpt(entourage.description) %></td>
         <td><%= entourage_state_label(entourage) %></td>
         <td><span class="badge" title="Membres"><%= entourage.members_count %></span></td>
@@ -172,8 +157,7 @@
       </tr>
     <% end %>
 
-    <% if @entourages.none? && @entourages.current_page == 1 &&
-          params[:moderator_id].present? && params[:moderator_id].to_i != 0 %>
+    <% if @entourages.none? && @entourages.current_page == 1 && params[:moderator_id].present? && params[:moderator_id].to_i != 0 %>
       <% filtered_moderator = current_user.community.users.find(params[:moderator_id]) %>
       <tr>
         <td colspan="8" style="text-align: center">
@@ -194,9 +178,8 @@
 </table>
 
 <%= page_entries_info @entourages, entry_name: 'entourages' %>
-<div class="container">
-  <%= paginate @entourages %>
-</div>
+
+<div class="container"><%= paginate @entourages %></div>
 
 <script>
   $(function(){

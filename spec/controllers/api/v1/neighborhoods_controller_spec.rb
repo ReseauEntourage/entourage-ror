@@ -8,7 +8,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   let(:not_admin) { create(:public_user, admin: false) }
 
   context 'index' do
-    let!(:neighborhood) { create :neighborhood }
+    let!(:neighborhood) { create :neighborhood, name: "JO Paris", interest_list: ["sport"] }
     let(:result) { JSON.parse(response.body) }
 
     before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood]) }
@@ -65,14 +65,71 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhoods'].count).to eq(0) }
     end
 
-    describe 'with user roles' do
-      before { neighborhood.user.update_attribute(:targeting_profile, :ambassador) }
+    describe 'filter by interests' do
+      before { get :index, params: { token: user.token, interests: interests } }
+
+      describe 'find with interest' do
+        let(:interests) { ["sport"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(1) }
+        it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      end
+
+      describe 'does not find with interest' do
+        let(:interests) { ["jeux"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(0) }
+      end
+    end
+
+    describe 'filter by q' do
+      before { get :index, params: { token: user.token, q: q } }
+
+      describe 'find with q' do
+        let(:q) { "JO" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(1) }
+        it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      end
+
+      describe 'find with q not case sensitive' do
+        let(:q) { "jo" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(1) }
+        it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      end
+
+      describe 'does not find with q' do
+        let(:q) { "OJ" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result['neighborhoods'].count).to eq(0) }
+      end
+    end
+
+    describe 'always find national' do
+      let!(:neighborhood_national) { create :neighborhood, national: true }
 
       before { get :index, params: { token: user.token } }
 
-      it { expect(response.status).to eq 200 }
       it { expect(result).to have_key('neighborhoods') }
-      it { expect(result['neighborhoods'][0]['user']['community_roles']).to eq(['Ambassadeur']) }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
+    end
+
+    describe 'national first' do
+      let!(:neighborhood_national) { create :neighborhood, national: true }
+
+      before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood, neighborhood_national]) }
+      before { get :index, params: { token: user.token } }
+
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
     end
   end
 
@@ -273,7 +330,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
           "status_changed_at" => nil,
-          "public" => true
+          "public" => true,
+          "national" => false
         }) }
       end
 
@@ -372,7 +430,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ongoing_outings" => [],
           "has_ongoing_outing" => false,
           "posts" => [],
-          "public" => true
+          "public" => true,
+          "national" => false
         }
       })}
     end
@@ -582,6 +641,53 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
         it { expect(response.status).to eq 400 }
       end
+    end
+  end
+
+  describe 'default' do
+    let(:paris) { create(:address, postal_code: '75001' )}
+    let(:user) { create(:public_user, address: paris) }
+
+    let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: paris.latitude, longitude: paris.longitude ) }
+    let!(:neighborhood_not_paris) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
+
+    let(:result) { JSON.parse(response.body) }
+
+    let(:request) { get :default, params: { token: user.token } }
+
+    context "user has not joined" do
+      before { request }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to eq(Hash.new) }
+    end
+
+    context "user has joined" do
+      let!(:join_request) { create :join_request, user: user, joinable: neighborhood_paris, status: :accepted }
+
+      before { request }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("neighborhood") }
+      it { expect(result["neighborhood"]["id"]).to eq(neighborhood_paris.id) }
+    end
+
+    context "user has left" do
+      before { request }
+
+      let!(:join_request) { create :join_request, user: user, joinable: neighborhood_paris, status: :cancelled }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to eq(Hash.new) }
+    end
+
+    context "user has joined a not-default neighborhood" do
+      before { request }
+
+      let!(:join_request) { create :join_request, user: user, joinable: neighborhood_not_paris, status: :accepted }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to eq(Hash.new) }
     end
   end
 

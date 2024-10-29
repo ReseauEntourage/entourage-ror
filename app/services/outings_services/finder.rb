@@ -1,6 +1,6 @@
 module OutingsServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests
 
     def initialize user, params
       @user = user
@@ -14,10 +14,20 @@ module OutingsServices
       end
 
       @distance = params[:travel_distance] || user.travel_distance
+
+      @q = params[:q]
+
+      @interests = params[:interests] || []
+      @interests += params[:interest_list].split(',') if params[:interest_list].present?
+      @interests = @interests.compact.uniq if @interests.present?
     end
 
     def find_all
-      outings = Outing.active.future_or_ongoing
+      outings = Outing
+        .like(q)
+        .active
+        .future_or_ongoing
+        .match_at_least_one_interest(interests)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
@@ -27,6 +37,16 @@ module OutingsServices
 
       # order by starts_at is already in default_scope
       outings.group(:id)
+    end
+
+    def find_all_participations
+      Outing
+        .like(q)
+        .joins(:join_requests)
+        .like(q)
+        .where(join_requests: { user: user, status: JoinRequest::ACCEPTED_STATUS })
+        .match_at_least_one_interest(interests)
+        .group('entourages.id, join_requests.id')
     end
 
     private

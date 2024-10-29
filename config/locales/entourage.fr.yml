@@ -204,11 +204,8 @@ fr:
       moderation_area:
         name: Nom de la zone
         departement: Département
-        moderator_id: Modérateur
-        animator_id: Com-anim
-        mobilisator_id: Mob-anim
-        sourcing_id: Sourcing
-        accompanyist_id: Accompagnement
+        animator_id: PEC
+        sourcing_id: PI
         community_builder_id: Community builder
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
@@ -425,13 +422,13 @@ fr:
       ask: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
 
   regions:
+    ouest: Ouest
+    sud_ouest: Sud-Ouest
+    sud_est: Sud-Est
     aura: Auvergne-Rhône-Alpes
-    bretagne: Bretagne
-    hdf: Hauts-de-France
+    nord: Nord
     idf: Ile-de-France
-    paca: Provence-Alpes-Côte d'Azur
-    gironde: Gironde
-    digital_community: Communauté digitale
+    centre_est: Centre-Est
 
   pois:
     soliguide:
@@ -527,6 +524,17 @@ fr:
       in_danger: Mise en danger
       other: Autre
 
+  onboarding:
+    ethical_charter: |
+      C'est encore moi !
+
+      Chez Entourage, on a vraiment à cœur que chacun se sente bien, en sécurité, écouté et accueilli. Alors on a rédigé cette charte éthique qui doit être lue et acceptée par tous les membres de la communauté : https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+
+      Je suis chargé.e de veiller au respect de cette charte sur l'app et pendant les événements organisés par l'association, pour que le réseau reste sécurisé et bienveillant pour toutes et pour tous. Toute la communauté doit en être garante ! On compte sur vous 💪
+
+      A très vite !
+
+      %s
 
   charts:
     conversations:

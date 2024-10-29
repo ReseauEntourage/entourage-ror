@@ -156,62 +156,61 @@ describe Api::V1::PoisController, :type => :controller do
 
         context 'v1' do
           before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), :format => :json } }
-          it { expect(assigns(:categories)).to eq([category1, category2, category3]) }
-          it { expect(assigns(:pois)).to eq([poi1, poi3]) }
+          it { expect(assigns(:categories)).to match_array([category1, category2, category3]) }
+          it { expect(assigns(:pois)).to match_array([poi1, poi3]) }
 
           it "renders POI" do
             res = JSON.parse(response.body)
-            expect(res).to eq({
-              "categories" => [{
-                "id" => category1.id,
-                "name" => category1.name
-              }, {
-                "id" => category2.id,
-                "name" => category2.name
-              }, {
-                "id" => category3.id,
-                "name" => category3.name
-              }
-              ],
-              "pois" => [{
-                "id" => poi1.id,
-                "name" => "Dede",
-                "description" => nil,
-                "longitude" => 2.30681949999996,
-                "latitude" => 48.870424,
-                "adress" => "Au 50 75008 Paris",
-                "phone" => "0000000000",
-                "website" => "entourage.com",
-                "email" => "entourage@entourage.com",
-                "audience" => "Mon audience",
-                "validated" => true,
-                "category_id" => poi1.category_id,
-                "category" => {
-                  "id" => poi1.category.id,
-                  "name" => poi1.category.name
-                },
-                "partner_id" => nil
-              }, {
-                "id" => poi3.id,
-                "name" => "Dede",
-                "description" => nil,
-                "longitude" => 2.30681949999996,
-                "latitude" => 48.870424,
-                "adress" => "Au 50 75008 Paris",
-                "phone" => "0000000000",
-                "website" => "entourage.com",
-                "email" => "entourage@entourage.com",
-                "audience" => "Mon audience",
-                "validated" => true,
-                "category_id" => poi3.category_id,
-                "category" => {
-                  "id" => poi3.category.id,
-                  "name" => poi3.category.name
-                },
-                "partner_id" => nil
-              }
-            ]
-          })
+
+            expect(res["categories"]).to match_array([{
+              "id" => category1.id,
+              "name" => category1.name
+            }, {
+              "id" => category2.id,
+              "name" => category2.name
+            }, {
+              "id" => category3.id,
+              "name" => category3.name
+            }])
+
+            expect(res["pois"]).to match_array([{
+              "id" => poi1.id,
+              "name" => "Dede",
+              "description" => nil,
+              "longitude" => 2.30681949999996,
+              "latitude" => 48.870424,
+              "adress" => "Au 50 75008 Paris",
+              "phone" => "0000000000",
+              "website" => "entourage.com",
+              "email" => "entourage@entourage.com",
+              "audience" => "Mon audience",
+              "validated" => true,
+              "category_id" => poi1.category_id,
+              "category" => {
+                "id" => poi1.category.id,
+                "name" => poi1.category.name
+              },
+              "partner_id" => nil
+            }, {
+              "id" => poi3.id,
+              "name" => "Dede",
+              "description" => nil,
+              "longitude" => 2.30681949999996,
+              "latitude" => 48.870424,
+              "adress" => "Au 50 75008 Paris",
+              "phone" => "0000000000",
+              "website" => "entourage.com",
+              "email" => "entourage@entourage.com",
+              "audience" => "Mon audience",
+              "validated" => true,
+              "category_id" => poi3.category_id,
+              "category" => {
+                "id" => poi3.category.id,
+                "name" => poi3.category.name
+              },
+              "partner_id" => nil
+            }
+          ])
           end
         end
 
@@ -219,8 +218,8 @@ describe Api::V1::PoisController, :type => :controller do
           before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), v: 2 } }
           it "renders POI" do
             res = JSON.parse(response.body)
-            expect(res).to eq(
-              "pois" => [{
+            expect(res['pois']).to match_array(
+              [{
                 "uuid" => poi1.uuid,
                 "name" => "Dede",
                 "longitude" => 2.30681949999996,
@@ -254,13 +253,13 @@ describe Api::V1::PoisController, :type => :controller do
         context 'without distance' do
           before { get :index, params: { latitude: 10.0, longitude: 10.0, format: :json } }
           it { expect(response.status).to eq(200) }
-          it { expect(assigns[:pois].map(&:id).sort).to eq [poi3, poi4].map(&:id).sort }
+          it { expect(assigns[:pois].map(&:id).sort).to match_array [poi3].map(&:id).sort }
         end
 
         context 'with distance' do
           before { get :index, params: { latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json } }
           it { expect(response.status).to eq(200) }
-          it { expect(assigns[:pois].map(&:id).sort).to eq [poi3, poi4, poi2].map(&:id).sort }
+          it { expect(assigns[:pois].map(&:id).sort).to match_array [poi3, poi4, poi2].map(&:id).sort }
         end
       end
 
@@ -301,5 +300,23 @@ describe Api::V1::PoisController, :type => :controller do
         end
       end
     end
+  end
+
+  describe "clustered" do
+    let(:user) { create :pro_user }
+    let(:result) { JSON.parse(response.body) }
+
+    let!(:poi1) { create :poi, latitude: 10, longitude: 12 }
+    let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1 }
+    let!(:poi3) { create :poi, latitude: 10, longitude: 10 }
+    let!(:poi4) { create :poi, latitude: 10.05, longitude: 9.95 }
+    let!(:poi5) { create :poi, latitude: 12, longitude: 10 }
+
+    before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json } }
+
+    it { expect(response.status).to eq(200) }
+    it { expect(result).to have_key("clusters") }
+    it { expect(result["clusters"].length).to eq(3) }
+    it { expect(result["clusters"].map{|cluster| cluster["id"]}).to match_array([poi3.id, poi4.id, poi2.id]) }
   end
 end

@@ -6,9 +6,11 @@ module Admin
 
     def index
       @params = params.permit(:region)
+      @default_slack_id = ModerationServices::DEFAULT_SLACK_MODERATOR_ID
+      @default_moderator = User.find_by(slack_id: @default_slack_id, admin: true, validation_status: :validated)
 
       @moderation_areas = ModerationArea
-        .includes(:moderator, :animator, :mobilisator, :sourcing, :accompanyist, :community_builder)
+        .includes(:animator, :sourcing, :community_builder)
         .in_region(@params[:region])
         .order(:departement)
     end
@@ -46,15 +48,6 @@ module Admin
       end
     end
 
-    def update_moderator
-      @moderation_area = ModerationArea.find(params[:id])
-      @moderation_area.update(moderator_id: params[:moderator_id])
-      respond_to do |format|
-        format.js { render "admin/moderation_areas/update/moderator" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Modérateur mis à jour avec succès.' }
-      end
-    end
-
     def update_animator
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(animator_id: params[:animator_id])
@@ -64,30 +57,12 @@ module Admin
       end
     end
 
-    def update_mobilisator
-      @moderation_area = ModerationArea.find(params[:id])
-      @moderation_area.update(mobilisator_id: params[:mobilisator_id])
-      respond_to do |format|
-        format.js { render "admin/moderation_areas/update/mobilisator" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Mob-anim mis à jour avec succès.' }
-      end
-    end
-
     def update_sourcing
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(sourcing_id: params[:sourcing_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/sourcing" }
         format.html { redirect_to admin_moderation_areas, notice: 'Sourcing mis à jour avec succès.' }
-      end
-    end
-
-    def update_accompanyist
-      @moderation_area = ModerationArea.find(params[:id])
-      @moderation_area.update(accompanyist_id: params[:accompanyist_id])
-      respond_to do |format|
-        format.js { render "admin/moderation_areas/update/accompanyist" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Accompagnement mis à jour avec succès.' }
       end
     end
 
@@ -110,11 +85,8 @@ module Admin
 
     def super_admin_area_params
       params.require(:moderation_area).permit(
-        :moderator_id,
         :animator_id,
-        :mobilisator_id,
         :sourcing_id,
-        :accompanyist_id,
         :community_builder_id,
         :departement,
         :name,

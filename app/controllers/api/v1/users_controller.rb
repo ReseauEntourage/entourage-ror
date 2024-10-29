@@ -187,6 +187,34 @@ module Api
         end
       end
 
+      def notify
+        return unless neighborhood = current_user.default_neighborhood
+
+        PushNotificationService.new.send_notification(
+          "sender",
+          PushNotificationTrigger::I18nStruct.new(text: "object"),
+          PushNotificationTrigger::I18nStruct.new(text: "object"),
+          [current_user],
+          "neighborhood",
+          neighborhood.id, {
+            instance: "neighborhood",
+            instance_id: neighborhood.id
+          }
+        )
+
+        render status: 200, json: { message: "Notification sent" }
+      end
+
+      def notify_force
+        UserServices::UserApplications.new(user: current_user).app_tokens.each do |token|
+          NotificationJob.new.perform("sender", "object", "content", token.push_token, current_user.community.slug, {
+            instance: "neighborhood", instance_id: current_user.default_neighborhood.id
+          })
+        end
+
+        render status: 200, json: { message: "Notification sent" }
+      end
+
       def presigned_avatar_upload
         user = params[:id] == "me" ? current_user : community.users.find(params[:id])
         if user != current_user
@@ -392,11 +420,11 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :willing_to_engage_locally, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
       end
 
       def update_params
-        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :interest_list, :involvement_list, :concern_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
+        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthday, :travel_distance, :willing_to_engage_locally, :interest_list, :involvement_list, :concern_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
       end
 
       def user_report_params

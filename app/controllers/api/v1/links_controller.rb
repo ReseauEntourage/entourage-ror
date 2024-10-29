@@ -103,6 +103,15 @@ module Api
 
         redirect_to redirection
       end
+
+      def mesure_impact
+        user = User.find_by_uuid(params[:id])
+
+        url = "https://entourage-asso.typeform.com/to/w1OHXk1E"
+        url = "https://entourage-asso.typeform.com/to/i8dpyRvx" if user && user.is_ask_for_help?
+
+        redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}"
+      end
     end
   end
 end

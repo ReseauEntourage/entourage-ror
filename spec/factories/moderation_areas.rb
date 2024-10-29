@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :moderation_area do
-    moderator { association(:public_user) }
+    animator { association(:public_user) }
     departement { '99' }
     name { "Zone 1" }
 

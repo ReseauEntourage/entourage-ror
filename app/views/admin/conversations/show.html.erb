@@ -4,41 +4,7 @@
   <br>
 
   <% if !@new_conversation %>
-    <% if @read %>
-      <%= button_to "Marquer comme non-lu", read_status_admin_conversation_path(@conversation.id || @conversation.uuid_v2, status: :unread),
-        method: :post,
-        class: "btn btn-default btn-sm",
-        form: { style: "float: left;" }
-      %>
-    <% else %>
-      <%= button_to "Marquer comme lu", read_status_admin_conversation_path(@conversation.id || @conversation.uuid_v2, status: :read),
-        method: :post,
-        class: "btn btn-default btn-sm",
-        form: { style: "float: left;" }
-      %>
-    <% end %>
-
-    <% if @archived %>
-      <%= button_to "Désarchiver", archive_status_admin_conversation_path(@conversation.id || @conversation.uuid_v2, status: :inbox),
-        method: :post,
-        class: "btn btn-default btn-sm",
-        form: { style: "float: left;" }
-      %>
-    <% else %>
-      <%= button_to "Archiver", archive_status_admin_conversation_path(@conversation.id || @conversation.uuid_v2, status: :archived),
-        method: :post,
-        class: "btn btn-default btn-sm",
-        form: { style: "float: left;" }
-      %>
-    <% end %>
-
-    <% unless @archived %>
-      <%= form_tag invite_admin_conversation_path(@conversation.id), method: :post, html: { role: "form" } do |f| %>
-        <%= submit_tag "Ajouter à la conversation", class: "btn btn-default btn-sm", style: "float: right" %>
-
-        <%= text_field_tag :user_id, nil, class: "form-control", style: "float: right; width: 200px;", placeholder: "utilisateur (ID ou téléphone)", required: true %>
-      <% end %>
-    <% end %>
+    <%= render partial: 'actions', locals: { conversation: @conversation } %>
   <% end %>
   <br>
 

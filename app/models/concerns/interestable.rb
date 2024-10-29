@@ -6,18 +6,18 @@ module Interestable
 
     validate :validate_interest_list!
 
-    scope :join_tags, -> {
+    scope :join_interests, -> {
       joins(sanitize_sql_array [%(
-        left join taggings on taggable_type = '%s' and taggable_id = %s.id
+        left join taggings on taggable_type = '%s' and taggable_id = %s.id and context = 'interests'
         left join tags on tags.id = taggings.tag_id
-      ), self.name, self.table_name])
+      ), self.table_name.singularize.camelize, self.table_name])
     }
 
     scope :order_by_interests_matching, -> (interest_list) {
       return unless interest_list
       return unless interest_list.any?
 
-      join_tags
+      join_interests
         .group(sanitize_sql_array ["%s.id", self.table_name])
         .order(Arel.sql %(
         sum(
@@ -30,7 +30,7 @@ module Interestable
     }
 
     scope :order_with_interests, -> {
-      join_tags
+      join_interests
         .group(sanitize_sql_array ["%s.id", self.table_name])
         .order(Arel.sql %(
           sum(case when tags.id is not null then 1 else 0 end) desc
@@ -41,7 +41,7 @@ module Interestable
       return unless interest_list
       return unless interest_list.any?
 
-      joins(:interests).where(interests: { name: interest_list })
+      join_interests.where("tags.name IN (?)", interest_list)
     }
   end
 

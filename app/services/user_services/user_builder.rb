@@ -22,7 +22,10 @@ module UserServices
       UserService.sync_roles(user)
       if user.save
         self.class.process_good_waves_invitations(user)
+
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
+        MemberMailer.welcome(user).deliver_later if user.email.present?
+
         callback.on_success.try(:call, user)
       else
         return callback.on_duplicate(user) if User.where(phone: params[:phone]).count>0

@@ -95,10 +95,7 @@ class Entourage < ApplicationRecord
   scope :like, -> (search) {
     return unless search.present?
 
-    where('(unaccent(title) ilike unaccent(:title) or unaccent(description) ilike unaccent(:description))', {
-      title: "%#{search.strip}%",
-      description: "%#{search.strip}%"
-    })
+    where('(unaccent(title) ilike unaccent(:title))', { title: "%#{search.strip}%" })
   }
   scope :moderator_search, -> (search) {
     return if search == 'any'
@@ -108,6 +105,8 @@ class Entourage < ApplicationRecord
   scope :successful_outcome, -> {
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
+
+  scope :with_chat_messages, -> { joins(:chat_messages).distinct }
 
   attribute :preload_performed, :boolean, default: false
   attribute :preload_landscape_url, :string, default: nil

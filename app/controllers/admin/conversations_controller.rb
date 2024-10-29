@@ -2,17 +2,19 @@ module Admin
   class ConversationsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_conversation, only: [:show, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
+    before_action :set_conversation, only: [:show, :chat_messages, :prepend_chat_messages, :show_members, :message, :invite, :unjoin, :read_status, :archive_status]
     before_action :set_recipients, only: [:show, :show_members]
 
     def index
       @params = params.permit([:filter])
-      @user = current_admin
 
       @conversations = Entourage
-        .where(group_type: :conversation)
+        .includes(:user)
         .joins(:join_requests)
-        .merge(@user.join_requests.accepted)
+        .where(group_type: :conversation)
+        .search_by_member(params[:search])
+        .with_chat_messages
+        .merge(current_admin.join_requests.accepted)
         .select(%(
           entourages.*,
           last_message_read < feed_updated_at or last_message_read is null as unread
@@ -21,7 +23,7 @@ module Admin
         .page(params[:page])
         .per(50)
 
-      params.delete(:filter) unless params[:filter].in?(['archived', 'unread', 'multiple'])
+      params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
 
       @conversations = if params[:filter] == 'archived'
         @conversations.where("archived_at >= feed_updated_at")
@@ -30,23 +32,11 @@ module Admin
       end
 
       @conversations = @conversations.where("last_message_read < feed_updated_at or last_message_read is null") if params[:filter] == 'unread'
-      @conversations = @conversations.where("number_of_people > 2") if params[:filter] == 'multiple'
 
-      @last_message =
-        ChatMessage
-        .select('distinct on (messageable_id) *')
-        .where(messageable_type: :Entourage)
-        .where(messageable_id: @conversations.map(&:id))
-        .order(:messageable_id, created_at: :desc)
-
-      @last_message = Hash[@last_message.map { |m| [m.messageable_id, m] }]
-
-      @recipient_ids = JoinRequest.accepted.where(joinable_type: :Entourage, joinable_id: @conversations.map(&:id)).where.not(user_id: @user.id).pluck(:joinable_id, :user_id).group_by(&:first).each { |_, a| a.replace a.map(&:last) }
-      @recipient_ids.default = [@user.id] # if no recipient, it must be a conversation with self
-
-      @users = Hash[User.where(
-        id: @recipient_ids.values.map{ |a| a.first(3) }.flatten + @last_message.values.map(&:user_id)
-      ).select(:id, :first_name, :last_name).uniq.map { |u| [u.id, u] }]
+      respond_to do |format|
+        format.js
+        format.html
+      end
     end
 
     def show
@@ -83,8 +73,32 @@ module Admin
       @messages_author = current_admin if join_request.present? || @conversation.new_record?
     end
 
+    def chat_messages
+      @chat_messages = @conversation.chat_messages.order(created_at: :desc).page(1).per(10)
+
+      respond_to do |format|
+        format.js
+        format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages, tab: :chat_messages } }
+      end
+    end
+
+    def prepend_chat_messages
+      @current_page = params[:page] || 1
+      @chat_messages = @conversation.chat_messages.order(created_at: :desc).page(@current_page).per(10)
+
+      respond_to do |format|
+        format.js
+        format.html { render partial: 'prepend_chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages, tab: :chat_messages } }
+      end
+    end
+
     def show_members
       @join_requests = @conversation.join_requests.accepted.includes(:user)
+
+      respond_to do |format|
+        format.js
+        format.html { render partial: 'show_members', locals: { join_requests: @join_requests, tab: :show_members } }
+      end
     end
 
     def message
@@ -104,7 +118,13 @@ module Admin
       chat_builder.create do |on|
         on.success do |message|
           join_request.update_column(:last_message_read, message.created_at)
-          redirect_to admin_conversation_path(@conversation)
+
+          respond_to do |format|
+            @chat_messages = [message]
+
+            format.js { render :append_chat_messages }
+            format.html { redirect_to admin_conversations_path }
+          end
         end
 
         on.failure do |message|
@@ -117,10 +137,16 @@ module Admin
       @chat_message = ChatMessage.find(params[:id])
 
       ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
-        redirection = admin_conversation_path(@chat_message.messageable)
+        redirection = chat_messages_admin_conversation_path(@chat_message.messageable)
 
         on.success do |chat_message|
-          redirect_to redirection
+          @conversation = @chat_message.messageable
+          @chat_messages = @conversation.chat_messages.order(created_at: :desc)
+
+          respond_to do |format|
+            format.js { render :chat_messages }
+            format.html { render partial: 'chat_messages', locals: { conversation: @conversation, chat_messages: @chat_messages } }
+          end
         end
 
         on.failure do |chat_message|
@@ -146,7 +172,10 @@ module Admin
       end
 
       if join_request.save
-        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation"
+        respond_to do |format|
+          format.js { render :show_members }
+          format.html { redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été ajouté à la conversation" }
+        end
       else
         redirect_to admin_conversation_path(params[:id]), alert: "L'utilisateur '#{params[:user_id]}' n'a pas pu être ajouté à la conversation"
       end
@@ -159,7 +188,10 @@ module Admin
       return redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' ne fait déjà pas partie de la conversation" unless join_request.present? && join_request.accepted?
 
       if join_request.update_attribute(:status, :cancelled)
-        redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été retiré de la conversation"
+        respond_to do |format|
+          format.js { render :show_members }
+          format.html { redirect_to admin_conversation_path(params[:id]), notice: "L'utilisateur '#{user.full_name}' a été retiré de la conversation" }
+        end
       else
         redirect_to admin_conversation_path(params[:id]), alert: "L'utilisateur '#{user.full_name}' n'a pas pu être retiré de la conversation"
       end
@@ -198,7 +230,7 @@ module Admin
 
       JoinRequest.where(joinable: @conversation).update_all(archived_at: timestamp)
 
-      redirect_to admin_conversations_path()
+      redirect_to admin_conversations_path({ filter: :archived })
     end
 
     private

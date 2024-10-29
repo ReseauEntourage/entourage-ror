@@ -1,18 +1,16 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Contenus pédagogiques", admin_resources_path %></li>
-      <li class="active">Modifier</li>
-      <li style="float: right;">
-        <%= link_to nil, @resource.share_url, target: :_blank %>
-      </li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Contenus pédagogiques", admin_resources_path %></li>
+    <li class="active">Modifier</li>
+    <li style="float: right;">
+      <%= link_to nil, @resource.share_url, target: :_blank %>
+    </li>
+  </ol>
 
-    <h2>
-      <span class="text-muted">#<%= @resource.id %></span>
-      <%= @resource.name %>
-    </h2>
+  <h2>
+    <span class="text-muted">#<%= @resource.id %></span>
+    <%= @resource.name %>
+  </h2>
 
-    <%= render partial: 'form' %>
-  </div>
+  <%= render partial: 'form' %>
 </div>

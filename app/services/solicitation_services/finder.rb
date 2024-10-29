@@ -1,6 +1,6 @@
 module SolicitationServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :sections
+    attr_reader :user, :latitude, :longitude, :distance, :q, :sections
 
     def initialize user, params
       @user = user
@@ -14,11 +14,16 @@ module SolicitationServices
       end
 
       @distance = params[:travel_distance] || user.travel_distance
+
+      @q = params[:q]
+
       @sections = params[:sections] || []
+      @sections += params[:section_list].split(',') if params[:section_list].present?
+      @sections = @sections.compact.uniq if @sections.present?
     end
 
     def find_all
-      solicitations = Solicitation.active
+      solicitations = Solicitation.active.like(q)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
@@ -27,7 +32,7 @@ module SolicitationServices
       end
 
       if sections.any?
-        solicitations = solicitations.where(id: Solicitation.with_sections(sections))
+        solicitations = solicitations.where(id: Solicitation.match_at_least_one_section(sections))
       end
 
       # order by created_at is already in default_scope

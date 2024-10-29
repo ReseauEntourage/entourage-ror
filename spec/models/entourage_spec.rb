@@ -15,6 +15,26 @@ RSpec.describe Entourage, type: :model do
   it { should validate_inclusion_of(:category).in_array(['mat_help', 'non_mat_help', 'social']) }
   it { should belong_to(:user) }
 
+  describe '.with_chat_messages' do
+    let!(:entourage_with_messages) { create(:entourage) }
+    let!(:entourage_without_messages) { create(:entourage) }
+    let!(:chat_message) { create(:chat_message, messageable: entourage_with_messages) }
+
+    it 'returns entourages with chat messages' do
+      expect(Entourage.with_chat_messages).to include(entourage_with_messages)
+    end
+
+    it 'does not return entourages without chat messages' do
+      expect(Entourage.with_chat_messages).not_to include(entourage_without_messages)
+    end
+
+    it 'returns unique entourages even if they have multiple messages' do
+      create(:chat_message, messageable: entourage_with_messages)
+
+      expect(Entourage.with_chat_messages.count).to eq(1)
+    end
+  end
+
   describe "validate_inclusion_of status" do
     context 'is an event' do
       before { allow(subject).to receive(:outing?).and_return(true) }

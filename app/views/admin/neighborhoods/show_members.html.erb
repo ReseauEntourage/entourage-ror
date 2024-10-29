@@ -1,58 +1,68 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <%= render 'edit_header', tab: :show_members %>
+  <%= render 'edit_header', tab: :show_members %>
 
-    <div class="row">
-      <% if @neighborhood.member_ids.include?(current_user.id) && @neighborhood.user_id == current_user.id %>
-        <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
-          <div style="flex-grow: 1">
-            <b>Membre</b><br>
-            Vous êtes membre et administrateur de ce groupe. Si vous souhaitez le quitter, vous devez choisir avant un autre administrateur.
-          </div>
+  <div class="row">
+    <% if @neighborhood.member_ids.include?(current_user.id) && @neighborhood.user_id == current_user.id %>
+      <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Membre</b><br>
+          Vous êtes membre et administrateur de ce groupe. Si vous souhaitez le quitter, vous devez choisir avant un autre administrateur.
         </div>
-      <% elsif @neighborhood.member_ids.include?(current_user.id) %>
-        <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
-          <div style="flex-grow: 1">
-            <b>Membre</b><br>
-            Vous êtes membre de ce groupe. Souhaitez-vous le quitter ?
-          </div>
-
-          <%= link_to("Quitter", unjoin_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success") %>
-        </div>
-      <% else %>
-        <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
-          <div style="flex-grow: 1">
-            <b>Non membre</b><br>
-            Vous n'êtes pas membre de ce groupe. Souhaitez-vous le rejoindre ?
-          </div>
-
-          <%= link_to("Rejoindre", join_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success") %>
-        </div>
-      <% end %>
-
-      <div class="breadcrumb" style="margin-bottom: 0px">
-        <%= link_to "Changer l'administrateur", edit_owner_admin_neighborhood_path(@neighborhood) %>
       </div>
+    <% elsif @neighborhood.member_ids.include?(current_user.id) %>
+      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Membre</b><br>
+          Vous êtes membre de ce groupe. Souhaitez-vous le quitter ?
+        </div>
 
-      <table class="table">
-        <th>Id</th>
-        <th>Nom</th>
-        <th>Email</th>
-        <th>Téléphone</th>
-        <th>Statut</th>
-        <% @neighborhood.members.each do |user| %>
-          <tr>
-            <td><%= user.id %></td>
-            <td>
-              <%= link_to user.full_name, edit_admin_user_path(user.id) %>
-              <% if user == @neighborhood.user %><i>(administrateur)</i><% end %>
-            </td>
-            <td><%= user.email %></td>
-            <td><%= user.phone %></td>
-            <td><%= user.status %></td>
-          </tr>
-        <% end %>
-      </table>
+        <%= link_to("Quitter", unjoin_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success") %>
+      </div>
+    <% else %>
+      <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Non membre</b><br>
+          Vous n'êtes pas membre de ce groupe. Souhaitez-vous le rejoindre ?
+        </div>
+
+        <%= link_to("Rejoindre", join_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success") %>
+      </div>
+    <% end %>
+
+    <div class="breadcrumb" style="margin-bottom: 0px">
+      <%= link_to "Changer l'administrateur", edit_owner_admin_neighborhood_path(@neighborhood) %>
     </div>
+
+    <table class="table">
+      <th>Id</th>
+      <th>Nom</th>
+      <th>Email</th>
+      <th>Téléphone</th>
+      <th>Statut</th>
+      <th>Profil</th>
+      <% @neighborhood.members.each do |member| %>
+        <tr>
+          <td><%= member.id %></td>
+          <td>
+            <%= link_to member.full_name, edit_admin_user_path(member.id) %>
+            <% if member == @neighborhood.user %><i>(administrateur)</i><% end %>
+          </td>
+          <td><%= member.email %></td>
+          <td><%= member.phone %></td>
+          <td><%= user_state_label(member.status) %></td>
+          <td>
+            <% if member.targeting_profile.present? %>
+              <span class="custom-badge info" title="Profil renseigné par la modération">
+                <%= t "community.entourage.targeting_profiles.#{member.targeting_profile}" %>
+              </span>
+            <% elsif member.goal.present? %>
+              <span class="custom-badge info" title="Profil renseigné par l'utilisateur">
+                <%= t "community.entourage.goals_compact.#{member.goal}" %>
+              </span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
   </div>
 </div>

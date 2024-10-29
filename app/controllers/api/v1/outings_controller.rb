@@ -146,7 +146,7 @@ module Api
       end
 
       def index_params
-        params.permit(:latitude, :longitude, :travel_distance, :page, :per)
+        params.permit(:q, :latitude, :longitude, :travel_distance, :page, :per, :interest_list, interests: [])
       end
 
       def outing_params

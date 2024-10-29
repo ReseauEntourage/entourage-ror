@@ -3,8 +3,8 @@
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @user_message_broadcast } %>
-<%= form_for [:admin, @user_message_broadcast], html: { role: "form" } do |f| %>
 
+<%= form_for [:admin, @user_message_broadcast], html: { role: "form" } do |f| %>
   <% if @user_message_broadcast.archived? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -35,6 +35,25 @@
       </div>
       <%= link_to("Dupliquer", clone_admin_user_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
+
+    <% forgotten_users = ConversationMessageBroadcastJob.recipient_ids_to_broadcast(@user_message_broadcast.id, current_user.id).count %>
+    <% if forgotten_users > 0 %>
+      <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Compléter l'envoi</b><br>
+          Si la diffusion a lieu mais n'a pas été envoyée à tous les utilisateurs attendus, vous pouvez redéclencher la diffusion.<br>
+
+          Cette diffusion continuera l'envoi aux utilisateurs qui n'ont pas encore reçu le message.
+
+          <ul>
+            <li>diffusion à <%= forgotten_users %> utilisateurs</li>
+          </ul>
+        </div>
+        <%= link_to("Compléter l'envoi", rebroadcast_admin_user_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
+          confirm: "Êtes vous sûr de vouloir diffuser ces MP ?"
+        }) %>
+      </div>
+    <% end %>
   <% elsif @user_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -118,6 +137,7 @@
 
   <div class="form-group">
     <%= f.label :content %>
+    <p>Vous pouvez utiliser les variables : {{first_name}}, {{email}}, {{phone}}, {{city}}, {{uuid}}</p>
     <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
   </div>
 

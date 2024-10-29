@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
+          get :search
           get 'moderate'
           get 'fake'
           post 'generate'
@@ -98,11 +99,8 @@ Rails.application.routes.draw do
 
       resources :moderation_areas do
         member do
-          patch 'update_moderator'
           patch 'update_animator'
-          patch 'update_mobilisator'
           patch 'update_sourcing'
-          patch 'update_accompanyist'
           patch 'update_community_builder'
         end
       end
@@ -161,6 +159,8 @@ Rails.application.routes.draw do
       resources :sensitive_words, only: [:show, :destroy]
       resources :conversations, only: [:index, :show] do
         member do
+          get :chat_messages
+          get :prepend_chat_messages
           get :show_members
           post :message
           post :invite
@@ -285,6 +285,7 @@ Rails.application.routes.draw do
     resources :user_message_broadcasts do
       member do
         post 'broadcast'
+        post 'rebroadcast'
         post 'clone'
         post 'kill'
       end
@@ -293,6 +294,7 @@ Rails.application.routes.draw do
       member do
         put :update_neighborhoods
         post 'broadcast'
+        post 'rebroadcast'
         post 'clone'
         post 'kill'
       end
@@ -353,6 +355,10 @@ Rails.application.routes.draw do
       end
 
       resources :pois, only: [:index, :show, :create] do
+        collection do
+          get :clusters
+        end
+
         member do
           post 'report'
         end
@@ -370,6 +376,8 @@ Rails.application.routes.draw do
         member do
           patch 'code'
           post :report
+          get :notify
+          get :notify_force
           post :presigned_avatar_upload
           post :address
           get :email_preferences, action: :update_email_preferences
@@ -404,6 +412,7 @@ Rails.application.routes.draw do
       resources :neighborhoods do
         collection do
           get :joined # see my neighborhoods
+          get :default # show default user neighborhood
         end
 
         member do
@@ -605,6 +614,7 @@ Rails.application.routes.draw do
       resources :links, only: [] do
         member do
           get :redirect
+          get 'mesure-impact' => :mesure_impact
         end
       end
 

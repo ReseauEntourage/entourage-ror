@@ -4,27 +4,27 @@ en:
     action:
       create_for_follower: "%s invites you to join %s"
     outing:
-      create: "A new event has been added to %s: %s scheduled for %s"
+      create: "A new event has been added to %s: %s is scheduled for %s"
       cancel: "This event scheduled for %s has been canceled"
-      update: "The event scheduled for %s has been modified. It will take place on %s at %s"
-      update_short: "The event scheduled for %s has been modified"
+      update: "The event on %s has been updated. It will now take place on %s at %s"
+      update_short: "The event scheduled for %s has been updated"
       day_before:
         title: "🔔 Reminder: «%s» is happening tomorrow!"
-        content: "Don't forget, this event is for tomorrow. Are you still coming?"
+        content: "Don't forget, this event is tomorrow. Will you be attending?"
     post:
-      create: "%s has just shared: \"%s\""
+      create: "%s just shared: \"%s\""
     comment:
-      create: "%s has just made a comment on the post \"%s\""
+      create: "%s commented on the post \"%s\""
     join_request:
-      new: "New member"
-      update: "Request accepted"
-      update_on_action: "You have just joined an action by %s"
-      update_on_outing: "You have just joined the event of %s"
-      update_on_neighborhood: "You have just joined a group made by %s"
-      create: "%s has just joined your %s \"%s\""
-      create_outing: "%s has just joined your event \"%s\" on %s"
+      new: "New member request"
+      update: "Request approved"
+      update_on_action: "You've joined an action led by %s"
+      update_on_outing: "You've joined %s's event"
+      update_on_neighborhood: "You've joined a group created by %s"
+      create: "%s has joined your %s \"%s\""
+      create_outing: "%s has joined your event \"%s\" on %s"
     contribution:
-      create: "A neighbor is offering new assistance"
+      create: "A neighbor is asking for help"
     solicitation:
       create: "A neighbor is seeking help"
       create_section: "A neighbor is looking for a %s"
@@ -32,40 +32,40 @@ en:
   timeliner:
     h1:
       title: "Welcome to Entourage 👌"
-      offer: "Did you know? It only takes one video to break down your prejudices!"
-      ask: "You can't imagine everything your new app contains: come check it out!"
+      offer: "Did you know? One video is all it takes to challenge your biases!"
+      ask: "Discover all the features in your new app. Check it out!"
     j2:
-      title: "Come and say hello 👋"
-      offer: "Your group of neighbors is eager to get to know you!"
-      ask_title_outing: "Do you have 4 minutes?"
-      ask: "Watch a short video to understand everything about how your new application works"
+      title: "Come say hello 👋"
+      offer: "Your neighbor group is eager to meet you!"
+      ask_title_outing: "Got 4 minutes?"
+      ask: "Watch a quick video to learn all about your new app"
     j5:
-      title_outing: "Hello, it's us again! 🕺"
-      offer_outing: "Virtual is nice for a couple of minutes; come and make a real-life connection!"
-      title_action: "Hello, it's us again! 🕺"
-      offer_action: "Do you have two minutes to help out your neighbors?"
-      title_create_action: "Hello, it's us again! 🕺"
+      title_outing: "Hey there, it's us again! 🕺"
+      offer_outing: "Virtual is nice, but how about a real-life connection?"
+      title_action: "Hey there, it's us again! 🕺"
+      offer_action: "Got 2 minutes to help your neighbors?"
+      title_create_action: "Hey there, it's us again! 🕺"
       offer_create_action: "Take two minutes to offer your assistance to those around you"
-      ask_title: "Come and say hello 👏"
+      ask_title: "Come say hello 👏"
       ask: "Your group of neighbors is eager to get to know you"
     j8:
       title: "It's your turn! 📱"
-      offer: "A little anti-prejudice quiz: we bet you'll learn something?"
-      ask_title_outing: "Hello, it's us again! 🕺"
-      ask_outing: "Virtual is nice for a couple of minutes; come and make a real-life connection!"
-      ask_title_action: "Hello, it's us again! 🕺"
-      ask_action: "Take a look at the help offered near you"
-      ask_title_create_action: "Hello, it's us again! 🕺"
-      ask_create_action: "A game of pétanque, a coffee, or just a walk: suggest an outing to your neighbors!"
+      offer: "Take a quiz to challenge your biases. You might learn something new!"
+      ask_title_outing: "Hey there, it's us again! 🕺"
+      ask_outing: "Virtual is nice, but how about a real-life connection?"
+      ask_title_action: "Hey there, it's us again! 🕺"
+      ask_action: "Check out the help offered near you"
+      ask_title_create_action: "Hey there, it's us again! 🕺"
+      ask_create_action: "Suggest an outing to your neighbors—a walk, coffee, or pétanque!"
     j11:
-      title: "Entourage is like family!"
-      offer: "We can say it, you're now part of the Entourage community. Let's celebrate!"
-      ask: "We can say it, you're now part of the Entourage community. Let's celebrate!"
+      title: "Entourage feels like family!"
+      offer: "You're now part of the Entourage community. Let's celebrate!"
+      ask: "You're officially part of the Entourage community. Time to celebrate!"
 
   pois:
     soliguide:
       public:
-        administrative: "Home: %s"
+        administrative: "Domicile: %s"
         description: "Other important information: %s"
         reception: Reception
       accueil:
@@ -93,7 +93,7 @@ en:
         addiction: "in addiction situation"
         handicap: "in a situation of handicap"
         lgbt: "belonging to LGBT+ communities"
-        hiv: "HIV carrier"
+        hiv: "HIV-positive"
         prostitution: "sex worker"
         prison: "released from prison"
         student: "student"
@@ -101,14 +101,26 @@ en:
         inconditionnel: "Walk-in welcome"
         appointment: "By appointment (%s)"
         inscription: "By registration (%s)"
-        orientation: "By orientation (%s)"
-        other_details: Other Details
+        orientation: "By referral (%s)"
+        other_details: Other details
       animal:
-        unauthorized: "Pets not allowed"
+        unauthorized: "No pets allowed"
         authorized: "Pets allowed"
       hours:
         closed: Closed
         at: at
+
+  onboarding:
+    ethical_charter: |
+      It's me again!
+
+      At Entourage, we really care about ensuring everyone feels safe, heard, and welcomed. That's why we wrote this ethical charter, which must be read and accepted by all members of the community: https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+
+      I am responsible for ensuring that this charter is respected on the app and during events organized by the association so that the network remains safe and welcoming for everyone. The entire community must be its guardian! We're counting on you 💪
+
+      See you soon!
+
+      %s
 
   date:
     abbr_day_names:

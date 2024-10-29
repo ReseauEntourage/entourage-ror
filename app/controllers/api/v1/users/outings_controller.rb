@@ -5,31 +5,27 @@ module Api
         before_action :set_user
 
         def index
-          page = params[:page] || 1
-          per = [(params[:per].try(:to_i) || 25), 25].min
-
-          outings = Outing.future_or_recently_past
-            .joins(:join_requests)
-            .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
+          render json: OutingsServices::Finder.new(@user, index_params)
+            .find_all_participations
+            .future_or_recently_past
             .default_order
+            .includes(:translation, :user, :members, :confirmed_members, :interests, :recurrence)
             .page(page)
-            .per(per)
-
-          render json: outings, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
+            .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+              user: @user
+            }
         end
 
         def past
-          page = params[:page] || 1
-          per = [(params[:per].try(:to_i) || 25), 25].min
-
-          outings = Outing.past
-            .joins(:join_requests)
-            .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
+          render json: OutingsServices::Finder.new(@user, index_params)
+            .find_all_participations
+            .past
             .reversed_order
+            .includes(:translation, :user, :members, :confirmed_members, :interests, :recurrence)
             .page(page)
-            .per(per)
-
-          render json: outings, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
+            .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+              user: @user
+            }
         end
 
         private
@@ -40,6 +36,18 @@ module Api
           else
             User.find(params[:user_id])
           end
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per] || 50
+        end
+
+        def index_params
+          params.permit(:q, :latitude, :longitude, :distance, :interest_list, interests: [])
         end
       end
     end

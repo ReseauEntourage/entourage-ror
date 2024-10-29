@@ -1,28 +1,26 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Photos de recommandation", admin_recommandation_images_path %></li>
-      <li><%= link_to @recommandation_image.title, edit_admin_recommandation_image_path(@recommandation_image) %></li>
-      <li class="active">Image</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Photos de recommandation", admin_recommandation_images_path %></li>
+    <li><%= link_to @recommandation_image.title, edit_admin_recommandation_image_path(@recommandation_image) %></li>
+    <li class="active">Image</li>
+  </ol>
 
-    <h1>Modifier l'image</h1>
+  <h1>Modifier l'image</h1>
 
-    <% size = controller.action_name.to_s == 'edit_portrait' ? '300x492' : '1125x375' %>
+  <% size = controller.action_name.to_s == 'edit_portrait' ? '300x492' : '1125x375' %>
 
-    <div class="margin-bottom: 15px">
-      <p><i><%= size %> px</i></p>
-      <%= image_tag(@image, size: size) if @image.present? %>
-    </div>
-
-    <form class="form-inline" id="upload-form" action="#" method="post" enctype="multipart/form-data">
-      <div>PNG ou JPEG, <% size %></div>
-      <div class="form-group">
-        <input type="file" class="btn btn-default" name="file" accept="<%= @form.content_types %>"/>
-      </div>
-      <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
-    </form>
+  <div class="margin-bottom: 15px">
+    <p><i><%= size %> px</i></p>
+    <%= image_tag(@image, size: size) if @image.present? %>
   </div>
+
+  <form class="form-inline" id="upload-form" action="#" method="post" enctype="multipart/form-data">
+    <div>PNG ou JPEG, <% size %></div>
+    <div class="form-group">
+      <input type="file" class="btn btn-default" name="file" accept="<%= @form.content_types %>"/>
+    </div>
+    <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
+  </form>
 </div>
 
 <script>

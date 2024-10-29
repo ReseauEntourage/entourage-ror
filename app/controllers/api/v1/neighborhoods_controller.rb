@@ -6,15 +6,16 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: NeighborhoodServices::Finder.search(
-          user: current_user,
-          q: params[:q]
-        )
-          .includes(:translation, :members, :image_resize_actions)
+        render json: NeighborhoodServices::Finder.new(current_user, index_params).find_all
+          .includes(:translation, :image_resize_actions, :user)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: {
-            user: current_user
-          }
+          .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NotMemberListSerializer, scope: { user: current_user }
+      end
+
+      def default
+        return render json: {} unless @neighborhood = default_neighborhood_as_member
+
+        render json: @neighborhood, serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: current_user }
       end
 
       def show
@@ -96,6 +97,10 @@ module Api
         render json: { message: 'Could not find neighborhood' }, status: 400 unless @neighborhood.present?
       end
 
+      def index_params
+        params.permit(:q, :latitude, :longitude, :travel_distance, :interest_list, interests: [])
+      end
+
       def neighborhood_params
         params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :google_place_id, :place_name, :display_address, :neighborhood_image_id, :other_interest, interests: [])
       end
@@ -120,6 +125,10 @@ module Api
 
       def report_params
         params.require(:report).permit(:message, signals: [])
+      end
+
+      def default_neighborhood_as_member
+        @default_neighborhood_as_member ||= NeighborhoodServices::Joiner.new(current_user).default_neighborhood_as_member
       end
     end
   end

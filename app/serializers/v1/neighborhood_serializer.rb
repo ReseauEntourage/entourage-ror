@@ -19,7 +19,8 @@ module V1
       :has_ongoing_outing,
       :address,
       :status_changed_at,
-      :public
+      :public,
+      :national
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
 
