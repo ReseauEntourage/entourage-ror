@@ -58,6 +58,8 @@ class Poi < ApplicationRecord
         find(uuid)
       end
     end
+
+    alias_method :find_by_id_or_uuid, :find_by_uuid
   end
 
   def uuid
