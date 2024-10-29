@@ -10,22 +10,20 @@ class OpenaiAssistantJob
 
     return unless instance = openai_assistant.instance
 
-    EntourageServices::Matcher.new(instance: instance).find_best_matches do |on|
-      on.success do |matches|
+    MatchingServices::Connect.new(instance: instance).perform do |on|
+      on.success do |response|
         openai_assistant.update_columns(
-          openai_assistant_id: matches['assistant_id'],
-          openai_thread_id: matches['thread_id'],
-          openai_run_id: matches['run_id'],
-          openai_message_id: matches['message_id'],
-          status: matches['status'],
+          openai_assistant_id: response.metadata[:assistant_id],
+          openai_thread_id: response.metadata[:thread_id],
+          openai_run_id: response.metadata[:run_id],
+          openai_message_id: response.metadata[:message_id],
+          status: nil,
           run_ends_at: Time.current,
           updated_at: Time.current
         )
 
-        matches['matchings'].each_with_index do |matching, index|
-          next unless parse_matching = EntourageServices::Matcher.parse_matching(matching)
-
-          instance.matchings.build(match: parse_matching, score: matching['score'], position: index)
+        response.each_recommandation do |matching, score, index|
+          instance.matchings.build(match: matching, score: score, position: index)
         end
 
         instance.save(validate: false)
