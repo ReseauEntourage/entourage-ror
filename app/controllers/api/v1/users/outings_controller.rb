@@ -9,7 +9,7 @@ module Api
             .find_all_participations
             .future_or_recently_past
             .default_order
-            .includes(:translation, :user, :members, :confirmed_members, :interests, :recurrence)
+            .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
             .page(page)
             .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
               user: @user
@@ -21,7 +21,7 @@ module Api
             .find_all_participations
             .past
             .reversed_order
-            .includes(:translation, :user, :members, :confirmed_members, :interests, :recurrence)
+            .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
             .page(page)
             .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
               user: @user

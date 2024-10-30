@@ -20,15 +20,15 @@ module V1
                :neighborhoods,
                :recurrency,
                :member,
+               :members,
                :members_count,
                :confirmed_member,
-               :confirmed_members_count,
+               :confirmed_members_count, # use number_of_confirmed_people instead
                :created_at,
                :updated_at,
                :status_changed_at,
                :distance
 
-    has_many :members, serializer: ::V1::Users::BasicSerializer
     has_one :location
 
     def title
@@ -70,6 +70,13 @@ module V1
       return false unless scope && scope[:user]
 
       object.member_ids.include?(scope[:user].id)
+    end
+
+    def members
+      # fake data: not really used in mobile app
+      # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
+      # so we want this method to return an array of "members" elements
+      Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
     end
 
     def confirmed_member
