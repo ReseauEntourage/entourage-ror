@@ -58,7 +58,7 @@
     <div class="control-group">
       <%= f.label :sf_category, class: "control-label" %>
       <div class="controls" style="max-width: 400px">
-        <%= select_tag 'entourage[sf_category]', options_for_select(Tag.sf_categories.to_a.map { |key, value| [value, key] }, @entourage.sf_category), include_blank: true, class: "form-control update-select" %>
+        <%= select_tag 'entourage[sf_category]', options_for_select(Tag.sf_categories.to_a.map { |key, value| [value, key] }, @entourage.sf_category), include_blank: true, required: true, class: "form-control update-select" %>
       </div>
     </div>
 
