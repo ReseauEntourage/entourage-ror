@@ -1,7 +1,7 @@
 class Tag < ApplicationRecord
   class << self
     def find_tag_for instance, context
-      Tag.joins("INNER JOIN taggings ON tags.id = taggings.tag_id").where(taggings: { taggable_id: self.id, taggable_type: 'Entourage', context: context })
+      Tag.joins("INNER JOIN taggings ON tags.id = taggings.tag_id").where(taggings: { taggable_id: instance.id, taggable_type: 'Entourage', context: context })
     end
 
     def interest_list

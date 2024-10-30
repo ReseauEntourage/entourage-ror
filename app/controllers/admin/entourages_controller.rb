@@ -260,7 +260,7 @@ module Admin
           end
         end if group_type_change
 
-        redirect_to [:edit, :admin, @entourage], notice: "Entourage mis à jour"
+        redirect_to edit_admin_entourage_path(@entourage), notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
       end
@@ -465,6 +465,10 @@ module Admin
 
     def set_entourage
       @entourage = Entourage.find(params[:id])
+
+      if @entourage.outing?
+        @entourage = Outing.find(params[:id])
+      end
     end
 
     def set_forced_join_request
@@ -510,7 +514,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, :sf_category, metadata: metadata_keys)
 
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)
