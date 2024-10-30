@@ -453,21 +453,6 @@ module Admin
       end
     end
 
-    def update_sf_category
-      @entourage = Outing.find(params[:id])
-      @entourage.sf_category = params[:sf_category]
-      @entourage.valid?
-
-      unless @entourage.errors.attribute_names.include?(:sf_categories)
-        @entourage.save(validate: false)
-      end
-
-      respond_to do |format|
-        format.js { render "admin/entourages/update/sf_category" }
-        format.html { redirect_to admin_entourages, notice: 'SfCategory mis à jour avec succès.' }
-      end
-    end
-
     private
 
     def per
@@ -567,14 +552,9 @@ module Admin
         ransack_params = params[:q]
       end
 
-      instances = if params.dig(:q, :group_type_eq) == 'outing'
-        Outing.all
-      else
-        Action.all
-      end
+      group_types = (params[:group_type] || 'action,outing').split(',')
 
-      instances.like(params[:search])
-        .with_moderation
+      Entourage.where(group_type: group_types).like(params[:search]).with_moderation
         .moderator_search(params[:moderator_id])
         .ransack(ransack_params)
     end

@@ -1,3 +1,0 @@
-<%= form_tag(update_sf_category_admin_entourage_path(entourage), method: :patch, remote: true, id: "update-sf-category-form-#{entourage.id}", class: "update-form") do %>
-  <%= select_tag 'sf_category', options_for_select(Tag.sf_categories.to_a.map { |key, value| [value, key] }, entourage.sf_category), include_blank: true, class: "form-control update-select" %>
-<% end %>

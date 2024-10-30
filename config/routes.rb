@@ -142,7 +142,6 @@ Rails.application.routes.draw do
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
           put :update_neighborhoods
-          patch :update_sf_category
         end
 
         collection do
