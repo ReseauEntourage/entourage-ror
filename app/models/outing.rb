@@ -236,6 +236,7 @@ class Outing < Entourage
     return unless new_record?
 
     self.interests = original_outing.interest_list
+    self.sf_category = original_outing.sf_category
   end
 
   def set_entourage_image_id
