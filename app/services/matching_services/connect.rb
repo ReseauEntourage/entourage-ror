@@ -94,9 +94,7 @@ module MatchingServices
         recommandations: {
           contributions: get_contributions.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
           solicitations: get_solicitations.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          outings: get_outings.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          resources: get_resources.pluck(:uuid_v2, :name).map { |values| [:uuid_v2, :name].zip(values).to_h },
-          pois: get_pois.pluck(:source_id, :name).map { |values| [:source_id, :name].zip(values).to_h },
+          outings: get_outings.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h }
         }
       }
     end
@@ -115,16 +113,6 @@ module MatchingServices
 
     def get_outings
       OutingsServices::Finder.new(user, Hash.new).find_all.limit(100)
-    end
-
-    def get_resources
-      Resource.where(status: :active)
-    end
-
-    def get_pois
-      return unless instance.respond_to?(:latitude) && instance.respond_to?(:longitude)
-
-      Poi.validated.around(instance.latitude, instance.longitude, user.travel_distance).limit(300)
     end
   end
 end
