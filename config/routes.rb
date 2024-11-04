@@ -135,10 +135,6 @@ Rails.application.routes.draw do
           get :edit_owner
           post :close
           post :update_owner
-          post :pin
-          post :unpin
-          post :admin_pin
-          post :admin_unpin
           get :renew
           get :cancellation
           post :cancel
@@ -386,7 +382,12 @@ Rails.application.routes.draw do
         end
 
         resources :entourages, :controller => 'users/entourages', only: [:index]
-        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
+        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index] do
+          collection do
+            get :default
+          end
+        end
+
         resources :outings, :controller => 'users/outings', only: [:index] do
           collection do
             get :past

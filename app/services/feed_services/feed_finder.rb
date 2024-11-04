@@ -112,14 +112,6 @@ module FeedServices
         @last_page = true
       end
 
-      if page == 1
-        pinned = EntourageServices::Pins.find(user, types)
-
-        pinned.compact.uniq.reverse.each do |action|
-          feeds = pin(action, feeds: feeds)
-        end
-      end
-
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
       preload_user_join_requests(feeds)
@@ -210,24 +202,6 @@ module FeedServices
         .order(Arel.sql("case when online then 1 else 2 end"))
         .order(Arel.sql(distance_from_center))
         .order(created_at: :desc)
-    end
-
-    def pin entourage_id, feeds:
-      feeds = feeds.to_a
-
-      index = feeds.index { |f| f.feedable_type == 'Entourage' && f.feedable_id == entourage_id }
-
-      if index != nil
-        item = feeds.delete_at(index)
-      else
-        item = Announcement::Feed.new(Entourage.visible.find_by(id: entourage_id))
-      end
-
-      if item.feedable.nil?
-        feeds
-      else
-        feeds.insert(0, item)
-      end
     end
 
     def lyon_grenoble_timerange_workaround
