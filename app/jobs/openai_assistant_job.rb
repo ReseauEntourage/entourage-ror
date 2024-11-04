@@ -22,8 +22,8 @@ class OpenaiAssistantJob
           updated_at: Time.current
         )
 
-        response.each_recommandation do |matching, score, index|
-          instance.matchings.build(match: matching, score: score, position: index)
+        response.each_recommandation do |matching, score, explanation, index|
+          instance.matchings.build(match: matching, score: score, explanation: explanation, position: index)
         end
 
         instance.save(validate: false)
