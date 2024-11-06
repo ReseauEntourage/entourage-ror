@@ -225,6 +225,20 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :actions, only: [:index] do
+      resources :matchings, :controller => 'actions/matchings', only: [:index] do
+        collection do
+          post :notify_best
+          post :mail_best
+        end
+
+        member do
+          post :notify
+          post :mail
+        end
+      end
+    end
+
     resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
       member do
         put :reactivate
