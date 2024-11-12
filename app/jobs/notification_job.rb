@@ -24,6 +24,8 @@ class NotificationJob
     if app.nil?
       raise "No Android notification has been sent: no '#{community}' certificate found."
     else
+      content = content.truncate(512)
+
       notification = Rpush::Fcm::Notification.new
       notification.app = app
       notification.device_token = device_token
@@ -39,8 +41,6 @@ class NotificationJob
         }.to_json
       }
 
-      NotificationTruncationService.truncate_message! notification
-
       notification.save!
     end
   end
@@ -51,6 +51,8 @@ class NotificationJob
     if app.nil?
       raise "No Android notification has been sent: no '#{community}' certificate found."
     else
+      content = content.truncate(512)
+
       notification = Rpush::Apnsp8::Notification.new
       notification.app = app
       notification.device_token = device_token.to_s
