@@ -65,18 +65,17 @@
             </div>
           </div>
 
-          <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Conversations</label>
+          <div class="control-group" style="margin-left: 30px" title="1">
+            <label class="control-label" title="de moins de six mois">Conversations ⯑</label>
             <div class="controls">
-              <%= @user.conversations.count %>
+              <%= @user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>
             </div>
           </div>
 
           <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Messages</label>
-            <i>de moins d'un an</i>
+            <label class="control-label" title="de moins de six mois">Messages ⯑</label>
             <div class="controls">
-              <%= @user.chat_messages.where("created_at > ?", 1.year.ago).count %>
+              <%= @user.chat_messages.where("created_at > ?", 6.months.ago).count %>
             </div>
           </div>
         </div>
