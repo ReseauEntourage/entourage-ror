@@ -26,8 +26,11 @@ module V1
         past_outing_memberships(object).count + successful_actions(object).count
       end
 
+      # fake data: deprecated field
       def chat_messages_count
-        object.chat_messages.count
+        # object.chat_messages.count
+
+        0
       end
 
       def outing_participations_count
