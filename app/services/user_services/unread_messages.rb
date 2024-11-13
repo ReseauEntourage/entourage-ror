@@ -23,7 +23,7 @@ module UserServices
       JoinRequest.where(user_id: user.id, joinable_type: :Entourage)
         .joins(:entourage)
         .where("entourages.group_type = 'conversation'")
-        .where("unread_messages_count > 0")
+        .with_unread_messages
         .pluck(:joinable_id)
         .uniq
     end

@@ -4,7 +4,7 @@ class UnreadChatMessageJob
   sidekiq_options :retry => true, queue: :default
 
   def perform messageable_type, messageable_id
-    compute_unread_on(record.idmessageable_type, messageable_id)
+    compute_unread_on(messageable_type, messageable_id)
   end
 
   def compute_unread_on messageable_type, messageable_id
