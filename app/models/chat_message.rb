@@ -256,7 +256,12 @@ class ChatMessage < ApplicationRecord
   def update_parent_comments_count
     return unless ancestry.present?
 
-    parent.update(comments_count: parent.descendants.where(status: :active).count)
+    parent.update(comments_count: parent.children
+      .where(status: :active)
+      .where(messageable_type: messageable_type)
+      .where(messageable_id: messageable_id)
+      .count
+    )
   end
 
   def update_sender_report_prompt_status
