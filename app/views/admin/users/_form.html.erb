@@ -66,14 +66,18 @@
           </div>
 
           <div class="control-group" style="margin-left: 30px" title="1">
-            <label class="control-label" title="de moins de six mois">Conversations ⯑</label>
+            <label class="control-label" title="de moins de six mois">
+              Conversations <span class="badge">i</span>
+            </label>
             <div class="controls">
               <%= @user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>
             </div>
           </div>
 
           <div class="control-group" style="margin-left: 30px">
-            <label class="control-label" title="de moins de six mois">Messages ⯑</label>
+            <label class="control-label" title="de moins de six mois">
+              Messages <span class="badge">i</span>
+            </label>
             <div class="controls">
               <%= @user.chat_messages.where("created_at > ?", 6.months.ago).count %>
             </div>
