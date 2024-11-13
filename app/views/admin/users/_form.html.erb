@@ -74,8 +74,9 @@
 
           <div class="control-group" style="margin-left: 30px">
             <label class="control-label">Messages</label>
+            <i>de moins d'un an</i>
             <div class="controls">
-              <%= @user.chat_messages.count %>
+              <%= @user.chat_messages.where("created_at > ?", 1.year.ago).count %>
             </div>
           </div>
         </div>
