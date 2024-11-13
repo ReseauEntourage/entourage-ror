@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["message_type"], name: "index_chat_messages_on_message_type"
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
     t.index ["status"], name: "index_chat_messages_on_status"
+    t.index ["survey_id"], name: "index_chat_messages_on_survey_id"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
     t.index ["uuid_v2"], name: "index_chat_messages_on_uuid_v2", unique: true
   end
