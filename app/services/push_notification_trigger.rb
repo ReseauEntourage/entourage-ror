@@ -74,12 +74,12 @@ class PushNotificationTrigger
     return unless entourage.first_occurrence?
     return unless (user_ids = neighborhood.member_ids.uniq - [entourage.user_id]).any?
 
-    user_ids.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: entourage.user_id,
         referent: neighborhood,
         instance: entourage,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: I18nStruct.new(instance: neighborhood, field: :name),
           content: I18nStruct.new(
@@ -156,17 +156,12 @@ class PushNotificationTrigger
       :solicitation_on_create
     end
 
-    follower_ids.each do |follower_id|
-      next if follower_id == user.id
-      next unless follower = User.find(follower_id)
-
-      invitation_id = EntourageInvitation.where(invitable: @record, inviter: user, invitee_id: follower_id).pluck(:id).first
-
+    User.where(id: follower_ids).where.not(id: user.id).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [follower],
+        users: [batches],
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
           content: I18nStruct.new(i18n: 'push_notifications.action.create_for_follower', i18n_args: [partner.name, title(@record)]),
@@ -175,9 +170,9 @@ class PushNotificationTrigger
             type: "ENTOURAGE_INVITATION",
             entourage_id: @record.id,
             group_type: @record.group_type,
-            inviter_id: user.id,
-            invitee_id: follower_id,
-            invitation_id: invitation_id
+            inviter_id: nil,
+            invitee_id: nil,
+            invitation_id: nil
           }
         }
       )
@@ -189,26 +184,24 @@ class PushNotificationTrigger
     return unless @record.action?
 
     neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
-    neighbor_ids = User.where(id: neighbor_ids).where("last_sign_in_at > ?", 1.year.ago).pluck(:id)
+    neighbor_ids = User.where(id: neighbor_ids)
+      .where(deleted: false)
+      .where.not(id: user.id)
+      .where("last_sign_in_at > ?", 1.year.ago)
+
+    neighbor_ids = neighbor_ids.offer_help.pluck(:id) if @record.solicitation?
+    neighbor_ids = neighbor_ids.ask_for_help.pluck(:id) if @record.contribution?
 
     return unless neighbor_ids.any?
 
     tracking = @record.contribution? ? :contribution_on_create : :solicitation_on_create
 
-    neighbor_ids.each do |neighbor_id|
-      next if neighbor_id == user.id
-      next unless neighbor = User.find(neighbor_id)
-      next if neighbor.deleted?
-      next if neighbor.community == :pfp
-
-      next if @record.solicitation? && neighbor.is_ask_for_help?
-      next if @record.contribution? && !neighbor.is_ask_for_help?
-
+    User.where(id: neighbor_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [neighbor],
+        users: [batches],
         params: {
           object: content_for_create_action(@record),
           content: I18nStruct.new(instance: @record, field: :title),
@@ -239,12 +232,12 @@ class PushNotificationTrigger
 
     return unless (user_ids = @record.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    user_ids.uniq.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
           content: update_outing_message(@record, @changes),
@@ -267,12 +260,12 @@ class PushNotificationTrigger
   def outing_on_cancel
     return unless (user_ids = @record.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    user_ids.uniq.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
           content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: [to_date(@record.starts_at)]),
@@ -322,12 +315,12 @@ class PushNotificationTrigger
   def public_chat_message_on_create
     return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    user_ids.uniq.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: I18nStruct.new(text: "#{username(@record.user)} - %s", i18n_args: [title(@record.messageable)]), # @requires i18n
           content: I18nStruct.new(instance: @record, field: :content),
@@ -347,12 +340,12 @@ class PushNotificationTrigger
   def private_chat_message_on_create
     return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
 
-    user_ids.uniq.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record.messageable,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: I18nStruct.new(text: username(@record.user)),
           content: I18nStruct.new(instance: @record, field: :content),
@@ -380,12 +373,12 @@ class PushNotificationTrigger
       :post_on_create
     end
 
-    user_ids.uniq.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record.messageable,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: title(@record.messageable),
           content: I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)]),
@@ -417,13 +410,13 @@ class PushNotificationTrigger
       :comment_on_create
     end
 
-    user_ids.uniq.each do |user_id|
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       # should redirect to post
       notify(
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record.parent,
-        users: [User.find(user_id)],
+        users: [batches],
         params: {
           object: title(@record.messageable),
           content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
