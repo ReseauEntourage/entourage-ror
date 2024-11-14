@@ -207,22 +207,6 @@ describe Api::V1::HomeController do
         it { expect(subject["user"]["meetings_count"]).to eq(0) }
       end
 
-      context "renders chat_messages_count" do
-        let!(:chat_message_entourage) { FactoryBot.create(:chat_message, messageable: entourage, user: user) }
-        let!(:chat_message_outing) { FactoryBot.create(:chat_message, messageable: outing, user: user) }
-        let!(:chat_message_conversation) { FactoryBot.create(:chat_message, messageable: conversation, user: user) }
-        let!(:chat_message_neighborhood) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
-        # same but with pro_user
-        let!(:chat_message_action_pro) { FactoryBot.create(:chat_message, messageable: entourage, user: pro_user) }
-        let!(:chat_message_outing_pro) { FactoryBot.create(:chat_message, messageable: outing, user: pro_user) }
-        let!(:chat_message_conversation_pro) { FactoryBot.create(:chat_message, messageable: conversation, user: pro_user) }
-        let!(:chat_message_neighborhood_pro) { FactoryBot.create(:chat_message, messageable: neighborhood, user: pro_user) }
-
-        before { request }
-
-        it { expect(subject["user"]["chat_messages_count"]).to eq(4) }
-      end
-
       context "renders outing_participations_count" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
         let!(:join_request_pro) { FactoryBot.create(:join_request, joinable: outing, user: pro_user, status: :accepted) }

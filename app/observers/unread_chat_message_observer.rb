@@ -3,7 +3,7 @@ class UnreadChatMessageObserver < ActiveRecord::Observer
 
   def after_commit record
     return unless record.is_a?(ChatMessage)
-    return unless record.messageable && record.messageable.is_a?(Neighborhood)
+    return unless record.messageable
     return unless commit_is?(record, [:create])
 
     UnreadChatMessageJob.perform_later(record.messageable_type, record.messageable_id)

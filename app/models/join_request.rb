@@ -88,36 +88,7 @@ class JoinRequest < ApplicationRecord
   end
 
   def self.with_unread_messages
-    where(status: :accepted)
-    .joins(%(
-      join chat_messages on (
-        messageable_id = joinable_id and messageable_type = joinable_type and
-        (last_message_read is null or chat_messages.created_at > last_message_read)
-      )
-    ))
-  end
-
-  def self.with_unread_text_messages
-    where(status: :accepted)
-    .joins(%(
-      join chat_messages on (
-        chat_messages.message_type in ('text', 'broadcast') and
-        messageable_id = joinable_id and messageable_type = joinable_type and
-        (last_message_read is null or chat_messages.created_at > last_message_read)
-      )
-    ))
-  end
-
-  def self.with_unread_images_messages
-    where(status: :accepted)
-    .joins(%(
-      join chat_messages on (
-        chat_messages.message_type in ('text') and
-        chat_messages.image_url is not null and
-        messageable_id = joinable_id and messageable_type = joinable_type and
-        (last_message_read is null or chat_messages.created_at > last_message_read)
-      )
-    ))
+    where(status: :accepted).where("unread_messages_count > 0")
   end
 
   STATUS.each do |check_status|

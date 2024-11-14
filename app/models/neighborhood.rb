@@ -256,13 +256,6 @@ class Neighborhood < ApplicationRecord
       .count
   end
 
-  def unread_images_count_chat_messages_for user
-    JoinRequest
-      .where(user: user, joinable: self)
-      .with_unread_images_messages
-      .count
-  end
-
   def unread_first_chat_message_for user
     JoinRequest
       .select("join_requests.id, join_requests.created_at, min(chat_messages.id) as unread_first_chat_message_id")
