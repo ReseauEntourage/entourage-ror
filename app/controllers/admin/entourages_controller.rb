@@ -268,9 +268,9 @@ module Admin
 
     def close
       if EntourageServices::EntourageBuilder.close(entourage: @entourage)
-        redirect_to [:admin, @entourage], notice: "L'événement a été clôturé"
+        redirect_to admin_entourage_path(@entourage), notice: "L'événement a été clôturé"
       else
-        redirect_to [:admin, @entourage], alert: "L'événement n'a pas pu être clôturé : #{@entourage.errors.full_messages.to_sentence}"
+        redirect_to admin_entourage_path(@entourage), alert: "L'événement n'a pas pu être clôturé : #{@entourage.errors.full_messages.to_sentence}"
       end
     end
 
@@ -283,9 +283,9 @@ module Admin
 
     def cancel
       if EntourageServices::EntourageBuilder.cancel(entourage: @entourage, params: cancel_params.to_h)
-        redirect_to [:admin, @entourage], notice: "L'événement a été annulé"
+        redirect_to admin_entourage_path(@entourage), notice: "L'événement a été annulé"
       else
-        redirect_to [:cancellation, :admin, @entourage], alert: "L'événement n'a pas pu être annulé : #{@entourage.errors.full_messages.to_sentence}"
+        redirect_to cancellation_admin_entourage_path(@entourage), alert: "L'événement n'a pas pu être annulé : #{@entourage.errors.full_messages.to_sentence}"
       end
     end
 
@@ -294,9 +294,9 @@ module Admin
       @outing = original.dup
 
       if @outing.save
-        redirect_to [:admin, @outing], notice: "L'événement a été dupliqué"
+        redirect_to admin_entourage_path(@outing), notice: "L'événement a été dupliqué"
       else
-        redirect_to [:admin, @original], alert: "L'événement n'a pas été dupliqué: #{@outing.errors.full_messages.to_sentence}"
+        redirect_to admin_entourage_path(@original), alert: "L'événement n'a pas été dupliqué: #{@outing.errors.full_messages.to_sentence}"
       end
     end
 
@@ -351,9 +351,9 @@ module Admin
 
       EntourageServices::ChangeOwner.new(@entourage).to(user_id, message) do |success, error_message|
         if success
-          redirect_to [:admin, @entourage], notice: "Mise à jour réussie"
+          redirect_to admin_entourage_path(@entourage), notice: "Mise à jour réussie"
         else
-          redirect_to [:edit_owner, :admin, @entourage], alert: error_message
+          redirect_to edit_owner_admin_entourage_path(@entourage), alert: error_message
         end
       end
     end
@@ -435,7 +435,7 @@ module Admin
       check = @entourage.sensitive_words_check || @entourage.build_sensitive_words_check
       check.status = params[:status]
       check.save!
-      redirect_to [:admin, @entourage]
+      redirect_to admin_entourage_path(@entourage)
     end
 
     def update_neighborhoods
