@@ -93,6 +93,7 @@ fr:
         members_count: Nombre de membres
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation
+        sf_category: Type d'événement
         categories:
           social: Social
           resource: Ressource
