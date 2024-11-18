@@ -80,7 +80,7 @@ class Outing < Entourage
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
   scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }
 
-  scope :welcome_category, -> { where(online: true) }
+  scope :welcome_category, -> { where(online: true).tagged_with_sf_category(:welcome_entourage_local) }
 
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
