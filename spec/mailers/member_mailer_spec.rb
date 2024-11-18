@@ -77,7 +77,7 @@ describe MemberMailer, type: :mailer do
 
   describe '#welcome' do
     let(:mail) { MemberMailer.welcome(user) }
-    let!(:outing) { create(:outing, online: true, title: "JO 2024", event_url: "Paris") }
+    let!(:outing) { create(:outing, :outing_class, online: true, title: "JO 2024", event_url: "Paris", sf_category: :welcome_entourage_local) }
 
     expect_mailjet_email do
       {
