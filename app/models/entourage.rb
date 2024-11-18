@@ -535,6 +535,10 @@ class Entourage < ApplicationRecord
     moderation.save
   end
 
+  def sf_category
+    Tag.find_tag_for(self, 'sf_categories').first
+  end
+
   protected
 
   def check_moderation

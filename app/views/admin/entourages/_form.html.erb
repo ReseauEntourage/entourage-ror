@@ -10,7 +10,7 @@
 <% url = @entourage.new_record? ? admin_entourages_path(@entourage) : admin_entourage_path(@entourage) %>
 <% method = @entourage.new_record? ? :post : :patch %>
 
-<%= form_for(@entourage, url: url, :method => method, html: { class: "form-horizontal", role: "form" }) do |f| %>
+<%= form_for(@entourage, as: :entourage, url: url, :method => method, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
   <% if @entourage.new_record? %>
@@ -56,7 +56,14 @@
     </div>
 
     <div class="control-group">
-      <%= f.label :outing_image_url %>
+      <%= f.label :sf_category, class: "control-label" %>
+      <div class="controls" style="max-width: 400px">
+        <%= select_tag 'entourage[sf_category]', options_for_select(Tag.sf_categories.to_a.map { |key, value| [value, key] }, @entourage.sf_category), include_blank: true, required: true, class: "form-control update-select" %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :outing_image_url, class: "control-label" %>
       <% if @entourage.new_record? %>
         <div class="text-muted">
           Vous pourrez ajouter une image une fois que l'événement sera crée.

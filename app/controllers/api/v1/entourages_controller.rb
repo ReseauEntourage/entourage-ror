@@ -99,7 +99,7 @@ module Api
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.create do |on|
           on.success do |entourage|
-            render json: entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
+            render json: entourage, root: :entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
           end
 
           on.failure do |entourage|
@@ -118,7 +118,7 @@ module Api
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.update(entourage: @entourage) do |on|
           on.success do |entourage|
-            render json: @entourage, status: 200, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
+            render json: @entourage, root: :entourage, status: 200, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
           end
 
           on.failure do |entourage|

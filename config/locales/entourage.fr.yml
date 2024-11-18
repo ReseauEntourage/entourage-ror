@@ -93,6 +93,7 @@ fr:
         members_count: Nombre de membres
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation
+        sf_category: Type d'événement
         categories:
           social: Social
           resource: Ressource
@@ -495,6 +496,18 @@ fr:
       hygiene:
         name: Produit d'hygiène
         subname: savon, protection hygiénique...
+    sf_categories:
+      atelier_femmes: Atelier de sensib Femmes en situation de préca
+      atelier_mdlr: Atelier de sensib Monde de la rue
+      atelier_preca: Atelier de sensib Précarité, exclusion & emploi
+      devenir_ambassadeur: b.a BA devenir ambassadeur
+      convivialite: Evenement de convivialité
+      passion_sport: Passion sport
+      pratique_sport: Pratique Sport
+      quizz_sensibilisation: Quizz de sensibilisation
+      rencontre_nomade: Rencontre Nomade
+      welcome_entourage_local: Rdv de bienvenue Entourage Local
+      welcome_entourage_pro: Rdv de bienvenue Entourage Pro
     concerns:
       sharing_time: Temps de partage
       material_donations: Dons matériels
