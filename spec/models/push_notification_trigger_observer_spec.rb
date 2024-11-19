@@ -472,12 +472,13 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "sender is publisher" do
         after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
 
+        # we use batches rather than two calls
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: user.id,
             referent: neighborhood,
             instance: publication,
-            users: [kind_of(User)],
+            users: [kind_of(User), kind_of(User)],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
               content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
@@ -485,19 +486,20 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 tracking: :comment_on_create_to_neighborhood
               }
             }
-          ).twice
+          ).once
         }
       end
 
       context "sender is commentator" do
         after { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: publication }
 
+        # we use batches rather than two calls
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: john.id,
             referent: neighborhood,
             instance: publication,
-            users: [kind_of(User)],
+            users: [kind_of(User), kind_of(User)],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
               content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
@@ -505,7 +507,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 tracking: :comment_on_create_to_neighborhood
               }
             }
-          ).twice
+          ).once
         }
       end
     end

@@ -79,7 +79,7 @@ class PushNotificationTrigger
         sender_id: entourage.user_id,
         referent: neighborhood,
         instance: entourage,
-        users: [batches],
+        users: batches,
         params: {
           object: I18nStruct.new(instance: neighborhood, field: :name),
           content: I18nStruct.new(
@@ -161,7 +161,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [batches],
+        users: batches,
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
           content: I18nStruct.new(i18n: 'push_notifications.action.create_for_follower', i18n_args: [partner.name, title(@record)]),
@@ -201,7 +201,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [batches],
+        users: batches,
         params: {
           object: content_for_create_action(@record),
           content: I18nStruct.new(instance: @record, field: :title),
@@ -237,7 +237,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [batches],
+        users: batches,
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
           content: update_outing_message(@record, @changes),
@@ -265,7 +265,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record,
         instance: @record,
-        users: [batches],
+        users: batches,
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
           content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: [to_date(@record.starts_at)]),
@@ -320,7 +320,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record,
-        users: [batches],
+        users: batches,
         params: {
           object: I18nStruct.new(text: "#{username(@record.user)} - %s", i18n_args: [title(@record.messageable)]), # @requires i18n
           content: I18nStruct.new(instance: @record, field: :content),
@@ -345,7 +345,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record.messageable,
-        users: [batches],
+        users: batches,
         params: {
           object: I18nStruct.new(text: username(@record.user)),
           content: I18nStruct.new(instance: @record, field: :content),
@@ -378,7 +378,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record.messageable,
-        users: [batches],
+        users: batches,
         params: {
           object: title(@record.messageable),
           content: I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)]),
@@ -416,7 +416,7 @@ class PushNotificationTrigger
         sender_id: @record.user_id,
         referent: @record.messageable,
         instance: @record.parent,
-        users: [batches],
+        users: batches,
         params: {
           object: title(@record.messageable),
           content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
