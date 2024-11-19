@@ -211,9 +211,7 @@ module Admin
 
       JoinRequest.where(joinable: @conversation).update_all(last_message_read: timestamp)
 
-      filters = {}
-      filters[:filter] = :unread if status == :unread
-      redirect_to admin_conversations_path(filters)
+      redirect_to admin_conversations_path(filter: Rack::Utils.parse_query(URI(request.referer).query)['filter'])
     end
 
     def archive_status
