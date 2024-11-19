@@ -9,7 +9,7 @@ class MemberMailer < MailjetMailer
                   from: email_with_name("contact@entourage.social", "Le Réseau Entourage"),
                   variables: {
                     outings_url: Entourage.share_url(:outings),
-                    outings: Outing.welcome_category.map { |outing|
+                    outings: Outing.welcome_category.limit(3).map { |outing|
                       {
                         name: outing.title,
                         address: outing.event_url,
