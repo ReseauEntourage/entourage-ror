@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><%= link_to "Actions et événements", admin_entourages_path %></li>
-  <li><%= link_to @entourage.title, [:admin, @entourage] %></li>
+  <li><%= link_to @entourage.title, admin_entourage_path(@entourage) %></li>
   <li class="active">Annuler</li>
 </ol>
 
@@ -18,7 +18,7 @@
   </div>
 </div>
 
-<%= form_for([:cancel, :admin, @entourage], :method => :POST, html: { class: "form-horizontal", role: "form" }) do |f| %>
+<%= form_for(cancel_admin_entourage_path(@entourage), as: :entourage, :method => :POST, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
   <%= f.hidden_field :group_type %>
@@ -30,5 +30,5 @@
     <br>
     <%= f.submit "Annuler l'événement", class: "btn btn-success" %>
 
-  <%= link_to "Retour", [:admin, @entourage], class: "btn btn-default" %>
+  <%= link_to "Retour", admin_entourage_path(@entourage), class: "btn btn-default" %>
 <% end %>
