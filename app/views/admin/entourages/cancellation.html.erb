@@ -18,7 +18,7 @@
   </div>
 </div>
 
-<%= form_for(cancel_admin_entourage_path(@entourage), as: :entourage, :method => :POST, html: { class: "form-horizontal", role: "form" }) do |f| %>
+<%= form_for(@entourage, as: :entourage, url: cancel_admin_entourage_path(@entourage), :method => :POST, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
   <%= f.hidden_field :group_type %>

@@ -6,7 +6,7 @@
   </div>
 </div>
 
-<%= form_for([:admin, @entourage], :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
+<%= form_for(@entourage, as: :entourage, url: admin_entourage_path(@entourage), :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
   <%= f.hidden_field :group_type %>
@@ -38,5 +38,5 @@
   <% else %>
   <% end %>
 
-  <%= link_to "Annuler", [:admin, @entourage], class: "btn btn-default" %>
+  <%= link_to "Annuler", admin_entourage_path(@entourage), class: "btn btn-default" %>
 <% end %>

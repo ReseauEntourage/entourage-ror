@@ -24,7 +24,7 @@
 
     </div>
 
-    <%= form_for @entourage, url: update_image_admin_entourage_path(@entourage), method: :put do |f| %>
+    <%= form_for @entourage, as: :entourage, url: update_image_admin_entourage_path(@entourage), method: :put do |f| %>
       <table class="table">
         <th>Titre</th>
         <th>Photos</th>
