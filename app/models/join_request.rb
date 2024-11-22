@@ -45,6 +45,15 @@ class JoinRequest < ApplicationRecord
     update_column(:unread_messages_count, 0)
   end
 
+  def set_chat_messages_as_unread
+    update_column(:last_message_read, nil)
+    update_column(:unread_messages_count, joinable.chat_messages
+      .where(status: [:active, :updated])
+      .where(ancestry: nil)
+      .count
+    )
+  end
+
   def set_chat_messages_as_read_from datetime
     update_column(:last_message_read, datetime)
     update_column(:unread_messages_count, joinable.chat_messages

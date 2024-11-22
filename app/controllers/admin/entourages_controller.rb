@@ -372,7 +372,7 @@ module Admin
         end
 
         on.success do |message|
-          @join_request.update_column(:last_message_read, message.created_at)
+          @join_request.set_chat_messages_as_read_from(message.created_at)
           ModeratorReadsService
             .new(instance: @entourage, moderator: current_user)
             .mark_as_read
