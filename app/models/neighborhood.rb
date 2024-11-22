@@ -80,6 +80,8 @@ class Neighborhood < ApplicationRecord
   scope :public_only, -> { where(public: true) }
 
   scope :with_moderation_area, -> (moderation_area) {
+    return where(national: true) if moderation_area.to_sym == :national
+
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
       return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
         where.not(country: :FR)
@@ -154,9 +156,8 @@ class Neighborhood < ApplicationRecord
   scope :like, -> (search) {
     return unless search.present?
 
-    where('(unaccent(neighborhoods.name) ilike unaccent(:name) or unaccent(neighborhoods.description) ilike unaccent(:description))', {
-      name: "%#{search.strip}%",
-      description: "%#{search.strip}%"
+    where('unaccent(neighborhoods.name) ilike unaccent(:name)', {
+      name: "%#{search.strip}%"
     })
   }
 
@@ -252,13 +253,6 @@ class Neighborhood < ApplicationRecord
     JoinRequest
       .where(user: user, joinable: self)
       .with_unread_messages
-      .count
-  end
-
-  def unread_images_count_chat_messages_for user
-    JoinRequest
-      .where(user: user, joinable: self)
-      .with_unread_images_messages
       .count
   end
 

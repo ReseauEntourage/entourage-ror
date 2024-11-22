@@ -1,59 +1,86 @@
 <style>
-  .overlay-container {
-    position: relative;
-  }
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  .overlay-container a:not(.overlay) {
-    position: relative;
-    z-index: 2;
-  }
-
-  .conversation {
-    display: flex;
-  }
-
-  .conversation-recipients {
-    width: 250px;
-  }
-
-  .conversation-content {
-    width: 100%;
-  }
-
-  .conversation-timestamp {
-    width: 100px;
-  }
-
-  .conversation:hover {
-    background-color: rgba(0, 0, 0, .05);
+  .conversations-menu {
+    height: calc(100vh - 350px);
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
   }
 
   .conversation.unread {
     font-weight: bold;
   }
 
-  .cell {
-    padding: 8px;
-    line-height: 1.42857143;
-    vertical-align: top;
-    border-top: 1px solid #ddd;
+  .conversation-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+    transition: background-color 0.3s;
   }
 
-  .truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .conversation {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px;
   }
+
+  .conversation-avatar {
+    flex: 0 0 auto;
+    margin-right: 10px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .conversation-details {
+    flex: 1;
+  }
+
+  .conversation-recipients {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .conversation-message {
+    color: #666;
+  }
+
+  .conversation-date {
+    flex: 0 0 auto;
+    font-size: 0.8em;
+    color: #999;
+  }
+
+  .nav-tabs-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .conversation-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .nav-tabs {
+    margin-bottom: 0;
+  }
+
+  .conversation-messages-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 15px;
+  }
+
+  .conversation-day-divider, .conversation-message {
+    margin-bottom: 15px;
+  }
+
 </style>
+
 <div class="container">
   <h1>Messages privés</h1>
 
@@ -61,55 +88,24 @@
     <div class="btn-group btn-group-sm">
       <%= link_to "Tous", @params.except(:filter), class: "btn btn-#{params.key?(:filter) ? :default : :primary}" %>
       <%= link_to "Non-lus", @params.merge(filter: :unread), class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}" %>
-      <%= link_to "POC multiple", @params.merge(filter: :multiple), class: "btn btn-#{params[:filter] == 'multiple' ? :primary : :default}" %>
     </div>
 
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
   </div>
 
-  <div class="conversations">
-    <% @conversations.each do |conversation| %>
-      <% last_message = @last_message[conversation.id] %>
-      <% recipient_ids = @recipient_ids[conversation.id] %>
+  <div style="padding-bottom: 50px">
+    <%= form_tag admin_conversations_path, remote: true, method: :get, html: { role: "form" } do |f| %>
+      <%= text_field_tag :search, nil, class: "form-control", style: "width: 200px;", placeholder: "Recherche par membre" %>
 
-      <div class="overlay-container conversation <%= :unread if conversation.unread %>">
-        <div class="cell truncate conversation-recipients">
-          <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
-        </div>
-
-        <div class="cell truncate conversation-content">
-          <% if last_message.nil? %>
-            <span class="text-muted">(pas de messages)</span>
-          <% else %>
-            <% if last_message.user_id == @user.id %>
-              Vous :
-            <% elsif recipient_ids.count > 1 %>
-              <%= display_user_name @users[last_message.user_id] %> :
-            <% end %>
-
-            <% if last_message.deleted? %>
-              <p style="color: red;"> Ce message a été supprimé : </p>
-              <em><%= simple_format last_message.content(true) %></em>
-            <% else %>
-              <%= simple_format last_message.content %>
-            <% end %>
-          <% end %>
-        </div>
-
-        <div class="cell conversation-timestamp" style="text-align: right">
-          <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>
-          <% timestamp = last_message&.created_at || conversation.created_at %>
-          <% if timestamp.today? %>
-            <%= l timestamp, format: "%H:%M" %>
-          <% elsif timestamp >= 7.days.ago.midnight %>
-            <%= l timestamp, format: "%A" %>
-          <% else  %>
-            <%= l timestamp, format: "%-d %b" %>
-          <% end %>
-        </div>
-      </div>
+      <% @params.each do |key, value| %>
+        <% unless key.to_sym == :search %>
+          <%= hidden_field_tag key, value %>
+        <% end %>
+      <% end %>
     <% end %>
   </div>
 
-  <%= paginate @conversations %>
+  <div class="conversations-list">
+    <%= render partial: 'conversations', locals: { conversations: @conversations } %>
+  </div>
 </div>

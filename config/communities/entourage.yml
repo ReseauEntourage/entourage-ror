@@ -1,7 +1,7 @@
 name: Entourage
 dev_name: Entourage
 mailjet_template:
-  welcome: 311246
+  welcome: 6028131
 store_short_url: https://bit.ly/applientourage
 links:
   feedback: https://entourage-asso.typeform.com/to/QeQ4X7?user_id=%{user_id}

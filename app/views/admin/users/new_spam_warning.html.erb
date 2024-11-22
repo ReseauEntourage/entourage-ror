@@ -1,57 +1,55 @@
 <% users = User.in_conversation_with(@user.id) %>
 
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to @user.full_name, admin_user_path(@user) %></li>
-      <li class="active">Alerter</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to @user.full_name, admin_user_path(@user) %></li>
+    <li class="active">Alerter</li>
+  </ol>
 
-    <h2>
-      <span class="text-muted">#<%= @user.id %></span>
-      Alerter les personnes contactées par <%= @user.full_name %>
-    </h2>
+  <h2>
+    <span class="text-muted">#<%= @user.id %></span>
+    Alerter les personnes contactées par <%= @user.full_name %>
+  </h2>
 
-    <div class="panel panel-info">
-      <div class="panel-heading">
-        Vous pouvez entrer un message personnalisé à envoyer à toutes les personnes contactées par <%= @user.full_name %>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      Vous pouvez entrer un message personnalisé à envoyer à toutes les personnes contactées par <%= @user.full_name %>
+    </div>
+  </div>
+
+  <details>
+    <summary>
+      <div class="panel panel-info">
+        <div class="panel-body">
+          Consulter la liste des <%= users.length %> utilisateurs contactés
+        </div>
       </div>
+    </summary>
+
+    <table class="table admin-table" style="table-layout: auto">
+      <tr>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+      <% users.each do |user| %>
+        <tr>
+          <td><%= link_to user.full_name, admin_user_path(user) %></td>
+          <td><%= user.email %></td>
+          <td><%= user.phone %></td>
+        </tr>
+      <% end %>
+    </table>
+  </details>
+
+  <%= form_tag create_spam_warning_admin_user_path, class: 'form-horizontal' do %>
+    <div class="control-group">
+      <%= label_tag :message, nil, class: "control-label" %>
+      <%= text_area_tag :message, nil, class: "form-control", rows: 10 %>
     </div>
 
-    <details>
-      <summary>
-        <div class="panel panel-info">
-          <div class="panel-body">
-            Consulter la liste des <%= users.length %> utilisateurs contactés
-          </div>
-        </div>
-      </summary>
-
-      <table class="table admin-table" style="table-layout: auto">
-        <tr>
-          <th>Nom</th>
-          <th>Email</th>
-          <th>Phone</th>
-        </tr>
-        <% users.each do |user| %>
-          <tr>
-            <td><%= link_to user.full_name, admin_user_path(user) %></td>
-            <td><%= user.email %></td>
-            <td><%= user.phone %></td>
-          </tr>
-        <% end %>
-      </table>
-    </details>
-
-    <%= form_tag create_spam_warning_admin_user_path, class: 'form-horizontal' do %>
-      <div class="control-group">
-        <%= label_tag :message, nil, class: "control-label" %>
-        <%= text_area_tag :message, nil, class: "form-control", rows: 10 %>
-      </div>
-
-      <br>
-      <%= submit_tag "Envoyer", class: "btn btn-success" %>
-      <%= link_to "Annuler", admin_user_path(@user), class: "btn btn-default" %>
-    <% end %>
-  </div>
+    <br>
+    <%= submit_tag "Envoyer", class: "btn btn-success" %>
+    <%= link_to "Annuler", admin_user_path(@user), class: "btn btn-default" %>
+  <% end %>
 </div>

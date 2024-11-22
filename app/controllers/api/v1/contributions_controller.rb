@@ -111,14 +111,14 @@ module Api
       end
 
       def index_params
-        params.permit(:latitude, :longitude, :travel_distance, :page, :per, sections: [])
+        params.permit(:q, :latitude, :longitude, :travel_distance, :section_list, sections: [])
       end
 
       def contribution_params
         metadata_keys = params.dig(:contribution, :metadata).try(:keys) || []
         params.require(:contribution).permit({
           location: [:longitude, :latitude]
-        }, :postal_code, :title, :description, :section, {
+        }, :postal_code, :title, :description, :section, :auto_post_at_create, {
           metadata: metadata_keys
         }, :image_url)
       end
@@ -138,7 +138,7 @@ module Api
       def set_last_message_read
         return unless join_request
 
-        join_request.update(last_message_read: Time.now)
+        join_request.set_chat_messages_as_read
       end
 
       def page

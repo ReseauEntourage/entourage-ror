@@ -188,11 +188,10 @@ describe Api::V1::EntouragesController do
       it { expect(subject["entourages"][0]["id"]).to eq(entourage_2.id) }
     end
 
-    context "filter search term on description" do
+    context "no filter search term on description, only on title" do
       before { get :search, params: { token: user.token, q: 'Bar' } }
 
-      it { expect(subject["entourages"].count).to eq(1) }
-      it { expect(subject["entourages"][0]["id"]).to eq(entourage_1.id) }
+      it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter search term on unknown" do
@@ -356,6 +355,9 @@ describe Api::V1::EntouragesController do
       end
 
       context "metadata (outings)" do
+        let(:starts_at) { 1.day.from_now.iso8601(3) }
+        let(:ends_at) { 2.days.from_now.iso8601(3) }
+
         let(:params) do
           {
             group_type: :outing,
@@ -365,7 +367,8 @@ describe Api::V1::EntouragesController do
               longitude: 2.390185
             },
             metadata: {
-              starts_at: "2018-09-04T19:30:00+02:00",
+              starts_at: starts_at,
+              ends_at: ends_at,
               place_name: "Le Dorothy",
               street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
               google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
@@ -391,8 +394,8 @@ describe Api::V1::EntouragesController do
               "group_type"=>"outing",
               "public"=>false,
               "metadata"=>{
-                "starts_at"=>"2018-09-04T19:30:00.000+02:00",
-                "ends_at"=>"2018-09-04T22:30:00.000+02:00",
+                "starts_at"=>starts_at,
+                "ends_at"=>ends_at,
                 "previous_at"=>nil,
                 "place_name"=>"Le Dorothy",
                 "street_address"=>"85 bis rue de Ménilmontant, 75020 Paris, France",
@@ -436,6 +439,9 @@ describe Api::V1::EntouragesController do
       end
 
       context "metadata (outings) records correct urls" do
+        let(:starts_at) { 1.day.from_now.iso8601(3) }
+        let(:ends_at) { 2.days.from_now.iso8601(3) }
+
         let(:params) do
           {
             group_type: :outing,
@@ -445,7 +451,7 @@ describe Api::V1::EntouragesController do
               longitude: 2.390185
             },
             metadata: {
-              starts_at: "2018-09-04T19:30:00+02:00",
+              starts_at: starts_at,
               place_name: "Le Dorothy",
               street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
               google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
@@ -466,6 +472,9 @@ describe Api::V1::EntouragesController do
       end
 
       context "metadata (outings) with empty urls" do
+        let(:starts_at) { 1.day.from_now.iso8601(3) }
+        let(:ends_at) { 2.days.from_now.iso8601(3) }
+
         let(:params) do
           {
             entourage_type: :outing,
@@ -476,7 +485,7 @@ describe Api::V1::EntouragesController do
               longitude: 2.390185
             },
             metadata: {
-              starts_at: "2018-09-04T19:30:00+02:00",
+              starts_at: starts_at,
               place_name: "Le Dorothy",
               street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
               google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",

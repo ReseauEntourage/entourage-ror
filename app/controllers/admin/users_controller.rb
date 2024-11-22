@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :neighborhoods, :outings, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -10,7 +10,19 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:address).order("created_at DESC").page(params[:page]).per(25)
+    end
+
+    def search
+      if params[:query].present?
+        @users = User.validated.where('first_name LIKE ? OR phone LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%")
+      else
+        @users = User.none
+      end
+
+      respond_to do |format|
+        format.json { render json: @users.map { |user| { id: user.id, first_name: user.first_name, last_name: user.last_name, phone: user.phone } } }
+      end
     end
 
     def show
@@ -48,6 +60,23 @@ module Admin
     end
 
     def engagement
+    end
+
+    def neighborhoods
+      @join_requests = user
+        .join_requests
+        .where(joinable_type: :Neighborhood)
+        .includes(joinable: :chat_messages)
+        .order(status: :asc, created_at: :desc)
+    end
+
+    def outings
+      @join_requests = user
+        .join_requests
+        .where(joinable_type: :Entourage)
+        .where("joinable_id in (select entourages.id from entourages where group_type = 'outing')")
+        .includes(joinable: :chat_messages)
+        .order(created_at: :desc)
     end
 
     def history
@@ -295,7 +324,7 @@ module Admin
       engagement = get_engagement
       profile = get_profile
 
-      @users = current_user.community.users.includes([:neighborhood_memberships])
+      @users = current_user.community.users
 
       @users = @users.status_is(status)
       @users = @users.role_is(role)
@@ -304,9 +333,9 @@ module Admin
       @users = @users.not_engaged if engagement == :not_engaged
       @users = @users.search_by(params[:search]) if params[:search].present?
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if status == :pending
-      @users = @users.unknown if profile == :goal_not_known
-      @users = @users.ask_for_help if profile == :ask_for_help
-      @users = @users.offer_help if profile == :offer_help
+
+      @users = @users.with_profile(profile.to_s) if profile.present?
+
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')

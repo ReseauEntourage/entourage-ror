@@ -82,6 +82,7 @@ class User < ApplicationRecord
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
+  delegate :city, to: :address, allow_nil: true
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
   delegate :departement, to: :address, allow_nil: true
@@ -148,26 +149,25 @@ class User < ApplicationRecord
   }
   scope :goal_not_known, -> { where(targeting_profile: nil, goal: nil) }
   scope :unknown, -> { goal_not_known }
-  scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
-  scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
+  scope :ask_for_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :ask_for_help, :asks_for_help) }
+  scope :offer_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :offer_help, :offers_help) }
   scope :search_by, ->(search) {
-    strip = search && search.strip
-    like = "%#{strip}%"
+    strip = search && search.strip.downcase
 
     where(%(
       users.id = :id OR
-      trim(first_name) ILIKE :first_name OR
-      trim(last_name) ILIKE :last_name OR
-      email ILIKE :email OR
+      lower(first_name) = :first_name OR
+      lower(last_name) = :last_name OR
+      email = :email OR
       phone = :phone OR
-      concat(trim(first_name), ' ', trim(last_name)) ILIKE :full_name OR
-      concat(trim(last_name), ' ', trim(first_name)) ILIKE :full_name
+      concat(lower(first_name), ' ', lower(last_name)) = :full_name OR
+      concat(lower(last_name), ' ', lower(first_name)) = :full_name
     ), {
       id: strip.to_i,
-      first_name: like,
-      last_name: like,
-      email: like,
-      full_name: like,
+      first_name: strip,
+      last_name: strip,
+      email: strip,
+      full_name: strip,
       phone: Phone::PhoneBuilder.new(phone: strip).format,
     })
   }
@@ -211,9 +211,9 @@ class User < ApplicationRecord
     elsif profile.to_sym == :offer_help
       offer_help
     elsif profile.to_sym == :partner
-      where(targeting_profile: :partner)
+      where.not(partner_id: nil)
     elsif profile.to_sym == :organization
-      where(targeting_profile: :partner)
+      where.not(partner_id: nil)
     elsif profile.to_sym == :goal_not_known
       goal_not_known
     end
@@ -233,7 +233,7 @@ class User < ApplicationRecord
 
   # from departements or postal_codes
   scope :in_specific_areas, -> (areas) {
-    joins(:addresses).where("addresses.country = 'FR' and postal_code SIMILAR TO ?", "(#{areas.join('|')})%")
+    joins(:addresses).where("addresses.country = 'FR' and addresses.postal_code SIMILAR TO ?", "(#{areas.join('|')})%")
   }
 
   scope :in_conversation_with, -> (user_id) {
@@ -405,6 +405,10 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def avatar_url
+    UserServices::Avatar.new(user: self).thumbnail_url
+  end
+
   def sms_code=(another_sms_code)
     #Hashing slows down tests a lot
     if Rails.env.test? && ENV["DISABLE_CRYPT"]=="TRUE"
@@ -482,6 +486,14 @@ class User < ApplicationRecord
 
   def is_ask_for_help?
     (targeting_profile.blank? && goal.to_s == 'ask_for_help') || targeting_profile.to_s == 'asks_for_help'
+  end
+
+  def offer_help?
+    goal.to_s == 'offer_help'
+  end
+
+  def is_offer_help?
+    (targeting_profile.blank? && goal.to_s == 'offer_help') || targeting_profile.to_s == 'offers_help'
   end
 
   def public?
@@ -656,6 +668,14 @@ class User < ApplicationRecord
 
   def conversation_participations_count
     entourage_participations.where(group_type: :conversation).count
+  end
+
+  def watched_resource_ids
+    @watched_resource_ids ||= UsersResource.where(user_id: id, watched: true).pluck(:resource_id)
+  end
+
+  def has_watched_resource? resource_id
+    watched_resource_ids.include?(resource_id)
   end
 
   protected

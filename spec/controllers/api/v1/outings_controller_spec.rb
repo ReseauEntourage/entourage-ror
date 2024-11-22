@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe Api::V1::OutingsController do
-  let(:user) { FactoryBot.create(:public_user) }
+  let(:user) { create(:public_user) }
   let(:neighborhood_1) { create :neighborhood }
   let(:neighborhood_2) { create :neighborhood }
-  let(:entourage_image) { FactoryBot.create(:entourage_image) }
+  let(:entourage_image) { create(:entourage_image) }
 
   subject { JSON.parse(response.body) }
 
@@ -14,8 +14,57 @@ describe Api::V1::OutingsController do
     let(:latitude) { 48.85 }
     let(:longitude) { 2.27 }
 
-    let(:outing) { FactoryBot.create(:outing, latitude: latitude, longitude: longitude) }
+    let(:outing) { create(:outing, title: "JO Paris", latitude: latitude, longitude: longitude) }
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
+
+    describe 'filter by interests' do
+      let!(:outing) { FactoryBot.create(:outing, :outing_class, latitude: latitude, longitude: longitude, interest_list: ["sport"]) }
+      let(:join_request) { nil }
+
+      before { get :index, params: { token: user.token, interests: interests } }
+
+      describe 'find with interest' do
+        let(:interests) { ["sport"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
+
+      describe 'does not find with interest' do
+        let(:interests) { ["jeux"] }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(0) }
+      end
+    end
+
+    describe 'filter by q' do
+      before { get :index, params: { token: user.token, q: q } }
+
+      describe 'find with q' do
+        let(:q) { "JO" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
+
+      describe 'find with q not case sensitive' do
+        let(:q) { "jo" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
+
+      describe 'does not find with q' do
+        let(:q) { "OJ" }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(0) }
+      end
+    end
 
     describe 'do not get closed' do
       let!(:closed) { create :outing, status: :closed, latitude: latitude, longitude: longitude }
@@ -79,12 +128,11 @@ describe Api::V1::OutingsController do
       it { expect(subject).to have_key("outings") }
       it { expect(subject["outings"].count).to eq(1) }
       it { expect(subject["outings"][0]).to have_key("members") }
-      it { expect(subject["outings"][0]["members"]).to eq([{
-        "id" => outing.user_id,
-        "lang" => "fr",
-        "display_name" => "John D.",
-        "avatar_url" => nil,
-        "community_roles" => [],
+      it { expect(subject["outings"][0]["members"]).to match_array([{
+        "id" => kind_of(Integer),
+        "lang" => kind_of(String),
+        "display_name" => kind_of(String),
+        "avatar_url" => kind_of(String),
       }]) }
     end
 

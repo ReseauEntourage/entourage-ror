@@ -9,7 +9,12 @@ module Api
 
         def index
           # outing members
-          render json: @outing.join_requests.includes(:user).ordered_by_users.accepted, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          render json: @outing.join_requests
+            .includes(:user)
+            .ordered_by_users
+            .accepted
+            .page(page)
+            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
@@ -62,9 +67,16 @@ module Api
 
         def set_membership
           @membership = JoinRequest.where(joinable: @outing, user: current_user).first
-          @membership.status = :accepted if @membership.present?
 
           @membership ||= JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
+          @membership.status = :accepted
+          @membership.role = if current_user.ambassador? && params[:role] == 'organizer'
+            :organizer
+          else
+            :participant
+          end
+
+          @membership
         end
 
         def authorised_user?
@@ -73,6 +85,14 @@ module Api
           unless current_user == User.find(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per].try(:to_i) || 100
         end
       end
     end

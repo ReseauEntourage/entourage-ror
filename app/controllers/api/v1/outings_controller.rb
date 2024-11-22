@@ -10,7 +10,7 @@ module Api
       def index
         render json: OutingsServices::Finder.new(current_user, index_params)
           .find_all
-          .includes(:translation, :user, :members, :confirmed_members, :interests, :recurrence)
+          .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
           .page(page)
           .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
             user: current_user,
@@ -146,7 +146,7 @@ module Api
       end
 
       def index_params
-        params.permit(:latitude, :longitude, :travel_distance, :page, :per)
+        params.permit(:q, :latitude, :longitude, :travel_distance, :page, :per, :interest_list, interests: [])
       end
 
       def outing_params
@@ -196,7 +196,7 @@ module Api
       def set_last_message_read
         return unless join_request
 
-        join_request.update(last_message_read: Time.now)
+        join_request.set_chat_messages_as_read
       end
 
       def page

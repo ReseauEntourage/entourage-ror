@@ -1,0 +1,37 @@
+<%= render 'header', tab: :outings %>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <%= @user.full_name %> a participé à <%= @join_requests.select{ |join_request| join_request.accepted? }.count %> événements.
+  </div>
+</div>
+
+<div class="row">
+  <label class="control-label">Groupes de voisins</label>
+  <table class="table">
+    <tr>
+      <th>Nom</th>
+      <th>Date de l'événement</th>
+      <th>Nombre de participants</th>
+      <th title="Accepted : l'utilisateur participe à l'événement ; Cancelled : l'utilisateur ne participe plus à l'événement">Statut de l'utilisateur ⓘ</th>
+
+      <th>Posts créés</th>
+      <th>Commentaires créés</th>
+    </tr>
+    <% @join_requests.each do |join_request| %>
+      <% next unless outing = join_request.joinable %>
+
+      <% chat_messages = outing.chat_messages.pluck(:user_id, :ancestry) %>
+
+      <tr>
+        <td><%= link_to outing.title, admin_entourage_path(outing) %></td>
+        <td><%= l outing.metadata[:starts_at], format: :short %></td>
+        <td><%= outing.number_of_people %></td>
+        <td><%= join_request.status %></td>
+
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && ancestry.nil? } %></td>
+        <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && !ancestry.nil? } %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

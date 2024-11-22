@@ -12,6 +12,9 @@ class ChatMessage < ApplicationRecord
 
   STATUSES = [:active, :updated, :deleted]
 
+  store_attribute :options, :auto_post_type, :string
+  store_attribute :options, :auto_post_id, :integer
+
   has_ancestry
 
   belongs_to :messageable, polymorphic: true
@@ -135,6 +138,10 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  def neighborhood?
+    messageable_type == 'Neighborhood'
+  end
+
   def entourage?
     messageable_type == 'Entourage'
   end
@@ -249,7 +256,12 @@ class ChatMessage < ApplicationRecord
   def update_parent_comments_count
     return unless ancestry.present?
 
-    parent.update(comments_count: parent.descendants.where(status: :active).count)
+    parent.update(comments_count: parent.children
+      .where(status: :active)
+      .where(messageable_type: messageable_type)
+      .where(messageable_id: messageable_id)
+      .count
+    )
   end
 
   def update_sender_report_prompt_status

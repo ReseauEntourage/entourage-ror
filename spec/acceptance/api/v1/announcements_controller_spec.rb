@@ -11,7 +11,6 @@ resource Api::V1::AnnouncementsController do
 
     parameter :token, "User token", type: :string, required: true
 
-    let!(:paris) { FactoryBot.create(:moderation_area, departement: '75') }
     let(:address) { FactoryBot.create(:address) }
     let(:user) { FactoryBot.create(:public_user, goal: :offer_help, addresses: [address]) }
     let!(:announcement) { FactoryBot.create(:announcement, user_goals: [:offer_help], areas: [:dep_75]) }

@@ -77,6 +77,22 @@ module Admin
       redirect_to admin_user_message_broadcasts_path
     end
 
+    def rebroadcast
+      @user_message_broadcast = UserMessageBroadcast.find(params[:id])
+
+      unless @user_message_broadcast.sending?
+        @user_message_broadcast.update_attribute(:status, :sent)
+
+        ConversationMessageBroadcastJob.perform_later(
+          @user_message_broadcast.id,
+          current_admin.id,
+          @user_message_broadcast.content
+        )
+      end
+
+      redirect_to admin_user_message_broadcasts_path
+    end
+
     private
 
     def user_message_broadcast_params

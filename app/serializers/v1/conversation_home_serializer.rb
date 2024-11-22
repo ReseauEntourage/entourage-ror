@@ -55,11 +55,11 @@ module V1
     def member
       return false unless scope && scope[:user]
 
-      object.members.include? scope[:user]
+      object.member_ids.include?(scope[:user].id)
     end
 
     def members_count
-      object.members.count
+      object.member_ids.count
     end
 
     def chat_messages
@@ -92,7 +92,7 @@ module V1
     end
 
     def section
-      object.becomes(object.contribution? ? Contribution : Solicitation).section
+      object.becomes(object.action_class).section
     end
 
     def author

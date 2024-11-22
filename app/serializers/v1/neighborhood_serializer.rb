@@ -10,6 +10,7 @@ module V1
       :member,
       :members,
       :members_count,
+      :unread_posts_count,
       :image_url,
       :interests,
       :ethics,
@@ -18,7 +19,8 @@ module V1
       :has_ongoing_outing,
       :address,
       :status_changed_at,
-      :public
+      :public,
+      :national
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
 
@@ -41,7 +43,7 @@ module V1
     def member
       return false unless scope && scope[:user]
 
-      object.members.include? scope[:user]
+      object.member_ids.include?(scope[:user].id)
     end
 
     def members
@@ -49,6 +51,12 @@ module V1
       # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
       Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
+    end
+
+    def unread_posts_count
+      return unless member
+
+      object.members.pluck(:user_id, :unread_messages_count).to_h[scope[:user].id]
     end
 
     def image_url

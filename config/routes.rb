@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
+          get :search
           get 'moderate'
           get 'fake'
           post 'generate'
@@ -98,11 +99,8 @@ Rails.application.routes.draw do
 
       resources :moderation_areas do
         member do
-          patch 'update_moderator'
           patch 'update_animator'
-          patch 'update_mobilisator'
           patch 'update_sourcing'
-          patch 'update_accompanyist'
           patch 'update_community_builder'
         end
       end
@@ -137,10 +135,6 @@ Rails.application.routes.draw do
           get :edit_owner
           post :close
           post :update_owner
-          post :pin
-          post :unpin
-          post :admin_pin
-          post :admin_unpin
           get :renew
           get :cancellation
           post :cancel
@@ -161,6 +155,8 @@ Rails.application.routes.draw do
       resources :sensitive_words, only: [:show, :destroy]
       resources :conversations, only: [:index, :show] do
         member do
+          get :chat_messages
+          get :prepend_chat_messages
           get :show_members
           post :message
           post :invite
@@ -218,6 +214,8 @@ Rails.application.routes.draw do
       member do
         get 'messages'
         get 'engagement'
+        get 'neighborhoods'
+        get 'outings'
         get 'history'
         put 'destroy_avatar'
         put 'banish'
@@ -283,6 +281,7 @@ Rails.application.routes.draw do
     resources :user_message_broadcasts do
       member do
         post 'broadcast'
+        post 'rebroadcast'
         post 'clone'
         post 'kill'
       end
@@ -291,6 +290,7 @@ Rails.application.routes.draw do
       member do
         put :update_neighborhoods
         post 'broadcast'
+        post 'rebroadcast'
         post 'clone'
         post 'kill'
       end
@@ -351,6 +351,10 @@ Rails.application.routes.draw do
       end
 
       resources :pois, only: [:index, :show, :create] do
+        collection do
+          get :clusters
+        end
+
         member do
           post 'report'
         end
@@ -368,6 +372,8 @@ Rails.application.routes.draw do
         member do
           patch 'code'
           post :report
+          get :notify
+          get :notify_force
           post :presigned_avatar_upload
           post :address
           get :email_preferences, action: :update_email_preferences
@@ -376,7 +382,12 @@ Rails.application.routes.draw do
         end
 
         resources :entourages, :controller => 'users/entourages', only: [:index]
-        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
+        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index] do
+          collection do
+            get :default
+          end
+        end
+
         resources :outings, :controller => 'users/outings', only: [:index] do
           collection do
             get :past
@@ -402,6 +413,7 @@ Rails.application.routes.draw do
       resources :neighborhoods do
         collection do
           get :joined # see my neighborhoods
+          get :default # show default user neighborhood
         end
 
         member do
@@ -453,6 +465,7 @@ Rails.application.routes.draw do
 
       resources :resources, only: [:index, :show] do
         collection do
+          get :home
           get "tag/:tag" => :tag, as: :tag
         end
 
@@ -602,6 +615,7 @@ Rails.application.routes.draw do
       resources :links, only: [] do
         member do
           get :redirect
+          get 'mesure-impact' => :mesure_impact
         end
       end
 

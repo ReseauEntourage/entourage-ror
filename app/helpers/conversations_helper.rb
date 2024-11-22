@@ -6,7 +6,7 @@ module ConversationsHelper
   def conversation_recipients_display_names recipients, max: 3
     count = recipients.count
 
-    recipients = User.where(id: recipients).select(:id, :first_name, :last_name)
+    recipients = User.where(id: recipients).select(:id, :first_name, :last_name).order(:first_name)
 
     recipient_names = recipients.first(max).map { |u| [UserPresenter.full_name(u), u.id] }
 
@@ -17,5 +17,21 @@ module ConversationsHelper
     end
 
     recipient_names
+  end
+
+  def read_for_user? conversation, user
+    conversation.join_requests.any? do |join_request|
+      join_request.user_id == user.id &&
+      join_request.last_message_read.present? &&
+      join_request.last_message_read >= (conversation.feed_updated_at || conversation.updated_at)
+    end
+  end
+
+  def archived_for_user? conversation, user
+    conversation.join_requests.any? do |join_request|
+      join_request.user_id == user.id &&
+      join_request.archived_at.present? &&
+      join_request.archived_at >= (conversation.feed_updated_at || conversation.updated_at)
+    end
   end
 end

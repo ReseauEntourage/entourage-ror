@@ -9,9 +9,10 @@ module InappNotificationServices
     end
 
     def skip_obsolete_notifications
-      user.inapp_notifications.active.each do |inapp_notification|
-        inapp_notification.update_attribute(:skipped_at, Time.now) if inapp_notification.created_at < OBSOLETE_PERIOD.ago
-      end
+      user.inapp_notifications
+        .active
+        .where("created_at < ?", OBSOLETE_PERIOD.ago)
+        .update_all(skipped_at: Time.current)
     end
 
     # @params context ie. chat_message_on_create

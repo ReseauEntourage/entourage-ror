@@ -3,7 +3,7 @@ default: &default
   url: <%= ENV.fetch('DATABASE_URL', '') %>
   encoding: UTF8
   pool: <%= ENV['MAX_THREADS'] || 5 %>
-  timeout: 5000
+  timeout: 10000
 
 development:
   <<: *default

@@ -48,6 +48,12 @@
   <li role="presentation" class="<%= :active if tab == :engagement %>">
     <%= link_to "Engagement", engagement_admin_user_path(@user) %>
   </li>
+  <li role="presentation" class="<%= :active if tab == :neighborhoods %>">
+    <%= link_to "Groupes de voisins", neighborhoods_admin_user_path(@user) %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :outings %>">
+    <%= link_to "Événements", outings_admin_user_path(@user) %>
+  </li>
   <li role="presentation" class="<%= :active if tab == :history %>">
     <%= link_to "Historique", history_admin_user_path(@user) %>
   </li>

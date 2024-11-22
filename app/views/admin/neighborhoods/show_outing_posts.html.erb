@@ -1,136 +1,134 @@
 <%= stylesheet_link_tag 'chat_messages' %>
 
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <%= render 'edit_header', tab: :show_outing_chat_messages %>
+  <%= render 'edit_header', tab: :show_outing_chat_messages %>
 
-    <div class="row">
-      <div class="breadcrumb" style="margin-bottom: 0px">
-        <%= "Messages de l'événement : #{@outing.title}" %>
-      </div>
+  <div class="row">
+    <div class="breadcrumb" style="margin-bottom: 0px">
+      <%= "Messages de l'événement : #{@outing.title}" %>
+    </div>
 
-      <% color = {} %>
+    <% color = {} %>
 
-      <% color[current_user.id] || (color.count * 0.381966011 * 360).round %>
-      <div class="conversation-message is-message-form">
-        <div class="conversation-gutter">
-          <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
-            <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
-          </div>
-        </div>
-
-        <div class="conversation-content">
-          <div>
-            <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
-          </div>
-          <%= form_for ChatMessage.new, url: outing_message_admin_neighborhood_path(@neighborhood.id, outing_id: @outing.id) do |f| %>
-            <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
-            <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
-          <% end %>
+    <% color[current_user.id] || (color.count * 0.381966011 * 360).round %>
+    <div class="conversation-message is-message-form">
+      <div class="conversation-gutter">
+        <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
+          <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
         </div>
       </div>
 
-      <% if @posts.empty? %>
-        Il n'y a pas encore de message.
-      <% else %>
-        <% date = nil %>
+      <div class="conversation-content">
+        <div>
+          <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
+        </div>
+        <%= form_for ChatMessage.new, url: outing_message_admin_neighborhood_path(@neighborhood.id, outing_id: @outing.id) do |f| %>
+          <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+          <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+        <% end %>
+      </div>
+    </div>
 
-        <% @posts.each do |post| %>
-          <% if date.nil? || date != post.created_at.to_date %>
-            <% date = post.created_at.to_date %>
-            <div class="conversation-day-divider">
-              <div class="conversation-day-divider-label">
-                <% if date == Date.today %>
-                  aujourd'hui
-                <% else %>
-                  <%= l date, format: "%A %-d %B %Y" %>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
+    <% if @posts.empty? %>
+      Il n'y a pas encore de message.
+    <% else %>
+      <% date = nil %>
 
-          <% color[post.user_id] ||= (color.count * 0.381966011 * 360).round %>
-
-          <div class="conversation-message">
-            <div class="conversation-gutter">
-              <div style="background-color: hsl(<%= color[post.user_id] %>, 70%, 75%)" class="conversation-icon">
-                <%= [post.user.first_name.try(:first), post.user.last_name.try(:first)].compact.join.upcase %>
-              </div>
-            </div>
-            <div class="conversation-content">
-              <div>
-                <%= link_to post.user.full_name, admin_user_path(post.user), class: "conversation-sender" %>
-                <span class="conversation-timestamp"><%= l post.created_at, format: "%H h %M" %></span>
-              </div>
-
-              <% if post.deleted? %>
-                <p style="color: red;"> Ce message a été supprimé : </p>
-                <em><%= simple_format post.content(true) %></em>
+      <% @posts.each do |post| %>
+        <% if date.nil? || date != post.created_at.to_date %>
+          <% date = post.created_at.to_date %>
+          <div class="conversation-day-divider">
+            <div class="conversation-day-divider-label">
+              <% if date == Date.today %>
+                aujourd'hui
               <% else %>
-                <div id="chat-message-<%= post.id %>">
-                  <%= simple_format post.content %>
-                </div>
+                <%= l date, format: "%A %-d %B %Y" %>
               <% end %>
-
-              <% if post.survey.present? %>
-                <p><strong>Sondage</strong></p>
-                <div class="survey-choices">
-                  <% post.survey.choices.each_with_index do |choice, index| %>
-                    <li><%= "#{choice} (#{post.survey.summary[index]} réponses)" %></li>
-                  <% end %>
-                </div>
-              <% end %>
-
-              <% if post.image_path(true).present? %>
-                <div id="chat-message-image-<%= post.id %>" style="margin-bottom: 15px">
-                  <%= image_tag(post.image_path(true), height: '100') %>
-                </div>
-              <% else %>
-                <div id="chat-message-image-<%= post.id %>" hidden="hidden"></div>
-              <% end %>
-
-              <% if post.children.any? %>
-                <div><%= link_to "voir les commentaires", show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: post.id) %></div>
-              <% end %>
-            </div>
-
-            <div class="conversation-actions">
-              <div class="dropdown" style="display: inline-block">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                  <% unless post.children.any? %>
-                    <li>
-                      <%= link_to "Ajouter un commentaire", show_outing_post_comments_admin_neighborhood_path(@neighborhood.id, post_id: post.id) %>
-                    </li>
-                  <% end %>
-
-                  <li>
-                    <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(post.id), remote: true %>
-                  </li>
-
-                  <li>
-                    <%= link_to "Modifier le message", admin_chat_message_path(post.id), remote: true %>
-                  </li>
-
-                  <li>
-                    <%= link_to "Supprimer le message",
-                        destroy_outing_message_admin_neighborhood_path(@neighborhood.id, chat_message_id: post.id),
-                        method: :delete,
-                        data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{post.user.full_name} :\n#{post.content}" },
-                        class: "text-danger" %>
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
         <% end %>
-      <% end %>
 
-      <div class="row">
-        <%= paginate @posts %>
-      </div>
+        <% color[post.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+        <div class="conversation-message">
+          <div class="conversation-gutter">
+            <div style="background-color: hsl(<%= color[post.user_id] %>, 70%, 75%)" class="conversation-icon">
+              <%= [post.user.first_name.try(:first), post.user.last_name.try(:first)].compact.join.upcase %>
+            </div>
+          </div>
+          <div class="conversation-content">
+            <div>
+              <%= link_to post.user.full_name, admin_user_path(post.user), class: "conversation-sender" %>
+              <span class="conversation-timestamp"><%= l post.created_at, format: "%H h %M" %></span>
+            </div>
+
+            <% if post.deleted? %>
+              <p style="color: red;"> Ce message a été supprimé par <%= post.deleter&.full_name %> le <%= l post.deleted_at, format: :short %> : </p>
+              <em><%= simple_format post.content(true) %></em>
+            <% else %>
+              <div id="chat-message-<%= post.id %>">
+                <%= simple_format post.content %>
+              </div>
+            <% end %>
+
+            <% if post.survey.present? %>
+              <p><strong>Sondage</strong></p>
+              <div class="survey-choices">
+                <% post.survey.choices.each_with_index do |choice, index| %>
+                  <li><%= "#{choice} (#{post.survey.summary[index]} réponses)" %></li>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if post.image_path(true).present? %>
+              <div id="chat-message-image-<%= post.id %>" style="margin-bottom: 15px">
+                <%= image_tag(post.image_path(true), height: '100') %>
+              </div>
+            <% else %>
+              <div id="chat-message-image-<%= post.id %>" hidden="hidden"></div>
+            <% end %>
+
+            <% if post.children.any? %>
+              <div><%= link_to "voir les commentaires", show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: post.id) %></div>
+            <% end %>
+          </div>
+
+          <div class="conversation-actions">
+            <div class="dropdown" style="display: inline-block">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                <% unless post.children.any? %>
+                  <li>
+                    <%= link_to "Ajouter un commentaire", show_outing_post_comments_admin_neighborhood_path(@neighborhood.id, post_id: post.id) %>
+                  </li>
+                <% end %>
+
+                <li>
+                  <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(post.id), remote: true %>
+                </li>
+
+                <li>
+                  <%= link_to "Modifier le message", admin_chat_message_path(post.id), remote: true %>
+                </li>
+
+                <li>
+                  <%= link_to "Supprimer le message",
+                      destroy_outing_message_admin_neighborhood_path(@neighborhood.id, chat_message_id: post.id),
+                      method: :delete,
+                      data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{post.user.full_name} :\n#{post.content}" },
+                      class: "text-danger" %>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="row">
+      <%= paginate @posts %>
     </div>
   </div>
 </div>

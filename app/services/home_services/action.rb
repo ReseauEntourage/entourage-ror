@@ -19,7 +19,6 @@ module HomeServices
       Entourage.where(status: :open)
         .where.not(group_type: [:conversation, :group, :outing])
         .where("entourages.created_at > ?", time_range.hours.ago)
-        .where(pin: false)
         .where(entourage_type: entourage_type)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .order_by_profile(profile)

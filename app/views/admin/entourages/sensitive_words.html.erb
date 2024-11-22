@@ -15,8 +15,8 @@
 
 <div class="container">
   <ol class="breadcrumb">
-    <li><%= link_to "Actions", [:admin, :entourages] %></li>
-    <li><%= link_to "##{@entourage.id}", [:admin, @entourage] %></li>
+    <li><%= link_to "Actions", admin_entourages_path %></li>
+    <li><%= link_to "##{@entourage.id}", admin_entourage_path(@entourage) %></li>
     <li class="active">Mots sensibles</li>
   </ol>
   <h4><%= @title %></h4>

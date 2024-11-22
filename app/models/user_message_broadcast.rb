@@ -20,9 +20,9 @@ class UserMessageBroadcast < ConversationMessageBroadcast
 
     def with_engagement(users, has_engagement)
       return users if has_engagement.nil?
-      return users.where("users.id in (select user_id from denorm_daily_engagements)") if has_engagement
+      return users.engaged if has_engagement
 
-      users.where("users.id not in (select user_id from denorm_daily_engagements)")
+      users.not_engaged
     end
 
     def created_after(users, user_creation_date)
@@ -34,7 +34,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     def engaged_after(users, last_engagement_date)
       return users unless last_engagement_date
 
-      users.where("users.id in (select user_id from denorm_daily_engagements where date > ?)", last_engagement_date)
+      users.engaged.where("denorm_daily_engagements.date > ?", last_engagement_date)
     end
 
     def with_interests(users, interests)
@@ -139,6 +139,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     value = self["specific_filters"]["has_engagement"]
 
     return nil if value.nil?
+    return nil if value.blank?
 
     value == 'true'
   end

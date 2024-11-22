@@ -26,8 +26,11 @@ module V1
         past_outing_memberships(object).count + successful_actions(object).count
       end
 
+      # fake data: deprecated field
       def chat_messages_count
-        object.chat_messages.count
+        # object.chat_messages.count
+
+        0
       end
 
       def outing_participations_count
@@ -38,22 +41,28 @@ module V1
         object.neighborhood_memberships.count
       end
 
+      # @deprecated
       def recommandations
-        object.user_recommandations.active.order(:fragment).map do |recommandation|
-          V1::UserRecommandationSerializer.new(recommandation).as_json
-        end
+        # object.user_recommandations.active.order(:fragment).map do |recommandation|
+        #   V1::UserRecommandationSerializer.new(recommandation).as_json
+        # end
+
+        []
       end
 
+      # @deprecated
       def congratulations
-        object.user_recommandations.to_be_congratulated.order(completed_at: :desc).map do |recommandation|
-          recommandation.update_column(:congrats_at, Time.now)
+        # object.user_recommandations.to_be_congratulated.order(completed_at: :desc).map do |recommandation|
+        #   recommandation.update_column(:congrats_at, Time.now)
 
-          V1::UserRecommandationSerializer.new(recommandation).as_json
-        end
+        #   V1::UserRecommandationSerializer.new(recommandation).as_json
+        # end
+
+        []
       end
 
       def unclosed_action
-        actions = Entourage.where(user: object).where(pin: false).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
+        actions = Entourage.where(user: object).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
         actions = actions.where("created_at > ?", object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
         action = actions.order(:created_at).select(:entourage_type, :id).first
 

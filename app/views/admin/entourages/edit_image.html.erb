@@ -1,59 +1,57 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
-    <ol class="breadcrumb">
-      <li><%= link_to "Événements", admin_entourages_path %></li>
-      <li><%= link_to @entourage.title, edit_admin_entourage_path(@entourage) %></li>
-      <li class="active">Image</li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><%= link_to "Événements", admin_entourages_path %></li>
+    <li><%= link_to @entourage.title, edit_admin_entourage_path(@entourage) %></li>
+    <li class="active">Image</li>
+  </ol>
 
-    <h1>Modifier l'image</h1>
+  <h1>Modifier l'image</h1>
 
-    <% if @entourage_images.empty? %>
-      <div class="panel panel-warning">
-        <div class="panel-heading">
-          <h3 class="panel-title">Aucune photo n'est encore spécifiée.</h3>
-        </div>
+  <% if @entourage_images.empty? %>
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h3 class="panel-title">Aucune photo n'est encore spécifiée.</h3>
       </div>
-    <% else %>
-      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
-        <div style="flex-grow: 1">
-          <b>Galerie</b><br>
-          Vous souhaitez ajouter une nouvelle photo ?
-          <b><u><%= link_to 'Cliquez ici', new_admin_entourage_image_path %></u></b>
-          pour accéder à l'édition de la galerie photos des événements.
-        </div>
-
+    </div>
+  <% else %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Galerie</b><br>
+        Vous souhaitez ajouter une nouvelle photo ?
+        <b><u><%= link_to 'Cliquez ici', new_admin_entourage_image_path %></u></b>
+        pour accéder à l'édition de la galerie photos des événements.
       </div>
 
-      <%= form_for @entourage, url: update_image_admin_entourage_path(@entourage), method: :put do |f| %>
-        <table class="table">
-          <th>Titre</th>
-          <th>Photos</th>
-          <% @entourage_images.each do |entourage_image| %>
-            <tr>
-              <td>
-                <%= entourage_image.title %>
-              </td>
-              <td>
-                <%= image_tag(entourage_image.landscape_small_url, size: '288x96') if entourage_image.landscape_small_url.present? %>
-                <%= image_tag(entourage_image.portrait_small_url, size: '59x96') if entourage_image.portrait_small_url.present? %>
-              </td>
-              <td>
-                <%= f.radio_button :entourage_image_id, entourage_image.id, checked: @entourage.metadata[:landscape_url] == entourage_image[:landscape_url] %>
-              </td>
-            </tr>
-          <% end %>
+    </div>
+
+    <%= form_for @entourage, as: :entourage, url: update_image_admin_entourage_path(@entourage), method: :put do |f| %>
+      <table class="table">
+        <th>Titre</th>
+        <th>Photos</th>
+        <% @entourage_images.each do |entourage_image| %>
           <tr>
-            <td>Pas de photo</td>
-            <td></td>
             <td>
-              <%= f.radio_button :entourage_image_id, nil, checked: @entourage.outing_image_url.blank? %>
+              <%= entourage_image.title %>
+            </td>
+            <td>
+              <%= image_tag(entourage_image.landscape_small_url, size: '288x96') if entourage_image.landscape_small_url.present? %>
+              <%= image_tag(entourage_image.portrait_small_url, size: '59x96') if entourage_image.portrait_small_url.present? %>
+            </td>
+            <td>
+              <%= f.radio_button :entourage_image_id, entourage_image.id, checked: @entourage.metadata[:landscape_url] == entourage_image[:landscape_url] %>
             </td>
           </tr>
-        </table>
-        <%= f.submit "Enregistrer", class: "btn btn-success" %>
-        <%= link_to "Annuler", edit_admin_entourage_path(@entourage), class: "btn btn-default" %>
-      <% end %>
+        <% end %>
+        <tr>
+          <td>Pas de photo</td>
+          <td></td>
+          <td>
+            <%= f.radio_button :entourage_image_id, nil, checked: @entourage.outing_image_url.blank? %>
+          </td>
+        </tr>
+      </table>
+      <%= f.submit "Enregistrer", class: "btn btn-success" %>
+      <%= link_to "Annuler", edit_admin_entourage_path(@entourage), class: "btn btn-default" %>
     <% end %>
-  </div>
+  <% end %>
 </div>

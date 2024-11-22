@@ -3,7 +3,11 @@
 
   <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
     <div style="flex-grow: 1">
-      <b>Interlocuteur : <%= ModerationServices.moderator_for_user(@user).full_name %></b>
+      <% if interlocutor = ModerationServices.moderator_for_user(@user) %>
+        <b>Interlocuteur : <%= interlocutor.full_name %></b>
+      <% else %>
+        <b>Pas d'interlocuteur</b>
+      <% end %>
     </div>
   </div>
 
@@ -61,17 +65,21 @@
             </div>
           </div>
 
-          <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Conversations</label>
+          <div class="control-group" style="margin-left: 30px" title="1">
+            <label class="control-label" title="de moins de six mois">
+              Conversations <span class="badge">i</span>
+            </label>
             <div class="controls">
-              <%= @user.conversations.count %>
+              <%= @user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>
             </div>
           </div>
 
           <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Messages</label>
+            <label class="control-label" title="de moins de six mois">
+              Messages <span class="badge">i</span>
+            </label>
             <div class="controls">
-              <%= @user.chat_messages.count %>
+              <%= @user.chat_messages.where("created_at > ?", 6.months.ago).count %>
             </div>
           </div>
         </div>

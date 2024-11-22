@@ -18,8 +18,6 @@
     moderation.action_author_type ||= t("community.#{user_community.slug}.targeting_profiles.#{entourage.user.targeting_profile}")
   end
 
-  # moderation.moderator = "Guillaume" if moderation.moderator.blank?
-
   def safe_options standard_values, current_value
     if current_value.blank? || current_value.in?(standard_values)
       return standard_values, false
@@ -163,11 +161,11 @@
           <div class="col-md-3 form-inline">
             <label>Actions rejointes :</label> <%= entourage.user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
           </div>
-          <div class="col-md-3 form-inline">
-            <label>Conversations :</label> <%= entourage.user.conversations.count %>
+          <div class="col-md-3 form-inline" title="de moins de six mois">
+            <label>Conversations <span class="badge">i</span> :</label> <%= entourage.user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>
           </div>
-          <div class="col-md-3 form-inline">
-            <label>Messages :</label> <%= entourage.user.chat_messages.count %>
+          <div class="col-md-3 form-inline" title="de moins de six mois">
+            <label>Messages <span class="badge">i</span> :</label> <%= entourage.user.chat_messages.where("created_at > ?", 6.months.ago).count %>
           </div>
         </div>
         <div class="row">

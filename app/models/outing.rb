@@ -1,5 +1,6 @@
 class Outing < Entourage
   include Interestable
+  include SfCategorizable
   include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
   include Recommandable
 
@@ -235,6 +236,7 @@ class Outing < Entourage
     return unless new_record?
 
     self.interests = original_outing.interest_list
+    self.sf_category = original_outing.sf_category
   end
 
   def set_entourage_image_id

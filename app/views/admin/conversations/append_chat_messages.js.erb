@@ -1,0 +1,5 @@
+$('#conversation-messages .conversation-messages-content').append('<%= j(render partial: "chat_messages_content", locals: { chat_messages: @chat_messages }) %>');
+
+$('form textarea#chat_message_content').val('');
+
+$('#conversation-messages').scrollTop($('#conversation-messages')[0].scrollHeight);

@@ -82,6 +82,20 @@ module Admin
       redirect_to admin_neighborhood_message_broadcasts_path
     end
 
+    def rebroadcast
+      unless @neighborhood_message_broadcast.sending?
+        @neighborhood_message_broadcast.update_attribute(:status, :sent)
+
+        ConversationMessageBroadcastJob.perform_later(
+          @neighborhood_message_broadcast.id,
+          current_admin.id,
+          @neighborhood_message_broadcast.content
+        )
+      end
+
+      redirect_to admin_neighborhood_message_broadcasts_path
+    end
+
     private
 
     def neighborhood_message_broadcast_params

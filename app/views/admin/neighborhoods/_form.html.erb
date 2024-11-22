@@ -5,6 +5,29 @@
 <%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
 
 <%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
+  <% if @neighborhood.national? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+          <b>National</b><br>
+          Ce groupe de voisins est national. Il sera visible dans toutes les recherches de groupes sur l'app mobile.
+      </div>
+    </div>
+  <% elsif @neighborhood.public? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+          <b>Public</b><br>
+          Ce groupe de voisins est public. Il peut être vu par tout utilisateur de l'app mobile.
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+          <b>Privé</b><br>
+          Ce groupe de voisins est privé. Il n'apparaît pas dans les propositions de groupe de voisins sur l'app mobile.
+      </div>
+    </div>
+  <% end %>
+
   <% if @neighborhood.deleted? %>
     <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -21,11 +44,19 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :status %>
+  <div class="form-group row">
+    <div class="col-md-8">
+      <%= f.label :status %>
+      <% statuses = Neighborhood::STATUSES.map { |status| [t("activerecord.attributes.neighborhood.statuses.#{status}"), status] } %>
+      <%= f.select :status, options_for_select(statuses, @neighborhood.status), { include_blank: false }, class: "form-control" %>
+    </div>
 
-    <% statuses = Neighborhood::STATUSES.map { |status| [t("activerecord.attributes.neighborhood.statuses.#{status}"), status] } %>
-    <%= f.select :status, options_for_select(statuses, @neighborhood.status), { include_blank: false }, class: "form-control" %>
+    <div class="col-md-4">
+      <%= f.label :public %>
+      <div class="controls">
+        <%= f.check_box :public, { checked: @neighborhood.public?, 'data-toggle': :toggle }, 'true', 'false' %>
+      </div>
+    </div>
   </div>
 
   <div class="form-group">

@@ -38,8 +38,6 @@ module Api
                   postcode: user.address&.postal_code,
                   utm_term: "db#{UserServices::EncodedId.encode(user.id)}"
                 }.to_query
-
-                mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "dons2019" })
               else
                 url += "&utm_term=anonymous"
               end
@@ -104,6 +102,15 @@ module Api
         redirection = redirection.call(current_user_or_anonymous) if redirection.respond_to?(:call)
 
         redirect_to redirection
+      end
+
+      def mesure_impact
+        user = User.find_by_uuid(params[:id])
+
+        url = "https://entourage-asso.typeform.com/to/w1OHXk1E"
+        url = "https://entourage-asso.typeform.com/to/i8dpyRvx" if user && user.is_ask_for_help?
+
+        redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}"
       end
     end
   end
