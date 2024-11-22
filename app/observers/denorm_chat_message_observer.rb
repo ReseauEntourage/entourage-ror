@@ -1,12 +1,13 @@
-class UnreadChatMessageObserver < ActiveRecord::Observer
+class DenormChatMessageObserver < ActiveRecord::Observer
   observe :chat_message
 
   def after_commit record
     return unless record.is_a?(ChatMessage)
     return unless record.messageable
-    return unless commit_is?(record, [:create])
+    return unless commit_is?(record, [:create]) || record.saved_change_to_status?
 
     UnreadChatMessageJob.perform_later(record.messageable_type, record.messageable_id)
+    CountChatMessageJob.perform_later(record.messageable_type, record.messageable_id)
   end
 
   private

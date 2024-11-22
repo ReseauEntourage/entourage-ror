@@ -348,6 +348,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "working_hours_sent_at"
     t.integer "number_of_confirmed_people", default: 0
     t.boolean "auto_post_at_create", default: false
+    t.integer "number_of_root_chat_messages", default: 0
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
