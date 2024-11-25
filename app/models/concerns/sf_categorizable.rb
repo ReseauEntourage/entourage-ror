@@ -5,6 +5,10 @@ module SfCategorizable
     acts_as_taggable_on :sf_categories
 
     validate :validate_sf_category_list!
+
+    scope :tagged_with_sf_category, -> (sf_categories) {
+      tagged_with(sf_categories, :any => true)
+    }
   end
 
   def validate_sf_category_list!
