@@ -22,8 +22,7 @@ module ConversationsHelper
   def read_for_user? conversation, user
     conversation.join_requests.any? do |join_request|
       join_request.user_id == user.id &&
-      join_request.last_message_read.present? &&
-      join_request.last_message_read >= (conversation.feed_updated_at || conversation.updated_at)
+      join_request.unread_messages_count == 0
     end
   end
 

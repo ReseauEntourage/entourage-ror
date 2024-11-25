@@ -106,7 +106,7 @@ class Entourage < ApplicationRecord
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
 
-  scope :with_chat_messages, -> { joins(:chat_messages).distinct }
+  scope :with_chat_messages, -> { where("number_of_root_chat_messages > 0").distinct }
 
   attribute :preload_performed, :boolean, default: false
   attribute :preload_landscape_url, :string, default: nil
