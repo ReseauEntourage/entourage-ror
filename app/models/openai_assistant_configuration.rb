@@ -1,0 +1,2 @@
+class OpenaiAssistantConfiguration < ApplicationRecord
+end
