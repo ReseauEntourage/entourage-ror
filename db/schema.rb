@@ -494,6 +494,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "explanation"
     t.index ["instance_type", "instance_id"], name: "index_matchings_on_instance_type_and_instance_id"
   end
 

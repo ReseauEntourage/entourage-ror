@@ -225,6 +225,20 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :actions, only: [:index] do
+      resources :matchings, :controller => 'actions/matchings', only: [:index] do
+        collection do
+          post :notify_best
+          post :mail_best
+        end
+
+        member do
+          post :notify
+          post :mail
+        end
+      end
+    end
+
     resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
       member do
         put :reactivate
@@ -487,6 +501,15 @@ Rails.application.routes.draw do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
+        resources :matchings, :controller => 'entourages/matchings', only: [:index] do
+          collection do
+            get :contributions
+            get :solicitations
+            get :outings
+            get :resources
+            get :pois
+          end
+        end
 
         member do
           put :read
