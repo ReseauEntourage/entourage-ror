@@ -1,7 +1,7 @@
 class NotificationJob
   include Sidekiq::Worker
 
-  sidekiq_options :timeout => 60
+  sidekiq_options :timeout => 180
 
   def self.perform_later sender, object, content, device_token, community, extra={}, badge=nil
     NotificationJob.perform_async(sender, object, content, device_token, community, extra)

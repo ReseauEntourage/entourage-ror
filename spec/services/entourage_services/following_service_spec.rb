@@ -57,8 +57,8 @@ describe FollowingService do
             :type => "ENTOURAGE_INVITATION",
             :entourage_id => action.id,
             :group_type => 'action',
-            :inviter_id => partner_user.id,
-            :invitee_id => following.user.id,
+            :inviter_id => nil,
+            :invitee_id => nil,
             :invitation_id => nil,
           }
         )
