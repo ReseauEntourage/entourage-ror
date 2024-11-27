@@ -1,0 +1,13 @@
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><%= link_to "openai_assistant_configurations", admin_openai_assistant_configurations_path %></li>
+      <li class="active">Modifier</li>
+      <li style="float: right;">
+        Version <%= @openai_assistant_configuration.version %>
+      </li>
+    </ol>
+
+    <h2>
+      <span class="text-muted"># Version <%= @openai_assistant_configuration.version %></span>
+    </h2>
+  </div>
