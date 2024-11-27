@@ -1,6 +1,6 @@
 module MatchingServices
   class Connect
-    attr_reader :client, :callback, :assistant_id, :instance, :user
+    attr_reader :configuration, :client, :callback, :assistant_id, :instance, :user
 
     class MatcherCallback < Callback
     end
@@ -8,8 +8,10 @@ module MatchingServices
     def initialize instance:
       @callback = MatcherCallback.new
 
-      @client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
-      @assistant_id = ENV['OPENAI_API_ASSISTANT_ID_2']
+      @configuration = OpenaiAssistantConfiguration.find_by_version(1)
+
+      @client = OpenAI::Client.new(access_token: @configuration.api_key)
+      @assistant_id = @configuration.assistant_id
 
       @instance = instance
       @user = instance.user
@@ -71,22 +73,26 @@ module MatchingServices
     end
 
     def user_message
+      {
+        role: "user",
+        content: [
+          { type: "text", text: get_formatted_prompt },
+          { type: "text", text: get_recommandations.to_json }
+        ]
+      }
+    end
+
+    def get_formatted_prompt
       instance_class = if instance.respond_to?(:action) && instance.action?
         instance.contribution? ? 'contribution' : 'solicitation'
       else
         instance.class.name.camelize.downcase
       end
 
-      {
-        role: "user",
-        content: [{
-          type: "text",
-          text: "I created a #{instance_class} \"#{instance.name}\" : #{instance.description}. What are the most relevant recommandations? The following text contains all the possible recommandations."
-        }, {
-          type: "text",
-          text: get_recommandations.to_json
-        }]
-      }
+      @configuration.prompt
+        .gsub("{{action_type}}", instance_class)
+        .gsub("{{name}}", instance.name)
+        .gsub("{{description}}", instance.description)
     end
 
     def get_recommandations
@@ -102,17 +108,38 @@ module MatchingServices
     def get_contributions
       return [] if instance.is_a?(Entourage) && instance.contribution?
 
-      ContributionServices::Finder.new(user, Hash.new).find_all.limit(100)
+      ContributionServices::Finder.new(user, Hash.new)
+        .find_all
+        .where("created_at > ?", @configuration.days_for_actions.days.ago)
+        .limit(100)
     end
 
     def get_solicitations
       return [] if instance.is_a?(Entourage) && instance.solicitation?
 
-      SolicitationServices::Finder.new(user, Hash.new).find_all.limit(100)
+      SolicitationServices::Finder.new(user, Hash.new)
+        .find_all
+        .where("created_at > ?", @configuration.days_for_actions.days.ago)
+        .limit(100)
     end
 
     def get_outings
-      OutingsServices::Finder.new(user, Hash.new).find_all.limit(100)
+      OutingsServices::Finder.new(user, Hash.new)
+        .find_all
+        .between(Time.zone.now, @configuration.days_for_outings.days.from_now)
+        .limit(100)
+    end
+
+    def get_pois
+      return unless @configuration.poi_from_file
+
+      Poi.validated.around(instance.latitude, instance.longitude, user.travel_distance).limit(300)
+    end
+
+    def get_resources
+      return unless @configuration.resource_from_file
+
+      Resource.where(status: :active)
     end
   end
 end
