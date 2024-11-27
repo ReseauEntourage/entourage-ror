@@ -762,6 +762,19 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id"], name: "index_old_user_denorms_on_user_id"
   end
 
+  create_table "openai_assistant_configurations", force: :cascade do |t|
+    t.integer "version"
+    t.string "api_key", null: false
+    t.string "assistant_id", null: false
+    t.text "prompt", null: false
+    t.boolean "poi_from_file", default: false
+    t.boolean "resource_from_file", default: false
+    t.integer "days_for_actions", default: 30
+    t.integer "days_for_outings", default: 30
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "openai_assistants", force: :cascade do |t|
     t.integer "version"
     t.string "api_key", null: false
