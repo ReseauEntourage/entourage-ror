@@ -23,12 +23,14 @@ module MatchingServices
     end
 
     def parsed_response
+      return unless @response
       return unless content = @response["content"]
       return unless content.any? && first_content = content[0]
       return unless first_content["type"] == "text"
+      return unless value = first_content["text"]["value"]
+      return unless json = value[/\{.*\}/m]
 
-      # escape potential rendering strings
-      JSON.parse(first_content["text"]["value"].strip.gsub("```json", "").gsub("`", ""))
+      JSON.parse(json)
     end
 
     def recommandations
