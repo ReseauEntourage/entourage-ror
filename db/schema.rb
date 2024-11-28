@@ -762,7 +762,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id"], name: "index_old_user_denorms_on_user_id"
   end
 
-  create_table "openai_assistant_configurations", force: :cascade do |t|
+  create_table "openai_assistants", force: :cascade do |t|
     t.integer "version"
     t.string "api_key", null: false
     t.string "assistant_id", null: false

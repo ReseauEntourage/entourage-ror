@@ -2,9 +2,9 @@
   .field_with_errors { display: inline-block }
 </style>
 
-<%= render partial: 'common/errors', locals: { obj: @openai_assistant_configuration } %>
+<%= render partial: 'common/errors', locals: { obj: @openai_assistant } %>
 
-<%= form_for [:admin, @openai_assistant_configuration], html: { role: "form" } do |f| %>
+<%= form_for [:admin, @openai_assistant], html: { role: "form" } do |f| %>
   <div class="form-group">
     <%= f.label :prompt %>
     <div class="controls">
@@ -46,5 +46,5 @@
   </div>
 
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
-  <%= link_to "Retour", admin_openai_assistant_configurations_path, class: "btn btn-default" %>
+  <%= link_to "Retour", admin_openai_assistants_path, class: "btn btn-default" %>
 <% end %>
