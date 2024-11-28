@@ -777,7 +777,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "run_ends_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["instance_type", "instance_id"], name: "index_openai_assistants_on_instance_type_and_instance_id"
+    t.string "instance_class", default: "Entourage"
+    t.index ["instance_type", "instance_id"], name: "index_openai_assistants_on_instance_type_and_instance_id", unique: true
   end
 
   create_table "options", force: :cascade do |t|
