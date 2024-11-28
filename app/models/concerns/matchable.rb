@@ -9,6 +9,10 @@ module Matchable
     has_many :matches, through: :matchings, source: :match
   end
 
+  def build_openai_assistant(attributes = {})
+    super(attributes.merge(instance_class: self.class.name))
+  end
+
   def matchable_field_changed?
     previous_changes.slice(:title, :name, :description).present?
   end
@@ -31,11 +35,9 @@ module Matchable
     end
 
     def ensure_openai_assistant_exists!
-      return if @instance.openai_assistant && @instance.openai_assistant.persisted?
+      return if @instance.openai_assistant
 
-      openai_assistant = (@instance.openai_assistant || @instance.build_openai_assistant)
-      openai_assistant.instance_type = @instance.class.name # forces "Action" rather than "Entourage"
-      openai_assistant.save!
+      @instance.build_openai_assistant.save!
     end
   end
 end
