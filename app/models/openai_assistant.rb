@@ -6,6 +6,6 @@ class OpenaiAssistant < ApplicationRecord
   attr_accessor :forced_matching
 
   def run
-    OpenaiAssistantJob.perform_later(id)
+    OpenaiRequestJob.perform_later(id)
   end
 end

@@ -1,6 +1,6 @@
 require 'json'
 
-class OpenaiAssistantJob
+class OpenaiRequestJob
   include Sidekiq::Worker
 
   sidekiq_options :retry => false, queue: :openai_assistants
@@ -40,6 +40,6 @@ class OpenaiAssistantJob
   end
 
   def self.perform_later openai_assistant_id
-    OpenaiAssistantJob.perform_async(openai_assistant_id)
+    OpenaiRequestJob.perform_async(openai_assistant_id)
   end
 end
