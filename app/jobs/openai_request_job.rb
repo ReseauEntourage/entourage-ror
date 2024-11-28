@@ -3,17 +3,17 @@ require 'json'
 class OpenaiRequestJob
   include Sidekiq::Worker
 
-  sidekiq_options :retry => false, queue: :openai_assistants
+  sidekiq_options :retry => false, queue: :openai_requests
 
-  def perform openai_assistant_id
-    openai_assistant = OpenaiAssistant.find(openai_assistant_id)
+  def perform openai_request_id
+    openai_request = OpenaiRequest.find(openai_request_id)
 
-    return unless instance = openai_assistant.instance
+    return unless instance = openai_request.instance
 
     MatchingServices::Connect.new(instance: instance).perform do |on|
       on.success do |response|
-        openai_assistant.update_columns(
-          openai_assistant_id: response.metadata[:assistant_id],
+        openai_request.update_columns(
+          openai_request_id: response.metadata[:assistant_id],
           openai_thread_id: response.metadata[:thread_id],
           openai_run_id: response.metadata[:run_id],
           openai_message_id: response.metadata[:message_id],
@@ -30,7 +30,7 @@ class OpenaiRequestJob
       end
 
       on.failure do |error|
-        openai_assistant.update_columns(
+        openai_request.update_columns(
           status: :error,
           run_ends_at: Time.current,
           updated_at: Time.current
@@ -39,7 +39,7 @@ class OpenaiRequestJob
     end
   end
 
-  def self.perform_later openai_assistant_id
-    OpenaiRequestJob.perform_async(openai_assistant_id)
+  def self.perform_later openai_request_id
+    OpenaiRequestJob.perform_async(openai_request_id)
   end
 end

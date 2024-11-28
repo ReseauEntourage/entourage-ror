@@ -1,4 +1,4 @@
-class OpenaiAssistant < ApplicationRecord
+class OpenaiRequest < ApplicationRecord
   belongs_to :instance, polymorphic: true
 
   after_commit :run, on: :create

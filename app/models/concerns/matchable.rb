@@ -4,12 +4,12 @@ module Matchable
   included do
     after_save :match_on_save, :if => :matchable_field_changed?
 
-    has_one :openai_assistant, as: :instance
+    has_one :openai_request, as: :instance
     has_many :matchings, as: :instance
     has_many :matches, through: :matchings, source: :match
   end
 
-  def build_openai_assistant(attributes = {})
+  def build_openai_request(attributes = {})
     super(attributes.merge(instance_class: self.class.name))
   end
 
@@ -31,13 +31,13 @@ module Matchable
     end
 
     def on_save
-      ensure_openai_assistant_exists!
+      ensure_openai_request_exists!
     end
 
-    def ensure_openai_assistant_exists!
-      return if @instance.openai_assistant
+    def ensure_openai_request_exists!
+      return if @instance.openai_request
 
-      @instance.build_openai_assistant.save!
+      @instance.build_openai_request.save!
     end
   end
 end

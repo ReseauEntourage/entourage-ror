@@ -5,7 +5,7 @@ RSpec.describe Matchable, type: :module do
 
   describe 'included methods' do
     it 'adds the required associations' do
-      expect(Action.reflect_on_association(:openai_assistant).macro).to eq(:has_one)
+      expect(Action.reflect_on_association(:openai_request).macro).to eq(:has_one)
       expect(Action.reflect_on_association(:matchings).macro).to eq(:has_many)
       expect(Action.reflect_on_association(:matches).macro).to eq(:has_many)
     end
@@ -47,24 +47,24 @@ RSpec.describe Matchable, type: :module do
     before { allow_any_instance_of(Action).to receive(:matchable_field_changed?).and_return(false) }
 
     describe '#on_save' do
-      context 'when openai_assistant exists and is persisted' do
-        let!(:openai_assistant) { action.create_openai_assistant(instance: action) }
+      context 'when openai_request exists and is persisted' do
+        let!(:openai_request) { action.create_openai_request(instance: action) }
 
-        it 'does not create a new openai_assistant' do
-          expect { match_struct.on_save }.not_to change(OpenaiAssistant, :count)
+        it 'does not create a new openai_request' do
+          expect { match_struct.on_save }.not_to change(OpenaiRequest, :count)
         end
       end
 
-      context 'when openai_assistant does not exist' do
-        context 'creates a new openai_assistant' do
-          it { expect { match_struct.on_save }.to change(OpenaiAssistant, :count).by(1) }
+      context 'when openai_request does not exist' do
+        context 'creates a new openai_request' do
+          it { expect { match_struct.on_save }.to change(OpenaiRequest, :count).by(1) }
         end
 
-        context 'associates the openai_assistant to the correct instance' do
+        context 'associates the openai_request to the correct instance' do
           before { match_struct.on_save }
 
-          it { expect(OpenaiAssistant.where(instance: action).count).to eq(1) }
-          it { expect(OpenaiAssistant.where(instance: action, instance_class: "Contribution").count).to eq(1) }
+          it { expect(OpenaiRequest.where(instance: action).count).to eq(1) }
+          it { expect(OpenaiRequest.where(instance: action, instance_class: "Contribution").count).to eq(1) }
         end
       end
     end
