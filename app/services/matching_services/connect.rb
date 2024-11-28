@@ -8,7 +8,7 @@ module MatchingServices
     def initialize instance:
       @callback = MatcherCallback.new
 
-      @configuration = OpenaiAssistantConfiguration.find_by_version(1)
+      @configuration = OpenaiAssistant.find_by_version(1)
 
       @client = OpenAI::Client.new(access_token: @configuration.api_key)
       @assistant_id = @configuration.assistant_id

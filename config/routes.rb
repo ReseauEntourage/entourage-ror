@@ -266,7 +266,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :openai_assistant_configurations, only: [:index, :edit, :update]
+    resources :openai_assistants, only: [:index, :edit, :update]
 
     resources :recommandations do
       member do
