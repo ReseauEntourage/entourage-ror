@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_matchings, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -158,6 +158,13 @@ module Admin
     def show_neighborhoods
       @outing = Outing.find(@entourage.id)
       @neighborhoods = @outing.neighborhoods.includes([:user])
+
+      render :show
+    end
+
+    def show_matchings
+      @action = Action.find(params[:id])
+      @matchings = @action.matchings
 
       render :show
     end

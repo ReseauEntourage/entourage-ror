@@ -1,0 +1,41 @@
+<h4>Liste matchings</h4>
+
+<% if @action.matchings.none? %>
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      Cette action n'a pas de matching
+    </div>
+  </div>
+<% end %>
+
+<table id="matchings-list" class="table table-striped">
+  <% if @matchings.any? %>
+    <thead>
+      <tr>
+        <th>type</th>
+        <th>nom</th>
+        <th>description</th>
+        <th>score</th>
+        <th>position</th>
+        <th>explanation</th>
+        <th>created_at</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @matchings.each do |matching| %>
+        <tr>
+          <td><%= matching.match_type %></td>
+          <td><%= link_to matching.match.name, [:admin, matching.match] %></td>
+          <td><%= matching.match.description %></td>
+          <td><%= matching.score %></td>
+          <td><%= matching.position %></td>
+          <td><%= matching.explanation %></td>
+          <td><%= l matching.created_at.to_date, format: :long %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <% else %>
+    <caption><%= "Il n'y a pas de matching."%></caption>
+  <% end %>
+</table>
