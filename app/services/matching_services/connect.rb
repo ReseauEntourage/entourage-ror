@@ -131,13 +131,13 @@ module MatchingServices
     end
 
     def get_pois
-      return unless @configuration.poi_from_file
+      return if @configuration.poi_from_file
 
       Poi.validated.around(instance.latitude, instance.longitude, user.travel_distance).limit(300)
     end
 
     def get_resources
-      return unless @configuration.resource_from_file
+      return if @configuration.resource_from_file
 
       Resource.where(status: :active)
     end
