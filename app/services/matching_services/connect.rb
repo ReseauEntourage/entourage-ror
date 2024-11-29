@@ -100,7 +100,9 @@ module MatchingServices
         recommandations: {
           contributions: get_contributions.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
           solicitations: get_solicitations.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          outings: get_outings.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h }
+          outings: get_outings.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
+          pois: get_pois.pluck(:uuid_v2, :name, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
+          resources: get_resources.pluck(:uuid_v2, :name, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h }
         }
       }
     end
