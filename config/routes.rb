@@ -127,6 +127,7 @@ Rails.application.routes.draw do
           get :show_messages
           get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments
+          get :show_matchings
           get :show_siblings
           post :stop_recurrences
           get :sensitive_words
