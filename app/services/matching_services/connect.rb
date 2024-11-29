@@ -29,7 +29,7 @@ module MatchingServices
       # run the thread
       run = client.runs.create(thread_id: thread['id'], parameters: {
         assistant_id: assistant_id,
-        max_prompt_tokens: 1024*16,
+        max_prompt_tokens: 1024*1024,
         max_completion_tokens: 1024
       })
 
@@ -101,8 +101,8 @@ module MatchingServices
           contributions: get_contributions.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
           solicitations: get_solicitations.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
           outings: get_outings.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          pois: get_pois.pluck(:uuid_v2, :name, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          resources: get_resources.pluck(:uuid_v2, :name, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h }
+          pois: get_pois.pluck(:id, :name).map { |values| [:id, :name].zip(values).to_h },
+          resources: get_resources.pluck(:uuid_v2, :name, :description).map { |values| [:uuid_v2, :name, :description].zip(values).to_h }
         }
       }
     end
