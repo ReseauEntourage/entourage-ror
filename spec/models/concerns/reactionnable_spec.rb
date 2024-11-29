@@ -12,19 +12,21 @@ describe Reactionnable do
     let(:subject) { instance.reactions.summary }
 
     context "no reaction" do
-      it { expect(subject).to eq({}) }
+      it { expect(subject.count).to eq(0) }
     end
 
     context "no reaction on instance" do
       let!(:user_reaction) { create(:user_reaction) }
 
-      it { expect(subject).to eq({}) }
+      it { expect(subject.count).to eq(0) }
     end
 
     context "one reaction" do
       let!(:user_reaction) { create(:user_reaction, instance: instance, reaction: heart) }
 
-      it { expect(subject).to eq({ heart.id => 1 }) }
+      it { expect(subject).to match_array([
+        have_attributes(reaction_id: heart.id, reactions_count: 1)
+      ]) }
     end
 
     context "multiple reactions" do
@@ -32,10 +34,10 @@ describe Reactionnable do
       let!(:user_reaction_2) { create(:user_reaction, instance: instance, reaction: heart) }
       let!(:user_reaction_3) { create(:user_reaction, instance: instance, reaction: thumb) }
 
-      it { expect(subject).to eq({
-        heart.id => 2,
-        thumb.id => 1,
-      }) }
+      it { expect(subject).to match_array([
+        have_attributes(reaction_id: heart.id, reactions_count: 2),
+        have_attributes(reaction_id: thumb.id, reactions_count: 1)
+      ]) }
     end
   end
 
