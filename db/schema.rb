@@ -752,7 +752,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id"], name: "index_old_user_denorms_on_user_id"
   end
 
-  create_table "openai_assistant_configurations", force: :cascade do |t|
+  create_table "openai_assistants", force: :cascade do |t|
     t.integer "version"
     t.string "api_key", null: false
     t.string "assistant_id", null: false
@@ -765,7 +765,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "openai_assistants", force: :cascade do |t|
+  create_table "openai_requests", force: :cascade do |t|
     t.string "instance_type", null: false
     t.integer "instance_id", null: false
     t.string "openai_assistant_id"
@@ -777,7 +777,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "run_ends_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["instance_type", "instance_id"], name: "index_openai_assistants_on_instance_type_and_instance_id"
+    t.string "instance_class", default: "Entourage"
+    t.index ["instance_type", "instance_id"], name: "index_openai_requests_on_instance_type_and_instance_id", unique: true
   end
 
   create_table "options", force: :cascade do |t|
