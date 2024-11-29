@@ -12,8 +12,9 @@
   <% if @matchings.any? %>
     <thead>
       <tr>
-        <th>matching_type</th>
-        <th>matching_id</th>
+        <th>type</th>
+        <th>nom</th>
+        <th>description</th>
         <th>score</th>
         <th>position</th>
         <th>explanation</th>
@@ -25,7 +26,8 @@
       <% @matchings.each do |matching| %>
         <tr>
           <td><%= matching.match_type %></td>
-          <td><%= matching.match_id %></td>
+          <td><%= link_to matching.match.name, [:admin, matching.match] %></td>
+          <td><%= matching.match.description %></td>
           <td><%= matching.score %></td>
           <td><%= matching.position %></td>
           <td><%= matching.explanation %></td>
