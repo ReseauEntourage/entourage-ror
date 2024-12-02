@@ -46,4 +46,12 @@ class Resource < ApplicationRecord
   def remove_resource_image_id!
     self.image_url = nil
   end
+
+  def text_description_only
+    return description if is_video
+
+    document = Nokogiri::HTML(description)
+    document.css('img, a').each { |node| node.remove }
+    document.text.strip
+  end
 end
