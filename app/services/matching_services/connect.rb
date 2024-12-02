@@ -98,11 +98,11 @@ module MatchingServices
     def get_recommandations
       {
         recommandations: {
-          contributions: get_contributions.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          solicitations: get_solicitations.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          outings: get_outings.pluck(:uuid_v2, :title, :description).map { |values| [:uuid_v2, :title, :description].zip(values).to_h },
-          pois: get_pois.pluck(:id, :name).map { |values| [:id, :name].zip(values).to_h },
-          resources: get_resources.pluck(:uuid_v2, :name, :description).map { |values| [:uuid_v2, :name, :description].zip(values).to_h }
+          contributions: get_contributions.map { |contribution| Openai::ContributionSerializer.new(contribution).as_json },
+          solicitations: get_solicitations.map { |solicitation| Openai::SolicitationSerializer.new(solicitation).as_json },
+          outings: get_outings.map { |outing| Openai::OutingSerializer.new(outing).as_json },
+          pois: get_pois.map { |poi| Openai::PoiSerializer.new(poi).as_json },
+          resources: get_resources.map { |resource| Openai::ResourceSerializer.new(resource).as_json }
         }
       }
     end
