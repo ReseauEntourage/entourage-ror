@@ -27,7 +27,7 @@ module MatchingServices
       return unless content = @response["content"]
       return unless content.any? && first_content = content[0]
       return unless first_content["type"] == "text"
-      return unless value = first_content["text"]["value"]
+      return unless value = first_content["text"]["value"]&.gsub("\n", "")
       return unless json = value[/\{.*\}/m]
 
       JSON.parse(json)
