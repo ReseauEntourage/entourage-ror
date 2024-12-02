@@ -27,7 +27,13 @@
         <tr>
           <td><%= matching.match_type %></td>
           <td><%= link_to matching.match.name, [:admin, matching.match] %></td>
-          <td><%= matching.match.description %></td>
+          <td>
+            <% if matching.match.respond_to?(:text_description_only) %>
+              <%= matching.match.text_description_only %>
+            <% else %>
+              <%= matching.match.description %>
+            <% end %>
+          </td>
           <td><%= matching.score %></td>
           <td><%= matching.position %></td>
           <td><%= matching.explanation %></td>
