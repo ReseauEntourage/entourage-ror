@@ -19,6 +19,8 @@
         <th>position</th>
         <th>explanation</th>
         <th>created_at</th>
+        <th>notif inapp envoyée</th>
+        <th>Envoyer</th>
       </tr>
     </thead>
 
@@ -38,6 +40,10 @@
           <td><%= matching.position %></td>
           <td><%= matching.explanation %></td>
           <td><%= l matching.created_at.to_date, format: :long %></td>
+          <td class="inapp-notification">
+            <%= render partial: 'admin/entourages/show/show_matching_inapp_notification', :locals => { matching: matching } %>
+          </td>
+          <td><%= link_to "Envoyer", send_matching_admin_entourage_path(@entourage, matching_id: matching.id), method: :post, remote: true, class: "btn btn-default btn-sm", data: { confirm: "Etes-vous sûr de vouloir générer une notification pour l'utilisateur ?" } %></td>
         </tr>
       <% end %>
     </tbody>
