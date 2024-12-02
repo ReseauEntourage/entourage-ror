@@ -246,6 +246,16 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true
   end
 
+  create_table "entourage_areas", force: :cascade do |t|
+    t.string "postal_code"
+    t.boolean "antenne"
+    t.string "geo_zone"
+    t.string "display_name"
+    t.string "city"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
     t.integer "entourage_id", null: false
     t.datetime "max_chat_message_created_at"
