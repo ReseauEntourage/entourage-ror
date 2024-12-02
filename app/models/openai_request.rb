@@ -3,6 +3,10 @@ class OpenaiRequest < ApplicationRecord
 
   after_commit :run, on: :create
 
+  def instance
+    instance_class.constantize.find(instance_id)
+  end
+
   attr_accessor :forced_matching
 
   def run

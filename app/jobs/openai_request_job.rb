@@ -13,7 +13,7 @@ class OpenaiRequestJob
     MatchingServices::Connect.new(instance: instance).perform do |on|
       on.success do |response|
         openai_request.update_columns(
-          openai_request_id: response.metadata[:assistant_id],
+          openai_assistant_id: response.metadata[:assistant_id],
           openai_thread_id: response.metadata[:thread_id],
           openai_run_id: response.metadata[:run_id],
           openai_message_id: response.metadata[:message_id],
