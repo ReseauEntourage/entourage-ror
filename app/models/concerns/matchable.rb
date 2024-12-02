@@ -9,6 +9,10 @@ module Matchable
     has_many :matches, through: :matchings, source: :match
   end
 
+  def matchings_with_notifications
+    matchings.with_notifications_for_user(user)
+  end
+
   def build_openai_request(attributes = {})
     super(attributes.merge(instance_class: self.class.name))
   end

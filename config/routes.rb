@@ -129,6 +129,7 @@ Rails.application.routes.draw do
           get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_matchings
           get :show_siblings
+          post :send_matching
           post :stop_recurrences
           get :sensitive_words
           post :sensitive_words_check

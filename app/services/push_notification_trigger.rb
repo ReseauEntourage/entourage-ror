@@ -543,7 +543,12 @@ class PushNotificationTrigger
   end
 
   def matching_on_create
-    return unless @record.position == 0
+    return unless @record.position <= 1
+
+    matching_on_forced_create
+  end
+
+  def matching_on_forced_create
     return unless instance = @record.instance
     return unless match = @record.match
     return unless moderator_id = ModerationServices.moderator_for_user(instance.user)&.id || match&.user_id
