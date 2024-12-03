@@ -25,6 +25,6 @@ class Matching < ApplicationRecord
   end
 
   def inapp_notification_exists? user
-    InappNotification.exists?(user: user, instance_baseclass: instance_type, instance_id: instance_id, context: :matching)
+    InappNotification.exists?(user: user, instance_baseclass: match_type, instance_id: match_id, context: [:matching_on_create, :matching_on_forced_create])
   end
 end
