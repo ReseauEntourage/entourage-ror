@@ -165,6 +165,8 @@ module Admin
     def show_matchings
       @action = Action.find(params[:id])
       @matchings = @action.matchings_with_notifications
+        .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
+        .group("matchings.id")
 
       render :show
     end
@@ -181,7 +183,7 @@ module Admin
 
       PushNotificationTrigger.new(@matching, :forced_create, Hash.new).run
 
-      @matching.inapp_notification_exists_virtual = @matching.inapp_notification_exists?(@matching.instance.user)
+      @matching.inapp_notification_created_at_virtual = @matching.inapp_notifications.pluck(:created_at).compact.max
 
       respond_to do |format|
         format.js
