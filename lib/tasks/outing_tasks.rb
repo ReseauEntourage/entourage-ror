@@ -1,5 +1,5 @@
 module OutingTasks
-  REMINDER_CONTENT = "Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message. Nous reviendrons vers vous pour vous confirmer votre inscription."
+  REMINDER_CONTENT = "Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message."
 
   POST_UPCOMING_DELAY = 2.days
   EMAIL_UPCOMING_DELAY = 7.days
