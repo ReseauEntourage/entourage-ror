@@ -178,9 +178,9 @@ module Admin
 
     def send_matching
       @matching = Matching.find(params[:matching_id])
-      @matching.inapp_notification_exists = @matching.inapp_notification_exists?(@matching.instance.user)
+      @matching.inapp_notification_exists_virtual = @matching.inapp_notification_exists?(@matching.instance.user)
 
-      PushNotificationTrigger.new(@matching, :create, Hash.new).run
+      PushNotificationTrigger.new(@matching, :forced_create, Hash.new).run
 
       respond_to do |format|
         format.js
