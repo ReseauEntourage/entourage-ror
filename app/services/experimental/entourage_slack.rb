@@ -56,6 +56,8 @@ module Experimental::EntourageSlack
         "par _#{UserPresenter.new(user: e.user).display_name}_ #{e.user.ambassador? ? ' - Ambassadeur' : ''} (<@#{slack_moderator}>)"
       end
 
+    text += " partagée dans son groupe de voisins" if e.auto_post_at_create?
+
     event_metadata =
       if e.group_type == 'outing'
         url = "https://www.google.com/maps/search/?api=1&" + {
