@@ -38,11 +38,8 @@ module Onboarding
 
           next if messages.empty?
 
-          first_name = UserPresenter.format_first_name user.first_name
-
           messages.each do |message|
-            message = message.gsub(/\{\{\s*first_name\s*\}\}/, first_name)
-            message = message.gsub(/\{\{\s*interlocutor\s*\}\}/, author.first_name) if author.present?
+            message = ChatMessage.interpolate(message: message, user: user, author: author)
 
             builder = ChatServices::ChatMessageBuilder.new(
               user: author,
