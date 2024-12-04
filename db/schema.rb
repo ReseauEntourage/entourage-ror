@@ -220,6 +220,16 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true
   end
 
+  create_table "entourage_areas", force: :cascade do |t|
+    t.string "postal_code"
+    t.boolean "antenne"
+    t.string "geo_zone"
+    t.string "display_name"
+    t.string "city"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
     t.integer "entourage_id", null: false
     t.datetime "max_chat_message_created_at"
@@ -326,10 +336,9 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "number_of_root_chat_messages", default: 0
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
-    t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["created_at"], name: "index_entourages_on_created_at"
-    t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
+    t.index ["group_type"], name: "index_entourages_on_group_type"
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
     t.index ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true
@@ -1162,7 +1171,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "fragment"
-    t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
     t.index ["instance"], name: "index_user_recommandations_on_instance"
     t.index ["user_id", "recommandation_id"], name: "index_user_recommandations_on_user_id_and_recommandation_id", unique: true, where: "((completed_at IS NULL) AND (skipped_at IS NULL))"
     t.index ["user_id"], name: "index_user_recommandations_on_user_id"
