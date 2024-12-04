@@ -17,7 +17,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "plpython3u"
   enable_extension "postgis"
   enable_extension "unaccent"
   enable_extension "uuid-ossp"
@@ -252,8 +251,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "geo_zone"
     t.string "display_name"
     t.string "city"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
@@ -362,11 +361,10 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
-    t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["created_at"], name: "index_entourages_on_created_at"
     t.index ["description"], name: "index_entourages_on_description", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
-    t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
+    t.index ["group_type"], name: "index_entourages_on_group_type"
     t.index ["title"], name: "index_entourages_on_title", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
@@ -444,6 +442,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "post_id"
     t.integer "sender_id"
     t.string "title"
+    t.string "instance_class", default: "Entourage"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
@@ -465,9 +464,9 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "report_prompt_status"
     t.datetime "confirmed_at"
     t.integer "unread_messages_count"
-    t.index ["confirmed_at"], name: "index_join_requests_on_confirmed_at"
-    t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
-    t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
+    t.index ["joinable_type", "joinable_id"], name: "index_join_requests_on_joinable_type_and_joinable_id"
+    t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable"
+    t.index ["user_id"], name: "index_join_requests_on_user_id"
   end
 
   create_table "lexical_transformations", force: :cascade do |t|
@@ -504,6 +503,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "position"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "explanation"
     t.index ["instance_type", "instance_id"], name: "index_matchings_on_instance_type_and_instance_id"
   end
 
@@ -577,6 +577,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "uuid_v2", limit: 12, null: false
     t.string "country", default: "FR"
     t.boolean "national", default: false
+    t.integer "number_of_root_chat_messages", default: 0
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_neighborhoods_on_coordinates", using: :gist
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
@@ -762,6 +763,19 @@ ActiveRecord::Schema.define(version: 202401111415004) do
   end
 
   create_table "openai_assistants", force: :cascade do |t|
+    t.integer "version"
+    t.string "api_key", null: false
+    t.string "assistant_id", null: false
+    t.text "prompt", null: false
+    t.boolean "poi_from_file", default: false
+    t.boolean "resource_from_file", default: false
+    t.integer "days_for_actions", default: 30
+    t.integer "days_for_outings", default: 30
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "openai_requests", force: :cascade do |t|
     t.string "instance_type", null: false
     t.integer "instance_id", null: false
     t.string "openai_assistant_id"
@@ -773,7 +787,8 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "run_ends_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["instance_type", "instance_id"], name: "index_openai_assistants_on_instance_type_and_instance_id"
+    t.string "instance_class", default: "Entourage"
+    t.index ["instance_type", "instance_id"], name: "index_openai_requests_on_instance_type_and_instance_id", unique: true
   end
 
   create_table "options", force: :cascade do |t|
@@ -1215,7 +1230,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "fragment"
-    t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
     t.index ["instance"], name: "index_user_recommandations_on_instance"
     t.index ["user_id", "recommandation_id"], name: "index_user_recommandations_on_user_id_and_recommandation_id", unique: true, where: "((completed_at IS NULL) AND (skipped_at IS NULL))"
     t.index ["user_id"], name: "index_user_recommandations_on_user_id"
@@ -1264,7 +1278,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "partner_id"
     t.boolean "partner_admin", default: false, null: false
     t.string "partner_role_title"
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }
+    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }
     t.string "goal"
     t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"
