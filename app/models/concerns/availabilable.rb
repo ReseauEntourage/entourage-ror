@@ -40,4 +40,13 @@ module Availabilable
     end
   end
 
+  def availability_formatted
+    availability.map do |day_number, hours|
+      "#{Availabilable.day_name(day_number)} : #{hours.join(', ')}"
+    end.join("\n")
+  end
+
+  def self.day_name day_number
+    I18n.t("date.day_names")[day_number.to_i % 7]
+  end
 end

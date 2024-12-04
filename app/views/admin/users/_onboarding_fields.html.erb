@@ -5,7 +5,7 @@
     <ul>
       <% @user.availability.each do |day, slots| %>
         <li>
-          <strong><%= day_name(day) %>:</strong>
+          <strong><%= Availabilable.day_name(day) %>:</strong>
           <%= slots.join(', ') %>
         </li>
       <% end %>
