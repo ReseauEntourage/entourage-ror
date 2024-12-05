@@ -64,8 +64,8 @@ RSpec.describe ChatMessage, type: :model do
         Your email is john.doe@example.com, and your phone number is +33612345678.
         You live in Paris and your ID is 123e4567-e89b-12d3-a456-426614174000.
         Default neighborhood: Groupe de Paris.
-        Your interests: Jeux, Cuisine.
-        Your involvements: Participer à des événements de convivialité, Apprendre avec des contenus pédagogiques.
+        Your interests: Cuisine, Jeux.
+        Your involvements: Apprendre avec des contenus pédagogiques, Participer à des événements de convivialité.
         Availability: lundi : 09:00-12:00, 14:00-18:00
         mardi : 10:00-12:00.
         Interlocutor: Alice.
