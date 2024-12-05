@@ -9,6 +9,24 @@ Bundler.require(*Rails.groups)
 # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#halting-callback-chains-via-throw-abort
 # ActiveSupport.halt_callback_chains_on_return_false = false
 
+class SubdomainRouter
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    req = Rack::Request.new(env)
+
+    if req.host.start_with?("api")
+      ENV["PORT"] = "3000"
+    elsif req.host.start_with?("backoffice")
+      ENV["PORT"] = "3001"
+    end
+
+    @app.call(env)
+  end
+end
+
 module EntourageBack
   class Application < Rails::Application
     # Configuration for the application, engines, and railties goes here.
@@ -23,6 +41,7 @@ module EntourageBack
 
     # Batch loading
     config.middleware.use BatchLoader::Middleware
+    config.middleware.insert_before 0, SubdomainRouter
     config.load_defaults 5.0
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
