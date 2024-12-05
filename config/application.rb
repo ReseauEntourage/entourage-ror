@@ -17,9 +17,9 @@ class SubdomainRouter
   def call(env)
     req = Rack::Request.new(env)
 
-    if req.host.start_with?("api")
+    if req.host.start_with?("api-preprod")
       ENV["PORT"] = "3000"
-    elsif req.host.start_with?("backoffice")
+    elsif req.host.start_with?("admin-preprod")
       ENV["PORT"] = "3001"
     end
 
