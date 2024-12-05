@@ -94,8 +94,8 @@ class ChatMessage < ApplicationRecord
         .gsub(/\{\{\s*city\s*\}\}/, user.city.to_s)
         .gsub(/\{\{\s*uuid\s*\}\}/, user.uuid.to_s)
         .gsub(/\{\{\s*default_neighborhood\s*\}\}/, user.default_neighborhood&.name.to_s)
-        .gsub(/\{\{\s*interests\s*\}\}/, user.interest_i18n.join(', '))
-        .gsub(/\{\{\s*involvements\s*\}\}/, user.involvement_i18n.join(', '))
+        .gsub(/\{\{\s*interests\s*\}\}/, user.interest_i18n.sort.join(', '))
+        .gsub(/\{\{\s*involvements\s*\}\}/, user.involvement_i18n.sort.join(', '))
         .gsub(/\{\{\s*availability\s*\}\}/, user.availability_formatted.to_s)
         .gsub(/\{\{\s*interlocutor\s*\}\}/, author&.first_name.to_s)
     end
