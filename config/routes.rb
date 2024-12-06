@@ -760,6 +760,24 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :fun do
+    resources :home, only: [:index] do
+      collection do
+        get :aquatic_animals
+        get :climacode
+        get :curly_editor
+        get :day_night
+        get :falling_words
+        get :galaxy
+        get :maze
+        get :milk
+        get :responsive_carousel
+        get :timeline_slider
+        get :tube_clock
+      end
+    end
+  end
+
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'

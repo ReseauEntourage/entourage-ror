@@ -1,0 +1,2694 @@
+<style type="text/css">
+  @charset "UTF-8";
+  :root {
+    --white: #e6e0e0;
+    --floor: #D73A4D;
+  }
+
+  :root:has(#gfx1:checked) {
+    --white: #574444;
+    --floor: #69262e;
+  }
+  :root:has(#gfx1:checked) div:before, :root:has(#gfx1:checked) darkness {
+    display: none;
+  }
+
+  html {
+    font-size: clamp(6px, 1vh, 22px);
+    background: #1a0606;
+  }
+
+  @media (orientation: portrait) {
+    html {
+      font-size: 0.8vh;
+    }
+  }
+  body {
+    margin: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0);
+    font-size: 2rem;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  body > div {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  body > div:before {
+    content: "";
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  @media (min-width: 480px) {
+    body > div:before {
+      background: radial-gradient(rgba(255, 255, 255, 0), rgba(26, 6, 6, 0.7));
+      box-shadow: inset 0 1rem 3rem #1a0606, inset 0 -1rem 3rem #1a0606, inset 0 0 5rem #1a0606;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  body content *, body content *:before, body content *:after {
+    box-sizing: border-box;
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    transform-style: preserve-3d;
+  }
+
+  content, room {
+    width: 100rem;
+    height: 100rem;
+  }
+
+  content {
+    margin: auto;
+    position: absolute;
+    perspective: 100rem;
+    display: block;
+    inset: 0;
+    left: -100rem;
+    right: -100rem;
+  }
+  @media (max-width: 480px) {
+    content {
+      transform: scale(0.8);
+    }
+  }
+
+  input {
+    position: relative;
+    z-index: 1;
+    margin-top: 1rem;
+    display: none;
+  }
+
+  #top-view:checked ~ content > w {
+    transform: translate3d(50rem, 200rem, -600rem) rotateX(-90deg) !important;
+  }
+
+  #bottom-floor:checked ~ content > w > x > y > z:nth-of-type(1) room {
+    display: none;
+  }
+
+  w, x, y, z {
+    width: 100%;
+    height: 100%;
+  }
+
+  w {
+    transform-origin: 50rem -50rem 0;
+    transition: all 1s ease-in-out;
+    animation: enter 1s ease-in-out backwards;
+    transform: translate3d(0, 100rem, 0);
+  }
+  @keyframes enter {
+    0% {
+      transform: translate3d(50rem, 300rem, -800rem) rotateX(-90deg);
+    }
+  }
+
+  y {
+    transform-origin: -50rem 0;
+  }
+
+  x {
+    transform-origin: 50rem 0 50rem;
+  }
+
+  z {
+    transform-origin: 0 0;
+  }
+
+  w:before, w:after {
+    transform: translate3d(-500vw, -600vh, -1000rem) scale(10);
+    content: "";
+    width: 0.3rem;
+    height: 0.3rem;
+    background: #fff;
+    box-shadow: 58vw 79vh 0.1rem #e88f9a , 44vw 21vh 0.1rem #e88f9a , 71vw 46vh 0.1rem #fff , 73vw 47vh 0.1rem #fff , 69vw 82vh 0.1rem #e88f9a , 32vw 34vh 0.1rem #fff , 44vw 41vh 0.1rem #fff , 63vw 42vh 0.1rem #fff , 31vw 77vh 0.1rem #fff , 57vw 55vh 0.1rem #fff , 61vw 27vh 0.1rem #e88f9a , 7vw 5vh 0.1rem #e88f9a , 90vw 2vh 0.1rem #e88f9a , 16vw 68vh 0.1rem #fff , 95vw 67vh 0.1rem #e88f9a , 15vw 87vh 0.1rem #e88f9a , 12vw 83vh 0.1rem #fff , 54vw 57vh 0.1rem #fff , 69vw 49vh 0.1rem #e88f9a , 40vw 54vh 0.1rem #fff , 80vw 83vh 0.1rem #fff , 82vw 59vh 0.1rem #fff , 63vw 49vh 0.1rem #fff , 42vw 50vh 0.1rem #e88f9a , 91vw 10vh 0.1rem #e88f9a , 91vw 53vh 0.1rem #fff , 5vw 21vh 0.1rem #fff , 68vw 65vh 0.1rem #e88f9a , 77vw 48vh 0.1rem #e88f9a , 73vw 89vh 0.1rem #e88f9a , 5vw 49vh 0.1rem #fff , 54vw 55vh 0.1rem #e88f9a , 96vw 65vh 0.1rem #fff , 78vw 53vh 0.1rem #e88f9a , 29vw 52vh 0.1rem #fff , 13vw 22vh 0.1rem #fff , 73vw 69vh 0.1rem #fff , 12vw 13vh 0.1rem #fff , 48vw 50vh 0.1rem #fff , 93vw 8vh 0.1rem #fff , 54vw 6vh 0.1rem #fff , 27vw 5vh 0.1rem #fff , 74vw 36vh 0.1rem #e88f9a , 88vw 24vh 0.1rem #e88f9a , 13vw 72vh 0.1rem #e88f9a , 62vw 1vh 0.1rem #e88f9a , 62vw 78vh 0.1rem #fff , 81vw 71vh 0.1rem #e88f9a , 1vw 18vh 0.1rem #e88f9a , 41vw 41vh 0.1rem #e88f9a;
+    right: 0;
+    margin: auto;
+  }
+
+  graphics, numbers {
+    bottom: 1rem;
+    left: 1rem;
+    position: absolute;
+    z-index: 2;
+  }
+  graphics label, numbers label {
+    padding: 0.5rem 1rem;
+    background: #1a0606;
+    color: #ebebe7;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+
+  #gfx2:checked ~ graphics > [for=gfx2],
+  #gfx1:checked ~ graphics > [for=gfx1],
+  #numon:checked ~ numbers > [for=numon],
+  #numoff:checked ~ numbers > [for=numoff] {
+    display: none;
+  }
+
+  numbers {
+    bottom: 1rem;
+    left: 14rem;
+    position: absolute;
+    z-index: 2;
+  }
+
+  :root:has(#numoff:checked) body, :root:has(#numoff:checked) room {
+    color: #fff;
+  }
+  :root:has(#numoff:checked) input {
+    display: inline;
+  }
+
+  .d-none {
+    display: none !important;
+  }
+
+  sig {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 0.5rem;
+    color: #ebebe7;
+    width: 10em;
+    transform: skewX(10deg) scaleY(0.45) rotate(2deg);
+    mix-blend-mode: difference;
+  }
+  sig, sig * {
+    height: 9.25em;
+    overflow: hidden;
+    border-radius: 0.5em;
+  }
+  sig:before, sig *:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5em;
+    height: 5em;
+    background: currentColor;
+    transform: translate3d(-2.5em, 0, 0) rotate(-45deg);
+    box-shadow: -3em 3em 0 0 currentColor;
+    border-radius: 0.5em 2em 0.5em 2em;
+  }
+  sig * {
+    width: 5em;
+    transform: translate3d(3.75em, 0, 0) scaleY(0.95);
+    display: block !important;
+  }
+  sig *:before {
+    transform: translate3d(-3em, -2em, 0) rotate(-45deg);
+    box-shadow: -3em 3em 0 0 currentColor, -6em 6em 0 0 currentColor;
+    border-radius: 0.5em;
+  }
+
+  room {
+    transform: translate3d(0, 0, 0) rotateX(90deg);
+    transform-origin: 0 0 0;
+    color: rgba(255, 255, 255, 0);
+    font-size: 30rem;
+    background: var(--floor);
+  }
+  room:before, room:after {
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    transform-origin: 0 0 0;
+  }
+  room:before {
+    transform: translate3d(0, 0, 100rem) rotateY(90deg);
+  }
+  room:after {
+    transform: translate3d(100rem, 0, 0) rotateY(-90deg);
+  }
+
+  z:nth-of-type(1) room:nth-of-type(36):after, z:nth-of-type(1) room:nth-of-type(37):after, z:nth-of-type(1) room:nth-of-type(39):after, z:nth-of-type(1) room:nth-of-type(40):after, z:nth-of-type(1) room:nth-of-type(41):after, z:nth-of-type(1) room:nth-of-type(42):after, z:nth-of-type(1) room:nth-of-type(35):after, z:nth-of-type(1) room:nth-of-type(28):after {
+    filter: brightness(0.5);
+  }
+  z:nth-of-type(1) room:nth-of-type(14):before, z:nth-of-type(1) room:nth-of-type(6):before, z:nth-of-type(1) room:nth-of-type(38):before, z:nth-of-type(1) room:nth-of-type(5):before, z:nth-of-type(1) room:nth-of-type(12):before, z:nth-of-type(1) room:nth-of-type(26):before, z:nth-of-type(1) room:nth-of-type(33):before {
+    filter: brightness(0.5);
+  }
+  z:nth-of-type(1) room:nth-of-type(22):after, z:nth-of-type(1) room:nth-of-type(8):after, z:nth-of-type(1) room:nth-of-type(38):after, z:nth-of-type(1) room:nth-of-type(7):after, z:nth-of-type(1) room:nth-of-type(21):after, z:nth-of-type(1) room:nth-of-type(18):after, z:nth-of-type(1) room:nth-of-type(17):after {
+    filter: brightness(0.75);
+  }
+  z:nth-of-type(1) room:nth-of-type(31):before, z:nth-of-type(1) room:nth-of-type(14):before, z:nth-of-type(1) room:nth-of-type(36):before, z:nth-of-type(1) room:nth-of-type(22):before, z:nth-of-type(1) room:nth-of-type(8):before, z:nth-of-type(1) room:nth-of-type(16):before, z:nth-of-type(1) room:nth-of-type(21):before, z:nth-of-type(1) room:nth-of-type(35):before, z:nth-of-type(1) room:nth-of-type(42):before, z:nth-of-type(1) room:nth-of-type(28):before, z:nth-of-type(1) room:nth-of-type(4):before {
+    filter: brightness(0.75);
+  }
+  z:nth-of-type(1) room:nth-of-type(1) {
+    transform: translate3d(-300rem, 0, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(2) {
+    transform: translate3d(-200rem, 0, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(3) {
+    transform: translate3d(-100rem, 0, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(4) {
+    transform: translate3d(-100rem, 0, -400rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(4):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(5) {
+    transform: translate3d(0, 0, -400rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(5):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(6) {
+    transform: translate3d(100rem, 0, -300rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(7) {
+    transform: translate3d(200rem, 0, -400rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(7):before {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(8) {
+    transform: translate3d(-300rem, 0, -200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(8):before {
+    transform: translate3d(100rem, -100rem, 100rem) rotateY(90deg) rotateX(0deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(9) {
+    transform: translate3d(-300rem, 0, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(9):before, z:nth-of-type(1) room:nth-of-type(9):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(10) {
+    transform: translate3d(-200rem, 0, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(10):before, z:nth-of-type(1) room:nth-of-type(10):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(11) {
+    transform: translate3d(-100rem, 0, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(11):before, z:nth-of-type(1) room:nth-of-type(11):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(12) {
+    transform: translate3d(0, 0, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(13) {
+    transform: translate3d(100rem, 0, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(13):before, z:nth-of-type(1) room:nth-of-type(13):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(14) {
+    transform: translate3d(300rem, 0, -300rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(14):before {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(15) {
+    transform: translate3d(-400rem, 0, -200rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(15):before, z:nth-of-type(1) room:nth-of-type(15):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(16) {
+    transform: translate3d(-200rem, 0, -100rem) rotateX(90deg) rotateZ(-180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(16):before {
+    transform: translate3d(0, 100rem, 100rem) rotateY(90deg) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(17) {
+    transform: translate3d(-200rem, 0, -100rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(18) {
+    transform: translate3d(0, 0, -100rem) rotateX(90deg) rotateZ(-180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(18):after {
+    transform: translate3d(0, 100rem, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(18):before {
+    transform: translate3d(100rem, 0, 100rem) rotateY(90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(19) {
+    transform: translate3d(0, 0, -200rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(19):before {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(20) {
+    transform: translate3d(100rem, 0, -200rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(20):before, z:nth-of-type(1) room:nth-of-type(20):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(21) {
+    transform: translate3d(200rem, 0, -200rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(21):after {
+    transform: translate3d(-100rem, 100rem, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(21):before {
+    transform: translate3d(100rem, 0, 100rem) rotateY(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(22) {
+    transform: translate3d(-300rem, 0, 0) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(22):before {
+    transform: translate3d(100rem, -100rem, 100rem) rotateY(90deg) rotateX(0deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(23) {
+    transform: translate3d(-200rem, 0, 0) rotateX(90deg) rotateZ(-180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(23):before {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(24) {
+    transform: translate3d(-200rem, 0, -100rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(24):before, z:nth-of-type(1) room:nth-of-type(24):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(25) {
+    transform: translate3d(-100rem, 0, -100rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(25):before, z:nth-of-type(1) room:nth-of-type(25):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(26) {
+    transform: translate3d(0, 0, -100rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(27) {
+    transform: translate3d(100rem, 0, -100rem) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(27):before, z:nth-of-type(1) room:nth-of-type(27):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(28) {
+    transform: translate3d(300rem, 0, 0rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(29) {
+    transform: translate3d(-400rem, 0, 0) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(29):before, z:nth-of-type(1) room:nth-of-type(29):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(30) {
+    transform: translate3d(-200rem, 0, 100rem) rotateX(90deg) rotateZ(-180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(30):before {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(31) {
+    transform: translate3d(-200rem, 0, 0rem) rotateX(90deg) rotateZ(0deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(31):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(32) {
+    transform: translate3d(0, 0, 0) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(32):before, z:nth-of-type(1) room:nth-of-type(32):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(34) {
+    transform: translate3d(100rem, 0, 0) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(34):before, z:nth-of-type(1) room:nth-of-type(34):after {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(35) {
+    transform: translate3d(300rem, 0, 100rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(36) {
+    transform: translate3d(-300rem, 0, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(36):before {
+    transform: translate3d(0, 100rem, 100rem) rotateY(90deg) rotateX(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(37) {
+    transform: translate3d(-200rem, 0, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(37):before {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(38) {
+    transform: translate3d(-200rem, 0, 200rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(38):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(39) {
+    transform: translate3d(0, 0, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(40) {
+    transform: translate3d(100rem, 0, 200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(40):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(41) {
+    transform: translate3d(200rem, 0, 200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(41):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(41):before {
+    display: none;
+  }
+  z:nth-of-type(1) room:nth-of-type(42) {
+    transform: translate3d(300rem, 0, 200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(1) room:nth-of-type(42):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+
+  z:nth-of-type(2) room {
+    transform: translate3d(0, 100rem, 0) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(36):after, z:nth-of-type(2) room:nth-of-type(37):after, z:nth-of-type(2) room:nth-of-type(39):after, z:nth-of-type(2) room:nth-of-type(40):after, z:nth-of-type(2) room:nth-of-type(41):after, z:nth-of-type(2) room:nth-of-type(42):after, z:nth-of-type(2) room:nth-of-type(38):after, z:nth-of-type(2) room:nth-of-type(2):after, z:nth-of-type(2) room:nth-of-type(3):after {
+    filter: brightness(0.5);
+  }
+  z:nth-of-type(2) room:nth-of-type(14):before, z:nth-of-type(2) room:nth-of-type(6):before, z:nth-of-type(2) room:nth-of-type(38):before, z:nth-of-type(2) room:nth-of-type(5):before, z:nth-of-type(2) room:nth-of-type(12):before, z:nth-of-type(2) room:nth-of-type(26):before, z:nth-of-type(2) room:nth-of-type(33):before, z:nth-of-type(2) room:nth-of-type(11):before, z:nth-of-type(2) room:nth-of-type(16):before, z:nth-of-type(2) room:nth-of-type(24):before, z:nth-of-type(2) room:nth-of-type(25):before, z:nth-of-type(2) room:nth-of-type(27):before {
+    filter: brightness(0.5);
+  }
+  z:nth-of-type(2) room:nth-of-type(1):after, z:nth-of-type(2) room:nth-of-type(4):after, z:nth-of-type(2) room:nth-of-type(10):after, z:nth-of-type(2) room:nth-of-type(14):after, z:nth-of-type(2) room:nth-of-type(22):after, z:nth-of-type(2) room:nth-of-type(8):after, z:nth-of-type(2) room:nth-of-type(7):after, z:nth-of-type(2) room:nth-of-type(21):after, z:nth-of-type(2) room:nth-of-type(17):after, z:nth-of-type(2) room:nth-of-type(27):after {
+    filter: brightness(0.75);
+  }
+  z:nth-of-type(2) room:nth-of-type(15):before, z:nth-of-type(2) room:nth-of-type(14):before, z:nth-of-type(2) room:nth-of-type(36):before, z:nth-of-type(2) room:nth-of-type(22):before, z:nth-of-type(2) room:nth-of-type(21):before, z:nth-of-type(2) room:nth-of-type(35):before, z:nth-of-type(2) room:nth-of-type(42):before, z:nth-of-type(2) room:nth-of-type(28):before, z:nth-of-type(2) room:nth-of-type(37):before, z:nth-of-type(2) room:nth-of-type(38):before, z:nth-of-type(2) room:nth-of-type(39):before {
+    filter: brightness(0.75);
+  }
+  z:nth-of-type(2) room:nth-of-type(1) {
+    transform: translate3d(-300rem, 100rem, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(1):after {
+    transform: translate3d(100rem, 100rem, 0) rotateY(-90deg) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(2) {
+    transform: translate3d(-200rem, 100rem, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(3) {
+    transform: translate3d(-100rem, 100rem, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(4) {
+    transform: translate3d(0, 100rem, -400rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(4):after {
+    transform: translate3d(0, 100rem, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(5) {
+    transform: translate3d(0, 100rem, -300rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(6) {
+    transform: translate3d(100rem, 100rem, -300rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(7) {
+    transform: translate3d(200rem, 100rem, -400rem) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(7):before {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(8) {
+    transform: translate3d(-300rem, 100rem, -200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(8):before {
+    transform: translate3d(0, 0, 100rem) rotateY(90deg) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(9) {
+    transform: translate3d(-300rem, 100rem, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(9):before, z:nth-of-type(2) room:nth-of-type(9):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(10) {
+    transform: translate3d(-200rem, 100rem, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(10):before, z:nth-of-type(2) room:nth-of-type(10):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(11) {
+    transform: translate3d(0, 100rem, -300rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(11):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(12) {
+    transform: translate3d(100rem, 100rem, -300rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(12):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(13) {
+    transform: translate3d(200rem, 100rem, -300rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(13):before {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(14) {
+    transform: translate3d(200rem, 100rem, -300rem) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(15) {
+    transform: translate3d(-400rem, 100rem, -200rem) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(15):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(16) {
+    transform: translate3d(-300rem, 100rem, -100rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(17) {
+    transform: translate3d(-200rem, 100rem, -100rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(17):after {
+    transform: translate3d(0, 100rem, 100rem) rotateY(90deg) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(18) {
+    transform: translate3d(-100rem, 100rem, -100rem) rotateX(90deg) rotateZ(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(18):after {
+    transform: translate3d(0, 100rem, 100rem) rotateY(90deg) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(19) {
+    transform: translate3d(100rem, 100rem, -200rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(19):before {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(20) {
+    transform: translate3d(200rem, 100rem, -200rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(21) {
+    transform: translate3d(200rem, 100rem, -200rem) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(21):before {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(22) {
+    transform: translate3d(-300rem, 100rem, 0) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(22):before {
+    transform: translate3d(100rem, -100rem, 100rem) rotateY(90deg) rotateX(0deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(23) {
+    transform: translate3d(-200rem, 100rem, 0) rotateX(90deg) rotateZ(-180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(23):before {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(24) {
+    transform: translate3d(-100rem, 100rem, -100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(25) {
+    transform: translate3d(0, 100rem, -100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(26) {
+    transform: translate3d(100rem, 100rem, -100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(26):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(27) {
+    transform: translate3d(200rem, 100rem, -100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(28) {
+    transform: translate3d(300rem, 100rem, 0rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(29) {
+    transform: translate3d(-400rem, 100rem, 0) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(29):before, z:nth-of-type(2) room:nth-of-type(29):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(30) {
+    transform: translate3d(-200rem, 100rem, 100rem) rotateX(90deg) rotateZ(-180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(30):before {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(31) {
+    transform: translate3d(-100rem, 100rem, 0rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(32) {
+    transform: translate3d(-100rem, 100rem, 0) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(32):before, z:nth-of-type(2) room:nth-of-type(32):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(34) {
+    transform: translate3d(100rem, 100rem, 0) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(34):before, z:nth-of-type(2) room:nth-of-type(34):after {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(35) {
+    transform: translate3d(300rem, 100rem, 100rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(36) {
+    transform: translate3d(-300rem, 100rem, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(36):before {
+    transform: translate3d(0, 100rem, 100rem) rotateY(90deg) rotateX(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(37) {
+    transform: translate3d(-200rem, 100rem, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(38) {
+    transform: translate3d(-100rem, 100rem, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(39) {
+    transform: translate3d(0, 100rem, 100rem) rotateX(90deg) rotateZ(90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(40) {
+    transform: translate3d(100rem, 100rem, 200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(40):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(41) {
+    transform: translate3d(200rem, 100rem, 200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(41):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(41):before {
+    display: none;
+  }
+  z:nth-of-type(2) room:nth-of-type(42) {
+    transform: translate3d(300rem, 100rem, 200rem) rotateX(90deg) rotateZ(180deg);
+  }
+  z:nth-of-type(2) room:nth-of-type(42):after {
+    transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+  }
+
+  buttons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate3d(0, 0, 0);
+    width: 40rem;
+    height: 30rem;
+    z-index: 2;
+  }
+  buttons label {
+    font-size: 3rem;
+    border-radius: 1rem;
+    padding: 1em;
+    color: #ebebe7;
+    cursor: pointer;
+    font-weight: bold;
+    width: 3em;
+    height: 3em;
+    transition: all 0.15s ease-in-out;
+    position: absolute;
+    box-sizing: border-box;
+    background: #4B4640;
+    border: 0.2rem solid #1a0606;
+  }
+  buttons label.leftb {
+    bottom: 1rem;
+    right: 21rem;
+  }
+  buttons label.rightb {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  buttons label.upb {
+    bottom: 11rem;
+    right: 11rem;
+  }
+  buttons label.downb {
+    bottom: 1rem;
+    right: 11rem;
+  }
+  buttons label:before, buttons label:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 1rem;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+  buttons label:after {
+    content: "↑";
+    font-size: 4rem;
+  }
+  buttons label.leftb:after {
+    content: "←";
+  }
+  buttons label.rightb:after {
+    content: "→";
+  }
+  buttons label.downb:after {
+    content: "↓";
+  }
+  buttons label:hover, buttons label:focus, buttons label:active {
+    transform: translate3d(0, 0.5rem, -10rem) scale(0.98);
+    color: #1a0606;
+  }
+
+  @supports not (-webkit-touch-callout: none) {
+    @media (min-width: 480px) {
+      #gfx2:checked ~ buttons label {
+        text-shadow: 0 0 0.2rem currentColor, 0 0 0.2rem currentColor, 0 0 0.2rem currentColor, 0 0 0.2rem currentColor;
+        border: none;
+        color: #4B4640;
+      }
+      #gfx2:checked ~ buttons label:before {
+        transform: translate3d(0, 0, -0.6rem);
+        background: linear-gradient(rgba(189, 187, 175, 0.5), rgba(75, 70, 64, 0.5)), linear-gradient(90deg, rgba(212, 211, 203, 0.5), rgba(75, 70, 64, 0.5)), conic-gradient(from 20deg, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor), #BDBBAF;
+        box-shadow: 0.5rem 0.5rem 1rem #1a0606;
+      }
+      #gfx2:checked ~ buttons label:after {
+        transform: translate3d(0, -0.5rem, -0.3rem) scale(0.75);
+        background: radial-gradient(rgba(75, 70, 64, 0.5), #BDBBAF), #BDBBAF;
+        box-shadow: inset 0 0 0.5rem rgba(212, 211, 203, 0.5), 0 0 0.5rem rgba(212, 211, 203, 0.5);
+      }
+    }
+  }
+  .dead {
+    filter: brightness(0.8);
+  }
+
+  x, y, z, room {
+    transition: all 1s ease-in-out;
+  }
+
+  .upb, .downb, .rightb, .leftb, .dead {
+    display: none;
+  }
+
+  #original:checked ~ buttons > .rb1, #original:checked ~ buttons > .lb1 {
+    display: block;
+  }
+
+  #left1:checked ~ content > w > x {
+    transform: rotateY(-90deg);
+  }
+  #left1:checked ~ buttons > .rb4, #left1:checked ~ buttons > .lb2 {
+    display: block;
+  }
+
+  #left2:checked ~ content > w > x {
+    transform: rotateY(-180deg);
+  }
+  #left2:checked ~ buttons > .rb5, #left2:checked ~ buttons > .lb3 {
+    display: block;
+  }
+
+  #left3:checked ~ content > w > x {
+    transform: rotateY(-270deg);
+  }
+  #left3:checked ~ buttons > .rb6, #left3:checked ~ buttons > .lb4 {
+    display: block;
+  }
+
+  #left4:checked ~ content > w > x {
+    animation: killrotate 1s ease-in-out;
+  }
+  @keyframes killrotate {
+    0% {
+      transform: rotateY(-270deg);
+    }
+    99% {
+      transform: rotateY(-360deg);
+    }
+    100% {
+      transform: rotateY(0deg);
+    }
+  }
+  #left4:checked ~ buttons > .rb1, #left4:checked ~ buttons > .lb1 {
+    display: block;
+  }
+
+  #right1:checked ~ content > w > x {
+    transform: rotateY(90deg);
+  }
+  #right1:checked ~ buttons > .rb2, #right1:checked ~ buttons > .lb4 {
+    display: block;
+  }
+
+  #right2:checked ~ content > w > x {
+    transform: rotateY(180deg);
+  }
+  #right2:checked ~ buttons > .rb3, #right2:checked ~ buttons > .lb5 {
+    display: block;
+  }
+
+  #right3:checked ~ content > w > x {
+    transform: rotateY(270deg);
+  }
+  #right3:checked ~ buttons > .rb4, #right3:checked ~ buttons > .lb6 {
+    display: block;
+  }
+
+  #right4:checked ~ content > w > x {
+    animation: killrotate2 1s ease-in-out;
+  }
+  @keyframes killrotate2 {
+    0% {
+      transform: rotateY(270deg);
+    }
+    99% {
+      transform: rotateY(360deg);
+    }
+    100% {
+      transform: rotateY(0deg);
+    }
+  }
+  #right4:checked ~ buttons > .rb1, #right4:checked ~ buttons > .lb1 {
+    display: block;
+  }
+
+  #left2:checked ~ buttons > .upb, #left3:checked ~ buttons > .upb, #right1:checked ~ buttons > .upb, #right2:checked ~ buttons > .upb {
+    bottom: 1rem;
+  }
+  #left2:checked ~ buttons > .upb:after, #left3:checked ~ buttons > .upb:after, #right1:checked ~ buttons > .upb:after, #right2:checked ~ buttons > .upb:after {
+    content: "↓";
+  }
+  #left2:checked ~ buttons > .downb, #left3:checked ~ buttons > .downb, #right1:checked ~ buttons > .downb, #right2:checked ~ buttons > .downb {
+    bottom: 11rem;
+  }
+  #left2:checked ~ buttons > .downb:after, #left3:checked ~ buttons > .downb:after, #right1:checked ~ buttons > .downb:after, #right2:checked ~ buttons > .downb:after {
+    content: "↑";
+  }
+
+  #z-0:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, -200rem);
+  }
+  #z-0:checked ~ buttons > .upb[for=z-1], #z-0:checked ~ buttons > .downb[for=z--1] {
+    display: block;
+  }
+
+  #z-1:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, -100rem);
+  }
+  #z-1:checked ~ buttons > .upb[for=z-2], #z-1:checked ~ buttons > .downb[for=z-0] {
+    display: block;
+  }
+
+  #z-2:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, 0rem);
+  }
+  #z-2:checked ~ buttons > .upb[for=z-3], #z-2:checked ~ buttons > .downb[for=z-1] {
+    display: block;
+  }
+
+  #z-3:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, 100rem);
+  }
+  #z-3:checked ~ buttons > .upb[for=z-4], #z-3:checked ~ buttons > .downb[for=z-2] {
+    display: block;
+  }
+
+  #z-4:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, 200rem);
+  }
+  #z-4:checked ~ buttons > .upb[for=z-5], #z-4:checked ~ buttons > .downb[for=z-3] {
+    display: block;
+  }
+
+  #z-5:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, 300rem);
+  }
+  #z-5:checked ~ buttons > .upb[for=z-6], #z-5:checked ~ buttons > .downb[for=z-4] {
+    display: block;
+  }
+
+  #z-6:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, 400rem);
+  }
+  #z-6:checked ~ buttons > .upb[for=z-7], #z-6:checked ~ buttons > .downb[for=z-5] {
+    display: block;
+  }
+
+  #z-7:checked ~ content > w > x > y > z {
+    transform: translate3d(0, 0, 500rem);
+  }
+  #z-7:checked ~ buttons > .upb[for=z-8], #z-7:checked ~ buttons > .downb[for=z-6] {
+    display: block;
+  }
+
+  #x-0:checked ~ content > w > x > y {
+    transform: translate3d(-300rem, 0, 0);
+  }
+  #x-0:checked ~ buttons > .upb[for=x-1], #x-0:checked ~ buttons > .downb[for=x--1] {
+    display: block;
+  }
+
+  #x-1:checked ~ content > w > x > y {
+    transform: translate3d(-200rem, 0, 0);
+  }
+  #x-1:checked ~ buttons > .upb[for=x-2], #x-1:checked ~ buttons > .downb[for=x-0] {
+    display: block;
+  }
+
+  #x-2:checked ~ content > w > x > y {
+    transform: translate3d(-100rem, 0, 0);
+  }
+  #x-2:checked ~ buttons > .upb[for=x-3], #x-2:checked ~ buttons > .downb[for=x-1] {
+    display: block;
+  }
+
+  #x-3:checked ~ content > w > x > y {
+    transform: translate3d(0rem, 0, 0);
+  }
+  #x-3:checked ~ buttons > .upb[for=x-4], #x-3:checked ~ buttons > .downb[for=x-2] {
+    display: block;
+  }
+
+  #x-4:checked ~ content > w > x > y {
+    transform: translate3d(100rem, 0, 0);
+  }
+  #x-4:checked ~ buttons > .upb[for=x-5], #x-4:checked ~ buttons > .downb[for=x-3] {
+    display: block;
+  }
+
+  #x-5:checked ~ content > w > x > y {
+    transform: translate3d(200rem, 0, 0);
+  }
+  #x-5:checked ~ buttons > .upb[for=x-6], #x-5:checked ~ buttons > .downb[for=x-4] {
+    display: block;
+  }
+
+  #x-6:checked ~ content > w > x > y {
+    transform: translate3d(300rem, 0, 0);
+  }
+  #x-6:checked ~ buttons > .upb[for=x-7], #x-6:checked ~ buttons > .downb[for=x-5] {
+    display: block;
+  }
+
+  #x-7:checked ~ content > w > x > y {
+    transform: translate3d(400rem, 0, 0);
+  }
+  #x-7:checked ~ buttons > .upb[for=x-8], #x-7:checked ~ buttons > .downb[for=x-6] {
+    display: block;
+  }
+
+  #x-8:checked ~ content > w > x > y {
+    transform: translate3d(500rem, 0, 0);
+  }
+  #x-8:checked ~ buttons > .upb[for=x-9], #x-8:checked ~ buttons > .downb[for=x-7] {
+    display: block;
+  }
+
+  #x-9:checked ~ content > w > x > y {
+    transform: translate3d(600rem, 0, 0);
+  }
+  #x-9:checked ~ buttons > .upb[for=x-10], #x-9:checked ~ buttons > .downb[for=x-8] {
+    display: block;
+  }
+
+  #left2:checked ~ buttons > .bx, #left4:checked ~ buttons > .bx, #original:checked ~ buttons > .bx, #right2:checked ~ buttons > .bx, #right4:checked ~ buttons > .bx {
+    display: none !important;
+  }
+
+  #left1:checked ~ buttons > .bz, #left3:checked ~ buttons > .bz, #right1:checked ~ buttons > .bz, #right3:checked ~ buttons > .bz {
+    display: none !important;
+  }
+
+  body:has(.ilower:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb, body:has(.ilower:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-6:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-6:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.ilower:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8], body:has(.ilower:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-5:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-5:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-6:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-6:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8] {
+    display: block;
+  }
+  body:has(.ilower:checked) #z-4:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-1:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-1:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-6:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.ilower:checked) #z-4:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-1:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-1:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-4:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-5:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.ilower:checked) #z-6:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8] {
+    display: block;
+  }
+  body:has(.ilower:checked) #z-6:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-1:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-1:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-2:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb {
+    display: none;
+  }
+  body:has(.ilower:checked) #z-6:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-1:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-1:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-2:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-3:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-4:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-5:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.ilower:checked) #z-4:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8] {
+    display: block;
+  }
+  body:has(.ilower:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb, body:has(.ilower:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.ilower:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7], body:has(.ilower:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-4:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-4:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-4:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-4:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7] {
+    display: block;
+  }
+  body:has(.ilower:checked) #z-2:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-3:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb {
+    display: none;
+  }
+  body:has(.ilower:checked) #z-2:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-3:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-3:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-4:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7] {
+    display: block;
+  }
+  body:has(.ilower:checked) #z-2:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-5:checked ~ #x-1:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.ilower:checked) #z-4:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.ilower:checked) #z-2:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-5:checked ~ #x-1:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.ilower:checked) #z-4:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7] {
+    display: block;
+  }
+
+  body:has(.iupper:checked) {
+    /* background: blue;*/
+  }
+  body:has(.iupper:checked) #z-5:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .upb, body:has(.iupper:checked) #z-5:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.iupper:checked) #z-5:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8], body:has(.iupper:checked) #z-5:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-3:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-3:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-4:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-4:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8] {
+    display: block;
+  }
+  body:has(.iupper:checked) #z-1:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.iupper:checked) #z-1:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-3:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-6:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-3:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-5:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-5:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-4:checked ~ #x-5:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8],
+  body:has(.iupper:checked) #z-6:checked ~ #x-1:checked ~ .x-rotation:checked ~ buttons > .downb[for=x-8] {
+    display: block;
+  }
+  body:has(.iupper:checked) #z-5:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-1:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb {
+    display: none;
+  }
+  body:has(.iupper:checked) #z-5:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-4:checked ~ #x-3:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-4:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-1:checked ~ #x-2:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-3:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-6:checked ~ #x-4:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-6:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8],
+  body:has(.iupper:checked) #z-2:checked ~ #x-6:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8] {
+    display: block;
+  }
+  body:has(.iupper:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb, body:has(.iupper:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-1:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-1:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-1:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-1:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.iupper:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7], body:has(.iupper:checked) #z-1:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-1:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-1:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-2:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-2:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-2:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-2:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-1:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-1:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7] {
+    display: block;
+  }
+  body:has(.iupper:checked) #z-3:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-2:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-3:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-6:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .upb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb {
+    display: none;
+  }
+  body:has(.iupper:checked) #z-3:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-2:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-3:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-6:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7] {
+    display: block;
+  }
+  body:has(.iupper:checked) #z-2:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-4:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb,
+  body:has(.iupper:checked) #z-5:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .downb {
+    display: none;
+  }
+  body:has(.iupper:checked) #z-2:checked ~ #x-6:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-3:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-5:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-4:checked ~ #x-4:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7],
+  body:has(.iupper:checked) #z-5:checked ~ #x-7:checked ~ .z-rotation:checked ~ buttons > .downb[for=z-7] {
+    display: block;
+  }
+
+  #ilift7:checked ~ #z-2:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb {
+    display: none;
+  }
+  #ilift7:checked ~ #z-2:checked ~ #x-2:checked ~ .z-rotation:checked ~ buttons > .upb[for=z-7] {
+    display: block;
+  }
+
+  .lift {
+    background: none;
+  }
+  .lift *, .lift *:before, .lift *:after {
+    transform-origin: 0 0 0;
+  }
+  .lift lift, .lift floor {
+    width: 100%;
+    height: 100%;
+  }
+  .lift lift {
+    transform: translate3d(0, 0, 0);
+    transition: all 1s ease-in-out;
+  }
+  .lift lift:before {
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    transform-origin: 0 0 0;
+    transform: translate3d(0, 0, 100rem) rotateY(90deg) rotateX(90deg);
+    filter: brightness(0.75);
+  }
+  .lift.lower lift {
+    transform: translate3d(0, 0, -100rem);
+  }
+  .lift label {
+    background: #8e1d2b;
+    height: 5rem;
+    width: 5rem;
+    cursor: pointer;
+    transform: translate3d(47.5rem, 1.25rem, 25rem) rotateX(90deg);
+    border-radius: 50%;
+    transition: all 1s ease-in-out;
+    pointer-events: none;
+  }
+  .lift label:before, .lift label:after {
+    height: 5rem;
+    width: 5rem;
+    transform: translate3d(0, 0, 0.25rem);
+    border-radius: 50%;
+    background: #b92537;
+  }
+  .lift label:after {
+    transform: translate3d(0, 0, 0.5rem);
+  }
+  .lift label:hover, .lift label:focus {
+    transform: translate3d(47.5rem, 0.9rem, 25rem) rotateX(90deg);
+  }
+  @keyframes light {
+    90% {
+      background: #e06473;
+      box-shadow: inset 0 0 3rem #D73A4D, 0 0 5rem #D73A4D, 0 0 2rem #D73A4D;
+    }
+    100% {
+      background: #e06473;
+      box-shadow: inset 0 0 1rem #1a0606, inset 0 0 3rem #D73A4D, 0 0 2rem #D73A4D;
+    }
+  }
+  .lift floor {
+    background: var(--floor);
+  }
+  .lift floor:before, .lift floor:after {
+    width: 10rem;
+    transform: translate3d(45rem, 0.5rem, 0) rotateX(90deg);
+    background: #4B4640;
+    height: 33rem;
+    border-radius: 0 0 5rem 5rem;
+  }
+  .lift floor:before {
+    transform: translate3d(45rem, 0.1rem, 0) rotateX(90deg);
+    background: #1a0606;
+  }
+  .lift floor:nth-of-type(1) {
+    border-radius: 1rem;
+    background: #2f2c29;
+  }
+  .lift floor:nth-of-type(2) {
+    transform: translate3d(0, 0, 100rem);
+  }
+  .lift floor:nth-of-type(2):before, .lift floor:nth-of-type(2):after {
+    display: none;
+  }
+
+  @media (min-width: 480px) {
+    body:has(#gfx2:checked) .lift label {
+      box-shadow: inset 0 0 1rem #1a0606;
+    }
+    body:has(#gfx2:checked) .lift label:hover, body:has(#gfx2:checked) .lift label:focus {
+      box-shadow: inset 0 0 3rem #1a0606;
+    }
+    body:has(#gfx2:checked) floor:nth-of-type(1) {
+      box-shadow: inset 0 0 0 2rem #4B4640, inset -1rem -1rem 0 3rem #b92537, inset 1rem 1rem 0 3rem #e06473;
+      background: repeating-linear-gradient(to right, #4B4640, #4B4640 1rem, rgba(255, 255, 255, 0) 1rem, rgba(255, 255, 255, 0) 2.6rem);
+    }
+  }
+
+  #ilift5:checked ~ content > w {
+    transform: translate3d(0, -10rem, 0);
+  }
+  #ilift5:checked ~ content > w > x > y > z > room > #lift5 {
+    transform: translate3d(0, 0, -100rem);
+  }
+
+  #ilift2:checked ~ content > w {
+    transform: translate3d(0, -10rem, 0);
+  }
+  #ilift2:checked ~ content > w > x > y > z > room > #lift2 {
+    transform: translate3d(0, 0, -100rem);
+  }
+
+  #ilift1:checked ~ content > w {
+    transform: translate3d(0, 100rem, 0);
+  }
+  #ilift1:checked ~ content > w > x > y > z > room > #lift1 {
+    transform: translate3d(0, 0, 0);
+  }
+
+  #ilift3:checked ~ content > w {
+    transform: translate3d(0, 100rem, 0);
+  }
+  #ilift3:checked ~ content > w > x > y > z > room > #lift3 {
+    transform: translate3d(0, 0, 0);
+  }
+
+  #ilift4:checked ~ content > w {
+    transform: translate3d(0, 100rem, 0);
+  }
+  #ilift4:checked ~ content > w > x > y > z > room > #lift4 {
+    transform: translate3d(0, 0, 0);
+  }
+
+  #ilift6:checked ~ content > w {
+    transform: translate3d(0, 100rem, 0);
+  }
+  #ilift6:checked ~ content > w > x > y > z > room > #lift6 {
+    transform: translate3d(0, 0, 0);
+  }
+
+  #ilift7:checked ~ content > w {
+    transform: translate3d(0, 100rem, 0);
+  }
+  #ilift7:checked ~ content > w > x > y > z > room > #lift7 {
+    transform: translate3d(0, 0, 0);
+  }
+
+  #z-6:checked ~ #x-5:checked ~ content > w > x > y > z > room:nth-of-type(3) > lift > label,
+  #z-6:checked ~ #x-4:checked ~ content > w > x > y > z > room:nth-of-type(4) > lift > label,
+  #z-5:checked ~ #x-2:checked ~ content > w > x > y > z > room:nth-of-type(13) > lift > label,
+  #z-4:checked ~ #x-4:checked ~ content > w > x > y > z > room:nth-of-type(18) > lift > label,
+  #z-3:checked ~ #x-3:checked ~ content > w > x > y > z > room:nth-of-type(26) > lift > label,
+  #z-3:checked ~ #x-2:checked ~ content > w > x > y > z > room:nth-of-type(27) > lift > label,
+  #z-2:checked ~ #x-4:checked ~ content > w > x > y > z > room:nth-of-type(32) > lift > label,
+  #z-2:checked ~ #x-2:checked ~ content > w > x > y > z > room:nth-of-type(34) > lift > label {
+    pointer-events: all;
+    animation: light 1s cubic-bezier(0.5, 0, 1, 0.5) forwards;
+  }
+
+  .iupper:checked ~ #z-3:checked ~ #x-2:checked ~ content > w > x > y > z > room:nth-of-type(27) > lift > label,
+  .iupper:checked ~ #z-6:checked ~ #x-4:checked ~ content > w > x > y > z > room:nth-of-type(4) > lift > label,
+  .ilower:checked ~ #z-2:checked ~ #x-4:checked ~ content > w > x > y > z > room:nth-of-type(32) > lift > label,
+  .ilower:checked ~ #z-6:checked ~ #x-5:checked ~ content > w > x > y > z > room:nth-of-type(3) > lift > label,
+  .ilower:checked ~ #z-5:checked ~ #x-2:checked ~ content > w > x > y > z > room:nth-of-type(13) > lift > label,
+  .ilower:checked ~ #z-4:checked ~ #x-4:checked ~ content > w > x > y > z > room:nth-of-type(18) > lift > label,
+  .ilower:checked ~ #z-3:checked ~ #x-3:checked ~ content > w > x > y > z > room:nth-of-type(26) > lift > label,
+  .ilower:checked ~ #z-2:checked ~ #x-2:checked ~ content > w > x > y > z > room:nth-of-type(34) > lift > label {
+    animation: light2 1s ease-in-out forwards;
+  }
+
+  @keyframes light2 {
+    0%, 80% {
+      background: #e06473;
+      box-shadow: inset 0 0 3rem #D73A4D, 0 0 5rem #D73A4D, 0 0 2rem #D73A4D;
+    }
+    100% {
+      background: #8e1d2b;
+      box-shadow: inset 0 0 1rem #1a0606;
+      pointer-events: none;
+    }
+  }
+  wintext {
+    transform: scale(0);
+    position: absolute;
+    top: 10rem;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+    max-width: 80rem;
+    font-size: 4rem;
+    text-align: center;
+    line-height: 1.5em;
+    background: #ebebe7;
+    color: #1a0606;
+    padding: 1rem;
+    border-radius: 2rem;
+    border: 1rem solid #D73A4D;
+    box-shadow: inset 0 0 0 0.25rem #1a0606, inset 0 0.25rem 0.5rem #1a0606;
+    background: repeating-radial-gradient(circle at 50% 30%, #e9e8e4, #e9e8e4 1rem, #ebebe7 1rem, #ebebe7 2rem);
+  }
+  wintext h4 {
+    margin-top: -1rem;
+  }
+  wintext h1, wintext h3, wintext h4 {
+    font-weight: normal;
+  }
+  wintext label {
+    display: inline-block;
+    font-size: 3rem;
+    border-radius: 1rem;
+    padding: 1em 2rem;
+    color: #4B4640;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.15s ease-in-out;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+  wintext label:before, wintext label:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 1rem;
+    left: 0;
+    right: 0;
+    top: 0;
+    transition: all 0.15s ease-in-out;
+  }
+  wintext label:before {
+    background: linear-gradient(rgba(189, 187, 175, 0.5), rgba(75, 70, 64, 0.5)), linear-gradient(90deg, rgba(235, 235, 231, 0.5), rgba(75, 70, 64, 0.5)), conic-gradient(from 20deg, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor, rgba(189, 187, 175, 0.5), currentColor, currentColor, currentColor), #BDBBAF;
+    transform: translate3d(0, 0, -0.2rem);
+    box-shadow: 0 0.5rem 0.5rem 0.5rem rgba(26, 6, 6, 0.3);
+  }
+  wintext label:after {
+    background: radial-gradient(rgba(75, 70, 64, 0.5), #BDBBAF), #BDBBAF;
+    transform: translate3d(0, -0.5rem, -0.1rem) scale(0.75);
+    box-shadow: inset 0 0 0.5rem rgba(255, 255, 255, 0.5), 0 0 0.5rem rgba(235, 235, 231, 0.5);
+    font-size: 4rem;
+    content: "Return ↵";
+  }
+  wintext label:hover, wintext label:focus {
+    transform: translate3d(0, 0.5rem, -10rem) scale(0.98);
+    color: #1a0606;
+  }
+  wintext label:hover:before, wintext label:focus:before {
+    box-shadow: 0 0.1rem 0.5rem 0.25rem rgba(26, 6, 6, 0.8);
+  }
+  wintext .badge {
+    padding: 1rem;
+    border-radius: 50%;
+    width: 11rem;
+    height: 11rem;
+    margin: 2rem auto;
+    box-shadow: 0 0.5rem 0.5rem 0.5rem rgba(26, 6, 6, 0.3), inset 0 0 0 5rem #1a0606;
+    transform: scale(0.9);
+    position: relative;
+    border: dashed 0.5rem #1a0606;
+    background: #D73A4D;
+  }
+  wintext .badge:before, wintext .badge:after, wintext .badge div:before, wintext .badge div:after {
+    content: "";
+    position: absolute;
+  }
+  wintext .badge:before {
+    height: 1rem;
+    border: 3rem solid rgba(255, 255, 255, 0);
+    top: 10rem;
+    border-left: 3rem solid #1a0606;
+    border-right: 3rem solid #1a0606;
+    left: 3.5rem;
+  }
+  wintext .badge > div {
+    width: 9rem;
+    height: 9rem;
+    background: #D73A4D;
+    border-radius: 1rem;
+    margin: auto;
+    position: relative;
+    border: 1rem solid #D73A4D;
+    box-shadow: inset 0 0 0 1rem #ebebe7;
+    transform: rotate(45deg);
+  }
+  wintext .badge > div:before, wintext .badge > div:after {
+    width: 4rem;
+    height: 2rem;
+  }
+  wintext .badge > div:before {
+    border-bottom: 1rem solid #ebebe7;
+    border-right: 1rem solid #ebebe7;
+    left: 2rem;
+    top: 4rem;
+  }
+  wintext .badge > div:after {
+    border-top: 1rem solid #ebebe7;
+    border-left: 1rem solid #ebebe7;
+    left: 4rem;
+    top: 2rem;
+    box-shadow: 0 -1rem 0 #D73A4D, -1rem 0 0 #D73A4D, -2rem 0 0 #ebebe7;
+  }
+  wintext .button {
+    background: radial-gradient(farthest-corner at bottom, rgba(26, 6, 6, 0.5), rgba(215, 58, 77, 0.1));
+    filter: brightness(1.5);
+    padding: 1rem;
+    box-shadow: 0 -1rem 2rem #ebebe7;
+  }
+
+  #z-6:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .upb[for=x-8] {
+    display: none;
+  }
+  #z-6:checked ~ #x-7:checked ~ .x-rotation:checked ~ buttons > .upb[for=win] {
+    display: block;
+  }
+
+  #win:checked ~ buttons > .leftb, #win:checked ~ buttons > .rightb {
+    display: none;
+  }
+  #win:checked ~ content > w > x > y {
+    transform: translate3d(500rem, 0, 0);
+  }
+  #win:checked ~ content > win {
+    display: block;
+  }
+  #win:checked ~ wintext {
+    animation: wintext 7s forwards cubic-bezier(0, 0, 1, 0.5);
+  }
+
+  @keyframes wintext {
+    80% {
+      transform: scale(0);
+    }
+    99% {
+      transform: scale(1.5) rotate(710deg);
+    }
+    100% {
+      transform: scale(1) rotate(720deg);
+    }
+  }
+  @-webkit-keyframes stars {
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0vmin, 0vmin, 1000rem) scale(5);
+      opacity: 0;
+    }
+  }
+  win {
+    display: none;
+  }
+  win > u {
+    width: 1rem;
+    height: 1rem;
+    position: absolute;
+    top: -10vmin;
+    left: 0;
+    box-shadow: -37vmin 30vmin 0 #ebebe7 , 1vmin -19vmin 0 #ebebe7 , -45vmin -48vmin 0 #ebebe7 , 0vmin 29vmin 0 #ebebe7 , -19vmin 20vmin 0 #ebebe7;
+    animation: stars 10s -10s infinite linear;
+    transform: translate3d(0vmin, 0vmin, -1000rem) scale(5);
+    opacity: 0;
+  }
+  win > u:nth-of-type(2) {
+    animation: stars 9s infinite linear -1s;
+    box-shadow: 51vmin 42vmin 0 #D73A4D , 0vmin -30vmin 0 #D73A4D , -20vmin -28vmin 0 #D73A4D , 27vmin -47vmin 0 #D73A4D , 46vmin 21vmin 0 #D73A4D , 10vmin 8vmin 0 #D73A4D , 38vmin 0vmin 0 #D73A4D;
+  }
+  win > u:nth-of-type(3) {
+    animation: stars 8s infinite linear -2s;
+    box-shadow: -6vmin -31vmin 0 #ebebe7 , 38vmin -39vmin 0 #ebebe7 , 13vmin -15vmin 0 #ebebe7 , -13vmin -31vmin 0 #ebebe7 , 14vmin -49vmin 0 #ebebe7 , 13vmin 14vmin 0 #ebebe7 , 10vmin 12vmin 0 #ebebe7 , 14vmin 21vmin 0 #ebebe7 , 23vmin 20vmin 0 #ebebe7 , 39vmin -37vmin 0 #ebebe7;
+  }
+  win > u:nth-of-type(4) {
+    animation: stars 7s infinite linear -3s;
+    box-shadow: -37vmin 30vmin 0 #ebebe7 , 1vmin -19vmin 0 #ebebe7 , -45vmin -48vmin 0 #ebebe7 , 0vmin 29vmin 0 #ebebe7 , -19vmin 20vmin 0 #ebebe7;
+  }
+  win > u:nth-of-type(5) {
+    animation: stars 6s infinite linear -4s;
+    box-shadow: 51vmin 42vmin 0 #D73A4D , 0vmin -30vmin 0 #D73A4D , -20vmin -28vmin 0 #D73A4D , 27vmin -47vmin 0 #D73A4D , 46vmin 21vmin 0 #D73A4D , 10vmin 8vmin 0 #D73A4D , 38vmin 0vmin 0 #D73A4D;
+  }
+  win > u:nth-of-type(6) {
+    animation: stars 5s infinite linear -5s;
+    box-shadow: -6vmin -31vmin 0 #ebebe7 , 38vmin -39vmin 0 #ebebe7 , 13vmin -15vmin 0 #ebebe7 , -13vmin -31vmin 0 #ebebe7 , 14vmin -49vmin 0 #ebebe7 , 13vmin 14vmin 0 #ebebe7 , 10vmin 12vmin 0 #ebebe7 , 14vmin 21vmin 0 #ebebe7 , 23vmin 20vmin 0 #ebebe7 , 39vmin -37vmin 0 #ebebe7;
+  }
+  win > u:nth-of-type(7) {
+    animation: stars 4s infinite linear -6s;
+    box-shadow: -37vmin 30vmin 0 #ebebe7 , 1vmin -19vmin 0 #ebebe7 , -45vmin -48vmin 0 #ebebe7 , 0vmin 29vmin 0 #ebebe7 , -19vmin 20vmin 0 #ebebe7;
+  }
+  win > u:nth-of-type(8) {
+    animation: stars 3s infinite linear -7s;
+    box-shadow: -6vmin -31vmin 0 #ebebe7 , 38vmin -39vmin 0 #ebebe7 , 13vmin -15vmin 0 #ebebe7 , -13vmin -31vmin 0 #ebebe7 , 14vmin -49vmin 0 #ebebe7 , 13vmin 14vmin 0 #ebebe7 , 10vmin 12vmin 0 #ebebe7 , 14vmin 21vmin 0 #ebebe7 , 23vmin 20vmin 0 #ebebe7 , 39vmin -37vmin 0 #ebebe7;
+  }
+  win > u:nth-of-type(9) {
+    animation: stars 2s infinite linear -8s;
+    box-shadow: 51vmin 42vmin 0 #D73A4D , 0vmin -30vmin 0 #D73A4D , -20vmin -28vmin 0 #D73A4D , 27vmin -47vmin 0 #D73A4D , 46vmin 21vmin 0 #D73A4D , 10vmin 8vmin 0 #D73A4D , 38vmin 0vmin 0 #D73A4D;
+  }
+  win > u:nth-of-type(10) {
+    animation: stars 1s infinite linear -9s;
+    box-shadow: -37vmin 30vmin 0 #ebebe7 , 1vmin -19vmin 0 #ebebe7 , -45vmin -48vmin 0 #ebebe7 , 0vmin 29vmin 0 #ebebe7 , -19vmin 20vmin 0 #ebebe7;
+  }
+
+  darkness {
+    width: 700rem;
+    height: 300rem;
+    transform: translate3d(-400rem, -160rem, 201rem);
+    pointer-events: none;
+  }
+  darkness u {
+    width: 700rem;
+    height: 300rem;
+    background: rgba(47, 11, 11, 0.075);
+    transform: translate3d(0, 0, -100rem) rotateX(-5deg);
+  }
+  darkness u:before {
+    width: 700rem;
+    height: 300rem;
+    background: rgba(47, 11, 11, 0.075);
+    transform: translate3d(0, 0, -30rem);
+  }
+  darkness u:nth-of-type(2) {
+    transform: translate3d(0, 0, -200rem) rotateX(-5deg);
+  }
+  darkness u:nth-of-type(3) {
+    transform: translate3d(0, 0, -300rem) rotateX(-5deg);
+  }
+  darkness u:nth-of-type(4) {
+    transform: translate3d(0, 0, -400rem) rotateX(-5deg);
+  }
+  darkness u:nth-of-type(5) {
+    transform: translate3d(0, 0, -500rem) rotateX(-5deg);
+  }
+  darkness u:nth-of-type(6) {
+    transform: translate3d(0, 0, -600rem) rotateX(-5deg);
+  }
+  darkness:nth-of-type(2) {
+    transform: translate3d(-45rem, -100rem, -100rem) rotateY(90deg);
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    wall, content, room {
+      width: 10rem;
+      height: 10rem;
+    }
+
+    content {
+      perspective: 100rem;
+      transform: scale(0.8);
+    }
+
+    w {
+      transform-origin: 5rem -5rem 0;
+      transform: translate3d(0, 10rem, 100rem);
+    }
+
+    y {
+      transform-origin: -5rem 0;
+    }
+
+    x {
+      transform-origin: 5rem 0 -5rem;
+    }
+
+    x, y, z, room {
+      transition: none;
+    }
+
+    room {
+      font-size: 3rem;
+    }
+    room:before {
+      transform: translate3d(0, 0, 10rem) rotateY(90deg) scaleY(1.009);
+    }
+    room:after {
+      transform: translate3d(10rem, 0, 0) rotateY(-90deg) scaleY(1.009);
+    }
+
+    z:nth-of-type(1) room:nth-of-type(1) {
+      transform: translate3d(-30rem, 0, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(2) {
+      transform: translate3d(-20rem, 0, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(3) {
+      transform: translate3d(-10rem, 0, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(4) {
+      transform: translate3d(-10rem, 0, -40rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(4):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(5) {
+      transform: translate3d(0, 0, -40rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(5):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(6) {
+      transform: translate3d(10rem, 0, -30rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(7) {
+      transform: translate3d(20rem, 0, -40rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(7):before {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(8) {
+      transform: translate3d(-30rem, 0, -20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(8):before {
+      transform: translate3d(10rem, -10rem, 10rem) rotateY(90deg) rotateX(0deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(9) {
+      transform: translate3d(-30rem, 0, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(10) {
+      transform: translate3d(-20rem, 0, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(11) {
+      transform: translate3d(-10rem, 0, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(12) {
+      transform: translate3d(0, 0, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(13) {
+      transform: translate3d(10rem, 0, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(14) {
+      transform: translate3d(30rem, 0, -30rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(14):before {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(15) {
+      transform: translate3d(-40rem, 0, -20rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(16) {
+      transform: translate3d(-20rem, 0, -10rem) rotateX(90deg) rotateZ(-180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(16):before {
+      transform: translate3d(0, 10rem, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(17) {
+      transform: translate3d(-20rem, 0, -10rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(18) {
+      transform: translate3d(0, 0, -10rem) rotateX(90deg) rotateZ(-180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(18):after {
+      transform: translate3d(0, 10rem, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(18):before {
+      transform: translate3d(10rem, 0, 10rem) rotateY(90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(19) {
+      transform: translate3d(0, 0, -20rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(20) {
+      transform: translate3d(10rem, 0, -20rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(21) {
+      transform: translate3d(20rem, 0, -20rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(21):after {
+      transform: translate3d(-10rem, 10rem, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(21):before {
+      transform: translate3d(10rem, 0, 10rem) rotateY(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(22) {
+      transform: translate3d(-30rem, 0, 0) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(22):before {
+      transform: translate3d(10rem, -10rem, 10rem) rotateY(90deg) rotateX(0deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(23) {
+      transform: translate3d(-20rem, 0, 0) rotateX(90deg) rotateZ(-180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(24) {
+      transform: translate3d(-20rem, 0, -10rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(25) {
+      transform: translate3d(-10rem, 0, -10rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(26) {
+      transform: translate3d(0, 0, -10rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(27) {
+      transform: translate3d(10rem, 0, -10rem) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(28) {
+      transform: translate3d(30rem, 0, 0rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(29) {
+      transform: translate3d(-40rem, 0, 0) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(30) {
+      transform: translate3d(-20rem, 0, 10rem) rotateX(90deg) rotateZ(-180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(31) {
+      transform: translate3d(-20rem, 0, 0rem) rotateX(90deg) rotateZ(0deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(31):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(32) {
+      transform: translate3d(0, 0, 0) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(34) {
+      transform: translate3d(10rem, 0, 0) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(35) {
+      transform: translate3d(30rem, 0, 10rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(36) {
+      transform: translate3d(-30rem, 0, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(36):before {
+      transform: translate3d(0, 10rem, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(37) {
+      transform: translate3d(-20rem, 0, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(38) {
+      transform: translate3d(-20rem, 0, 20rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(38):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(39) {
+      transform: translate3d(0, 0, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(40) {
+      transform: translate3d(10rem, 0, 20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(40):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(41) {
+      transform: translate3d(20rem, 0, 20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(41):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(42) {
+      transform: translate3d(30rem, 0, 20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(1) room:nth-of-type(42):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+
+    z:nth-of-type(2) room {
+      transform: translate3d(0, 10rem, 0) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(1) {
+      transform: translate3d(-30rem, 10rem, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(1):after {
+      transform: translate3d(10rem, 10rem, 0) rotateY(-90deg) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(2) {
+      transform: translate3d(-20rem, 10rem, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(3) {
+      transform: translate3d(-10rem, 10rem, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(4) {
+      transform: translate3d(0, 10rem, -40rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(4):after {
+      transform: translate3d(0, 10rem, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(5) {
+      transform: translate3d(0, 10rem, -30rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(6) {
+      transform: translate3d(10rem, 10rem, -30rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(7) {
+      transform: translate3d(20rem, 10rem, -40rem) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(7):before {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(8) {
+      transform: translate3d(-30rem, 10rem, -20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(8):before {
+      transform: translate3d(0, 0, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(9) {
+      transform: translate3d(-30rem, 10rem, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(10) {
+      transform: translate3d(-20rem, 10rem, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(11) {
+      transform: translate3d(0, 10rem, -30rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(11):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(12) {
+      transform: translate3d(10rem, 10rem, -30rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(13) {
+      transform: translate3d(20rem, 10rem, -30rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(13):before {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(14) {
+      transform: translate3d(20rem, 10rem, -30rem) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(15) {
+      transform: translate3d(-40rem, 10rem, -20rem) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(16) {
+      transform: translate3d(-30rem, 10rem, -10rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(17) {
+      transform: translate3d(-20rem, 10rem, -10rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(17):after {
+      transform: translate3d(0, 10rem, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(18) {
+      transform: translate3d(-10rem, 10rem, -10rem) rotateX(90deg) rotateZ(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(18):after {
+      transform: translate3d(0, 10rem, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(19) {
+      transform: translate3d(10rem, 10rem, -20rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(20) {
+      transform: translate3d(20rem, 10rem, -20rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(21) {
+      transform: translate3d(20rem, 10rem, -20rem) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(22) {
+      transform: translate3d(-30rem, 10rem, 0) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(22):before {
+      transform: translate3d(10rem, -10rem, 10rem) rotateY(90deg) rotateX(0deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(23) {
+      transform: translate3d(-20rem, 10rem, 0) rotateX(90deg) rotateZ(-180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(24) {
+      transform: translate3d(-10rem, 10rem, -10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(25) {
+      transform: translate3d(0, 10rem, -10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(26) {
+      transform: translate3d(10rem, 10rem, -10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(27) {
+      transform: translate3d(20rem, 10rem, -10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(28) {
+      transform: translate3d(30rem, 10rem, 0rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(29) {
+      transform: translate3d(-40rem, 10rem, 0) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(30) {
+      transform: translate3d(-20rem, 10rem, 10rem) rotateX(90deg) rotateZ(-180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(31) {
+      transform: translate3d(-10rem, 10rem, 0rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(32) {
+      transform: translate3d(-10rem, 10rem, 0) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(34) {
+      transform: translate3d(10rem, 10rem, 0) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(35) {
+      transform: translate3d(30rem, 10rem, 10rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(36) {
+      transform: translate3d(-30rem, 10rem, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(36):before {
+      transform: translate3d(0, 10rem, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(37) {
+      transform: translate3d(-20rem, 10rem, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(38) {
+      transform: translate3d(-10rem, 10rem, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(39) {
+      transform: translate3d(0, 10rem, 10rem) rotateX(90deg) rotateZ(90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(40) {
+      transform: translate3d(10rem, 10rem, 20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(40):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(41) {
+      transform: translate3d(20rem, 10rem, 20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(41):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(42) {
+      transform: translate3d(30rem, 10rem, 20rem) rotateX(90deg) rotateZ(180deg);
+    }
+    z:nth-of-type(2) room:nth-of-type(42):after {
+      transform: translate3d(0, 0, 0) rotateY(-90deg) rotateX(-90deg);
+    }
+
+    .lift lift:before {
+      transform: translate3d(0, 0, 10rem) rotateY(90deg) rotateX(90deg);
+    }
+    .lift.lower lift {
+      transform: translate3d(0, 0, -10rem);
+    }
+    .lift label {
+      height: 0.5rem;
+      width: 0.5rem;
+      transform: translate3d(4.725rem, 0.125rem, 2.5rem) rotateX(90deg);
+    }
+    .lift label:before, .lift label:after {
+      height: 0.5rem;
+      width: 0.5rem;
+      transform: translate3d(0, 0, 0.025rem);
+    }
+    .lift label:after {
+      transform: translate3d(0, 0, 0.05rem);
+    }
+    .lift label:hover, .lift label:focus {
+      transform: translate3d(4.75rem, 0.09rem, 2.5rem) rotateX(90deg);
+    }
+    @keyframes light {
+      90% {
+        box-shadow: inset 0 0 0.3rem #D73A4D, 0 0 0.5rem #D73A4D, 0 0 0.2rem #D73A4D;
+      }
+      100% {
+        box-shadow: inset 0 0 0.1rem #1a0606, inset 0 0 0.3rem #D73A4D, 0 0 0.2rem #D73A4D;
+      }
+    }
+    .lift floor:before, .lift floor:after {
+      width: 1rem;
+      transform: translate3d(4.5rem, 0.05rem, 0) rotateX(90deg);
+      height: 3.3rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+    .lift floor:before {
+      transform: translate3d(4.5rem, 0.01rem, 0) rotateX(90deg);
+    }
+    .lift floor:nth-of-type(1) {
+      border-radius: 0.1rem;
+    }
+    .lift floor:nth-of-type(2) {
+      transform: translate3d(0, 0, 10rem);
+    }
+
+    @media (min-width: 480px) {
+      body:has(#gfx2:checked) .lift label {
+        box-shadow: inset 0 0 0.1rem #1a0606;
+      }
+      body:has(#gfx2:checked) .lift label:hover, body:has(#gfx2:checked) .lift label:focus {
+        box-shadow: inset 0 0 0.3rem #1a0606;
+      }
+      body:has(#gfx2:checked) floor:nth-of-type(1) {
+        box-shadow: inset 0 0 0 0.2rem #4B4640, inset -0.1rem -0.1rem 0 0.3rem #b92537, inset 0.1rem 0.1rem 0 0.3rem #e06473;
+        background: #676057;
+      }
+    }
+
+    #ilift5:checked ~ content > w {
+      transform: translate3d(0, -1rem, 100rem);
+    }
+    #ilift5:checked ~ content > w > x > y > z > room > #lift5 {
+      transform: translate3d(0, 0, -10rem);
+    }
+
+    #ilift2:checked ~ content > w {
+      transform: translate3d(0, -10rem, 100rem);
+    }
+    #ilift2:checked ~ content > w > x > y > z > room > #lift2 {
+      transform: translate3d(0, 0, -10rem);
+    }
+
+    #ilift1:checked ~ content > w {
+      transform: translate3d(0, 10rem, 100rem);
+    }
+
+    #ilift3:checked ~ content > w {
+      transform: translate3d(0, 10rem, 100rem);
+    }
+
+    #ilift4:checked ~ content > w {
+      transform: translate3d(0, 10rem, 100rem);
+    }
+
+    #ilift6:checked ~ content > w {
+      transform: translate3d(0, 10rem, 100rem);
+    }
+
+    #ilift7:checked ~ content > w {
+      transform: translate3d(0, 10rem, 100rem);
+    }
+
+    #z-0:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, -30rem);
+    }
+
+    #z-1:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, -20rem);
+    }
+
+    #z-2:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, -10rem);
+    }
+
+    #z-3:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, 0rem);
+    }
+
+    #z-4:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, 10rem);
+    }
+
+    #z-5:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, 20rem);
+    }
+
+    #z-6:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, 30rem);
+    }
+
+    #z-7:checked ~ content > w > x > y > z {
+      transform: translate3d(0, 0, 40rem);
+    }
+
+    #x-0:checked ~ content > w > x > y {
+      transform: translate3d(-30rem, 0, 0);
+    }
+
+    #x-1:checked ~ content > w > x > y {
+      transform: translate3d(-20rem, 0, 0);
+    }
+
+    #x-2:checked ~ content > w > x > y {
+      transform: translate3d(-10rem, 0, 0);
+    }
+
+    #x-3:checked ~ content > w > x > y {
+      transform: translate3d(0rem, 0, 0);
+    }
+
+    #x-4:checked ~ content > w > x > y {
+      transform: translate3d(10rem, 0, 0);
+    }
+
+    #x-5:checked ~ content > w > x > y {
+      transform: translate3d(20rem, 0, 0);
+    }
+
+    #x-6:checked ~ content > w > x > y {
+      transform: translate3d(30rem, 0, 0);
+    }
+
+    #x-7:checked ~ content > w > x > y {
+      transform: translate3d(40rem, 0, 0);
+    }
+
+    #x-8:checked ~ content > w > x > y {
+      transform: translate3d(50rem, 0, 0);
+    }
+
+    #x-9:checked ~ content > w > x > y {
+      transform: translate3d(60rem, 0, 0);
+    }
+
+    #top-view:checked ~ content > w {
+      transform: translate3d(5rem, 20rem, -60rem) rotateX(-90deg) !important;
+    }
+
+    darkness {
+      width: 70rem;
+      height: 30rem;
+      transform: translate3d(-40rem, -16rem, 20.1rem);
+    }
+    darkness u {
+      width: 70rem;
+      height: 30rem;
+      transform: translate3d(0, 0, -10rem) rotateX(-5deg);
+    }
+    darkness u:before {
+      width: 70rem;
+      height: 30rem;
+      transform: translate3d(0, 0, -3rem);
+    }
+    darkness u:nth-of-type(2) {
+      transform: translate3d(0, 0, -20rem) rotateX(-5deg);
+    }
+    darkness u:nth-of-type(3) {
+      transform: translate3d(0, 0, -30rem) rotateX(-5deg);
+    }
+    darkness u:nth-of-type(4) {
+      transform: translate3d(0, 0, -40rem) rotateX(-5deg);
+    }
+    darkness u:nth-of-type(5) {
+      transform: translate3d(0, 0, -50rem) rotateX(-5deg);
+    }
+    darkness u:nth-of-type(6) {
+      transform: translate3d(0, 0, -60rem) rotateX(-5deg);
+    }
+    darkness:nth-of-type(2) {
+      transform: translate3d(-4.5rem, -10rem, -10rem) rotateY(90deg);
+    }
+  }
+</style>
+
+
+<div>
+  <input type="radio" id="ilift1" title="lift1" class="liftmove ilower" name="liftup" />Lift 1
+  <input type="radio" id="ilift2" title="lift2" class="liftmove iupper" name="liftup" />Lift 2
+  <input type="radio" id="ilift3" title="lift3" class="liftmove ilower" name="liftup" />Lift 3
+  <input type="radio" id="ilift4" title="lift4" class="liftmove ilower" name="liftup" />Lift 4
+  <input type="radio" id="ilift5" title="lift5" class="liftmove iupper" name="liftup" />Lift 5
+  <input type="radio" id="ilift6" title="lift6" class="liftmove ilower" name="liftup" />Lift 6
+  <input type="radio" id="ilift7" title="lift7" class="liftmove ilower" name="liftup" />Lift 7
+
+  <input type="radio" id="iliftup" title="liftup" class="liftmove ilower d-none" name="liftup" checked />
+
+  <br />
+
+  <input type="checkbox" id="top-view" />Top view
+  <input type="checkbox" id="bottom-floor" />Bottom floor
+
+  <input type="radio" name="gfx" id="gfx1" class="d-none" />
+  <input type="radio" name="gfx" id="gfx2" checked class="d-none" />
+  <input type="radio" name="num" id="numon" checked class="d-none" />
+  <input type="radio" name="num" id="numoff" class="d-none" />
+
+  <input type="radio" id="win" name="x" class="d-none" />
+
+  <br />
+
+  <input type="radio" id="z-1" name="room" title="z-1" />Z-1
+  <input type="radio" id="z-2" name="room" title="z-2" checked />Z-2
+  <input type="radio" id="z-3" name="room" title="z-3" />Z-3
+  <input type="radio" id="z-4" name="room" title="z-4" />Z-4
+  <input type="radio" id="z-5" name="room" title="z-5" />Z-5
+  <input type="radio" id="z-6" name="room" title="z-6" />Z-6
+
+  <br />
+
+  <input type="radio" id="x-1" name="x" title="x-1" />X-1
+  <input type="radio" id="x-2" name="x" title="x-2" />X-2
+  <input type="radio" id="x-3" name="x" title="x-3" checked />X-3
+  <input type="radio" id="x-4" name="x" title="x-4" />X-4
+  <input type="radio" id="x-5" name="x" title="x-5" />X-5
+  <input type="radio" id="x-6" name="x" title="x-6" />X-6
+  <input type="radio" id="x-7" name="x" title="x-7" />X-7
+
+  <input type="radio" id="original" checked name="rotate" class="d-none" />
+
+  <br />
+
+  <input type="radio" id="left1" name="rotate" class="x-rotation" />L-1
+  <input type="radio" id="left2" name="rotate" class="z-rotation" />L-2
+  <input type="radio" id="left3" name="rotate" class="x-rotation" />L-3
+  <input type="radio" id="left4" name="rotate" class="z-rotation" />L-4
+
+  <br />
+
+  <input type="radio" id="right1" name="rotate" class="x-rotation" />R-1
+  <input type="radio" id="right2" name="rotate" class="z-rotation" />R-2
+  <input type="radio" id="right3" name="rotate" class="x-rotation" />R-3
+  <input type="radio" id="right4" name="rotate" class="z-rotation" />R-4
+
+  <content>
+    <w>
+
+      <x>
+
+        <y>
+
+          <z>
+
+            <darkness>
+              <u></u> <u></u> <u></u> <u></u> <u></u>
+            </darkness>
+            <darkness>
+              <u></u> <u></u> <u></u> <u></u> <u></u><u></u>
+            </darkness>
+
+            <room>1</room>
+            <room>2</room>
+
+            <room class="lift lower">
+
+              <lift id="lift1">
+                <label for="ilift1"></label>
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+
+            <room class="lift upper">
+
+              <lift id="lift2">
+
+                <label for="ilift2"></label>
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+            <room>5</room>
+            <room>6</room>
+            <room>7</room>
+            <room>8</room>
+            <room>9</room>
+            <room>10</room>
+            <room>11</room>
+            <room>12</room>
+
+            <room class="lift lower">
+
+              <lift id="lift3">
+                <label for="ilift3"></label>
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+            <room>14</room>
+            <room>15</room>
+            <room>16</room>
+            <room>17</room>
+
+            <room class="lift lower">
+
+              <lift id="lift4">
+
+                <label for="ilift4"></label>
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+            <room>19</room>
+            <room>20</room>
+            <room>21</room>
+            <room>22</room>
+            <room>23</room>
+            <room>24</room>
+            <room>25</room>
+            <room>26</room>
+
+            <room class="lift upper">
+
+              <lift id="lift5">
+
+                <label for="ilift5"></label>
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+            <room>28</room>
+            <room>29</room>
+            <room>30</room>
+            <room>31</room>
+
+            <room class="lift lower">
+
+              <lift id="lift6">
+
+                <label for="ilift6"></label>
+
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+
+            <room>33</room>
+
+            <room class="lift lower">
+
+              <lift id="lift7">
+
+                <label for="ilift7"></label>
+                <floor></floor>
+                <floor></floor>
+              </lift>
+            </room>
+            <room>35</room>
+            <room>36</room>
+            <room>37</room>
+            <room>38</room>
+            <room>39</room>
+            <room>40</room>
+            <room>41</room>
+            <room>42</room>
+          </z>
+
+          <z>
+
+            <room>1</room>
+            <room>2</room>
+            <room class="lift"></room>
+            <room class="lift"></room>
+            <room>5</room>
+            <room>6</room>
+            <room>7</room>
+            <room>8</room>
+            <room>9</room>
+            <room>10</room>
+            <room>11</room>
+            <room>12</room>
+            <room class="lift"></room>
+            <room>14</room>
+            <room>15</room>
+            <room>16</room>
+            <room>17</room>
+            <room class="lift"></room>
+            <room>19</room>
+            <room>20</room>
+            <room>21</room>
+            <room>22</room>
+            <room>23</room>
+            <room>24</room>
+            <room>25</room>
+            <room>26</room>
+            <room class="lift"></room>
+            <room>28</room>
+            <room>29</room>
+            <room>30</room>
+            <room>31</room>
+            <room class="lift"></room>
+            <room>33</room>
+            <room class="lift"></room>
+            <room>35</room>
+            <room>36</room>
+            <room>37</room>
+            <room>38</room>
+            <room>39</room>
+            <room>40</room>
+            <room>41</room>
+            <room>42</room>
+          </z>
+        </y>
+      </x>
+    </w>
+
+    <win>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+      <u><u></u></u>
+    </win>
+  </content>
+
+  <wintext>
+    <div class="badge">
+      <div></div>
+    </div>
+    <h1>Well Done!</h1>
+    <h3>You have solved the maze :)</h3>
+    <h4>Today is a good day.</h4>
+    <div class="button">
+      <label id="wintest" for="x-2">Return?</label>
+    </div>
+  </wintext>
+
+  <buttons>
+
+    <!--x-->
+    <label class="upb bx dead" for="x-0"></label>
+    <label class="upb bx" for="x-1"></label>
+    <label class="upb bx" for="x-2"></label>
+    <label class="upb bx" for="x-3"></label>
+    <label class="upb bx" for="x-4"></label>
+    <label class="upb bx" for="x-5"></label>
+    <label class="upb bx" for="x-6"></label>
+    <label class="upb bx" for="x-7"></label>
+    <label class="upb bx dead" for="x-8"></label>
+
+    <label class="upb bx" for="win"></label>
+
+    <!--z-->
+    <label class="upb bz dead" for="z-0"></label>
+    <label class="upb bz" for="z-1"></label>
+    <label class="upb bz" for="z-2"></label>
+    <label class="upb bz" for="z-3"></label>
+    <label class="upb bz" for="z-4"></label>
+    <label class="upb bz" for="z-5"></label>
+    <label class="upb bz" for="z-6"></label>
+    <label class="upb bz dead" for="z-7"></label>
+
+    <label class="leftb lb1" for="left1"></label>
+    <label class="leftb lb2" for="left2"></label>
+    <label class="leftb lb3" for="left3"></label>
+    <label class="leftb lb4" for="left4"></label>
+
+    <label class="leftb lb5" for="right1"></label>
+    <label class="leftb lb6" for="right2"></label>
+
+    <!--z-->
+    <label class="downb bz dead" for="z-0"></label>
+    <label class="downb bz" for="z-1"></label>
+    <label class="downb bz" for="z-2"></label>
+    <label class="downb bz" for="z-3"></label>
+    <label class="downb bz" for="z-4"></label>
+    <label class="downb bz" for="z-5"></label>
+    <label class="downb bz" for="z-6"></label>
+    <label class="downb bz dead" for="z-7"></label>
+
+    <!--x-->
+    <label class="downb bx dead" for="x-0"></label>
+    <label class="downb bx" for="x-1"></label>
+    <label class="downb bx" for="x-2"></label>
+    <label class="downb bx" for="x-3"></label>
+    <label class="downb bx" for="x-4"></label>
+    <label class="downb bx" for="x-5"></label>
+    <label class="downb bx" for="x-6"></label>
+    <label class="downb bx" for="x-7"></label>
+    <label class="downb bx dead" for="x-8"></label>
+
+    <label class="rightb rb1" for="right1"></label>
+    <label class="rightb rb2" for="right2"></label>
+    <label class="rightb rb3" for="right3"></label>
+    <label class="rightb rb4" for="right4"></label>
+
+    <label class="rightb rb5" for="left1"></label>
+    <label class="rightb rb6" for="left2"></label>
+  </buttons>
+
+  <graphics>
+    <label for="gfx2">Graphics: Low</label>
+    <label for="gfx1">Graphics: High</label>
+  </graphics>
+  <numbers>
+    <label for="numon">Help: On</label>
+    <label for="numoff">Help: Off</label>
+  </numbers>
+
+  <a href="https://tinydesign.co.uk/" title="Ben Evans Portfolio">
+    <sig><u></u></sig>
+  </a>
+</div>
