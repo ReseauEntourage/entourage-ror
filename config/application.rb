@@ -17,10 +17,15 @@ class SubdomainRouter
   def call(env)
     req = Rack::Request.new(env)
 
+    # Ajoutez une logique spécifique en fonction du sous-domaine
     if req.host.start_with?("api-preprod")
-      ENV["PORT"] = "3000"
+      ENV["TARGET"] = "API"
+      Rails.logger.info "Routing to API"
     elsif req.host.start_with?("admin-preprod")
-      ENV["PORT"] = "3001"
+      ENV["TARGET"] = "BACKOFFICE"
+      Rails.logger.info "Routing to Backoffice"
+    else
+      Rails.logger.info "Unknown subdomain: #{req.host}"
     end
 
     @app.call(env)
