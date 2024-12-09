@@ -6,7 +6,7 @@ threads threads_count, threads_count
 
 preload_app!
 
-port        ENV['PORT']     || 3001
+port        ENV['PORT']
 environment ENV['RACK_ENV'] || 'development'
 
 pidfile ENV['PUMA_PIDFILE'] if ENV['PUMA_PIDFILE']
