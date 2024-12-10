@@ -87,6 +87,10 @@ class ChatMessage < ApplicationRecord
     def interpolate message:, user:, author: nil
       first_name = UserPresenter.format_first_name(user.first_name)
 
+      if message.match?(/\{\{\s*interlocutor\s*\}\}/)
+        author ||= ModerationServices.moderation_area_for_user_with_default(user)&.interlocutor_for_user(user)
+      end
+
       message
         .gsub(/\{\{\s*first_name\s*\}\}/, first_name.to_s)
         .gsub(/\{\{\s*email\s*\}\}/, user.email.to_s)
