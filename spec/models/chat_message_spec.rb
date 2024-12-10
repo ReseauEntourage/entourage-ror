@@ -106,6 +106,10 @@ RSpec.describe ChatMessage, type: :model do
       message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
       expected_message = "Hello John, your interlocutor is ."
 
+      allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
+        .with(user)
+        .and_return(double(interlocutor_for_user: nil))
+
       result = ChatMessage.interpolate(message: message, user: user, author: nil)
       expect(result).to eq(expected_message)
     end
@@ -116,6 +120,76 @@ RSpec.describe ChatMessage, type: :model do
 
       result = ChatMessage.interpolate(message: message, user: user)
       expect(result).to eq(expected_message)
+    end
+
+    context 'when the message includes {{interlocutor}}' do
+      it 'handles a message with multiple placeholders including {{interlocutor}} with no moderation area' do
+        allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
+          .with(user)
+          .and_return(nil)
+
+        message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
+        expected_message = "Hello John, your interlocutor is ."
+
+        result = ChatMessage.interpolate(message: message, user: user, author: nil)
+        expect(result).to eq(expected_message)
+      end
+
+      it 'handles a message with multiple placeholders including {{interlocutor}} with no moderator' do
+        allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
+          .with(user)
+          .and_return(double(interlocutor_for_user: nil))
+
+        message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
+        expected_message = "Hello John, your interlocutor is ."
+
+        result = ChatMessage.interpolate(message: message, user: user, author: nil)
+        expect(result).to eq(expected_message)
+      end
+
+      it 'replaces {{interlocutor}} when an author is dynamically determined' do
+        allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
+          .with(user)
+          .and_return(double(interlocutor_for_user: author))
+
+        message = "Your interlocutor is {{ interlocutor }}."
+        expected_message = "Your interlocutor is Alice."
+
+        result = ChatMessage.interpolate(message: message, user: user, author: nil)
+        expect(result).to eq(expected_message)
+      end
+
+      it 'replaces {{interlocutor}} when author is provided manually' do
+        message = "Your interlocutor is {{ interlocutor }}."
+        expected_message = "Your interlocutor is Alice."
+
+        result = ChatMessage.interpolate(message: message, user: user, author: author)
+        expect(result).to eq(expected_message)
+      end
+
+      it 'leaves {{interlocutor}} blank when no author and no default interlocutor are available' do
+        allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
+          .with(user)
+          .and_return(double(interlocutor_for_user: nil))
+
+        message = "Your interlocutor is {{ interlocutor }}."
+        expected_message = "Your interlocutor is ."
+
+        result = ChatMessage.interpolate(message: message, user: user, author: nil)
+        expect(result).to eq(expected_message)
+      end
+
+      it 'handles a message with multiple placeholders including {{interlocutor}}' do
+        allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
+          .with(user)
+          .and_return(double(interlocutor_for_user: author))
+
+        message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
+        expected_message = "Hello John, your interlocutor is Alice."
+
+        result = ChatMessage.interpolate(message: message, user: user, author: nil)
+        expect(result).to eq(expected_message)
+      end
     end
   end
 
