@@ -48,7 +48,7 @@
               <td>
                 <% action.matchings.each do |matching| %>
                   <p>
-                    <%= "#{matching.match.name} : score #{matching.score} (#{matching.match_type} : #{matching.explanation})" %>
+                    <%= "#{matching.match&.name} : score #{matching.score} (#{matching.match_type} : #{matching.explanation})" %>
                   </p>
                 <% end %>
               </td>
