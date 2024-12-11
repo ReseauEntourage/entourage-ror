@@ -732,6 +732,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "instance_class", default: "Entourage"
+    t.string "response"
     t.index ["instance_type", "instance_id"], name: "index_openai_requests_on_instance_type_and_instance_id", unique: true
   end
 

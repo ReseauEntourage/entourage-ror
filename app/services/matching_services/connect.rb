@@ -40,11 +40,11 @@ module MatchingServices
 
       response = Response.new(response: find_run_message(thread['id'], run['id']))
 
-      return callback.on_failure.try(:call, "Response not valid") unless response.valid?
+      return callback.on_failure.try(:call, "Response not valid", response) unless response.valid?
 
       callback.on_success.try(:call, response)
     rescue => e
-      callback.on_failure.try(:call, e.message)
+      callback.on_failure.try(:call, e.message, nil)
     end
 
     private

@@ -17,7 +17,7 @@ class OpenaiRequestJob
           openai_thread_id: response.metadata[:thread_id],
           openai_run_id: response.metadata[:run_id],
           openai_message_id: response.metadata[:message_id],
-          status: nil,
+          status: :success,
           run_ends_at: Time.current,
           updated_at: Time.current
         )
@@ -29,8 +29,9 @@ class OpenaiRequestJob
         instance.save(validate: false)
       end
 
-      on.failure do |error|
+      on.failure do |error, response|
         openai_request.update_columns(
+          response: response,
           status: :error,
           run_ends_at: Time.current,
           updated_at: Time.current
