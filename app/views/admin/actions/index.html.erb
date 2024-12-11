@@ -35,6 +35,7 @@
             <th>Date de création</th>
             <th>Statut</th>
             <th>Matchings</th>
+            <th>Matchings status</th>
           </thead>
           <% @actions.each_with_index do |action, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
@@ -50,6 +51,11 @@
                   <p>
                     <%= "#{matching.match&.name} : score #{matching.score} (#{matching.match_type} : #{matching.explanation})" %>
                   </p>
+                <% end %>
+              </td>
+              <td>
+                <% if action.openai_request %>
+                  <%= link_to action.openai_request.status, admin_openai_request_path(action.openai_request) %>
                 <% end %>
               </td>
             </tr>
