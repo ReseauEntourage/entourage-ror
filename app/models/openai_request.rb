@@ -32,7 +32,9 @@ class OpenaiRequest < ApplicationRecord
   end
 
   def matching_response
-    @matching_response ||= MatchingServices::Response.new(response: response)
+    @matching_response ||= MatchingServices::Response.new(response: JSON.parse(response))
+  rescue
+    @matching_response ||= MatchingServices::Response.new(response: Hash.new)
   end
 
   attr_accessor :forced_matching

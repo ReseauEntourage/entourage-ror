@@ -33,6 +33,10 @@ module MatchingServices
       JSON.parse(json)
     end
 
+    def to_json
+      @response.to_json
+    end
+
     def recommandations
       return [] unless @parsed_response
 

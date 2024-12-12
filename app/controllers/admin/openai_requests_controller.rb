@@ -5,7 +5,10 @@ module Admin
     before_action :set_openai_request, only: [:show]
 
     def index
-      @openai_requests = OpenaiRequest.page(page).per(per)
+      @openai_requests = OpenaiRequest
+        .order(updated_at: :desc)
+        .page(page)
+        .per(per)
     end
 
     def show
