@@ -67,7 +67,7 @@ module MatchingServices
       recommandations.each_with_index do |recommandation, index|
         next unless recommandation["id"]
         next unless TYPES.include?(recommandation["type"])
-        next unless instance = recommandation["type"].classify.constantize.find_by_id_or_uuid(recommandation["id"])
+        next unless instance = recommandation["type"].classify.constantize.find_by_id(recommandation["id"])
 
         yield(instance, recommandation["score"], recommandation["explanation"], index)
       end

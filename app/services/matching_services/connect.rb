@@ -83,14 +83,16 @@ module MatchingServices
     end
 
     def get_formatted_prompt
-      instance_class = if instance.respond_to?(:action) && instance.action?
-        instance.contribution? ? 'contribution' : 'solicitation'
-      else
-        instance.class.name.camelize.downcase
+      action_type = opposite_action_type = instance.class.name.camelize.downcase
+
+      if instance.respond_to?(:action) && instance.action?
+        action_type = instance.contribution? ? 'contribution' : 'solicitation'
+        opposite_action_type = instance.contribution? ? 'solicitation' : 'contribution'
       end
 
       @configuration.prompt
-        .gsub("{{action_type}}", instance_class)
+        .gsub("{{action_type}}", action_type)
+        .gsub("{{opposite_action_type}}", opposite_action_type)
         .gsub("{{name}}", instance.name)
         .gsub("{{description}}", instance.description)
     end
