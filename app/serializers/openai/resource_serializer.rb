@@ -1,6 +1,10 @@
 module Openai
   class ResourceSerializer < ActiveModel::Serializer
-    attributes :id, :name, :is_video, :description
+    attributes :id, :type, :name, :is_video, :description
+
+    def type
+      :resource
+    end
 
     def description
       object.text_description_only

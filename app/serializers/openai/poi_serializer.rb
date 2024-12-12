@@ -1,5 +1,9 @@
 module Openai
   class PoiSerializer < ActiveModel::Serializer
-    attributes :id, :name
+    attributes :id, :type, :name
+
+    def type
+      :poi
+    end
   end
 end
