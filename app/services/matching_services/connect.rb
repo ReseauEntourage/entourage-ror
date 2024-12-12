@@ -99,13 +99,12 @@ module MatchingServices
 
     def get_recommandations
       {
-        recommandations: {
-          contributions: get_contributions.map { |contribution| Openai::ContributionSerializer.new(contribution).as_json },
-          solicitations: get_solicitations.map { |solicitation| Openai::SolicitationSerializer.new(solicitation).as_json },
-          outings: get_outings.map { |outing| Openai::OutingSerializer.new(outing).as_json },
-          pois: get_pois.map { |poi| Openai::PoiSerializer.new(poi).as_json },
-          resources: get_resources.map { |resource| Openai::ResourceSerializer.new(resource).as_json }
-        }
+        recommandations:
+          get_contributions.map { |contribution| Openai::ContributionSerializer.new(contribution).as_json } +
+          get_solicitations.map { |solicitation| Openai::SolicitationSerializer.new(solicitation).as_json } +
+          get_outings.map { |outing| Openai::OutingSerializer.new(outing).as_json } +
+          get_pois.map { |poi| Openai::PoiSerializer.new(poi).as_json } +
+          get_resources.map { |resource| Openai::ResourceSerializer.new(resource).as_json }
       }
     end
 
