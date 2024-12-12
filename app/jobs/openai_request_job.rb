@@ -13,6 +13,8 @@ class OpenaiRequestJob
     MatchingServices::Connect.new(instance: instance).perform do |on|
       on.success do |response|
         openai_request.update_columns(
+          error: nil,
+          response: response.to_json,
           openai_assistant_id: response.metadata[:assistant_id],
           openai_thread_id: response.metadata[:thread_id],
           openai_run_id: response.metadata[:run_id],
@@ -31,7 +33,8 @@ class OpenaiRequestJob
 
       on.failure do |error, response|
         openai_request.update_columns(
-          response: response,
+          error: error,
+          response: response.to_json,
           status: :error,
           run_ends_at: Time.current,
           updated_at: Time.current
