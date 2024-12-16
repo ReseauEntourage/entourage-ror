@@ -6,7 +6,7 @@
       <% unless @openai_assistants.none? %>
         <table class="table custom-table">
           <thead>
-            <th>Version</th>
+            <th>Module</th>
             <th>Prompt</th>
             <th>poi_from_file</th>
             <th>resource_from_file</th>
@@ -17,7 +17,7 @@
             <% parite = i.even? ? 'pair' : 'impair' %>
 
             <tr class="above-row row-<%= parite %>">
-              <td><%= link_to openai_assistant.version, edit_admin_openai_assistant_path(openai_assistant) %></td>
+              <td><%= link_to openai_assistant.module_type, edit_admin_openai_assistant_path(openai_assistant) %></td>
               <td><%= link_to openai_assistant.prompt, edit_admin_openai_assistant_path(openai_assistant) %></td>
               <td><%= openai_assistant.poi_from_file %></td>
               <td><%= openai_assistant.resource_from_file %></td>
