@@ -1,75 +1,18 @@
-module MatchingServices
-  class Connect
-    attr_reader :configuration, :client, :callback, :assistant_id, :instance, :user
+module OpenaiServices
+  class MatchingPerformer < BasicPerformer
+    attr_reader :user
 
     class MatcherCallback < Callback
     end
 
     def initialize instance:
-      @callback = MatcherCallback.new
+      super(instance: instance)
 
-      @configuration = OpenaiAssistant.find_by_version(1)
-
-      @client = OpenAI::Client.new(access_token: @configuration.api_key)
-      @assistant_id = @configuration.assistant_id
-
-      @instance = instance
       @user = instance.user
     end
 
-    def perform
-      yield callback if block_given?
-
-      # create new thread
-      thread = client.threads.create
-
-      # create instance message
-      message = client.messages.create(thread_id: thread['id'], parameters: user_message)
-
-      # run the thread
-      run = client.runs.create(thread_id: thread['id'], parameters: {
-        assistant_id: assistant_id,
-        max_prompt_tokens: 1024*1024,
-        max_completion_tokens: 1024
-      })
-
-      # wait for completion
-      status = status_loop(thread['id'], run['id'])
-
-      return callback.on_failure.try(:call, "Failure status #{status}") unless ['completed', 'requires_action'].include?(status)
-
-      response = Response.new(response: find_run_message(thread['id'], run['id']))
-
-      return callback.on_failure.try(:call, "Response not valid", response) unless response.valid?
-
-      callback.on_success.try(:call, response)
-    rescue => e
-      callback.on_failure.try(:call, e.message, nil)
-    end
-
-    private
-
-    def status_loop thread_id, run_id
-      status = nil
-
-      while true do
-        response = client.runs.retrieve(id: run_id, thread_id: thread_id)
-        status = response['status']
-
-        break if ['completed'].include?(status) # success
-        break if ['requires_action'].include?(status) # success
-        break if ['cancelled', 'failed', 'expired'].include?(status) # error
-        break if ['incomplete'].include?(status) # ???
-
-        sleep 1 if ['queued', 'in_progress', 'cancelling'].include?(status)
-      end
-
-      status
-    end
-
-    def find_run_message(thread_id, run_id)
-      messages = client.messages.list(thread_id: thread_id)
-      messages['data'].find { |message| message['run_id'] == run_id && message['role'] == 'assistant' }
+    def get_configuration
+      OpenaiAssistant.find_by_module_type(:matching)
     end
 
     def user_message
@@ -81,6 +24,12 @@ module MatchingServices
         ]
       }
     end
+
+    def get_response_class
+      MatchingResponse
+    end
+
+    private
 
     def get_formatted_prompt
       action_type = opposite_action_type = instance.class.name.camelize.downcase

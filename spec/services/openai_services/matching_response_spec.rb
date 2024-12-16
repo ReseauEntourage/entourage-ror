@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MatchingServices::Response do
+describe OpenaiServices::MatchingResponse do
   describe '#parsed_response' do
     subject { described_class.new(response: response).parsed_response }
 

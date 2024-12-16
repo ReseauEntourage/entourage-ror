@@ -1,4 +1,4 @@
-module MatchingServices
+module OpenaiServices
   # response example
   # {"recommandations"=>
   #   [{
@@ -10,7 +10,7 @@ module MatchingServices
   #   }]
   # }
 
-  Response = Struct.new(:response) do
+  MatchingResponse = Struct.new(:response) do
     TYPES = %w{contribution solicitation outing resource poi}
 
     def initialize(response: nil)

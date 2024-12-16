@@ -30,6 +30,20 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :max_prompt_tokens %>
+    <div class="controls">
+      <%= f.number_field :max_prompt_tokens, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :max_completion_tokens %>
+    <div class="controls">
+      <%= f.number_field :max_completion_tokens, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
     <%= f.label :poi_from_file, "Charger les points d'intérêt depuis un fichier ?" %>
     <div class="controls">
       <%= f.radio_button :poi_from_file, true %> Oui
