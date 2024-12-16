@@ -3,11 +3,11 @@
       <li><%= link_to "openai_assistants", admin_openai_assistants_path %></li>
       <li class="active">Modifier</li>
       <li style="float: right;">
-        Version <%= @openai_assistant.version %>
+        Module <%= @openai_assistant.module_type %>
       </li>
     </ol>
 
     <h2>
-      <span class="text-muted"># Version <%= @openai_assistant.version %></span>
+      <span class="text-muted"># Module <%= @openai_assistant.module_type %></span>
     </h2>
   </div>
