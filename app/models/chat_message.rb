@@ -83,6 +83,28 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  class << self
+    def interpolate message:, user:, author: nil
+      first_name = UserPresenter.format_first_name(user.first_name)
+
+      if message.match?(/\{\{\s*interlocutor\s*\}\}/)
+        author ||= ModerationServices.moderation_area_for_user_with_default(user)&.interlocutor_for_user(user)
+      end
+
+      message
+        .gsub(/\{\{\s*first_name\s*\}\}/, first_name.to_s)
+        .gsub(/\{\{\s*email\s*\}\}/, user.email.to_s)
+        .gsub(/\{\{\s*phone\s*\}\}/, user.phone.to_s)
+        .gsub(/\{\{\s*city\s*\}\}/, user.city.to_s)
+        .gsub(/\{\{\s*uuid\s*\}\}/, user.uuid.to_s)
+        .gsub(/\{\{\s*default_neighborhood\s*\}\}/, user.default_neighborhood&.name.to_s)
+        .gsub(/\{\{\s*interests\s*\}\}/, user.interest_i18n.sort.join(', '))
+        .gsub(/\{\{\s*involvements\s*\}\}/, user.involvement_i18n.sort.join(', '))
+        .gsub(/\{\{\s*availability\s*\}\}/, user.availability_formatted.to_s)
+        .gsub(/\{\{\s*interlocutor\s*\}\}/, author&.first_name.to_s)
+    end
+  end
+
   def active?
     status.to_sym == :active
   end
