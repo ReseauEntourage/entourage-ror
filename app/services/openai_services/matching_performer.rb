@@ -21,6 +21,21 @@ module OpenaiServices
 
     private
 
+    def handle_success(response)
+      super(response)
+
+      response.each_recommandation do |matching, score, explanation, index|
+        openai_request.instance.matchings.build(
+          match: matching,
+          score: score,
+          explanation: explanation,
+          position: index
+        )
+      end
+
+      openai_request.instance.save(validate: false)
+    end
+
     def user
       @user ||= instance.user
     end
