@@ -5,7 +5,11 @@ module Admin
     before_action :set_openai_request, only: [:show]
 
     def index
-      @openai_requests = OpenaiRequest
+      @params = params.permit(:module_type)
+      @module_type = params[:module_type] || :matching
+
+      @openai_requests = OpenaiRequest.includes(:instance)
+        .where(module_type: @module_type)
         .order(updated_at: :desc)
         .page(page)
         .per(per)

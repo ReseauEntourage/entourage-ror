@@ -1,6 +1,16 @@
 class OpenaiRequest < ApplicationRecord
   belongs_to :instance, polymorphic: true
 
+  # when adding a new module_type, it would be required to:
+  # 1. create a new openai_assistant instance
+  # 2. create a class that inherits from BasicPerformer. Check MatchingPerformer for example
+  # 3. add this class to performer_instance method
+  # 4. create a response class that inherits from BasicResponse. Check MatchingResponse for evample
+  # 5. add this class to performer_response method
+  enum module_type: {
+    matching: 'matching'
+  }
+
   after_commit :run, on: :create
 
   def instance
@@ -24,22 +34,36 @@ class OpenaiRequest < ApplicationRecord
   end
 
   def response_valid?
-    matching_response.valid?
+    response_instance.valid?
   end
 
   def formatted_response
-    matching_response.parsed_response
+    response_instance.parsed_response
   end
 
-  def matching_response
-    @matching_response ||= OpenaiServices::MatchingResponse.new(response: JSON.parse(response))
-  rescue
-    @matching_response ||= OpenaiServices::MatchingResponse.new(response: Hash.new)
+  # add module_type case if needed
+  def response_instance
+    @response_instance ||= begin
+      if matching?
+        OpenaiServices::MatchingResponse.new(response: safe_json_parse(response))
+      end
+    end
+  end
+
+  # add module_type case if needed
+  def performer_instance
+    return OpenaiServices::MatchingPerformer.new(openai_request: self) if matching?
   end
 
   attr_accessor :forced_matching
 
   def run
     OpenaiRequestJob.perform_later(id)
+  end
+
+  def safe_json_parse json_string
+    JSON.parse(json_string)
+  rescue JSON::ParserError
+    {}
   end
 end

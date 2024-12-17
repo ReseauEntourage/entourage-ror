@@ -1,19 +1,19 @@
 module OpenaiServices
   class BasicPerformer
-    attr_reader :configuration, :client, :callback, :assistant_id, :instance
+    attr_reader :configuration, :client, :callback, :assistant_id, :openai_request, :instance
 
     class BasicPerformerCallback < Callback
     end
 
-    def initialize instance:
+    def initialize openai_request:
+      @openai_request = openai_request
+      @instance = @openai_request.instance
       @callback = BasicPerformerCallback.new
 
-      @configuration = get_configuration
+      @configuration = OpenaiAssistant.find_by_module_type(@openai_request.module_type)
 
       @client = OpenAI::Client.new(access_token: @configuration.api_key)
       @assistant_id = @configuration.assistant_id
-
-      @instance = instance
     end
 
     def perform
@@ -35,15 +35,15 @@ module OpenaiServices
       # wait for completion
       status = status_loop(thread['id'], run['id'])
 
-      return callback.on_failure.try(:call, "Failure status #{status}") unless ['completed', 'requires_action'].include?(status)
+      return handle_failure("Failure status #{status}") unless ['completed', 'requires_action'].include?(status)
 
       response = get_response_class.new(response: find_run_message(thread['id'], run['id']))
 
-      return callback.on_failure.try(:call, "Response not valid", response) unless response.valid?
+      return handle_failure("Response not valid", response) unless response.valid?
 
-      callback.on_success.try(:call, response)
+      handle_success(response)
     rescue => e
-      callback.on_failure.try(:call, e.message, nil)
+      handle_failure(e.message)
     end
 
     def status_loop thread_id, run_id
@@ -71,11 +71,6 @@ module OpenaiServices
 
     private
 
-    # OpenaiAssistant.find_by_version(?)
-    def get_configuration
-      raise NotImplementedError, "this method get_configuration has to be defined in your class"
-    end
-
     # format: { role: string, content: { type: "text", text: string }}
     def user_message
       raise NotImplementedError, "this method user_message has to be defined in your class"
@@ -84,6 +79,32 @@ module OpenaiServices
     # example: MatchingResponse
     def get_response_class
       raise NotImplementedError, "this method get_response_class has to be defined in your class"
+    end
+
+    def handle_success response
+      openai_request.update_columns(
+        error: nil,
+        response: response.to_json,
+        openai_assistant_id: response.metadata[:assistant_id],
+        openai_thread_id: response.metadata[:thread_id],
+        openai_run_id: response.metadata[:run_id],
+        openai_message_id: response.metadata[:message_id],
+        status: :success,
+        run_ends_at: Time.current,
+        updated_at: Time.current
+      )
+      callback.on_success.try(:call, response)
+    end
+
+    def handle_failure error, response = nil
+      openai_request.update_columns(
+        error: error,
+        response: response&.to_json,
+        status: :error,
+        run_ends_at: Time.current,
+        updated_at: Time.current
+      )
+      callback.on_failure.try(:call, error, response)
     end
   end
 end

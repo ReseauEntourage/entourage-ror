@@ -5,16 +5,6 @@ module OpenaiServices
     class MatcherCallback < Callback
     end
 
-    def initialize instance:
-      super(instance: instance)
-
-      @user = instance.user
-    end
-
-    def get_configuration
-      OpenaiAssistant.find_by_module_type(:matching)
-    end
-
     def user_message
       {
         role: "user",
@@ -30,6 +20,25 @@ module OpenaiServices
     end
 
     private
+
+    def handle_success(response)
+      super(response)
+
+      response.each_recommandation do |matching, score, explanation, index|
+        openai_request.instance.matchings.build(
+          match: matching,
+          score: score,
+          explanation: explanation,
+          position: index
+        )
+      end
+
+      openai_request.instance.save(validate: false)
+    end
+
+    def user
+      @user ||= instance.user
+    end
 
     def get_formatted_prompt
       action_type = opposite_action_type = instance.class.name.camelize.downcase
