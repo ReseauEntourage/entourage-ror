@@ -10,7 +10,7 @@ class OpenaiRequestJob
 
     return unless instance = openai_request.instance
 
-    OpenaiServices::MatchingPerformer.new(instance: instance).perform do |on|
+    OpenaiServices::MatchingPerformer.new(openai_request: openai_request).perform do |on|
       on.success do |response|
         openai_request.update_columns(
           error: nil,

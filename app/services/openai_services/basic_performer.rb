@@ -1,19 +1,19 @@
 module OpenaiServices
   class BasicPerformer
-    attr_reader :configuration, :client, :callback, :assistant_id, :instance
+    attr_reader :configuration, :client, :callback, :assistant_id, :openai_request, :instance
 
     class BasicPerformerCallback < Callback
     end
 
-    def initialize instance:
+    def initialize openai_request:
+      @openai_request = openai_request
+      @instance = @openai_request.instance
       @callback = BasicPerformerCallback.new
 
-      @configuration = get_configuration
+      @configuration = OpenaiAssistant.find_by_module_type(@openai_request.module_type)
 
       @client = OpenAI::Client.new(access_token: @configuration.api_key)
       @assistant_id = @configuration.assistant_id
-
-      @instance = instance
     end
 
     def perform
@@ -70,11 +70,6 @@ module OpenaiServices
     end
 
     private
-
-    # OpenaiAssistant.find_by_version(?)
-    def get_configuration
-      raise NotImplementedError, "this method get_configuration has to be defined in your class"
-    end
 
     # format: { role: string, content: { type: "text", text: string }}
     def user_message

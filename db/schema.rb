@@ -717,6 +717,9 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.integer "days_for_outings", default: 30
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "module_type", default: "matching"
+    t.integer "max_prompt_tokens", default: 1048576
+    t.integer "max_completion_tokens", default: 1024
   end
 
   create_table "openai_requests", force: :cascade do |t|
@@ -734,6 +737,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.string "instance_class", default: "Entourage"
     t.string "response"
     t.string "error"
+    t.string "module_type", default: "matching"
     t.index ["instance_type", "instance_id"], name: "index_openai_requests_on_instance_type_and_instance_id", unique: true
   end
 
