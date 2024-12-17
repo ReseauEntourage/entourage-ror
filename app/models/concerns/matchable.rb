@@ -41,7 +41,7 @@ module Matchable
     def ensure_openai_request_exists!
       return if @instance.openai_request
 
-      @instance.build_openai_request.save!
+      @instance.build_openai_request(module_type: :matching).save!
     end
   end
 end
