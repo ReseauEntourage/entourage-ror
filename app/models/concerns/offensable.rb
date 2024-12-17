@@ -1,33 +1,41 @@
 module Offensable
   extend ActiveSupport::Concern
 
-  alias_attribute :name, :content
-
-  FIELDS = {
-    chat_messages: "content"
-  }
-
   included do
     has_one :openai_request, as: :instance
 
-    after_commit :check_offense, if: :check_offense?
+    after_save :offense_on_save, :if => :offensable_field_changed?
   end
-
-  private
 
   def build_openai_request(attributes = {})
     super(attributes.merge(instance_class: self.class.name))
   end
 
-  def check_offense
-    build_openai_request(module_type: :offense).save!
+  def offensable_field_changed?
+    previous_changes.slice(:content).present?
   end
 
-  def check_offense?
-    key = self.class.table_name.to_sym
+  def offense
+    @offense ||= OffenseStruct.new(instance: self)
+  end
 
-    return false unless FIELDS.has_key?(key)
+  def offense_on_save
+    offense.on_save
+  end
 
-    previous_changes.keys.include?(FIELDS[key])
+  OffenseStruct = Struct.new(:instance) do
+    def initialize instance: nil
+      @instance = instance
+    end
+
+    def on_save
+      ensure_openai_request_exists!
+    end
+
+    def ensure_openai_request_exists!
+      return if @instance.openai_request
+
+      @instance.build_openai_request(module_type: :offense).save!
+    end
   end
 end
