@@ -16,6 +16,7 @@
           <thead>
             <th>Nom</th>
             <th>Créé le</th>
+            <th>Résultat</th>
           </thead>
           <% @openai_requests.each_with_index do |openai_request, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
@@ -23,6 +24,7 @@
             <tr class="above-row row-<%= parite %>">
               <td><%= link_to openai_request.instance.name, admin_openai_request_path(openai_request) %></td>
               <td><%= l openai_request.created_at %></td>
+              <td><%= openai_request.response_instance.display_result %></td>
             </tr>
           <% end %>
         </table>
