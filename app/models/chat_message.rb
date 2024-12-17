@@ -4,6 +4,7 @@ class ChatMessage < ApplicationRecord
   include ChatServices::PrivateConversation
   include Deeplinkable
   include Mentionable
+  include Offensable
   include Translatable
   include Reactionnable
   include Surveyable

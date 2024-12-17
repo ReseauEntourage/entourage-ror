@@ -9,6 +9,10 @@ module OpenaiServices
       raise NotImplementedError, "this method valid? has to be defined in your class"
     end
 
+    def display_result
+      raise NotImplementedError, "this method display_result has to be defined in your class"
+    end
+
     def parsed_response
       return unless @response
       return unless content = @response["content"]
