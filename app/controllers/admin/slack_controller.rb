@@ -84,7 +84,7 @@ module Admin
       return head :bad_request unless ['is_offensive', 'is_not_offensive'].include?(action)
       return head :bad_request unless chat_message = ChatMessage.find(callback_params[0])
 
-      response = SlackServices::OffensiveText.new(instance: callback_params[0], text: chat_message.content).payload
+      response = SlackServices::OffensiveText.new(chat_message_id: callback_params[0], text: chat_message.content).payload
 
       if action == 'is_offensive'
         chat_message.is_offensive!
