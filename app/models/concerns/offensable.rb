@@ -20,7 +20,7 @@ module Offensable
   end
 
   def offense_on_save
-    offense.on_save
+    offense.on_save if SensitiveWordsService.has_match?(content)
   end
 
   OffenseStruct = Struct.new(:instance) do
