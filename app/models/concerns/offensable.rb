@@ -23,6 +23,18 @@ module Offensable
     offense.on_save if SensitiveWordsService.has_match?(content)
   end
 
+  def is_offensible!
+    update_column(status: :offensible)
+  end
+
+  def is_offensive!
+    update_column(status: :offensive)
+  end
+
+  def is_not_offensive!
+    update_column(status: :active)
+  end
+
   OffenseStruct = Struct.new(:instance) do
     def initialize instance: nil
       @instance = instance

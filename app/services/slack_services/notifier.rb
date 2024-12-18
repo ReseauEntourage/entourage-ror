@@ -45,6 +45,12 @@ module SlackServices
       {}
     end
 
+    def link_to instance
+      return link_to_user(instance.id) if instance.is_a?(User)
+      return link_to_neighborhood(instance) if instance.is_a?(Neighborhood)
+      return link_to_conversation(instance) if instance.is_a?(Entourage)
+    end
+
     def link_to_user user_id
       Rails.application.routes.url_helpers.admin_user_url(user_id, host: ENV['ADMIN_HOST'])
     end

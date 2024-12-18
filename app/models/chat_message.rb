@@ -12,7 +12,7 @@ class ChatMessage < ApplicationRecord
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
 
-  STATUSES = [:active, :updated, :deleted]
+  STATUSES = [:active, :updated, :deleted, :offensible, :offensive]
 
   store_attribute :options, :auto_post_type, :string
   store_attribute :options, :auto_post_id, :integer
