@@ -323,6 +323,7 @@ Rails.application.routes.draw do
     namespace :slack do
       post :message_action
       post :user_unblock
+      post :offensive_text
       get :csv
       get 'entourage_links/:id' => :entourage_links, as: :entourage_links
       get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
