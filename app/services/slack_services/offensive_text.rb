@@ -55,7 +55,7 @@ module SlackServices
 
     # used by Admin::SlackController.authenticate_slack_offensive_text! to authenticate webhook
     def self.webhook field
-      SlackServices::UnblockUser.new(user_id: nil).webhook(field)
+      SlackServices::OffensiveText.new(user_id: nil).webhook(field)
     end
   end
 end
