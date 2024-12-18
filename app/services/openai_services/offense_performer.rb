@@ -18,10 +18,7 @@ module OpenaiServices
     def handle_success response
       super(response)
 
-      puts "-- response.offensive?: #{response.offensive?}"
-
       if response.offensive?
-        puts "-- offensive!"
         SlackServices::OffensiveText.new(instance: instance, text: instance.content).notify
       end
     end
