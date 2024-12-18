@@ -92,7 +92,8 @@ module OpenaiServices
     end
 
     def get_pois
-      return if @configuration.poi_from_file
+      return [] if user.ask_for_help?
+      return [] if @configuration.poi_from_file
 
       Poi.validated.around(instance.latitude, instance.longitude, user.travel_distance).limit(300)
     end
