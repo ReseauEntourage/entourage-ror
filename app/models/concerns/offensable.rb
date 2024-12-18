@@ -24,15 +24,15 @@ module Offensable
   end
 
   def is_offensible!
-    update_column(status: :offensible)
+    update_column(:status, :offensible)
   end
 
   def is_offensive!
-    update_column(status: :offensive)
+    update_column(:status, :offensive)
   end
 
   def is_not_offensive!
-    update_column(status: :active)
+    update_column(:status, :active)
   end
 
   OffenseStruct = Struct.new(:instance) do
