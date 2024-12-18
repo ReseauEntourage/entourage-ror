@@ -1,7 +1,7 @@
 module SlackServices
   class OffensiveText < Notifier
-    def initialize instance:, text:
-      @instance = instance
+    def initialize chat_message_id:, text:
+      @chat_message = ChatMessage.find(chat_message_id)
       @text = text
     end
 
@@ -11,13 +11,13 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@instance.user)}> ou team modération (département : #{departement(@instance.user) || 'n/a'}) pouvez-vous vérifier ce texte ?",
+        text: "<@#{slack_moderator_id(@chat_message.user)}> ou team modération (département : #{departement(@chat_message.user) || 'n/a'}) pouvez-vous vérifier ce texte ?",
         attachments: [
           {
             text: "Texte offensant : #{@text}"
           },
           {
-            callback_id: [:offensive_text, @instance.id].join(':'),
+            callback_id: [:offensive_text, @chat_message.id].join(':'),
             fallback: "",
             actions: [
               {
@@ -38,7 +38,7 @@ module SlackServices
 
                 text: "Afficher",
                 type: :button,
-                url: link_to(@instance.messageable)
+                url: link_to(@chat_message.messageable)
               }
             ]
           }

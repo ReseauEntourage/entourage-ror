@@ -21,7 +21,7 @@ module OpenaiServices
       if response.offensive?
         instance.is_offensible! if instance.respond_to?(:is_offensible!)
 
-        SlackServices::OffensiveText.new(instance: instance, text: instance.content).notify
+        SlackServices::OffensiveText.new(chat_message_id: instance.id, text: instance.content).notify
       end
     end
 
