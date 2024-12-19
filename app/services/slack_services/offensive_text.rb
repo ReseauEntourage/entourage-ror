@@ -1,7 +1,7 @@
 module SlackServices
   class OffensiveText < Notifier
     def initialize chat_message_id:, text:
-      @chat_message = ChatMessage.find(chat_message_id)
+      @chat_message = ChatMessage.find(chat_message_id) if chat_message_id
       @text = text
     end
 
@@ -55,7 +55,7 @@ module SlackServices
 
     # used by Admin::SlackController.authenticate_slack_offensive_text! to authenticate webhook
     def self.webhook field
-      SlackServices::OffensiveText.new(user_id: nil).webhook(field)
+      SlackServices::OffensiveText.new(chat_message_id: nil, text: nil).webhook(field)
     end
   end
 end
