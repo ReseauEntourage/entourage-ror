@@ -25,15 +25,13 @@ module OpenaiServices
       super(response)
 
       response.each_recommandation do |matching, score, explanation, index|
-        openai_request.instance.matchings.build(
+        openai_request.instance.matchings.create(
           match: matching,
           score: score,
           explanation: explanation,
           position: index
         )
       end
-
-      openai_request.instance.save(validate: false)
     end
 
     def user
