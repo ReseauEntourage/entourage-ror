@@ -1,5 +1,5 @@
 module SensitiveWordsService
-  def self.find_matches string, scope=:all
+  def self.find_matches string, scope=:all, categories=[]
     result = {
       records: SensitiveWord.none,
       words: {}
@@ -29,13 +29,14 @@ module SensitiveWordsService
     result[:records] =
       SensitiveWord
         .where(scope: SensitiveWord.scopes_for(scope))
+        .with_categories(categories)
         .where(predicates.join(' or '))
 
     result
   end
 
-  def self.has_match? string, scope=:all
-    find_matches(string, scope)[:records].exists?
+  def self.has_match? string, scope=:all, categories=[]
+    find_matches(string, scope, categories)[:records].exists?
   end
 
   def self.entourage_text entourage
