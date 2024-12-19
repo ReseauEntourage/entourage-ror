@@ -1,5 +1,5 @@
 class InappNotification < ApplicationRecord
-  INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user, :neighborhood_post, :outing_post]
+  INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user, :neighborhood_post, :outing_post, :resource]
 
   belongs_to :user # user that is notified
   belongs_to :sender, class_name: :User, required: false # user that created the notification
@@ -24,6 +24,14 @@ class InappNotification < ApplicationRecord
 
     where(context: context)
   }
+
+  def instance= instance
+    self.instance_baseclass = instance.to_s.camelize
+    self.instance_baseclass = "ChatMessage" if [:neighborhood_post, :outing_post].include?(instance&.to_sym)
+    self.instance_baseclass = "Entourage" if [:contribution, :solicitation, :outing].include?(instance&.to_sym)
+
+    super(instance)
+  end
 
   def record
     return unless instance

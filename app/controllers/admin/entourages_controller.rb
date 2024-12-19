@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_matchings, :show_siblings, :send_matching, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -162,11 +162,32 @@ module Admin
       render :show
     end
 
+    def show_matchings
+      @action = Action.find(params[:id])
+      @matchings = @action.matchings_with_notifications
+        .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
+        .group("matchings.id")
+
+      render :show
+    end
+
     def show_siblings
       @outing = Outing.find(params[:id])
       @siblings = @outing.siblings
 
       render :show
+    end
+
+    def send_matching
+      @matching = Matching.find(params[:matching_id])
+
+      PushNotificationTrigger.new(@matching, :forced_create, Hash.new).run
+
+      @matching.inapp_notification_created_at_virtual = @matching.inapp_notifications.pluck(:created_at).compact.max
+
+      respond_to do |format|
+        format.js
+      end
     end
 
     def download_list_export

@@ -1,0 +1,73 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Actions</h1>
+
+    <%= form_tag admin_actions_path, class: 'form-inline', method: :get do |f| %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+            <div class='input-group'>
+              <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Nom, description..." %>
+              <span class="input-group-btn">
+                <%= submit_tag "Chercher", class: "btn btn-default" %>
+              </span>
+            </div>
+        </div>
+        <div class="panel-body">
+          <div class="input-group">
+            <div class="btn-group btn-group-sm">
+              <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+              <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
+                <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="row">
+      <% unless @actions.none? %>
+        <table class="table custom-table">
+          <thead>
+            <th>Nom du groupe</th>
+            <th>Créateur</th>
+            <th>Code postal</th>
+            <th>Date de création</th>
+            <th>Statut</th>
+            <th>Matchings</th>
+            <th>Matchings status</th>
+          </thead>
+          <% @actions.each_with_index do |action, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <td><%= link_to action.name, edit_admin_entourage_path(action) %></td>
+              <td><%= link_to action.user.full_name, admin_user_path(action.user) %></td>
+              <td><%= action.postal_code %></td>
+              <td><%= l action.created_at, format: :date_short %></td>
+              <td><%= status_label action %></td>
+              <td>
+                <% action.matchings.each do |matching| %>
+                  <p>
+                    <span class="custom-badge info"><%= matching.score %></span> <b><%= matching.match&.name %></b> (<%= matching.match_type %>)<br/>
+                    <%= matching.explanation %>
+                  </p>
+                <% end %>
+              </td>
+              <td>
+                <% if action.openai_request %>
+                  <%= link_to action.openai_request.status, admin_openai_request_path(action.openai_request) %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @actions, entry_name: 'actions' %>
+    <div class="container">
+      <%= paginate(@actions) %>
+    </div>
+  </div>
+</div>

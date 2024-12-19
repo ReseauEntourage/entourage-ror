@@ -19,6 +19,7 @@
             Superadmin
           </a>
           <ul class="dropdown-menu">
+            <li><%= link_to "openai_assistants", admin_openai_assistants_path %></li>
             <li><%= link_to "Options", admin_options_path %></li>
             <li><%= link_to "Soliguide", admin_super_admin_soliguide_path %></li>
             <li><%= link_to "Sidekiq", sidekiq_web_path %></li>
@@ -51,6 +52,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
+            <li><%= link_to "Actions", admin_actions_path %></li>
             <li><%= link_to "Associations - Demandes d'adhésion", admin_partner_registrations_path %></li>
             <li><%= link_to "Associations - Liste", admin_partners_path %></li>
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>

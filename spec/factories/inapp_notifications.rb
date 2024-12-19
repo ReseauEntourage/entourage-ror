@@ -5,6 +5,13 @@ FactoryBot.define do
     instance_id { association(:neighborhood).id }
     context { :chat_message_on_create }
 
+    after(:build) do |notification, evaluator|
+      if evaluator.instance.present?
+        notification.instance = evaluator.instance
+        notification.instance_id = evaluator.instance_id
+      end
+    end
+
     trait :obsolete do
       created_at { Time.now - InappNotificationServices::Builder::OBSOLETE_PERIOD - 1.hour }
     end

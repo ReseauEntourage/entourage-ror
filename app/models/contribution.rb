@@ -1,8 +1,4 @@
-class Contribution < Entourage
-  include Actionable
-  include Sectionable
-  include Recommandable
-
+class Contribution < Action
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "contributions"
 

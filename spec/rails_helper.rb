@@ -19,12 +19,16 @@ RSpec.configure do |config|
     ActionMailer::Base.deliveries.clear
 
     stub_request(:any, /.*api.mailjet.com.*/).to_return(status: 200, body: { id: 1 }.to_json, headers: {})
+    stub_request(:any, /.*api.openai.*/).to_return(status: 200, body: "{}", headers: {})
 
     # deactivate slack_trace notifications
     SlackServices::StackTrace.any_instance.stub(:notify).and_return(nil)
 
     # deactivate salesforce updates
     SalesforceJob.any_instance.stub(:perform).and_return(nil)
+
+    # deactivate openai assistant
+    OpenaiRequestJob.any_instance.stub(:perform).and_return(nil)
 
     # deactivate translation on create
     # TranslationObserver.any_instance.stub(:action).and_return(nil)

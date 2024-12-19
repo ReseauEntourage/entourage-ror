@@ -1,0 +1,5 @@
+<% if matching.inapp_notification_created_at %>
+  <span class="label label-success">Reçue le <%= l matching.inapp_notification_created_at.to_date %></span>
+<% else %>
+  <span class="label label-danger">Non reçue</span>
+<% end %>
