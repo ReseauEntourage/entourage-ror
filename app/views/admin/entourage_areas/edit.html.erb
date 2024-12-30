@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Zones de modération", admin_entourage_areas_path %></li>
+        <li><%= @entourage_area.display_name %> (<%= @entourage_area.postal_code %>)</li>
+      </ol>
+
+      <%= render partial: 'form' %>
+    </div>
+  </div>
+</div>
