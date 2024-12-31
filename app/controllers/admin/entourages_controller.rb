@@ -167,6 +167,7 @@ module Admin
       @matchings = @action.matchings_with_notifications
         .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
         .group("matchings.id")
+        .includes(:match)
 
       render :show
     end

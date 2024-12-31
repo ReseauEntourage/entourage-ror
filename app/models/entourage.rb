@@ -97,13 +97,26 @@ class Entourage < ApplicationRecord
 
     where('(unaccent(title) ilike unaccent(:title))', { title: "%#{search.strip}%" })
   }
+  scope :with_status, -> (status) {
+    return unless status.present?
+    where(status: status)
+  }
+  scope :with_entourage_type, -> (entourage_type) {
+    return unless entourage_type.present?
+    where(entourage_type: entourage_type)
+  }
   scope :moderator_search, -> (search) {
-    return if search == 'any'
-    return where(entourage_moderations: { moderator_id: nil }) if search == 'none'
-    return where(entourage_moderations: { moderator_id: search.to_i }) if search.present?
+    return unless search.present?
+    return if search.to_s == 'any'
+    return where(entourage_moderations: { moderator_id: nil }) if search.to_s == 'none'
+
+    where(entourage_moderations: { moderator_id: search.to_i })
   }
   scope :successful_outcome, -> {
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
+  }
+  scope :with_moderation, -> {
+    joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
   }
 
   scope :with_chat_messages, -> { where("number_of_root_chat_messages > 0").distinct }
@@ -174,10 +187,6 @@ class Entourage < ApplicationRecord
         join_request.save
       end
     end
-  end
-
-  def self.with_moderation
-    joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
   end
 
   def self.findable_by_id_or_uuid identifier

@@ -7,6 +7,9 @@ class Action < Entourage
   default_scope { where(group_type: :action, entourage_type: [:ask_for_help, :contribution]).order(created_at: :desc) }
 
   scope :with_moderation_area, -> (moderation_area) {
+    return unless moderation_area
+    return if moderation_area.to_sym == :all
+
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
       return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
         where.not(country: :FR)
