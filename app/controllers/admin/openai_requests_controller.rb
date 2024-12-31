@@ -8,7 +8,7 @@ module Admin
       @params = params.permit(:module_type)
       @module_type = params[:module_type] || :matching
 
-      @openai_requests = OpenaiRequest.includes(:instance)
+      @openai_requests = OpenaiRequest.preload(:instance)
         .where(module_type: @module_type)
         .order(updated_at: :desc)
         .page(page)
