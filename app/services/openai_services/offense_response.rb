@@ -1,11 +1,11 @@
 module OpenaiServices
   class OffenseResponse < BasicResponse
     def valid?
-      result.in? [true, false]
+      %w[true false].include?(result.to_s)
     end
 
     def offensive?
-      result == true
+      "true" == result.to_s
     end
 
     def display_result
@@ -13,6 +13,8 @@ module OpenaiServices
     end
 
     def result
+      return unless @parsed_response.present?
+
       @parsed_response["result"]
     end
   end
