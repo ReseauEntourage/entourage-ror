@@ -22,7 +22,7 @@ module OpenaiServices
       super(response)
 
       response.each_recommandation do |matching, score, explanation, index|
-        openai_request.instance.matchings.create(
+        openai_request.fetch_instance.matchings.create(
           match: matching,
           score: score,
           explanation: explanation,
