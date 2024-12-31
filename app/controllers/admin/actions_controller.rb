@@ -6,7 +6,7 @@ module Admin
       @params = params.permit([:search, :area, :moderator_id, :status, :entourage_type]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-      @actions = Action.preload([:user, :openai_request, matchings: :match])
+      @actions = Action.preload([:user, matchings: :match])
         .like(params[:search])
         .with_moderation
         .with_moderation_area(@area.to_s)
