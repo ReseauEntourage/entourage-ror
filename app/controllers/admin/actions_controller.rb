@@ -3,13 +3,25 @@ module Admin
     layout 'admin_large'
 
     def index
-      @params = params.permit([:area, :search]).to_h
+      @params = params.permit([:search, :area, :moderator_id, :status, :entourage_type]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-      @actions = Action.includes([:user, :openai_request, matchings: :match])
-      @actions = @actions.search_by(params[:search]) if params[:search].present?
-      @actions = @actions.with_moderation_area(@area.to_s) if @area && @area != :all
-      @actions = @actions.page(page).per(per)
+      @actions = Action.preload([:user, :openai_request, matchings: :match])
+        .like(params[:search])
+        .with_moderation
+        .with_moderation_area(@area.to_s)
+        .with_moderator_reads_for(user: current_user)
+        .with_entourage_type(params[:entourage_type])
+        .with_status(params[:status])
+        .moderator_search(params[:moderator_id])
+        .select(%(
+          entourages.*,
+          entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated
+        ))
+        .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
+        .order(Arel.sql("entourages.created_at DESC"))
+        .page(page)
+        .per(per)
     end
 
     private
