@@ -4,7 +4,7 @@
 
     <ul class="nav nav-tabs">
       <% OpenaiAssistant.pluck(:module_type).each do |module_type| %>
-        <li role="presentation" class="<%= :active if @module_type == module_type.to_s %>">
+        <li role="presentation" class="<%= :active if @module_type.to_s == module_type.to_s %>">
           <%= link_to module_type, @params.merge(module_type: module_type) %>
         </li>
       <% end %>
