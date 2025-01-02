@@ -241,6 +241,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :outings, only: [:index]
+
     resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
       member do
         put :reactivate
