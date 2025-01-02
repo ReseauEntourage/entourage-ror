@@ -36,9 +36,12 @@
 
       <div style="float: left; margin: -10px 0 10px">
         <div class="btn-group btn-group-sm">
-          <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+          <%= radio_button_tag :area, :all, @area == :all, id: "area_all", style: "display: none;" %>
+          <%= label_tag "area_all", "Tous", class: "btn btn-#{@area == :all ? :primary : :default}" %>
+
           <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
-            <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+            <%= radio_button_tag :area, slug, @area == slug, id: "area_#{slug}", style: "display: none;" %>
+            <%= label_tag "area_#{slug}", area.short_name, class: "btn btn-#{@area == slug ? :primary : :default}" %>
           <% end %>
         </div>
       </div>
@@ -100,7 +103,7 @@
 
 <script>
   $(function() {
-    $('form select').on('change', function(event) {
+    $('form select,input').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
   })
