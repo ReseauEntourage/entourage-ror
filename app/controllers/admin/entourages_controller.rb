@@ -41,24 +41,6 @@ module Admin
 
       entourage_ids = @entourages.map(&:id)
 
-      @requests_count = JoinRequest
-        .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
-        .group(:joinable_id)
-        .pluck(Arel.sql(%(
-          joinable_id,
-          count(*),
-          count(case when updated_at <= now() - interval '48 hours' then 1 end)
-        )))
-
-      @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
-      @requests_count.default = { total: 0, late: 0 }
-
-      @reminded_users = Experimental::PendingRequestReminder.recent
-        .where(user_id: @entourages.map(&:user_id))
-        .pluck(Arel.sql('distinct user_id'))
-
-      @reminded_users = Set.new(@reminded_users)
-
       @message_count = ConversationMessage
         .with_moderator_reads_for(user: current_user)
         .where(messageable_type: :Entourage, messageable_id: entourage_ids)
