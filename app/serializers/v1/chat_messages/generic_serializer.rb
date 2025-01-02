@@ -19,7 +19,10 @@ module V1
       def content
         return if object.deleted?
 
-        I18nSerializer.new(object, :content, lang).translation
+        display_status = ""
+        display_status = "[#{object.status}] " if object.offensible? || object.offensive?
+
+        "#{display_status}#{I18nSerializer.new(object, :content, lang).translation}"
       end
 
       def content_translations

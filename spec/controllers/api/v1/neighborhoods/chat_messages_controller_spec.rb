@@ -357,7 +357,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         end
 
         context "with image_url and no content" do
-          let(:content) { nil }
+          let(:content) { "" }
           let(:image_url) { "path/to/image.jpeg" }
           let(:chat_message_params) { {
             message_type: :text,
