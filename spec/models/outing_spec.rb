@@ -3,7 +3,8 @@ include CommunityHelper
 
 RSpec.describe Outing, type: :model do
   let(:member) { FactoryBot.create(:public_user)}
-  let(:outing) { FactoryBot.create(:outing, :with_neighborhood, :with_recurrence, interests: [:sport]) }
+  let(:sf_category) { :convivialite }
+  let(:outing) { FactoryBot.create(:outing, :with_neighborhood, :with_recurrence, sf_category: sf_category, interests: [:sport]) }
   let!(:chat_message) { FactoryBot.create(:chat_message, messageable: outing) }
   let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: member, status: :accepted) }
 
@@ -33,6 +34,7 @@ RSpec.describe Outing, type: :model do
     it { expect(result.neighborhoods_entourages.count).to eq 1 }
     it { expect(result.neighborhoods.count).to eq 1 }
     it { expect(result.metadata[:starts_at]).to eq(outing.reload.metadata[:starts_at] + 7.days) }
+    it { expect(result.sf_category).to eq("convivialite") }
     it { expect(result.interest_list).to eq(["sport"]) }
     it { expect(result.taggings.map(&:id)).not_to eq(outing.taggings.map(&:id)) }
     it { expect(result.taggings.map(&:tag_id)).to eq(outing.taggings.map(&:tag_id)) }
@@ -110,6 +112,23 @@ RSpec.describe Outing, type: :model do
 
         it { expect { subject }.to change { Outing.count }.by(0) }
       end
+    end
+  end
+
+  describe "tagged_with_sf_category" do
+    let(:sf_category) { :convivialite }
+    let(:subject) { Outing.tagged_with_sf_category(with_sf_category) }
+
+    context "none" do
+      let(:with_sf_category) { :passion_sport }
+
+      it { expect(subject.pluck(:id)).to match_array([]) }
+    end
+
+    context "match" do
+      let(:with_sf_category) { :convivialite }
+
+      it { expect(subject.pluck(:id)).to match_array([outing.id]) }
     end
   end
 end

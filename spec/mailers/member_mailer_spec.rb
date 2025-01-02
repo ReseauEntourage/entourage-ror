@@ -77,12 +77,24 @@ describe MemberMailer, type: :mailer do
 
   describe '#welcome' do
     let(:mail) { MemberMailer.welcome(user) }
+    let!(:outing) { create(:outing, :outing_class, online: true, title: "JO 2024", event_url: "Paris", sf_category: :welcome_entourage_local) }
 
     expect_mailjet_email do
       {
         from: %("Le Réseau Entourage" <contact@entourage.social>),
         template_id: user.community.mailjet_template['welcome'],
-        campaign_name: :welcome
+        campaign_name: :welcome,
+        variables: {
+          outings_url: Entourage.share_url(:outings),
+          outings: [{
+            name: 'JO 2024',
+            address: 'Paris',
+            date: I18n.l(outing.metadata[:starts_at].to_date, format: :short),
+            hour: outing.metadata[:starts_at].strftime("%Hh%M"),
+            image_url: nil,
+            url: outing.share_url
+          }]
+        }
       }
     end
 

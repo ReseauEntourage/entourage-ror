@@ -33,19 +33,13 @@
       <% when :validated %>
         <span class="text-success">contenu validé</span>
         –
-        <%= link_to "Signaler des mots sensible",
-                    [:sensitive_words_check, :admin, @entourage,
-                      status: :require_moderation],
-                    method: :post %>
+        <%= link_to "Signaler des mots sensibles", sensitive_words_check_admin_entourage_path(@entourage, status: :require_moderation), method: :post %>
       <% when :require_moderation %>
         <span class="text-danger">détectés</span>
         –
-        <%= link_to "Valider le contenu",
-                    [:sensitive_words_check, :admin, @entourage,
-                      status: :validated],
-                    method: :post %>
+        <%= link_to "Valider le contenu", sensitive_words_check_admin_entourage_path(@entourage, status: :validated), method: :post %>
         |
-        <%= link_to "Détails", [:sensitive_words, :admin, @entourage] %>
+        <%= link_to "Détails", sensitive_words_admin_entourage_path(@entourage) %>
       <% end %>
     </div>
   </div>
@@ -75,7 +69,7 @@
 
       <% if @entourage.outing? && @entourage.ongoing? %>
         <div>
-          <%= link_to "Annuler l'événement", [:cancellation, :admin, @entourage] %>
+          <%= link_to "Annuler l'événement", cancellation_admin_entourage_path(@entourage) %>
         </div>
       <% end %>
     </div>

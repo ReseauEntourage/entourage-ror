@@ -12,6 +12,9 @@ class ChatMessage < ApplicationRecord
 
   STATUSES = [:active, :updated, :deleted]
 
+  store_attribute :options, :auto_post_type, :string
+  store_attribute :options, :auto_post_id, :integer
+
   has_ancestry
 
   belongs_to :messageable, polymorphic: true
@@ -77,6 +80,28 @@ class ChatMessage < ApplicationRecord
 
     def path key
       "#{BUCKET_PREFIX}/#{key}"
+    end
+  end
+
+  class << self
+    def interpolate message:, user:, author: nil
+      first_name = UserPresenter.format_first_name(user.first_name)
+
+      if message.match?(/\{\{\s*interlocutor\s*\}\}/)
+        author ||= ModerationServices.moderation_area_for_user_with_default(user)&.interlocutor_for_user(user)
+      end
+
+      message
+        .gsub(/\{\{\s*first_name\s*\}\}/, first_name.to_s)
+        .gsub(/\{\{\s*email\s*\}\}/, user.email.to_s)
+        .gsub(/\{\{\s*phone\s*\}\}/, user.phone.to_s)
+        .gsub(/\{\{\s*city\s*\}\}/, user.city.to_s)
+        .gsub(/\{\{\s*uuid\s*\}\}/, user.uuid.to_s)
+        .gsub(/\{\{\s*default_neighborhood\s*\}\}/, user.default_neighborhood&.name.to_s)
+        .gsub(/\{\{\s*interests\s*\}\}/, user.interest_i18n.sort.join(', '))
+        .gsub(/\{\{\s*involvements\s*\}\}/, user.involvement_i18n.sort.join(', '))
+        .gsub(/\{\{\s*availability\s*\}\}/, user.availability_formatted.to_s)
+        .gsub(/\{\{\s*interlocutor\s*\}\}/, author&.first_name.to_s)
     end
   end
 
@@ -253,7 +278,12 @@ class ChatMessage < ApplicationRecord
   def update_parent_comments_count
     return unless ancestry.present?
 
-    parent.update(comments_count: parent.descendants.where(status: :active).count)
+    parent.update(comments_count: parent.children
+      .where(status: :active)
+      .where(messageable_type: messageable_type)
+      .where(messageable_id: messageable_id)
+      .count
+    )
   end
 
   def update_sender_report_prompt_status

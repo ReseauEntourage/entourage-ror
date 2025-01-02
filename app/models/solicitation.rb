@@ -1,11 +1,6 @@
-class Solicitation < Entourage
-  include Actionable
-  include Sectionable
-  include Recommandable
-
+class Solicitation < Action
   default_scope {
     where(group_type: :action, entourage_type: :ask_for_help)
-    .where(pin: false)
     .order(created_at: :desc)
   }
 

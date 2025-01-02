@@ -65,7 +65,7 @@
             pour le profil <%= t 'community.entourage.goals_compact.offer_help' %>
           <% end %>
           <%= f.text_area :welcome_message_1_offer_help, rows: 10, class: "form-control" %>
-          Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
+          <%= render partial: 'common/interpolation_specifications' %>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
             si <%= t 'community.entourage.goals_compact.ask_for_help' %>
           <% end %>
           <%= f.text_area :welcome_message_1_ask_for_help, rows: 10, class: "form-control" %>
-          Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
+          <%= render partial: 'common/interpolation_specifications' %>
         </div>
       </div>
 
@@ -87,7 +87,7 @@
             pour le profil <%= t 'community.entourage.goals_compact.organization' %>
           <% end %>
           <%= f.text_area :welcome_message_1_organization, rows: 10, class: "form-control" %>
-          Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
+          <%= render partial: 'common/interpolation_specifications' %>
         </div>
       </div>
 
@@ -98,7 +98,7 @@
             pour le profil <%= t 'community.entourage.goals_compact.goal_not_known' %>
           <% end %>
           <%= f.text_area :welcome_message_1_goal_not_known, rows: 10, class: "form-control" %>
-          Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
+          <%= render partial: 'common/interpolation_specifications' %>
         </div>
       </div>
     </div>

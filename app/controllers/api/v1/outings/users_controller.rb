@@ -70,7 +70,12 @@ module Api
 
           @membership ||= JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
           @membership.status = :accepted
-          @membership.role = :organizer if current_user.ambassador? && params[:role] == 'organizer'
+          @membership.role = if current_user.ambassador? && params[:role] == 'organizer'
+            :organizer
+          else
+            :participant
+          end
+
           @membership
         end
 

@@ -22,6 +22,7 @@ class ModerationArea < ApplicationRecord
 
     return unless user.present?
     return animator_with_fallback if user.is_offer_help?
+    return animator_with_fallback if user.ambassador?
 
     sourcing_with_fallback
   end

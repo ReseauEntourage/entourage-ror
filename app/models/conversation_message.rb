@@ -3,6 +3,9 @@ class ConversationMessage < ApplicationRecord
   belongs_to :user
   belongs_to :full_object, polymorphic: true
 
+  delegate :deleter, to: :full_object, allow_nil: true
+  delegate :deleted_at, to: :full_object, allow_nil: true
+
   scope :ordered, -> { order(:created_at) }
   scope :with_content, -> { where("content <> ''") }
 

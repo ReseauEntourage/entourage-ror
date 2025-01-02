@@ -106,7 +106,7 @@ class Entourage < ApplicationRecord
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
 
-  scope :with_chat_messages, -> { joins(:chat_messages).distinct }
+  scope :with_chat_messages, -> { where("number_of_root_chat_messages > 0").distinct }
 
   attribute :preload_performed, :boolean, default: false
   attribute :preload_landscape_url, :string, default: nil
@@ -142,6 +142,8 @@ class Entourage < ApplicationRecord
   before_validation :set_default_online_attributes, if: :online_changed?
 
   after_create :check_moderation
+
+  alias_attribute :name, :title
 
   def create_from_join_requests!
     ApplicationRecord.connection.transaction do
@@ -435,6 +437,13 @@ class Entourage < ApplicationRecord
     entourage_type && entourage_type.to_sym == :ask_for_help
   end
 
+  def action_class
+    return Entourage unless action?
+    return Contribution if contribution?
+
+    Solicitation
+  end
+
   def cancelled?
     status && status.to_sym == :cancelled
   end
@@ -526,6 +535,10 @@ class Entourage < ApplicationRecord
     moderation.update_attribute(:moderated_at, Time.zone.now)
     moderation.update_attribute(:validated_at, Time.zone.now) unless blacklisted?
     moderation.save
+  end
+
+  def sf_category
+    Tag.find_tag_for(self, 'sf_categories').first
   end
 
   protected

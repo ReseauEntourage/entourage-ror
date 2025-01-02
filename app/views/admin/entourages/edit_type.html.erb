@@ -1,5 +1,5 @@
 <div class="row">
-  <%= link_to "<- Retourner à l'entourage", [:admin, @entourage] %>
+  <%= link_to "<- Retourner à l'entourage", admin_entourage_path(@entourage) %>
   <h1>
     <% case @entourage.group_type %>
     <% when 'outing' %>

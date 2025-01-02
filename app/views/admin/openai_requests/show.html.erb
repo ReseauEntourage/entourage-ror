@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "OpenAI requests", admin_openai_requests_path %></li>
+        <li><%= @openai_request.instance.name %></li>
+      </ol>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <%= link_to @openai_request.instance.name, [:admin, @openai_request.instance_baseclass] %>
+        </div>
+
+        <div class="panel-body">
+          <p>
+            <% if @openai_request.error? %>
+              <span class="label label-danger">error</span>
+            <% else %>
+              <span class="label label-info">success</span>
+            <% end %>
+          </p>
+
+          <p>
+            <strong>Assistant OpenAI</strong>
+            <%= link_to @openai_request.openai_assistant_id, @openai_request.assistant_link %>
+          </p>
+
+          <p>
+            <strong>Thread OpenAI</strong>
+            <%= link_to @openai_request.openai_thread_id, @openai_request.thread_link %>
+          </p>
+
+          <p>
+            <strong>Instance type</strong>
+            <%= @openai_request.instance_type %>
+          </p>
+
+          <p>
+            <strong>Instance id</strong>
+            <%= @openai_request.instance_id %>
+          </p>
+
+          <p>
+            <strong>Lancé le:</strong>
+            <%= l @openai_request.run_starts_at if @openai_request.run_starts_at %>
+          </p>
+
+          <p>
+            <strong>Fini le:</strong>
+            <%= l @openai_request.run_ends_at if @openai_request.run_ends_at %>
+          </p>
+
+          <p>
+            <strong>Validité réponse:</strong>
+            <%= @openai_request.response_valid? %>
+          </p>
+
+          <p>
+            <strong>Réponse:</strong>
+            <pre wrap="true"><%= @openai_request.response %></pre>
+          </p>
+
+          <p>
+            <strong>Réponse formattée:</strong>
+            <pre wrap="true"><%= @openai_request.formatted_response %></pre>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

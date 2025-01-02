@@ -6,7 +6,7 @@
 
 <h2>Changer le créateur</h2>
 
-<%= form_for(@entourage, url: update_owner_admin_entourage_path(@entourage), :method => :post, html: { role: "form" }) do |f| %>
+<%= form_for(@entourage, as: :entourage, url: update_owner_admin_entourage_path(@entourage), :method => :post, html: { role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: { obj: @entourage } %>
 
   <div class="form-group">

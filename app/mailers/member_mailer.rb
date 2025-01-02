@@ -6,7 +6,26 @@ class MemberMailer < MailjetMailer
     mailjet_email to: user,
                   template_id: community.mailjet_template['welcome'],
                   campaign_name: community_prefix(community, :welcome),
-                  from: email_with_name("contact@entourage.social", "Le Réseau Entourage")
+                  from: email_with_name("contact@entourage.social", "Le Réseau Entourage"),
+                  variables: {
+                    outings_url: Entourage.share_url(:outings),
+                    outings: Outing.welcome_category.limit(3).map { |outing|
+                      {
+                        name: outing.title,
+                        address: outing.event_url,
+                        date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
+                        hour: outing.metadata[:starts_at].strftime("%Hh%M"),
+                        image_url: outing.image_url_with_size(:landscape_url, :medium),
+                        url: outing.share_url
+                      }
+                    }
+                  }
+  end
+
+  def incomplete_profile(user)
+    mailjet_email to: user,
+                  template_id: 6174246,
+                  campaign_name: 'onboarding_incomplete_profile'
   end
 
   def onboarding_day_8(user)

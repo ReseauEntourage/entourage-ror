@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_matchings, :show_siblings, :send_matching, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -33,7 +33,6 @@ module Admin
           end
         )))
         .order(Arel.sql(%(
-          admin_pin DESC,
           entourages.created_at DESC
         )))
         .to_a
@@ -163,11 +162,32 @@ module Admin
       render :show
     end
 
+    def show_matchings
+      @action = Action.find(params[:id])
+      @matchings = @action.matchings_with_notifications
+        .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
+        .group("matchings.id")
+
+      render :show
+    end
+
     def show_siblings
       @outing = Outing.find(params[:id])
       @siblings = @outing.siblings
 
       render :show
+    end
+
+    def send_matching
+      @matching = Matching.find(params[:matching_id])
+
+      PushNotificationTrigger.new(@matching, :forced_create, Hash.new).run
+
+      @matching.inapp_notification_created_at_virtual = @matching.inapp_notifications.pluck(:created_at).compact.max
+
+      respond_to do |format|
+        format.js
+      end
     end
 
     def download_list_export
@@ -261,7 +281,7 @@ module Admin
           end
         end if group_type_change
 
-        redirect_to [:edit, :admin, @entourage], notice: "Entourage mis à jour"
+        redirect_to edit_admin_entourage_path(@entourage), notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
       end
@@ -269,9 +289,9 @@ module Admin
 
     def close
       if EntourageServices::EntourageBuilder.close(entourage: @entourage)
-        redirect_to [:admin, @entourage], notice: "L'événement a été clôturé"
+        redirect_to admin_entourage_path(@entourage), notice: "L'événement a été clôturé"
       else
-        redirect_to [:admin, @entourage], alert: "L'événement n'a pas pu être clôturé : #{@entourage.errors.full_messages.to_sentence}"
+        redirect_to admin_entourage_path(@entourage), alert: "L'événement n'a pas pu être clôturé : #{@entourage.errors.full_messages.to_sentence}"
       end
     end
 
@@ -284,9 +304,9 @@ module Admin
 
     def cancel
       if EntourageServices::EntourageBuilder.cancel(entourage: @entourage, params: cancel_params.to_h)
-        redirect_to [:admin, @entourage], notice: "L'événement a été annulé"
+        redirect_to admin_entourage_path(@entourage), notice: "L'événement a été annulé"
       else
-        redirect_to [:cancellation, :admin, @entourage], alert: "L'événement n'a pas pu être annulé : #{@entourage.errors.full_messages.to_sentence}"
+        redirect_to cancellation_admin_entourage_path(@entourage), alert: "L'événement n'a pas pu être annulé : #{@entourage.errors.full_messages.to_sentence}"
       end
     end
 
@@ -295,9 +315,9 @@ module Admin
       @outing = original.dup
 
       if @outing.save
-        redirect_to [:admin, @outing], notice: "L'événement a été dupliqué"
+        redirect_to admin_entourage_path(@outing), notice: "L'événement a été dupliqué"
       else
-        redirect_to [:admin, @original], alert: "L'événement n'a pas été dupliqué: #{@outing.errors.full_messages.to_sentence}"
+        redirect_to admin_entourage_path(@original), alert: "L'événement n'a pas été dupliqué: #{@outing.errors.full_messages.to_sentence}"
       end
     end
 
@@ -318,26 +338,6 @@ module Admin
         @entourage_images = EntourageImage.all
         render :edit_image
       end
-    end
-
-    def admin_pin
-      @entourage.update_column(:admin_pin, true)
-      redirect_to [:admin, @entourage]
-    end
-
-    def admin_unpin
-      @entourage.update_column(:admin_pin, false)
-      redirect_to [:admin, @entourage]
-    end
-
-    def pin
-      @entourage.update_column(:pin, true)
-      redirect_to [:admin, @entourage]
-    end
-
-    def unpin
-      @entourage.update_column(:pin, false)
-      redirect_to [:admin, @entourage]
     end
 
     def edit_type
@@ -372,9 +372,9 @@ module Admin
 
       EntourageServices::ChangeOwner.new(@entourage).to(user_id, message) do |success, error_message|
         if success
-          redirect_to [:admin, @entourage], notice: "Mise à jour réussie"
+          redirect_to admin_entourage_path(@entourage), notice: "Mise à jour réussie"
         else
-          redirect_to [:edit_owner, :admin, @entourage], alert: error_message
+          redirect_to edit_owner_admin_entourage_path(@entourage), alert: error_message
         end
       end
     end
@@ -393,7 +393,7 @@ module Admin
         end
 
         on.success do |message|
-          @join_request.update_column(:last_message_read, message.created_at)
+          @join_request.set_chat_messages_as_read_from(message.created_at)
           ModeratorReadsService
             .new(instance: @entourage, moderator: current_user)
             .mark_as_read
@@ -456,7 +456,7 @@ module Admin
       check = @entourage.sensitive_words_check || @entourage.build_sensitive_words_check
       check.status = params[:status]
       check.save!
-      redirect_to [:admin, @entourage]
+      redirect_to admin_entourage_path(@entourage)
     end
 
     def update_neighborhoods
@@ -486,6 +486,10 @@ module Admin
 
     def set_entourage
       @entourage = Entourage.find(params[:id])
+
+      if @entourage.outing?
+        @entourage = Outing.find(params[:id])
+      end
     end
 
     def set_forced_join_request
@@ -525,13 +529,13 @@ module Admin
     end
 
     def index_params
-      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
+      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
     end
 
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, pins: [], metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, :sf_category, metadata: metadata_keys)
 
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)

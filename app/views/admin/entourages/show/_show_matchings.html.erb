@@ -1,0 +1,53 @@
+<h4>Liste matchings</h4>
+
+<% if @action.matchings.none? %>
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      Cette action n'a pas de matching
+    </div>
+  </div>
+<% end %>
+
+<table id="matchings-list" class="table table-striped">
+  <% if @matchings.any? %>
+    <thead>
+      <tr>
+        <th>type</th>
+        <th>nom</th>
+        <th>description</th>
+        <th>score</th>
+        <th>position</th>
+        <th>explanation</th>
+        <th>created_at</th>
+        <th>notif inapp envoyée</th>
+        <th>Envoyer</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @matchings.each do |matching| %>
+        <tr id="matching-<%= matching.id %>">
+          <td><%= matching.match_type %></td>
+          <td><%= link_to matching.match.name, [:admin, matching.match] %></td>
+          <td>
+            <% if matching.match.respond_to?(:text_description_only) %>
+              <%= matching.match.text_description_only %>
+            <% else %>
+              <%= matching.match.description %>
+            <% end %>
+          </td>
+          <td><%= matching.score %></td>
+          <td><%= matching.position %></td>
+          <td><%= matching.explanation %></td>
+          <td><%= l matching.created_at.to_date, format: :long %></td>
+          <td class="inapp-notification">
+            <%= render partial: 'admin/entourages/show/show_matching_inapp_notification', :locals => { matching: matching } %>
+          </td>
+          <td><%= link_to "Envoyer", send_matching_admin_entourage_path(@entourage, matching_id: matching.id), method: :post, remote: true, class: "btn btn-default btn-sm", data: { confirm: "Etes-vous sûr de vouloir générer une notification pour l'utilisateur ?" } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <% else %>
+    <caption><%= "Il n'y a pas de matching."%></caption>
+  <% end %>
+</table>

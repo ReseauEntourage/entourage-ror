@@ -30,7 +30,7 @@ module ModeratorReadable
         left join moderator_reads on (
           moderator_reads.user_id = #{user.id} and
           moderator_reads.moderatable_id = #{table_name}.id and
-          moderator_reads.moderatable_type = '#{self.name}'
+          moderator_reads.moderatable_type = '#{self.base_class.name}'
         )
       ))
     end

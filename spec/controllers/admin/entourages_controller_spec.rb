@@ -49,12 +49,12 @@ describe Admin::EntouragesController do
           longitude: 2,
           metadata: {
             starts_at: {
-              date: "2018-09-04",
+              date: 1.day.from_now.to_date,
               hour: 7,
               min: 30,
             },
             ends_at: {
-              date: "2018-09-05",
+              date: 2.days.from_now.to_date,
               hour: 7,
               min: 30,
             },
@@ -79,12 +79,12 @@ describe Admin::EntouragesController do
           online: true,
           metadata: {
             starts_at: {
-              date: "2018-09-04",
+              date: 1.day.from_now.to_date,
               hour: 7,
               min: 30,
             },
             ends_at: {
-              date: "2018-09-05",
+              date: 2.days.from_now.to_date,
               hour: 7,
               min: 30,
             },
@@ -195,7 +195,7 @@ describe Admin::EntouragesController do
     end
 
     context "full outings are closable" do
-      let(:outing) { FactoryBot.create(:outing, status: :full) }
+      let(:outing) { FactoryBot.create(:outing, :outing_class, status: :full) }
       before { post :close, params: { id: outing.to_param } }
 
       it { should redirect_to admin_entourage_path(outing) }
@@ -232,7 +232,7 @@ describe Admin::EntouragesController do
     end
 
     context "outings are cancellable" do
-      let(:outing) { FactoryBot.create(:outing) }
+      let(:outing) { FactoryBot.create(:outing, :outing_class) }
       before { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
 
       it { should redirect_to admin_entourage_path(outing) }
@@ -240,7 +240,7 @@ describe Admin::EntouragesController do
     end
 
     context "cancellable outings should be cancelled" do
-      let(:outing) { FactoryBot.create(:outing) }
+      let(:outing) { FactoryBot.create(:outing, :outing_class) }
       before {
         expect(EntourageServices::EntourageBuilder).to receive(:cancel).with(
         entourage: outing,
@@ -249,26 +249,5 @@ describe Admin::EntouragesController do
 
       it { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
     end
-  end
-
-  describe "POST update pins" do
-    let(:entourage) { FactoryBot.create(:entourage, pin: true) }
-    before { post :update, params: { id: entourage.to_param, entourage: { pins: ['75000','44'], group_type: :action } } }
-
-    it { expect(assigns(:entourage).pins).to match_array(['75000', '44']) }
-  end
-
-  describe "POST pin" do
-    let(:entourage) { FactoryBot.create(:entourage, pin: false) }
-    before { post :pin, params: { id: entourage.to_param } }
-
-    it { expect(assigns(:entourage).pin?).to eq(true) }
-  end
-
-  describe "POST unpin" do
-    let(:entourage) { FactoryBot.create(:entourage, pin: true) }
-    before { post :unpin, params: { id: entourage.to_param } }
-
-    it { expect(assigns(:entourage).pin?).to eq(false) }
   end
 end

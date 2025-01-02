@@ -1,0 +1,64 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @openai_assistant } %>
+
+<%= form_for [:admin, @openai_assistant], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :prompt %>
+    <div class="controls">
+      <%= f.text_area :prompt, class: "form-control", required: true %>
+    </div>
+    <i>{{action_type}} : en fonction de l'action créée par l'utilisateur, sera remplacé par "contribution" ou "solicitation"</i><br/>
+    <i>{{name}} : nom de l'action créée par l'utilisateur</i><br/>
+    <i>{{description}} : description de l'action créée par l'utilisateur</i><br/>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :days_for_actions %>
+    <div class="controls">
+      <%= f.number_field :days_for_actions, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :days_for_outings %>
+    <div class="controls">
+      <%= f.number_field :days_for_outings, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :max_prompt_tokens %>
+    <div class="controls">
+      <%= f.number_field :max_prompt_tokens, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :max_completion_tokens %>
+    <div class="controls">
+      <%= f.number_field :max_completion_tokens, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :poi_from_file, "Charger les points d'intérêt depuis un fichier ?" %>
+    <div class="controls">
+      <%= f.radio_button :poi_from_file, true %> Oui
+      <%= f.radio_button :poi_from_file, false %> Non
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :resource_from_file, "Charger les ressources pédagogiques depuis un fichier ?" %>
+    <div class="controls">
+      <%= f.radio_button :resource_from_file, true %> Oui
+      <%= f.radio_button :resource_from_file, false %> Non
+    </div>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_openai_assistants_path, class: "btn btn-default" %>
+<% end %>

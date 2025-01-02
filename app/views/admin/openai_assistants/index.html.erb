@@ -1,0 +1,36 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>openai_assistant</h1>
+
+    <div class="row">
+      <% unless @openai_assistants.none? %>
+        <table class="table custom-table">
+          <thead>
+            <th>Module</th>
+            <th>Prompt</th>
+            <th>poi_from_file</th>
+            <th>resource_from_file</th>
+            <th>days_for_actions</th>
+            <th>days_for_outings</th>
+          </thead>
+          <% @openai_assistants.each_with_index do |openai_assistant, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <td><%= link_to openai_assistant.module_type, edit_admin_openai_assistant_path(openai_assistant) %></td>
+              <td><%= link_to openai_assistant.prompt, edit_admin_openai_assistant_path(openai_assistant) %></td>
+              <td><%= openai_assistant.poi_from_file %></td>
+              <td><%= openai_assistant.resource_from_file %></td>
+              <td><%= openai_assistant.days_for_actions %></td>
+              <td><%= openai_assistant.days_for_outings %></td>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @openai_assistants, entry_name: 'openai_assistants' %>
+    <div class="container">
+      <%= paginate(@openai_assistants) %>
+    </div>
+  </div>
+</div>

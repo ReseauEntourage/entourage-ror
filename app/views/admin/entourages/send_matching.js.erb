@@ -1,0 +1,4 @@
+$("#matching-<%= @matching.id %> .inapp-notification").html("<%= j render(
+  partial: "admin/entourages/show/show_matching_inapp_notification",
+  locals: { matching: @matching }
+) %>");

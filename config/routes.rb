@@ -127,7 +127,9 @@ Rails.application.routes.draw do
           get :show_messages
           get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments
+          get :show_matchings
           get :show_siblings
+          post :send_matching
           post :stop_recurrences
           get :sensitive_words
           post :sensitive_words_check
@@ -135,10 +137,6 @@ Rails.application.routes.draw do
           get :edit_owner
           post :close
           post :update_owner
-          post :pin
-          post :unpin
-          post :admin_pin
-          post :admin_unpin
           get :renew
           get :cancellation
           post :cancel
@@ -229,6 +227,20 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :actions, only: [:index] do
+      resources :matchings, :controller => 'actions/matchings', only: [:index] do
+        collection do
+          post :notify_best
+          post :mail_best
+        end
+
+        member do
+          post :notify
+          post :mail
+        end
+      end
+    end
+
     resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
       member do
         put :reactivate
@@ -255,6 +267,9 @@ Rails.application.routes.draw do
         delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
       end
     end
+
+    resources :openai_assistants, only: [:index, :edit, :update]
+    resources :openai_requests, only: [:index, :show]
 
     resources :recommandations do
       member do
@@ -386,7 +401,12 @@ Rails.application.routes.draw do
         end
 
         resources :entourages, :controller => 'users/entourages', only: [:index]
-        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
+        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index] do
+          collection do
+            get :default
+          end
+        end
+
         resources :outings, :controller => 'users/outings', only: [:index] do
           collection do
             get :past

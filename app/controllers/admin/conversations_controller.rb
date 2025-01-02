@@ -15,10 +15,7 @@ module Admin
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)
-        .select(%(
-          entourages.*,
-          last_message_read < feed_updated_at or last_message_read is null as unread
-        ))
+        .select("entourages.*, (unread_messages_count > 0) as unread")
         .order("feed_updated_at desc")
         .page(params[:page])
         .per(50)
@@ -31,7 +28,7 @@ module Admin
         @conversations.where("archived_at < feed_updated_at or archived_at is null")
       end
 
-      @conversations = @conversations.where("last_message_read < feed_updated_at or last_message_read is null") if params[:filter] == 'unread'
+      @conversations = @conversations.where("unread_messages_count > 0") if params[:filter] == 'unread'
 
       respond_to do |format|
         format.js
@@ -117,7 +114,7 @@ module Admin
 
       chat_builder.create do |on|
         on.success do |message|
-          join_request.update_column(:last_message_read, message.created_at)
+          join_request.set_chat_messages_as_read_from(message.created_at)
 
           respond_to do |format|
             @chat_messages = [message]
@@ -201,19 +198,15 @@ module Admin
       status = params[:status]&.to_sym
       raise unless status.in?([:read, :unread])
 
-      timestamp =
-        case status
-        when :read
-          Time.now
-        when :unread
-          nil
-        end
+      join_request = JoinRequest.where(joinable: @conversation, user: current_admin).first
 
-      JoinRequest.where(joinable: @conversation).update_all(last_message_read: timestamp)
+      if status == :read
+        join_request.set_chat_messages_as_read
+      else
+        join_request.set_chat_messages_as_unread
+      end
 
-      filters = {}
-      filters[:filter] = :unread if status == :unread
-      redirect_to admin_conversations_path(filters)
+      redirect_to admin_conversations_path(filter: Rack::Utils.parse_query(URI(request.referer).query)['filter'])
     end
 
     def archive_status

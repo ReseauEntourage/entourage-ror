@@ -1,6 +1,6 @@
 class NotificationPermission < ApplicationRecord
-  INAPP_INSTANCES = %{neighborhood outing contribution solicitation user}
-  PUSH_INSTANCES = %{neighborhood outing contribution solicitation conversation user}
+  INAPP_INSTANCES = %{neighborhood outing contribution solicitation user resource poi}
+  PUSH_INSTANCES = %{neighborhood outing contribution solicitation conversation user resource poi}
 
   belongs_to :user
   validates_presence_of :user
@@ -65,6 +65,14 @@ class NotificationPermission < ApplicationRecord
   def action instance_id = nil
     return true unless permissions && permissions.has_key?("action")
     permissions["action"]
+  end
+
+  def resource instance_id = nil
+    true
+  end
+
+  def poi instance_id = nil
+    true
   end
 
   # setters

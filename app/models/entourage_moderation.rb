@@ -5,6 +5,8 @@ class EntourageModeration < ApplicationRecord
   belongs_to :entourage
   belongs_to :moderator, class_name: :User, optional: true # about 30% of records have null moderator_id
 
+  after_commit :auto_post_at_create
+
   SUCCESSFUL_VALUES = ["Oui", "Échange de coordonnées", "Orientation via modérateur"]
 
   VALUES = {
@@ -101,5 +103,41 @@ class EntourageModeration < ApplicationRecord
 
   def validated?
     validated_at.present?
+  end
+
+  def auto_post_at_create
+    return unless validated?
+    return unless saved_change_to_validated_at?
+    return unless entourage.present?
+    return unless entourage.action?
+    return unless entourage.ongoing?
+    return unless entourage.auto_post_at_create?
+    return unless default_neighborhood = entourage.user.default_neighborhood
+    return unless join_request = JoinRequest.find_by(joinable: default_neighborhood, user: entourage.user, status: :accepted)
+
+    return if auto_post_already_created_on?(default_neighborhood, entourage)
+
+    ChatServices::ChatMessageBuilder.new(
+      params: {
+        content: "#{entourage.title}\n\n#{entourage.description}",
+        auto_post_type: entourage.action_class.to_s,
+        auto_post_id: entourage.id
+      },
+      user: entourage.user,
+      joinable: default_neighborhood,
+      join_request: join_request
+    ).create
+  end
+
+  private
+
+  def auto_post_already_created_on? instance, entourage
+    return unless instance.respond_to?(:chat_messages)
+
+    instance
+      .chat_messages
+      .where("options->>'auto_post_type' = ?", entourage.action_class.to_s)
+      .where("options->>'auto_post_id' = ?", entourage.id.to_s)
+      .exists?
   end
 end

@@ -19,7 +19,11 @@ module EntourageServices
     def create
       yield callback if block_given?
 
-      entourage = Entourage.new(params.except(:location))
+      entourage = if params[:group_type] == 'outing'
+        Outing.new(params.except(:location))
+      else
+        Entourage.new(params.except(:location))
+      end
       entourage.group_type ||= 'action'
       entourage.entourage_type = 'contribution' if entourage.group_type != 'action'
       entourage.longitude = params.dig(:location, :longitude) || params[:longitude]
@@ -48,7 +52,7 @@ module EntourageServices
 
       if entourage.save
         #When you start an entourage you are automatically added to members
-        join_request = JoinRequest.create(joinable: entourage, user: user)
+        join_request = JoinRequest.find_or_initialize_by(joinable: entourage, user: user)
 
         joinable = entourage
         join_request.role =

@@ -41,11 +41,17 @@
             <%= link_to "Commentaires", "#" %>
           </li>
         <% end %>
+
         <% if @entourage.outing? %>
           <li role="presentation" class="<%= :active if params[:action] == 'show_neighborhoods' %>">
             <%= link_to "Groupes de voisins", show_neighborhoods_admin_entourage_path(@entourage, @params) %>
           </li>
+        <% else %>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_matchings' %>">
+            <%= link_to "Matchings", show_matchings_admin_entourage_path(@entourage, @params) %>
+          </li>
         <% end %>
+
         <% if @entourage.recurrent? %>
           <li role="presentation" class="<%= :active if params[:action] == 'show_siblings' %>">
             <%= link_to "Récurrences", show_siblings_admin_entourage_path(@entourage, @params) %>
@@ -70,7 +76,7 @@
                 —
                 Créée il y a <%= time_ago_in_words @entourage.created_at %>
               </div>
-              <%= link_to "Changer le créateur", edit_owner_admin_entourage_path(@entourage) if @entourage.pin? || @entourage.outing? %>
+              <%= link_to "Changer le créateur", edit_owner_admin_entourage_path(@entourage) if @entourage.outing? %>
             </div>
             <div class='col-sm-4 '>
               <div class='pull-right'>
@@ -93,10 +99,6 @@
                   <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
                 <% end %>
 
-                <div class="btn-group btn-group-sm pull-right">
-                  <%= link_to("Prioritaire", admin_pin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :primary : :default}") %>
-                  <%= link_to("Non prioritaire", admin_unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :default : :primary}") %>
-                </div>
                 <br>
                 <br>
                 <% if @entourage.outing? %>

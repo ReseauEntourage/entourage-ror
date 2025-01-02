@@ -1,0 +1,37 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>openai_requests</h1>
+
+    <ul class="nav nav-tabs">
+      <% OpenaiAssistant.pluck(:module_type).each do |module_type| %>
+        <li role="presentation" class="<%= :active if @module_type == module_type.to_s %>">
+          <%= link_to module_type, @params.merge(module_type: module_type) %>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="row">
+      <% unless @openai_requests.none? %>
+        <table class="table custom-table">
+          <thead>
+            <th>Nom</th>
+            <th>Créé le</th>
+          </thead>
+          <% @openai_requests.each_with_index do |openai_request, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <td><%= link_to openai_request.instance.name, admin_openai_request_path(openai_request) %></td>
+              <td><%= l openai_request.created_at %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @openai_requests, entry_name: 'openai_requests' %>
+    <div class="container">
+      <%= paginate(@openai_requests) %>
+    </div>
+  </div>
+</div>

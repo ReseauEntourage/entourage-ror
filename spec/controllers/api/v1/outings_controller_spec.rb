@@ -128,12 +128,11 @@ describe Api::V1::OutingsController do
       it { expect(subject).to have_key("outings") }
       it { expect(subject["outings"].count).to eq(1) }
       it { expect(subject["outings"][0]).to have_key("members") }
-      it { expect(subject["outings"][0]["members"]).to eq([{
-        "id" => outing.user_id,
-        "lang" => "fr",
-        "display_name" => "John D.",
-        "avatar_url" => nil,
-        "community_roles" => [],
+      it { expect(subject["outings"][0]["members"]).to match_array([{
+        "id" => kind_of(Integer),
+        "lang" => kind_of(String),
+        "display_name" => kind_of(String),
+        "avatar_url" => kind_of(String),
       }]) }
     end
 

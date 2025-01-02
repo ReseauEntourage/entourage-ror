@@ -1,0 +1,13 @@
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><%= link_to "openai_assistants", admin_openai_assistants_path %></li>
+      <li class="active">Modifier</li>
+      <li style="float: right;">
+        Module <%= @openai_assistant.module_type %>
+      </li>
+    </ol>
+
+    <h2>
+      <span class="text-muted"># Module <%= @openai_assistant.module_type %></span>
+    </h2>
+  </div>

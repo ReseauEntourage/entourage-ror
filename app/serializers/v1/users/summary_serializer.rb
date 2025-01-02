@@ -26,8 +26,11 @@ module V1
         past_outing_memberships(object).count + successful_actions(object).count
       end
 
+      # fake data: deprecated field
       def chat_messages_count
-        object.chat_messages.count
+        # object.chat_messages.count
+
+        0
       end
 
       def outing_participations_count
@@ -59,7 +62,7 @@ module V1
       end
 
       def unclosed_action
-        actions = Entourage.where(user: object).where(pin: false).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
+        actions = Entourage.where(user: object).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
         actions = actions.where("created_at > ?", object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
         action = actions.order(:created_at).select(:entourage_type, :id).first
 

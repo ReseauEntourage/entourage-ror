@@ -118,7 +118,7 @@ module Api
         metadata_keys = params.dig(:contribution, :metadata).try(:keys) || []
         params.require(:contribution).permit({
           location: [:longitude, :latitude]
-        }, :postal_code, :title, :description, :section, {
+        }, :postal_code, :title, :description, :section, :auto_post_at_create, {
           metadata: metadata_keys
         }, :image_url)
       end

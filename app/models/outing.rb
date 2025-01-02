@@ -1,5 +1,6 @@
 class Outing < Entourage
   include Interestable
+  include SfCategorizable
   include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
   include Recommandable
 
@@ -78,6 +79,13 @@ class Outing < Entourage
   scope :future_or_recently_past, -> { ending_after(RECENTLY_PAST_PERIOD.ago) }
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
   scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }
+
+  scope :welcome_category, -> { where(online: true).tagged_with_sf_category([
+    :atelier_femmes,
+    :atelier_mdlr,
+    :atelier_preca,
+    :welcome_entourage_local
+  ]) }
 
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
@@ -235,6 +243,7 @@ class Outing < Entourage
     return unless new_record?
 
     self.interests = original_outing.interest_list
+    self.sf_category = original_outing.sf_category
   end
 
   def set_entourage_image_id
