@@ -190,6 +190,8 @@ Rails.application.routes.draw do
 
       resources :options, only: [:index, :update]
 
+      resources :outings, only: [:index]
+
       resources :partners do
         collection do
           post :change_admin_role

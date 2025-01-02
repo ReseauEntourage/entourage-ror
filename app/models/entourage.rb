@@ -118,6 +118,18 @@ class Entourage < ApplicationRecord
   scope :with_moderation, -> {
     joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
   }
+  scope :with_moderation_area, -> (moderation_area) {
+    return unless moderation_area
+    return if moderation_area.to_sym == :all
+
+    if moderation_area.present? && moderation_area.to_sym == :hors_zone
+      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
+        where.not(country: :FR)
+      )
+    end
+
+    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area)).where(country: :FR)
+  }
 
   scope :with_chat_messages, -> { where("number_of_root_chat_messages > 0").distinct }
 
