@@ -303,8 +303,8 @@ describe Api::V1::Outings::ChatMessagesController do
             "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content.to_s,
             "content_translations" => {
-              "translation" => content,
-              "original" => content,
+              "translation" => content.to_s,
+              "original" => content.to_s,
               "from_lang" => "fr",
               "to_lang" => "fr",
             },
