@@ -61,7 +61,9 @@
             <th>Code postal</th>
             <th>Date de création</th>
             <th>Statut</th>
-            <th>Matchings</th>
+            <% if current_user.super_admin? %>
+              <th>Matchings</th>
+            <% end %>
           </thead>
           <% @actions.each_with_index do |action, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
@@ -74,20 +76,22 @@
               </td>
               <td>
                 <p><%= link_to action.name, admin_entourage_path(action) %></p>
-                <p><%= action.description %></p>
+                <p><%= truncate(action.description.to_s, length: 500) %></p>
               </td>
               <td><%= link_to action.user.full_name, admin_user_path(action.user) %></td>
               <td><%= action.postal_code %></td>
               <td><%= l action.created_at, format: :date_short %></td>
               <td><%= entourage_state_label(action) %></td>
-              <td>
-                <% action.matchings.each do |matching| %>
-                  <p>
-                    <span class="custom-badge info"><%= matching.score %></span> <b><%= matching.match&.name %></b> (<%= matching.match_type %>)<br/>
-                    <%= matching.explanation %>
-                  </p>
-                <% end %>
-              </td>
+              <% if current_user.super_admin? %>
+                <td>
+                  <% action.matchings.each do |matching| %>
+                    <p>
+                      <span class="custom-badge info"><%= matching.score %></span> <b><%= matching.match&.name %></b> (<%= matching.match_type %>)<br/>
+                      <%= matching.explanation %>
+                    </p>
+                  <% end %>
+                </td>
+              <% end %>
             </tr>
           <% end %>
         </table>
