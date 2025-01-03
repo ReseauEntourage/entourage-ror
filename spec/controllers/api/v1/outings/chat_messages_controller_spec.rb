@@ -301,7 +301,7 @@ describe Api::V1::Outings::ChatMessagesController do
           "chat_message" => {
             "id" => ChatMessage.last.id,
             "uuid_v2" => ChatMessage.last.uuid_v2,
-            "content" => content,
+            "content" => content.to_s,
             "content_translations" => {
               "translation" => content,
               "original" => content,
@@ -380,7 +380,7 @@ describe Api::V1::Outings::ChatMessagesController do
         end
 
         context "with image_url and no content" do
-          let(:content) { "" }
+          let(:content) { nil }
           let(:image_url) { "path/to/image.jpeg" }
           let(:chat_message_params) { {
             message_type: :text,
