@@ -20,8 +20,8 @@ class ActiveModel::Serializer
       return unless object.translation
 
       {
-        translation: translation,
-        original: object[field],
+        translation: "#{object.respond_to?(:offensive?) && object.offensive? ? '[offensive] ' : ''}#{translation}",
+        original: "#{object.respond_to?(:offensive?) && object.offensive? ? '[offensive] ' : ''}#{object[field]}",
         from_lang: object.translation&.from_lang || default_lang,
         to_lang: lang || default_lang
       }
