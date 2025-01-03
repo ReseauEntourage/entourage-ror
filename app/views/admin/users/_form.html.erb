@@ -54,7 +54,8 @@
             <label class="control-label">Action créées</label>
             <div class="controls">
               <%= @user.groups.count %>
-              <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
+              <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %> 
+              coucou
             </div>
           </div>
 
