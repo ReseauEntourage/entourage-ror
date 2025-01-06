@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @params = params.permit([:search, :area, :moderator_id, :status, :entourage_type]).to_h
+      @params = params.permit([:search, :area, :moderator_id, :status, :entourage_type, :moderated]).to_h
       @area = params[:area].presence&.to_sym || :all
 
       @actions = Action.preload([:user, matchings: :match])
@@ -11,6 +11,7 @@ module Admin
         .with_moderation
         .with_moderation_area(@area.to_s)
         .with_moderator_reads_for(user: current_user)
+        .with_moderated(@params[:moderated])
         .with_entourage_type(params[:entourage_type])
         .with_status(params[:status])
         .moderator_search(params[:moderator_id])

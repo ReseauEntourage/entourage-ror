@@ -11,4 +11,11 @@ class Action < Entourage
 
     where(entourage_type: :ask_for_help)
   }
+
+  scope :with_moderated, -> (moderated) {
+    return unless moderated.present?
+    return where("entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01'") if ActiveModel::Type::Boolean.new.cast(moderated)
+
+    where("entourage_moderations.moderated_at is null and entourages.created_at > '2018-01-01'")
+  }
 end
