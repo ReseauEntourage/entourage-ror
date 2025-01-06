@@ -6,7 +6,7 @@ module Admin
       @params = params.permit([:search, :area, :moderator_id, :status]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-      @outings = Outing.preload([:user])
+      @outings = Outing.unscope(:order)
         .like(params[:search])
         .with_moderation
         .with_moderation_area(@area.to_s)

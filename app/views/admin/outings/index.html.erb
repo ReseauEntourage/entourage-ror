@@ -52,13 +52,12 @@
         <table class="table custom-table">
           <thead>
             <th></th>
-            <th><span class="glyphicon glyphicon-user" aria-hidden="true" title="Nombre de membres"></span></th>
-            <th><span class="glyphicon glyphicon-comment" aria-hidden="true" title="Nombre de publications"></span></th>
-            <th>outing</th>
-            <th>Créateur</th>
-            <th>Code postal</th>
+            <th>Nom et descriptif de l'événement</th>
             <th>Date de création</th>
+            <th>Date de l'événement</th>
+            <th>Code postal</th>
             <th>Statut</th>
+            <th><span class="glyphicon glyphicon-user" aria-hidden="true" title="Nombre de participants"></span></th>
           </thead>
           <% @outings.each_with_index do |outing, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
@@ -69,17 +68,15 @@
                   <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
                 <% end %>
               </td>
-              <td><span class="badge" title="Membres"><%= outing.number_of_people %></span></td>
-              <td><span class="badge" title="Membres"><%= outing.number_of_root_chat_messages %></span></td>
               <td>
                 <p><%= link_to outing.name, admin_entourage_path(outing) %></p>
                 <p><%= outing.description %></p>
               </td>
-              <% pp outing.user_id %>
-              <td><%= link_to outing.user.full_name, admin_user_path(outing.user) %></td>
-              <td><%= outing.postal_code %></td>
               <td><%= l outing.created_at, format: :date_short %></td>
+              <td><%= l outing.starts_at, format: :short %></td>
+              <td><%= outing.postal_code %></td>
               <td><%= entourage_state_label(outing) %></td>
+              <td><span class="badge" title="Participants"><%= outing.number_of_people %></span></td>
             </tr>
           <% end %>
         </table>
