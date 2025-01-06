@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_many :session_histories
   has_many :user_histories
   has_many :entourages
+  has_many :actions, -> { where(group_type: :action) }, class_name: "Action"
   has_many :outings, -> { where(group_type: :outing) }, class_name: "Outing"
   has_many :user_blocked_users
   has_many :blocked_users, through: :user_blocked_users, source: "blocked_user"

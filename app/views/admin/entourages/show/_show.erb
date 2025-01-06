@@ -155,11 +155,15 @@
       <div class="panel-body">
         <div class="row" style="margin-bottom: 2px;">
           <div class="col-md-3 form-inline">
-            <label>Actions créées :</label> <%= entourage.user.groups.count %>
-            <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
+            <label>Actions créées :</label> <%= entourage.user.actions.count %>
+            <%= link_to '(Voir)', admin_actions_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
           </div>
           <div class="col-md-3 form-inline">
-            <label>Actions rejointes :</label> <%= entourage.user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
+            <label>Événements créés :</label> <%= entourage.user.outings.count %>
+            <%= link_to '(Voir)', admin_outings_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
+          </div>
+          <div class="col-md-3 form-inline">
+            <label>Événements rejoints :</label> <%= entourage.user.joined_groups(exclude_created: true, status: [:accepted], group_type: :outing).count %>
           </div>
           <div class="col-md-3 form-inline" title="de moins de six mois">
             <label>Conversations <span class="badge">i</span> :</label> <%= entourage.user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>

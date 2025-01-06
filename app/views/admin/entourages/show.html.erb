@@ -8,55 +8,10 @@
 </style>
 
 <div class="container">
-  <%= link_to('<- Retourner à la liste des entourages', admin_entourages_path(@params)) %>
-  <div class="pull-right">
-    <%= link_to nil, @entourage.share_url, target: :_blank %>
-  </div>
-  </br>
-  </br>
-
-  <% if ['show', 'show_messages'].include?(params[:action]) && @moderator_read.nil? %>
-    <div class="conversation-unread-status">
-      Nouvel entourage créé le
-      <%= l @entourage.created_at, format: "%-d %B %Y" %>
-    </div>
-  <% end %>
+  <%= render 'edit_header', tab: :edit %>
 
   <div class="panel panel-default">
     <div class="panel-body">
-      <ul class="nav nav-tabs">
-        <li role="presentation" class="<%= :active if params[:action] == 'show' %>">
-          <%= link_to "Informations générales", admin_entourage_path(@entourage, @params) %>
-        </li>
-        <li role="presentation" class="<%= :active if params[:action] == 'show_members' %>">
-          <%= link_to "Membres", show_members_admin_entourage_path(@entourage, @params) %>
-        </li>
-        <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
-          <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
-        </li>
-        <% if params[:action] == 'show_comments' %>
-          <li role="presentation" class="active">
-            <%= link_to "Commentaires", "#" %>
-          </li>
-        <% end %>
-
-        <% if @entourage.outing? %>
-          <li role="presentation" class="<%= :active if params[:action] == 'show_neighborhoods' %>">
-            <%= link_to "Groupes de voisins", show_neighborhoods_admin_entourage_path(@entourage, @params) %>
-          </li>
-        <% else %>
-          <li role="presentation" class="<%= :active if params[:action] == 'show_matchings' %>">
-            <%= link_to "Matchings", show_matchings_admin_entourage_path(@entourage, @params) %>
-          </li>
-        <% end %>
-
-        <% if @entourage.recurrent? %>
-          <li role="presentation" class="<%= :active if params[:action] == 'show_siblings' %>">
-            <%= link_to "Récurrences", show_siblings_admin_entourage_path(@entourage, @params) %>
-          </li>
-        <% end %>
-      </ul>
-
       <div class="panel panel-default">
         <div class="panel-heading">
           <div class="row">
