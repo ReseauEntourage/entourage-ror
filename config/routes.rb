@@ -190,7 +190,11 @@ Rails.application.routes.draw do
 
       resources :options, only: [:index, :update]
 
-      resources :outings, only: [:index]
+      resources :outings, only: [:index] do
+        collection do
+          get :download_list_export
+        end
+      end
 
       resources :partners do
         collection do

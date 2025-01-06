@@ -43,6 +43,7 @@
       </div>
 
       <div style="float: right; margin: -10px 0 10px">
+        <%= link_to "Exporter", download_list_export_admin_outings_path(@params), class: "btn btn-default" %>
         <%= link_to "Réinitialiser les filtres", admin_outings_path, class: "btn btn-default" %>
       </div>
     <% end %>
