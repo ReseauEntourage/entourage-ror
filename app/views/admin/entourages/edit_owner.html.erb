@@ -1,5 +1,11 @@
 <ol class="breadcrumb">
-  <li><%= link_to "Liste des entourages", admin_entourages_path %></li>
+  <li>
+    <% if @entourage.action? %>
+      <%= link_to "Liste des actions", admin_actions_path %>
+    <% else %>
+      <%= link_to "Liste des événements", admin_outings_path %>
+    <% end %>
+  </li>
   <li><%= link_to @entourage.title, admin_entourage_path(@entourage) %></li>
   <li class="active">Changer le créateur</li>
 </ol>

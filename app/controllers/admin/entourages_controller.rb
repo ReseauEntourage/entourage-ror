@@ -512,7 +512,7 @@ module Admin
     end
 
     def index_params
-      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
+      params.permit([:search, :area, :moderator_id, :moderated, :entourage_type, :status, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
     end
 
     def entourage_params

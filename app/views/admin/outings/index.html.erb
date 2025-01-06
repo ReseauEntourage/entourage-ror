@@ -10,7 +10,7 @@
           </div>
 
           <div class='input-group'>
-            <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Nom, description..." %>
+            <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Rechercher un événement" %>
             <span class="input-group-btn">
               <%= submit_tag "Chercher", class: "btn btn-default" %>
             </span>
@@ -69,7 +69,7 @@
                 <% end %>
               </td>
               <td>
-                <p><%= link_to outing.name, admin_entourage_path(outing) %></p>
+                <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
                 <p><%= outing.description %></p>
               </td>
               <td><%= l outing.created_at, format: :date_short %></td>

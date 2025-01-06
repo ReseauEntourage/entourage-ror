@@ -77,7 +77,7 @@
                 <% end %>
               </td>
               <td>
-                <p><%= link_to action.name, admin_entourage_path(action) %></p>
+                <p><%= link_to action.name, admin_entourage_path(action, @params) %></p>
                 <p><%= action.description %></p>
               </td>
               <td><%= link_to action.user.full_name, admin_user_path(action.user) %></td>
