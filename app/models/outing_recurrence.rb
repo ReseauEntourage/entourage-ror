@@ -13,6 +13,8 @@ class OutingRecurrence < ApplicationRecord
     def generate_all
       with_valid_outings.find_in_batches do |outing_recurrences|
         outing_recurrences.each do |outing_recurrence|
+          next unless outing_recurrence.generate_available?
+
           outing_recurrence.generate.save
         end
       end
