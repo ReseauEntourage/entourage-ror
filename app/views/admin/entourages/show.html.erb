@@ -78,45 +78,50 @@
               </div>
               <%= link_to "Changer le créateur", edit_owner_admin_entourage_path(@entourage) if @entourage.outing? %>
             </div>
-            <div class='col-sm-4 '>
-              <div class='pull-right'>
-                <% if @moderator_read %>
-                  <div class="dropdown" style="display: inline-block">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                      <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                      <li>
-                        <%= link_to "Marquer comme non lu",
-                          moderator_unread_admin_entourage_path(@entourage),
-                          method: :post %>
-                      </li>
-                    </ul>
-                  </div>
-                <% end %>
-                <%- if !@entourage.members.include?(current_user) &&
-                       current_user.roles.include?(:moderator) %>
-                  <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
-                <% end %>
 
-                <br>
-                <br>
-                <% if @entourage.outing? %>
-                  <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
-                <% end %>
+            <% if params[:action] == 'show' %>
+              <div class='col-sm-4 '>
+                <div class='pull-right'>
+                  <% if @moderator_read %>
+                    <div class="dropdown" style="display: inline-block">
+                      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                        <li>
+                          <%= link_to "Marquer comme non lu",
+                            moderator_unread_admin_entourage_path(@entourage),
+                            method: :post %>
+                        </li>
+                      </ul>
+                    </div>
+                  <% end %>
+                  <%- if !@entourage.members.include?(current_user) &&
+                         current_user.roles.include?(:moderator) %>
+                    <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
+                  <% end %>
 
-                <% if @entourage.outing? && Outing.find(@entourage.id).recurrence.present? %>
-                  <%= link_to "Générer un nouvel événement", duplicate_outing_admin_entourage_path(@entourage), method: :post, class: "btn btn-primary" %>
-                <% end %>
-                <%= link_to "Modifier", edit_admin_entourage_path(@entourage, @params), class: "btn btn-success" %>
+                  <br>
+                  <br>
+                  <% if @entourage.outing? %>
+                    <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
+                  <% end %>
+
+                  <% if @entourage.outing? && Outing.find(@entourage.id).recurrence.present? %>
+                    <%= link_to "Générer un nouvel événement", duplicate_outing_admin_entourage_path(@entourage), method: :post, class: "btn btn-primary" %>
+                  <% end %>
+                  <%= link_to "Modifier", edit_admin_entourage_path(@entourage, @params), class: "btn btn-success" %>
+                </div>
               </div>
-            </div>
+            <% end %>
           </div>
         </div>
 
-        <div class="panel-body">
-          <%= render partial: "admin/entourages/show/details", entourage: @entourage %>
-        </div>
+        <% if params[:action] == 'show' %>
+          <div class="panel-body">
+            <%= render partial: "admin/entourages/show/details", entourage: @entourage %>
+          </div>
+        <% end %>
       </div>
 
       <%= render "admin/entourages/show/#{params[:action]}" %>
