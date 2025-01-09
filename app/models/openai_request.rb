@@ -8,7 +8,8 @@ class OpenaiRequest < ApplicationRecord
   # 4. create a response class that inherits from BasicResponse. Check MatchingResponse for evample
   # 5. add this class to performer_response method
   enum module_type: {
-    matching: 'matching'
+    matching: 'matching',
+    offense: 'offense'
   }
 
   after_commit :run, on: :create
@@ -46,13 +47,19 @@ class OpenaiRequest < ApplicationRecord
     @response_instance ||= begin
       if matching?
         OpenaiServices::MatchingResponse.new(response: safe_json_parse(response))
+      elsif offense?
+        OpenaiServices::OffenseResponse.new(response: safe_json_parse(response))
       end
     end
   end
 
   # add module_type case if needed
   def performer_instance
-    return OpenaiServices::MatchingPerformer.new(openai_request: self) if matching?
+    if matching?
+      OpenaiServices::MatchingPerformer.new(openai_request: self)
+    elsif offense?
+      OpenaiServices::OffensePerformer.new(openai_request: self)
+    end
   end
 
   attr_accessor :forced_matching
@@ -62,6 +69,8 @@ class OpenaiRequest < ApplicationRecord
   end
 
   def safe_json_parse json_string
+    return Hash.new unless json_string.present?
+
     JSON.parse(json_string)
   rescue JSON::ParserError
     {}

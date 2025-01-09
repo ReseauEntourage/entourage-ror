@@ -17,7 +17,8 @@ module V1
                  :survey
 
       def content
-        return if object.deleted?
+        return "" if object.deleted?
+        return "" if object.offensive?
 
         I18nSerializer.new(object, :content, lang).translation
       end

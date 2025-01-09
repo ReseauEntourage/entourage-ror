@@ -3,6 +3,7 @@ require 'lingua/stemmer'
 class SensitiveWord < ApplicationRecord
   MATCH_TYPES = %w(stem exact)
   SCOPES = %w(all public)
+  OFFENSABLE_CATEGORIES = ["Arme", "Insulte", "Violence / Sexualité / Famille"]
 
   before_validation do
     next unless raw.present? && match_type.present? && (raw_changed? || match_type_changed?)
@@ -54,4 +55,10 @@ class SensitiveWord < ApplicationRecord
   validates :raw, :pattern, :match_type, :scope, presence: true
   validates :match_type, inclusion: { in: MATCH_TYPES }
   validates :scope, inclusion: { in: SCOPES }
+
+  scope :with_categories, -> (categories) {
+    return unless categories.any?
+
+    where(category: categories)
+  }
 end
