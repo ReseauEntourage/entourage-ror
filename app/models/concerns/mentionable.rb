@@ -5,15 +5,20 @@ module Mentionable
     after_create :has_mentions!, if: :has_mentions?
   end
 
+  def self.no_html content
+    document = Nokogiri::HTML(content)
+    document.css('img').each { |node| node.remove }
+    document.css('a').each { |node| node.replace(node.text) }
+    document.text.strip
+  end
+
   MentionsStruct = Struct.new(:instance) do
     def initialize(instance: nil)
       @instance = instance
     end
 
     def no_html
-      document = Nokogiri::HTML(@instance.content)
-      document.css('img, a').each { |node| node.remove }
-      document.text.strip
+      Mentionable.no_html(@instance.content)
     end
 
     def fragments
@@ -21,7 +26,7 @@ module Mentionable
     end
 
     def contains_html?
-      fragments.children.any?
+      fragments.children.any? { |node| node.element? }
     end
 
     def contains_anchor_with_href?
@@ -50,6 +55,8 @@ module Mentionable
   end
 
   def has_mentions!
+    return unless has_mentions?
+
     # @todo perform in a job
     PushNotificationTrigger.new(self, :mention, Hash.new).run
   end
