@@ -7,7 +7,7 @@ module OpenaiServices
 
     def initialize openai_request:
       @openai_request = openai_request
-      @instance = @openai_request.instance
+      @instance = @openai_request.fetch_instance
       @callback = BasicPerformerCallback.new
 
       @configuration = OpenaiAssistant.find_by_module_type(@openai_request.module_type)

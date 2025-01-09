@@ -243,6 +243,12 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :outings, only: [:index] do
+      collection do
+        get :download_list_export
+      end
+    end
+
     resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
       member do
         put :reactivate
