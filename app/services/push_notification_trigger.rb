@@ -26,8 +26,8 @@ class PushNotificationTrigger
       return @i18ns[lang] = I18n.t(@i18n, locale: lang) % args_to(lang) if @i18n.present?
 
       if @instance.present? && @field.present?
-        return @i18ns[lang] = @instance.send(@field) unless @instance.respond_to?(:translation) && @instance.translation.present?
-        return @i18ns[lang] = @instance.translation.translate(field: @field, lang: lang) || @instance.send(@field)
+        return @i18ns[lang] = Mentionable.no_html(@instance.send(@field)) unless @instance.respond_to?(:translation) && @instance.translation.present?
+        return @i18ns[lang] = Mentionable.no_html(@instance.translation.translate(field: @field, lang: lang) || @instance.send(@field))
       end
 
       @i18ns[lang] = @text % args_to(lang)

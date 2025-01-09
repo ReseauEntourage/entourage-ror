@@ -5,16 +5,20 @@ module Mentionable
     after_create :has_mentions!, if: :has_mentions?
   end
 
+  def self.no_html content
+    document = Nokogiri::HTML(content)
+    document.css('img').each { |node| node.remove }
+    document.css('a').each { |node| node.replace(node.text) }
+    document.text.strip
+  end
+
   MentionsStruct = Struct.new(:instance) do
     def initialize(instance: nil)
       @instance = instance
     end
 
     def no_html
-      document = Nokogiri::HTML(@instance.content)
-      document.css('img').each { |node| node.remove }
-      document.css('a').each { |node| node.replace(node.text) }
-      document.text.strip
+      Mentionable.no_html(@instance.content)
     end
 
     def fragments
