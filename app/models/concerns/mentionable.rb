@@ -12,7 +12,8 @@ module Mentionable
 
     def no_html
       document = Nokogiri::HTML(@instance.content)
-      document.css('img, a').each { |node| node.remove }
+      document.css('img').each { |node| node.remove }
+      document.css('a').each { |node| node.replace(node.text) }
       document.text.strip
     end
 
@@ -21,7 +22,7 @@ module Mentionable
     end
 
     def contains_html?
-      fragments.children.any?
+      fragments.children.any? { |node| node.element? }
     end
 
     def contains_anchor_with_href?
@@ -50,6 +51,8 @@ module Mentionable
   end
 
   def has_mentions!
+    return unless has_mentions?
+
     # @todo perform in a job
     PushNotificationTrigger.new(self, :mention, Hash.new).run
   end
