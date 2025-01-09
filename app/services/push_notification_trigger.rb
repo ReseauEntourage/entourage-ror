@@ -428,6 +428,33 @@ class PushNotificationTrigger
     end
   end
 
+  def chat_message_on_mention
+    return unless @record.respond_to?(:mentions)
+    return unless @record.mentions.respond_to?(:extract_user_uuid)
+
+    user_ids = User.where(uuid: @record.mentions.extract_user_uuid).pluck(:id).uniq
+
+    return unless user_ids.any?
+
+    puts "-- push to: #{user_ids}"
+
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record.messageable,
+        users: batches,
+        params: {
+          object: I18nStruct.new(i18n: 'push_notifications.chat_message.mention', i18n_args: [username(@record.user)]),
+          content: I18nStruct.new(instance: @record, field: :content),
+          extra: {
+            tracking: :chat_message_on_mention
+          }
+        }
+      )
+    end
+  end
+
   def user_reaction_on_create
     return unless @record.respond_to?(:instance)
     return unless @record.instance.respond_to?(:user_id)

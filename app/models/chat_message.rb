@@ -3,6 +3,7 @@ class ChatMessage < ApplicationRecord
   include ChatServices::Spam
   include ChatServices::PrivateConversation
   include Deeplinkable
+  include Mentionable
   include Offensable
   include Translatable
   include Reactionnable
