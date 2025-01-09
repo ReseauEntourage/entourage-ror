@@ -95,6 +95,8 @@ Rails.application.routes.draw do
 
       resources :options, only: [:index, :update]
 
+      resources :entourage_areas
+
       resources :partner_registrations, only: [:index, :show, :edit, :update]
 
       resources :moderation_areas do

@@ -1,0 +1,41 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Zones</h1>
+
+    <div class="row">
+      <% unless @entourage_areas.none? %>
+        <table class="table custom-table">
+          <thead>
+            <th>Code postal</th>
+            <th>Antenne</th>
+            <th>Géo zone</th>
+            <th>Nom</th>
+            <th>Ville</th>
+          </thead>
+          <% @entourage_areas.each_with_index do |entourage_area, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <td><%= link_to entourage_area.postal_code, edit_admin_entourage_area_path(entourage_area) %></td>
+              <td>
+                <% if entourage_area.antenne %>
+                  <span class="label label-success">Oui</span>
+                <% else %>
+                  <span class="label label-danger">Non</span>
+                <% end %>
+              </td>
+              <td><%= entourage_area.geo_zone %></td>
+              <td><%= link_to entourage_area.display_name, edit_admin_entourage_area_path(entourage_area) %></td>
+              <td><%= entourage_area.city %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @entourage_areas, entry_name: 'entourage_areas' %>
+    <div class="container">
+      <%= paginate(@entourage_areas) %>
+    </div>
+  </div>
+</div>
