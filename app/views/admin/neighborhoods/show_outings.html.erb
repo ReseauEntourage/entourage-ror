@@ -24,7 +24,7 @@
           <%= image_tag(outing.image_url, size: '225x96') if outing.image_url.present? %>
         </div>
 
-        <% if outing.parent_chat_messages.any? %>
+        <% if outing.number_of_root_chat_messages > 0 %>
           <div><%= link_to "voir les messages", show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: outing.id) %></div>
         <% end %>
       </div>

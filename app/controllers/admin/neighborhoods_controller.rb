@@ -100,6 +100,7 @@ module Admin
     end
 
     def show_members
+      @members = @neighborhood.members.page(page).per(per)
     end
 
     def show_outings

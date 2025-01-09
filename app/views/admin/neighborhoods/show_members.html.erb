@@ -40,7 +40,7 @@
       <th>Téléphone</th>
       <th>Statut</th>
       <th>Profil</th>
-      <% @neighborhood.members.each do |member| %>
+      <% @members.each do |member| %>
         <tr>
           <td><%= member.id %></td>
           <td>
@@ -64,5 +64,10 @@
         </tr>
       <% end %>
     </table>
+  </div>
+
+  <%= page_entries_info @members, entry_name: 'Membres' %>
+  <div class="container">
+    <%= paginate(@members) %>
   </div>
 </div>

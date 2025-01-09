@@ -102,7 +102,7 @@
               <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
             <% end %>
 
-            <% if message.children.any? %>
+            <% if message.comments_count > 0 %>
               <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
             <% end %>
           </div>
@@ -118,7 +118,7 @@
                       method: :post %>
                 </li>
 
-                <% unless message.children.any? %>
+                <% unless message.comments_count > 0 %>
                   <li>
                     <%= link_to "Ajouter un commentaire", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %>
                   </li>
