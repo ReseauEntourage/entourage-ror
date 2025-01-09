@@ -220,10 +220,6 @@ class Neighborhood < ApplicationRecord
     self[:longitude] = google_place_details[:longitude]
   end
 
-  def posts_count
-    posts.length
-  end
-
   def outings_with_admin_online scope: :outings
     scope = :outings unless [:past_outings, :future_outings, :ongoing_outings].include?(scope)
 

@@ -23,7 +23,7 @@
         <%= link_to "Événements (#{@neighborhood.outings.count})", show_outings_admin_neighborhood_path(@neighborhood) %>
       </li>
       <li role="presentation" class="<%= :active if tab == :show_posts %>">
-        <%= link_to "Publications (#{@neighborhood.posts_count})", show_posts_admin_neighborhood_path(@neighborhood) %>
+        <%= link_to "Publications (#{@neighborhood.number_of_root_chat_messages})", show_posts_admin_neighborhood_path(@neighborhood) %>
       </li>
 
       <% if tab == :show_outing_chat_messages || @outing.present? %>
