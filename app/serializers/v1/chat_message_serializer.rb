@@ -14,8 +14,8 @@ module V1
     attribute :metadata, if: :metadata?
 
     def content
-      return if object.deleted?
-      return if object.offensive?
+      return "" if object.deleted?
+      return "" if object.offensive?
 
       Mentionable.no_html(
         I18nSerializer.new(object, :content, lang).translation
