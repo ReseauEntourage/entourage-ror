@@ -277,6 +277,13 @@ class Entourage < ApplicationRecord
     :solicitations
   end
 
+  def calendar_url
+    return unless outing?
+    return unless uuid_v2
+
+    "#{share_url}/agenda"
+  end
+
   class << self
     def share_url model
       "#{ENV['MOBILE_HOST']}/app/#{model}"
