@@ -19,8 +19,9 @@ class GroupMailer < MailjetMailer
     )
   end
 
-  def event_joined_confirmation event
-    user = event.user
+  def event_joined_confirmation event_id, user_id
+    event = Outing.find(event_id)
+    user = User.find(user_id)
 
     IcalService.attach_ical(group: event, for_user: user, to: self)
 
