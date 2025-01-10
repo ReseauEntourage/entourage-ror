@@ -32,7 +32,7 @@ class GroupMailer < MailjetMailer
       variables: {
         outing: {
           name: event.title,
-          address: event.event_url,
+          address: event.metadata[:display_address],
           date: I18n.l(event.metadata[:starts_at].to_date, format: :short, locale: user.lang),
           hour: event.metadata[:starts_at].strftime("%Hh%M"),
           image_url: event.image_url_with_size(:landscape_url, :medium),
