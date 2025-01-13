@@ -25,6 +25,7 @@ module UserServices
 
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         MemberMailer.welcome(user).deliver_later if user.email.present?
+        SlackServices.SignalAssociationCreation(user: user).notify if user.goal_association?
 
         callback.on_success.try(:call, user)
       else
