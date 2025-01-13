@@ -464,6 +464,10 @@ class User < ApplicationRecord
     user_type=="pro"
   end
 
+  def goal_association?
+    goal.to_s == 'organization'
+  end
+
   def association?
     partner_id != nil
   end
