@@ -10,16 +10,16 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}). Un utilisateur a créé un compte association. Au besoin, merci de créer l'association correspondante et/ou d'associer l'utilisateur à cette association sur le backoffice.",
+        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}). Un utilisateur a créé un compte association",
         attachments: [{
-          text: "Compte créé : #{@user.full_name}, #{link_to_user @user.id}"
+          text: "Compte créé : #{@user.full_name}, #{link_to_user @user.id} (#{@user.phone}, #{@user.email})"
         }]
       }
     end
 
     def payload_adds
       {
-        username: "Nouvel utilisateur association",
+        username: "Création d’un compte association",
         channel: webhook('channel'),
       }
     end
