@@ -2,7 +2,7 @@
   <div style="margin: auto">
     <h1>Actions</h1>
 
-    <%= form_tag admin_actions_path, class: 'form-inline', method: :get do |f| %>
+    <%= form_tag admin_actions_path, class: 'form-inline', id: "search-form", method: :get do |f| %>
       <div class="panel panel-default">
         <div class="panel-body">
           <div style="float: right">
@@ -32,8 +32,8 @@
             <%= select_tag :moderated, options_for_select([['Toutes (modéré, non modéré)', nil], ['Modéré', true], ['Non modéré', false]], @params[:moderated]), class: 'form-control' %>
           </div>
 
-          <div class="input-group">
-            <%= select_tag :status, options_for_select(entourage_type_statuses, @params[:status]), class: 'form-control' %>
+          <div id="select-status" class="input-group">
+            <%= select_tag :status, options_for_select(entourage_type_statuses, @params[:status]), multiple: true, class: 'form-control' %>
           </div>
         </div>
       </div>
@@ -107,8 +107,24 @@
 
 <script>
   $(function() {
-    $('form select,input').on('change', function(event) {
-      $(event.target).closest('form').submit();
+    var formId = "search-form";
+    var isChanged = false;
+
+    $('#status').multiselect({
+      nonSelectedText: 'Tous les statuts',
+      onChange: function(option, change) { isChanged = true },
+      onSelectAll: function(option, change) { isChanged = true },
+      onDropdownHide: function(option, change) {
+        if (isChanged) {
+          $(formId).submit();
+        }
+      },
+    });
+
+    $(formId + ' select, input').on('change', function(event) {
+      if ($(event.target).closest('#select-status').length == 0) {
+        $(formId).submit();
+      }
     })
   })
 </script>
