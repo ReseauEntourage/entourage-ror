@@ -55,6 +55,10 @@ jobs:
         REDIS_URL: redis://redis:6379
       run: bundle exec rake
 
+    - name: Install Heroku CLI
+      run: |
+        curl https://cli-assets.heroku.com/install.sh | sh
+
     - uses: akhileshns/heroku-deploy@v3.8.9
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
