@@ -33,7 +33,7 @@ module Admin
     end
 
     def filter_params
-      params.permit(:search, :area, :moderator_id, :status).to_h
+      params.permit(:search, :area, :moderator_id, status: []).to_h
     end
 
     def filtered_outings

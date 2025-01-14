@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @params = params.permit([:search, :area, :moderator_id, :status, :entourage_type, :moderated]).to_h
+      @params = params.permit(:search, :area, :moderator_id, :entourage_type, :moderated, status: []).to_h
       @area = params[:area].presence&.to_sym || :all
 
       @actions = Action.preload([:user, matchings: :match])
