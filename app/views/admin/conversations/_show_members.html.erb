@@ -44,7 +44,7 @@
   <%= form_tag invite_admin_conversation_path(@conversation.id), remote: true, method: :post, html: { role: "form" } do |f| %>
     <%= submit_tag "Ajouter à la conversation", class: "btn btn-default btn-sm", style: "float: right" %>
 
-    <%= select_tag :user_id, options_for_select([]), class: "form-control user-select", placeholder: "utilisateur (prénom ou téléphone)", required: true, style: "float: right; width: 200px;" %>
+    <%= select_tag :user_id, options_for_select([]), class: "form-control user-select", placeholder: "utilisateur (prénom ou téléphone)", required: true, style: "float: right; width: 400px;" %>
   <% end %>
 <% end %>
 
