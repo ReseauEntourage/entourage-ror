@@ -15,7 +15,7 @@ module Admin
 
     def search
       if params[:query].present?
-        @users = User.validated.where('first_name LIKE ? OR phone LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%")
+        @users = User.validated.where('first_name ILIKE ? OR phone LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%")
       else
         @users = User.none
       end
