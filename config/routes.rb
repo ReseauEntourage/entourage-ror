@@ -155,7 +155,7 @@ Rails.application.routes.draw do
 
       resources :entourage_moderations, only: [:create]
       resources :sensitive_words, only: [:show, :destroy]
-      resources :conversations, only: [:index, :show] do
+      resources :conversations, only: [:index, :show, :new, :create] do
         member do
           get :chat_messages
           get :prepend_chat_messages
@@ -168,6 +168,7 @@ Rails.application.routes.draw do
         end
 
         collection do
+          get :add_member
           delete :destroy_message
         end
       end

@@ -69,6 +69,43 @@ module Admin
       @messages_author = current_admin if join_request.present? || @conversation.new_record?
     end
 
+    def new
+      @conversation = Conversation.new
+    end
+
+    def create
+      participant_ids = conversation_params[:member_ids] + [current_admin.id]
+
+      # create conversation
+      @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_admin.id)
+      @conversation.create_from_join_requests!
+
+      # create message
+      join_request = current_admin.join_requests.accepted.find_by!(joinable: @conversation)
+
+      ChatServices::ChatMessageBuilder.new(
+        params: { content: conversation_params[:message] },
+        user: current_admin,
+        joinable: @conversation,
+        join_request: join_request
+      ).create do |on|
+        on.success do
+          # we need this value right now to get conversation displayable in index view
+          @conversation.update_attribute(:number_of_root_chat_messages, 1)
+        end
+      end
+
+      redirect_to admin_conversations_path
+    end
+
+    def add_member
+      @index = (Time.now.to_r * 1_000).to_i
+
+      respond_to do |format|
+        format.js
+      end
+    end
+
     def chat_messages
       @chat_messages = @conversation.chat_messages.order(created_at: :desc).page(1).per(10)
 
@@ -226,6 +263,10 @@ module Admin
     end
 
     private
+
+    def conversation_params
+      params.require(:conversation).permit(member_ids: [])
+    end
 
     def chat_messages_params
       params.require(:chat_message).permit(:content)

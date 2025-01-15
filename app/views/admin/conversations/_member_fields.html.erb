@@ -1,0 +1,6 @@
+<div class="form-group member-group" data-index="<%= index %>">
+  <%= label_tag "member_#{index}", "Membre" %>
+  <div class="controls">
+    <%= select_tag "conversation[member_ids][]", options_for_select([]), class: "form-control user-select", placeholder: "utilisateur (ID ou téléphone)", required: true, style: "width: 200px;", id: "member_#{index}" %>
+  </div>
+</div>

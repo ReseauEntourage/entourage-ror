@@ -91,6 +91,8 @@
     </div>
 
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
+
+    <%= button_to "Créer multiple", new_admin_conversation_path, method: :get, class: "btn btn-default btn-sm", form: { style: "float: right;" } %>
   </div>
 
   <div style="padding-bottom: 50px">
