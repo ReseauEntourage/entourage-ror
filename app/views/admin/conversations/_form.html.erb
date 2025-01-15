@@ -17,7 +17,7 @@
   </div>
 
   <div class="form-group">
-    <%= link_to "Ajouter membre", add_member_admin_conversations_path, remote: true, class: "btn btn-default", id: "add-member-btn" %>
+    <%= link_to "Ajouter participant", add_member_admin_conversations_path, remote: true, class: "btn btn-default", id: "add-member-btn" %>
   </div>
 
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
@@ -29,7 +29,7 @@
     const selectElement = $(element).find('.user-select');
     if (!selectElement.hasClass('select2-hidden-accessible')) {
       selectElement.select2({
-        placeholder: 'utilisateur (ID ou téléphone)',
+        placeholder: 'utilisateur (prénom ou téléphone)',
         minimumInputLength: 1,
         ajax: {
           url: '/users/search',
