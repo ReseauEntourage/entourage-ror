@@ -8,10 +8,9 @@ module Admin
     def index
       @params = params.permit([:filter])
 
-      @conversations = Entourage
+      @conversations = Conversation
         .includes(:user)
         .joins(:join_requests)
-        .where(group_type: :conversation)
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)
