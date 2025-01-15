@@ -11,6 +11,7 @@ module Admin
       @conversations = Conversation
         .includes(:user)
         .joins(:join_requests)
+        .search_by_id(params[:search])
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)

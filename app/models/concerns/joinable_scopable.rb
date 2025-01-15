@@ -23,6 +23,7 @@ module JoinableScopable
 
     scope :search_by_member, -> (search) {
       return unless search.present?
+      return if search.match?(/\A\d+\z/) # exclude integer
 
       where(sanitize_sql_array [%(
         %s.id in (
