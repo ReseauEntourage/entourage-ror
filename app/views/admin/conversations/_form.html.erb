@@ -1,0 +1,81 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @conversation } %>
+
+<%= form_for [:admin, @conversation], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= label_tag :message, "Message initial" %>
+    <div class="controls">
+      <%= text_area_tag "conversation[message]", nil, rows: 6, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div id="members-container">
+    <%= render partial: "member_fields", locals: { index: 0 } %>
+  </div>
+
+  <div class="form-group">
+    <%= link_to "Ajouter membre", add_member_admin_conversations_path, remote: true, class: "btn btn-default", id: "add-member-btn" %>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_conversations_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  function initializeSelect2ForElement(element) {
+    const selectElement = $(element).find('.user-select');
+    if (!selectElement.hasClass('select2-hidden-accessible')) {
+      selectElement.select2({
+        placeholder: 'utilisateur (ID ou téléphone)',
+        minimumInputLength: 1,
+        ajax: {
+          url: '/users/search',
+          dataType: 'json',
+          delay: 250,
+          data: function(params) {
+            return {
+              query: params.term // search term
+            };
+          },
+          processResults: function(data) {
+            return {
+              results: data.map(function(user) {
+                return { id: user.id, text: user.first_name + ' ' + user.last_name + ' (' + user.phone + ')' };
+              })
+            };
+          },
+          cache: true
+        }
+      });
+    }
+  }
+
+  // observe container modifications
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.addedNodes) {
+        $(mutation.addedNodes).each(function() {
+          if ($(this).hasClass('member-group')) {
+            initializeSelect2ForElement(this);
+          }
+        });
+      }
+    });
+  });
+
+  // observe specific container
+  const container = document.getElementById('members-container');
+  if (container) {
+    observer.observe(container, { childList: true });
+  }
+
+  // initialize member-group
+  $(document).ready(function() {
+    $('.member-group').each(function() {
+      initializeSelect2ForElement(this);
+    });
+  });
+</script>
