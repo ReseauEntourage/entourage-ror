@@ -75,7 +75,11 @@ module Admin
     end
 
     def create
-      participant_ids = conversation_params[:member_ids] + [current_admin.id]
+      participant_ids = (conversation_params[:member_ids] + [current_admin.id]).uniq
+
+      if @conversation = Conversation.active.find_by_member_ids(participant_ids)
+        return redirect_to admin_conversations_path(search: @conversation.id), alert: "Une conversation identique existe déjà"
+      end
 
       # create conversation
       @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_admin.id)
@@ -96,7 +100,9 @@ module Admin
         end
       end
 
-      redirect_to admin_conversations_path
+      redirect_to admin_conversations_path(search: @conversation.id)
+    rescue => e
+      redirect_to admin_conversations_path, alert: "Une erreur a eu lieu : #{e}"
     end
 
     def add_member
