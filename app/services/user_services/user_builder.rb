@@ -25,7 +25,8 @@ module UserServices
 
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         MemberMailer.welcome(user).deliver_later if user.email.present?
-        SlackServices.SignalAssociationCreation(user: user).notify if user.goal_association?
+
+        signal_association(user)
 
         callback.on_success.try(:call, user)
       else
@@ -46,6 +47,13 @@ module UserServices
       return if blocked_user_ids.empty?
 
       SlackServices::SignalUserCreation.new(user: user, blocked_user_ids: blocked_user_ids).notify
+    end
+
+    def signal_association user
+      return unless user.saved_change_to_goal?
+      return unless user.goal_association?
+
+      SlackServices::SignalAssociationCreation.new(user: user).notify
     end
 
     private
