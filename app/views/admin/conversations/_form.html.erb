@@ -29,7 +29,7 @@
     const selectElement = $(element).find('.user-select');
     if (!selectElement.hasClass('select2-hidden-accessible')) {
       selectElement.select2({
-        placeholder: 'utilisateur (ID ou téléphone)',
+        placeholder: 'utilisateur (prénom ou téléphone)',
         minimumInputLength: 1,
         ajax: {
           url: '/users/search',
