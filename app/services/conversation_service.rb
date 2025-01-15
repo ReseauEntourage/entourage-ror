@@ -46,7 +46,7 @@ module ConversationService
   end
 
   def self.build_conversation participant_ids:, creator_id:
-    conversation = Entourage.new(group_type: :conversation)
+    conversation = Conversation.new
     conversation.send :set_default_attributes
     conversation.user_id = creator_id
     conversation.join_requests = participant_ids.map do |participant_id|

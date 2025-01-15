@@ -95,7 +95,7 @@
 
   <div style="padding-bottom: 50px">
     <%= form_tag admin_conversations_path, remote: true, method: :get, html: { role: "form" } do |f| %>
-      <%= text_field_tag :search, nil, class: "form-control", style: "width: 200px;", placeholder: "Recherche par membre" %>
+      <%= text_field_tag :search, params[:search], class: "form-control", style: "width: 200px;", placeholder: "Recherche par membre" %>
 
       <% @params.each do |key, value| %>
         <% unless key.to_sym == :search %>
