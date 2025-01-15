@@ -26,7 +26,7 @@
       <%= link_to "Modifier", admin_conversation_path(@conversation) %>
     </li>
     <li role="presentation" class="<%= :active if tab == :show_members %>">
-      <%= link_to "Membres (#{@conversation.members_count})", show_members_admin_conversation_path(@conversation) %>
+      <%= link_to "Participants (#{@conversation.members_count})", show_members_admin_conversation_path(@conversation) %>
     </li>
   </ul>
 <% end %>
