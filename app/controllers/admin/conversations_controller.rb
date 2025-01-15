@@ -86,19 +86,14 @@ module Admin
       @conversation.create_from_join_requests!
 
       # create message
-      join_request = current_admin.join_requests.accepted.find_by!(joinable: @conversation)
-
-      ChatServices::ChatMessageBuilder.new(
-        params: { content: conversation_params[:message] },
+      ChatMessage.new(
         user: current_admin,
-        joinable: @conversation,
-        join_request: join_request
-      ).create do |on|
-        on.success do
-          # we need this value right now to get conversation displayable in index view
-          @conversation.update_attribute(:number_of_root_chat_messages, 1)
-        end
-      end
+        messageable: @conversation,
+        content: conversation_params[:message]
+      ).save!
+
+      # we need this value right now to get conversation displayable in index view
+      @conversation.update_attribute(:number_of_root_chat_messages, 1)
 
       redirect_to admin_conversations_path(search: @conversation.id)
     rescue => e
@@ -272,7 +267,7 @@ module Admin
     private
 
     def conversation_params
-      params.require(:conversation).permit(member_ids: [])
+      params.require(:conversation).permit(:message, member_ids: [])
     end
 
     def chat_messages_params
