@@ -2,5 +2,9 @@
   <%= label_tag "member_#{index}", "Participant" %>
   <div class="controls">
     <%= select_tag "conversation[member_ids][]", options_for_select([]), class: "form-control user-select", placeholder: "utilisateur (prénom ou téléphone)", required: true, style: "width: 400px;", id: "member_#{index}" %>
+
+    <% unless index == 0 %>
+      <button type="button" class="btn btn-danger btn-remove-member" data-index="<%= index %>">Supprimer</button>
+    <% end %>
   </div>
 </div>
