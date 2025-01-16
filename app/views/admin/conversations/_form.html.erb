@@ -78,4 +78,12 @@
       initializeSelect2ForElement(this);
     });
   });
+
+  // remove member-group
+  $(document).on('click', '.btn-remove-member', function(e) {
+    e.preventDefault();
+
+    $(this).closest('.member-group').remove();
+  });
+
 </script>
