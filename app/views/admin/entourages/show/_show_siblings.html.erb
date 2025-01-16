@@ -31,6 +31,7 @@
     <thead>
       <tr>
         <th>id</th>
+        <th>statut</th>
         <th>date de création</th>
         <th>date d'événement (début)</th>
         <th>date d'événement (fin)</th>
@@ -41,9 +42,10 @@
       <% @siblings.each do |sibling| %>
         <tr>
           <td><%= link_to sibling.id, admin_entourage_path(sibling) %></td>
-          <td><%= l sibling.created_at %></td>
-          <td><%= l sibling.metadata[:starts_at] %></td>
-          <td><%= l sibling.metadata[:ends_at] %></td>
+          <td><%= status_label sibling %></td>
+          <td><%= l sibling.created_at, format: :long %></td>
+          <td><%= l sibling.metadata[:starts_at], format: :long %></td>
+          <td><%= l sibling.metadata[:ends_at], format: :long %></td>
         </tr>
       <% end %>
     </tbody>
