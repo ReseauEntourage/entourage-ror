@@ -35,8 +35,8 @@ module V1
     attribute :created_at
 
     has_one :stats
-    has_one :address,      serializer: AddressSerializer, if: :me?
-    has_one :address_2,    serializer: AddressSerializer, if: :me?
+    has_one :address, serializer: AddressSerializer
+    has_one :address_2, serializer: AddressSerializer
 
     def placeholders?
       me? && scope[:user].anonymous?
