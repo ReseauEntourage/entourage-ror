@@ -253,7 +253,7 @@ module Api
         updater.update do |on|
           on.success do |user, address|
             render status: 200, json: {
-              address: ::V1::AddressSerializer.new(address, root: false),
+              address: ::V1::AddressSerializer.new(address, root: false, scope: { user: current_user_or_anonymous }),
               firebase_properties: UserService.firebase_properties(user)
             }
           end

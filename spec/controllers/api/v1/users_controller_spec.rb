@@ -1019,7 +1019,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "conversation" => {
               "uuid" => "1_list_#{user.id}-#{other_user.id}"
             },
-            "created_at" => other_user.created_at.iso8601(3)
+            "created_at" => other_user.created_at.iso8601(3),
+            "address" => nil,
+            "address_2" => nil
           }
         }) }
 
@@ -1260,9 +1262,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             subject
             expect(result).to eq(
               "address"=>{
-                "display_address"=>"My Place, 00001",
-                "latitude"=>1.0,
-                "longitude"=>2.0,
+                "display_address"=>", 00001",
+                "latitude"=>nil,
+                "longitude"=>nil,
                 "position"=>1,
               },
               "firebase_properties"=>{
