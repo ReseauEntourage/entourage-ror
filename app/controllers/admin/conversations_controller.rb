@@ -100,14 +100,6 @@ module Admin
       redirect_to admin_conversations_path, alert: "Une erreur a eu lieu : #{e}"
     end
 
-    def add_member
-      @index = (Time.now.to_r * 1_000).to_i
-
-      respond_to do |format|
-        format.js
-      end
-    end
-
     def chat_messages
       @chat_messages = @conversation.chat_messages.order(created_at: :desc).page(1).per(10)
 
