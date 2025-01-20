@@ -24,8 +24,11 @@ module OutingTasks
         .where(online: false)
         .where(notification_sent_at: nil)
         .upcoming(POST_UPCOMING_DELAY.from_now)
+        .with_moderation
+        .where("entourage_moderations.moderated_at is not null")
         .joins(:user)
         .where("users.admin = ? OR users.targeting_profile = ?", true, 'team')
+        .group("entourages.id")
     end
 
     # send_email_with_upcoming
@@ -50,6 +53,9 @@ module OutingTasks
 
       outing_ids = OutingsServices::Finder.new(user, Hash.new).find_all
         .upcoming(EMAIL_UPCOMING_DELAY.from_now)
+        .with_moderation
+        .where("entourage_moderations.moderated_at is not null")
+        .group("entourages.id")
         .pluck(:id)
         .uniq
 
