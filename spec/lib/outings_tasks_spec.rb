@@ -7,8 +7,11 @@ describe OutingTasks do
   let(:online) { false }
   let(:notification_sent_at) { nil }
   let(:starts_at) { 1.hour.from_now }
+  let(:moderated_at) { Time.zone.now }
 
   let(:outing) { create :outing,
+    country: 'FR',
+    postal_code: '44240',
     status: status,
     online: online,
     notification_sent_at: notification_sent_at,
@@ -19,23 +22,23 @@ describe OutingTasks do
   describe "upcoming_outings" do
     subject { OutingTasks.upcoming_outings.pluck(:id) }
 
-    before { outing }
-
     # include
-    context "correct params" do
-      it { expect(subject).to include(outing.id) }
-    end
-
-    context "admin creator but not team" do
-      let(:user) { create :admin_user }
+    context "correct params and moderated" do
+      before { outing.moderation.update_attribute(:moderated_at, moderated_at) }
 
       it { expect(subject).to include(outing.id) }
     end
 
-    context "not admin creator but team" do
-      let(:user) { create :public_user, partner: create(:partner, staff: true) }
+    context "correct params but not moderated" do
+      before { outing.moderation.update_attribute(:moderated_at, nil) }
 
-      it { expect(subject).to include(outing.id) }
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context "correct params but not exists" do
+      before { outing.moderation.destroy }
+
+      it { expect(subject).not_to include(outing.id) }
     end
 
     # not include
@@ -73,7 +76,7 @@ describe OutingTasks do
   describe "send_post_to_upcoming" do
     subject { OutingTasks.send_post_to_upcoming }
 
-    before { outing }
+    before { outing.moderation.update_attribute(:moderated_at, moderated_at) }
 
     context "creates a chat_message" do
       it { expect { subject }.to change { ChatMessage.count }.by(1) }
