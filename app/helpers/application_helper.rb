@@ -6,6 +6,13 @@ module ApplicationHelper
     l(datetime, format: "%-d %b")
   end
 
+  def object_translation object, field, lang
+    return object[field] if Translation.disable_on_read?
+    return object[field] unless lang && object.translation
+
+    object.translation.with_lang(lang)[field] || object[field]
+  end
+
   def status_label instance
     type_to_class = {
       "active" => "info",

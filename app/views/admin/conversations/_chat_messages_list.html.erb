@@ -160,6 +160,10 @@
         <em><%= simple_format message.content(true) %></em>
       <% else %>
         <%= simple_format message.content %>
+
+        <% if message.translation && message.translation.foreign? %>
+          <i>Traduction: <%= object_translation(message, :content, :fr) %></i>
+        <% end %>
       <% end %>
 
       <% if @last_reads[message.id].any? %>

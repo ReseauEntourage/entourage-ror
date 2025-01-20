@@ -49,7 +49,7 @@ module Admin
                   join_request.archived_at.present? &&
                   join_request.archived_at >= (@conversation.feed_updated_at || @conversation.updated_at)
 
-      @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user)
+      @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user, :translation)
 
       reads = join_requests
         .reject { |r| r.last_message_read.nil? || r.user_id == current_admin.id }
