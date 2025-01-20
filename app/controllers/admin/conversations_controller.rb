@@ -95,7 +95,7 @@ module Admin
       # we need this value right now to get conversation displayable in index view
       @conversation.update_attribute(:number_of_root_chat_messages, 1)
 
-      redirect_to admin_conversations_path(search: @conversation.id)
+      redirect_to admin_conversations_path
     rescue => e
       redirect_to admin_conversations_path, alert: "Une erreur a eu lieu : #{e}"
     end

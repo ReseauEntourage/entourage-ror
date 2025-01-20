@@ -6,7 +6,7 @@
 
 <%= form_for [:admin, @conversation], html: { role: "form" } do |f| %>
   <div class="form-group">
-    <%= label_tag :message, "Message initial" %>
+    <%= label_tag :message, "Message" %>
     <div class="controls">
       <%= text_area_tag "conversation[message]", nil, rows: 6, class: "form-control", required: true %>
     </div>
