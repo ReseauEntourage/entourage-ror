@@ -168,7 +168,6 @@ Rails.application.routes.draw do
         end
 
         collection do
-          get :add_member
           delete :destroy_message
         end
       end
