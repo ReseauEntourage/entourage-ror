@@ -1,0 +1,50 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @entourage_area } %>
+
+<%= form_for [:admin, @entourage_area], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :antenne %>
+    <div class="controls">
+      <%= f.check_box :antenne, { checked: @entourage_area.antenne?, 'data-toggle': :toggle }, 'true', 'false' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-md-6">
+      <%= f.label :geo_zone %>
+      <% geo_zones = EntourageArea::GEO_ZONES.map { |geo_zone| [t("activerecord.attributes.entourage_area.geo_zones.#{geo_zone}"), geo_zone] } %>
+      <%= f.select :geo_zone, options_for_select(geo_zones, @entourage_area.geo_zone), { include_blank: false }, class: "form-control" %>
+    </div>
+
+    <div class="col-md-6">
+      <%= f.label :postal_code  %>
+      <div class="controls">
+        <%= f.text_field :postal_code, class: "form-control", required: true %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :display_name %>
+    <div class="controls">
+      <%= f.text_field :display_name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :city %>
+    <div class="controls">
+      <%= f.text_field :city, class: "form-control", required: true, rows: 8 %>
+    </div>
+  </div>
+
+  <%= f.submit "Enregistrer", class: "btn btn-success" %>
+  <%= link_to "Retour", admin_entourage_areas_path, class: "btn btn-default" %>
+
+  <div style="float: right;">
+    <%= link_to "Supprimer", admin_entourage_area_path(@entourage_area), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de vouloir supprimer cette zone ?" } %>
+  </div>
+<% end %>
