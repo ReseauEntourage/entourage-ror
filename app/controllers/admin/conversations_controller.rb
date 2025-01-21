@@ -8,10 +8,10 @@ module Admin
     def index
       @params = params.permit([:filter])
 
-      @conversations = Entourage
+      @conversations = Conversation
         .includes(:user)
         .joins(:join_requests)
-        .where(group_type: :conversation)
+        .search_by_id(params[:search])
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)
@@ -68,6 +68,36 @@ module Admin
       end
 
       @messages_author = current_admin if join_request.present? || @conversation.new_record?
+    end
+
+    def new
+      @conversation = Conversation.new
+    end
+
+    def create
+      participant_ids = (conversation_params[:member_ids] + [current_admin.id]).uniq
+
+      if @conversation = Conversation.active.find_by_member_ids(participant_ids)
+        return redirect_to admin_conversations_path(search: @conversation.id), alert: "Une conversation identique existe déjà"
+      end
+
+      # create conversation
+      @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_admin.id)
+      @conversation.create_from_join_requests!
+
+      # create message
+      ChatMessage.new(
+        user: current_admin,
+        messageable: @conversation,
+        content: conversation_params[:message]
+      ).save!
+
+      # we need this value right now to get conversation displayable in index view
+      @conversation.update_attribute(:number_of_root_chat_messages, 1)
+
+      redirect_to admin_conversations_path
+    rescue => e
+      redirect_to admin_conversations_path, alert: "Une erreur a eu lieu : #{e}"
     end
 
     def chat_messages
@@ -227,6 +257,10 @@ module Admin
     end
 
     private
+
+    def conversation_params
+      params.require(:conversation).permit(:message, member_ids: [])
+    end
 
     def chat_messages_params
       params.require(:chat_message).permit(:content)

@@ -6,14 +6,14 @@
     <%= link_to recipient_names, chat_messages_admin_conversation_path(conversation), remote: true %>
   </li>
   <li role="presentation" class="<%= :active if tab == :show_members %>">
-    <%= link_to "Membres (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
+    <%= link_to "Participants (#{conversation.members_count})", show_members_admin_conversation_path(conversation), remote: true %>
   </li>
 </ul>
 
 <table class="table">
   <th>Nom</th>
-  <th>Membre</th>
-  <th>Membre depuis</th>
+  <th>Participant</th>
+  <th>Participant depuis</th>
   <th></th>
 
   <% conversation.join_requests.each do |join_request| %>
@@ -44,13 +44,13 @@
   <%= form_tag invite_admin_conversation_path(@conversation.id), remote: true, method: :post, html: { role: "form" } do |f| %>
     <%= submit_tag "Ajouter à la conversation", class: "btn btn-default btn-sm", style: "float: right" %>
 
-    <%= select_tag :user_id, options_for_select([]), class: "form-control", id: "user-select", placeholder: "utilisateur (ID ou téléphone)", required: true, style: "float: right; width: 200px;" %>
+    <%= select_tag :user_id, options_for_select([]), class: "form-control user-select", placeholder: "utilisateur (prénom ou téléphone)", required: true, style: "float: right; width: 400px;" %>
   <% end %>
 <% end %>
 
 <script>
-  $('#user-select').select2({
-    placeholder: 'utilisateur (ID ou téléphone)',
+  $('.user-select').select2({
+    placeholder: 'utilisateur (prénom ou téléphone)',
     minimumInputLength: 1,
     ajax: {
       url: '/users/search',

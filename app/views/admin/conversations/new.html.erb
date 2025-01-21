@@ -1,0 +1,17 @@
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Conversations", admin_conversations_path %></li>
+    <li class="active">Créer</li>
+  </ol>
+
+  <h1>Nouvelle conversation</h1>
+
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+        <b>Participants</b><br>
+        Vous serez automatiquement ajouté à la conversation.
+    </div>
+  </div>
+
+  <%= render partial: 'form' %>
+</div>
