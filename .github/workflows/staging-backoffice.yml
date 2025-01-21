@@ -63,5 +63,5 @@ jobs:
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
         # deploy to entourage-back-preprod
-        heroku_app_name: entourage-back-preprod
+        heroku_app_name: entourage-back-backoffice-preprod
         heroku_email: nicolas.chafai@entourage.social
