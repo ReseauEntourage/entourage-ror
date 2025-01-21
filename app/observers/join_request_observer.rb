@@ -3,6 +3,8 @@ class JoinRequestObserver < ActiveRecord::Observer
 
   def after_create(record)
     action(:create, record)
+
+    mailer(record)
   end
 
   def after_update(record)
@@ -27,5 +29,12 @@ class JoinRequestObserver < ActiveRecord::Observer
     record.joinable.members_has_changed!
   rescue
     # we want this hook to never fail the main process
+  end
+
+  def mailer(record)
+    return unless record.user
+    return unless record.joinable.respond_to?(:outing?) && record.joinable.outing?
+
+    GroupMailer.event_joined_confirmation(record.joinable_id, record.user_id).deliver_later
   end
 end
