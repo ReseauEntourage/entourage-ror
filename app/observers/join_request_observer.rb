@@ -34,6 +34,7 @@ class JoinRequestObserver < ActiveRecord::Observer
   def mailer(record)
     return unless record.user
     return unless record.joinable.respond_to?(:outing?) && record.joinable.outing?
+    return if record.user_id == record.joinable.user_id
 
     GroupMailer.event_joined_confirmation(record.joinable_id, record.user_id).deliver_later
   end
