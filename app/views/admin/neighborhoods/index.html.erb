@@ -1,30 +1,10 @@
 <div class="container">
+  <%= render 'header', tab: :index %>
+
   <div style="margin: auto">
     <h1>Groupes de voisinage</h1>
 
-    <%= form_tag admin_neighborhoods_path, class: 'form-inline', method: :get do |f| %>
-      <div class="panel panel-default">
-        <div class="panel-body">
-            <div class='input-group'>
-              <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Nom, description..." %>
-              <span class="input-group-btn">
-                <%= submit_tag "Chercher", class: "btn btn-default" %>
-              </span>
-            </div>
-        </div>
-        <div class="panel-body">
-          <div class="input-group">
-            <div class="btn-group btn-group-sm">
-              <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
-              <%= link_to("National", @params.merge(area: :national), class: "btn btn-#{@area == :national ? :primary : :default}") %>
-              <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
-                <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'search_form', params: @params, area: @area, path: nil %>
 
     <div class="row">
       <% unless @neighborhoods.none? %>

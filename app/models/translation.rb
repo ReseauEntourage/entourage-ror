@@ -11,6 +11,14 @@ class Translation < ApplicationRecord
     end
   end
 
+  def fr?
+    from_lang.to_sym == :fr
+  end
+
+  def foreign?
+    !fr?
+  end
+
   # allow: record.fr.content for example
   def with_lang language
     OpenStruct.new(self[language])
