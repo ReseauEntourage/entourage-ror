@@ -282,6 +282,12 @@ Rails.application.routes.draw do
         end
       end
 
+      collection do
+        get :unread_posts
+        post 'unread_message/:chat_message_id' => :unread_message, as: :unread_message
+        delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
+      end
+
       namespace :testings, only: [] do
         resources :emails, only: [] do
           collection do
