@@ -17,8 +17,11 @@ module Admin
       if params[:query].present?
         @users = User
           .validated
+          .select(:id, :first_name, :last_name, :phone)
           .where(deleted: false)
           .where('first_name ILIKE ? OR phone LIKE ?', "%#{params[:query]}%", "%#{params[:query]}%")
+          .limit(25)
+          .sort_by(&:first_name)
       else
         @users = User.none
       end

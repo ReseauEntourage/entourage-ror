@@ -53,7 +53,7 @@ module UserServices
       return unless user.saved_change_to_goal?
       return unless user.goal_association?
 
-      SlackServices.SignalAssociationCreation(user: user).notify
+      SlackServices::SignalAssociationCreation.new(user: user).notify
     end
 
     private
