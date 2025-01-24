@@ -20,7 +20,7 @@ module SlackServices
     def payload_adds
       {
         username: "Création d’un compte association",
-        channel: webhook('channel'),
+        channel: webhook('channel-associations'),
       }
     end
   end
