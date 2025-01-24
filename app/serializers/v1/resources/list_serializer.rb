@@ -4,6 +4,10 @@ module V1
       def description
         nil
       end
+
+      def html
+        nil
+      end
     end
   end
 end

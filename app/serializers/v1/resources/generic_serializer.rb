@@ -10,9 +10,8 @@ module V1
         :description,
         :image_url,
         :url,
-        :watched
-
-      attribute :html, unless: :nohtml?
+        :watched,
+        :html
 
       def name
         I18nSerializer.new(object, :name, lang).translation
