@@ -131,6 +131,12 @@ class Entourage < ApplicationRecord
     .group("entourages.id")
   }
 
+  scope :with_exact_members, -> (member_ids) {
+    return unless uuid_v2 = ConversationService.hash_for_participants(member_ids, validated: false)
+
+    where(uuid_v2: uuid_v2)
+  }
+
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?
   before_validation :set_outings_ends_at
