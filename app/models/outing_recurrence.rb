@@ -11,13 +11,21 @@ class OutingRecurrence < ApplicationRecord
 
   class << self
     def generate_all
-      OutingRecurrence.find_in_batches do |outing_recurrences|
+      with_valid_outings.find_in_batches do |outing_recurrences|
         outing_recurrences.each do |outing_recurrence|
           next unless outing_recurrence.generate_available?
 
           outing_recurrence.generate.save
         end
       end
+    end
+
+    def with_valid_outings
+      OutingRecurrence.joins(:outings)
+        .where(continue: true)
+        .where("entourages.metadata ->> 'ends_at' > ?", Time.now)
+        .where("entourages.status IN (?)", %w[open full])
+        .distinct
     end
   end
 

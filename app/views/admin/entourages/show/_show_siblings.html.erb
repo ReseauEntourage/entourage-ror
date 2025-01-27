@@ -1,7 +1,23 @@
 <h4>Liste des événements récurrents <span class="badge"><%= @siblings.count %><span></h4>
 
 <% if @outing.recurrence %>
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      Un événement récurrent continuer de générer de nouveaux événements tant que :
+      <ul>
+        <li>On n'a pas arrêté les récurrences dans le backoffice</li>
+        <li>Ou tant qu'il y a au moins un événement actif à venir</li>
+      </ul>
+      Si vous souhaitez arrêter les récurrences, vous avez donc deux moyens possibles :
+      <ul>
+        <li>Arrêter les récurrences dans le backoffice</li>
+        <li>Ou annuler tous les événements à venir</li>
+      </ul>
+    </div>
+  </div>
+
   <%= link_to("Arrêter les récurrences", stop_recurrences_admin_entourage_path(@outing), method: :post, class: "btn btn-primary", data: { confirm: "Cette action est irréversible. Êtes-vous sûr d'arrêter la récurrence de cet événement ?" }) %>
+
 <% else %>
   <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
     <div style="flex-grow: 1">
@@ -15,6 +31,7 @@
     <thead>
       <tr>
         <th>id</th>
+        <th>statut</th>
         <th>date de création</th>
         <th>date d'événement (début)</th>
         <th>date d'événement (fin)</th>
@@ -25,9 +42,10 @@
       <% @siblings.each do |sibling| %>
         <tr>
           <td><%= link_to sibling.id, admin_entourage_path(sibling) %></td>
-          <td><%= l sibling.created_at %></td>
-          <td><%= l sibling.metadata[:starts_at] %></td>
-          <td><%= l sibling.metadata[:ends_at] %></td>
+          <td><%= status_label sibling %></td>
+          <td><%= l sibling.created_at, format: :long %></td>
+          <td><%= l sibling.metadata[:starts_at], format: :long %></td>
+          <td><%= l sibling.metadata[:ends_at], format: :long %></td>
         </tr>
       <% end %>
     </tbody>
