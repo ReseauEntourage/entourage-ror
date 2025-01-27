@@ -23,7 +23,7 @@
     <% if @entourage.group_type == 'outing' || @entourage.public_accessibility_options.count > 1 %>
       <br/>
     <% end %>
-    <%= simple_format @highlighted[:description] %>
+    <%= simple_format @entourage.description %>
     <hr>
     <div class="small text-muted">
       Mots sensibles :

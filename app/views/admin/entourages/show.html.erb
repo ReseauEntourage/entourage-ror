@@ -1,5 +1,3 @@
-<% @highlighted = SensitiveWordsService.highlight_entourage @entourage %>
-
 <%= stylesheet_link_tag 'chat_messages' %>
 
 <style>
@@ -65,7 +63,7 @@
             <div class='col-sm-8'>
               <h3 class="panel-title">
                 <%= entourage_category_image @entourage, style: "position: relative; top: -2px;" %>
-                <%= @highlighted[:title] %>
+                <%= @entourage.title %>
               </h3>
               <div>
                 <%= entourage_type_name @entourage %> par
