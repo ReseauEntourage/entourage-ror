@@ -77,7 +77,7 @@ module Admin
     def create
       participant_ids = (conversation_params[:member_ids] + [current_admin.id]).uniq
 
-      if @conversation = Conversation.active.find_by_member_ids(participant_ids)
+      if @conversation = Conversation.active.with_exact_members(participant_ids).first
         return redirect_to admin_conversations_path(search: @conversation.id), alert: "Une conversation identique existe déjà"
       end
 

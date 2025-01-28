@@ -196,6 +196,9 @@ class Outing < Entourage
 
   # we create recurrence relationship whenever we set a recurrency to an outing that does not already defines this relationship
   def recurrency= recurrency
+    # deactivate for regular user
+    return unless user.ambassador? || user.association?
+
     @recurrency = recurrency
 
     return if recurrence.present?

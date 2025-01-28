@@ -36,19 +36,6 @@ module JoinableScopable
         )
       ), self.table_name, self.table_name.singularize.camelize, "%#{search.downcase}%", "%#{search.downcase}%", "%#{search.downcase}%"])
     }
-
-    scope :with_exact_members, -> (member_ids) {
-      joins(:join_requests)
-        .where("join_requests.status = 'accepted'")
-        .group('entourages.id')
-        .having('ARRAY_AGG(join_requests.user_id ORDER BY join_requests.user_id) = ARRAY[?]', member_ids.map(&:to_i).sort)
-    }
-  end
-
-  class_methods do
-    def find_by_member_ids member_ids
-      with_exact_members(member_ids).first
-    end
   end
 
   def members_has_changed!
