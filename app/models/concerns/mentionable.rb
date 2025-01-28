@@ -6,10 +6,20 @@ module Mentionable
   end
 
   def self.no_html content
+    return content unless content.is_a?(String)
+
     document = Nokogiri::HTML(content)
     document.css('img').each { |node| node.remove }
     document.css('a').each { |node| node.replace(node.text) }
     document.text.strip
+  end
+
+  def self.none_html! hash
+    hash.each do |key, value|
+      hash[key] = no_html(value)
+    end
+
+    hash
   end
 
   MentionsStruct = Struct.new(:instance) do
