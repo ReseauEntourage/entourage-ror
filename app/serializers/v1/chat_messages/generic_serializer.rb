@@ -19,10 +19,26 @@ module V1
       def content
         return if object.deleted?
 
+        Mentionable.no_html(
+          I18nSerializer.new(object, :content, lang).translation
+        )
+      end
+
+      def content_html
+        return if object.deleted?
+
         I18nSerializer.new(object, :content, lang).translation
       end
 
       def content_translations
+        return Hash.new if object.deleted?
+
+        Mentionable.none_html!(
+          I18nSerializer.new(object, :content, lang).translations
+        )
+      end
+
+      def content_translations_html
         return Hash.new if object.deleted?
 
         I18nSerializer.new(object, :content, lang).translations
