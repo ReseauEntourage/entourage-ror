@@ -1,0 +1,4 @@
+$('#comment-<%= @chat_message.id %>').html("<%= j render(
+  partial: 'unread_post_row',
+  locals: { post: @chat_message }
+) %>");
