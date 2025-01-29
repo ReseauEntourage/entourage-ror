@@ -360,7 +360,8 @@ describe Api::V1::OutingsController do
       end
 
       context "with recurrency for association" do
-        before { post :create, params: { outing: params.merge({ recurrency: 7 }), token: association.token } }
+        let(:user) { association }
+        before { post :create, params: { outing: params.merge({ recurrency: 7 }), token: user.token } }
 
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("outing") }
