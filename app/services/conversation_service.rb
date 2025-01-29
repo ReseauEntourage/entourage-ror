@@ -58,6 +58,19 @@ module ConversationService
     conversation
   end
 
+  def self.create_private_message! sender_id:, recipient_ids:, content:
+    participant_ids = [sender_id] + recipient_ids
+
+    unless conversation = Conversation.active.find_by_member_ids(participant_ids)
+      conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: sender_id)
+      conversation.create_from_join_requests!
+    end
+
+    chat_message = ChatMessage.new(user_id: sender_id, messageable: conversation, content: content)
+    chat_message.save!
+    chat_message
+  end
+
   def self.conversations_allowed? from:, to:
     !to.deleted
   end

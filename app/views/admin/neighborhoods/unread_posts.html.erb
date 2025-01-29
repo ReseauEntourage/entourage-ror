@@ -14,27 +14,12 @@
             <th>Utilisateur</th>
             <th>post</th>
             <th>Créée le</th>
+            <th>Supprimer</th>
           </thead>
           <% @posts.each_with_index do |post, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
-            <tr class="above-row row-<%= parite %>">
-              <td><%= link_to post.messageable.name, edit_admin_neighborhood_path(post.messageable) %></td>
-              <td><%= link_to post.user.full_name, admin_user_path(post.user) %></td>
-              <td><%= post.content %></td>
-              <td><%= l post.created_at, format: :long %></td>
-            </tr>
-            <tr class="underneath-row row-<%= parite %>">
-              <td></td>
-              <td></td>
-              <td>
-                <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(post.messageable_id), remote: true, html: { id: "comment-#{post.id}" } do |f| %>
-                  <%= f.hidden_field :parent_id, value: post.id %>
-
-                  <%= f.text_field :content, class: "conversation-message-box" %>
-                  <%= f.submit 'Envoyer', class: "btn btn-primary" %>
-                <% end %>
-              </td>
-              <td></td>
+            <tr class="above-row row-<%= parite %>" id="comment-<%= post.id %>">
+              <%= render 'unread_post_row', post: post %>
             </tr>
           <% end %>
         </table>

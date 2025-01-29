@@ -59,6 +59,7 @@ module Admin
       @area = params[:area].presence&.to_sym || :all
 
       @posts = ChatMessage
+        .visible
         .where(messageable_type: :Neighborhood)
         .where(comments_count: 0)
         .where("chat_messages.created_at > ?", 3.months.ago)
@@ -301,15 +302,18 @@ module Admin
         end
 
         on.success do |chat_message|
-          redirect_to redirection
+          respond_to do |format|
+            format.js
+            format.html { redirect_to redirection }
+          end
         end
 
         on.failure do |chat_message|
-          redirect_to redirection, alert: chat_message.errors.full_messages
+          format.html { redirect_to redirection, alert: chat_message.errors.full_messages }
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
+          format.html { redirect_to redirection, alert: "You are not authorized to delete this chat_message" }
         end
       end
     end

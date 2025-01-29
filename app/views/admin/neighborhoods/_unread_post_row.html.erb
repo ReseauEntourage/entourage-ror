@@ -1,0 +1,20 @@
+<td><%= link_to post.messageable.name, edit_admin_neighborhood_path(post.messageable) %></td>
+<td><%= link_to post.user.full_name, admin_user_path(post.user) %></td>
+<td>
+  <% if post.deleted? %>
+    <p style="color: red;"> Ce message a été supprimé par <%= post.deleter&.full_name %> le <%= l post.deleted_at, format: :short %> : </p>
+    <em><%= simple_format post.content(true) %></em>
+  <% else %>
+    <p><%= simple_format post.content %></p>
+    <p>
+      <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(post.messageable_id), remote: true do |f| %>
+        <%= f.hidden_field :parent_id, value: post.id %>
+
+        <%= f.text_field :content, class: "conversation-message-box" %>
+        <%= f.submit 'Envoyer', class: "btn btn-primary" %>
+      <% end %>
+    </p>
+  <% end %>
+</td>
+<td><%= l post.created_at, format: :long %></td>
+<td><%= link_to "Supprimer", destroy_message_admin_neighborhoods_path(chat_message_id: post.id), method: :delete, remote: true, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de vouloir supprimer cette publication ?" } if post.visible? %></td>
