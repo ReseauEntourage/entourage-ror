@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Api::V1::OutingsController do
   let(:user) { create(:public_user) }
+  let(:association) { create(:public_user, :partner) }
   let(:neighborhood_1) { create :neighborhood }
   let(:neighborhood_2) { create :neighborhood }
   let(:entourage_image) { create(:entourage_image) }
@@ -358,8 +359,8 @@ describe Api::V1::OutingsController do
         it { expect(subject).to have_key("message") }
       end
 
-      context "with recurrency" do
-        before { post :create, params: { outing: params.merge({ recurrency: 7 }), token: user.token } }
+      context "with recurrency for association" do
+        before { post :create, params: { outing: params.merge({ recurrency: 7 }), token: association.token } }
 
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("outing") }
