@@ -36,6 +36,7 @@ class ChatMessage < ApplicationRecord
   validate :validate_ancestry!
   validate :validate_private_conversation_is_not_blocked!
 
+  scope :visible, -> { where(status: [:active, :updated]) }
   scope :ordered, -> { order("created_at DESC") }
   scope :with_content, -> { where("content <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
@@ -127,6 +128,10 @@ class ChatMessage < ApplicationRecord
 
   def offensive?
     status.to_sym == :offensive
+  end
+
+  def visible?
+    [:active, :updated].include?(status.to_sym)
   end
 
   # @param force true to bypass deletion

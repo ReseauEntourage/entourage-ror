@@ -17,14 +17,13 @@ module V1
                  :survey
 
       def content
-        return "" if object.deleted?
-        return "" if object.offensive?
+        return "" unless object.visible?
 
         I18nSerializer.new(object, :content, lang).translation
       end
 
       def content_translations
-        return Hash.new if object.deleted?
+        return Hash.new unless object.visible?
 
         I18nSerializer.new(object, :content, lang).translations
       end
