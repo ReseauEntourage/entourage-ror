@@ -150,16 +150,20 @@ module Api
       end
 
       def outing_params
-        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
-          :starts_at,
-          :ends_at,
-          :place_name,
-          :street_address,
-          :google_place_id,
-          :place_limit
-        ] }, neighborhood_ids: [],
+        permitted_attributes = [
+          :status, :title, :description, :event_url, :latitude, :longitude,
+          :other_interest, :online, :entourage_image_id,
+          { metadata: [
+            :starts_at, :ends_at, :place_name, :street_address,
+            :google_place_id, :place_limit
+          ] },
+          neighborhood_ids: [],
           interests: []
-        )
+        ]
+
+        permitted_attributes << :recurrency if current_user.ambassador? || current_user.association?
+
+        params.require(:outing).permit(permitted_attributes)
       end
 
       def cancel_params
