@@ -5,13 +5,16 @@
     <p style="color: red;"> Ce message a été supprimé par <%= post.deleter&.full_name %> le <%= l post.deleted_at, format: :short %> : </p>
     <em><%= simple_format post.content(true) %></em>
   <% else %>
-    <p><%= simple_format post.content %></p>
+    <div id="chat-message-<%= post.id %>"><%= simple_format post.content %></div>
+
+    <%= link_to "Modifier le message", admin_chat_message_path(post.id), remote: true %>
+
     <p>
       <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(post.messageable_id), remote: true do |f| %>
         <%= f.hidden_field :parent_id, value: post.id %>
 
         <%= f.text_field :content, class: "conversation-message-box" %>
-        <%= f.submit 'Envoyer', class: "btn btn-primary" %>
+        <%= f.submit 'Répondre', class: "btn btn-primary" %>
       <% end %>
     </p>
   <% end %>
