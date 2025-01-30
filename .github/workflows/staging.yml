@@ -1,0 +1,100 @@
+# @see https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
+# @see https://www.pibit.nl/github/actions/rails/postgres/rspec/tutorial/example/2019/09/23/github-actions-with-rails-postgres-and-rspec/
+
+name: Ruby
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mdillon/postgis:11
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis
+        options: --entrypoint redis-server
+        ports: ['6379:6379']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.0
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: Setup Database
+        run: |
+          cp config/database.yml.github-actions config/database.yml
+          bundle exec rake db:drop db:create db:migrate
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          REDIS_URL: redis://redis:6379
+        run: bundle exec rake
+
+  deploy-api:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy API to Heroku
+        uses: akhileshns/heroku-deploy@v3.8.9
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: entourage-back-preprod
+          heroku_email: nicolas.chafai@entourage.social
+          branch: staging
+          usedocker: false # Si ton projet ne tourne pas en mode Docker
+        env:
+          RAILS_ENV: production
+
+  deploy-backoffice:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy Backoffice to Heroku
+        uses: akhileshns/heroku-deploy@v3.8.9
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: local-backoffice-preprod
+          heroku_email: nicolas.chafai@entourage.social
+          branch: staging
+          usedocker: false
+        env:
+          RAILS_ENV: production
