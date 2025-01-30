@@ -61,7 +61,7 @@ module ConversationService
   def self.create_private_message! sender_id:, recipient_ids:, content:
     participant_ids = [sender_id] + recipient_ids
 
-    unless conversation = Conversation.active.find_by_member_ids(participant_ids)
+    unless conversation = Conversation.active.with_exact_members(participant_ids).first
       conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: sender_id)
       conversation.create_from_join_requests!
     end
