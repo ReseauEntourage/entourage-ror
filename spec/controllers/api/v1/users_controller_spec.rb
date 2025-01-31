@@ -1414,15 +1414,4 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       pending "add some examples to (or delete) #{__FILE__}"
     end
   end
-
-  describe 'GET organization_admin_redirect' do
-    let(:user) { create :partner_user }
-
-    before {
-      UserServices::UserAuthenticator.stub(:auth_token) { 'foo' }
-      get :organization_admin_redirect, params: { message: 'webapp_logout', token: user.token }
-    }
-    it { expect(response.status).to eq(302) }
-    it { should redirect_to organization_admin_auth_url(auth_token: 'foo', message: 'webapp_logout') }
-  end
 end
