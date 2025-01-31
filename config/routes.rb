@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/super_admin/sidekiq', :constraints => SuperAdminConstraint.new
 
   #ADMIN
-  constraints :subdomain => /\A(admin|admin-preprod)\z/ do
+  constraints :subdomain => /\A(admin|admin-preprod|admin-test|admin-preprod-test)\z/ do
     scope :module => "admin", :as => "admin" do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
