@@ -20,6 +20,10 @@ module Offensable
   end
 
   def offense_on_save
+    if respond_to?(:messageable)
+      return if messageable.respond_to?(:conversation?) && messageable.conversation?
+    end
+
     offense.on_save if SensitiveWordsService.has_match?(content, :all, SensitiveWord::OFFENSABLE_CATEGORIES)
   end
 
