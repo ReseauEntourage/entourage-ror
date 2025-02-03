@@ -129,6 +129,10 @@ class ChatMessage < ApplicationRecord
     status.to_sym == :offensive
   end
 
+  def visible?
+    active? || updated?
+  end
+
   # @param force true to bypass deletion
   def content force = false
     return "" if deleted? && !force
