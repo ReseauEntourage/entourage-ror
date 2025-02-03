@@ -62,6 +62,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Setup API Procfile
+        run: cp Procfile.api Procfile
+
       - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
@@ -73,7 +76,7 @@ jobs:
           heroku_app_name: entourage-back-preprod
           heroku_email: nicolas.chafai@entourage.social
           branch: staging
-          usedocker: false # Si ton projet ne tourne pas en mode Docker
+          usedocker: false
         env:
           RAILS_ENV: production
 
@@ -83,6 +86,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Setup Backoffice Procfile
+        run: cp Procfile.backoffice Procfile
 
       - name: Install Heroku CLI
         run: |
