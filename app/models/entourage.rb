@@ -132,7 +132,7 @@ class Entourage < ApplicationRecord
   }
 
   scope :with_exact_members, -> (member_ids) {
-    return unless uuid_v2 = ConversationService.hash_for_participants(member_ids, validated: false)
+    return none unless uuid_v2 = ConversationService.hash_for_participants(member_ids, validated: false)
 
     where(uuid_v2: uuid_v2)
   }
@@ -182,6 +182,10 @@ class Entourage < ApplicationRecord
 
   def self.findable_by_id_or_uuid identifier
     @entourage = Entourage.findable.find_by_id_or_uuid!(identifier)
+  end
+
+  def self.find_by_member_ids member_ids
+    with_exact_members(member_ids).first
   end
 
   #An entourage can never be freezed
