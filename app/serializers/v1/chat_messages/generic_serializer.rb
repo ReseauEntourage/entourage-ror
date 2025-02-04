@@ -19,11 +19,27 @@ module V1
       def content
         return unless object.visible?
 
+        Mentionable.no_html(
+          I18nSerializer.new(object, :content, lang).translation
+        )
+      end
+
+      def content_html
+        return if object.deleted?
+
         I18nSerializer.new(object, :content, lang).translation
       end
 
       def content_translations
         return Hash.new unless object.visible?
+
+        Mentionable.none_html!(
+          I18nSerializer.new(object, :content, lang).translations
+        )
+      end
+
+      def content_translations_html
+        return Hash.new if object.deleted?
 
         I18nSerializer.new(object, :content, lang).translations
       end

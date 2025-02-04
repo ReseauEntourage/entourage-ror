@@ -26,8 +26,8 @@ class PushNotificationTrigger
       return @i18ns[lang] = I18n.t(@i18n, locale: lang) % args_to(lang) if @i18n.present?
 
       if @instance.present? && @field.present?
-        return @i18ns[lang] = @instance.send(@field) unless @instance.respond_to?(:translation) && @instance.translation.present?
-        return @i18ns[lang] = @instance.translation.translate(field: @field, lang: lang) || @instance.send(@field)
+        return @i18ns[lang] = Mentionable.no_html(@instance.send(@field)) unless @instance.respond_to?(:translation) && @instance.translation.present?
+        return @i18ns[lang] = Mentionable.no_html(@instance.translation.translate(field: @field, lang: lang) || @instance.send(@field))
       end
 
       @i18ns[lang] = @text % args_to(lang)
@@ -422,6 +422,33 @@ class PushNotificationTrigger
           content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
           extra: {
             tracking: tracking
+          }
+        }
+      )
+    end
+  end
+
+  def chat_message_on_mention
+    return unless @record.respond_to?(:mentions)
+    return unless @record.mentions.respond_to?(:extract_user_uuid)
+
+    user_ids = User.where(uuid: @record.mentions.extract_user_uuid).pluck(:id).uniq
+
+    return unless user_ids.any?
+
+    puts "-- push to: #{user_ids}"
+
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record.messageable,
+        users: batches,
+        params: {
+          object: I18nStruct.new(i18n: 'push_notifications.chat_message.mention', i18n_args: [username(@record.user)]),
+          content: I18nStruct.new(instance: @record, field: :content),
+          extra: {
+            tracking: :chat_message_on_mention
           }
         }
       )
