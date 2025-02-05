@@ -1,6 +1,6 @@
 module SlackServices
   class SignalAssociationCreation < Notifier
-    def initialize user:
+    def initialize(user:)
       @user = user
     end
 
@@ -10,43 +10,37 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}). Un utilisateur a créé un compte association",
-        attachments: [
+        blocks: [
           {
-            color: "#36a64f",
-            blocks: [
+            type: "section",
+            fields: [
               {
-                type: "section",
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: "*Nom :*\n#{@user.full_name}"
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Accéder au profil :*\n<#{link_to_user(@user_id)}|Cliquez ici>"
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Contact :*\n<tel:+33#{@user.phone.gsub(' ', '')}>#{@user.phone}"
-                  }
-                ]
+                type: "mrkdwn",
+                text: ":pushpin: *Nom :* #{@user.full_name}"
               },
               {
-                type: "section",
-                text: {
-                  type: "mrkdwn",
-                  text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
-                }
+                type: "mrkdwn",
+                text: ":link: *Accéder au profil :* <#{link_to_user(@user.id)}|Cliquez ici>"
+              },
+              {
+                type: "mrkdwn",
+                text: ":telephone_receiver: *Contact :* #{@user.phone}"
               }
             ].tap do |fields|
               if @user.email.present?
                 fields << {
                   type: "mrkdwn",
-                  text: "*Email :*\n<mailto:#{@user.email}>#{@user.email}"
+                  text: ":email: *Email :* #{@user.email}"
                 }
               end
             end
+          },
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
+            }
           }
         ]
       }
