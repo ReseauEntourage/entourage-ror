@@ -36,6 +36,14 @@ class JoinRequest < ApplicationRecord
     joins(:user).order("join_requests.role, users.first_name")
   }
 
+  scope :search_by_member, ->(search) {
+    strip = search && search.strip.downcase
+
+    return unless strip.present?
+
+    where(id: User.search_by_first_name(params[:query]))
+  }
+
   after_save :joinable_callback
   after_destroy :joinable_callback
   before_save :reset_confirmed_at_unless_accepted

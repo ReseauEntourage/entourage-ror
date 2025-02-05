@@ -25,6 +25,7 @@ describe Api::V1::Outings::UsersController do
       it { expect(result).to have_key("users") }
       it { expect(result["users"]).to match_array([{
         "id" => outing.user.id,
+        "uuid" => outing.user.uuid,
         "display_name" => "John D.",
         "role" => "organizer",
         "group_role" => "organizer",
@@ -38,6 +39,7 @@ describe Api::V1::Outings::UsersController do
         "partner_role_title" => nil,
       }, {
         "id" => user.id,
+        "uuid" => user.reload.uuid,
         "display_name" => "John D.",
         "role" => "participant",
         "group_role" => "participant",
@@ -67,6 +69,7 @@ describe Api::V1::Outings::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -90,6 +93,7 @@ describe Api::V1::Outings::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => join_request.role,
@@ -201,6 +205,7 @@ describe Api::V1::Outings::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -225,6 +230,7 @@ describe Api::V1::Outings::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -258,6 +264,7 @@ describe Api::V1::Outings::UsersController do
         it { expect(result).to eq({
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -320,6 +327,7 @@ describe Api::V1::Outings::UsersController do
         it { expect(result).to eq({
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
