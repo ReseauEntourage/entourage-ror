@@ -32,10 +32,10 @@ module V1
 
       def content_translations
         return Hash.new if object.deleted?
+        return unless translations = I18nSerializer.new(object, :content, lang).translations
+        return unless translations.present?
 
-        Mentionable.none_html!(
-          I18nSerializer.new(object, :content, lang).translations
-        )
+        Mentionable.none_html!(translations)
       end
 
       def content_translations_html

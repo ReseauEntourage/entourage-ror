@@ -15,6 +15,8 @@ module Mentionable
   end
 
   def self.none_html! hash
+    return unless hash.present?
+
     hash.each do |key, value|
       hash[key] = no_html(value)
     end
