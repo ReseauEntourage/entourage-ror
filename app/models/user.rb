@@ -171,6 +171,13 @@ class User < ApplicationRecord
       phone: Phone::PhoneBuilder.new(phone: strip).format,
     })
   }
+  scope :search_by_first_name, ->(search) {
+    strip = search && search.strip.downcase
+
+    return unless strip.present?
+
+    where(%(first_name ilike = :first_name), { first_name: strip })
+  }
   scope :accepts_email_category, -> (category_name) {
     email_category_id = EmailPreferencesService.category_id(category_name)
     joins(%{
