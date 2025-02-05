@@ -1,6 +1,6 @@
 module SlackServices
   class SignalAssociationCreation < Notifier
-    def initialize user:
+    def initialize(user:)
       @user = user
     end
 
@@ -10,10 +10,39 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}). Un utilisateur a créé un compte association",
-        attachments: [{
-          text: "Compte créé : #{@user.full_name}, #{link_to_user @user.id} (#{@user.phone}, #{@user.email})"
-        }]
+        blocks: [
+          {
+            type: "section",
+            fields: [
+              {
+                type: "mrkdwn",
+                text: ":pushpin: *Nom :* #{@user.full_name}"
+              },
+              {
+                type: "mrkdwn",
+                text: ":link: *Accéder au profil :* <#{link_to_user(@user.id)}|Cliquez ici>"
+              },
+              {
+                type: "mrkdwn",
+                text: ":telephone_receiver: *Contact :* #{@user.phone}"
+              }
+            ].tap do |fields|
+              if @user.email.present?
+                fields << {
+                  type: "mrkdwn",
+                  text: ":email: *Email :* #{@user.email}"
+                }
+              end
+            end
+          },
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
+            }
+          }
+        ]
       }
     end
 
