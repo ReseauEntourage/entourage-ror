@@ -25,6 +25,7 @@ describe Api::V1::Neighborhoods::UsersController do
       it { expect(result).to have_key("users") }
       it { expect(result["users"]).to match_array([{
         "id" => creator.id,
+        "uuid" => creator.reload.uuid,
         "display_name" => "John D.",
         "role" => "creator",
         "group_role" => "creator",
@@ -38,6 +39,7 @@ describe Api::V1::Neighborhoods::UsersController do
         "partner_role_title" => nil,
       }, {
         "id" => user.id,
+        "uuid" => user.reload.uuid,
         "display_name" => "John D.",
         "role" => "member",
         "group_role" => "member",
@@ -69,6 +71,7 @@ describe Api::V1::Neighborhoods::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "member",
             "group_role" => "member",
@@ -92,6 +95,7 @@ describe Api::V1::Neighborhoods::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "member",
             "group_role" => join_request.role,
@@ -133,6 +137,7 @@ describe Api::V1::Neighborhoods::UsersController do
         it { expect(result).to eq({
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "member",
             "group_role" => "member",
@@ -194,6 +199,7 @@ describe Api::V1::Neighborhoods::UsersController do
         it { expect(result).to eq({
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "member",
             "group_role" => "member",

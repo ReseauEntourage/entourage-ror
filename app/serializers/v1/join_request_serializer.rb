@@ -1,6 +1,7 @@
 module V1
   class JoinRequestSerializer < ActiveModel::Serializer
     attributes :id,
+               :uuid,
                :display_name,
                :role,
                :group_role,
@@ -15,6 +16,12 @@ module V1
 
     def id
       object.user_id
+    end
+
+    def uuid
+      return unless object.user
+
+      object.user.uuid
     end
 
     def requested_at
