@@ -10,10 +10,42 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}). Un utilisateur a créé un compte association",
-        attachments: [{
-          text: "Compte créé : #{@user.full_name}, #{link_to_user @user.id} (#{@user.phone}, #{@user.email})"
-        }]
+        text: nil,
+        attachments: [
+          {
+            color: "#36a64f",
+            blocks: [
+              {
+                type: "section",
+                fields: [
+                  {
+                    type: "mrkdwn",
+                    text: "*Nom :*\n#{@action.user.full_name}"
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Accéder au profil :*\n<#{link_to_user(@action.user_id)}|Cliquez ici>"
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Contact :*\n<tel:+33#{@action.user.phone.gsub(' ', '')}>#{@action.user.phone}"
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Email :*\n<mailto:#{@action.user.email}>#{@action.user.email}"
+                  }
+                ]
+              },
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: "👀 <@#{slack_moderator_id(@action.user)}> merci de vérifier ce compte !"
+                }
+              }
+            ]
+          }
+        ]
       }
     end
 
