@@ -20,19 +20,19 @@ module SlackServices
                 fields: [
                   {
                     type: "mrkdwn",
-                    text: "*Nom :*\n#{@action.user.full_name}"
+                    text: "*Nom :*\n#{@user.full_name}"
                   },
                   {
                     type: "mrkdwn",
-                    text: "*Accéder au profil :*\n<#{link_to_user(@action.user_id)}|Cliquez ici>"
+                    text: "*Accéder au profil :*\n<#{link_to_user(@user_id)}|Cliquez ici>"
                   },
                   {
                     type: "mrkdwn",
-                    text: "*Contact :*\n<tel:+33#{@action.user.phone.gsub(' ', '')}>#{@action.user.phone}"
+                    text: "*Contact :*\n<tel:+33#{@user.phone.gsub(' ', '')}>#{@user.phone}"
                   },
                   {
                     type: "mrkdwn",
-                    text: "*Email :*\n<mailto:#{@action.user.email}>#{@action.user.email}"
+                    text: "*Email :*\n<mailto:#{@user.email}>#{@user.email}"
                   }
                 ]
               },
@@ -40,7 +40,7 @@ module SlackServices
                 type: "section",
                 text: {
                   type: "mrkdwn",
-                  text: "👀 <@#{slack_moderator_id(@action.user)}> merci de vérifier ce compte !"
+                  text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
                 }
               }
             ]
