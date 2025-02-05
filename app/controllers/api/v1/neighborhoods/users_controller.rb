@@ -10,6 +10,7 @@ module Api
           # neighborhood members
           render json: @neighborhood.join_requests
             .includes(user: :partner)
+            .search_by_member(params[:query])
             .ordered_by_users
             .accepted
             .page(page)
