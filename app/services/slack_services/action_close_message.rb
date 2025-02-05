@@ -15,20 +15,41 @@ module SlackServices
 
     def payload
       {
-        text: "Nouveau commentaire utilisateur",
+        text: nil,
         attachments: [
           {
-            text: "<@#{slack_moderator_id(@action.user)}> ou team modération (département : #{departement(@action.user) || 'n/a'})"
-          },
-          {
-            text: "%s vient de clôturer son action solidaire en laissant un commentaire" % @action.user.full_name
-          },
-          {
-            text: "Commentaire : #{@message}"
-          },
-          {
-            text: "Afficher l'action #{@action.title} : #{link_to_group(@action)}"
-          },
+            color: "#36a64f",
+            blocks: [
+              {
+                type: "section",
+                fields: [
+                  {
+                    type: "mrkdwn",
+                    text: "*Nom :*\n#{@action.user.full_name}"
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Accéder au profil :*\n<#{link_to_user(@action.user_id)}|Cliquez ici>"
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Contact :*\n<tel:+33#{@action.user.phone.gsub(' ', '')}>#{@action.user.phone}"
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: "*Email :*\n<mailto:#{@action.user.email}>#{@action.user.email}"
+                  }
+                ]
+              },
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: "👀 <@#{slack_moderator_id(@action.user)}> merci de vérifier ce compte !"
+                }
+              }
+            ]
+          }
         ]
       }
     end
