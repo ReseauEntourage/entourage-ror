@@ -21,6 +21,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq(
           "user"=>{
             "id"=>user.id,
+            "uuid"=>user.reload.uuid,
             "display_name"=>"John D.",
             "role"=>"member",
             "group_role"=>"member",
@@ -53,6 +54,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq(
           "user"=>{
             "id"=>user.id,
+            "uuid"=>user.reload.uuid,
             "display_name"=>"John D.",
             "status"=>"accepted",
             "role"=>"member",
@@ -75,6 +77,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq(
           "user"=>{
             "id"=>user.id,
+            "uuid"=>user.reload.uuid,
             "display_name"=>"John D.",
             "role"=>"member",
             "group_role"=>"member",
@@ -223,6 +226,7 @@ describe Api::V1::Entourages::UsersController do
       it { expect(result).to eq({
         "users"=>[{
           "id"=>user.id,
+          "uuid"=>user.reload.uuid,
           "display_name"=>"John D.",
           "role"=>"member",
           "group_role"=>"member",
@@ -355,6 +359,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq({
           "user"=>{
             "id"=>other_user.id,
+            "uuid"=>other_user.reload.uuid,
             "display_name"=>"John D.",
             "role"=>"member",
             "group_role"=>"member",
@@ -378,6 +383,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq({
           "user"=>{
             "id"=>user.id,
+            "uuid"=>user.reload.uuid,
             "display_name"=>"John D.",
             "role"=>"member",
             "group_role"=>"member",

@@ -23,6 +23,7 @@ describe Api::V1::Conversations::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -46,6 +47,7 @@ describe Api::V1::Conversations::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -76,6 +78,7 @@ describe Api::V1::Conversations::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => join_request.role,
@@ -109,6 +112,7 @@ describe Api::V1::Conversations::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
@@ -132,6 +136,7 @@ describe Api::V1::Conversations::UsersController do
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => join_request.role,
@@ -165,6 +170,7 @@ describe Api::V1::Conversations::UsersController do
         it { expect(result).to eq({
           "user" => {
             "id" => user.id,
+            "uuid" => user.reload.uuid,
             "display_name" => "John D.",
             "role" => "participant",
             "group_role" => "participant",
