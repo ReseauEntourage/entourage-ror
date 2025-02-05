@@ -10,7 +10,7 @@ module SlackServices
 
     def payload
       {
-        text: nil,
+        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}). Un utilisateur a créé un compte association",
         attachments: [
           {
             color: "#36a64f",
@@ -29,10 +29,6 @@ module SlackServices
                   {
                     type: "mrkdwn",
                     text: "*Contact :*\n<tel:+33#{@user.phone.gsub(' ', '')}>#{@user.phone}"
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: "*Email :*\n<mailto:#{@user.email}>#{@user.email}"
                   }
                 ]
               },
@@ -43,7 +39,14 @@ module SlackServices
                   text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
                 }
               }
-            ]
+            ].tap do |fields|
+              if @user.email.present?
+                fields << {
+                  type: "mrkdwn",
+                  text: "*Email :*\n<mailto:#{@user.email}>#{@user.email}"
+                }
+              end
+            end
           }
         ]
       }
