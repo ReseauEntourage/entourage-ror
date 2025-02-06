@@ -5,40 +5,44 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/super_admin/sidekiq', :constraints => SuperAdminConstraint.new
 
   #ADMIN
-  constraints :subdomain => /\A(admin|admin-preprod)\z/ do
+  constraints :subdomain => /\A(admin|admin-preprod|admin-test|admin-preprod-test)\z/ do
     scope :module => "admin", :as => "admin" do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
       get '/sessions/new', to: redirect('/admin/sessions/new')
 
-      resources :users, only: [:index, :show, :edit, :update, :new, :create] do
-        collection do
-          get :search
-          get 'moderate'
-          get 'fake'
-          post 'generate'
-          get 'download_list_export'
-        end
+      get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
+      delete 'user_relationships' => "user_relationships#destroy"
 
-        member do
-          get 'edit_block'
-          put 'block'
-          put 'temporary_block'
-          put 'unblock'
-          put 'banish'
-          put 'validate'
-          put 'cancel_phone_change_request'
-          get 'download_export'
-          get 'send_export'
-          put 'anonymize'
-          post 'experimental_pending_request_reminder'
+      namespace :super_admin do
+        get '/soliguide', action: :soliguide
+        get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
+      end
+
+      resources :actions, only: [:index] do
+        resources :matchings, :controller => 'actions/matchings', only: [:index] do
+          collection do
+            post :notify_best
+            post :mail_best
+          end
+
+          member do
+            post :notify
+            post :mail
+          end
         end
       end
 
-      resources :pois do
+      resources :announcements do
         collection do
-          get :export
-          post :import
+          post :reorder
+        end
+
+        member do
+          get '/edit/image', action: :edit_image
+          get '/image_upload_success', action: :image_upload_success
+          get '/edit/image_portrait', action: :edit_image_portrait
+          get '/image_portrait_upload_success', action: :image_portrait_upload_success
         end
       end
 
@@ -52,74 +56,29 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :entourage_images do
+      resources :conversations, only: [:index, :show, :new, :create] do
         member do
-          get '/edit/landscape', action: :edit_landscape
-          get '/landscape_upload_success', action: :landscape_upload_success
-          get '/edit/portrait', action: :edit_portrait
-          get '/portrait_upload_success', action: :portrait_upload_success
+          get :chat_messages
+          get :prepend_chat_messages
+          get :show_members
+          post :message
+          post :invite
+          post :read_status
+          post :archive_status
+          post :unjoin
         end
-      end
 
-      resources :neighborhood_images do
-        member do
-          get '/edit/photo', action: :edit_photo
-          get '/photo_upload_success', action: :photo_upload_success
-        end
-      end
-
-      resources :recommandation_images do
-        member do
-          get '/edit/photo', action: :edit_photo
-          get '/photo_upload_success', action: :photo_upload_success
-        end
-      end
-
-      resources :resource_images do
-        member do
-          get '/edit/photo', action: :edit_photo
-          get '/photo_upload_success', action: :photo_upload_success
-        end
-      end
-
-      resources :messages, only: [:index, :destroy]
-      resources :partners do
         collection do
-          post :change_admin_role
+          delete :destroy_message
         end
+      end
+
+      resources :digest_emails, only: [:index, :show, :edit, :update] do
         member do
-          get '/edit/logo', action: :edit_logo
-          get '/logo_upload_success', action: :logo_upload_success
+          post :send_test
         end
       end
 
-      resources :options, only: [:index, :update]
-
-      resources :entourage_areas
-
-      resources :partner_registrations, only: [:index, :show, :edit, :update]
-
-      resources :moderation_areas do
-        member do
-          patch 'update_animator'
-          patch 'update_sourcing'
-          patch 'update_community_builder'
-        end
-      end
-
-      resources :uploads, only: :new
-      namespace :uploads do
-        get '/success', action: :update
-      end
-
-
-      namespace :super_admin do
-        get '/soliguide', action: :soliguide
-        get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
-      end
-
-      resources :newsletter_subscriptions, only: [:index]
-      resources :entourage_invitations, only: [:index]
       resources :entourages, only: [:index, :show, :new, :create, :edit, :update] do
         member do
           post :moderator_read
@@ -155,48 +114,191 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :entourage_areas
+      resources :entourage_invitations, only: [:index]
       resources :entourage_moderations, only: [:create]
-      resources :sensitive_words, only: [:show, :destroy]
-      resources :conversations, only: [:index, :show, :new, :create] do
-        member do
-          get :chat_messages
-          get :prepend_chat_messages
-          get :show_members
-          post :message
-          post :invite
-          post :read_status
-          post :archive_status
-          post :unjoin
-        end
 
-        collection do
-          delete :destroy_message
+      resources :entourage_images do
+        member do
+          get '/edit/landscape', action: :edit_landscape
+          get '/landscape_upload_success', action: :landscape_upload_success
+          get '/edit/portrait', action: :edit_portrait
+          get '/portrait_upload_success', action: :portrait_upload_success
         end
       end
 
       resources :join_requests, only: [:create]
 
-      resources :digest_emails, only: [:index, :show, :edit, :update] do
+      resources :messages, only: [:index, :destroy]
+
+      resources :moderation_areas do
         member do
-          post :send_test
+          patch 'update_animator'
+          patch 'update_sourcing'
+          patch 'update_community_builder'
         end
       end
 
-      resources :announcements do
+      resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
+        member do
+          put :reactivate
+          put :join
+          put :unjoin
+          get :show_members
+          get :show_outings
+          get 'outing_posts/:outing_id' => :show_outing_posts, as: :show_outing_posts
+          get 'outing_post_comments/:post_id' => :show_outing_post_comments, as: :show_outing_post_comments
+          get :show_posts
+          get 'post_comments/:post_id' => :show_post_comments, as: :show_post_comments
+          get :edit_owner
+          post :update_owner
+          get '/edit/image', action: :edit_image
+          put '/update/image', action: :update_image
+          post :read_all_messages
+          post :message
+          post 'outing_message/:outing_id' => :outing_message, as: :outing_message
+          delete 'destroy_outing_message/:chat_message_id' => :destroy_outing_message, as: :destroy_outing_message
+        end
+
+        collection do
+          post 'unread_message/:chat_message_id' => :unread_message, as: :unread_message
+          delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
+        end
+      end
+
+      resources :neighborhood_images do
+        member do
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
+      resources :neighborhood_message_broadcasts do
+        member do
+          put :update_neighborhoods
+          post 'broadcast'
+          post 'rebroadcast'
+          post 'clone'
+          post 'kill'
+        end
+      end
+
+      resources :newsletter_subscriptions, only: [:index]
+
+      resources :openai_assistants, only: [:index, :edit, :update]
+      resources :openai_requests, only: [:index, :show]
+
+      resources :options, only: [:index, :update]
+
+      resources :partners do
+        collection do
+          post :change_admin_role
+        end
+        member do
+          get '/edit/logo', action: :edit_logo
+          get '/logo_upload_success', action: :logo_upload_success
+        end
+      end
+
+      resources :partner_registrations, only: [:index, :show, :edit, :update]
+
+      resources :pois do
+        collection do
+          get :export
+          post :import
+        end
+      end
+
+      resources :recommandations do
+        member do
+          get '/edit/image', action: :edit_image
+          put '/update/image', action: :update_image
+        end
+
         collection do
           post :reorder
         end
+      end
 
+      resources :recommandation_images do
         member do
-          get '/edit/image', action: :edit_image
-          get '/image_upload_success', action: :image_upload_success
-          get '/edit/image_portrait', action: :edit_image_portrait
-          get '/image_portrait_upload_success', action: :image_portrait_upload_success
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
         end
       end
 
-      get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-      delete 'user_relationships' => "user_relationships#destroy"
+      resources :resources do
+        member do
+          get :edit_translation
+          post :update_translation
+          get '/edit/image', action: :edit_image
+          put '/update/image', action: :update_image
+        end
+      end
+
+      resources :resource_images do
+        member do
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
+      resources :sensitive_words, only: [:show, :destroy]
+
+      namespace :slack do
+        post :message_action
+        post :user_unblock
+        get :csv
+        get 'entourage_links/:id' => :entourage_links, as: :entourage_links
+        get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
+      end
+
+      resources :users, only: [:index, :show, :edit, :update, :new, :create] do
+        collection do
+          get :search
+          get 'moderate'
+          get 'fake'
+          post 'generate'
+          get 'download_list_export'
+        end
+
+        member do
+          get 'messages'
+          get 'engagement'
+          get 'neighborhoods'
+          get 'outings'
+          get 'history'
+          put 'destroy_avatar'
+          get 'new_spam_warning'
+          post 'create_spam_warning'
+
+          get 'edit_block'
+          put 'block'
+          put 'temporary_block'
+          put 'unblock'
+          put 'banish'
+          put 'validate'
+          put 'cancel_phone_change_request'
+          get 'download_export'
+          get 'send_export'
+          put 'anonymize'
+          post 'experimental_pending_request_reminder'
+        end
+      end
+
+      resources :user_message_broadcasts do
+        member do
+          post 'broadcast'
+          post 'rebroadcast'
+          post 'clone'
+          post 'kill'
+        end
+      end
+
+      resources :uploads, only: :new
+      namespace :uploads do
+        get '/success', action: :update
+      end
     end
   end
 
@@ -205,128 +307,7 @@ Rails.application.routes.draw do
     get 'logout' => 'sessions#logout'
 
     resources :sessions, only: [:new, :create]
-
     resources :password_resets, only: [:new, :create, :edit, :update]
-
-    resources :users, only: [:index, :edit, :update, :new, :create] do
-      collection do
-        get 'moderate'
-        get 'fake'
-        post 'generate'
-      end
-
-      member do
-        get 'messages'
-        get 'engagement'
-        get 'neighborhoods'
-        get 'outings'
-        get 'history'
-        put 'destroy_avatar'
-        put 'banish'
-        put 'validate'
-        get 'new_spam_warning'
-        post 'create_spam_warning'
-      end
-    end
-
-    resources :actions, only: [:index] do
-      resources :matchings, :controller => 'actions/matchings', only: [:index] do
-        collection do
-          post :notify_best
-          post :mail_best
-        end
-
-        member do
-          post :notify
-          post :mail
-        end
-      end
-    end
-
-    resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
-      member do
-        put :reactivate
-        put :join
-        put :unjoin
-        get :show_members
-        get :show_outings
-        get 'outing_posts/:outing_id' => :show_outing_posts, as: :show_outing_posts
-        get 'outing_post_comments/:post_id' => :show_outing_post_comments, as: :show_outing_post_comments
-        get :show_posts
-        get 'post_comments/:post_id' => :show_post_comments, as: :show_post_comments
-        get :edit_owner
-        post :update_owner
-        get '/edit/image', action: :edit_image
-        put '/update/image', action: :update_image
-        post :read_all_messages
-        post :message
-        post 'outing_message/:outing_id' => :outing_message, as: :outing_message
-        delete 'destroy_outing_message/:chat_message_id' => :destroy_outing_message, as: :destroy_outing_message
-      end
-
-      collection do
-        post 'unread_message/:chat_message_id' => :unread_message, as: :unread_message
-        delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
-      end
-    end
-
-    resources :openai_assistants, only: [:index, :edit, :update]
-    resources :openai_requests, only: [:index, :show]
-
-    resources :recommandations do
-      member do
-        get '/edit/image', action: :edit_image
-        put '/update/image', action: :update_image
-      end
-
-      collection do
-        post :reorder
-      end
-    end
-
-    resources :resources do
-      member do
-        get :edit_translation
-        post :update_translation
-        get '/edit/image', action: :edit_image
-        put '/update/image', action: :update_image
-      end
-    end
-
-    resources :pois
-    resources :messages, only: [:index, :destroy]
-    resources :newsletter_subscriptions, only: [:index]
-    resources :entourage_invitations, only: [:index]
-    resources :entourages, only: [:index, :show, :edit, :update]
-    resources :join_requests, only: [:create]
-    resources :user_message_broadcasts do
-      member do
-        post 'broadcast'
-        post 'rebroadcast'
-        post 'clone'
-        post 'kill'
-      end
-    end
-    resources :neighborhood_message_broadcasts do
-      member do
-        put :update_neighborhoods
-        post 'broadcast'
-        post 'rebroadcast'
-        post 'clone'
-        post 'kill'
-      end
-    end
-
-    get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-    delete 'user_relationships' => "user_relationships#destroy"
-
-    namespace :slack do
-      post :message_action
-      post :user_unblock
-      get :csv
-      get 'entourage_links/:id' => :entourage_links, as: :entourage_links
-      get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
-    end
   end
 
   #API
@@ -675,95 +656,6 @@ Rails.application.routes.draw do
         collection do
           get :interests
         end
-      end
-    end
-  end
-
-  organization_admin_url = URI(ENV['ORGANIZATION_ADMIN_URL'] || "//#{ENV['HOST']}/organization_admin")
-  organization_admin_scope = {
-    host: organization_admin_url.host,
-    path: organization_admin_url.path
-  }.compact
-
-  scope organization_admin_scope.merge(
-    as: :organization_admin, :module => :organization_admin,
-    constraints: organization_admin_scope.slice(:host)) do
-
-    get '/' => 'base#home'
-    get 'auth' => 'base#auth'
-    get 'webapp_redirect' => 'base#webapp_redirect'
-    resource :session, only: [:new] do
-      collection do
-        match :identify, via: [:post, :get]
-        post :authenticate
-        post :reset_password
-        post :logout
-      end
-    end
-    resources :invitations, only: [:new, :create, :index, :destroy] do
-      member do
-        post :resend
-      end
-      with_scope_level(:member) do
-        scope(parent_resource.collection_scope) do
-          get ':token/join', action: :join, as: :join
-          post ':token/accept', action: :accept, as: :accept
-        end
-      end
-    end
-    resources :members, only: [:index, :show, :edit, :update, :destroy]
-    resource :description, only: [:edit, :update] do
-      member do
-        get '/edit/logo', action: :edit_logo
-        get '/logo_upload', action: :new_logo_upload
-        get '/logo_upload_success', action: :logo_upload_success
-      end
-    end
-    resources :entourages, only: [:edit] do
-      member do
-        get '/edit/image', action: :edit_image
-        get '/image_upload_success', action: :image_upload_success
-      end
-    end
-    resources :uploads, only: :new
-    namespace :uploads do
-      get '/success', action: :update
-    end
-  end
-
-  good_waves_url = URI(ENV['GOOD_WAVES_URL'] || "//#{ENV['HOST']}/good_waves")
-  good_waves_scope = {
-    host: good_waves_url.host,
-    path: good_waves_url.path
-  }.compact
-
-  scope good_waves_scope.merge(
-    as: :good_waves, :module => :good_waves,
-    constraints: good_waves_scope.slice(:host)) do
-
-    get '/' => 'base#home'
-    get '/onboarding' => 'base#onboarding'
-    post '/onboarding' => 'base#update_profile'
-    get '/invitation/:id' => 'invitations#show', as: :invitation
-
-    resources :groups, only: [:index, :new, :create, :show] do
-      collection do
-        post :parse_members
-      end
-      member do
-        get :invitation, action: :new_invitation
-        post :invitation, action: :create_invitation
-        post :remove_member
-        post :cancel_invitation
-      end
-    end
-
-    resource :session, only: [:new] do
-      collection do
-        match :identify, via: [:post, :get]
-        post :authenticate
-        post :reset_password
-        post :logout
       end
     end
   end

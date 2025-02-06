@@ -30,38 +30,77 @@ jobs:
         ports: ['6379:6379']
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.1.0
-        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.0
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - name: Setup Database
-      run: |
-        cp config/database.yml.github-actions config/database.yml
-        bundle exec rake db:drop db:create db:migrate
-      env:
-        RAILS_ENV: test
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
+      - name: Setup Database
+        run: |
+          cp config/database.yml.github-actions config/database.yml
+          bundle exec rake db:drop db:create db:migrate
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
 
-    - name: Run tests
-      env:
-        RAILS_ENV: test
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        REDIS_URL: redis://redis:6379
-      run: bundle exec rake
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          REDIS_URL: redis://redis:6379
+        run: bundle exec rake
 
-    - name: Install Heroku CLI
-      run: |
-        curl https://cli-assets.heroku.com/install.sh | sh
+  deploy-api:
+    needs: test
+    runs-on: ubuntu-latest
 
-    - uses: akhileshns/heroku-deploy@v3.8.9
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        # deploy to entourage-back-preprod
-        heroku_app_name: entourage-back-preprod
-        heroku_email: nicolas.chafai@entourage.social
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup API Procfile
+        run: cp Procfile.api-preprod Procfile
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy API to Heroku
+        uses: akhileshns/heroku-deploy@v3.8.9
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: entourage-back-preprod
+          heroku_email: nicolas.chafai@entourage.social
+          branch: staging
+          usedocker: false
+        env:
+          RAILS_ENV: production
+
+  deploy-backoffice:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Backoffice Procfile
+        run: cp Procfile.backoffice-preprod Procfile
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy Backoffice to Heroku
+        uses: akhileshns/heroku-deploy@v3.8.9
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: local-backoffice-preprod
+          heroku_email: nicolas.chafai@entourage.social
+          branch: staging
+          usedocker: false
+        env:
+          RAILS_ENV: production
