@@ -49,7 +49,7 @@ module Mentionable
       fragments.css('a[href]').any? { |a| a['href'].include?('app/users') }
     end
 
-    def extract_user_uuid
+    def extract_user_ids_or_uuids
       user_links = fragments.css('a[href]').select { |a| a['href'].include?('app/users') }
 
       user_links.map do |a|
@@ -63,7 +63,7 @@ module Mentionable
   end
 
   def has_mentions?
-    mentions.extract_user_uuid.any?
+    mentions.extract_user_ids_or_uuids.any?
   end
 
   def has_mentions!
