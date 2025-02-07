@@ -430,13 +430,12 @@ class PushNotificationTrigger
 
   def chat_message_on_mention
     return unless @record.respond_to?(:mentions)
-    return unless @record.mentions.respond_to?(:extract_user_uuid)
+    return unless @record.mentions.respond_to?(:extract_user_ids_or_uuids)
+    return unless ids_or_uuids = @record.mentions.extract_user_ids_or_uuids
 
-    user_ids = User.where(uuid: @record.mentions.extract_user_uuid).pluck(:id).uniq
+    user_ids = User.search_by_ids_or_uuids(ids_or_uuids).pluck(:id).uniq
 
     return unless user_ids.any?
-
-    puts "-- push to: #{user_ids}"
 
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
