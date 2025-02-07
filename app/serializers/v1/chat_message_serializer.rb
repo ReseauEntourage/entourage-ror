@@ -3,7 +3,9 @@ module V1
     attributes :id,
                :uuid_v2,
                :content,
+               :content_html,
                :content_translations,
+               :content_translations_html,
                :user,
                :created_at,
                :message_type,
@@ -14,10 +16,26 @@ module V1
     def content
       return if object.deleted?
 
+      Mentionable.no_html(
+        I18nSerializer.new(object, :content, lang).translation
+      )
+    end
+
+    def content_html
+      return if object.deleted?
+
       I18nSerializer.new(object, :content, lang).translation
     end
 
     def content_translations
+      return Hash.new if object.deleted?
+      return Hash.new unless translations = I18nSerializer.new(object, :content, lang).translations
+      return Hash.new unless translations.present?
+
+      Mentionable.none_html!(translations)
+    end
+
+    def content_translations_html
       return Hash.new if object.deleted?
 
       I18nSerializer.new(object, :content, lang).translations
