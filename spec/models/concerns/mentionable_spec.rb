@@ -22,11 +22,23 @@ RSpec.describe Mentionable, type: :module do
       end
 
       it 'extracts user UUIDs' do
-        expect(subject.extract_user_uuid).to eq(['123'])
+        expect(subject.extract_user_ids_or_uuids).to eq(['123'])
       end
 
       it 'removes HTML for no_html' do
         expect(subject.no_html).to eq('Hello, User')
+      end
+    end
+
+    context 'when content contains multiple HTML' do
+      let(:content) { '<p>Hello, <a href="https://preprod.entourage.social/app/users/123">John</a> and <a href="https://preprod.entourage.social/app/users/456">Jane</a></p>' }
+
+      it 'extracts user UUIDs' do
+        expect(subject.extract_user_ids_or_uuids).to eq(['123', '456'])
+      end
+
+      it 'removes HTML for no_html' do
+        expect(subject.no_html).to eq('Hello, John and Jane')
       end
     end
 
@@ -46,7 +58,7 @@ RSpec.describe Mentionable, type: :module do
       end
 
       it 'extracts no user UUIDs' do
-        expect(subject.extract_user_uuid).to eq([])
+        expect(subject.extract_user_ids_or_uuids).to eq([])
       end
     end
   end
