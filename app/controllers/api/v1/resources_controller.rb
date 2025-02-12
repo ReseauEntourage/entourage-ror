@@ -6,21 +6,23 @@ module Api
       after_action :set_as_watched, only: [:show, :tag]
 
       def index
-        render json: Resource.concise.all.includes(:translation), each_serializer: ::V1::Resources::ListSerializer, scope: { user: current_user }
+        render json: Resource.all.includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
       end
 
       def home
-        render json: Resource.concise.pin(current_user)
+        render json: Resource.pin(current_user)
           .where.not(id: current_user.users_resources.pluck(:resource_id))
-          .includes(:translation), each_serializer: ::V1::Resources::ListSerializer, scope: { user: current_user }
+          .includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: {
+            user: current_user, nohtml: params[:nohtml].present?
+          }
       end
 
       def show
-        render json: @resource, serializer: ::V1::Resources::GenericSerializer, scope: { user: current_user }
+        render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
 
       def tag
-        render json: @resource, serializer: ::V1::Resources::GenericSerializer, scope: { user: current_user }
+        render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
 
       private

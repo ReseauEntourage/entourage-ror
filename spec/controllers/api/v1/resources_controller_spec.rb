@@ -6,7 +6,7 @@ describe Api::V1::ResourcesController, :type => :controller do
   let(:user) { create :pro_user }
 
   describe 'index' do
-    let!(:resource) { create :resource, description: "pouf" }
+    let!(:resource) { create :resource }
     let(:result) { JSON.parse(response.body) }
 
     describe 'not authorized' do
@@ -30,7 +30,6 @@ describe Api::V1::ResourcesController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(subject).to have_key('html') }
-      it { expect(subject['html']).to be_nil }
     end
 
     describe 'with param nohtml' do
@@ -39,8 +38,7 @@ describe Api::V1::ResourcesController, :type => :controller do
       before { get :index, params: { token: user.token, nohtml: true } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(subject).to have_key('html') }
-      it { expect(subject['html']).to be_nil }
+      it { expect(subject).not_to have_key('html') }
     end
   end
 

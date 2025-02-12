@@ -20,10 +20,6 @@ class Resource < ApplicationRecord
     where(pin_offer_help: true)
   }
 
-  scope :concise, -> {
-    select(column_names.map(&:to_sym) - [:description])
-  }
-
   # valides :image_url # should be ?x?
   attr_accessor :resource_image_id
 
