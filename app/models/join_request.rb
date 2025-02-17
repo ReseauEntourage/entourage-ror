@@ -41,7 +41,7 @@ class JoinRequest < ApplicationRecord
 
     return unless strip.present?
 
-    where(id: User.search_by_first_name(params[:query]))
+    where(user_id: User.search_by_first_name(strip))
   }
 
   after_save :joinable_callback
