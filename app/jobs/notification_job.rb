@@ -4,17 +4,17 @@ class NotificationJob
   sidekiq_options :timeout => 180
 
   def self.perform_later sender, object, content, device_token, community, extra={}, badge=nil
-    NotificationJob.perform_async(sender, object, content, device_token, community, extra)
+    NotificationJob.perform_async(sender, object, content, device_token, community, extra.to_json)
   end
 
-  def perform sender, object, content, device_token, community, extra={}
+  def perform sender, object, content, device_token, community, extra="{}"
     return if device_token.blank?
     return unless user_application = UserApplication.find_by_push_token(device_token)
 
     if user_application.android?
-      perform_android(sender, object, content, device_token, community, extra)
+      perform_android(sender, object, content, device_token, community, JSON.parse(extra))
     elsif user_application.ios?
-      perform_ios(sender, object, content, device_token, community, extra)
+      perform_ios(sender, object, content, device_token, community, JSON.parse(extra))
     end
   end
 
