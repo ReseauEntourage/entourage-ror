@@ -226,7 +226,7 @@ class ChatMessage < ApplicationRecord
   end
 
   def recipient_ids
-    return siblings.pluck(:user_id).uniq + [parent.user_id] - [user_id]
+    return siblings.pluck(:user_id).uniq + [parent.user_id] - [user_id] if parent && parent.present?
 
     messageable.accepted_member_ids.uniq - [user_id]
   end
