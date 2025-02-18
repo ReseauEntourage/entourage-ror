@@ -301,6 +301,7 @@ class PushNotificationTrigger
   end
 
   def chat_message_on_create
+    return unless @record.visible?
     return unless ['text', 'broadcast'].include? @record.message_type
 
     chat_message_on_mention
@@ -311,6 +312,13 @@ class PushNotificationTrigger
     return public_chat_message_on_create if @record.messageable.respond_to?(:action?) && @record.messageable.action?
 
     private_chat_message_on_create
+  end
+
+  def chat_message_on_update
+    return unless @record.visible?
+    return unless changes.keys.include?("status")
+
+    chat_message_on_create
   end
 
   # initial caller: chat_message_on_create

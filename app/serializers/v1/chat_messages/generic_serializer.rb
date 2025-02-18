@@ -19,7 +19,7 @@ module V1
                  :survey
 
       def content
-        return unless object.visible?
+        return "" unless object.visible?
 
         Mentionable.no_html(
           I18nSerializer.new(object, :content, lang).translation
@@ -27,7 +27,7 @@ module V1
       end
 
       def content_html
-        return unless object.visible?
+        return "" unless object.visible?
 
         I18nSerializer.new(object, :content, lang).translation
       end

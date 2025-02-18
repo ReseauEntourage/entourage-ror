@@ -14,7 +14,7 @@ module V1
     attribute :metadata, if: :metadata?
 
     def content
-      return unless object.visible?
+      return "" unless object.visible?
 
       Mentionable.no_html(
         I18nSerializer.new(object, :content, lang).translation
@@ -22,7 +22,7 @@ module V1
     end
 
     def content_html
-      return Hash.new unless object.visible?
+      return "" unless object.visible?
 
       I18nSerializer.new(object, :content, lang).translation
     end

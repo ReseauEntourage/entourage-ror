@@ -4,6 +4,7 @@ class ChatMessage < ApplicationRecord
   include ChatServices::PrivateConversation
   include Deeplinkable
   include Mentionable
+  include Offensable
   include Translatable
   include Reactionnable
   include Surveyable
@@ -11,7 +12,7 @@ class ChatMessage < ApplicationRecord
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
 
-  STATUSES = [:active, :updated, :deleted]
+  STATUSES = [:active, :updated, :deleted, :offensible, :offensive]
 
   store_attribute :options, :auto_post_type, :string
   store_attribute :options, :auto_post_id, :integer
@@ -121,8 +122,16 @@ class ChatMessage < ApplicationRecord
     status.to_sym == :deleted
   end
 
+  def offensible?
+    status.to_sym == :offensible
+  end
+
+  def offensive?
+    status.to_sym == :offensive
+  end
+
   def visible?
-    [:active, :updated].include?(status.to_sym)
+    active? || updated?
   end
 
   # @param force true to bypass deletion

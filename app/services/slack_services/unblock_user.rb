@@ -50,6 +50,7 @@ module SlackServices
       }
     end
 
+    # used by Admin::SlackController.authenticate_slack_user_unblock! to authenticate webhook
     def self.webhook field
       SlackServices::UnblockUser.new(user_id: nil).webhook(field)
     end
