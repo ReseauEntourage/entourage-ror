@@ -303,6 +303,8 @@ class PushNotificationTrigger
   def chat_message_on_create
     return unless ['text', 'broadcast'].include? @record.message_type
 
+    chat_message_on_mention
+
     return comment_on_create if @record.has_parent?
     return post_on_create if @record.messageable.is_a?(Neighborhood)
     return post_on_create if @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
@@ -313,7 +315,7 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def public_chat_message_on_create
-    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
@@ -338,7 +340,7 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def private_chat_message_on_create
-    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
@@ -363,7 +365,7 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def post_on_create
-    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :post_on_create_to_neighborhood
@@ -397,10 +399,7 @@ class PushNotificationTrigger
   # initial caller: chat_message_on_create
   def comment_on_create
     return unless @record.has_parent?
-
-    user_ids = @record.siblings.pluck(:user_id).uniq + [@record.parent.user_id] - [@record.user_id]
-
-    return unless user_ids.any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :comment_on_create_to_neighborhood
