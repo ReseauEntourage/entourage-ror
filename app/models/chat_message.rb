@@ -218,6 +218,12 @@ class ChatMessage < ApplicationRecord
     metadata[:conversation_message_broadcast_id] = id
   end
 
+  def recipient_ids
+    return siblings.pluck(:user_id).uniq + [parent.user_id] - [user_id] if parent && parent.present?
+
+    messageable.accepted_member_ids.uniq - [user_id]
+  end
+
   private
 
   def generate_content

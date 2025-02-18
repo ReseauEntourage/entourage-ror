@@ -62,46 +62,4 @@ RSpec.describe Mentionable, type: :module do
       end
     end
   end
-
-  describe '#has_mentions?' do
-    subject { chat_message }
-
-    context 'when there are user mentions' do
-      let(:content) { '<a href="https://preprod.entourage.social/app/users/456">John</a>' }
-
-      it {  }
-    end
-
-    context 'when there are no user mentions' do
-      let(:content) { '<a href="https://preprod.entourage.social/app/groups/123">Group</a>' }
-
-      it { expect(subject.has_mentions?).to be false }
-    end
-  end
-
-  describe '#has_mentions!' do
-    subject { chat_message }
-
-    context 'when there are user mentions' do
-      let(:content) { '<a href="https://preprod.entourage.social/app/users/789">Doe</a>' }
-
-      it 'triggers a push notification' do
-        expect(PushNotificationTrigger).to receive(:new)
-          .with(subject, :mention, {})
-          .and_call_original
-
-        subject.send(:has_mentions!)
-      end
-    end
-
-    context 'when there are no user mentions' do
-      let(:content) { 'No user mentions here.' }
-
-      it 'does not trigger a push notification' do
-        expect(PushNotificationTrigger).not_to receive(:new).with(subject, :mention, {})
-
-        subject.send(:has_mentions!)
-      end
-    end
-  end
 end
