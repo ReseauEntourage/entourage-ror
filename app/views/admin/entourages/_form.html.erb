@@ -189,7 +189,11 @@
 
   <br>
   <%= f.submit "Enregistrer", class: "btn btn-success" %>
-  <%= link_to "Annuler", admin_entourages_path, class: "btn btn-default" %>
+  <% if @entourage.action? %>
+    <%= link_to "Annuler", admin_actions_path(@params), class: "btn btn-default" %>
+  <% else %>
+    <%= link_to "Annuler", admin_outings_path(@params), class: "btn btn-default" %>
+  <% end %>
 <% end %>
 
 <% if @entourage.group_type == 'outing' %>

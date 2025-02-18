@@ -57,6 +57,8 @@ class ChatMessage < ApplicationRecord
 
   after_commit :update_parent_comments_count
 
+  alias_attribute :name, :content
+
   class << self
     def bucket
       Storage::Client.images

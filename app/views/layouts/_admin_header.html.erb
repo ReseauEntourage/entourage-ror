@@ -53,7 +53,6 @@
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
-            <li><%= link_to "Actions", admin_actions_path %></li>
             <li><%= link_to "Associations - Demandes d'adhésion", admin_partner_registrations_path %></li>
             <li><%= link_to "Associations - Liste", admin_partners_path %></li>
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
@@ -64,13 +63,18 @@
           </ul>
         </li>
 
-        <li class="<%= :active if controller_name == 'entourages' %> custom-nav-item">
-          <%= link_to "Actions et événements", admin_entourages_path(q: { group_type_eq: 'action' }) %>
+        <li class="dropdown custom-nav-item">
+          <a class="dropdown-toggle" type="button" data-toggle="dropdown">
+            Actions et événements
+          </a>
+          <ul class="dropdown-menu">
+            <li><%= link_to "Actions", admin_actions_path %></li>
+            <li><%= link_to "Événements", admin_outings_path %></li>
+          </ul>
         </li>
+
         <li class="<%= :active if controller_name == 'conversations' %> custom-nav-item">
-          <%
-            unread_count = ConversationService.unread_count_for(current_admin)
-          %>
+          <% unread_count = ConversationService.unread_count_for(current_admin) %>
           <%= link_to admin_conversations_path do %>
             Messages
             <% if unread_count > 0 %>
