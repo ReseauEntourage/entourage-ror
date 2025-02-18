@@ -1,10 +1,6 @@
 module Mentionable
   extend ActiveSupport::Concern
 
-  included do
-    after_create :has_mentions!, if: :has_mentions?
-  end
-
   def self.no_html content
     return content unless content.is_a?(String)
 
@@ -60,16 +56,5 @@ module Mentionable
 
   def mentions
     @mentions ||= MentionsStruct.new(instance: self)
-  end
-
-  def has_mentions?
-    mentions.extract_user_ids_or_uuids.any?
-  end
-
-  def has_mentions!
-    return unless has_mentions?
-
-    # @todo perform in a job
-    PushNotificationTrigger.new(self, :mention, Hash.new).run
   end
 end
