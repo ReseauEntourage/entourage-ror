@@ -9,38 +9,39 @@ module SlackServices
     end
 
     def payload
+      contact_info = @user.phone
+      contact_info += " - #{@user.email}" if @user.email.present?
+
       {
         blocks: [
+          { type: "divider" },
           {
-            type: "section",
-            fields: [
-              {
-                type: "mrkdwn",
-                text: ":pushpin: *Nom :* #{@user.full_name}"
-              },
-              {
-                type: "mrkdwn",
-                text: ":link: *Accéder au profil :* <#{link_to_user(@user.id)}|Cliquez ici>"
-              },
-              {
-                type: "mrkdwn",
-                text: ":telephone_receiver: *Contact :* #{@user.phone}"
-              }
-            ].tap do |fields|
-              if @user.email.present?
-                fields << {
-                  type: "mrkdwn",
-                  text: ":email: *Email :* #{@user.email}"
-                }
-              end
-            end
+            type: "context",
+            elements: [{
+              type: "mrkdwn",
+              text: ":pushpin: *Nom :* #{@user.full_name}"
+            }]
           },
           {
-            type: "section",
-            text: {
+            type: "context",
+            elements: [{
+              type: "mrkdwn",
+              text: ":link: *Accéder au profil :* <#{link_to_user(@user.id)}|Cliquez ici>"
+            }]
+          },
+          {
+            type: "context",
+            elements: [{
+              type: "mrkdwn",
+              text: ":telephone_receiver: *Contact :* #{contact_info}"
+            }]
+          },
+          {
+            type: "context",
+            elements: [{
               type: "mrkdwn",
               text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
-            }
+            }]
           }
         ]
       }
