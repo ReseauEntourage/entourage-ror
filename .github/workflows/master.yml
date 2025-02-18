@@ -55,13 +55,52 @@ jobs:
         REDIS_URL: redis://redis:6379
       run: bundle exec rake
 
-    - name: Install Heroku CLI
-      run: |
-        curl https://cli-assets.heroku.com/install.sh | sh
+  deploy-api:
+    needs: test
+    runs-on: ubuntu-latest
 
-    - uses: akhileshns/heroku-deploy@v3.8.9
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        # deploy to entourage-back
-        heroku_app_name: entourage-back
-        heroku_email: nicolas.chafai@entourage.social
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup API Procfile
+        run: cp Procfile.api-prod Procfile
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy API to Heroku
+        uses: akhileshns/heroku-deploy@v3.8.9
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: entourage-back
+          heroku_email: nicolas.chafai@entourage.social
+          branch: master
+          usedocker: false
+        env:
+          RAILS_ENV: production
+
+  deploy-backoffice:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup API Procfile
+        run: cp Procfile.backoffice-prod Procfile
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy API to Heroku
+        uses: akhileshns/heroku-deploy@v3.8.9
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: local-backoffice-prod
+          heroku_email: nicolas.chafai@entourage.social
+          branch: master
+          usedocker: false
+        env:
+          RAILS_ENV: production
