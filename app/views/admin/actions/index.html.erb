@@ -1,6 +1,6 @@
 <div class="container">
   <div style="margin: auto">
-    <h1>Actions</h1>
+    <h1>Actions : demandes et contributions</h1>
 
     <%= form_tag admin_actions_path, class: 'form-inline', id: "search-form", method: :get do |f| %>
       <div class="panel panel-default">
@@ -10,7 +10,7 @@
           </div>
 
           <div class='input-group'>
-            <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Nom, description..." %>
+            <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Rechercher une action" %>
             <span class="input-group-btn">
               <%= submit_tag "Chercher", class: "btn btn-default" %>
             </span>
@@ -65,7 +65,6 @@
             <th>Code postal</th>
             <th>Date de création</th>
             <th>Statut</th>
-            <th>Matchings</th>
           </thead>
           <% @actions.each_with_index do |action, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
@@ -78,20 +77,12 @@
               </td>
               <td>
                 <p><%= link_to action.name, admin_entourage_path(action, @params) %></p>
-                <p><%= action.description %></p>
+                <p><%= truncate(action.description, length: 500) %></p>
               </td>
               <td><%= link_to action.user.full_name, admin_user_path(action.user) %></td>
               <td><%= action.postal_code %></td>
               <td><%= l action.created_at, format: :date_short %></td>
               <td><%= entourage_state_label(action) %></td>
-              <td>
-                <% action.matchings.each do |matching| %>
-                  <p>
-                    <span class="custom-badge info"><%= matching.score %></span> <b><%= matching.match&.name %></b> (<%= matching.match_type %>)<br/>
-                    <%= matching.explanation %>
-                  </p>
-                <% end %>
-              </td>
             </tr>
           <% end %>
         </table>

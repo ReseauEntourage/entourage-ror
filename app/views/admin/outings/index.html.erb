@@ -71,7 +71,7 @@
               </td>
               <td>
                 <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
-                <p><%= outing.description %></p>
+                <p><%= truncate(outing.description, length: 500) %></p>
               </td>
               <td><%= l outing.created_at, format: :date_short %></td>
               <td><%= l outing.starts_at, format: :short %></td>
