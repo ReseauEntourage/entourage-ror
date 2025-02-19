@@ -91,8 +91,7 @@ module Api
           'hub_2' => 'https://www.simplecommebonjour.org/',
           'hub_3' => 'https://www.eventbrite.fr/o/entourage-29770425367',
           'hub_faq'  => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#index-faq',
-          'how-to-present' => 'https://blog.entourage.social/2019/08/06/comment-mieux-presenter-entourage-a-une-personne-sdf/',
-          'partner_action_faq' => 'https://blog.entourage.social/category/associations/'
+          'how-to-present' => 'https://blog.entourage.social/2019/08/06/comment-mieux-presenter-entourage-a-une-personne-sdf/'
         }
 
         redirection = redirections[params[:id]]
