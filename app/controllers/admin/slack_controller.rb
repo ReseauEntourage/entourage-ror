@@ -90,12 +90,12 @@ module Admin
         chat_message.is_offensive!
 
         response[:attachments].first[:color] = :danger
-        response[:attachments].last[:text] = "*:#{:white_check_mark}: <@#{@payload['user']['name']}> a marqué le contenu comme offensant*"
+        response[:attachments].last[:text] = "*:#{:no_entry_sign}: <@#{@payload['user']['name']}> a marqué le contenu comme offensant*"
       elsif action == 'is_not_offensive'
         chat_message.is_not_offensive!
 
         response[:attachments].first[:color] = :good
-        response[:attachments].last[:text] = "*:#{:no_entry_sign}: <@#{@payload['user']['name']}> a marqué le contenu comme non offensant*"
+        response[:attachments].last[:text] = "*:#{:white_check_mark}: <@#{@payload['user']['name']}> a marqué le contenu comme non offensant*"
       end
 
       render json: response
