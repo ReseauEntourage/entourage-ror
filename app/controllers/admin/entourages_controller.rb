@@ -41,24 +41,6 @@ module Admin
 
       entourage_ids = @entourages.map(&:id)
 
-      @requests_count = JoinRequest
-        .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
-        .group(:joinable_id)
-        .pluck(Arel.sql(%(
-          joinable_id,
-          count(*),
-          count(case when updated_at <= now() - interval '48 hours' then 1 end)
-        )))
-
-      @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
-      @requests_count.default = { total: 0, late: 0 }
-
-      @reminded_users = Experimental::PendingRequestReminder.recent
-        .where(user_id: @entourages.map(&:user_id))
-        .pluck(Arel.sql('distinct user_id'))
-
-      @reminded_users = Set.new(@reminded_users)
-
       @message_count = ConversationMessage
         .with_moderator_reads_for(user: current_user)
         .where(messageable_type: :Entourage, messageable_id: entourage_ids)
@@ -167,6 +149,7 @@ module Admin
       @matchings = @action.matchings_with_notifications
         .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
         .group("matchings.id")
+        .includes(:match)
 
       render :show
     end
@@ -529,7 +512,7 @@ module Admin
     end
 
     def index_params
-      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
+      params.permit([:search, :area, :moderator_id, :moderated, :entourage_type, :status, q: [:entourage_type_eq, :status_in, :display_category_eq, :country_eq, :postal_code_start, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
     end
 
     def entourage_params

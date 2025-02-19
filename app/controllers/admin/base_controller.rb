@@ -6,7 +6,7 @@ module Admin
 
     def home
       if current_admin
-        redirect_to admin_entourages_path
+        redirect_to admin_actions_path
       else
         redirect_to new_admin_session_path
       end

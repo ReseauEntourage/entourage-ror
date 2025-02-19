@@ -15,7 +15,13 @@
 
 <div class="container">
   <ol class="breadcrumb">
-    <li><%= link_to "Actions", admin_entourages_path %></li>
+    <li>
+      <% if @entourage.action? %>
+        <%= link_to "Actions", admin_actions_path %>
+      <% else %>
+        <%= link_to "Événements", admin_outings_path %>
+      <% end %>
+    </li>
     <li><%= link_to "##{@entourage.id}", admin_entourage_path(@entourage) %></li>
     <li class="active">Mots sensibles</li>
   </ol>

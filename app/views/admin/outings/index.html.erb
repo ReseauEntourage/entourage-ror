@@ -1,16 +1,16 @@
 <div class="container">
   <div style="margin: auto">
-    <h1>Actions : demandes et contributions</h1>
+    <h1>Événements</h1>
 
-    <%= form_tag admin_actions_path, class: 'form-inline', id: "search-form", method: :get do |f| %>
+    <%= form_tag admin_outings_path, class: 'form-inline', id: "search-form", method: :get do |f| %>
       <div class="panel panel-default">
         <div class="panel-body">
           <div style="float: right">
-            <%= link_to "Nouvelle action", new_admin_entourage_path(group_type: :action), class: "btn btn-success" %>
+            <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
           </div>
 
           <div class='input-group'>
-            <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Rechercher une action" %>
+            <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Rechercher un événement" %>
             <span class="input-group-btn">
               <%= submit_tag "Chercher", class: "btn btn-default" %>
             </span>
@@ -20,16 +20,8 @@
         <div style="padding: 0 0 15px 15px">
           <div class='input-group'>
             <% moderators_options = current_user.community.users.moderators.validated.order(:first_name).map { |u| [u.first_name, u.id] } %>
-            <% moderators_options.unshift ['Toutes (avec ou sans interlocuteur)', :any], ['Non assigné', :none] %>
+            <% moderators_options.unshift ['Tous (avec ou sans interlocuteur)', :any], ['Non assigné', :none] %>
             <%= select_tag :moderator_id, options_for_select(moderators_options, params[:moderator_id]), class: 'form-control' %>
-          </div>
-
-          <div class='input-group'>
-            <%= select_tag :entourage_type, options_for_select([['Toutes (demande, contribution)', nil]] + entourage_type_names, @params[:entourage_type]), class: 'form-control' %>
-          </div>
-
-          <div class='input-group'>
-            <%= select_tag :moderated, options_for_select([['Toutes (modéré, non modéré)', nil], ['Modéré', true], ['Non modéré', false]], @params[:moderated]), class: 'form-control' %>
           </div>
 
           <div id="select-status" class="input-group">
@@ -51,47 +43,50 @@
       </div>
 
       <div style="float: right; margin: -10px 0 10px">
-        <%= link_to "Réinitialiser les filtres", admin_actions_path, class: "btn btn-default" %>
+        <%= link_to "Exporter", download_list_export_admin_outings_path(@params), class: "btn btn-default" %>
+        <%= link_to "Réinitialiser les filtres", admin_outings_path, class: "btn btn-default" %>
       </div>
     <% end %>
 
     <div class="row">
-      <% unless @actions.none? %>
+      <% unless @outings.none? %>
         <table class="table custom-table">
           <thead>
             <th></th>
-            <th>Action</th>
-            <th>Créateur</th>
-            <th>Code postal</th>
+            <th>Nom et descriptif de l'événement</th>
             <th>Date de création</th>
+            <th>Date de l'événement</th>
+            <th>Code postal</th>
             <th>Statut</th>
+            <th><span class="glyphicon glyphicon-user" aria-hidden="true" title="Nombre de participants"></span></th>
           </thead>
-          <% @actions.each_with_index do |action, i| %>
+          <% @outings.each_with_index do |outing, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
 
             <tr class="above-row row-<%= parite %>">
               <td>
-                <% unless action.moderated %>
+                <% unless outing.moderated %>
                   <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
                 <% end %>
               </td>
               <td>
-                <p><%= link_to action.name, admin_entourage_path(action, @params) %></p>
-                <p><%= truncate(action.description, length: 500) %></p>
+                <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
+                <p><%= truncate(outing.description, length: 500) %></p>
               </td>
-              <td><%= link_to action.user.full_name, admin_user_path(action.user) %></td>
-              <td><%= action.postal_code %></td>
-              <td><%= l action.created_at, format: :date_short %></td>
-              <td><%= entourage_state_label(action) %></td>
+              <td><%= l outing.created_at, format: :date_short %></td>
+              <td><%= l outing.starts_at, format: :short %></td>
+              <td><%= outing.postal_code %></td>
+              <td><%= entourage_state_label(outing) %></td>
+              <td><span class="badge" title="Participants"><%= outing.number_of_people %></span></td>
             </tr>
           <% end %>
         </table>
       <% end %>
     </div>
 
-    <%= page_entries_info @actions, entry_name: 'actions' %>
+    <%= page_entries_info @outings, entry_name: 'outings' %>
     <div class="container">
-      <%= paginate(@actions) %>
+      <%= paginate(@outings) %>
     </div>
   </div>
 </div>

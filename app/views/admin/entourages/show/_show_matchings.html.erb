@@ -8,6 +8,10 @@
   </div>
 <% end %>
 
+<% if @action.openai_request && @action.openai_request.status.present? %>
+  <%= link_to "Voir le run du matching", admin_openai_request_path(@action.openai_request) %>
+<% end %>
+
 <table id="matchings-list" class="table table-striped">
   <% if @matchings.any? %>
     <thead>

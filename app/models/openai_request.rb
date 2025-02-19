@@ -13,7 +13,7 @@ class OpenaiRequest < ApplicationRecord
 
   after_commit :run, on: :create
 
-  def instance
+  def fetch_instance
     instance_class.constantize.find(instance_id)
   end
 
