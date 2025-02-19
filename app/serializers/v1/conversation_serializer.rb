@@ -68,7 +68,7 @@ module V1
       return unless last_chat_message.present?
 
       {
-        text: last_chat_message.content,
+        text: Mentionable.no_html(last_chat_message.content),
         date: last_chat_message.created_at,
       }
     end
