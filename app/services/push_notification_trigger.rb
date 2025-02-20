@@ -316,7 +316,7 @@ class PushNotificationTrigger
 
   def chat_message_on_update
     return unless @record.visible?
-    return unless changes.keys.include?("status")
+    return unless @changes.keys.include?("status")
 
     chat_message_on_create
   end
