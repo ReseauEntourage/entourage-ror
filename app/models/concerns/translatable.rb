@@ -35,9 +35,22 @@ module Translatable
       translation.translate!(
         lang: language,
         field: translation_key,
-        translation: language == from_lang.to_sym ? original_text : text_translation(original_text, language)
+        translation: language == from_lang.to_sym ? original_text : html_translation(original_text, language)
       )
     end
+  end
+
+  # translate html into lang
+  def html_translation content, lang
+    doc = Nokogiri::HTML.fragment(content)
+
+    doc.traverse do |node|
+      if node.text? && !node.content.strip.empty?
+        node.content = text_translation(node.content.strip, lang)
+      end
+    end
+
+    doc.to_html
   end
 
   # translate text into lang

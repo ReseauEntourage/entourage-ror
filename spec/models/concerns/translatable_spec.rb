@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+def normalize_html(html)
+  Nokogiri::HTML.fragment(html).to_html
+end
+
 describe Translatable do
   describe "translate_field!" do
     let(:subject) { record.translate! }
@@ -81,5 +85,59 @@ describe Translatable do
     let(:record) { create(:neighborhood, name: "Foo", description: "Bar") }
 
     it { expect(subject).to eq("Fooen") }
+  end
+
+  describe "html_translation" do
+    before do
+      User.any_instance.stub(:lang) { :fr }
+
+      allow_any_instance_of(Neighborhood).to receive(:text_translation) do |_, text, _|
+        case text
+        when "Bonjour, comment allez-vous ?" then "Hello, how are you?"
+        when "ma maison" then "my home"
+        when "Salut" then "Hi"
+        when "Ceci est un test" then "This is a test"
+        else text
+        end
+      end
+    end
+
+    let(:subject) { record.html_translation(input_html, :en) }
+    let(:record) { create(:neighborhood, name: "Foo", description: "Bar") }
+
+    context "traduit uniquement le texte et conserve la structure HTML" do
+      let(:input_html) { '<p dir="ltr">Bonjour, comment allez-vous ?</p><a  href="https://google.com">ma maison</a>' }
+      let(:expected_html) { '<p dir="ltr">Hello, how are you?</p><a  href="https://google.com">my home</a>' }
+
+      it { expect(normalize_html(subject)).to eq(normalize_html(expected_html)) }
+    end
+
+    context "gère les balises imbriquées" do
+      let(:input_html) { '<div><p>Salut</p><span>Ceci est un test</span></div>' }
+      let(:expected_html) { '<div><p>Hi</p><span>This is a test</span></div>' }
+
+      it { expect(normalize_html(subject)).to eq(normalize_html(expected_html)) }
+    end
+
+    context "ne modifie pas les liens et les attributs" do
+      let(:input_html) { '<a href="https://google.com" title="Lien">ma maison</a>' }
+      let(:expected_html) { '<a href="https://google.com" title="Lien">my home</a>' }
+
+      it { expect(normalize_html(subject)).to eq(normalize_html(expected_html)) }
+    end
+
+    context "gère le texte sans HTML" do
+      let(:input_html) { 'Bonjour, comment allez-vous ?' }
+      let(:expected_html) { 'Hello, how are you?' }
+
+      it { expect(normalize_html(subject)).to eq(normalize_html(expected_html)) }
+    end
+
+    context "ignore le contenu vide" do
+      let(:input_html) { '<p></p><span>   </span>' }
+      let(:expected_html) { '<p></p><span>   </span>' }
+
+      it { expect(normalize_html(subject)).to eq(normalize_html(expected_html)) }
+    end
   end
 end
