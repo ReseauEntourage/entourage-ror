@@ -16,31 +16,36 @@ module SlackServices
         blocks: [
           { type: "divider" },
           {
-            type: "context",
-            elements: [{
+            type: "section",
+            text: {
               type: "mrkdwn",
               text: ":pushpin: *Nom :* #{@user.full_name}"
-            }]
+            }
           },
           {
-            type: "context",
-            elements: [{
-              type: "mrkdwn",
-              text: ":link: *Accéder au profil :* <#{link_to_user(@user.id)}|Cliquez ici>"
-            }]
-          },
-          {
-            type: "context",
-            elements: [{
+            type: "section",
+            text: {
               type: "mrkdwn",
               text: ":telephone_receiver: *Contact :* #{contact_info}"
-            }]
+            }
           },
           {
-            type: "context",
-            elements: [{
+            type: "section",
+            text: {
               type: "mrkdwn",
               text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
+            }
+          },
+          {
+            type: "actions",
+            elements: [{
+              type: "button",
+              text: {
+                type: "plain_text",
+                text: "Voir le profil",
+                emoji: true
+              },
+              url: link_to_user(@user.id)
             }]
           }
         ]
