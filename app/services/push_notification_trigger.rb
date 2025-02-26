@@ -26,8 +26,8 @@ class PushNotificationTrigger
       return @i18ns[lang] = I18n.t(@i18n, locale: lang) % args_to(lang) if @i18n.present?
 
       if @instance.present? && @field.present?
-        return @i18ns[lang] = @instance.send(@field) unless @instance.respond_to?(:translation) && @instance.translation.present?
-        return @i18ns[lang] = @instance.translation.translate(field: @field, lang: lang) || @instance.send(@field)
+        return @i18ns[lang] = Mentionable.no_html(@instance.send(@field)) unless @instance.respond_to?(:translation) && @instance.translation.present?
+        return @i18ns[lang] = Mentionable.no_html(@instance.translation.translate(field: @field, lang: lang) || @instance.send(@field))
       end
 
       @i18ns[lang] = @text % args_to(lang)
@@ -303,6 +303,8 @@ class PushNotificationTrigger
   def chat_message_on_create
     return unless ['text', 'broadcast'].include? @record.message_type
 
+    chat_message_on_mention
+
     return comment_on_create if @record.has_parent?
     return post_on_create if @record.messageable.is_a?(Neighborhood)
     return post_on_create if @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
@@ -313,7 +315,7 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def public_chat_message_on_create
-    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
@@ -338,7 +340,7 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def private_chat_message_on_create
-    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
@@ -363,7 +365,7 @@ class PushNotificationTrigger
 
   # initial caller: chat_message_on_create
   def post_on_create
-    return unless (user_ids = @record.messageable.accepted_member_ids.uniq - [@record.user_id]).any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :post_on_create_to_neighborhood
@@ -397,10 +399,7 @@ class PushNotificationTrigger
   # initial caller: chat_message_on_create
   def comment_on_create
     return unless @record.has_parent?
-
-    user_ids = @record.siblings.pluck(:user_id).uniq + [@record.parent.user_id] - [@record.user_id]
-
-    return unless user_ids.any?
+    return unless (user_ids = @record.recipient_ids).any?
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :comment_on_create_to_neighborhood
@@ -422,6 +421,32 @@ class PushNotificationTrigger
           content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
           extra: {
             tracking: tracking
+          }
+        }
+      )
+    end
+  end
+
+  def chat_message_on_mention
+    return unless @record.respond_to?(:mentions)
+    return unless @record.mentions.respond_to?(:extract_user_ids_or_uuids)
+    return unless ids_or_uuids = @record.mentions.extract_user_ids_or_uuids
+
+    user_ids = User.search_by_ids_or_uuids(ids_or_uuids).pluck(:id).uniq
+
+    return unless user_ids.any?
+
+    User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
+      notify(
+        sender_id: @record.user_id,
+        referent: @record.messageable,
+        instance: @record.has_parent? ? @record.parent : @record.messageable,
+        users: batches,
+        params: {
+          object: I18nStruct.new(i18n: 'push_notifications.chat_message.mention', i18n_args: [username(@record.user)]),
+          content: I18nStruct.new(instance: @record, field: :content),
+          extra: {
+            tracking: :chat_message_on_mention
           }
         }
       )

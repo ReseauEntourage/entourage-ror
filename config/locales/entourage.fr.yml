@@ -367,6 +367,8 @@ fr:
       day_before:
         title: "🔔 Rappel : «%s» a lieu demain !"
         content: "N'oubliez pas, cet événement est pour demain. Est-ce que vous venez toujours ?"
+    chat_message:
+      mention: "%s vous a mentionné dans son message"
     post:
       create: "%s vient de partager : \"%s\""
     comment:

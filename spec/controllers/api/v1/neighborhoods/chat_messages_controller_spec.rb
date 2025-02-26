@@ -37,7 +37,14 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "id" => chat_message_1.id,
           "uuid_v2" => chat_message_1.uuid_v2,
           "content" => chat_message_1.content,
+          "content_html" => chat_message_1.content,
           "content_translations" => {
+            "translation" => chat_message_1.content,
+            "original" => chat_message_1.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
+          "content_translations_html" => {
             "translation" => chat_message_1.content,
             "original" => chat_message_1.content,
             "from_lang" => "fr",
@@ -146,7 +153,14 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "id" => chat_message.id,
           "uuid_v2" => chat_message.uuid_v2,
           "content" => chat_message.content,
+          "content_html" => chat_message.content,
           "content_translations" => {
+            "translation" => chat_message.content,
+            "original" => chat_message.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
+          "content_translations_html" => {
             "translation" => chat_message.content,
             "original" => chat_message.content,
             "from_lang" => "fr",
@@ -279,7 +293,14 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "id" => ChatMessage.last.id,
             "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content,
+            "content_html" => content,
             "content_translations" => {
+              "translation" => content,
+              "original" => content,
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
+            "content_translations_html" => {
               "translation" => content,
               "original" => content,
               "from_lang" => "fr",
@@ -503,7 +524,14 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "id" => chat_message_2.id,
           "uuid_v2" => chat_message_2.uuid_v2,
           "content" => chat_message_2.content,
+          "content_html" => chat_message_2.content,
           "content_translations" => {
+            "translation" => chat_message_2.content,
+            "original" => chat_message_2.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
+          "content_translations_html" => {
             "translation" => chat_message_2.content,
             "original" => chat_message_2.content,
             "from_lang" => "fr",

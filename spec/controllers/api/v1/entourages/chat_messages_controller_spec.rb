@@ -35,7 +35,14 @@ describe Api::V1::Entourages::ChatMessagesController do
             "uuid_v2" => chat_message1.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_html" => "MyText",
             "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
+            "content_translations_html" => {
               "translation" => "MyText",
               "original" => "MyText",
               "from_lang" => "fr",
@@ -56,7 +63,14 @@ describe Api::V1::Entourages::ChatMessagesController do
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_html" => "MyText",
             "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
+            "content_translations_html" => {
               "translation" => "MyText",
               "original" => "MyText",
               "from_lang" => "fr",
@@ -119,7 +133,14 @@ describe Api::V1::Entourages::ChatMessagesController do
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_html" => "MyText",
             "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
+            "content_translations_html" => {
               "translation" => "MyText",
               "original" => "MyText",
               "from_lang" => "fr",
@@ -150,7 +171,14 @@ describe Api::V1::Entourages::ChatMessagesController do
             "uuid_v2" => chat_message.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_html" => "MyText",
             "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
+            "content_translations_html" => {
               "translation" => "MyText",
               "original" => "MyText",
               "from_lang" => "fr",
@@ -221,7 +249,14 @@ describe Api::V1::Entourages::ChatMessagesController do
             "uuid_v2" => ChatMessage.first.uuid_v2,
             "message_type" => "text",
             "content" => "foobar",
+            "content_html" => "foobar",
             "content_translations" => {
+              "translation" => "foobar",
+              "original" => "foobar",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
+            "content_translations_html" => {
               "translation" => "foobar",
               "original" => "foobar",
               "from_lang" => "fr",
@@ -370,7 +405,14 @@ describe Api::V1::Entourages::ChatMessagesController do
               "uuid_v2" => ChatMessage.first.uuid_v2,
               "message_type" => "text",
               "content" => "foobar",
+              "content_html" => "foobar",
               "content_translations" => {
+                "translation" => "foobar",
+                "original" => "foobar",
+                "from_lang" => "fr",
+                "to_lang" => "fr",
+              },
+              "content_translations_html" => {
                 "translation" => "foobar",
                 "original" => "foobar",
                 "from_lang" => "fr",
@@ -437,7 +479,14 @@ describe Api::V1::Entourages::ChatMessagesController do
               "id" => ChatMessage.last.id,
               "uuid_v2" => ChatMessage.last.uuid_v2,
               "content" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
+              "content_html" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
               "content_translations" => {
+                "translation" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
+                "original" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
+                "from_lang" => "fr",
+                "to_lang" => "fr",
+              },
+              "content_translations_html" => {
                 "translation" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
                 "original" => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
                 "from_lang" => "fr",
@@ -481,7 +530,14 @@ describe Api::V1::Entourages::ChatMessagesController do
               "id" => ChatMessage.last.id,
               "uuid_v2" => ChatMessage.last.uuid_v2,
               "content" => "Dede\nAu 50 75008 Paris",
+              "content_html" => "Dede\nAu 50 75008 Paris",
               "content_translations" => {
+                "translation" => "Dede\nAu 50 75008 Paris",
+                "original" => "Dede\nAu 50 75008 Paris",
+                "from_lang" => "fr",
+                "to_lang" => "fr",
+              },
+              "content_translations_html" => {
                 "translation" => "Dede\nAu 50 75008 Paris",
                 "original" => "Dede\nAu 50 75008 Paris",
                 "from_lang" => "fr",

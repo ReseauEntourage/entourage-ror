@@ -10,7 +10,8 @@ module Api
         def index
           # outing members
           render json: @outing.join_requests
-            .includes(:user)
+            .includes(user: :partner)
+            .search_by_member(params[:query])
             .ordered_by_users
             .accepted
             .page(page)

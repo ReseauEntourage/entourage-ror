@@ -3,6 +3,7 @@ class ChatMessage < ApplicationRecord
   include ChatServices::Spam
   include ChatServices::PrivateConversation
   include Deeplinkable
+  include Mentionable
   include Translatable
   include Reactionnable
   include Surveyable
@@ -217,6 +218,12 @@ class ChatMessage < ApplicationRecord
 
   def conversation_message_broadcast_id= id
     metadata[:conversation_message_broadcast_id] = id
+  end
+
+  def recipient_ids
+    return siblings.pluck(:user_id).uniq + [parent.user_id] - [user_id] if parent && parent.present?
+
+    messageable.accepted_member_ids.uniq - [user_id]
   end
 
   private
