@@ -44,6 +44,7 @@ module UserServices
 
       if user.update(params)
         signal_blocked_user(user)
+        signal_association(user)
 
         callback.on_success.try(:call, user)
       else
