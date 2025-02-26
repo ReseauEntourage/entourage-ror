@@ -440,7 +440,7 @@ class PushNotificationTrigger
       notify(
         sender_id: @record.user_id,
         referent: @record.messageable,
-        instance: @record.messageable,
+        instance: @record.has_parent? ? @record.parent : @record.messageable,
         users: batches,
         params: {
           object: I18nStruct.new(i18n: 'push_notifications.chat_message.mention', i18n_args: [username(@record.user)]),
