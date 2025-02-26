@@ -39,24 +39,24 @@ module Salesforcable
     end
 
     def from_address_to_antenne
-      return "National" unless @instance.present? && @instance.respond_to?(:address)
+      return "National" unless @instance.present? && @instance.respond_to?(:departement)
 
-      address = @instance.address
+      departement = @instance.departement
 
-      return "National" unless address.present? && address.departement.present?
+      return "National" unless departement.present?
 
-      return "Paris" if address.departement == "75"
-      return "Lille" if address.departement == "59"
-      return "Lyon" if address.departement == "69"
-      return "Rennes" if address.departement == "35"
-      return "Seine Saint Denis" if address.departement == "93"
-      return "Hauts de Seine" if address.departement == "92"
-      return "Marseille" if address.departement == "13"
-      return "IDF" if address.departement == "77" || address.departement == "78" || address.departement == "91" || address.departement == "94" || address.departement == "95"
-      return "Lorient" if address.departement == "56"
-      return "Nantes" if address.departement == "44"
-      return "Bordeaux" if address.departement == "33"
-      return "Saint-Etienne" if address.departement == "42"
+      return "Paris" if departement == "75"
+      return "Lille" if departement == "59"
+      return "Lyon" if departement == "69"
+      return "Rennes" if departement == "35"
+      return "Seine Saint Denis" if departement == "93"
+      return "Hauts de Seine" if departement == "92"
+      return "Marseille" if departement == "13"
+      return "IDF" if departement == "77" || departement == "78" || departement == "91" || departement == "94" || departement == "95"
+      return "Lorient" if departement == "56"
+      return "Nantes" if departement == "44"
+      return "Bordeaux" if departement == "33"
+      return "Saint-Etienne" if departement == "42"
 
       "Hors zone"
     end

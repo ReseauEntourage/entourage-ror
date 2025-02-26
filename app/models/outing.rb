@@ -146,6 +146,12 @@ class Outing < Entourage
     end
   end
 
+  def address
+    return unless metadata
+
+    metadata[:display_address]
+  end
+
   def interests= interests
     unless interests.compact.map(&:to_sym).include?(:other)
       self[:other_interest] = nil
