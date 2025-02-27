@@ -31,14 +31,14 @@ module SalesforceServices
     end
 
     def update user
-      client.update(TABLE_NAME, Id: find_id_by_user(user), **user_to_hash(user))
+      client.update(TABLE_NAME, Id: find_id_by_user(user), **instance_to_hash(user))
     end
 
     def upsert user
       lead_id = lead_id(user)
       contact_id = lead_id ? contact_id(user) : contact_id!(user)
 
-      fields = user_to_hash(user).merge({
+      fields = instance_to_hash(user).merge({
         "Prospect__c" => lead_id,
         "Contact__c" => contact_id,
       })
@@ -50,9 +50,17 @@ module SalesforceServices
       client.update(TABLE_NAME, Id: find_id_by_user(user), Status__c: "supprimé")
     end
 
-    # helpers
+    def updatable_fields
+      UPDATABLE_FIELDS
+    end
 
-    def user_to_hash user
+    def find_by_external_id user_id
+      client.query("select Id from #{TABLE_NAME} where UserId__c = #{user_id}").first
+    end
+
+    private
+
+    def instance_to_hash user
       {
         "Prenom__c" => user.first_name,
         "Nom__c" => user.last_name,
@@ -69,16 +77,6 @@ module SalesforceServices
         "Status__c" => status(user),
       }
     end
-
-    def updatable_fields
-      UPDATABLE_FIELDS
-    end
-
-    def find_by_external_id user_id
-      client.query("select Id from #{TABLE_NAME} where UserId__c = #{user_id}").first
-    end
-
-    private
 
     def lead_id user
       Lead.new.find_id_by_user(user)
