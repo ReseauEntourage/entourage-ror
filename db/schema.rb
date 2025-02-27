@@ -335,6 +335,7 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.boolean "auto_post_at_create", default: false
     t.integer "number_of_root_chat_messages", default: 0
     t.string "exclusive_to"
+    t.string "salesforce_id"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
