@@ -67,6 +67,9 @@ module Salesforcable
   end
 
   def sync_salesforce
+    return if is_a?(Entourage) && action? # hack due to Salesforcable included in Entourage
+    return if is_a?(Entourage) && conversation? # hack due to Salesforcable included in Entourage
+
     return unless address.present?
 
     if has_attribute?(:deleted)
