@@ -513,6 +513,13 @@ class Entourage < ApplicationRecord
     value
   end
 
+  def address
+    return unless action? || outing?
+    return unless metadata
+
+    metadata[:display_address]
+  end
+
   def metadata_datetimes_formatted
     formats =
       if metadata[:ends_at].midnight == metadata[:starts_at].midnight
