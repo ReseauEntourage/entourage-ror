@@ -12,6 +12,7 @@ class Entourage < ApplicationRecord
   include JoinableScopable
   include ModeratorReadable
   include Deeplinkable
+  include Salesforcable # ought to be moved to Outing but backoffice creates outings using Entourage instances
   include Translatable
 
   after_validation :track_status_change
