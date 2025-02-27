@@ -1,6 +1,9 @@
 module SalesforceServices
-  class Campaign < Connect
+  class Outing < Connect
     TABLE_NAME = "Campaign"
+
+    UPDATABLE_FIELDS = [:status, :title, :metadata]
+
     RESEAU = "Entourage"
     STATUS_ENTOURAGE = "Organisateur"
     TYPE = "Event"
@@ -9,23 +12,35 @@ module SalesforceServices
     def find_id_by_outing outing
       return unless outing.ongoing?
 
-      return unless attributes = find_by_uuid(outing.uuid)
+      return unless attributes = find_by_external_id(outing.uuid)
       return unless attributes.any?
 
       attributes["Id"]
     end
 
-    def find_by_uuid uuid
-      client.query("select Id from #{TABLE_NAME} where Uuid = '#{uuid}'").first
+    def update outing
+      client.update(TABLE_NAME, Id: find_id_by_outing(outing), **instance_to_hash(outing))
     end
 
     def upsert outing
-      find_id_by_outing(outing) || client.upsert!(TABLE_NAME, "ID_externe__c", "ID_externe__c": outing.uuid, **outing_to_hash(outing))
+      find_id_by_outing(outing) || client.upsert!(TABLE_NAME, "ID_externe__c", "ID_externe__c": outing.uuid, **instance_to_hash(outing))
+    end
+
+    def destroy outing
+      client.update(TABLE_NAME, Id: find_id_by_outing(outing), Status: true)
+    end
+
+    def updatable_fields
+      UPDATABLE_FIELDS
+    end
+
+    def find_by_external_id uuid
+      client.query("select Id from #{TABLE_NAME} where Uuid__C = '#{uuid}'").first
     end
 
     private
 
-    def outing_to_hash outing
+    def instance_to_hash outing
       # Impact__c                    =>
       # Organisateur__c              =>
       {
