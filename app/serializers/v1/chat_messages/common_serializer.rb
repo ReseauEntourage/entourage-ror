@@ -8,6 +8,13 @@ module V1
        :created_at,
        :read,
        :status
+
+      def content
+        return "" if object.deleted?
+        return "" if object.offensive?
+
+        object.content
+      end
     end
   end
 end

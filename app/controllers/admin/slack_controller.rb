@@ -1,8 +1,9 @@
 module Admin
   class SlackController < ActionController::Base
-    before_action :parse_payload, only: [:message_action, :user_unblock]
+    before_action :parse_payload, only: [:message_action, :user_unblock, :offensive_text]
     before_action :authenticate_slack!, only: [:message_action]
     before_action :authenticate_slack_user_unblock!, only: [:user_unblock]
+    before_action :authenticate_slack_offensive_text!, only: [:offensive_text]
     before_action :authenticate_admin!, only: [:csv]
 
     def message_action
@@ -73,6 +74,33 @@ module Admin
       render json: response
     end
 
+    def offensive_text
+      callback_type, *callback_params = @payload['callback_id']&.split(':')
+      return head :bad_request if [callback_type, callback_params.length] != ['offensive_text', 1]
+      return head :bad_request unless @payload['actions']
+
+      action = @payload['actions'].first['value']
+
+      return head :bad_request unless ['is_offensive', 'is_not_offensive'].include?(action)
+      return head :bad_request unless chat_message = ChatMessage.find(callback_params[0])
+
+      response = SlackServices::OffensiveText.new(chat_message_id: callback_params[0], text: chat_message.content).payload
+
+      if action == 'is_offensive'
+        chat_message.is_offensive!
+
+        response[:attachments].first[:color] = :danger
+        response[:attachments].last[:text] = "*:#{:no_entry_sign}: <@#{@payload['user']['name']}> a marqué le contenu comme offensant*"
+      elsif action == 'is_not_offensive'
+        chat_message.is_not_offensive!
+
+        response[:attachments].first[:color] = :good
+        response[:attachments].last[:text] = "*:#{:white_check_mark}: <@#{@payload['user']['name']}> a marqué le contenu comme non offensant*"
+      end
+
+      render json: response
+    end
+
     private
 
     def parse_payload
@@ -85,6 +113,10 @@ module Admin
 
     def authenticate_slack_user_unblock!
       head :unauthorized if @payload['token'] != SlackServices::UnblockUser.webhook('token')
+    end
+
+    def authenticate_slack_offensive_text!
+      head :unauthorized if @payload['token'] != SlackServices::OffensiveText.webhook('token')
     end
 
     def authenticate_admin!

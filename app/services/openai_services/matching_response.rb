@@ -17,6 +17,10 @@ module OpenaiServices
       recommandations.any?
     end
 
+    def display_result
+      recommandations.count
+    end
+
     def recommandations
       return [] unless @parsed_response
 

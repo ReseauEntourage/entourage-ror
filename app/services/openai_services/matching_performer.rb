@@ -2,9 +2,6 @@ module OpenaiServices
   class MatchingPerformer < BasicPerformer
     attr_reader :user
 
-    class MatcherCallback < Callback
-    end
-
     def user_message
       {
         role: "user",
