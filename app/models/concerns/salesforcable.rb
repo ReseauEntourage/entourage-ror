@@ -73,16 +73,16 @@ module Salesforcable
     return unless address.present?
 
     if has_attribute?(:deleted)
-      return SalesforceJob.perform_later(id, "destroy") if saved_change_to_deleted? && deleted?
+      return SalesforceJob.perform_later(self, "destroy") if saved_change_to_deleted? && deleted?
     end
 
     if has_attribute?(:status)
-      return SalesforceJob.perform_later(id, "destroy") if saved_change_to_status? && status == "deleted"
+      return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && status == "deleted"
     end
 
     return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
-    SalesforceJob.perform_later(id, "upsert")
+    SalesforceJob.perform_later(self, "upsert")
   end
 
   alias_method :sf, :salesforce
