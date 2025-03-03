@@ -12,7 +12,7 @@ module SalesforceServices
     def find_id_by_outing outing
       return unless outing.ongoing?
 
-      return unless attributes = find_by_external_id(outing.uuid)
+      return unless attributes = find_by_external_id(outing.id)
       return unless attributes.any?
 
       attributes["Id"]
@@ -23,7 +23,7 @@ module SalesforceServices
     end
 
     def upsert outing
-      find_id_by_outing(outing) || client.upsert!(TABLE_NAME, "ID_externe__c", "ID_externe__c": outing.uuid, **instance_to_hash(outing))
+      find_id_by_outing(outing) || client.upsert!(TABLE_NAME, "OutingId__C", "OutingId__C": outing.id, **instance_to_hash(outing))
     end
 
     def destroy outing
@@ -34,8 +34,8 @@ module SalesforceServices
       UPDATABLE_FIELDS
     end
 
-    def find_by_external_id uuid
-      client.query("select Id from #{TABLE_NAME} where Uuid__C = '#{uuid}'").first
+    def find_by_external_id outing_id
+      client.query("select Id from #{TABLE_NAME} where OutingId__C = #{outing_id}").first
     end
 
     private
