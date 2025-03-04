@@ -1,8 +1,10 @@
 module Mentionable
   extend ActiveSupport::Concern
 
+  # remove html tags from text
   def self.no_html content
     return content unless content.is_a?(String)
+    return content if content !~ /<[^>]+>/
 
     document = Nokogiri::HTML(content)
     document.css('img').each { |node| node.remove }
@@ -10,6 +12,7 @@ module Mentionable
     document.text.strip
   end
 
+  # remove html tags from every text value
   def self.none_html! hash
     return unless hash.present?
 
@@ -18,6 +21,23 @@ module Mentionable
     end
 
     hash
+  end
+
+  # remove html tags from text except for a.href and br
+  def self.filter_html_tags(content, allowed_tags = %w[a br])
+    return content unless content.is_a?(String)
+    return content if content !~ /<[^>]+>/
+
+    document = Nokogiri::HTML.fragment(content)
+
+    document.traverse do |node|
+      next unless node.element?
+      next if allowed_tags.include?(node.name)
+
+      node.replace(node.text)
+    end
+
+    document.to_html
   end
 
   MentionsStruct = Struct.new(:instance) do
