@@ -7,7 +7,7 @@ RSpec.describe Mentionable, type: :module do
     subject { Mentionable::MentionsStruct.new(instance: chat_message) }
 
     context 'when content contains HTML' do
-      let(:content) { '<p>Hello, <a href="https://preprod.entourage.social/app/users/123">User</a></p>' }
+      let(:content) { 'Hello, <a href="https://preprod.entourage.social/app/users/123">User</a>' }
 
       it 'detects HTML content' do
         expect(subject.contains_html?).to be true
@@ -31,7 +31,7 @@ RSpec.describe Mentionable, type: :module do
     end
 
     context 'when content contains multiple HTML' do
-      let(:content) { '<p>Hello, <a href="https://preprod.entourage.social/app/users/123">John</a> and <a href="https://preprod.entourage.social/app/users/456">Jane</a></p>' }
+      let(:content) { 'Hello, <a href="https://preprod.entourage.social/app/users/123">John</a> and <a href="https://preprod.entourage.social/app/users/456">Jane</a>' }
 
       it 'extracts user UUIDs' do
         expect(subject.extract_user_ids_or_uuids).to eq(['123', '456'])
@@ -113,7 +113,7 @@ RSpec.describe Mentionable, type: :module do
 
     context 'with special tag br' do
       let(:content) { 'Text with <br/> special tag' }
-      it { expect(result).to eq('Text with  special tag') }
+      it { expect(result).to eq("Text with \n special tag") }
     end
 
     context 'multiple tags' do
