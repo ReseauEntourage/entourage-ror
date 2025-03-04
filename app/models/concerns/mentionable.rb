@@ -9,6 +9,7 @@ module Mentionable
     document = Nokogiri::HTML(content)
     document.css('img').each { |node| node.remove }
     document.css('a').each { |node| node.replace(node.text) }
+    document.css('br').each { |node| node.replace("\n") }
     document.text.strip
   end
 

@@ -113,7 +113,7 @@ RSpec.describe Mentionable, type: :module do
 
     context 'with special tag br' do
       let(:content) { 'Text with <br/> special tag' }
-      it { expect(result).to eq("Text with  special tag") }
+      it { expect(result).to eq("Text with \n special tag") }
     end
 
     context 'multiple tags' do
