@@ -2,10 +2,12 @@ module SalesforceServices
   class RecordType < Connect
     TABLE_NAME = "RecordType"
 
-    DEVELOPER_NAME_MAPPING = {
+    DEVELOPER_NAME_USER_MAPPING = {
       ask_for_help: "Personne_preca",
       offer_help: "Riverain",
     }
+
+    DEVELOPER_NAME_OUTING = "Campagne"
 
     RecordTypeStruct = Struct.new(:record_type) do
       def initialize(record_type: nil)
@@ -31,8 +33,12 @@ module SalesforceServices
         SalesforceConfig.find_by_klass_and_developer_name(TABLE_NAME, developer_name)
       end
 
+      def find_for_outing
+        find_by_developer_name(DEVELOPER_NAME_OUTING)
+      end
+
       def find_for_user user
-        developer_name = user.is_ask_for_help? ? DEVELOPER_NAME_MAPPING[:ask_for_help] : DEVELOPER_NAME_MAPPING[:offer_help]
+        developer_name = user.is_ask_for_help? ? DEVELOPER_NAME_USER_MAPPING[:ask_for_help] : DEVELOPER_NAME_USER_MAPPING[:offer_help]
 
         find_by_developer_name(developer_name)
       end
