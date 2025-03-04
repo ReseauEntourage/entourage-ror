@@ -99,7 +99,9 @@ module UserServices
 
       # chat_messages
       def public_chat_messages
-        @public_chat_messages ||= ChatMessage.where(user_id: @user.id, message_type: :text)
+        @public_chat_messages ||= ChatMessage
+          .where(user_id: @user.id, message_type: :text)
+          .where("messageable_type = 'Neighborhood' or (messageable_id in (select id from entourages where group_type = 'outing'))")
       end
 
       def public_chat_messages_by group
@@ -110,7 +112,9 @@ module UserServices
       end
 
       def private_chat_messages
-        @private_chat_messages ||= ChatMessage.where(user_id: @user.id, message_type: :text, messageable_type: :Entourage)
+        @private_chat_messages ||= ChatMessage
+          .where(user_id: @user.id, message_type: :text, messageable_type: :Entourage)
+          .where("messageable_id in (select id from entourages where group_type = 'conversation')")
       end
 
       def private_chat_messages_by group
