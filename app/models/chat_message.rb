@@ -229,6 +229,11 @@ class ChatMessage < ApplicationRecord
     @message_types ||= ['status_update', 'broadcast', *messageable&.group_type_config&.dig('message_types')]
   end
 
+  def content= text
+    # filter unexpected html tags from content
+    self[:content] = Mentionable.filter_html_tags(text)
+  end
+
   def conversation_message_broadcast_id= id
     metadata[:conversation_message_broadcast_id] = id
   end
