@@ -2,7 +2,7 @@ module SlackServices
   class OffensiveText < Notifier
     def initialize chat_message_id:, text:
       @chat_message = ChatMessage.find(chat_message_id) if chat_message_id
-      @text = text
+      @text = Mentionable.no_html(text)
     end
 
     def env
