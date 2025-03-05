@@ -505,6 +505,10 @@ class User < ApplicationRecord
     goal.to_s == 'organization'
   end
 
+  def team?
+    targeting_profile.to_s == 'team'
+  end
+
   def association?
     partner_id != nil
   end
