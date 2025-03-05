@@ -17,6 +17,10 @@ module SalesforceServices
       )
     end
 
+    def is_synchable?
+      true
+    end
+
     # describe object fields
     def object_fields object_name
       return Hash.new unless metadata = client.describe(object_name)

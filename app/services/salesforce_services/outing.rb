@@ -9,6 +9,13 @@ module SalesforceServices
     TYPE = "Event"
     TYPE_EVENEMENT = "Evenement de convivialité"
 
+    def is_synchable? outing
+      return false if outing.online
+      return false unless user = outing.user
+
+      user.team?
+    end
+
     def find_id_by_outing outing
       return unless outing.ongoing?
 
