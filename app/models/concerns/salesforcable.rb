@@ -34,6 +34,10 @@ module Salesforcable
       @service.destroy(@instance)
     end
 
+    def is_synchable?
+      @service.is_synchable?(@instance)
+    end
+
     def updatable_fields
       @service.updatable_fields
     end
@@ -80,6 +84,7 @@ module Salesforcable
       return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && status == "deleted"
     end
 
+    return unless sf.is_synchable?
     return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
     SalesforceJob.perform_later(self, "upsert")
