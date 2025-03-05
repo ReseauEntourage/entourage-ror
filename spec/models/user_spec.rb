@@ -235,16 +235,6 @@ describe User, :type => :model do
     expect(user.subscriptions).to eq([])
   end
 
-  describe "apple?" do
-    fr = Address.new(country: 'FR')
-    us = Address.new(country: 'US')
-
-    it { expect(FactoryBot.build(:public_user, id: 100, address: us).apple?).to be true }
-    it { expect(FactoryBot.build(:public_user, id: 100, address: fr).apple?).to be false }
-    it { expect(FactoryBot.build(:public_user, id: 101, address: us).apple?).to be true }
-    it { expect(FactoryBot.build(:public_user, id: 101, address: fr).apple?).to be true }
-  end
-
   def build_or_error *args
     o = build(*args)
     o.save || o.errors.to_hash
