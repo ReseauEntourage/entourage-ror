@@ -23,6 +23,8 @@ class GroupMailer < MailjetMailer
     event = Outing.find(event_id)
     user = User.find(user_id)
 
+    return if event.place_limit?
+
     IcalService.attach_ical(group: event, for_user: user, to: self)
 
     mailjet_email(
