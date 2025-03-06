@@ -470,10 +470,6 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     let(:chat_message) { create :chat_message, messageable: neighborhood }
     let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
 
-    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
-
-    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
-
     context "correct messageable" do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).to receive(:notify)
