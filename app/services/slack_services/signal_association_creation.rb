@@ -19,7 +19,7 @@ module SlackServices
             type: "section",
             text: {
               type: "mrkdwn",
-              text: ":pushpin: *Nom :* #{@user.full_name}"
+              text: ":pushpin: *Nom :* #{@user.full_name} (#{@user.postal_code}, #{@user.city})"
             }
           },
           {
