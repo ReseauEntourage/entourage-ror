@@ -410,7 +410,7 @@ class User < ApplicationRecord
 
   def signal_association
     return unless address.present?
-    return saved_change_to_address? || (saved_change_to_goal? && goal_association?)
+    return saved_change_to_address_id? || (saved_change_to_goal? && goal_association?)
 
     SlackServices::SignalAssociationCreation.new(user: self).notify
   end
