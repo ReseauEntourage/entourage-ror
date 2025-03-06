@@ -25,4 +25,5 @@ ENV["DISABLE_CRYPT"]="TRUE"
 ENV['ENTOURAGE_SECRET'] = 'test_entourage_secret'
 ENV["SLACK_DEFAULT_INTERLOCUTOR"] = "laure"
 ENV["MODERATOR_PHONE"] = "+33768037348"
+ENV["SLACK_SIGNAL"]='{"url":"https://url.to.slack.com","channel":"channel","channel-associations":"channel-associations"}'
 API_HOST = 'api.entourage.test'
