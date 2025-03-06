@@ -15,7 +15,7 @@ resource Api::V1::ConversationsController do
     let(:other_user) { FactoryBot.create(:public_user, first_name: 'Michel', last_name: 'Ange') }
 
     # conversations
-    let(:entourage) { FactoryBot.create(:entourage, title: "foo", status: :open, created_at: 2.hours.ago) }
+    let(:entourage) { FactoryBot.create(:outing, title: "foo", status: :open, created_at: 2.hours.ago) }
     let(:conversation) { FactoryBot.create(:conversation, user: user, participants: [other_user], created_at: 1.hour.ago) }
 
     # memberships
