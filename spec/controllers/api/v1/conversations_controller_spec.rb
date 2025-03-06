@@ -282,7 +282,7 @@ describe Api::V1::ConversationsController do
 
       before { get :privates, params: { token: user.token } }
 
-      it { expect(subject["privates"].count).to eq(0) }
+      it { expect(subject["conversations"].count).to eq(0) }
     end
 
     context "actions are not private" do
@@ -291,7 +291,7 @@ describe Api::V1::ConversationsController do
 
       before { get :privates, params: { token: user.token } }
 
-      it { expect(subject["privates"].count).to eq(0) }
+      it { expect(subject["conversations"].count).to eq(0) }
     end
 
     describe "some private conversations" do
@@ -309,43 +309,43 @@ describe Api::V1::ConversationsController do
 
         context "name is other participant name when the user is the creator" do
           # let(:creator) { user }
-          it { expect(subject["privates"].count).to eq(1) }
-          it { expect(subject["privates"][0]["name"]).to eq("Foo B.") }
+          it { expect(subject["conversations"].count).to eq(1) }
+          it { expect(subject["conversations"][0]["name"]).to eq("Foo B.") }
         end
 
         context "name is other participant name when the user is not the creator" do
           let(:creator) { other_user }
-          it { expect(subject["privates"].count).to eq(1) }
-          it { expect(subject["privates"][0]["name"]).to eq("Foo B.") }
+          it { expect(subject["conversations"].count).to eq(1) }
+          it { expect(subject["conversations"][0]["name"]).to eq("Foo B.") }
         end
       end
 
       context "default properties" do
         before { get :privates, params: { token: user.token } }
-        it { expect(subject["privates"].count).to eq(1) }
-        it { expect(subject["privates"][0]).to have_key("last_message") }
-        it { expect(subject["privates"][0]).to have_key("number_of_unread_messages") }
+        it { expect(subject["conversations"].count).to eq(1) }
+        it { expect(subject["conversations"][0]).to have_key("last_message") }
+        it { expect(subject["conversations"][0]).to have_key("number_of_unread_messages") }
       end
 
       context "with unread" do
         let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.from_now, messageable: conversation)}
 
         before { get :privates, params: { token: user.token } }
-        it { expect(subject["privates"].first["number_of_unread_messages"]).to eq(1) }
+        it { expect(subject["conversations"].first["number_of_unread_messages"]).to eq(1) }
       end
 
       context "without unread" do
         let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.ago, messageable: conversation)}
 
         before { get :privates, params: { token: user.token } }
-        it { expect(subject["privates"].first["number_of_unread_messages"]).to eq(0) }
+        it { expect(subject["conversations"].first["number_of_unread_messages"]).to eq(0) }
       end
 
       context "with last_message" do
         let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation)}
 
         before { get :privates, params: { token: user.token } }
-        it { expect(subject["privates"].first["last_message"]).to be_a(Hash) }
+        it { expect(subject["conversations"].first["last_message"]).to be_a(Hash) }
       end
 
       context "with some messages, get last_message" do
@@ -353,15 +353,15 @@ describe Api::V1::ConversationsController do
         let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: conversation, content: "bar", created_at: 2.hours.ago) }
 
         before { get :privates, params: { token: user.token } }
-        it { expect(subject["privates"].first["last_message"]).to be_a(Hash) }
-        it { expect(subject["privates"].first["last_message"]["text"]).to eq("foo") }
+        it { expect(subject["conversations"].first["last_message"]).to be_a(Hash) }
+        it { expect(subject["conversations"].first["last_message"]["text"]).to eq("foo") }
       end
 
       context "without last_message" do
         let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_conversation)}
 
         before { get :privates, params: { token: user.token } }
-        it { expect(subject["privates"].first["last_message"]).to eq(nil) }
+        it { expect(subject["conversations"].first["last_message"]).to eq(nil) }
       end
     end
 
@@ -378,8 +378,8 @@ describe Api::V1::ConversationsController do
           before { request }
 
           it { expect(response.status).to eq(200) }
-          it { expect(subject["privates"].count).to eq(1) }
-          it { expect(subject["privates"][0]['blockers']).to match_array([ "me" ]) }
+          it { expect(subject["conversations"].count).to eq(1) }
+          it { expect(subject["conversations"][0]['blockers']).to match_array([ "me" ]) }
         end
 
         context 'participant blocked' do
@@ -388,8 +388,8 @@ describe Api::V1::ConversationsController do
           before { request }
 
           it { expect(response.status).to eq(200) }
-          it { expect(subject["privates"].count).to eq(1) }
-          it { expect(subject["privates"][0]['blockers']).to match_array([ "participant" ]) }
+          it { expect(subject["conversations"].count).to eq(1) }
+          it { expect(subject["conversations"][0]['blockers']).to match_array([ "participant" ]) }
         end
 
         context 'both blocked' do
@@ -399,8 +399,8 @@ describe Api::V1::ConversationsController do
           before { request }
 
           it { expect(response.status).to eq(200) }
-          it { expect(subject["privates"].count).to eq(1) }
-          it { expect(subject["privates"][0]['blockers']).to match_array([ "me", "participant" ]) }
+          it { expect(subject["conversations"].count).to eq(1) }
+          it { expect(subject["conversations"][0]['blockers']).to match_array([ "me", "participant" ]) }
         end
       end
     end
@@ -477,37 +477,37 @@ describe Api::V1::ConversationsController do
 
       context "default properties" do
         before { get :outings, params: { token: user.token } }
-        it { expect(subject["outings"].count).to eq(1) }
-        it { expect(subject["outings"][0]).to have_key("last_message") }
-        it { expect(subject["outings"][0]).to have_key("number_of_unread_messages") }
+        it { expect(subject["conversations"].count).to eq(1) }
+        it { expect(subject["conversations"][0]).to have_key("last_message") }
+        it { expect(subject["conversations"][0]).to have_key("number_of_unread_messages") }
       end
 
       context "with unread" do
         let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.from_now, messageable: entourage)}
 
         before { get :outings, params: { token: user.token } }
-        it { expect(subject["outings"].first["number_of_unread_messages"]).to eq(1) }
+        it { expect(subject["conversations"].first["number_of_unread_messages"]).to eq(1) }
       end
 
       context "without unread" do
         let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.ago, messageable: entourage)}
 
         before { get :outings, params: { token: user.token } }
-        it { expect(subject["outings"].first["number_of_unread_messages"]).to eq(0) }
+        it { expect(subject["conversations"].first["number_of_unread_messages"]).to eq(0) }
       end
 
       context "with last_message" do
         let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage)}
 
         before { get :outings, params: { token: user.token } }
-        it { expect(subject["outings"].first["last_message"]).to be_a(Hash) }
+        it { expect(subject["conversations"].first["last_message"]).to be_a(Hash) }
       end
 
       context "without last_message" do
         let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_entourage)}
 
         before { get :outings, params: { token: user.token } }
-        it { expect(subject["outings"].first["last_message"]).to eq(nil) }
+        it { expect(subject["conversations"].first["last_message"]).to eq(nil) }
       end
     end
 
@@ -515,14 +515,14 @@ describe Api::V1::ConversationsController do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
 
       before { get :outings, params: { token: user.token } }
-      it { expect(subject["outings"].count).to eq(0) }
+      it { expect(subject["conversations"].count).to eq(0) }
     end
 
     context "outings conversations are not accepted" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
 
       before { get :outings, params: { token: user.token } }
-      it { expect(subject["outings"].count).to eq(0) }
+      it { expect(subject["conversations"].count).to eq(0) }
     end
   end
 

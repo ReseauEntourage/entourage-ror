@@ -31,7 +31,7 @@ module Api
           .order(updated_at: :desc)
           .page(params[:page] || 1).per(per)
 
-        render json: privates, root: :privates, each_serializer: ::V1::ConversationSerializer, scope: {
+        render json: privates, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
           user: current_user, include_last_message: true
         }
       end
@@ -60,7 +60,7 @@ module Api
           .order(updated_at: :desc)
           .page(params[:page] || 1).per(per)
 
-        render json: outings, root: :outings, each_serializer: ::V1::ConversationSerializer, scope: {
+        render json: outings, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
           user: current_user, include_last_message: true
         }
       end
