@@ -20,6 +20,7 @@ RSpec.configure do |config|
 
     stub_request(:any, /.*api.mailjet.com.*/).to_return(status: 200, body: { id: 1 }.to_json, headers: {})
     stub_request(:any, /.*api.openai.*/).to_return(status: 200, body: "{}", headers: {})
+    stub_request(:any, "https://url.to.slack.com").to_return(status: 200)
 
     # deactivate slack_trace notifications
     SlackServices::StackTrace.any_instance.stub(:notify).and_return(nil)
