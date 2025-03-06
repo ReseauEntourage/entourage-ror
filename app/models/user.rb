@@ -658,10 +658,6 @@ class User < ApplicationRecord
     false
   end
 
-  def apple?
-    id == 101 || address&.country == 'US'
-  end
-
   def address_2
     addresses.find_by(position: 2)
   end
