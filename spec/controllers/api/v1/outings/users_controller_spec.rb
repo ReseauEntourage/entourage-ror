@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Api::V1::Outings::UsersController do
-  let(:user) { FactoryBot.create(:public_user) }
-  let(:outing) { FactoryBot.create(:outing, title: "foobar1") }
+  let(:user) { create(:public_user) }
+  let(:outing) { create(:outing, title: "foobar1") }
   let!(:join_request_organizer) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
   let(:result) { JSON.parse(response.body) }
 
@@ -19,9 +19,16 @@ describe Api::V1::Outings::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+      let(:user_cancelled) { create(:public_user, first_name: 'cancelled') }
+      let(:user_blocked) { create(:public_user, first_name: 'blocked') }
 
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+      let!(:join_request_cancelled) { create(:join_request, user: user_cancelled, joinable: outing, status: :cancelled) }
+      let!(:join_request_blocked) { create(:join_request, user: user_blocked, joinable: outing, status: :accepted) }
+
+      before { user_blocked.update_attribute(:validation_status, :blocked) }
       before { get :index, params: { outing_id: outing.to_param, token: user.token } }
+
       it { expect(result).to have_key("users") }
       it { expect(result["users"]).to match_array([{
         "id" => outing.user.id,
