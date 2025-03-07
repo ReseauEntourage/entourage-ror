@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.1.0'
 
-gem 'rails',                          '~> 6.0'
+gem 'rails', '~> 6.1.7.10'
 
 gem 'sass-rails'
 gem 'uglifier'
