@@ -7,9 +7,6 @@ gem 'rails', '~> 6.1.7.10'
 gem 'sass-rails'
 gem 'uglifier'
 gem 'terser'
-gem 'jquery-rails',                   '~> 4'
-gem 'jquery-ui-rails',                '~> 5'
-gem 'turbolinks',                     '~> 5'
 gem 'coffee-rails',                   '~> 5'
 gem 'active_model_serializers',       '~> 0.10'
 gem 'handlebars_assets',              '~> 0'
@@ -58,6 +55,21 @@ gem 'tinymce-rails'
 gem 'chartkick'
 gem 'restforce', '~> 7.2.0'
 gem 'ffi', '>= 1.15', '< 1.17'
+
+# forces concurrent-ruby version to fix an issue on 1.3.5: https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
+# this gem declaration should be deleted when using Rails 7
+gem 'concurrent-ruby', '1.3.4'
+
+# Pour le support JavaScript moderne
+gem 'jsbundling-rails'
+
+# Pour le support CSS moderne
+gem 'cssbundling-rails'
+
+# Pour remplacer jQuery UJS si nécessaire
+gem 'stimulus-rails'
+gem 'turbo-rails' # Remplace turbolinks
+
 
 group :development, :test do
   # gem 'annotate'

@@ -1,0 +1,24 @@
+{
+  "name": "app",
+  "private": true,
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "dependencies": {
+    "@hotwired/turbo-rails": "^8.0.13",
+    "bootstrap-multiselect": "^1.1.0",
+    "chart.js": "^4.4.8",
+    "chartkick": "^5.0.1",
+    "daterangepicker": "^3.1.0",
+    "jquery": "^3.7.1",
+    "jquery-ui": "^1.14.1",
+    "moment": "^2.30.1",
+    "sass": "^1.85.1",
+    "select2": "^4.1.0-rc.0",
+    "stimulus": "^3.2.2"
+  }
+}

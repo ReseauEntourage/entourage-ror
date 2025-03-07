@@ -3,8 +3,7 @@ $navbar-inverse-bg: #252525;
 $text-color: #555;
 $buttons-color: #ef662f;
 
-@import "daterangepicker.css";
-
+@import "daterangepicker";
 @import "home";
 @import "organization";
 @import "sign_in";
@@ -20,8 +19,7 @@ $buttons-color: #ef662f;
 @import "select2-bootstrap";
 @import "header";
 @import "components";
-@import 'layout';
-
+@import "layout";
 
 body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }
