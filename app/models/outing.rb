@@ -117,6 +117,7 @@ class Outing < Entourage
 
   def validate_neighborhood_ids
     return unless outing?
+    return if user && user.admin?
     return if neighborhood_ids.empty?
 
     if (neighborhood_ids - user.neighborhood_participation_ids).any?
