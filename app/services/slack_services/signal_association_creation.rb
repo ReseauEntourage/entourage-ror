@@ -12,6 +12,17 @@ module SlackServices
       contact_info = @user.phone
       contact_info += " - #{@user.email}" if @user.email.present?
 
+      options = partners.map { |partner|
+        {
+          text: {
+            type: "plain_text",
+            text: partner.name,
+            emoji: true
+          },
+          value: "partner-id-#{partner.id}"
+        }
+      }
+
       {
         blocks: [
           { type: "divider" },
@@ -47,7 +58,37 @@ module SlackServices
               },
               url: link_to_user(@user.id)
             }]
-          }
+          },
+          {
+            type: "input",
+            element: {
+              type: "static_select",
+              placeholder: {
+                type: "plain_text",
+                text: "Sélectionner l'association",
+                emoji: true
+              },
+              options: options,
+              action_id: "static_select-action"
+            },
+            label: {
+              type: "plain_text",
+              text: "Choisir",
+              emoji: true
+            }
+          },
+          {
+            type: "actions",
+            elements: [{
+              type: "button",
+              text: {
+                type: "plain_text",
+                text: "N'est pas une association",
+                emoji: true
+              },
+              url: link_to_user(@user.id)
+            }]
+          },
         ]
       }
     end
@@ -57,6 +98,21 @@ module SlackServices
         username: "Création d’un compte association",
         channel: webhook('channel-associations'),
       }
+    end
+
+    private
+
+    def partners
+      return [] unless @user.latitude && @user.longitude
+
+      bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
+
+      Partner.where(bounding_box_sql).order(:name)
+    end
+
+    def box
+      # Geocoder::Calculations.bounding_box([@user.latitude, @user.longitude], @user.travel_distance, units: :km)
+      Geocoder::Calculations.bounding_box([@user.latitude, @user.longitude], 100, units: :km)
     end
   end
 end
