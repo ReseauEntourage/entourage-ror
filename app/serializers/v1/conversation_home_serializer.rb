@@ -92,6 +92,8 @@ module V1
     end
 
     def section
+      return unless object.action?
+
       object.becomes(object.action_class).section
     end
 
