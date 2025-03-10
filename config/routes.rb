@@ -594,7 +594,9 @@ Rails.application.routes.draw do
         end
 
         collection do
+          get :privates
           get :private
+          get :outings
           get :group
           get :metadata
         end

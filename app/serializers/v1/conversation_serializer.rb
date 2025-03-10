@@ -37,6 +37,8 @@ module V1
     end
 
     def section
+      return unless object.action?
+
       object.becomes(object.action_class).section
     end
 
@@ -47,6 +49,7 @@ module V1
 
     def type
       return :private if private_conversation?
+      return :outing if object.outing?
       return :contribution if object.contribution?
 
       :solicitation
@@ -54,12 +57,14 @@ module V1
 
     def name
       return object.title unless private_conversation?
+      return unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
     end
 
     def image_url
       return object.image_url unless private_conversation?
+      return unless other_participant
 
       UserServices::Avatar.new(user: other_participant).thumbnail_url
     end
