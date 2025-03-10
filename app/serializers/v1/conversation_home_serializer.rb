@@ -27,6 +27,7 @@ module V1
 
     def type
       return :private if private_conversation?
+      return :outing if object.outing?
       return :contribution if object.contribution?
 
       :solicitation
