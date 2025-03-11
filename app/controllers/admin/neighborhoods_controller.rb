@@ -109,7 +109,7 @@ module Admin
 
     def show_outing_posts
       @outing = Outing.find(params[:outing_id])
-      @posts = @outing.parent_chat_messages.order(created_at: :desc).page(page).per(per)
+      @posts = @outing.parent_chat_messages.order(created_at: :desc).page(page).per(per).includes(:user, :translation)
     end
 
     def show_outing_post_comments
@@ -119,14 +119,14 @@ module Admin
 
       if messageable.is_a?(Entourage) && messageable.outing?
         @outing = messageable
-        @comments = @post.children.ordered.page(page).per(per).includes([:user])
+        @comments = @post.children.ordered.page(page).per(per).includes(:user, :translation)
       else
         redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
       end
     end
 
     def show_posts
-      @posts = @neighborhood.posts.includes(:survey).order(created_at: :desc).page(page).per(per).includes([:user])
+      @posts = @neighborhood.posts.order(created_at: :desc).page(page).per(per).includes(:user, :survey, :translation)
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
     end
 
@@ -134,7 +134,7 @@ module Admin
       @post = ChatMessage.find(params[:post_id])
 
       if @post.messageable == @neighborhood
-        @comments = @post.children.order(created_at: :desc).page(page).per(per).includes([:user])
+        @comments = @post.children.order(created_at: :desc).page(page).per(per).includes(:user, :translation)
       else
         redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
       end

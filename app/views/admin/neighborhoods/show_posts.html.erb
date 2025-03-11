@@ -76,20 +76,7 @@
               <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
             </div>
 
-            <% if message.deleted? %>
-              <p style="color: red;"> Ce message a été supprimé par <%= message.deleter&.full_name %> le <%= l message.deleted_at, format: :short %> : </p>
-              <em><%= simple_format message.content(true) %></em>
-            <% elsif message.offensible? %>
-              <p style="color: red;"> Ce message a été détecté automatiquement comme offensant : </p>
-              <em><%= simple_format message.content(true) %></em>
-            <% elsif message.offensive? %>
-              <p style="color: red;"> Ce message a été modéré comme offensant : </p>
-              <em><%= simple_format message.content(true) %></em>
-            <% else %>
-              <div id="chat-message-<%= message.id %>">
-                <%= simple_format message.content %>
-              </div>
-            <% end %>
+            <%= chat_message_with_status(message) %>
 
             <% if message.survey.present? %>
               <p><strong>Sondage</strong></p>
