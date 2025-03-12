@@ -9,6 +9,10 @@ module SalesforceServices
 
     DEVELOPER_NAME_OUTING = "Campagne"
 
+    def initialize
+      super(TABLE_NAME)
+    end
+
     RecordTypeStruct = Struct.new(:record_type) do
       def initialize(record_type: nil)
         @record_type = record_type
