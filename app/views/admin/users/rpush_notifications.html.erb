@@ -1,0 +1,39 @@
+<%= render 'header', tab: :rpush_notifications %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <% unique_tokens = @user_applications.pluck(:push_token).uniq %>
+      <% @user_applications.each do |user_application| %>
+        <th><%= user_application.device_os %> (<%= user_application.version %>)</th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @rpush_notifications.each do |notification| %>
+      <tr>
+        <td><%= notification.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        <% unique_tokens.each do |token| %>
+          <% if notification.device_token == token %>
+            <td>
+              Status :
+              <% if notification.delivered_at.present? %>
+                <span class="label label-success">Delivered</span>
+              <% elsif notification.failed %>
+                <span class="label label-danger">Failed</span>
+              <% else %>
+                <span class="label label-warning">Pending</span>
+              <% end %>
+
+              <br>Delivered At: <%= l notification.delivered_at, format: :short if notification.delivered_at %>
+              <br>Failed At: <%= l notification.failed_at, format: :short if notification.failed_at %>
+            </td>
+          <% else %>
+            <td></td>
+          <% end %>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

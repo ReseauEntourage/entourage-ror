@@ -272,6 +272,7 @@ Rails.application.routes.draw do
         member do
           get 'messages'
           get 'engagement'
+          get 'rpush_notifications'
           get 'neighborhoods'
           get 'outings'
           get 'history'

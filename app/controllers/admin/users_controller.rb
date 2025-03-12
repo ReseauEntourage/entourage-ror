@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :neighborhoods, :outings, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -66,6 +66,17 @@ module Admin
     end
 
     def engagement
+    end
+
+    def rpush_notifications
+      @user_applications = UserApplication.where(user_id: @user.id)
+        .select(:push_token, :device_os, :version)
+        .order(updated_at: :desc)
+        .limit(3)
+
+      @rpush_notifications = Rpush::Client::ActiveRecord::Notification.where(
+        device_token: @user_applications.map(&:push_token)
+      ).order(id: :desc).limit(25)
     end
 
     def neighborhoods
