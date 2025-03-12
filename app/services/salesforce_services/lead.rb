@@ -2,6 +2,10 @@ module SalesforceServices
   class Lead < Connect
     TABLE_NAME = "Lead"
 
+    def initialize
+      super(TABLE_NAME)
+    end
+
     def find_id_by_user user
       return unless user.validated?
 
