@@ -7,6 +7,10 @@ module Salesforcable
 
   SalesforceStruct = Struct.new(:instance) do
     def initialize(instance: nil)
+      if instance.is_a?(Entourage) && instance.outing? && instance.persisted?
+        instance = Outing.find(instance.id)
+      end
+
       service_class = "SalesforceServices::#{instance.class.name}"
       raise ArgumentError.new("class #{service_class} does not exist") unless @service = service_class.safe_constantize
 
