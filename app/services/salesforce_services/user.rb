@@ -23,6 +23,10 @@ module SalesforceServices
       false => "actif"
     }
 
+    def initialize
+      super(TABLE_NAME)
+    end
+
     def find_id_by_user user
       return unless attributes = find_by_external_id(user.id)
       return unless attributes.any?
