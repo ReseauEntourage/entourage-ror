@@ -18,7 +18,7 @@ module SalesforceServices
       )
     end
 
-    def is_synchable?
+    def is_synchable? instance
       true
     end
 
