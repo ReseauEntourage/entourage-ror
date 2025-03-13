@@ -31,7 +31,7 @@ module SalesforceServices
     def update user
       return unless contact_id = find_id_by_user(user)
 
-      update_from_id(contact_id, user
+      update_from_id(contact_id, user)
     end
 
     def update_from_id contact_id, user
