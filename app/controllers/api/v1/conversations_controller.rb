@@ -13,7 +13,8 @@ module Api
           .where.not(chat_messages: { id: nil })
           .where(group_type: [:conversation, :outing])
           .where('join_requests.user_id = ?', current_user.id)
-          .merge(JoinRequest.accepted)
+          .where('join_requests.status = ?', :accepted)
+          .where("group_type = 'conversation' or entourages.created_at > ?", Time.at('2025-03-10'.to_time.to_i))
           .order(updated_at: :desc)
           .page(page).per(per)
 
@@ -23,8 +24,8 @@ module Api
       end
 
       def privates
-        privates = Entourage.joins(:join_requests)
-          .includes(:join_requests, { user: :partner })
+        privates = Entourage.joins(:members)
+          .includes(user: :partner)
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
@@ -52,11 +53,12 @@ module Api
       end
 
       def outings
-        outings = Entourage.joins(:join_requests)
-          .includes(:join_requests, { user: :partner })
-          .where(group_type: [:outing])
+        outings = Entourage.joins(:members)
+          .includes(user: :partner)
+          .where(group_type: :outing)
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
+          .where("entourages.created_at > ?", Time.at('2025-03-10'.to_time.to_i))
           .order(updated_at: :desc)
           .page(params[:page] || 1).per(per)
 
