@@ -6,7 +6,18 @@
       <th>Date</th>
       <% unique_tokens = @user_applications.pluck(:push_token).uniq %>
       <% @user_applications.each do |user_application| %>
-        <th><%= user_application.device_os %> (<%= user_application.version %>)</th>
+        <% permission = user_application.notifications_permissions %>
+
+        <th>
+          <%= user_application.device_os %> (<%= user_application.version %>)<br>
+          <% if permission == "authorized" %>
+            <span class="label label-success">authorized</span>
+          <% elsif permission == "denied" %>
+            <span class="label label-danger">denied</span>
+          <% else %>
+            <span class="label label-warning"><%= permission %></span>
+          <% end %>
+        </th>
       <% end %>
     </tr>
   </thead>
@@ -28,6 +39,10 @@
 
               <br>Delivered At: <%= l notification.delivered_at, format: :short if notification.delivered_at %>
               <br>Failed At: <%= l notification.failed_at, format: :short if notification.failed_at %>
+
+              <% alert = notification.alert || notification.notification %>
+              <br>Title: <%= alert['title'] %>
+              <br>Message: <%= alert['body'] %>
             </td>
           <% else %>
             <td></td>

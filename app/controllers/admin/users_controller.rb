@@ -70,7 +70,7 @@ module Admin
 
     def rpush_notifications
       @user_applications = UserApplication.where(user_id: @user.id)
-        .select(:push_token, :device_os, :version)
+        .select(:push_token, :device_os, :version, :notifications_permissions)
         .order(updated_at: :desc)
         .limit(3)
 
