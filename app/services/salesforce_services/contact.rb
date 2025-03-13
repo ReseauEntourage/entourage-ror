@@ -38,6 +38,16 @@ module SalesforceServices
       client.update(TABLE_NAME, Id: contact_id, **user_to_hash(user))
     end
 
+    def update user
+      return unless contact_id = find_id_by_user(user)
+
+      update_from_id(contact_id, user)
+    end
+
+    def update_from_id contact_id, user
+      client.update(TABLE_NAME, Id: contact_id, **user_to_hash(user))
+    end
+
     private
 
     def instance_to_hash user
