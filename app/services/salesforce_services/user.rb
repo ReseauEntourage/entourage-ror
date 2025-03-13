@@ -38,6 +38,8 @@ module SalesforceServices
       lead_id = lead_id(user)
       contact_id = lead_id ? contact_id(user) : contact_id!(user)
 
+      contact_update!(contact_id, user)
+
       fields = user_to_hash(user).merge({
         "Prospect__c" => lead_id,
         "Contact__c" => contact_id,
@@ -90,6 +92,10 @@ module SalesforceServices
 
     def contact_id! user
       Contact.new.upsert(user)
+    end
+
+    def contact_update! contact_id, user
+      Contact.new.update_from_id(contact_id, user)
     end
 
     def profil_declare user
