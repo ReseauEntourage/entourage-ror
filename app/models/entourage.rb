@@ -12,6 +12,7 @@ class Entourage < ApplicationRecord
   include JoinableScopable
   include ModeratorReadable
   include Deeplinkable
+  include Salesforcable # ought to be moved to Outing but backoffice creates outings using Entourage instances
   include Translatable
 
   after_validation :track_status_change
@@ -510,6 +511,13 @@ class Entourage < ApplicationRecord
     value = {} if value.nil?
     value['$id'] = "urn:entourage:#{group_type}:metadata" if group_type
     value
+  end
+
+  def address
+    return unless action? || outing?
+    return unless metadata
+
+    metadata[:display_address]
   end
 
   def metadata_datetimes_formatted

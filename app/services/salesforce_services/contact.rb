@@ -7,6 +7,10 @@ module SalesforceServices
       default: "ENT User de l'app",
     }
 
+    def initialize
+      super(TABLE_NAME)
+    end
+
     def find_id_by_user user
       return unless user.validated?
 
@@ -21,12 +25,12 @@ module SalesforceServices
     end
 
     def upsert user
-      find_id_by_user(user) || client.upsert!(TABLE_NAME, "ID_externe__c", "ID_externe__c": user.phone, **user_to_hash(user))
+      find_id_by_user(user) || client.upsert!(TABLE_NAME, "ID_externe__c", "ID_externe__c": user.phone, **instance_to_hash(user))
     end
 
     private
 
-    def user_to_hash user
+    def instance_to_hash user
       {
         "FirstName" => user.first_name,
         "LastName" => user.last_name,

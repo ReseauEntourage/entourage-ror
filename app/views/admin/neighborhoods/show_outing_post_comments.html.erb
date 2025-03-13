@@ -60,12 +60,7 @@
               <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
             </div>
 
-            <% if message.deleted? %>
-              <p style="color: red;"> Ce message a été supprimé par <%= message.deleter&.full_name %> le <%= l message.deleted_at, format: :short %> : </p>
-              <em><%= simple_format message.content(true) %></em>
-            <% else %>
-              <%= simple_format message.content %>
-            <% end %>
+            <%= chat_message_with_status(message) %>
           </div>
 
           <div class="conversation-actions">

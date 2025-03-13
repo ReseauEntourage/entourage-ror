@@ -62,14 +62,7 @@
               <span class="conversation-timestamp"><%= l post.created_at, format: "%H h %M" %></span>
             </div>
 
-            <% if post.deleted? %>
-              <p style="color: red;"> Ce message a été supprimé par <%= post.deleter&.full_name %> le <%= l post.deleted_at, format: :short %> : </p>
-              <em><%= simple_format post.content(true) %></em>
-            <% else %>
-              <div id="chat-message-<%= post.id %>">
-                <%= simple_format post.content %>
-              </div>
-            <% end %>
+            <%= chat_message_with_status(post) %>
 
             <% if post.survey.present? %>
               <p><strong>Sondage</strong></p>

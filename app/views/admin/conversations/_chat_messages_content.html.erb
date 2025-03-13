@@ -28,16 +28,7 @@
         <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
       </div>
 
-      <% if message.deleted? %>
-        <p style="color: red;"> Ce message a été supprimé : </p>
-        <em><%= simple_format message.content(true) %></em>
-      <% else %>
-        <%= simple_format message.content %>
-
-        <% if message.translation && message.translation.foreign? %>
-          <i>Traduction: <%= object_translation(message, :content, :fr) %></i>
-        <% end %>
-      <% end %>
+      <%= chat_message_with_status(message) %>
     </div>
     <div class="conversation-actions">
       <div class="dropdown" style="display: inline-block">
