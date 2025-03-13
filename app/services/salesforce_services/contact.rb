@@ -28,6 +28,16 @@ module SalesforceServices
       find_id_by_user(user) || client.upsert!(TABLE_NAME, "ID_externe__c", "ID_externe__c": user.phone, **instance_to_hash(user))
     end
 
+    def update user
+      return unless contact_id = find_id_by_user(user)
+
+      update_from_id(contact_id, user
+    end
+
+    def update_from_id contact_id, user
+      client.update(TABLE_NAME, Id: contact_id, **user_to_hash(user))
+    end
+
     private
 
     def instance_to_hash user
@@ -40,7 +50,12 @@ module SalesforceServices
         "Antenne__c" => antenne(user),
         "Reseaux__c" => "Entourage",
         "Casquettes_r_les__c" => casquette(user),
+        "MailingPostalCode" => user.postal_code
       }
+    end
+
+    def instance_sync_to_hash user
+      { "MailingPostalCode" => user.postal_code }
     end
 
     def record_type_id user

@@ -57,4 +57,9 @@
   <li role="presentation" class="<%= :active if tab == :history %>">
     <%= link_to "Historique", history_admin_user_path(@user) %>
   </li>
+  <% if current_user.super_admin? %>
+    <li role="presentation" class="<%= :active if tab == :rpush_notifications %>">
+      <%= link_to "Notifications", rpush_notifications_admin_user_path(@user) %>
+    </li>
+  <% end %>
 </ul>
