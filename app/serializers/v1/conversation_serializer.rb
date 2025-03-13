@@ -19,6 +19,8 @@ module V1
     attribute :section, unless: :private_conversation?
     attribute :blockers, if: :private_conversation?
 
+    has_many :members, serializer: ::V1::Users::BasicSerializer
+
     # @duplicated with V1::ConversationHomeSerializer
     def user
       return unless user = other_participant
