@@ -16,6 +16,7 @@ module SalesforceServices
     def is_synchable? outing
       return false if outing.online
       return false unless user = outing.user
+      return false unless outing.address.present?
 
       user.team?
     end
