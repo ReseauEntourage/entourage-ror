@@ -295,7 +295,7 @@ describe Api::V1::ConversationsController do
     end
 
     describe "some private conversations" do
-      let!(:conversation) { create :conversation, user: creator }
+      let!(:conversation) { create :conversation, user: creator, number_of_root_chat_messages: 1 }
       let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
       let!(:other_conversation) { create :conversation, participants: [other_user] }
 
@@ -368,7 +368,7 @@ describe Api::V1::ConversationsController do
     describe "some private conversations with blockers" do
       context 'blocked conversations' do
         let(:participant) { create :public_user, first_name: :Jane }
-        let!(:conversation) { create :conversation, participants: [user, participant] }
+        let!(:conversation) { create :conversation, number_of_root_chat_messages: 1, participants: [user, participant] }
 
         let(:request) { get :privates, params: { token: user.token } }
 
