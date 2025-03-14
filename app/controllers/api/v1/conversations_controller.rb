@@ -10,7 +10,7 @@ module Api
       def index
         conversations = Entourage.joins(:members)
           .includes(:chat_messages)
-          .where.not(chat_messages: { id: nil })
+          .where("number_of_root_chat_messages > 0 or group_type = 'outing'")
           .where(group_type: [:conversation, :outing])
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
@@ -26,6 +26,7 @@ module Api
       def privates
         privates = Entourage.joins(:members)
           .includes(user: :partner)
+          .where("number_of_root_chat_messages > 0")
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
