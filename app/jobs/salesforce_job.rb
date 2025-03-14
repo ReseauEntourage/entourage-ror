@@ -20,8 +20,6 @@ class SalesforceJob
   end
 
   def perform_upsert instance
-    instance.sf.upsert
-
     return unless salesforce_id = instance.sf.upsert
 
     instance.update_attribute(:salesforce_id, salesforce_id)
