@@ -78,7 +78,7 @@ module Salesforcable
     return if is_a?(Entourage) && action? # hack due to Salesforcable included in Entourage
     return if is_a?(Entourage) && conversation? # hack due to Salesforcable included in Entourage
 
-    return unless address.present?
+    return unless sf.is_synchable?
 
     if has_attribute?(:deleted)
       return SalesforceJob.perform_later(self, "destroy") if saved_change_to_deleted? && deleted?
@@ -88,7 +88,6 @@ module Salesforcable
       return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && status == "deleted"
     end
 
-    return unless sf.is_synchable?
     return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
     SalesforceJob.perform_later(self, "upsert")
