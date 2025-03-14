@@ -27,6 +27,10 @@ module SalesforceServices
       super(TABLE_NAME)
     end
 
+    def is_synchable? user
+      user.address.present?
+    end
+
     def find_id_by_user user
       return unless attributes = find_by_external_id(user.id)
       return unless attributes.any?
