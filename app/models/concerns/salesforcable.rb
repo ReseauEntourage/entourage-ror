@@ -90,7 +90,11 @@ module Salesforcable
 
     return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
 
-    SalesforceJob.perform_later(self, "upsert")
+    if salesforce_id.nil?
+      SalesforceJob.perform_later(self, "upsert")
+    else
+      SalesforceJob.perform_later(self, "update")
+    end
   end
 
   alias_method :sf, :salesforce
