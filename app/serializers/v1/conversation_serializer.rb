@@ -116,7 +116,7 @@ module V1
     end
 
     def members
-      object.members.limit(5)
+      object.accepted_members.limit(5)
     end
   end
 end
