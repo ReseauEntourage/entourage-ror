@@ -9,6 +9,7 @@ module V1
                :status,
                :type,
                :name,
+               :subname,
                :image_url,
                :members_count,
                :last_message,
@@ -62,6 +63,12 @@ module V1
       return unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
+    end
+
+    def subname
+      return unless object.outing?
+
+      object.starts_at
     end
 
     def image_url
