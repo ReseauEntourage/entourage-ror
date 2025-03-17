@@ -47,7 +47,7 @@ module V1
       # try to put other user as author if conversation
       # and user's name as title
       if object.group_type == 'conversation'
-        other_participant = object.members.find do |member|
+        other_participant = object.accepted_members.find do |member|
           member.id != scope[:user]&.id
         end
 
