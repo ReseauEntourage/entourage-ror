@@ -114,5 +114,9 @@ module V1
         join_request.user_id == scope[:user].id
       end.first
     end
+
+    def members
+      object.members.limit(5)
+    end
   end
 end
