@@ -1,10 +1,15 @@
 module SalesforceServices
   class Connect
-    def initialize table_name
-      @table_name = table_name
+    attr_accessor :interface, :instance
+
+    @client = nil
+
+    def initialize interface:, instance:
+      @interface = interface
+      @instance = instance
     end
 
-    def client
+    def self.client
       @client ||= Restforce.new(
         username: ENV['SALESFORCE_USERNAME'],
         password: ENV['SALESFORCE_PASSWORD'],
@@ -16,47 +21,67 @@ module SalesforceServices
         logger: Rails.logger,
         log_level: :debug
       )
+    rescue Restforce::AuthenticationError => e
+      Rails.logger.error "Erreur de connexion à Salesforce : #{e.message}"
+      @client = nil # forces new connection on next try
+
+      retry
+    end
+
+    def client
+      self.class.client
+    end
+
+    def updatable_fields
+      raise NotImplementedError
     end
 
     def is_synchable? instance
       true
     end
 
-    # describe table fields
-    def table_fields
-      return Hash.new unless metadata = client.describe(@table_name)
+    def find_id
+      return unless attributes = find_by_external_id
+      return unless attributes.any?
 
-      metadata[:fields]
+      attributes["Id"]
     end
 
-    # describe table field values
-    def table_field_values field
-      table_fields(@table_name).find { |f| f[:name] == field }[:picklistValues]
+    def find_by_external_id
+      fetch_fields("Id")
     end
 
-    # check whether a field includes a value
-    # example: table_field_has_value?("Campaign", "Type_evenement__c", SalesforceServices::Outing::TYPE_EVENEMENT)
-    def table_field_has_value? field, value
-      table_field_values(@table_name, field).any? do |config|
-        config["value"] == value
-      end
+    def fetch
+      fetch_fields(interface.sf_fields)
     end
 
-    # check whether table has fields with history tracking (flows)
-    def table_tracked_fields_with_types
-      client.query(%(
-        SELECT DeveloperName, DataType FROM FieldDefinition
-        WHERE EntityDefinition.QualifiedApiName = '#{@table_name}'
-        AND IsFieldHistoryTracked = true
-      )).map { |field| { name: field.DeveloperName, type: field.DataType }}
+    def fetch_fields fields
+      client.query("select #{fields.join(', ')} from #{interface.table_name} where #{interface.external_id_value} = #{instance.send(interface.external_id_key)}").first
     end
 
-    def table_has_cdc?
-      client.get("/services/data/v57.0/sobjects/#{@table_name}ChangeEvent/describe")
+    def update
+      update_from_id(find_id)
+    end
 
-      true
-    rescue Restforce::NotFoundError
-      false
+    def update_from_id id
+      client.update(interface.table_name, Id: id, **interface.mapped_fields)
+    end
+
+    def upsert
+      upsert_from_fields(interface.mapped_fields)
+    end
+
+    def upsert_from_fields fields
+      client.upsert!(
+        interface.table_name,
+        interface.external_id_value,
+        "#{interface.external_id_value}": instance.send(interface.external_id_key),
+        **fields
+      )
+    end
+
+    def destroy
+      client.update(interface.table_name, Id: find_id, Status: true)
     end
   end
 end
