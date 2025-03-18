@@ -14,32 +14,32 @@ module Salesforcable
       service_class = "SalesforceServices::#{instance.class.name}"
       raise ArgumentError.new("class #{service_class} does not exist") unless @service = service_class.safe_constantize
 
-      @service = @service.new
+      @service = @service.new(instance)
       @instance = instance
     end
 
     def show
-      @service.find_by_external_id(@instance.id)
+      @service.find_by_external_id
     end
 
     def create
-      @service.create(@instance)
+      @service.create
     end
 
     def update
-      @service.update(@instance)
+      @service.update
     end
 
     def upsert
-      @service.upsert(@instance)
+      @service.upsert
     end
 
     def destroy
-      @service.destroy(@instance)
+      @service.destroy
     end
 
     def is_synchable?
-      @service.is_synchable?(@instance)
+      @service.is_synchable?
     end
 
     def updatable_fields
