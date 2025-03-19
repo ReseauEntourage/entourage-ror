@@ -51,6 +51,12 @@ module SalesforceServices
       self.class.field_has_value?(table_name, field, value)
     end
 
+    def records fields: [], per: 50, page: 1
+      fields = instance_mapping.values unless fields.any?
+
+      self.class.records(table_name, fields: fields, per: per, page: page)
+    end
+
     def tracked_fields_with_types
       self.class.tracked_fields_with_types(table_name)
     end
@@ -114,7 +120,6 @@ module SalesforceServices
         default_value
       end
 
-
       # describe table fields
       def fields table_name
         Rails.cache.fetch("salesforce_table_fields_#{table_name}", expires_in: 12.hours) do
@@ -145,6 +150,20 @@ module SalesforceServices
         end
       end
 
+      def records table_name, fields: ["Id"], per: 50, page: 1
+        query = "SELECT #{fields.join(', ')} FROM #{table_name} ORDER BY Id DESC LIMIT #{per} OFFSET #{(page - 1) * per}"
+
+        {
+          data: client.query(query).map(&:to_h),
+          total: count_records(table_name)
+        }
+      end
+
+      def count_records table_name
+        response = client.query("SELECT COUNT() FROM #{table_name}")
+        response.size
+      end
+
       # check whether table has fields with history tracking (flows)
       def tracked_fields_with_types table_name
         client.query(%(
@@ -155,7 +174,7 @@ module SalesforceServices
       end
 
       def has_cdc? table_name
-        client.get("/services/data/v57.0/sobjects/#{table_name}ChangeEvent/describe")
+        client.get("/services/data/v55.0/sobjects/#{table_name}ChangeEvent/describe")
 
         true
       rescue Restforce::NotFoundError

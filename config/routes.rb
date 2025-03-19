@@ -23,6 +23,10 @@ Rails.application.routes.draw do
             get :show_contact
           end
         end
+
+        resources :users, only: [:index]
+        resources :outings, only: [:index]
+        resources :contacts, only: [:index]
       end
 
       namespace :super_admin do
