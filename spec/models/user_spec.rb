@@ -97,6 +97,17 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:public_user, sms_code_password: '12345').save).to be false }
   end
 
+  describe "goal=" do
+    it { expect(build(:public_user, goal: "offer_help").goal_choice).to eq("offer_help") }
+    it { expect(build(:public_user, goal: "offer_help").goal).to eq("offer_help") }
+
+    it { expect(build(:public_user, goal: "ask_for_help").goal_choice).to eq("ask_for_help") }
+    it { expect(build(:public_user, goal: "ask_for_help").goal).to eq("ask_for_help") }
+
+    it { expect(build(:public_user, goal: "ask_and_offer_help").goal_choice).to eq("ask_and_offer_help") }
+    it { expect(build(:public_user, goal: "ask_and_offer_help").goal).to eq("ask_for_help") }
+  end
+
   it "validates uniqueness of token" do
     expect(FactoryBot.build(:public_user, token: 'foo').save).to be true
     expect(FactoryBot.build(:public_user, token: 'foo').save).to be false
