@@ -369,6 +369,14 @@ class User < ApplicationRecord
     super(Phone::PhoneBuilder.new(phone: new_phone).format)
   end
 
+  def goal= goal
+    self.goal_choice = goal
+
+    goal = "ask_for_help" if goal.present? && goal.to_s == "ask_and_offer_help"
+
+    super(goal)
+  end
+
   # excluding wrong values due to v7 constraints
   def interests= interests
     return super(interests) if interests.is_a?(String)
