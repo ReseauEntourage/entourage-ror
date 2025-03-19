@@ -1,0 +1,25 @@
+  <div class="row">
+    <ol class="breadcrumb">
+      <li>Salesforce schema</li>
+      <li class="active">Afficher</li>
+    </ol>
+
+    <h2>
+      <span class="text-muted">#<%= @interface.table_name %></span>
+    </h2>
+
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="<%= :active if tab == :user %>">
+        <%= link_to "User schema", show_user_admin_salesforce_schemas_path %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :outing %>">
+        <%= link_to "Outing schema", show_outing_admin_salesforce_schemas_path %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :lead %>">
+        <%= link_to "Lead schema", show_lead_admin_salesforce_schemas_path %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :contact %>">
+        <%= link_to "Contact schema", show_contact_admin_salesforce_schemas_path %>
+      </li>
+    </ul>
+  </div>
