@@ -14,7 +14,7 @@ module Api
           .where(group_type: [:conversation, :outing])
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
-          .where("group_type = 'conversation' or entourages.created_at > ?", Time.at('2025-03-10'.to_time.to_i))
+          .where("group_type = 'conversation' or entourages.metadata->>'ends_at' >= ?", Time.at('2025-03-10'.to_time.to_i))
           .order(updated_at: :desc)
           .page(page).per(per)
 
@@ -59,7 +59,7 @@ module Api
           .where(group_type: :outing)
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
-          .where("entourages.created_at > ?", Time.at('2025-03-10'.to_time.to_i))
+          .where("entourages.metadata->>'ends_at' >= ?", Time.at('2025-03-10'.to_time.to_i))
           .order(updated_at: :desc)
           .page(params[:page] || 1).per(per)
 
