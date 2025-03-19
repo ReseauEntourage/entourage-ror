@@ -72,7 +72,7 @@ module V1
     end
 
     def image_url
-      return object.image_url_with_size(:landscape_url, :small) unless private_conversation?
+      return object.image_url_with_size(:portrait_url, :small) unless private_conversation?
       return unless other_participant
 
       UserServices::Avatar.new(user: other_participant).thumbnail_url
