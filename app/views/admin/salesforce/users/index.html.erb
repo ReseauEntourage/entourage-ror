@@ -1,0 +1,31 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Users (Compte_App__c)</h1>
+
+    <div class="row">
+      <% unless @users.none? %>
+        <table class="table custom-table">
+          <thead>
+            <% @interface.instance_mapping.values.each do |field_name| %>
+              <th><%= field_name%></th>
+            <% end %>
+          </thead>
+          <% @users.each_with_index do |user, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <% @interface.instance_mapping.values.each do |field_name| %>
+                <td><%= user[field_name] %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @users, entry_name: 'Users' %>
+    <div class="container">
+      <%= paginate(@users) %>
+    </div>
+  </div>
+</div>
