@@ -7,8 +7,10 @@
           <th>Nom</th>
           <th>Type</th>
           <th>Label</th>
+          <th>Synchronized</th>
           <th>Required</th>
         </thead>
+
         <% interface.fields.each_with_index do |field, i| %>
           <% parite = i.even? ? 'pair' : 'impair' %>
 
@@ -18,7 +20,8 @@
             </td>
             <td><%= field[:type] %></td>
             <td><%= field[:label] %></td>
-            <td><%= field[:required] %></td>
+            <td><%= check_box_tag '', '', interface.instance_mapping.values.include?(field[:name]), disabled: true %></td>
+            <td><%= check_box_tag '', '', field[:required], disabled: true %></td>
           </tr>
         <% end %>
       </table>
