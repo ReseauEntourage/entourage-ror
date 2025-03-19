@@ -36,7 +36,7 @@ module SalesforceServices
       raise NotImplementedError
     end
 
-    def is_synchable? instance
+    def is_synchable?
       true
     end
 
