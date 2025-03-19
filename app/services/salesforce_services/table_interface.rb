@@ -40,7 +40,7 @@ module SalesforceServices
 
     # table structure
     def fields
-      self.class.fields(table_name)
+      @fields ||= self.class.fields(table_name)
     end
 
     def field_values field
