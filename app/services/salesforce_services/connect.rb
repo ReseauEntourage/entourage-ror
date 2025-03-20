@@ -48,7 +48,7 @@ module SalesforceServices
     end
 
     def find_by_external_id
-      fetch_fields("Id")
+      fetch_fields(["Id"])
     end
 
     def fetch
