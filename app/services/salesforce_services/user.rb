@@ -12,8 +12,7 @@ module SalesforceServices
     end
 
     def upsert
-      lead_id = lead_id(instance)
-      contact_id = lead_id ? contact_id(instance) : contact_id!(instance)
+      contact_id = lead_id ? contact_id : contact_id!
 
       upsert_from_fields(
         interface.mapped_fields.merge({
@@ -34,11 +33,11 @@ module SalesforceServices
     private
 
     def lead_id
-      Lead.new(instance).find_id
+      @lead_id ||= Lead.new(instance).find_id
     end
 
     def contact_id
-      Contact.new(instance).find_id
+      @contact_id ||= Contact.new(instance).find_id
     end
 
     def contact_id!
