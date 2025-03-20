@@ -33,7 +33,7 @@ module SalesforceServices
     end
 
     def mapped_fields
-      instance_mapping.each_with_object({}) do |(rails_field, salesforce_field), hash|
+      @mapped_fields ||= instance_mapping.each_with_object({}) do |(rails_field, salesforce_field), hash|
         hash[salesforce_field] = mapping.send(rails_field)
       end
     end
