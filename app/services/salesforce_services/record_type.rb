@@ -1,5 +1,5 @@
 module SalesforceServices
-  class RecordType < Connect
+  class RecordType
     TABLE_NAME = "RecordType"
 
     DEVELOPER_NAME_USER_MAPPING = {
@@ -8,10 +8,6 @@ module SalesforceServices
     }
 
     DEVELOPER_NAME_OUTING = "Campagne"
-
-    def initialize
-      super(TABLE_NAME)
-    end
 
     RecordTypeStruct = Struct.new(:record_type) do
       def initialize(record_type: nil)
@@ -26,13 +22,17 @@ module SalesforceServices
       end
     end
 
-    def import
-      client.query("SELECT Id, DeveloperName FROM RecordType").each do |record_type|
-        RecordTypeStruct.new(record_type: record_type).upsert
-      end
-    end
-
     class << self
+      def client
+        SalesforceServices::Connect.client
+      end
+
+      def import
+        client.query("SELECT Id, DeveloperName FROM #{TABLE_NAME}").each do |record_type|
+          RecordTypeStruct.new(record_type: record_type).upsert
+        end
+      end
+
       def find_by_developer_name developer_name
         SalesforceConfig.find_by_klass_and_developer_name(TABLE_NAME, developer_name)
       end
