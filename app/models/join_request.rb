@@ -11,7 +11,7 @@ class JoinRequest < ApplicationRecord
   belongs_to :user
   belongs_to :validated_user, -> {
     where(validation_status: 'validated', deleted: false)
-  }, class_name: 'User', foreign_key: 'user_id'
+  }, class_name: 'User', foreign_key: 'user_id', optional: true
   belongs_to :joinable, polymorphic: true
   belongs_to :entourage, -> {
     where("join_requests.joinable_type = 'Entourage'")
