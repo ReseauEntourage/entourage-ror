@@ -1,0 +1,19 @@
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Users (Compte_App__c)", admin_salesforce_users_path %></li>
+  </ol>
+
+  <h2>
+    <span class="text-muted">#<%= @user.id %></span>
+    <%= @user.full_name %>
+  </h2>
+
+  <% @user.sf.show.each do |field, value| %>
+    <div class="control-group">
+      <%= label_tag field, field, class: "control-label" %> :
+      <div class="controls">
+        <%= text_field_tag field, value, class: "form-control", disabled: true %>
+      </div>
+    </div>
+  <% end %>
+</div>

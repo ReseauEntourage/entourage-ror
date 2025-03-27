@@ -6,14 +6,16 @@
       <% unless @users.none? %>
         <table class="table custom-table">
           <thead>
+            <th>Id</th>
             <% @interface.instance_mapping.values.each do |field_name| %>
-              <th><%= field_name%></th>
+              <th><%= field_name %></th>
             <% end %>
           </thead>
           <% @users.each_with_index do |user, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
 
             <tr class="above-row row-<%= parite %>">
+              <td><%= link_to user["UserId__c"].to_i, admin_salesforce_user_path(user["UserId__c"].to_i) %></td>
               <% @interface.instance_mapping.values.each do |field_name| %>
                 <td><%= user[field_name] %></td>
               <% end %>

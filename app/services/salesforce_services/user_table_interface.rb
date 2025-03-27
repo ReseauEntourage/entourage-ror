@@ -3,6 +3,7 @@ module SalesforceServices
     TABLE_NAME = "Compte_App__c"
 
     INSTANCE_MAPPING = {
+      id: "UserId__c",
       first_name: "Prenom__c",
       last_name: "Nom__c",
       email: "Email__c",

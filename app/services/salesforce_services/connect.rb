@@ -52,7 +52,7 @@ module SalesforceServices
     end
 
     def fetch
-      fetch_fields(interface.sf_fields)
+      fetch_fields(interface.sf_fields).except("attributes")
     end
 
     def fetch_fields fields
