@@ -90,7 +90,7 @@ fr:
         ends_at: Fini le
         image_url: Image URL
         place_limit: Nombre de places disponibles
-        members_count: Nombre de membres
+        members_count: Nombre de participants
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation
         sf_category: Type d'événement
@@ -376,7 +376,7 @@ fr:
     reaction:
       create: "%s a réagi à votre publication : \"%s\""
     join_request:
-      new: "Nouveau membre"
+      new: "Nouveau participant"
       update: "Demande acceptée"
       update_on_action: "Vous venez de rejoindre une action de %s"
       update_on_outing: "Vous venez de rejoindre un événement de %s"
@@ -555,9 +555,9 @@ fr:
 
   charts:
     conversations:
-      memberships: "Membres"
+      memberships: "Participants"
     users:
-      member_outings: "Membre événement"
+      member_outings: "Participant événement"
       member_neighborhoods: "Membre groupe de voisins"
       reactions: "Réactions"
       public_chat_messages: "Publications/Commentaires"
