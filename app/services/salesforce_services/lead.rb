@@ -1,18 +1,20 @@
 module SalesforceServices
   class Lead < Connect
-    TABLE_NAME = "Lead"
-
-    def find_id_by_user user
-      return unless user.validated?
-
-      return unless attributes = find_by_phone(user.phone)
-      return unless attributes.any?
-
-      attributes["Id"]
+    def initialize instance
+      super(
+        interface: LeadTableInterface.new(instance: instance),
+        instance: instance
+      )
     end
 
-    def find_by_phone phone
-      client.query("select Id from #{TABLE_NAME} where Phone = '#{phone}'").first
+    def find_id
+      return unless instance.validated?
+
+      super
+    end
+
+    def find_by_external_id
+      client.query("select Id from #{interface.table_name} where Phone = '#{instance.phone}'").first
     end
   end
 end
