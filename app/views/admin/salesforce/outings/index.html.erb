@@ -6,14 +6,16 @@
       <% unless @outings.none? %>
         <table class="table custom-table">
           <thead>
+            <th>Id</th>
             <% @interface.instance_mapping.values.each do |field_name| %>
-              <th><%= field_name%></th>
+              <th><%= field_name %></th>
             <% end %>
           </thead>
           <% @outings.each_with_index do |outing, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
 
             <tr class="above-row row-<%= parite %>">
+              <td><%= link_to outing["Id_app_de_l_event__c"], admin_salesforce_outing_path(outing["Id_app_de_l_event__c"]) %></td>
               <% @interface.instance_mapping.values.each do |field_name| %>
                 <td><%= outing[field_name] %></td>
               <% end %>

@@ -24,8 +24,8 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :users, only: [:index]
-        resources :outings, only: [:index]
+        resources :users, only: [:index, :show]
+        resources :outings, only: [:index, :show]
         resources :contacts, only: [:index]
       end
 
