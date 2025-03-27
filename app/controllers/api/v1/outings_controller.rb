@@ -34,14 +34,14 @@ module Api
       def update
         errors = nil
 
-        ApplicationRecord.transaction do
-          unless EntourageServices::OutingBuilder.update_recurrency(outing: @outing, params: outing_recurrency_params)
-            errors = @outing.errors.full_messages and raise ActiveRecord::Rollback
-          end
+        unless EntourageServices::OutingBuilder.update_recurrency(outing: @outing, params: outing_recurrency_params)
+          errors = @outing.errors.full_messages
+        end
 
+        unless errors.present?
           EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
             on.failure do |outing|
-              errors = outing.errors.full_messages and raise ActiveRecord::Rollback
+              errors = outing.errors.full_messages
             end
           end
         end
