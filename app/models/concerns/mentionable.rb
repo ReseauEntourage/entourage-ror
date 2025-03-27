@@ -35,7 +35,11 @@ module Mentionable
       next unless node.element?
       next if allowed_tags.include?(node.name)
 
-      node.replace(node.text)
+      if node.xpath('.//*').any? { |child| allowed_tags.include?(child.name) }
+        node.replace(node.children)
+      else
+        node.replace(node.text)
+      end
     end
 
     document.to_html

@@ -156,5 +156,12 @@ RSpec.describe Mentionable, type: :module do
       it { expect(Mentionable.filter_html_tags(123)).to eq(123) }
       it { expect(Mentionable.filter_html_tags(['test'])).to eq(['test']) }
     end
+
+    context "embedded tags" do
+      let(:content) { '<p dir="ltr"><a href="https://preprod.entourage.social/app/users/3445">@</a>. Voici une mention </p>\n' }
+      let(:result) { Mentionable.filter_html_tags(content) }
+
+      it { expect(result).to eq('<a href="https://preprod.entourage.social/app/users/3445">@</a>. Voici une mention \n') }
+    end
   end
 end
