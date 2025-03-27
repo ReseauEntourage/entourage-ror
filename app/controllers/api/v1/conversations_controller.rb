@@ -10,10 +10,11 @@ module Api
       def index
         conversations = Entourage.joins(:members)
           .includes(:chat_messages)
-          .where.not(chat_messages: { id: nil })
-          .where(group_type: [:conversation, :action])
+          .where("number_of_root_chat_messages > 0 or group_type = 'outing'")
+          .where(group_type: [:conversation, :outing])
           .where('join_requests.user_id = ?', current_user.id)
-          .merge(JoinRequest.accepted)
+          .where('join_requests.status = ?', :accepted)
+          .where("group_type = 'conversation' or entourages.metadata->>'ends_at' >= ?", Time.at('2025-03-10'.to_time.to_i))
           .order(updated_at: :desc)
           .page(page).per(per)
 
@@ -22,11 +23,28 @@ module Api
         }
       end
 
+      def privates
+        privates = Entourage.joins(:members)
+          .includes(user: :partner)
+          .where("number_of_root_chat_messages > 0")
+          .where(group_type: :conversation)
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+          .order(updated_at: :desc)
+          .page(params[:page] || 1).per(per)
+
+        render json: privates, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
+      # to be deprecated
       def private
         entourages = Entourage.joins(:join_requests)
           .includes(:join_requests, { user: :partner })
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
           .order(updated_at: :desc)
           .page(params[:page] || 1).per(per)
 
@@ -35,10 +53,26 @@ module Api
         }
       end
 
+      def outings
+        outings = Entourage.joins(:members)
+          .includes(user: :partner)
+          .where(group_type: :outing)
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+          .where("entourages.metadata->>'ends_at' >= ?", Time.at('2025-03-10'.to_time.to_i))
+          .order(updated_at: :desc)
+          .page(params[:page] || 1).per(per)
+
+        render json: outings, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
+      # to be deprecated
       def group
         entourages = Entourage.joins(:join_requests)
           .includes(:join_requests, { user: :partner })
-          .where(group_type: [:action, :outing])
+          .where(group_type: [:outing])
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
           .order(updated_at: :desc)
