@@ -3,6 +3,7 @@ module SalesforceServices
     TABLE_NAME = "Campaign"
 
     INSTANCE_MAPPING = {
+      id: "Id_app_de_l_event__c",
       address: "Adresse_de_l_v_nement__c",
       antenne: "Antenne__c",
       title: "Name",
@@ -11,7 +12,6 @@ module SalesforceServices
       starts_time: "Heure_de_d_but__c",
       ends_date: "EndDate",
       ends_time: "Heure_de_fin__c",
-      id: "Id_app_de_l_event__c",
       ongoing?: "IsActive",
       not_ongoing?: "Status",
       status: "Statut_d_Entourage__c",
