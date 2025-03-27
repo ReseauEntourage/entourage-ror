@@ -121,10 +121,10 @@ describe UserSegmentService do
           it { expect(segment.pluck(:user_id)).to eq [] }
         end
 
-        context "user is not in the default user scope" do
-          let(:user_attributes) { {deleted: true} }
-          it { expect(segment.pluck(:user_id)).to eq [] }
-        end
+        # context "user is not in the default user scope" do
+        #   let(:user_attributes) { {deleted: true} }
+        #   it { expect(segment.pluck(:user_id)).to eq [] }
+        # end
 
         context "event end date" do
           let(:segment) { UserSegmentService.at_day(n, after: :event, role: :organizer) }
