@@ -19,7 +19,7 @@ module Salesforcable
     end
 
     def show
-      @service.find_by_external_id
+      @service.fetch
     end
 
     def create
