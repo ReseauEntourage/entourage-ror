@@ -1,3 +1,5 @@
+require 'csv'
+
 module UserServices
   class ListExporter
     DEFAULT_PATH = "#{Rails.root}/tmp"
