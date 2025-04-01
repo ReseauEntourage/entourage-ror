@@ -1,23 +1,27 @@
 class AddEngagementToSalesforceCompteApp < ActiveRecord::Migration[6.1]
   def up
-    SalesforceServices::TableInterface.create_field(
-      "Compte_App__c",
-      "LastEngagementDate__c",
-      "Last Engagement Date",
-      "Date"
-    )
+    unless Rails.env.test?
+      SalesforceServices::TableInterface.create_field(
+        "Compte_App__c",
+        "LastEngagementDate__c",
+        "Last Engagement Date",
+        "Date"
+      )
 
-    SalesforceServices::TableInterface.create_field(
-      "Compte_App__c",
-      "IsEngaged__c",
-      "Is Engaged",
-      "Checkbox",
-      default_value: "false"
-    )
+      SalesforceServices::TableInterface.create_field(
+        "Compte_App__c",
+        "IsEngaged__c",
+        "Is Engaged",
+        "Checkbox",
+        default_value: "false"
+      )
+    end
   end
 
   def down
-    SalesforceServices::TableInterface.delete_field("Compte_App__c", "LastEngagementDate__c")
-    SalesforceServices::TableInterface.delete_field("Compte_App__c", "IsEngaged__c")
+    unless Rails.env.test?
+      SalesforceServices::TableInterface.delete_field("Compte_App__c", "LastEngagementDate__c")
+      SalesforceServices::TableInterface.delete_field("Compte_App__c", "IsEngaged__c")
+    end
   end
 end
