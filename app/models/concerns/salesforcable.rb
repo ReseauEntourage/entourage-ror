@@ -74,7 +74,7 @@ module Salesforcable
     @salesforce ||= SalesforceStruct.new(instance: self)
   end
 
-  def sync_salesforce
+  def sync_salesforce force=false
     return if is_a?(Entourage) && action? # hack due to Salesforcable included in Entourage
     return if is_a?(Entourage) && conversation? # hack due to Salesforcable included in Entourage
 
@@ -88,7 +88,9 @@ module Salesforcable
       return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && status == "deleted"
     end
 
-    return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
+    unless force
+      return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
+    end
 
     if salesforce_id.nil?
       SalesforceJob.perform_later(self, "upsert")
