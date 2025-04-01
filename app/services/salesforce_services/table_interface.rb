@@ -72,6 +72,8 @@ module SalesforceServices
 
       # table operation
       def create_field table_name, field_name, field_label, field_type, default_value: nil, required: false
+        return if field_exists?(table_name, field_name)
+
         field_payload = {
           "FullName" => "#{table_name}.#{field_name}__c",
           "Metadata" => {
@@ -89,6 +91,8 @@ module SalesforceServices
       end
 
       def delete_field table_name, field_name
+        return unless field_exists?(table_name, field_name)
+
         client.delete(DELETE_ENDPOINT % [table_name, field_name]).success?
       end
 
@@ -137,15 +141,23 @@ module SalesforceServices
         end
       end
 
+      def field table_name, field_name
+        fields(table_name).find { |f| f[:name] == field_name }
+      end
+
+      def field_exists? table_name, field_name
+        field(table_name, field_name).present?
+      end
+
       # describe table field values
-      def field_values table_name, field
-        fields(table_name).find { |f| f[:name] == field }[:picklistValues]
+      def field_values table_name, field_name
+        field(table_name, field_name)[:picklistValues]
       end
 
       # check whether a field includes a value
       # example: field_has_value?("Campaign", "Type_evenement__c", SalesforceServices::Outing::TYPE_EVENEMENT)
-      def field_has_value? table_name, field, value
-        field_values(table_name, field).any? do |config|
+      def field_has_value? table_name, field_name, value
+        field_values(table_name, field_name).any? do |config|
           config["value"] == value
         end
       end
