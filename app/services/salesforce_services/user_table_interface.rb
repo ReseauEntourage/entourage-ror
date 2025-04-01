@@ -16,6 +16,8 @@ module SalesforceServices
       longitude: "Geolocalisation__Longitude__s",
       created_date: "DateCreationCompte__c",
       last_sign_in_date: "DateDerniereConnexion__c",
+      last_engagement_date: "LastEngagementDate__c",
+      is_engaged: "IsEngaged__c",
       status: "Status__c"
     }
 
@@ -137,6 +139,16 @@ module SalesforceServices
 
       def last_sign_in_date
         user.last_sign_in_at.strftime("%Y-%m-%d")
+      end
+
+      def last_engagement_date
+        return unless denorm_daily_engagement = user.denorm_daily_engagements.order(id: :desc).first
+
+        denorm_daily_engagement.date.strftime("%Y-%m-%d")
+      end
+
+      def is_engaged
+        user.denorm_daily_engagements.any?
       end
 
       def status
