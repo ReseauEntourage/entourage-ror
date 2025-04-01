@@ -436,6 +436,8 @@ class PushNotificationTrigger
   end
 
   def chat_message_on_mention
+    @method = "chat_message_on_mention"
+
     return unless @record.respond_to?(:mentions)
     return unless @record.mentions.respond_to?(:extract_user_ids_or_uuids)
     return unless ids_or_uuids = @record.mentions.extract_user_ids_or_uuids
