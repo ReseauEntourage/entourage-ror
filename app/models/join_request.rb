@@ -9,6 +9,9 @@ class JoinRequest < ApplicationRecord
   include JoinRequestAcceptTracking
 
   belongs_to :user
+  belongs_to :validated_user, -> {
+    where(validation_status: 'validated', deleted: false)
+  }, class_name: 'User', foreign_key: 'user_id', optional: true
   belongs_to :joinable, polymorphic: true
   belongs_to :entourage, -> {
     where("join_requests.joinable_type = 'Entourage'")
@@ -32,8 +35,8 @@ class JoinRequest < ApplicationRecord
   scope :rejected, -> {where(status: REJECTED_STATUS)}
   scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
-  scope :ordered_by_users, -> {
-    joins(:user).order("join_requests.role, users.first_name")
+  scope :ordered_by_validated_users, -> {
+    joins(:validated_user).order("join_requests.role, users.first_name")
   }
 
   scope :search_by_member, ->(search) {
