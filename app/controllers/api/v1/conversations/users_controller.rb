@@ -12,7 +12,7 @@ module Api
           render json: @conversation.join_requests
             .includes(user: :partner)
             .search_by_member(params[:query])
-            .ordered_by_users
+            .ordered_by_validated_users
             .accepted
             .page(page)
             .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
