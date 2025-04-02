@@ -7,6 +7,55 @@ describe Api::V1::Conversations::UsersController do
   let(:conversation) { create(:conversation, user: creator, participants: [creator]) }
   let(:result) { JSON.parse(response.body) }
 
+  describe "GET index" do
+    context "not signed in" do
+      before { get :index, params: { conversation_id: conversation.to_param } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "did not join conversation" do
+      # we can see members even if we did not join
+      before { get :index, params: { conversation_id: conversation.to_param, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
+    context "signed in" do
+      let!(:join_request) { create(:join_request, user: user, joinable: conversation, status: :accepted) }
+
+      before { get :index, params: { conversation_id: conversation.to_param, token: user.token } }
+      it { expect(result).to have_key("users") }
+      it { expect(result["users"]).to match_array([{
+        "id" => conversation.user.id,
+        "uuid" => conversation.user.uuid,
+        "display_name" => "John D.",
+        "role" => "participant",
+        "group_role" => "participant",
+        "community_roles" => [],
+        "status" => "accepted",
+        "message" => nil,
+        "confirmed_at" => nil,
+        "requested_at" => JoinRequest.where(user: conversation.user, joinable: conversation).first.created_at.iso8601(3),
+        "avatar_url" => nil,
+        "partner" => nil,
+        "partner_role_title" => nil,
+      }, {
+        "id" => user.id,
+        "uuid" => user.reload.uuid,
+        "display_name" => "John D.",
+        "role" => "participant",
+        "group_role" => "participant",
+        "community_roles" => [],
+        "status" => "accepted",
+        "message" => nil,
+        "confirmed_at" => nil,
+        "requested_at" => join_request.created_at.iso8601(3),
+        "avatar_url" => nil,
+        "partner" => nil,
+        "partner_role_title" => nil,
+      }]) }
+    end
+  end
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, params: { conversation_id: conversation.to_param } }
