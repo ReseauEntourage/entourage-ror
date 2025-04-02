@@ -508,7 +508,7 @@ class PushNotificationTrigger
     notify(
       sender_id: @record.user_id,
       referent: @record.joinable,
-      instance: @record.user,
+      instance: @record.joinable,
       users: @record.joinable.creators_or_organizers.to_a,
       params: {
         object: I18nStruct.new(i18n: 'push_notifications.join_request.new'),
