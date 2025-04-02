@@ -31,13 +31,12 @@ describe V1::ConversationSerializer do
       it { expect(serialized[:has_personal_post]).to eq(false) }
     end
 
-    context 'as action' do
-      let(:conversation) { FactoryBot.create(:contribution, group_type: :action, participants: [user], section: :social) }
+    context 'as outing' do
+      let(:conversation) { FactoryBot.create(:outing, group_type: :outing, participants: [user]) }
 
       it { expect(serialized).not_to have_key(:user) }
       it { expect(serialized).to have_key(:section) }
-      it { expect(serialized[:type]).to eq(:contribution) }
-      it { expect(serialized[:section]).to eq('social') }
+      it { expect(serialized[:type]).to eq(:outing) }
     end
 
     context 'with personal post' do

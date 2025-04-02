@@ -9,6 +9,7 @@ module V1
                :status,
                :type,
                :name,
+               :subname,
                :image_url,
                :members_count,
                :last_message,
@@ -18,6 +19,8 @@ module V1
     attribute :user, if: :private_conversation?
     attribute :section, unless: :private_conversation?
     attribute :blockers, if: :private_conversation?
+
+    has_many :members, serializer: ::V1::Users::BasicSerializer
 
     # @duplicated with V1::ConversationHomeSerializer
     def user
@@ -37,6 +40,8 @@ module V1
     end
 
     def section
+      return unless object.action?
+
       object.becomes(object.action_class).section
     end
 
@@ -47,6 +52,7 @@ module V1
 
     def type
       return :private if private_conversation?
+      return :outing if object.outing?
       return :contribution if object.contribution?
 
       :solicitation
@@ -54,12 +60,20 @@ module V1
 
     def name
       return object.title unless private_conversation?
+      return unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
     end
 
+    def subname
+      return unless object.outing?
+
+      object.starts_at
+    end
+
     def image_url
-      return object.image_url unless private_conversation?
+      return object.image_url_with_size(:portrait_url, :small) unless private_conversation?
+      return unless other_participant
 
       UserServices::Avatar.new(user: other_participant).thumbnail_url
     end
@@ -106,6 +120,10 @@ module V1
       @current_join_request ||=  lazy_join_requests.select do |join_request|
         join_request.user_id == scope[:user].id
       end.first
+    end
+
+    def members
+      object.accepted_members.limit(5)
     end
   end
 end
