@@ -2,7 +2,7 @@ module UserServices
   module Options
     extend ActiveSupport::Concern
 
-    OPTIONS = ["last_unclosed_action_notification_at"]
+    OPTIONS = ["last_unclosed_action_notification_at", "goal_choice"]
 
     OPTIONS.each do |option|
       define_method(option) do
