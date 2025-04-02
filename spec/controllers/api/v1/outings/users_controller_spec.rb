@@ -174,7 +174,7 @@ describe Api::V1::Outings::UsersController do
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: user.id,
             referent: outing,
-            instance: user,
+            instance: outing,
             users: [outing.user],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.new'),

@@ -858,7 +858,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
           sender_id: participant.id,
           referent: outing,
-          instance: participant,
+          instance: outing,
           users: [outing.user],
           params: {
             object: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.new'),
