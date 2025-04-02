@@ -22,7 +22,7 @@
         <%= link_to "Informations générales", admin_entourage_path(@entourage, @params) %>
       </li>
       <li role="presentation" class="<%= :active if params[:action] == 'show_members' %>">
-        <%= link_to "Membres", show_members_admin_entourage_path(@entourage, @params) %>
+        <%= link_to "Participants", show_members_admin_entourage_path(@entourage, @params) %>
       </li>
       <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
         <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
