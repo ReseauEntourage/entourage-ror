@@ -7,6 +7,17 @@ module Api
         before_action :set_invite_join_request, only: [:invite]
         before_action :ensure_is_requested_with_uuid_or_uuid_v2, only: [:create]
 
+        def index
+          # conversation members
+          render json: @conversation.join_requests
+            .includes(user: :partner)
+            .search_by_member(params[:query])
+            .ordered_by_users
+            .accepted
+            .page(page)
+            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+        end
+
         def create
           return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
             user: current_user
@@ -80,6 +91,14 @@ module Api
 
         def set_invite_join_request
           @join_request ||= JoinRequest.where(joinable: @conversation, user: params[:id]).first
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per].try(:to_i) || 100
         end
       end
     end
