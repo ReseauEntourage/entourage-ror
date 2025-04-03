@@ -122,8 +122,8 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "user",
-                instance_id: user.id
+                instance: "contribution",
+                instance_id: entourage.id
               }
             )
           }
@@ -149,8 +149,8 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "user",
-                instance_id: user.id
+                instance: "contribution",
+                instance_id: entourage.id
               }
             )
           }
