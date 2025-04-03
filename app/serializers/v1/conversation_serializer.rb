@@ -16,7 +16,7 @@ module V1
                :number_of_unread_messages,
                :has_personal_post
 
-    attribute :user, if: :private_conversation?
+    attribute :user
     attribute :section, unless: :private_conversation?
     attribute :blockers, if: :private_conversation?
 
