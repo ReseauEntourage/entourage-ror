@@ -24,7 +24,7 @@ module V1
 
     # @duplicated with V1::ConversationHomeSerializer
     def user
-      return unless user = other_participant
+      return unless user = private_conversation? ? other_participant : object.user
 
       partner = user.partner
 
