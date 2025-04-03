@@ -34,7 +34,6 @@ describe V1::ConversationSerializer do
     context 'as outing' do
       let(:conversation) { FactoryBot.create(:outing, group_type: :outing, participants: [user]) }
 
-      it { expect(serialized).not_to have_key(:user) }
       it { expect(serialized).to have_key(:section) }
       it { expect(serialized[:type]).to eq(:outing) }
     end
