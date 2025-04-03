@@ -31,7 +31,7 @@ describe Api::V1::Conversations::ChatMessagesController do
       before { get :index, params: { conversation_id: conversation.to_param, token: user.token } }
 
       it { expect(response.status).to eq(200) }
-      it { expect(result).to have_key('chat_messages')}
+      it { expect(result).to have_key('chat_messages') }
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_1.id,
@@ -103,6 +103,17 @@ describe Api::V1::Conversations::ChatMessagesController do
           "survey" => nil
         }]
       }) }
+    end
+
+    context "filter with after_chat_message_id" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+      before { get :index, params: { conversation_id: conversation.to_param, token: user.token, after_chat_message_id: chat_message_1.id } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_messages') }
+      it { expect(result['chat_messages'].count).to eq(1) }
+      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
     end
 
     context "chat_message read and last_message_read" do

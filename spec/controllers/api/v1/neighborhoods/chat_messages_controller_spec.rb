@@ -75,6 +75,18 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       }) }
     end
 
+    context "filter with after_chat_message_id" do
+      let!(:join_request) { create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+      let!(:chat_message_3) { create(:chat_message, messageable: neighborhood, user: user) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token, after_chat_message_id: chat_message_1.id } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_messages') }
+      it { expect(result['chat_messages'].count).to eq(1) }
+      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_3.id) }
+    end
+
     context "chat_message read and last_message_read" do
       let(:last_message_read) { join_request.reload.last_message_read.to_s }
       let(:time) { Time.now }
@@ -552,6 +564,17 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "survey" => nil,
         }]
       }) }
+    end
+
+    context "filter with after_chat_message_id" do
+      let!(:chat_message_3) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
+
+      before { get :comments, params: { neighborhood_id: neighborhood.to_param, id: chat_message_1.id, token: user.token, after_chat_message_id: chat_message_2.id } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_messages') }
+      it { expect(result['chat_messages'].count).to eq(1) }
+      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_3.id) }
     end
 
     context "ordered" do
