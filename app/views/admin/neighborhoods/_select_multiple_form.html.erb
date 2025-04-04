@@ -109,7 +109,7 @@
     <% end %>
   </table>
 
-  <%= f.submit 'Valider', class: "btn btn-primary" %>
+  <%= f.submit 'Valider', class: "btn btn-primary" unless neighborhoods_for_area.empty? %>
 <% end %>
 
 
