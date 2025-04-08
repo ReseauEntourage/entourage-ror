@@ -33,13 +33,11 @@
       <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
     </div>
     <%= form_for ChatMessage.new, url: message_admin_entourage_path(@entourage) do |f| %>
-      <%= f.text_area :content, class: "conversation-message-box form-control tinymce" %>
+      <%= f.text_area :content, class: "conversation-message-box" %>
       <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
     <% end %>
   </div>
 </div>
-
-<%= tinymce %>
 
 <% color = {} %>
 <% if @chat_messages.empty? %>
