@@ -40,10 +40,22 @@ module Api
         end
       end
 
+      def destroy
+        return render json: { message: 'unauthorized' }, status: :unauthorized if @user_smalltalk.user != current_user
+
+        if @user_smalltalk.update(deleted_at: Time.zone.now)
+          render json: @user_smalltalk, root: "user", status: 200, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+        else
+          render json: {
+            message: "Could not delete user_smalltalk", reasons: @user_smalltalk.errors.full_messages
+          }, status: :bad_request
+        end
+      end
+
       private
 
       def set_user_smalltalk
-        @user_smalltalk = UserSmalltalk.find(params[:id])
+        @user_smalltalk = UserSmalltalk.find_by_id_through_context(params[:id], params)
 
         render json: { message: 'Could not find user_smalltalk' }, status: 400 unless @user_smalltalk.present?
       end
