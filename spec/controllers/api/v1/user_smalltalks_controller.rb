@@ -60,4 +60,67 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
       })}
     end
   end
+
+  context 'create' do
+    let(:user_smalltalk) { build :user_smalltalk }
+
+    let(:fields) { {
+      match_format: :many
+    } }
+
+    let(:request) { post :create, params: { token: user.token, user_smalltalk: fields, format: :json } }
+
+    let(:subject) { UserSmalltalk.last }
+    let(:result) { JSON.parse(response.body) }
+
+    describe 'not authorized' do
+      before { post :create }
+
+      it { expect(response.status).to eq 401 }
+    end
+
+    describe 'authorized' do
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+
+      it { expect(subject.user_latitude).to eq user.latitude }
+      it { expect(subject.user_longitude).to eq user.longitude }
+
+      it { expect(result).to have_key("user_smalltalk") }
+      it { expect(result['user_smalltalk']['smalltalk_id']).to eq(nil) }
+      it { expect(result['user_smalltalk']['match_format']).to eq("many") }
+      it { expect(result['user_smalltalk']['user_latitude']).to eq(user.latitude) }
+      it { expect(result['user_smalltalk']['user_longitude']).to eq(user.longitude) }
+    end
+  end
+
+  describe 'update' do
+    let(:user_smalltalk) { create :user_smalltalk, user: user, smalltalk: smalltalk, match_format: :one }
+    let(:result) { JSON.parse(response.body) }
+    let(:subject) { UserSmalltalk.find(user_smalltalk.id) }
+
+    context "not signed in" do
+      before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many } } }
+
+      context "user is not creator" do
+        let(:user_smalltalk) { create :user_smalltalk, user: create(:pro_user), smalltalk: smalltalk, match_format: :one }
+
+        before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: "many" }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(result["user_smalltalk"]["match_format"]).to eq("many") }
+      end
+    end
+  end
 end
