@@ -492,6 +492,12 @@ class User < ApplicationRecord
    save!
   end
 
+  def male?
+    # @temporary
+    # @requires new field
+    true
+  end
+
   def pro?
     user_type=="pro"
   end
