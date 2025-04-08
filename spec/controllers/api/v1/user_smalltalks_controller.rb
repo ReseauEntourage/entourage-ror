@@ -123,4 +123,35 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
       end
     end
   end
+
+  context 'destroy' do
+    before { user_smalltalk }
+
+    let(:result) { UserSmalltalk.unscoped.find(user_smalltalk.id) }
+
+    describe 'not authorized' do
+      before { delete :destroy, params: { id: user_smalltalk.id } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.deleted_at).to be_nil }
+    end
+
+    describe 'not authorized cause should be creator' do
+      let(:user_smalltalk) { create :user_smalltalk, user: create(:pro_user) }
+
+      before { delete :destroy, params: { id: user_smalltalk.id, token: user.token } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.deleted_at).to be_nil }
+    end
+
+    describe 'authorized' do
+      let(:creator) { user }
+
+      before { delete :destroy, params: { id: user_smalltalk.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result.deleted_at).not_to be_nil }
+    end
+  end
 end
