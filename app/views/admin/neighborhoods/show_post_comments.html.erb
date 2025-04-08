@@ -20,11 +20,13 @@
         <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
           <%= f.hidden_field :parent_id, value: @post.id %>
 
-          <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+          <%= f.text_area :content, class: "conversation-message-box form-control tinymce", rows: 5 %>
           <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
         <% end %>
       </div>
     </div>
+
+    <%= tinymce %>
 
     <% if @comments.empty? %>
       Il n'y a pas encore de message.
