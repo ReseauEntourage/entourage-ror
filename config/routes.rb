@@ -651,6 +651,9 @@ Rails.application.routes.draw do
         get :groups
       end
 
+      resources :user_smalltalks
+      resources :smalltalks
+
       resources :links, only: [] do
         member do
           get :redirect
