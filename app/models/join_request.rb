@@ -22,7 +22,9 @@ class JoinRequest < ApplicationRecord
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
   validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
     # can not remove creator
-    join_request.joinable&.user_id == join_request.user_id
+    join_request.joinable.present? &&
+      join_request.joinable.respond_to?(:user_id) &&
+      join_request.joinable.user_id == join_request.user_id
   }
   validates :role, presence: true, inclusion: { in: ['member', 'creator'] }, if: :neighborhood?
   validates :role, presence: true,
