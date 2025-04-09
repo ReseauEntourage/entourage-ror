@@ -5,6 +5,8 @@ class CreateUserSmalltalks < ActiveRecord::Migration[6.1]
       t.references :user, null: false, foreign_key: true
       t.references :smalltalk, null: true, foreign_key: true
 
+      t.string :uuid_v2, limit: 12
+
       # user information
       t.integer :user_gender, default: 0 # default: "male"
       t.integer :user_profile, default: 0 # default: "offer_help"
@@ -22,6 +24,8 @@ class CreateUserSmalltalks < ActiveRecord::Migration[6.1]
       t.datetime :matched_at
       t.datetime :deleted_at
       t.timestamps null: false
+
+      t.index :uuid_v2, unique: true
     end
   end
 end
