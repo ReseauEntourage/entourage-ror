@@ -655,6 +655,11 @@ Rails.application.routes.draw do
       resources :smalltalks, only: [:index, :show] do
         resources :chat_messages, :controller => 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy]
 
+        resources :users, :controller => 'smalltalks/users', only: [:index] do
+          collection do
+            delete :destroy
+          end
+        end
       end
 
       resources :links, only: [] do
