@@ -651,8 +651,11 @@ Rails.application.routes.draw do
         get :groups
       end
 
-      resources :user_smalltalks
-      resources :smalltalks
+      resources :user_smalltalks, only: [:index, :show, :create, :update, :destroy]
+      resources :smalltalks, only: [:index, :show] do
+        resources :chat_messages, :controller => 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy]
+
+      end
 
       resources :links, only: [] do
         member do
