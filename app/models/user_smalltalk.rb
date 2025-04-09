@@ -21,14 +21,14 @@ class UserSmalltalk < ApplicationRecord
   scope :ask_for_help_profile, -> { where(user_profile: :ask_for_help) }
 
   def find_matches
-    Hash.new
+    @find_matches ||= Hash.new
   end
 
   def has_match?
     find_matches.any?
   end
 
-  def match! conversation_id
+  def match! user_smalltalk_id
   end
 
   def user= user
