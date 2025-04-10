@@ -21,6 +21,9 @@ class UserSmalltalk < ApplicationRecord
   scope :offer_help_profile, -> { where(user_profile: :offer_help) }
   scope :ask_for_help_profile, -> { where(user_profile: :ask_for_help) }
 
+  # filters
+  scope :not_matched, -> { where(matched_at: nil) }
+
   def user= user
     self.user_latitude = user.latitude
     self.user_longitude = user.longitude
@@ -51,7 +54,7 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_match
-    @find_match ||= UserSmalltalk.where(matched_at: nil).first
+    @find_match ||= UserSmalltalk.not_matched.first
   end
 
   private
