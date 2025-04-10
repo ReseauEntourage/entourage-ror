@@ -2,7 +2,7 @@ class UserSmalltalk < ApplicationRecord
   include Deeplinkable
 
   enum match_format: { one: 0, many: 1 }
-  enum user_gender: { male: 0, female: 1 }
+  enum user_gender: { male: 0, female: 1, not_binary: 2 }
   enum user_profile: { offer_help: 0, ask_for_help: 1 }
 
   belongs_to :user
