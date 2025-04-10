@@ -36,7 +36,7 @@ RSpec.describe UserSmalltalk, type: :model do
       user_smalltalk_1 = create(:user_smalltalk)
       user_smalltalk_2 = create(:user_smalltalk)
 
-      allow(user_smalltalk_1).to receive(:find_matches).and_return([user_smalltalk_2])
+      allow(user_smalltalk_1).to receive(:find_match).and_return(user_smalltalk_2)
       expect(user_smalltalk_1).to receive(:save_match).with(user_smalltalk_2)
 
       user_smalltalk_1.find_and_save_match!
@@ -44,7 +44,7 @@ RSpec.describe UserSmalltalk, type: :model do
 
     it 'does not nothing whenever no match' do
       user_smalltalk_1 = create(:user_smalltalk)
-      allow(user_smalltalk_1).to receive(:find_matches).and_return([])
+      allow(user_smalltalk_1).to receive(:find_match).and_return(nil)
 
       expect(user_smalltalk_1).not_to receive(:save_match)
       user_smalltalk_1.find_and_save_match!

@@ -31,9 +31,9 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_and_save_match!
-    return unless find_matches.any?
+    return unless find_match.present?
 
-    save_match(find_matches.first)
+    save_match(find_match)
   end
 
   def save_match user_smalltalk
@@ -50,9 +50,8 @@ class UserSmalltalk < ApplicationRecord
     end
   end
 
-  def find_matches
-    # temporary: stub in rspec
-    raise NotImplementedError, "find_matches should be implemented or stubbed in tests"
+  def find_match
+    @find_match ||= UserSmalltalk.where(matched_at: nil).first
   end
 
   private
