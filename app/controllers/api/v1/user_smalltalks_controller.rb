@@ -58,7 +58,11 @@ module Api
       private
 
       def set_user_smalltalk
-        @user_smalltalk = UserSmalltalk.find_by_id_through_context(params[:id], params)
+        @user_smalltalk = if params[:id].present?
+          UserSmalltalk.find_by_id_through_context(params[:id], params)
+        else
+          UserSmalltalk.not_matched.find_by(user: current_user)
+        end
 
         render json: { message: 'Could not find user_smalltalk' }, status: 400 unless @user_smalltalk.present?
       end

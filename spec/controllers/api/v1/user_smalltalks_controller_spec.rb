@@ -132,7 +132,7 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
       let(:smalltalk) { create(:smalltalk) }
 
       before do
-        allow_any_instance_of(UserSmalltalk).to receive(:find_matches).and_return([user_smalltalk_2])
+        allow_any_instance_of(UserSmalltalk).to receive(:find_match).and_return(user_smalltalk_2)
       end
 
       it 'renvoie match: true et le smalltalk_id' do
@@ -148,7 +148,7 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
 
     context 'quand aucun match n’est trouvé' do
       before do
-        allow_any_instance_of(UserSmalltalk).to receive(:find_matches).and_return([])
+        allow_any_instance_of(UserSmalltalk).to receive(:find_match).and_return(nil)
       end
 
       it 'renvoie match: false et smalltalk_id nil' do
