@@ -124,6 +124,45 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
     end
   end
 
+  describe 'POST #match' do
+    let(:user_smalltalk) { create(:user_smalltalk, user: user) }
+    let(:user_smalltalk_2) { create(:user_smalltalk, user: create(:user), smalltalk: smalltalk) }
+
+    context 'quand un match est trouvé' do
+      let(:smalltalk) { create(:smalltalk) }
+
+      before do
+        allow_any_instance_of(UserSmalltalk).to receive(:find_matches).and_return([user_smalltalk_2])
+      end
+
+      it 'renvoie match: true et le smalltalk_id' do
+        post :match, params: { id: user_smalltalk.id, token: user.token }
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+
+        expect(json['match']).to eq(true)
+        expect(json['smalltalk_id']).to eq(smalltalk.id)
+      end
+    end
+
+    context 'quand aucun match n’est trouvé' do
+      before do
+        allow_any_instance_of(UserSmalltalk).to receive(:find_matches).and_return([])
+      end
+
+      it 'renvoie match: false et smalltalk_id nil' do
+        post :match, params: { id: user_smalltalk.id, token: user.token }
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+
+        expect(json['match']).to eq(false)
+        expect(json['smalltalk_id']).to be_nil
+      end
+    end
+  end
+
   context 'destroy' do
     before { user_smalltalk }
 

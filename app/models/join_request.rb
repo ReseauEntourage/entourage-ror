@@ -86,6 +86,10 @@ class JoinRequest < ApplicationRecord
     joinable_type == 'Neighborhood'
   end
 
+  def smalltalk?
+    joinable_type == 'Smalltalk'
+  end
+
   def entourage_id
     nil unless entourage?
     joinable_id
