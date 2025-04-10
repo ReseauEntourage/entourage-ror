@@ -1,7 +1,8 @@
 module Api
   module V1
     class UserSmalltalksController < Api::V1::BaseController
-      before_action :set_user_smalltalk, only: [:show, :update, :destroy]
+      before_action :set_user_smalltalk, only: [:show, :update, :match, :destroy]
+      before_action :ensure_is_creator, only: [:show, :update, :match, :destroy]
 
       def index
         render json: UserSmalltalk.where(user: current_user)
@@ -10,8 +11,6 @@ module Api
       end
 
       def show
-        return render json: { message: 'unauthorized' }, status: :unauthorized if @user_smalltalk.user != current_user
-
         render json: @user_smalltalk, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
       end
 
@@ -27,8 +26,6 @@ module Api
       end
 
       def update
-        return render json: { message: 'unauthorized' }, status: :unauthorized if @user_smalltalk.user != current_user
-
         @user_smalltalk.assign_attributes(user_smalltalk_params)
 
         if @user_smalltalk.save
@@ -40,9 +37,15 @@ module Api
         end
       end
 
-      def destroy
-        return render json: { message: 'unauthorized' }, status: :unauthorized if @user_smalltalk.user != current_user
+      def match
+        if @user_smalltalk.find_and_save_match!
+          render json: { match: true, smalltalk_id: @user_smalltalk.smalltalk_id }, status: 200
+        else
+          render json: { match: false, smalltalk_id: nil }, status: 200
+        end
+      end
 
+      def destroy
         if @user_smalltalk.update(deleted_at: Time.zone.now)
           render json: @user_smalltalk, root: "user", status: 200, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
         else
@@ -58,6 +61,10 @@ module Api
         @user_smalltalk = UserSmalltalk.find_by_id_through_context(params[:id], params)
 
         render json: { message: 'Could not find user_smalltalk' }, status: 400 unless @user_smalltalk.present?
+      end
+
+      def ensure_is_creator
+        render json: { message: 'unauthorized' }, status: :unauthorized unless @user_smalltalk.user == current_user
       end
 
       def user_smalltalk_params
