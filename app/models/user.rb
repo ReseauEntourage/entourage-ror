@@ -492,10 +492,10 @@ class User < ApplicationRecord
    save!
   end
 
-  def male?
+  def gender
     # @temporary
     # @requires new field
-    true
+    :male
   end
 
   def pro?
