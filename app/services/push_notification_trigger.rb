@@ -492,6 +492,7 @@ class PushNotificationTrigger
 
   def join_request_on_create
     return unless @record.accepted?
+    return join_request_on_create_smalltalk if @record.joinable.is_a?(Smalltalk)
     return if @record.joinable.is_a?(Entourage) && @record.joinable.conversation?
     return if @record.joinable && @record.joinable.user == @record.user
 
@@ -524,6 +525,49 @@ class PushNotificationTrigger
           group_type: group_type(@record.joinable),
           type: "JOIN_REQUEST_ACCEPTED",
           user_id: @record.user_id
+        }
+      }
+    )
+  end
+
+  def join_request_on_create_smalltalk
+    join_request_on_create_smalltalk_user
+    join_request_on_create_smalltalk_siblings
+  end
+
+  def join_request_on_create_smalltalk_user
+    return unless @record.joinable.is_a?(Smalltalk)
+
+    notify(
+      sender_id: @record.user_id,
+      referent: @record.joinable,
+      instance: @record.joinable,
+      users: @record.user,
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_user_object'),
+        content: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_user_content'),
+        extra: {
+          tracking: :join_request_on_create_smalltalk_user
+        }
+      }
+    )
+  end
+
+  def join_request_on_create_smalltalk_siblings
+    return unless @record.joinable.is_a?(Smalltalk)
+    return unless (user_ids = @record.joinable.accepted_member_ids.uniq - [@record.user_id]).any?
+
+    # no batches hack: user_ids has to be small (<= 5)
+    notify(
+      sender_id: @record.user_id,
+      referent: @record.joinable,
+      instance: @record.joinable,
+      users: User.where(id: user_ids),
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_sibling_object'),
+        content: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_sibling_content'),
+        extra: {
+          tracking: :join_request_on_create_smalltalk_siblings
         }
       }
     )
