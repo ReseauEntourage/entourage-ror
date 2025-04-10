@@ -383,6 +383,10 @@ fr:
       update_on_neighborhood: "Vous venez de rejoindre un groupe de %s"
       create: "%s vient de rejoindre votre %s \"%s\""
       create_outing: "%s vient de rejoindre votre événement \"%s\" du %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
     contribution:
       create: "Un voisin propose une nouvelle entraide"
     solicitation:
