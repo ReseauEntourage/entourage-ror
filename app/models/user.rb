@@ -13,7 +13,7 @@ class User < ApplicationRecord
   include UserServices::Options
 
   TEMPORARY_BLOCK_PERIOD = 1.month
-  PROFILES = [:offer_help, :ask_for_help, :organization, :goal_not_known]
+  PROFILES = [:offer_help, :ask_for_help, :ask_and_offer_help, :organization, :goal_not_known]
   STATUSES = [:validated, :blocked, :temporary_blocked, :deleted, :pending]
   ROLES = [:moderator, :admin]
 
