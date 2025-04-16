@@ -436,7 +436,7 @@ class PushNotificationTrigger
   end
 
   def chat_message_on_mention
-    @method = "chat_message_on_mention"
+    former_method = @method
 
     return unless @record.respond_to?(:mentions)
     return unless @record.mentions.respond_to?(:extract_user_ids_or_uuids)
@@ -445,6 +445,8 @@ class PushNotificationTrigger
     user_ids = User.search_by_ids_or_uuids(ids_or_uuids).pluck(:id).uniq
 
     return unless user_ids.any?
+
+    @method = "chat_message_on_mention"
 
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
@@ -461,6 +463,8 @@ class PushNotificationTrigger
         }
       )
     end
+
+    @method = former_method
   end
 
   def user_reaction_on_create
