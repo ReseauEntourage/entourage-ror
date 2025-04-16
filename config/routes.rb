@@ -654,8 +654,8 @@ Rails.application.routes.draw do
       resources :user_smalltalks, only: [:index, :show, :create, :update, :destroy] do
         collection do
           # these collection routes aim to define routes on in-progress user_smalltalk configuration
-          get :show
-          post :update
+          get :current
+          put :update
           delete :destroy
         end
 

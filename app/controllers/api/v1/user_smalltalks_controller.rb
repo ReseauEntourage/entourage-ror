@@ -1,7 +1,7 @@
 module Api
   module V1
     class UserSmalltalksController < Api::V1::BaseController
-      before_action :set_user_smalltalk, only: [:show, :update, :match, :destroy]
+      before_action :set_user_smalltalk, only: [:show, :current, :update, :match, :destroy]
       before_action :ensure_is_creator, only: [:show, :update, :match, :destroy]
 
       def index
@@ -12,6 +12,12 @@ module Api
 
       def show
         render json: @user_smalltalk, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+      end
+
+      def current
+        return render json: { error: "UserSmalltalk not found" }, status: :not_found unless @user_smalltalk.present?
+
+        redirect_to user_smalltalk_path(@user_smalltalk)
       end
 
       def create
