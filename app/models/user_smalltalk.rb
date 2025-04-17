@@ -10,20 +10,6 @@ class UserSmalltalk < ApplicationRecord
   belongs_to :user
   belongs_to :smalltalk, optional: true
 
-  # enum scope: match_format
-  scope :one_format, -> { where(match_format: :one) }
-  scope :many_format, -> { where(match_format: :many) }
-
-  # enum scope: user_gender
-  scope :male_gender, -> { where(user_gender: :male) }
-  scope :female_gender, -> { where(user_gender: :female) }
-  scope :not_binary_gender, -> { where(user_gender: :not_binary) }
-
-  # enum scope: user_profile
-  scope :offer_help_profile, -> { where(user_profile: :offer_help) }
-  scope :ask_for_help_profile, -> { where(user_profile: :ask_for_help) }
-
-  # filters
   scope :not_matched, -> { where(matched_at: nil) }
 
   def user= user
@@ -58,13 +44,32 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_match
-    @find_match ||= find_matches.first
+    @find_match ||= match_in_existing_group || match_to_form_duo
+  end
+
+  # find_match
+  def match_in_existing_group
+    find_matches
+      .where.not(smalltalk_id: nil)
+      .joins(:smalltalk)
+      .where("smalltalks.number_of_people < 5")
+      .first
+  end
+
+  # find_match
+  def match_to_form_duo
+    find_matches.where(smalltalk_id: nil).first
   end
 
   def find_matches
-    @find_matches ||= UserSmalltalk
-      .not_matched
-      .where.not(user_id: user_id)
+    base_scope = UserSmalltalk.not_matched.where.not(user_id: user_id)
+
+    base_scope = base_scope.where(match_format: match_format)
+    base_scope = filter_by_locality(base_scope) if match_locality
+    base_scope = filter_by_gender(base_scope) if match_gender
+    base_scope = filter_by_common_interests(base_scope) if match_interest
+
+    base_scope
   end
 
   def find_matches_count_by criteria
@@ -74,7 +79,39 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_almost_matches
-    @find_almost_matches ||= find_matches
+    scope = UserSmalltalk.not_matched
+      .where.not(user_id: user_id)
+      .where(match_format: match_format)
+
+    scope = filter_by_locality(scope) if match_locality
+    scope = filter_by_gender(scope) if match_gender
+
+    scope
+  end
+
+  def filter_by_locality scope
+    return scope unless user_latitude && user_longitude
+
+    scope.where(
+      <<~SQL.squish,
+        ST_DWithin(
+          ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
+          ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography,
+          ?
+        )
+      SQL
+      user_longitude, user_latitude, 20_000
+    )
+  end
+
+  def filter_by_gender scope
+    scope.where(user_gender: user_gender)
+  end
+
+  def filter_by_common_interests scope
+    scope.joins(user: :interests)
+      .where(interests: { id: user.interest_ids })
+      .distinct
   end
 
   class << self
@@ -90,10 +127,15 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def associate_user_smalltalk user_smalltalk, smalltalk
-    user_smalltalk.update!(smalltalk: smalltalk)
+    user_smalltalk.update!(smalltalk: smalltalk, matched_at: Time.current)
   end
 
   def ensure_join_request user, smalltalk
-    JoinRequest.find_or_create_by!(user: user, joinable: smalltalk, role: :member, status: :accepted)
+    JoinRequest.find_or_create_by!(
+      user: user,
+      joinable: smalltalk,
+      role: :member,
+      status: :accepted
+    )
   end
 end

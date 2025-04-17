@@ -862,6 +862,8 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.string "uuid_v2", limit: 12
     t.integer "number_of_people"
     t.integer "number_of_root_chat_messages"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["uuid_v2"], name: "index_smalltalks_on_uuid_v2", unique: true
   end
 
@@ -1054,6 +1056,7 @@ ActiveRecord::Schema.define(version: 202405021415000) do
   create_table "user_smalltalks", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "smalltalk_id"
+    t.string "uuid_v2", limit: 12
     t.integer "user_gender", default: 0
     t.integer "user_profile", default: 0
     t.float "user_latitude"
@@ -1067,8 +1070,10 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index "st_setsrid(st_makepoint(user_longitude, user_latitude), 4326)", name: "index_user_smalltalks_on_coordinates", using: :gist
     t.index ["smalltalk_id"], name: "index_user_smalltalks_on_smalltalk_id"
     t.index ["user_id"], name: "index_user_smalltalks_on_user_id"
+    t.index ["uuid_v2"], name: "index_user_smalltalks_on_uuid_v2", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
