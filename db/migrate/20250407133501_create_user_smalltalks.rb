@@ -23,6 +23,7 @@ class CreateUserSmalltalks < ActiveRecord::Migration[6.1]
       t.datetime :last_match_computation_at
       t.datetime :matched_at
       t.datetime :deleted_at
+
       t.timestamps null: false
 
       t.index :uuid_v2, unique: true
