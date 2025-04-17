@@ -7,6 +7,8 @@ class CreateSmalltalks < ActiveRecord::Migration[6.1]
       t.integer :number_of_people
       t.integer :number_of_root_chat_messages
 
+      t.timestamps null: false
+
       t.index :uuid_v2, unique: true
     end
   end
