@@ -1,6 +1,8 @@
 class UserSmalltalk < ApplicationRecord
   include Deeplinkable
 
+  CRITERIA = [:match_format, :match_locality, :match_gender, :match_interest]
+
   enum match_format: { one: 0, many: 1 }
   enum user_gender: { male: 0, female: 1, not_binary: 2 }
   enum user_profile: { offer_help: 0, ask_for_help: 1 }
@@ -54,7 +56,29 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_match
-    @find_match ||= UserSmalltalk.not_matched.first
+    @find_match ||= find_matches.first
+  end
+
+  def find_matches
+    @find_matches ||= UserSmalltalk
+      .not_matched
+      .where.not(user_id: user_id)
+  end
+
+  def find_matches_count_by criteria
+    raise ArgumentError unless self.class.has_criteria?(criteria)
+
+    find_matches.group(criteria).count
+  end
+
+  def find_almost_matches
+    @find_almost_matches ||= find_matches
+  end
+
+  class << self
+    def has_criteria? criteria
+      criteria.present? && CRITERIA.include?(criteria.to_sym)
+    end
   end
 
   private

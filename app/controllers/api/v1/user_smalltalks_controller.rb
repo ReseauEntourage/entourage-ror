@@ -51,6 +51,20 @@ module Api
         end
       end
 
+      def matches
+        render json: @user_smalltalk.find_matches.per(per).page(page)
+      end
+
+      def almost_matches
+        render json: @user_smalltalk.find_almost_matches.per(per).page(page)
+      end
+
+      def matches_by_criteria
+        render json: @user_smalltalk.find_matches_count_by(params[:criteria])
+      rescue ArgumentError
+        render json: { message: "Excepted criteria should be included in #{UserSmalltalk::CRITERIA.join(', ')}" }
+      end
+
       def destroy
         if @user_smalltalk.update(deleted_at: Time.zone.now)
           render json: @user_smalltalk, root: "user", status: 200, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
