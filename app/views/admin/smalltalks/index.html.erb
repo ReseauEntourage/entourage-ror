@@ -1,0 +1,42 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Groupes de Matching</h1>
+
+    <div class="row">
+      <% if @smalltalks.any? %>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>UUID</th>
+              <th>Nombre</th>
+              <th>Utilisateurs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @smalltalks.each do |smalltalk| %>
+              <tr>
+                <td><%= smalltalk.id %></td>
+                <td><%= smalltalk.uuid_v2 %></td>
+                <td><%= smalltalk.number_of_people %></td>
+                <td>
+                  <ul>
+                    <% smalltalk.members.each do |member| %>
+                      <li><%= link_to member.full_name, edit_admin_user_path(member) %></li>
+                    <% end %>
+                  </ul>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+          <div style="flex-grow: 1">
+            Aucun matching n'a encore été réalisé.
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

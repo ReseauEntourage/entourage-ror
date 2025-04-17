@@ -57,6 +57,7 @@
             <li><%= link_to "Associations - Liste", admin_partners_path %></li>
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
             <li><%= link_to "Demandes de changement de téléphone", admin_users_path(status: :pending) %></li>
+            <li><%= link_to "Papotages", admin_smalltalks_path %></li>
             <% if EnvironmentHelper.staging? %>
               <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
             <% end %>
