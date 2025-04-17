@@ -260,6 +260,8 @@ Rails.application.routes.draw do
         get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
       end
 
+      resources :smalltalks, only: [:index]
+
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
           get :search
