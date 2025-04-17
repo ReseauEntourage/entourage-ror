@@ -42,6 +42,8 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def save_match user_smalltalk
+    return if user.user_smalltalks.where.not(smalltalk_id: nil).distinct.count >= 3
+
     Smalltalk.transaction do
       target_smalltalk = user_smalltalk.smalltalk || create_smalltalk!
 
