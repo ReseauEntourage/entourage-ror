@@ -657,10 +657,18 @@ Rails.application.routes.draw do
           get :current
           put :update
           delete :destroy
+
+          post :match
+          get :matches
+          get :almost_matches
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
         end
 
         member do
           post :match
+          get :matches
+          get :almost_matches
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
         end
       end
 
