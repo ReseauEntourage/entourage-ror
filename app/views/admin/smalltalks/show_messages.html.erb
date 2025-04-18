@@ -1,0 +1,70 @@
+<%= stylesheet_link_tag 'chat_messages' %>
+
+<div class="container">
+  <%= render 'show_header', tab: :show_messages %>
+
+  <div class="row">
+    <% color = {} %>
+    <% color[current_user.id] || (color.count * 0.381966011 * 360).round %>
+
+    <% if @messages.empty? %>
+      Il n'y a pas encore de message.
+    <% else %>
+      <% date = nil %>
+
+      <% @messages.each do |message| %>
+        <% if date.nil? || date != message.created_at.to_date %>
+          <% date = message.created_at.to_date %>
+          <div class="conversation-day-divider">
+            <div class="conversation-day-divider-label">
+              <% if date == Date.today %>
+                aujourd'hui
+              <% else %>
+                <%= l date, format: "%A %-d %B %Y" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+        <div class="conversation-message">
+          <div class="conversation-gutter">
+            <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
+              <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
+            </div>
+          </div>
+          <div class="conversation-content">
+            <div>
+              <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
+              <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
+            </div>
+
+            <%= chat_message_with_status(message) %>
+
+            <% if message.survey.present? %>
+              <p><strong>Sondage</strong></p>
+              <div class="survey-choices">
+                <% message.survey.choices.each_with_index do |choice, index| %>
+                  <li><%= "#{choice} (#{message.survey.summary[index]} réponses)" %></li>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if message.image_path(true).present? %>
+              <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
+                <%= image_tag(message.image_path(true), height: '100') %>
+              </div>
+            <% else %>
+              <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="row">
+      <%= paginate @messages %>
+    </div>
+  </div>
+</div>

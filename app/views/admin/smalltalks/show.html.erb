@@ -1,0 +1,20 @@
+<div class="container">
+  <%= render 'show_header', tab: :show %>
+
+  <form>
+    <div class="form-group">
+      <%= label_tag "Nombre de participants" %>
+      <%= text_field_tag :number_of_people, @smalltalk[:number_of_people], class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag "Nombre de messages" %>
+      <%= text_field_tag :number_of_root_chat_messages, @smalltalk[:number_of_root_chat_messages], class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= label_tag "Créé le" %>
+      <%= text_field_tag :created_at, @smalltalk[:created_at].to_date, class: "form-control" %>
+    </div>
+  </form>
+</div>
