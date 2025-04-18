@@ -1,6 +1,6 @@
 <div class="container">
   <div style="margin: auto">
-    <h1>Groupes de Matching</h1>
+    <h1>Groupes de papotages</h1>
 
     <div class="row">
       <% if @smalltalks.any? %>
@@ -16,8 +16,8 @@
           <tbody>
             <% @smalltalks.each do |smalltalk| %>
               <tr>
-                <td><%= smalltalk.id %></td>
-                <td><%= smalltalk.uuid_v2 %></td>
+                <td><%= link_to smalltalk.id, admin_smalltalk_path(smalltalk) %></td>
+                <td><%= link_to smalltalk.uuid_v2, admin_smalltalk_path(smalltalk) %></td>
                 <td><%= smalltalk.number_of_people %></td>
                 <td>
                   <ul>
@@ -33,7 +33,7 @@
       <% else %>
         <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
           <div style="flex-grow: 1">
-            Aucun matching n'a encore été réalisé.
+            Aucun matching de papotage n'a encore été réalisé.
           </div>
         </div>
       <% end %>

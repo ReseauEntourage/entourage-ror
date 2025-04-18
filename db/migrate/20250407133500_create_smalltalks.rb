@@ -4,8 +4,8 @@ class CreateSmalltalks < ActiveRecord::Migration[6.1]
       t.string :uuid_v2, limit: 12
 
       # denorms
-      t.integer :number_of_people
-      t.integer :number_of_root_chat_messages
+      t.integer :number_of_people, default: 0
+      t.integer :number_of_root_chat_messages, default: 0
 
       t.timestamps null: false
 
