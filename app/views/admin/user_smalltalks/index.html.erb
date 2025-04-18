@@ -26,10 +26,10 @@
                 <td><%= link_to user_smalltalk.user.full_name, edit_admin_user_path(user_smalltalk.user) %></td>
                 <td><%= l user_smalltalk.created_at.to_date %></td>
                 <td><%= user_smalltalk.match_format %></td>
-                <td><%= user_smalltalk.match_locality %></td>
-                <td><%= user_smalltalk.match_gender %></td>
-                <td><%= user_smalltalk.match_interest %></td>
-                <td><%= user_smalltalk.matched_at.present? %></td>
+                <td><%= boolean_label user_smalltalk.match_locality %></td>
+                <td><%= boolean_label user_smalltalk.match_gender %></td>
+                <td><%= boolean_label user_smalltalk.match_interest %></td>
+                <td><%= boolean_label user_smalltalk.matched_at.present? %></td>
                 <td><%= link_to user_smalltalk.smalltalk.uuid_v2, admin_smalltalk_path(user_smalltalk.smalltalk) if user_smalltalk.smalltalk.present? %></td>
                 <td><%= link_to "Matcher", match_admin_user_smalltalk_path(user_smalltalk), method: :post, class: "btn btn-warning" %></td>
               </tr>
