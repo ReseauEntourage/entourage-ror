@@ -857,6 +857,15 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.index ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true
   end
 
+  create_table "smalltalks", force: :cascade do |t|
+    t.string "uuid_v2", limit: 12
+    t.integer "number_of_people"
+    t.integer "number_of_root_chat_messages"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["uuid_v2"], name: "index_smalltalks_on_uuid_v2", unique: true
+  end
+
 # Could not dump table "sms_deliveries" because of following StandardError
 #   Unknown type 'sms_delivery_status' for column 'status'
 
@@ -1043,6 +1052,29 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.index ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true
   end
 
+  create_table "user_smalltalks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "smalltalk_id"
+    t.string "uuid_v2", limit: 12
+    t.integer "user_gender", default: 0
+    t.integer "user_profile", default: 0
+    t.float "user_latitude"
+    t.float "user_longitude"
+    t.integer "match_format", default: 0, null: false
+    t.boolean "match_locality", default: false
+    t.boolean "match_gender", default: false
+    t.boolean "match_interest", default: false
+    t.datetime "last_match_computation_at"
+    t.datetime "matched_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index "st_setsrid(st_makepoint(user_longitude, user_latitude), 4326)", name: "index_user_smalltalks_on_coordinates", using: :gist
+    t.index ["smalltalk_id"], name: "index_user_smalltalks_on_smalltalk_id"
+    t.index ["user_id"], name: "index_user_smalltalks_on_user_id"
+    t.index ["uuid_v2"], name: "index_user_smalltalks_on_uuid_v2", unique: true
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1121,5 +1153,7 @@ ActiveRecord::Schema.define(version: 202405021415000) do
 
   add_foreign_key "experimental_pending_request_reminders", "users"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "user_smalltalks", "smalltalks"
+  add_foreign_key "user_smalltalks", "users"
   add_foreign_key "users", "addresses"
 end

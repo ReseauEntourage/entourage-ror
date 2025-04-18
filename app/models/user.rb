@@ -83,6 +83,7 @@ class User < ApplicationRecord
   has_many :email_preferences, dependent: :destroy
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
+  has_many :user_smalltalks
 
   delegate :city, to: :address, allow_nil: true
   delegate :country, to: :address, allow_nil: true
@@ -490,6 +491,12 @@ class User < ApplicationRecord
   def reset_admin_password!
    self.reset_admin_password_token = nil
    save!
+  end
+
+  def gender
+    # @temporary
+    # @requires new field
+    :male
   end
 
   def pro?

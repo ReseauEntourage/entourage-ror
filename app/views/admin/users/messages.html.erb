@@ -1,6 +1,14 @@
 <%= render 'header', tab: :messages %>
 
 <div class="row">
+  <% if @entourage_messages.none? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        L'utilisateur n'a publié aucun message.
+      </div>
+    </div>
+  <% end %>
+
   <table class="table">
     <% @entourage_messages.each do |entourage_id, messages| %>
       <tr>

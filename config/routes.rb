@@ -275,6 +275,13 @@ Rails.application.routes.draw do
         get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
       end
 
+      resources :smalltalks, only: [:index, :show] do
+        member do
+          get :show_members
+          get :show_messages
+        end
+      end
+
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
           get :search
@@ -315,6 +322,12 @@ Rails.application.routes.draw do
           post 'rebroadcast'
           post 'clone'
           post 'kill'
+        end
+      end
+
+      resources :user_smalltalks, only: [:index] do
+        member do
+          post :match
         end
       end
 
@@ -637,6 +650,37 @@ Rails.application.routes.draw do
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups
+      end
+
+      resources :user_smalltalks, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          # these collection routes aim to define routes on in-progress user_smalltalk configuration
+          get :current
+          put :update
+          delete :destroy
+
+          post :match
+          get :matches
+          get :almost_matches
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+        end
+
+        member do
+          post :match
+          get :matches
+          get :almost_matches
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+        end
+      end
+
+      resources :smalltalks, only: [:index, :show] do
+        resources :chat_messages, :controller => 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy]
+
+        resources :users, :controller => 'smalltalks/users', only: [:index] do
+          collection do
+            delete :destroy
+          end
+        end
       end
 
       resources :links, only: [] do
