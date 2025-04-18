@@ -1,0 +1,41 @@
+<div class="container">
+  <%= render 'show_header', tab: :show_members %>
+
+  <div class="row">
+    <table class="table">
+      <th>Id</th>
+      <th>Nom</th>
+      <th>Email</th>
+      <th>Téléphone</th>
+      <th>Statut</th>
+      <th>Profil</th>
+      <% @members.each do |member| %>
+        <tr>
+          <td><%= member.id %></td>
+          <td>
+            <%= link_to member.full_name, edit_admin_user_path(member.id) %>
+          </td>
+          <td><%= member.email %></td>
+          <td><%= member.phone %></td>
+          <td><%= user_state_label(member.status) %></td>
+          <td>
+            <% if member.targeting_profile.present? %>
+              <span class="custom-badge info" title="Profil renseigné par la modération">
+                <%= t "community.entourage.targeting_profiles.#{member.targeting_profile}" %>
+              </span>
+            <% elsif member.goal.present? %>
+              <span class="custom-badge info" title="Profil renseigné par l'utilisateur">
+                <%= t "community.entourage.goals_compact.#{member.goal}" %>
+              </span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <%= page_entries_info @members, entry_name: 'Membres' %>
+  <div class="container">
+    <%= paginate(@members) %>
+  </div>
+</div>

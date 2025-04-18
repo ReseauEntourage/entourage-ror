@@ -260,7 +260,12 @@ Rails.application.routes.draw do
         get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
       end
 
-      resources :smalltalks, only: [:index]
+      resources :smalltalks, only: [:index, :show] do
+        member do
+          get :show_members
+          get :show_messages
+        end
+      end
 
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
@@ -303,6 +308,12 @@ Rails.application.routes.draw do
           post 'rebroadcast'
           post 'clone'
           post 'kill'
+        end
+      end
+
+      resources :user_smalltalks, only: [:index] do
+        member do
+          post :match
         end
       end
 
