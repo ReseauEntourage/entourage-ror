@@ -11,6 +11,12 @@ class UserSmalltalk < ApplicationRecord
   belongs_to :smalltalk, optional: true
 
   scope :not_matched, -> { where(matched_at: nil) }
+  scope :with_match_filter, -> (matched) {
+    return where.not(matched_at: nil) if matched
+
+    not_matched
+  }
+
 
   def user= user
     self.user_latitude = user.latitude
