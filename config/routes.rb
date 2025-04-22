@@ -311,7 +311,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :user_smalltalks, only: [:index] do
+      resources :user_smalltalks do
         member do
           post :match
         end
