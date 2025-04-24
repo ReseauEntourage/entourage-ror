@@ -26,7 +26,7 @@ module SalesforceServices
     end
 
     def updatable_fields
-      [:status, :title, :metadata]
+      [:status, :title, :metadata, :sf_category, :sf_category_list]
     end
   end
 end
