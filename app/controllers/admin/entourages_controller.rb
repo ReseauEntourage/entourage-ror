@@ -6,7 +6,7 @@ module Admin
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
-    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_members]
+    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_members, :show_neighborhoods]
 
     def index
       per_page = params[:per] || 50

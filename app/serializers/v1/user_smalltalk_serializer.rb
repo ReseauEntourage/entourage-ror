@@ -1,6 +1,8 @@
 module V1
   class UserSmalltalkSerializer < ActiveModel::Serializer
-    attributes :smalltalk_id,
+    attributes :id,
+      :uuid_v2,
+      :smalltalk_id,
       :user_gender,
       :user_profile,
       :user_latitude,
