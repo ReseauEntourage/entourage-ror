@@ -285,4 +285,23 @@ class Outing < Entourage
   def place_limit?
     metadata[:place_limit].present? && metadata[:place_limit].to_i > 0
   end
+
+  def city
+    city_from_display_address || city_from_google_place_id
+  end
+
+  def city_from_display_address
+    return if metadata[:display_address].blank?
+    return unless matches = metadata[:display_address].match(/\b\d{5}\s+(.+)$/)
+
+    matches[1]
+  end
+
+  def city_from_google_place_id
+    return google_place_details = UserServices::AddressService.get_google_place_details(metadata[:google_place_id])
+    return unless google_place_details.has_key?(:city)
+
+    google_place_details[:city]
+  rescue
+  end
 end
