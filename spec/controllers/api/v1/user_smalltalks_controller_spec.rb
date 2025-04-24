@@ -43,6 +43,8 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(result).to eq({
         "user_smalltalk" => {
+          "id" => user_smalltalk.id,
+          "uuid_v2" => user_smalltalk.uuid_v2,
           "smalltalk_id" => smalltalk.id,
           "user_gender" => "male",
           "user_profile" => "offer_help",
