@@ -77,7 +77,8 @@ module SalesforceServices
       end
 
       def title
-        outing.title
+        # city, title, starts_at
+        [outing.city, outing.title, starts_time].compact.join(', ')
       end
 
       def postal_code
