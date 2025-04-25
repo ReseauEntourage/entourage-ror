@@ -40,7 +40,9 @@ module ChatServices
       if success
         message.check_spam!
 
-        join_request.set_chat_messages_as_read_from(message.created_at) unless [Neighborhood, Outing, NeighborhoodMessageBroadcast].include?(joinable.class)
+        if join_request && ![Neighborhood, Outing, NeighborhoodMessageBroadcast].include?(joinable.class)
+          join_request.set_chat_messages_as_read_from(message.created_at)
+        end
 
         callback.on_success.try(:call, message)
       else
