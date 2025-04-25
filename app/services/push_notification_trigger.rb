@@ -308,6 +308,7 @@ class PushNotificationTrigger
 
     return comment_on_create if @record.has_parent?
     return post_on_create if @record.messageable.is_a?(Neighborhood)
+    return post_on_create if @record.messageable.is_a?(Smalltalk)
     return post_on_create if @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
     return public_chat_message_on_create if @record.messageable.respond_to?(:action?) && @record.messageable.action?
 
@@ -377,6 +378,8 @@ class PushNotificationTrigger
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :post_on_create_to_neighborhood
+    elsif @record.messageable.is_a?(Smalltalk)
+      :post_on_create_to_smalltalk
     elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
       :post_on_create_to_outing
     else
@@ -411,6 +414,8 @@ class PushNotificationTrigger
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :comment_on_create_to_neighborhood
+    elsif @record.messageable.is_a?(Smalltalk)
+      :comment_on_create_to_outing
     elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
       :comment_on_create_to_outing
     else
@@ -504,6 +509,8 @@ class PushNotificationTrigger
 
     tracking = if @record.joinable.is_a?(Neighborhood)
       :join_request_on_create_to_neighborhood
+    elsif @record.joinable.is_a?(Smalltalk)
+      :join_request_on_create_to_smalltalk
     elsif @record.joinable.respond_to?(:outing?) && @record.joinable.outing?
       :join_request_on_create_to_outing
     else
