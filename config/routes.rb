@@ -279,6 +279,7 @@ Rails.application.routes.draw do
         member do
           get :show_members
           get :show_messages
+          post :message
         end
       end
 
