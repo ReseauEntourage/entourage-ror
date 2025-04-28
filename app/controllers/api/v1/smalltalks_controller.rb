@@ -6,6 +6,7 @@ module Api
 
       def index
         @smalltalks = Smalltalk.joins(:members)
+          .includes(:chat_messages)
           .where('join_requests.user_id = ?', current_user.id)
           .merge(JoinRequest.accepted)
           .page(page)

@@ -51,8 +51,26 @@ describe Api::V1::SmalltalksController, :type => :controller do
         it { expect(response.status).to eq 200 }
         it { expect(result).to eq({
           "smalltalk" => {
+            "id" => smalltalk.id,
             "uuid_v2" => smalltalk.uuid_v2,
-            "number_of_people" => 1
+            "type" => "smalltalk",
+            "name" => "Papotage",
+            "subname" => nil,
+            "image_url" => nil,
+            "members_count" => 1,
+            "last_message" => nil,
+            "number_of_unread_messages" => 0,
+            "has_personal_post" => false,
+            "members" => [
+              {
+                "id" => user.id,
+                "lang" => "fr",
+                "display_name" => "John D.",
+                "avatar_url" => nil,
+                "community_roles" => []
+              }
+            ]
+
           }
         })}
       end
