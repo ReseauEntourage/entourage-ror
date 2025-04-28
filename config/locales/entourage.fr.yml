@@ -292,6 +292,8 @@ fr:
           act: Agir
           inspire: S'inspirer
           understand: Comprendre
+      smalltalk:
+        object: Papotage
 
   community:
     entourage:

@@ -699,6 +699,7 @@ class PushNotificationTrigger
   end
 
   def title object
+    return I18nStruct.new(i18n: 'activerecord.attributes.smalltalk.object') if object.is_a?(Smalltalk)
     return unless object.respond_to?(:title)
     return if object.respond_to?(:conversation?) && object.conversation?
 
