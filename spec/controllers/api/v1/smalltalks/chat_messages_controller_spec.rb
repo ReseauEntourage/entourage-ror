@@ -269,13 +269,13 @@ describe Api::V1::Smalltalks::ChatMessagesController do
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
             nil,
-            PushNotificationTrigger::I18nStruct.new(text: 'John D.'),
+            PushNotificationTrigger::I18nStruct.new(i18n: 'activerecord.attributes.smalltalk.object'),
             PushNotificationTrigger::I18nStruct.new(instance: kind_of(ChatMessage), field: :content),
             [ join_request2.user ],
             "smalltalk",
             smalltalk.id,
             {
-              tracking: :private_chat_message_on_create,
+              tracking: :post_on_create_to_smalltalk,
               joinable_id: smalltalk.id,
               joinable_type: "Smalltalk",
               group_type: 'smalltalk',
