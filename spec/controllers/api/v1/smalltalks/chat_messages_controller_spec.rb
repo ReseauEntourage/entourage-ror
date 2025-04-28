@@ -347,4 +347,145 @@ describe Api::V1::Smalltalks::ChatMessagesController do
       it { expect(result.deleted_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
+
+  describe 'GET comments' do
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: smalltalk, user: user) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: smalltalk, user: user, parent: chat_message_1) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: smalltalk, user: user, status: :accepted) }
+
+    let(:request) { get :comments, params: { smalltalk_id: smalltalk.to_param, id: chat_message_1.id, token: user.token } }
+
+    context "signed and in smalltalk" do
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_messages')}
+      it { expect(result).to eq({
+        "chat_messages" => [{
+          "id" => chat_message_2.id,
+          "uuid_v2" => chat_message_2.uuid_v2,
+          "content" => chat_message_2.content,
+          "content_html" => chat_message_2.content,
+          "content_translations" => {
+            "translation" => chat_message_2.content,
+            "original" => chat_message_2.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
+          "content_translations_html" => {
+            "translation" => chat_message_2.content,
+            "original" => chat_message_2.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
+          "user" => {
+            "id" => user.id,
+            "avatar_url" => nil,
+            "display_name" => "John D.",
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
+          },
+          "created_at" => chat_message_2.created_at.iso8601(3),
+          "post_id" => chat_message_1.id,
+          "has_comments" => false,
+          "comments_count" => 0,
+          "image_url" => nil,
+          "read" => false,
+          "message_type" => "text",
+          "status" => "active",
+          "survey" => nil,
+        }]
+      }) }
+    end
+
+    context "ordered" do
+      let!(:chat_message_3) { FactoryBot.create(:chat_message, messageable: smalltalk, user: user, parent: chat_message_1, created_at: chat_message_2.created_at + day) }
+
+      before { request }
+
+      context "in one order" do
+        let(:day) { - 1.day }
+
+        it { expect(result["chat_messages"].count).to eq(2) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
+      end
+
+      context "in another order" do
+        let(:day) { + 1.day }
+
+        it { expect(result["chat_messages"].count).to eq(2) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
+      end
+    end
+
+    describe 'no deeplink' do
+      before { get :comments, params: { token: user.token, smalltalk_id: identifier, id: chat_message_1.id } }
+
+      context 'from id' do
+        let(:identifier) { smalltalk.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { smalltalk.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :comments, params: { token: user.token, smalltalk_id: smalltalk.uuid_v2, id: chat_message_1.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('chat_messages') }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+
+      context 'using id fails' do
+        before { get :comments, params: { token: user.token, smalltalk_id: smalltalk.to_param, id: chat_message_1.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
+  end
+
+  describe 'POST #presigned_upload' do
+    let(:request) { post :presigned_upload, params: { smalltalk_id: smalltalk.to_param, token: token, content_type: 'image/jpeg' } }
+
+    context "not signed in" do
+      let(:token) { nil }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in but not in smalltalk" do
+      let(:token) { user.token }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in and in smalltalk" do
+      let(:token) { user.token }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: smalltalk, user: user, status: :accepted) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to have_key('upload_key') }
+      it { expect(JSON.parse(response.body)).to have_key('presigned_url') }
+    end
+  end
 end
