@@ -97,6 +97,12 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:public_user, sms_code_password: '12345').save).to be false }
   end
 
+  describe "gender=" do
+    it { expect(build(:public_user, gender: "male").gender).to eq("male") }
+    it { expect(build(:public_user, gender: "female").gender).to eq("female") }
+    it { expect(build(:public_user, gender: "non_binary").gender).to eq("non_binary") }
+  end
+
   describe "goal=" do
     it { expect(build(:public_user, goal: "offer_help").goal_choice).to eq("offer_help") }
     it { expect(build(:public_user, goal: "offer_help").goal).to eq("offer_help") }
