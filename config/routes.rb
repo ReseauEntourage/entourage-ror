@@ -577,7 +577,33 @@ Rails.application.routes.draw do
       end
 
       resources :conversations do
-        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create, :update, :destroy]
+        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create, :update, :destroy] do
+          member do
+            get :comments
+          end
+
+          collection do
+            post :presigned_upload
+          end
+
+          resources :reactions, :controller => 'conversations/chat_messages/reactions', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+
+            member do
+              get :details
+            end
+          end
+
+          resources :survey_responses, :controller => 'conversations/chat_messages/survey_responses', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+          end
+        end
 
         resources :users, :controller => 'conversations/users', only: [:index, :create] do
           member do
