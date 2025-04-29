@@ -19,6 +19,12 @@ class UserSmalltalk < ApplicationRecord
     not_matched
   }
 
+  scope :with_accessible_smalltalks_for_user, -> (user) {
+    where(user: user)
+      .where(member_status: JoinRequest::ACCEPTED_STATUS)
+      .where.not(smalltalk_id: nil)
+  }
+
   def user= user
     self.user_latitude = user.latitude
     self.user_longitude = user.longitude
