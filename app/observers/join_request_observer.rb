@@ -5,6 +5,7 @@ class JoinRequestObserver < ActiveRecord::Observer
     action(:create, record)
 
     mailer(record)
+    user_smalltalk(record)
   end
 
   def after_update(record)
@@ -37,5 +38,14 @@ class JoinRequestObserver < ActiveRecord::Observer
     return if record.user_id == record.joinable.user_id
 
     GroupMailer.event_joined_confirmation(record.joinable_id, record.user_id).deliver_later
+  end
+
+  def user_smalltalk(record)
+    return unless record.user
+    return unless record.smalltalk?
+
+    UserSmalltalk
+      .where(user: record.user, smalltalk: record.joinable)
+      .update_all(member_status: record.status)
   end
 end

@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe Api::V1::UserSmalltalksController, :type => :controller do
   let(:user) { create :pro_user, goal: :offer_help }
-  let(:smalltalk) { create :smalltalk }
-  let(:user_smalltalk) { create :user_smalltalk, user: user, smalltalk: smalltalk }
+  let(:smalltalk) { create :smalltalk, participants: [user] }
+  let(:user_smalltalk) { create :user_smalltalk, user: user, smalltalk: smalltalk, member_status: :accepted }
 
   context 'index' do
     before { user_smalltalk }
