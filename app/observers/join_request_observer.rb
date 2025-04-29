@@ -45,7 +45,7 @@ class JoinRequestObserver < ActiveRecord::Observer
     return unless record.smalltalk?
 
     UserSmalltalk
-      .where(user: user, smalltalk: record.joinable)
+      .where(user: record.user, smalltalk: record.joinable)
       .update_all(member_status: record.status)
   end
 end
