@@ -1,4 +1,6 @@
 class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
+  store_accessor :specific_filters, :departements
+
   class << self
     def messageable_type
       'Neighborhood'
@@ -14,38 +16,39 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
   end
 
   def conversation_ids
+    return neighborhood_ids_in_departements_and_area_type if is_departement_selection?
+
     (self[:conversation_ids] || []).map(&:to_i)
   end
 
   def conversation_ids= ids
+    self["specific_filters"]["departements"] = nil
     self[:conversation_ids] = ids.map(&:to_s).reject(&:empty?)
   end
 
-  def departements
-    @departements ||= Neighborhood
-      .select('left(postal_code, 2) as departement')
-      .where(id: conversation_ids)
-      .group('left(postal_code, 2)')
-      .map(&:departement)
-  end
-
-  def departements= departements
-    self[:conversation_ids] = self.class.neighborhood_ids_in_departements(departements)
-  end
-
-  def self.neighborhood_ids_in_departements departements
-    departements = departements.compact.reject(&:empty?)
-
+  def neighborhood_ids_in_departements_and_area_type
     return [] unless departements.any?
 
-    like_departements = departements.map { |departement| "#{departement}%" }
-
-    Neighborhood.where('postal_code LIKE ANY ( array[?] )', like_departements).pluck(:id)
+    self.class.neighborhood_ids_in_departements_and_area_type(departements, area_type)
   end
 
-  # indicates whether the broadcast concerns all the neighborhoods of the concerned departements
-  def has_full_departements_selection?
-    self.class.neighborhood_ids_in_departements(departements).compact.uniq.sort == conversation_ids.compact.uniq.sort
+  class << self
+    def neighborhood_ids_in_departements_and_area_type departements, area_type
+      return [] unless departements.any?
+
+      Neighborhood
+        .where("postal_code LIKE ANY ( array[?] )", departements.map { |departement| "#{departement}%" })
+        .with_zone(area_type)
+        .pluck(:id)
+    end
+  end
+
+  def is_departement_selection?
+    departements.present? && departements.any?
+  end
+
+  def departements
+    (self["specific_filters"]["departements"] || []).compact.reject(&:empty?)
   end
 
   alias_method :neighborhoods, :recipients
@@ -57,7 +60,8 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
   def clone
     cloned = super
     cloned.assign_attributes(
-      conversation_ids: self[:conversation_ids]
+      conversation_ids: self[:conversation_ids],
+      specific_filters: self[:specific_filters]
     )
     cloned
   end

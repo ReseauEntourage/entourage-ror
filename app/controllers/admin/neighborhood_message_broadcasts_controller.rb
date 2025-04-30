@@ -27,8 +27,8 @@ module Admin
 
     def edit
       @tab = params[:tab].presence&.to_sym
-      @tab ||= :neighborhoods unless @neighborhood_message_broadcast.has_full_departements_selection?
-      @tab ||= :departements
+      @tab ||= :departements if @neighborhood_message_broadcast.is_departement_selection?
+      @tab ||= :neighborhoods
 
       @zone = params[:zone].presence&.to_sym
       @zone ||= :zone_all
@@ -102,11 +102,11 @@ module Admin
     private
 
     def neighborhood_message_broadcast_params
-      params.require(:neighborhood_message_broadcast).permit(:content, :title, neighborhood_ids: [], departements: [])
+      params.require(:neighborhood_message_broadcast).permit(:content, :title, :area_type, neighborhood_ids: [], departements: [])
     end
 
     def neighborhood_message_broadcast_neighborhoods_param
-      params.require(:neighborhood_message_broadcast).permit(neighborhood_ids: [], departements: [])
+      params.require(:neighborhood_message_broadcast).permit(:area_type, neighborhood_ids: [], departements: [])
     end
 
     def page
