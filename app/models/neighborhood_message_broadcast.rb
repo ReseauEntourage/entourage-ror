@@ -27,13 +27,20 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
   end
 
   def neighborhood_ids_in_departements_and_area_type
-    return [] unless is_departement_selection?
     return [] unless departements.any?
 
-    Neighborhood
-      .where("postal_code LIKE ANY ( array[?] )", departements.map { |departement| "#{departement}%" })
-      .with_zone(area_type)
-      .pluck(:id)
+    self.class.neighborhood_ids_in_departements_and_area_type(departements, area_type)
+  end
+
+  class << self
+    def neighborhood_ids_in_departements_and_area_type departements, area_type
+      return [] unless departements.any?
+
+      Neighborhood
+        .where("postal_code LIKE ANY ( array[?] )", departements.map { |departement| "#{departement}%" })
+        .with_zone(area_type)
+        .pluck(:id)
+    end
   end
 
   def is_departement_selection?
