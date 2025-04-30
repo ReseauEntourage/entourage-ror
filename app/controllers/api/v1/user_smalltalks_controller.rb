@@ -6,7 +6,7 @@ module Api
 
       def index
         render json: UserSmalltalk
-          .with_accessible_smalltalks
+          .with_accessible_smalltalks_for_user(current_user)
           .or(UserSmalltalk.where(user: current_user, smalltalk_id: nil))
           .page(page)
           .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
