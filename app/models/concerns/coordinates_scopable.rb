@@ -37,6 +37,9 @@ module CoordinatesScopable
     scope :with_zone, -> (zone) {
       return unless has_attribute?(:zone)
       return unless zone.present?
+
+      zone = zone.to_sym
+
       return unless [:ville, :departement, :no_zone].include?(zone)
 
       return where(zone: nil) if zone == :no_zone
