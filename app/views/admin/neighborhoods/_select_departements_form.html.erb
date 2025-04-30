@@ -1,4 +1,4 @@
-<%# Excepted variables -%>
+<%# Expected variables -%>
 
 <%# Case: outing -%>
 <%# 1. record: outing -%>
@@ -15,13 +15,24 @@
   @departements = record.departements
 %>
 
+<%= render partial: "admin/neighborhoods/show_selection" %>
+
 <h4>Changer les groupes de voisins</h4>
 
 <div style="margin-bottom: 15px; display: flex">
   <div class="btn-group btn-group-sm" id="departements-choices">
     <% ModerationArea.no_hz.pluck(:departement).each do |departement| %>
-      <%= link_to(departement, "#", class: "btn btn-#{@departements.include?(departement) ? :primary : :default}") %>
+      <%= link_to(departement, "#", class: "btn btn-#{record.departements.include?(departement) ? :primary : :default} department") %>
     <% end %>
+  </div>
+</div>
+
+<div style="margin-bottom: 15px; display: flex">
+  <div class="btn-group btn-group-sm" id="area-type-choice">
+    <%= link_to("Département", "", "data-value": "departement", class: "btn btn-#{record.area_type == "departement" ? :primary : :default}") %>
+    <%= link_to("Ville", "", "data-value": "ville", class: "btn btn-#{record.area_type == "ville" ? :primary : :default}") %>
+    <%= link_to("Thématique", "", "data-value": "no_zone", class: "btn btn-#{record.area_type == "no_zone" ? :primary : :default}") %>
+    <%= link_to("Tous", "", "data-value": "zone_all", class: "btn btn-#{record.area_type == "zone_all" ? :primary : :default}") %>
   </div>
 </div>
 
@@ -32,6 +43,9 @@
   </div>
 </div>
 
+<a href="#" data-role="select-departments" data-select="all">Tout sélectionner</a> ·
+<a href="#" data-role="select-departments" data-select="none">Tout désélectionner</a>
+
 <%= form_for record, url: path, method: :put do |f| %>
   <%= hidden_field_tag "#{record_type}[departements][]", '' %>
 
@@ -41,38 +55,86 @@
     <% end %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :area_type %>
+    <div class="controls">
+      <% area_types = { "Département": :departement, "Ville": :ville, "Thématique": :no_zone, "Tous": :zone_all } %>
+
+      <%= f.select :area_type, options_for_select(area_types, record.area_type), { include_blank: false }, class: "form-control" %>
+    </div>
+  </div>
+
   <%= f.submit 'Valider', class: "btn btn-primary" %>
 <% end %>
 
 <script>
-  var $neighborhoods = $('[type="checkbox"][name="<%= record_type %>[<%= recipient_ids %>][]"]');
+  $(document).ready(function () {
+    var inputName = "neighborhood_message_broadcast[departements][]";
 
-  $(document).on('click', '[data-role="select-neighborhoods"]', function(e) {
-    e.preventDefault()
-    var select = $(this).data('select'),
-        check = {
-          'all': function() { return true },
-          'none': function() { return false },
-        }[select]
+    // Fonction pour gérer le clic sur un élément
+    function toggleDepartment(element, shouldSelect) {
+      if (shouldSelect === undefined) {
+        // Toggle si la valeur n'est pas spécifiée
+        element.toggleClass("btn-primary btn-default");
+      } else if (shouldSelect) {
+        element.addClass("btn-primary").removeClass("btn-default");
+      } else {
+        element.addClass("btn-default").removeClass("btn-primary");
+      }
 
-    $neighborhoods.each(function() {
-      var $box = $(this)
-      $box.prop('checked', check($box.val()))
-      this.setCustomValidity('') // reset validations
-    })
-  });
-
-  var inputName = "neighborhood_message_broadcast[departements][]"
-
-  $("#departements-choices a").on('click', function(e) {
-    e.preventDefault();
-
-    $(this).toggleClass("btn-primary btn-default");
-
-    if ($(this).hasClass("btn-primary")) {
-      $("#departements-selected").append('<input type="hidden" name="' + inputName + '" value="' + $(this).text() + '">')
-    } else {
-      $("#departements-selected").find("input[value='" + $(this).text() + "']").remove();
+      if (element.hasClass("btn-primary")) {
+        if (!$("#departements-selected").find("input[value='" + element.text() + "']").length) {
+          $("#departements-selected").append(
+            '<input type="hidden" name="' + inputName + '" value="' + element.text() + '">'
+          );
+        }
+      } else {
+        $("#departements-selected")
+          .find("input[value='" + element.text() + "']")
+          .remove();
+      }
     }
+
+    // Gestion du clic sur les départements individuels
+    $("#departements-choices a").on("click", function (e) {
+      e.preventDefault();
+      toggleDepartment($(this));
+    });
+
+    // Gestion du clic sur les actions globales
+    $(document).on("click", '[data-role="select-departments"]', function (e) {
+      e.preventDefault();
+
+      var action = $(this).data("select");
+      var shouldSelect = action === "all"; // Sélectionner tous les départements pour "all"
+
+      $("#departements-choices a").each(function () {
+        toggleDepartment($(this), shouldSelect);
+      });
+    });
+
+    function toggleAreaType() {
+      var selectedType = $('select[name="neighborhood_message_broadcast[area_type]"]').val();
+
+      $("#area-type-choice a").each(function () {
+        var typeValue = $(this).data("value");
+        if (typeValue === selectedType) {
+          $(this).addClass("btn-primary").removeClass("btn-default");
+        } else {
+          $(this).addClass("btn-default").removeClass("btn-primary");
+        }
+      });
+    }
+
+    // Gestion du changement de type de zone
+    $("#area-type-choice a").on('click', function (e) {
+      e.preventDefault();
+
+      var value = $(this).data("value");
+
+      $('select[name="neighborhood_message_broadcast[area_type]"]').val(value);
+
+      toggleAreaType();
+    });
   });
 </script>
