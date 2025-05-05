@@ -6,14 +6,15 @@ module Api
 
       def index
         render json: UserSmalltalk
+          .includes(:user)
           .with_accessible_smalltalks_for_user(current_user)
           .or(UserSmalltalk.where(user: current_user, smalltalk_id: nil))
           .page(page)
-          .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+          .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def show
-        render json: @user_smalltalk, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+        render json: @user_smalltalk, serializer: ::V1::UserSmalltalkSerializer
       end
 
       def current
@@ -27,7 +28,7 @@ module Api
         @user_smalltalk.user = current_user
 
         if @user_smalltalk.save
-          render json: @user_smalltalk, status: 201, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+          render json: @user_smalltalk, status: 201, serializer: ::V1::UserSmalltalkSerializer
         else
           render json: { message: "Could not create UserSmalltalk", reasons: @user_smalltalk.errors.full_messages }, status: 400
         end
@@ -37,7 +38,7 @@ module Api
         @user_smalltalk.assign_attributes(user_smalltalk_params)
 
         if @user_smalltalk.save
-          render json: @user_smalltalk, status: 200, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+          render json: @user_smalltalk, status: 200, serializer: ::V1::UserSmalltalkSerializer
         else
           render json: {
             message: 'Could not update user_smalltalk', reasons: @user_smalltalk.errors.full_messages
@@ -54,11 +55,19 @@ module Api
       end
 
       def matches
-        render json: @user_smalltalk.find_matches.per(per).page(page)
+        render json: @user_smalltalk
+          .includes(:user)
+          .find_matches
+          .per(per)
+          .page(page), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def almost_matches
-        render json: @user_smalltalk.find_almost_matches.per(per).page(page)
+        render json: @user_smalltalk
+          .includes(:user)
+          .find_almost_matches
+          .per(per)
+          .page(page), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def matches_by_criteria
@@ -69,7 +78,7 @@ module Api
 
       def destroy
         if @user_smalltalk.update(deleted_at: Time.zone.now)
-          render json: @user_smalltalk, root: "user", status: 200, serializer: ::V1::UserSmalltalkSerializer, scope: { user: current_user }
+          render json: @user_smalltalk, root: "user", status: 200, serializer: ::V1::UserSmalltalkSerializer
         else
           render json: {
             message: "Could not delete user_smalltalk", reasons: @user_smalltalk.errors.full_messages
