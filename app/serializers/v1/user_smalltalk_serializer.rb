@@ -11,5 +11,7 @@ module V1
       :matched_at,
       :deleted_at,
       :created_at
+
+    has_one :user, serializer: ::V1::Users::BasicSerializer
   end
 end
