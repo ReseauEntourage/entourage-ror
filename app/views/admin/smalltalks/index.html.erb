@@ -21,7 +21,7 @@
                 <td><%= smalltalk.number_of_people %></td>
                 <td>
                   <ul>
-                    <% smalltalk.members.each do |member| %>
+                    <% smalltalk.accepted_members.each do |member| %>
                       <li><%= link_to member.full_name, edit_admin_user_path(member) %></li>
                     <% end %>
                   </ul>
