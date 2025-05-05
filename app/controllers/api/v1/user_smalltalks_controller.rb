@@ -55,11 +55,19 @@ module Api
       end
 
       def matches
-        render json: @user_smalltalk.find_matches.per(per).page(page)
+        render json: @user_smalltalk
+          .includes(:user)
+          .find_matches
+          .per(per)
+          .page(page), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def almost_matches
-        render json: @user_smalltalk.find_almost_matches.per(per).page(page)
+        render json: @user_smalltalk
+          .includes(:user)
+          .find_almost_matches
+          .per(per)
+          .page(page), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def matches_by_criteria
