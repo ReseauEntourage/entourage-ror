@@ -54,6 +54,13 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
           "matched_at" => nil,
           "deleted_at" => nil,
           "created_at" => user_smalltalk.created_at.iso8601(3),
+          "user" => {
+            "id" => user.id,
+            "lang" => user.lang,
+            "display_name" => "John D.",
+            "avatar_url" => nil,
+            "community_roles" => []
+          }
         }
       })}
     end
