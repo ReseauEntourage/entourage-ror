@@ -680,6 +680,7 @@ Rails.application.routes.draw do
 
         member do
           post :match
+          post :force_match
           get :matches
           get :almost_matches
           get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
