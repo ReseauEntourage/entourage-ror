@@ -60,6 +60,27 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
             "display_name" => "John D.",
             "avatar_url" => nil,
             "community_roles" => []
+          },
+          "smalltalk" => {
+            "id" => smalltalk.id,
+            "uuid_v2" => smalltalk.uuid_v2,
+            "type" => "smalltalk",
+            "name" => "Papotage",
+            "subname" => nil,
+            "image_url" => nil,
+            "members_count" => 1,
+            "last_message" => nil,
+            "number_of_unread_messages" => nil,
+            "has_personal_post" => nil,
+            "members" => [
+              {
+                "id" => user.id,
+                "lang" => "fr",
+                "display_name" => "John D.",
+                "avatar_url" => nil,
+                "community_roles" => []
+              }
+            ]
           }
         }
       })}

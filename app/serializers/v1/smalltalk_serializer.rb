@@ -11,9 +11,8 @@ module V1
       :members_count,
       :last_message,
       :number_of_unread_messages,
-      :has_personal_post
-
-    has_many :members, serializer: ::V1::Users::BasicSerializer
+      :has_personal_post,
+      :members
 
     lazy_relationship :last_chat_message
     lazy_relationship :chat_messages_count
@@ -46,6 +45,7 @@ module V1
     end
 
     def number_of_unread_messages
+      return unless current_join_request.present?
       return lazy_chat_messages_count&.count || 0 if current_join_request.last_message_read.nil?
 
       lazy_chat_messages.select do |chat_message|
@@ -60,7 +60,11 @@ module V1
     end
 
     def members
-      object.accepted_members.limit(5)
+      object.accepted_members.limit(5).map do |member|
+        ::V1::Users::BasicSerializer.new(member, scope: scope).as_json
+      end
+    rescue
+      []
     end
 
     private
@@ -76,6 +80,8 @@ module V1
     end
 
     def current_join_request
+      return unless scope[:user].present?
+
       # @fixme performance issue: we instanciate all records but we need only one
       @current_join_request ||=  lazy_join_requests.select do |join_request|
         join_request.user_id == scope[:user].id
