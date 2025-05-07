@@ -13,5 +13,6 @@ module V1
       :created_at
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
+    has_one :smalltalk, serializer: ::V1::SmalltalkSerializer
   end
 end
