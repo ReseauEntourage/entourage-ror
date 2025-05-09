@@ -522,6 +522,10 @@ Rails.application.routes.draw do
       end
 
       resources :outings do
+        collection do
+          get :smalltalk
+        end
+
         member do
           put :batch_update
           get :siblings
