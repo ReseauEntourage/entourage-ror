@@ -276,6 +276,7 @@ Rails.application.routes.draw do
           get 'neighborhoods'
           get 'outings'
           get 'history'
+          get 'blocked_users'
           put 'destroy_avatar'
           get 'new_spam_warning'
           post 'create_spam_warning'

@@ -1,0 +1,23 @@
+<%= render 'header', tab: :blocked_users %>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <%= @user.full_name %> a bloqué <%= @user_blocked_users.count %> autres utilisateurs.
+  </div>
+</div>
+
+<div class="row">
+  <label class="control-label">Utilisateurs bloqués</label>
+  <table class="table">
+    <tr>
+      <th>Nom</th>
+      <th>Date</th>
+    </tr>
+    <% @user_blocked_users.each do |user_blocked_user| %>
+      <tr>
+        <td><%= user_blocked_user.user.full_name %></td>
+        <td><%= l user_blocked_user.created_at.to_date %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
