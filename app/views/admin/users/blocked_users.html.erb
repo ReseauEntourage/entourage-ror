@@ -15,7 +15,7 @@
     </tr>
     <% @user_blocked_users.each do |user_blocked_user| %>
       <tr>
-        <td><%= user_blocked_user.user.full_name %></td>
+        <td><%= link_to user_blocked_user.blocked_user.full_name, admin_user_path(user_blocked_user.blocked_user.id) %></td>
         <td><%= l user_blocked_user.created_at.to_date %></td>
       </tr>
     <% end %>
