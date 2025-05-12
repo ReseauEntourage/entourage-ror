@@ -1,8 +1,8 @@
 module Api
   module V1
     class UserSmalltalksController < Api::V1::BaseController
-      before_action :set_user_smalltalk, only: [:show, :current, :update, :match, :destroy]
-      before_action :ensure_is_creator, only: [:show, :update, :match, :destroy]
+      before_action :set_user_smalltalk, only: [:show, :current, :update, :match, :destroy, :force_match, :match, :matches, :almost_matches, :matches_by_criteria]
+      before_action :ensure_is_creator, only: [:show, :update, :match, :destroy, :force_match, :match, :matches, :almost_matches, :matches_by_criteria]
 
       def index
         render json: UserSmalltalk
@@ -64,18 +64,18 @@ module Api
 
       def matches
         render json: @user_smalltalk
-          .includes(:user)
           .find_matches
-          .per(per)
-          .page(page), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
+          .includes(:user)
+          .page(page)
+          .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def almost_matches
         render json: @user_smalltalk
-          .includes(:user)
           .find_almost_matches
-          .per(per)
-          .page(page), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
+          .includes(:user)
+          .page(page)
+          .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end
 
       def matches_by_criteria
