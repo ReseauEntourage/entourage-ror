@@ -551,6 +551,8 @@ fr:
 
       A très vite !
 
+      %s
+
   charts:
     conversations:
       memberships: "Participants"
