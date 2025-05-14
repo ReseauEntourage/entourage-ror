@@ -1,5 +1,8 @@
 class UserSmalltalk < ApplicationRecord
   include Deeplinkable
+  include UserSmalltalkable
+
+  VIRTUAL_ATTRIBUTES = [:has_matched_format, :has_matched_gender, :has_matched_locality, :has_matched_interest, :unmatch_count]
 
   CRITERIA = [:match_format, :match_locality, :match_gender, :match_interest]
 
@@ -25,40 +28,28 @@ class UserSmalltalk < ApplicationRecord
       .where.not(smalltalk_id: nil)
   }
 
+  VIRTUAL_ATTRIBUTES.each do |virtual_attribute|
+    define_method(virtual_attribute) do
+      self[virtual_attribute]
+    end
+  end
+
   def user= user
     self.user_latitude = user.latitude
     self.user_longitude = user.longitude
     self.user_gender = user.gender
     self.user_profile = user.is_offer_help? ? :offer_help : :ask_for_help
+    self.user_interest_ids = user.interest_ids
 
     super(user)
   end
 
   def find_and_save_match!
-    return unless find_match.present?
-
-    save_match(find_match)
-  end
-
-  def force_and_save_match! smalltalk_id
-    return unless smalltalk_id
+    return unless (user_smalltalk = find_match)
+    return if joined_smalltalks.count >= 3
 
     Smalltalk.transaction do
-      target_smalltalk = user_smalltalk.smalltalk || create_smalltalk!
-
-      associate_user_smalltalk(self, target_smalltalk)
-
-      ensure_join_request(self.user, target_smalltalk)
-
-      target_smalltalk
-    end
-  end
-
-  def save_match user_smalltalk
-    return if user.user_smalltalks.where.not(smalltalk_id: nil).distinct.count >= 3
-
-    Smalltalk.transaction do
-      target_smalltalk = user_smalltalk.smalltalk || create_smalltalk!
+      target_smalltalk = user_smalltalk.smalltalk || create_smalltalk_with!(user_smalltalk)
 
       associate_user_smalltalk(self, target_smalltalk)
       associate_user_smalltalk(user_smalltalk, target_smalltalk)
@@ -70,33 +61,26 @@ class UserSmalltalk < ApplicationRecord
     end
   end
 
+  def force_and_save_match! smalltalk_id
+    return unless smalltalk_id
+    return unless target_smalltalk = Smalltalk.find_by(id: smalltalk_id)
+    return if joined_smalltalks.count >= 3
+
+    Smalltalk.transaction do
+      associate_user_smalltalk(self, target_smalltalk)
+
+      ensure_join_request(self.user, target_smalltalk)
+
+      target_smalltalk
+    end
+  end
+
   def find_match
-    @find_match ||= match_in_existing_group || match_to_form_duo
-  end
-
-  # find_match
-  def match_in_existing_group
-    find_matches
-      .where.not(smalltalk_id: nil)
-      .joins(:smalltalk)
-      .where("smalltalks.number_of_people < 5")
-      .first
-  end
-
-  # find_match
-  def match_to_form_duo
-    find_matches.where(smalltalk_id: nil).first
+    @find_match ||= find_matches.find { |us| us.unmatch_count == 0 }
   end
 
   def find_matches
-    base_scope = UserSmalltalk.not_matched.where.not(user_id: user_id)
-
-    base_scope = base_scope.where(match_format: match_format)
-    base_scope = filter_by_locality(base_scope) if match_locality
-    base_scope = filter_by_gender(base_scope) if match_gender
-    base_scope = filter_by_common_interests(base_scope) if match_interest
-
-    base_scope
+    UserSmalltalk.exact_matches(self)
   end
 
   def find_matches_count_by criteria
@@ -106,39 +90,7 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_almost_matches
-    scope = UserSmalltalk.not_matched
-      .where.not(user_id: user_id)
-      .where(match_format: match_format)
-
-    scope = filter_by_locality(scope) if match_locality
-    scope = filter_by_gender(scope) if match_gender
-
-    scope
-  end
-
-  def filter_by_locality scope
-    return scope unless user_latitude && user_longitude
-
-    scope.where(
-      <<~SQL.squish,
-        ST_DWithin(
-          ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
-          ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography,
-          ?
-        )
-      SQL
-      user_longitude, user_latitude, 20_000
-    )
-  end
-
-  def filter_by_gender scope
-    scope.where(user_gender: user_gender)
-  end
-
-  def filter_by_common_interests scope
-    scope.joins(user: :interests)
-      .where(interests: { id: user.interest_ids })
-      .distinct
+    UserSmalltalk.best_matches(self)
   end
 
   class << self
@@ -149,8 +101,8 @@ class UserSmalltalk < ApplicationRecord
 
   private
 
-  def create_smalltalk!
-    Smalltalk.create!
+  def create_smalltalk_with! user_smalltalk
+    Smalltalk.create!(match_format: user_smalltalk.match_format)
   end
 
   def associate_user_smalltalk user_smalltalk, smalltalk
@@ -164,5 +116,9 @@ class UserSmalltalk < ApplicationRecord
       role: :member,
       status: :accepted
     )
+  end
+
+  def joined_smalltalks
+    JoinRequest.where(user: user, joinable_type: :Smalltalk, status: JoinRequest::ACCEPTED_STATUS)
   end
 end
