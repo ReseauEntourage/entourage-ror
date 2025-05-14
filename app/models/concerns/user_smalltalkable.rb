@@ -1,0 +1,110 @@
+module UserSmalltalkable
+  extend ActiveSupport::Concern
+
+  included do
+    scope :best_matches, -> (user_smalltalk) {
+      select_match(user_smalltalk)
+        .reciprocity_match(user_smalltalk)
+        .where.not(user_id: user_smalltalk.user_id)
+        .where("user_smalltalks.deleted_at IS NULL")
+        .where("user_smalltalks.smalltalk_id IS NULL")
+    }
+
+    scope :select_match, -> (user_smalltalk) {
+      select(%(
+        user_smalltalks.*,
+        (#{user_smalltalk.format_match_expression}) as has_matched_format,
+        (#{user_smalltalk.gender_match_expression}) as has_matched_gender,
+        (#{user_smalltalk.locality_match_expression}) as has_matched_locality,
+        (#{user_smalltalk.interest_match_expression}) as has_matched_interest,
+        (
+          CASE WHEN (#{user_smalltalk.format_match_expression}) THEN 0 ELSE 1 END +
+          CASE WHEN (#{user_smalltalk.gender_match_expression}) THEN 0 ELSE 1 END +
+          CASE WHEN (#{user_smalltalk.locality_match_expression}) THEN 0 ELSE 1 END +
+          CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 0 ELSE 1 END
+        ) AS unmatch_count
+      )).order("unmatch_count")
+    }
+
+    scope :exact_matches, -> (user_smalltalk) {
+      reciprocity_match(user_smalltalk)
+        .where.not(user_id: user_smalltalk.user_id)
+        .where("user_smalltalks.deleted_at IS NULL")
+        .where("user_smalltalks.smalltalk_id IS NULL")
+        .where(user_smalltalk.format_match_expression)
+        .where(user_smalltalk.gender_match_expression)
+        .where(user_smalltalk.locality_match_expression)
+        .where(user_smalltalk.interest_match_expression)
+    }
+
+    scope :reciprocity_match, -> (user_smalltalk) {
+      gender_reciprocity(user_smalltalk)
+        .locality_reciprocity(user_smalltalk)
+        .interests_reciprocity(user_smalltalk)
+    }
+
+    scope :gender_reciprocity, -> (user_smalltalk) {
+      return where(match_gender: false) unless user_smalltalk.user_gender_before_type_cast.present?
+
+      where(match_gender: false).or(UserSmalltalk.where(user_gender: user_smalltalk.user_gender_before_type_cast))
+    }
+
+    scope :locality_reciprocity, -> (user_smalltalk) {
+      return where(match_locality: false) unless user_smalltalk.user_longitude.present? && user_smalltalk.user_latitude.present?
+
+      where(match_locality: false).or(UserSmalltalk.where(%(
+        ST_DWithin(
+          ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
+          ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography,
+          ?
+        )),
+        user_smalltalk.user_longitude, user_smalltalk.user_latitude, 20_000
+      ))
+    }
+
+    scope :interests_reciprocity, -> (user_smalltalk) {
+      return where(match_gender: false) unless user_smalltalk.user_interest_ids.any?
+
+      where(match_gender: false).or(UserSmalltalk.where(user_interest_ids: user_smalltalk.user_interest_ids))
+    }
+  end
+
+  def format_match_expression
+    "user_smalltalks.match_format = #{match_format_before_type_cast}"
+  end
+
+  def gender_match_expression
+    return "1=1" unless match_gender
+    return "1=1" unless user_gender_before_type_cast
+
+    "user_smalltalks.user_gender = #{user_gender_before_type_cast}"
+  end
+
+  def locality_match_expression
+    return "1=1" unless match_locality
+    return "1=1" unless user_latitude && user_longitude
+
+    return %(
+      ST_DWithin(
+        ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
+        ST_SetSRID(ST_MakePoint(#{user_longitude}, #{user_latitude}), 4326)::geography,
+        20000
+      )
+    ) if match_locality && user_latitude && user_longitude
+
+    %(
+      user_smalltalks.match_locality = false OR ST_DWithin(
+        ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
+        ST_SetSRID(ST_MakePoint(#{user_longitude}, #{user_latitude}), 4326)::geography,
+        20000
+      )
+    )
+  end
+
+  def interest_match_expression
+    return "1=1" unless match_interest
+    return "1=1" unless user_interest_ids.any?
+
+    "user_smalltalks.user_interest_ids IN (#{user_interest_ids.join(', ')})"
+  end
+end

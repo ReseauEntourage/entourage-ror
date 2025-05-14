@@ -2,6 +2,8 @@ class Smalltalk < ApplicationRecord
   include Deeplinkable
   include JoinableScopable
 
+  enum match_format: { one: 0, many: 1 }
+
   has_many :user_smalltalks
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_one :last_chat_message, -> {
