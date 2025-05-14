@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 202405021415000) do
+ActiveRecord::Schema.define(version: 202503131313000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -149,6 +149,15 @@ ActiveRecord::Schema.define(version: 202405021415000) do
   create_table "coordination", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "organization_id"
+  end
+
+  create_table "denorm_daily_encounters", force: :cascade  do |t|
+    t.date "creation_date", null: false
+    t.string "encounter_type"
+    t.integer "user1_id", null: false
+    t.integer "user2_id", null: false
+
+    t.index ["creation_date", "encounter_type", "user1_id", "user2_id"], unique: true, name: 'unicity_denorm_daily_encounters_on_date_encounter_type_users'
   end
 
   create_table "denorm_daily_engagements", force: :cascade do |t|
