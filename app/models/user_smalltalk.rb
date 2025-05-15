@@ -34,14 +34,17 @@ class UserSmalltalk < ApplicationRecord
     end
   end
 
-  def user= user
-    self.user_latitude = user.latitude
-    self.user_longitude = user.longitude
-    self.user_gender = user.gender
-    self.user_profile = user.is_offer_help? ? :offer_help : :ask_for_help
-    self.user_interest_ids = user.interest_ids
+  def user=(user)
+    assign_user_attributes(user)
 
     super(user)
+  end
+
+  def user_id=(user_id)
+    user = User.find(user_id)
+    assign_user_attributes(user)
+
+    super(user_id)
   end
 
   def find_and_save_match!
@@ -100,6 +103,14 @@ class UserSmalltalk < ApplicationRecord
   end
 
   private
+
+  def assign_user_attributes(user)
+    self.user_latitude = user.latitude
+    self.user_longitude = user.longitude
+    self.user_gender = user.gender
+    self.user_profile = user.is_offer_help? ? :offer_help : :ask_for_help
+    self.user_interest_ids = user.interest_ids
+  end
 
   def create_smalltalk_with! user_smalltalk
     Smalltalk.create!(match_format: user_smalltalk.match_format)
