@@ -1,6 +1,6 @@
 module Admin
   class UserSmalltalksController < Admin::BaseController
-    before_action :set_user_smalltalk, only: [:match]
+    before_action :set_user_smalltalk, only: [:show, :show_matches, :show_almost_matches, :edit, :update, :match]
 
     def index
       @params = params.permit(:matched).to_h
@@ -17,12 +17,18 @@ module Admin
     def show
     end
 
+    def show_matches
+      @matches = @user_smalltalk.find_matches
+    end
+
+    def show_almost_matches
+      @almost_matches = @user_smalltalk.find_almost_matches
+    end
+
     def edit
-      @user_smalltalk = UserSmalltalk.find(params[:id])
     end
 
     def update
-      @user_smalltalk = UserSmalltalk.find(params[:id])
       @user_smalltalk.assign_attributes(user_smalltalk_params)
 
       if @user_smalltalk.save

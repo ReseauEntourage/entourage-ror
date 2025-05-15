@@ -314,6 +314,8 @@ Rails.application.routes.draw do
 
       resources :user_smalltalks do
         member do
+          get :show_matches
+          get :show_almost_matches
           post :match
         end
       end

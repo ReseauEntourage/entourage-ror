@@ -1,0 +1,40 @@
+<div class="container">
+  <%= render 'show_header', tab: :show_almost_matches %>
+
+  <% if @almost_matches.any? %>
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Utilisateur</th>
+          <th>Créée le</th>
+          <th>match_format</th>
+          <th>match_locality</th>
+          <th>match_gender</th>
+          <th>match_interest</th>
+          <th>Critères non matchés</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @almost_matches.each do |almost_matche| %>
+          <tr>
+            <td><%= link_to almost_matche.id, admin_user_smalltalk_path(almost_matche.id) %></td>
+            <td><%= link_to almost_matche.user.full_name, edit_admin_user_path(almost_matche.user) %></td>
+            <td><%= l almost_matche.created_at.to_date %></td>
+            <td><%= almost_matche.match_format %></td>
+            <td><%= boolean_label almost_matche.match_locality %></td>
+            <td><%= boolean_label almost_matche.match_gender %></td>
+            <td><%= boolean_label almost_matche.match_interest %></td>
+            <td><%= almost_matche.unmatch_count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        Aucun match exact n'est possible.
+      </div>
+    </div>
+  <% end %>
+</div>

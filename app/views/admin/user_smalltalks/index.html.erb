@@ -33,7 +33,7 @@
           <tbody>
             <% @user_smalltalks.each do |user_smalltalk| %>
               <tr>
-                <td><%= user_smalltalk.id %></td>
+                <td><%= link_to user_smalltalk.id, admin_user_smalltalk_path(user_smalltalk.id) %></td>
                 <td><%= link_to user_smalltalk.user.full_name, edit_admin_user_path(user_smalltalk.user) %></td>
                 <td><%= l user_smalltalk.created_at.to_date %></td>
                 <td><%= user_smalltalk.match_format %></td>
