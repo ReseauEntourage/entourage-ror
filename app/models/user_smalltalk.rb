@@ -76,7 +76,7 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_match
-    @find_match ||= find_matches.find { |us| us.unmatch_count == 0 }
+    @find_match ||= find_matches.first
   end
 
   def find_matches
