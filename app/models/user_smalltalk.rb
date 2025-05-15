@@ -96,6 +96,19 @@ class UserSmalltalk < ApplicationRecord
     UserSmalltalk.best_matches(self)
   end
 
+  # Interestable
+  def interests
+    Tag.where(id: user_interest_ids)
+  end
+
+  def interest_names
+    interests.map(&:name).sort
+  end
+
+  def interest_i18n
+    interest_names.map { |interest| I18n.t("tags.interests.#{interest}") }
+  end
+
   class << self
     def has_criteria? criteria
       criteria.present? && CRITERIA.include?(criteria.to_sym)

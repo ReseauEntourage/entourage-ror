@@ -55,7 +55,7 @@
                 <td>
                   <%= boolean_label user_smalltalk.match_interest %>
                   <% if user_smalltalk.match_interest && user_smalltalk.user_interest_ids.any? %>
-                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_interest_ids.join(', ')}" %></p>
+                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.interest_names.join(', ')}" %></p>
                   <% end %>
                 </td>
                 <td><%= boolean_label user_smalltalk.matched_at.present? %></td>
