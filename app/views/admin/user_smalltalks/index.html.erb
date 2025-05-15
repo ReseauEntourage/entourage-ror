@@ -39,22 +39,23 @@
                 <td><%= user_smalltalk.match_format %></td>
                 <td>
                   <%= boolean_label user_smalltalk.match_locality %>
-                  <% if user_smalltalk.match_locality && user_smalltalk.user.city %>
+                  <% if user_smalltalk.user.city %>
                     <p style="font-size: 0.8em"><%= user_smalltalk.user.city %> (utilisateur)</p>
                   <% end %>
-                  <% if user_smalltalk.match_locality && user_smalltalk.user_latitude && user_smalltalk.user_longitude %>
+
+                  <% if user_smalltalk.user_latitude && user_smalltalk.user_longitude %>
                     <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_latitude.round(1)}, #{user_smalltalk.user_longitude.round(1)}" %> (demande)</p>
                   <% end %>
                 </td>
                 <td>
                   <%= boolean_label user_smalltalk.match_gender %>
-                  <% if user_smalltalk.match_gender && user_smalltalk.user_gender %>
+                  <% if user_smalltalk.user_gender %>
                     <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_gender}" %></p>
                   <% end %>
                 </td>
                 <td>
                   <%= boolean_label user_smalltalk.match_interest %>
-                  <% if user_smalltalk.match_interest && user_smalltalk.user_interest_ids.any? %>
+                  <% if user_smalltalk.user_interest_ids.any? %>
                     <p style="font-size: 0.8em"><%= "#{user_smalltalk.interest_names.join(', ')}" %></p>
                   <% end %>
                 </td>
