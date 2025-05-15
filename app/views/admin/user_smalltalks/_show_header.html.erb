@@ -1,0 +1,22 @@
+  <div class="row">
+    <ol class="breadcrumb">
+      <li><%= link_to "Demandes de papotages", admin_user_smalltalks_path %></li>
+      <li class="active">Modifier</li>
+    </ol>
+
+    <h2>
+      <span class="text-muted">#<%= @user_smalltalk.id %></span>
+    </h2>
+
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="<%= :active if tab == :show %>">
+        <%= link_to "Afficher", admin_user_smalltalk_path(@user_smalltalk) %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :show_matches %>">
+        <%= link_to "Matches", show_matches_admin_user_smalltalk_path(@user_smalltalk) %>
+      </li>
+      <li role="presentation" class="<%= :active if tab == :show_almost_matches %>">
+        <%= link_to "Almost matches", show_almost_matches_admin_user_smalltalk_path(@user_smalltalk) %>
+      </li>
+    </ul>
+  </div>
