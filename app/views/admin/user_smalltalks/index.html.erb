@@ -37,9 +37,27 @@
                 <td><%= link_to user_smalltalk.user.full_name, edit_admin_user_path(user_smalltalk.user) %></td>
                 <td><%= l user_smalltalk.created_at.to_date %></td>
                 <td><%= user_smalltalk.match_format %></td>
-                <td><%= boolean_label user_smalltalk.match_locality %></td>
-                <td><%= boolean_label user_smalltalk.match_gender %></td>
-                <td><%= boolean_label user_smalltalk.match_interest %></td>
+                <td>
+                  <%= boolean_label user_smalltalk.match_locality %>
+                  <% if user_smalltalk.match_locality && user_smalltalk.user.city %>
+                    <p style="font-size: 0.8em"><%= user_smalltalk.user.city %> (utilisateur)</p>
+                  <% end %>
+                  <% if user_smalltalk.match_locality && user_smalltalk.user_latitude && user_smalltalk.user_longitude %>
+                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_latitude.round(1)}, #{user_smalltalk.user_longitude.round(1)}" %> (demande)</p>
+                  <% end %>
+                </td>
+                <td>
+                  <%= boolean_label user_smalltalk.match_gender %>
+                  <% if user_smalltalk.match_gender && user_smalltalk.user_gender %>
+                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_gender}" %></p>
+                  <% end %>
+                </td>
+                <td>
+                  <%= boolean_label user_smalltalk.match_interest %>
+                  <% if user_smalltalk.match_interest && user_smalltalk.user_interest_ids.any? %>
+                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_interest_ids.join(', ')}" %></p>
+                  <% end %>
+                </td>
                 <td><%= boolean_label user_smalltalk.matched_at.present? %></td>
                 <td><%= link_to user_smalltalk.smalltalk.uuid_v2, admin_smalltalk_path(user_smalltalk.smalltalk) if user_smalltalk.smalltalk.present? %></td>
                 <td><%= link_to "Modifier", edit_admin_user_smalltalk_path(user_smalltalk), class: "btn btn-warning" %></td>
