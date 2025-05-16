@@ -111,7 +111,7 @@ module Api
       end
 
       def user_smalltalk_params
-        params.require(:user_smalltalk).permit(:match_format, :match_locality, :match_gender, :match_interest)
+        params.require(:user_smalltalk).permit(:match_format, :match_locality, :match_gender)
       end
 
       def page

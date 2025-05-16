@@ -24,7 +24,11 @@
             <td><%= almost_matche.match_format %></td>
             <td><%= boolean_label almost_matche.match_locality, default: almost_matche.user.city %></td>
             <td><%= boolean_label almost_matche.match_gender, default: almost_matche.user_gender %></td>
-            <td><%= boolean_label almost_matche.match_interest, default: almost_matche.interest_names.join(', ') %></td>
+            <td>
+              <% almost_matche.interest_names.each do |interest_name| %>
+                <span class="badge bg-success"><%= interest_name %></span>
+              <% end %>
+            </td>
             <td></td>
           </tr>
 
@@ -35,7 +39,11 @@
             <td><%= boolean_label almost_matche.has_matched_format, default: @user_smalltalk.match_format %></td>
             <td><%= boolean_label almost_matche.has_matched_locality, default: @user_smalltalk.user.city %></td>
             <td><%= boolean_label almost_matche.has_matched_gender, default: @user_smalltalk.user_gender %></td>
-            <td><%= boolean_label almost_matche.has_matched_interest, default: @user_smalltalk.interest_names.join(', ') %></td>
+            <td>
+              <% @user_smalltalk.interest_names.each do |interest_name| %>
+                <span class="badge bg-success"><%= interest_name %></span>
+              <% end %>
+            </td>
             <td><%= almost_matche.unmatch_count %></td>
           </tr>
         <% end %>
