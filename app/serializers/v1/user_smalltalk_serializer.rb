@@ -6,7 +6,6 @@ module V1
       :match_format,
       :match_locality,
       :match_gender,
-      :match_interest,
       :has_matched_format,
       :has_matched_gender,
       :has_matched_locality,
