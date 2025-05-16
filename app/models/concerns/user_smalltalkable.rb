@@ -105,6 +105,8 @@ module UserSmalltalkable
     return "1=1" unless match_interest
     return "1=1" unless user_interest_ids.any?
 
-    "user_smalltalks.user_interest_ids IN (#{user_interest_ids.join(', ')})"
+    "user_smalltalks.user_interest_ids ?| ARRAY[#{
+      user_interest_ids.map { |id| "'#{id}'" }.join(', ')
+    }]"
   end
 end
