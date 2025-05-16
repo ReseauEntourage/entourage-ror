@@ -28,9 +28,10 @@ module ApplicationHelper
   end
 
   def boolean_label bool, options = {}
-    type_to_class = { true => "info", false => "warning" }
+    # primary secondary success danger warning info light dark
+    type_to_class = { true => "primary", false => "danger" }
 
-    content_tag :span, options[:default] || bool || false, class: "custom-badge #{type_to_class[bool]}"
+    content_tag :span, options[:default] || bool || false, class: "badge bg-#{type_to_class[bool]}"
   end
 
   def active_class(link_path)
