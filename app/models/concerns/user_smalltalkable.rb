@@ -8,6 +8,8 @@ module UserSmalltalkable
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
         .where("user_smalltalks.smalltalk_id IS NULL")
+        .order("unmatch_count")
+        .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
     }
 
     scope :select_match, -> (user_smalltalk) {
@@ -20,10 +22,9 @@ module UserSmalltalkable
         (
           CASE WHEN (#{user_smalltalk.format_match_expression}) THEN 0 ELSE 1 END +
           CASE WHEN (#{user_smalltalk.gender_match_expression}) THEN 0 ELSE 1 END +
-          CASE WHEN (#{user_smalltalk.locality_match_expression}) THEN 0 ELSE 1 END +
-          CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 0 ELSE 1 END
+          CASE WHEN (#{user_smalltalk.locality_match_expression}) THEN 0 ELSE 1 END
         ) AS unmatch_count
-      )).order("unmatch_count")
+      ))
     }
 
     scope :exact_matches, -> (user_smalltalk) {
@@ -34,13 +35,12 @@ module UserSmalltalkable
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
         .where(user_smalltalk.locality_match_expression)
-        .where(user_smalltalk.interest_match_expression)
+        .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
     }
 
     scope :reciprocity_match, -> (user_smalltalk) {
       gender_reciprocity(user_smalltalk)
         .locality_reciprocity(user_smalltalk)
-        .interests_reciprocity(user_smalltalk)
     }
 
     scope :gender_reciprocity, -> (user_smalltalk) {
@@ -60,12 +60,6 @@ module UserSmalltalkable
         )),
         user_smalltalk.user_longitude, user_smalltalk.user_latitude, 20_000
       ))
-    }
-
-    scope :interests_reciprocity, -> (user_smalltalk) {
-      return where(match_gender: false) unless user_smalltalk.user_interest_ids.any?
-
-      where(match_gender: false).or(UserSmalltalk.where(user_interest_ids: user_smalltalk.user_interest_ids))
     }
   end
 
@@ -102,7 +96,6 @@ module UserSmalltalkable
   end
 
   def interest_match_expression
-    return "1=1" unless match_interest
     return "1=1" unless user_interest_ids.any?
 
     "user_smalltalks.user_interest_ids ?| ARRAY[#{

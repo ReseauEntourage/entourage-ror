@@ -49,7 +49,6 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
           "match_format" => "one",
           "match_locality" => false,
           "match_gender" => false,
-          "match_interest" => false,
           "has_matched_format" => nil,
           "has_matched_gender" => nil,
           "has_matched_locality" => nil,

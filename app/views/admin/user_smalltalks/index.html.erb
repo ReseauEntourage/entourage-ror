@@ -47,7 +47,9 @@
                   <%= boolean_label user_smalltalk.match_gender, default: user_smalltalk.user_gender %>
                 </td>
                 <td>
-                  <%= boolean_label user_smalltalk.match_interest, default: user_smalltalk.interest_names.join(', ') %>
+                  <% user_smalltalk.interest_names.each do |interest_name| %>
+                    <span class="badge bg-success"><%= interest_name %></span>
+                  <% end %>
                 </td>
                 <td><%= boolean_label user_smalltalk.matched_at.present? %></td>
                 <td><%= link_to user_smalltalk.smalltalk.uuid_v2, admin_smalltalk_path(user_smalltalk.smalltalk) if user_smalltalk.smalltalk.present? %></td>
