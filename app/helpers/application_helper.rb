@@ -27,10 +27,10 @@ module ApplicationHelper
     content_tag :span, instance.status, class: "custom-badge #{type_to_class[instance.status]}"
   end
 
-  def boolean_label bool
+  def boolean_label bool, options = {}
     type_to_class = { true => "info", false => "warning" }
 
-    content_tag :span, bool, class: "custom-badge #{type_to_class[bool]}"
+    content_tag :span, options[:default] || bool || false, class: "custom-badge #{type_to_class[bool]}"
   end
 
   def active_class(link_path)
