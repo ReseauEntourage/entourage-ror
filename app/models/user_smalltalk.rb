@@ -4,7 +4,7 @@ class UserSmalltalk < ApplicationRecord
 
   VIRTUAL_ATTRIBUTES = [:has_matched_format, :has_matched_gender, :has_matched_locality, :has_matched_interest, :unmatch_count]
 
-  CRITERIA = [:match_format, :match_locality, :match_gender, :match_interest]
+  CRITERIA = [:match_format, :match_locality, :match_gender]
 
   enum match_format: { one: 0, many: 1 }
   enum user_gender: { male: 0, female: 1, not_binary: 2 }
