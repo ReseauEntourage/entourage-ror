@@ -29,11 +29,6 @@
 </p>
 
 <p>
-  <strong>Match interest</strong>
-  <%= @user_smalltalk.match_interest %>
-</p>
-
-<p>
   <strong>Match</strong>
   <%= link_to @user_smalltalk.smalltalk.uuid_v2, admin_smalltalk_path(@user_smalltalk.smalltalk) if @user_smalltalk.smalltalk.present? %>
 </p>

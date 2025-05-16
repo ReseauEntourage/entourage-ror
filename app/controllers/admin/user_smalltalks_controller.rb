@@ -18,11 +18,11 @@ module Admin
     end
 
     def show_matches
-      @matches = @user_smalltalk.find_matches
+      @matches = @user_smalltalk.find_matches.includes(user: :address)
     end
 
     def show_almost_matches
-      @almost_matches = @user_smalltalk.find_almost_matches
+      @almost_matches = @user_smalltalk.find_almost_matches.includes(user: :address)
     end
 
     def edit
@@ -64,7 +64,7 @@ module Admin
     end
 
     def user_smalltalk_params
-      params.require(:user_smalltalk).permit(:user_id, :match_format, :match_locality, :match_gender, :match_interest)
+      params.require(:user_smalltalk).permit(:user_id, :match_format, :match_locality, :match_gender)
     end
 
     def page

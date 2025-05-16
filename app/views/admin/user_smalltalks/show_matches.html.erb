@@ -23,7 +23,11 @@
             <td><%= matche.match_format %></td>
             <td><%= boolean_label matche.match_locality, default: matche.user.city %></td>
             <td><%= boolean_label matche.match_gender, default: matche.user_gender %></td>
-            <td><%= boolean_label matche.match_interest, default: matche.interest_names.join(', ') %></td>
+            <td>
+              <% matche.interest_names.each do |interest_name| %>
+                <span class="badge bg-success"><%= interest_name %></span>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
