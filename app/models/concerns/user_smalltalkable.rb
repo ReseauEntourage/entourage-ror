@@ -4,10 +4,10 @@ module UserSmalltalkable
   included do
     scope :best_matches, -> (user_smalltalk) {
       select_match(user_smalltalk)
+        .merge(matchable_smalltalks)
         .reciprocity_match(user_smalltalk)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
-        .where("user_smalltalks.smalltalk_id IS NULL")
         .order("unmatch_count")
         .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
     }
@@ -29,13 +29,20 @@ module UserSmalltalkable
 
     scope :exact_matches, -> (user_smalltalk) {
       reciprocity_match(user_smalltalk)
+        .merge(matchable_smalltalks)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
-        .where("user_smalltalks.smalltalk_id IS NULL")
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
         .where(user_smalltalk.locality_match_expression)
         .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
+    }
+
+    scope :matchable_smalltalks, -> {
+      left_outer_joins(:smalltalk).where(
+        "user_smalltalks.smalltalk_id IS NULL OR smalltalks.id IN (?)",
+        Smalltalk.matchable.select(:id)
+      )
     }
 
     scope :reciprocity_match, -> (user_smalltalk) {
