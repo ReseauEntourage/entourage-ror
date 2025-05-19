@@ -298,7 +298,7 @@ class Outing < Entourage
   end
 
   def city_from_google_place_id
-    return google_place_details = UserServices::AddressService.get_google_place_details(metadata[:google_place_id])
+    return unless google_place_details = UserServices::AddressService.get_google_place_details(metadata[:google_place_id])
     return unless google_place_details.has_key?(:city)
 
     google_place_details[:city]
