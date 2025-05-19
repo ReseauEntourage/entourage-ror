@@ -4,10 +4,10 @@ module UserSmalltalkable
   included do
     scope :best_matches, -> (user_smalltalk) {
       select_match(user_smalltalk)
+        .merge(matchable_smalltalks)
         .reciprocity_match(user_smalltalk)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
-        .where("user_smalltalks.smalltalk_id IS NULL")
         .order("unmatch_count")
         .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
     }
@@ -29,13 +29,20 @@ module UserSmalltalkable
 
     scope :exact_matches, -> (user_smalltalk) {
       reciprocity_match(user_smalltalk)
+        .merge(matchable_smalltalks)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
-        .where("user_smalltalks.smalltalk_id IS NULL")
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
         .where(user_smalltalk.locality_match_expression)
         .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
+    }
+
+    scope :matchable_smalltalks, -> {
+      left_outer_joins(:smalltalk).where(
+        "user_smalltalks.smalltalk_id IS NULL OR smalltalks.id IN (?)",
+        Smalltalk.matchable.select(:id)
+      )
     }
 
     scope :reciprocity_match, -> (user_smalltalk) {
@@ -46,20 +53,24 @@ module UserSmalltalkable
     scope :gender_reciprocity, -> (user_smalltalk) {
       return where(match_gender: false) unless user_smalltalk.user_gender_before_type_cast.present?
 
-      where(match_gender: false).or(UserSmalltalk.where(user_gender: user_smalltalk.user_gender_before_type_cast))
+      where(
+        "user_smalltalks.match_gender = false OR user_smalltalks.id IN (?)",
+        UserSmalltalk.where(user_gender: user_smalltalk.user_gender_before_type_cast).select(:id)
+      )
     }
 
     scope :locality_reciprocity, -> (user_smalltalk) {
       return where(match_locality: false) unless user_smalltalk.user_longitude.present? && user_smalltalk.user_latitude.present?
 
-      where(match_locality: false).or(UserSmalltalk.where(%(
+      where(%(
+        user_smalltalks.match_locality = false OR
         ST_DWithin(
           ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
           ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography,
           ?
         )),
         user_smalltalk.user_longitude, user_smalltalk.user_latitude, 20_000
-      ))
+      )
     }
   end
 

@@ -14,6 +14,11 @@ class Smalltalk < ApplicationRecord
   }, as: :messageable, class_name: 'ChatMessage'
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
 
+  scope :matchable, -> {
+    where(match_format: UserSmalltalk.match_formats[:many])
+      .where("number_of_people < ?", 5)
+  }
+
   # @code_legacy
   def group_type
     'smalltalk'

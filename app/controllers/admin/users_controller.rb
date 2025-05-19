@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -106,6 +106,12 @@ module Admin
       @block_count = @histories.select do |history|
         history[:kind] == :block
       end.count
+    end
+
+    def blocked_users
+      @user_blocked_users = user
+        .user_blocked_users
+        .order("user_blocked_users.created_at desc")
     end
 
     def edit
