@@ -46,20 +46,24 @@ module UserSmalltalkable
     scope :gender_reciprocity, -> (user_smalltalk) {
       return where(match_gender: false) unless user_smalltalk.user_gender_before_type_cast.present?
 
-      where(match_gender: false).or(UserSmalltalk.where(user_gender: user_smalltalk.user_gender_before_type_cast))
+      where(
+        "user_smalltalks.match_gender = false OR user_smalltalks.id IN (?)",
+        UserSmalltalk.where(user_gender: user_smalltalk.user_gender_before_type_cast).select(:id)
+      )
     }
 
     scope :locality_reciprocity, -> (user_smalltalk) {
       return where(match_locality: false) unless user_smalltalk.user_longitude.present? && user_smalltalk.user_latitude.present?
 
-      where(match_locality: false).or(UserSmalltalk.where(%(
+      where(%(
+        user_smalltalks.match_locality = false OR
         ST_DWithin(
           ST_SetSRID(ST_MakePoint(user_smalltalks.user_longitude, user_smalltalks.user_latitude), 4326)::geography,
           ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography,
           ?
         )),
         user_smalltalk.user_longitude, user_smalltalk.user_latitude, 20_000
-      ))
+      )
     }
   end
 
