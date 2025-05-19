@@ -15,12 +15,6 @@ module SalesforceServices
       user.team?
     end
 
-    def find_id
-      return unless instance.ongoing?
-
-      super
-    end
-
     def upsert
       find_id || super
     end
