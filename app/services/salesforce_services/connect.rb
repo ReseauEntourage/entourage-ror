@@ -60,10 +60,8 @@ module SalesforceServices
     end
 
     def update
-      update_from_id(find_id)
-    end
+      return unless id = find_id
 
-    def update_from_id id
       client.update(interface.table_name, Id: id, **interface.mapped_fields)
     end
 
@@ -81,7 +79,9 @@ module SalesforceServices
     end
 
     def destroy
-      client.update(interface.table_name, Id: find_id, Status: true)
+      return unless id = find_id
+
+      client.update(interface.table_name, Id: id, Status: true)
     end
   end
 end
