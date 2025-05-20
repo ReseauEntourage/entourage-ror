@@ -4,6 +4,7 @@ module UserSmalltalkable
   included do
     scope :best_matches, -> (user_smalltalk) {
       select_match(user_smalltalk)
+        .profile_match(user_smalltalk)
         .merge(matchable_smalltalks)
         .reciprocity_match(user_smalltalk)
         .where.not(user_id: user_smalltalk.user_id)
@@ -19,6 +20,7 @@ module UserSmalltalkable
         (#{user_smalltalk.gender_match_expression}) as has_matched_gender,
         (#{user_smalltalk.locality_match_expression}) as has_matched_locality,
         (#{user_smalltalk.interest_match_expression}) as has_matched_interest,
+        (#{user_smalltalk.profile_match_expression}) as has_matched_profile,
         (
           CASE WHEN (#{user_smalltalk.format_match_expression}) THEN 0 ELSE 1 END +
           CASE WHEN (#{user_smalltalk.gender_match_expression}) THEN 0 ELSE 1 END +
@@ -28,7 +30,8 @@ module UserSmalltalkable
     }
 
     scope :exact_matches, -> (user_smalltalk) {
-      reciprocity_match(user_smalltalk)
+      profile_match(user_smalltalk)
+        .reciprocity_match(user_smalltalk)
         .merge(matchable_smalltalks)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
@@ -43,6 +46,10 @@ module UserSmalltalkable
         "user_smalltalks.smalltalk_id IS NULL OR smalltalks.id IN (?)",
         Smalltalk.matchable.select(:id)
       )
+    }
+
+    scope :profile_match, -> (user_smalltalk) {
+      where.not(user_profile: user_smalltalk.user_profile_before_type_cast)
     }
 
     scope :reciprocity_match, -> (user_smalltalk) {
@@ -112,5 +119,9 @@ module UserSmalltalkable
     "user_smalltalks.user_interest_ids ?| ARRAY[#{
       user_interest_ids.map { |id| "'#{id}'" }.join(', ')
     }]"
+  end
+
+  def profile_match_expression
+    "user_smalltalks.user_profile != #{user_profile_before_type_cast}"
   end
 end
