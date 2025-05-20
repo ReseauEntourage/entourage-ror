@@ -21,6 +21,7 @@
               <th>Utilisateur</th>
               <th>Créée le</th>
               <th>match_format</th>
+              <th>profile</th>
               <th>match_locality</th>
               <th>match_gender</th>
               <th>match_interest</th>
@@ -37,10 +38,11 @@
                 <td><%= link_to user_smalltalk.user.full_name, edit_admin_user_path(user_smalltalk.user) %></td>
                 <td><%= l user_smalltalk.created_at.to_date %></td>
                 <td><%= user_smalltalk.match_format %></td>
+                <td><%= user_smalltalk.user_profile %></td>
                 <td>
                   <%= boolean_label user_smalltalk.match_locality, default: user_smalltalk.user.city %>
                   <% if user_smalltalk.user_latitude && user_smalltalk.user_longitude %>
-                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_latitude.round(1)}, #{user_smalltalk.user_longitude.round(1)}" %> (demande)</p>
+                    <p style="font-size: 0.8em"><%= "#{user_smalltalk.user_latitude.round(1)}, #{user_smalltalk.user_longitude.round(1)}" %></p>
                   <% end %>
                 </td>
                 <td>
