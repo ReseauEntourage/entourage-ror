@@ -34,6 +34,7 @@ use-node
 .env.*
 *.dump
 .netrc
+.irb_history
 
 #ignore lambda zip files
 *.zip
