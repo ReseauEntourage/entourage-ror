@@ -12,6 +12,7 @@ class JoinRequestObserver < ActiveRecord::Observer
     return unless record.saved_change_to_status?
 
     action(:update, record)
+    user_smalltalk(record)
   end
 
   def after_destroy(record)
