@@ -43,7 +43,7 @@ class JoinRequestObserver < ActiveRecord::Observer
 
   def user_smalltalk(record)
     return unless record.user
-    return unless record.joinable.smalltalk?
+    return unless record.smalltalk?
 
     UserSmalltalk
       .where(user: record.user, smalltalk: record.joinable)
