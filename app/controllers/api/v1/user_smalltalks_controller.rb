@@ -47,7 +47,7 @@ module Api
       end
 
       def force_match
-        if @user_smalltalk.force_and_save_match!(params[:smalltalk_id])
+        if @user_smalltalk.force_and_save_match!(smalltalk_id: params[:smalltalk_id], user_smalltalk_id: params[:user_smalltalk_id])
           render json: { match: true, smalltalk_id: @user_smalltalk.smalltalk_id }, status: 200
         else
           render json: { match: false, smalltalk_id: nil }, status: 200

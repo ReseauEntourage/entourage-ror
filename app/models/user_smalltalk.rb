@@ -51,27 +51,35 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_and_save_match!
-    return unless (matching = find_match)
+    return unless find_match
     return if joined_smalltalks.count >= 3
 
+    match_with_user_smalltalk!(find_match.id)
+  end
+
+  def force_and_save_match! smalltalk_id:, user_smalltalk_id:
+    return match_with_smalltalk!(smalltalk_id) if smalltalk_id.present?
+
+    match_with_user_smalltalk!(user_smalltalk_id) if user_smalltalk_id.present?
+  end
+
+  def match_with_user_smalltalk! user_smalltalk_id
+    return unless user_smalltalk = UserSmalltalk.find(user_smalltalk_id)
+
     Smalltalk.transaction do
-      target_smalltalk = if matching.smalltalk_id
-        Smalltalk.find(matching.smalltalk_id)
-      else
-        create_smalltalk_with!(matching)
-      end
+      target_smalltalk = user_smalltalk.smalltalk || create_smalltalk_with!(user_smalltalk)
 
       associate_user_smalltalk(self, target_smalltalk)
-      associate_user_smalltalk(matching.user_smalltalk, target_smalltalk)
+      associate_user_smalltalk(user_smalltalk, target_smalltalk)
 
       ensure_join_request(self.user, target_smalltalk)
-      ensure_join_request(matching.user, target_smalltalk)
+      ensure_join_request(user_smalltalk.user, target_smalltalk)
 
       target_smalltalk
     end
   end
 
-  def force_and_save_match! smalltalk_id
+  def match_with_smalltalk! smalltalk_id
     return unless smalltalk_id
     return unless target_smalltalk = Smalltalk.find_by(id: smalltalk_id)
     return if joined_smalltalks.count >= 3
@@ -157,14 +165,12 @@ class UserSmalltalk < ApplicationRecord
     user_ids = matches.flat_map(&:user_ids) + matches.map(&:user_id)
     users_by_id = User.where(id: user_ids.uniq).index_by(&:id)
 
-    user_smalltalks_by_id = UserSmalltalk.where(id: matches.map(&:user_smalltalk_id)).index_by(&:id)
-
     matches.map do |record|
       UserSmalltalkMatch.new(
-        user_smalltalk: user_smalltalks_by_id[record.user_smalltalk_id],
+        id: record.id,
         smalltalk_id: record.smalltalk_id,
         user: users_by_id[record.user_id],
-        users: record.user_ids.map { |id| users_by_id[id] },
+        users: record.user_ids.map { |user_id| users_by_id[user_id] },
         has_matched_format: record.has_matched_format,
         has_matched_gender: record.has_matched_gender,
         has_matched_locality: record.has_matched_locality,
