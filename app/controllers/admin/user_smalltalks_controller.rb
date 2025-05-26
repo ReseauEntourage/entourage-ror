@@ -18,11 +18,11 @@ module Admin
     end
 
     def show_matches
-      @matches = @user_smalltalk.find_matches.includes(user: :address)
+      @matches = @user_smalltalk.find_matches
     end
 
     def show_almost_matches
-      @almost_matches = @user_smalltalk.find_almost_matches.includes(user: :address)
+      @almost_matches = @user_smalltalk.find_almost_matches
     end
 
     def edit

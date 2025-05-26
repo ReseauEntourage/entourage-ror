@@ -86,7 +86,19 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_matches
-    UserSmalltalk.exact_matches(self)
+    UserSmalltalk.exact_matches(self).limit(10).map do |record|
+      AlmostMatch.new(
+        user_smalltalk: UserSmalltalk.find(record.user_smalltalk_id),
+        smalltalk_id: record.smalltalk_id,
+        users: User.where(id: record.user_ids),
+        has_matched_format: record.has_matched_format,
+        has_matched_gender: record.has_matched_gender,
+        has_matched_locality: record.has_matched_locality,
+        has_matched_interest: record.has_matched_interest,
+        has_matched_profile: record.has_matched_profile,
+        unmatch_count: record.unmatch_count
+      )
+    end
   end
 
   def find_matches_count_by criteria
@@ -96,7 +108,19 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_almost_matches
-    UserSmalltalk.best_matches(self)
+    self.class.best_matches(self).limit(10).map do |record|
+      AlmostMatch.new(
+        user_smalltalk: UserSmalltalk.find(record.user_smalltalk_id),
+        smalltalk_id: record.smalltalk_id,
+        users: User.where(id: record.user_ids),
+        has_matched_format: record.has_matched_format,
+        has_matched_gender: record.has_matched_gender,
+        has_matched_locality: record.has_matched_locality,
+        has_matched_interest: record.has_matched_interest,
+        has_matched_profile: record.has_matched_profile,
+        unmatch_count: record.unmatch_count
+      )
+    end
   end
 
   # Interestable

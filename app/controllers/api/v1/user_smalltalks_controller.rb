@@ -67,15 +67,11 @@ module Api
           .find_matches
           .includes(:user)
           .page(page)
-          .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
+          .per(per), root: :user_smalltalks, each_serializer: ::V1::SmalltalkMatchesSerializer
       end
 
       def almost_matches
-        render json: @user_smalltalk
-          .find_almost_matches
-          .includes(:user)
-          .page(page)
-          .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
+        render json: @user_smalltalk.find_almost_matches, root: :user_smalltalks, each_serializer: ::V1::Smalltalks::MatchesSerializer
       end
 
       def matches_by_criteria

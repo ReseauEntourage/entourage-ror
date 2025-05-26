@@ -10,27 +10,12 @@ module UserSmalltalkable
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
         .order("unmatch_count")
-        .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
-    }
-
-    scope :select_match, -> (user_smalltalk) {
-      select(%(
-        user_smalltalks.*,
-        (#{user_smalltalk.format_match_expression}) as has_matched_format,
-        (#{user_smalltalk.gender_match_expression}) as has_matched_gender,
-        (#{user_smalltalk.locality_match_expression}) as has_matched_locality,
-        (#{user_smalltalk.interest_match_expression}) as has_matched_interest,
-        (#{user_smalltalk.profile_match_expression}) as has_matched_profile,
-        (
-          CASE WHEN (#{user_smalltalk.format_match_expression}) THEN 0 ELSE 1 END +
-          CASE WHEN (#{user_smalltalk.gender_match_expression}) THEN 0 ELSE 1 END +
-          CASE WHEN (#{user_smalltalk.locality_match_expression}) THEN 0 ELSE 1 END
-        ) AS unmatch_count
-      ))
+        .order(Arel.sql("CASE WHEN (bool_and(#{user_smalltalk.interest_match_expression})) THEN 1 ELSE 0 END"))
     }
 
     scope :exact_matches, -> (user_smalltalk) {
-      profile_match(user_smalltalk)
+      select_match(user_smalltalk)
+        .profile_match(user_smalltalk)
         .reciprocity_match(user_smalltalk)
         .merge(matchable_smalltalks)
         .where.not(user_id: user_smalltalk.user_id)
@@ -38,7 +23,25 @@ module UserSmalltalkable
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
         .where(user_smalltalk.locality_match_expression)
-        .order(Arel.sql("CASE WHEN (#{user_smalltalk.interest_match_expression}) THEN 1 ELSE 0 END"))
+        .order(Arel.sql("CASE WHEN (bool_and(#{user_smalltalk.interest_match_expression})) THEN 1 ELSE 0 END"))
+    }
+
+    scope :select_match, -> (user_smalltalk) {
+      select(%(
+        min(user_smalltalks.id) as user_smalltalk_id,
+        smalltalk_id,
+        array_agg(user_smalltalks.user_id) as user_ids,
+        (bool_and(#{user_smalltalk.format_match_expression})) as has_matched_format,
+        (bool_and(#{user_smalltalk.gender_match_expression})) as has_matched_gender,
+        (bool_and(#{user_smalltalk.locality_match_expression})) as has_matched_locality,
+        (bool_and(#{user_smalltalk.interest_match_expression})) as has_matched_interest,
+        (bool_and(#{user_smalltalk.profile_match_expression})) as has_matched_profile,
+        (
+          CASE WHEN (bool_and(#{user_smalltalk.format_match_expression})) THEN 0 ELSE 1 END +
+          CASE WHEN (bool_and(#{user_smalltalk.gender_match_expression})) THEN 0 ELSE 1 END +
+          CASE WHEN (bool_and(#{user_smalltalk.locality_match_expression})) THEN 0 ELSE 1 END
+        ) AS unmatch_count
+      ))
     }
 
     scope :matchable_smalltalks, -> {
@@ -55,6 +58,17 @@ module UserSmalltalkable
     scope :reciprocity_match, -> (user_smalltalk) {
       gender_reciprocity(user_smalltalk)
         .locality_reciprocity(user_smalltalk)
+        .group(%(
+          CASE
+            WHEN user_smalltalks.smalltalk_id IS NULL THEN user_smalltalks.id
+            ELSE user_smalltalks.smalltalk_id
+          END,
+          user_smalltalks.smalltalk_id,
+          smalltalks.number_of_people
+        ))
+        .having(%(
+          smalltalk_id IS NULL OR smalltalks.number_of_people = count(*)
+        ))
     }
 
     scope :gender_reciprocity, -> (user_smalltalk) {
