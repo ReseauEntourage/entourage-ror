@@ -19,8 +19,8 @@ module V1
         []
       end
 
-      def smalltalk_id
-        smalltalk.id
+      def user_smalltalk_id
+        object.user_smalltalk.id
       end
     end
   end

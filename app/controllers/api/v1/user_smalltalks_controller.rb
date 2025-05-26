@@ -63,11 +63,7 @@ module Api
       end
 
       def matches
-        render json: @user_smalltalk
-          .find_matches
-          .includes(:user)
-          .page(page)
-          .per(per), root: :user_smalltalks, each_serializer: ::V1::SmalltalkMatchesSerializer
+        render json: @user_smalltalk.find_matches, root: :user_smalltalks, each_serializer: ::V1::Smalltalks::MatchesSerializer
       end
 
       def almost_matches
