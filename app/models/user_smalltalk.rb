@@ -51,17 +51,21 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_and_save_match!
-    return unless (user_smalltalk = find_match)
+    return unless (matching = find_match)
     return if joined_smalltalks.count >= 3
 
     Smalltalk.transaction do
-      target_smalltalk = user_smalltalk.smalltalk || create_smalltalk_with!(user_smalltalk)
+      target_smalltalk = if matching.smalltalk_id
+        Smalltalk.find(matching.smalltalk_id)
+      else
+        create_smalltalk_with!(matching)
+      end
 
       associate_user_smalltalk(self, target_smalltalk)
-      associate_user_smalltalk(user_smalltalk, target_smalltalk)
+      associate_user_smalltalk(matching.user_smalltalk, target_smalltalk)
 
       ensure_join_request(self.user, target_smalltalk)
-      ensure_join_request(user_smalltalk.user, target_smalltalk)
+      ensure_join_request(matching.user, target_smalltalk)
 
       target_smalltalk
     end
@@ -91,50 +95,6 @@ class UserSmalltalk < ApplicationRecord
 
   def find_almost_matches
     build_matches(UserSmalltalk.best_matches(self).limit(10))
-  end
-
-  def find_matches
-    matches = UserSmalltalk.exact_matches(self).limit(10)
-    user_ids = matches.flat_map { |r| r.user_ids }.uniq
-    users_by_id = User.where(id: user_ids).index_by(&:id)
-
-    smalltalks_by_id = UserSmalltalk.where(id: matches.map(&:user_smalltalk_id)).index_by(&:id)
-
-    matches.map do |record|
-      AlmostMatch.new(
-        user_smalltalk: smalltalks_by_id[record.user_smalltalk_id],
-        smalltalk_id: record.smalltalk_id,
-        users: record.user_ids.map { |id| users_by_id[id] },
-        has_matched_format: record.has_matched_format,
-        has_matched_gender: record.has_matched_gender,
-        has_matched_locality: record.has_matched_locality,
-        has_matched_interest: record.has_matched_interest,
-        has_matched_profile: record.has_matched_profile,
-        unmatch_count: record.unmatch_count
-      )
-    end
-  end
-
-  def find_almost_matches
-    matches = UserSmalltalk.best_matches(self).limit(10)
-    user_ids = matches.flat_map { |r| r.user_ids }.uniq
-    users_by_id = User.where(id: user_ids).index_by(&:id)
-
-    smalltalks_by_id = UserSmalltalk.where(id: matches.map(&:user_smalltalk_id)).index_by(&:id)
-
-    matches.limit(10).map do |record|
-      AlmostMatch.new(
-        user_smalltalk: smalltalks_by_id[record.user_smalltalk_id],
-        smalltalk_id: record.smalltalk_id,
-        users: record.user_ids.map { |id| users_by_id[id] },
-        has_matched_format: record.has_matched_format,
-        has_matched_gender: record.has_matched_gender,
-        has_matched_locality: record.has_matched_locality,
-        has_matched_interest: record.has_matched_interest,
-        has_matched_profile: record.has_matched_profile,
-        unmatch_count: record.unmatch_count
-      )
-    end
   end
 
   def find_matches_count_by criteria
@@ -194,15 +154,16 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def build_matches(matches)
-    user_ids = matches.flat_map(&:user_ids).uniq
-    users_by_id = User.where(id: user_ids).index_by(&:id)
+    user_ids = matches.flat_map(&:user_ids) + matches.map(&:user_id)
+    users_by_id = User.where(id: user_ids.uniq).index_by(&:id)
 
-    smalltalks_by_id = UserSmalltalk.where(id: matches.map(&:user_smalltalk_id)).index_by(&:id)
+    user_smalltalks_by_id = UserSmalltalk.where(id: matches.map(&:user_smalltalk_id)).index_by(&:id)
 
     matches.map do |record|
-      AlmostMatch.new(
-        user_smalltalk: smalltalks_by_id[record.user_smalltalk_id],
+      UserSmalltalkMatch.new(
+        user_smalltalk: user_smalltalks_by_id[record.user_smalltalk_id],
         smalltalk_id: record.smalltalk_id,
+        user: users_by_id[record.user_id],
         users: record.user_ids.map { |id| users_by_id[id] },
         has_matched_format: record.has_matched_format,
         has_matched_gender: record.has_matched_gender,

@@ -28,8 +28,9 @@ module UserSmalltalkable
 
     scope :select_match, -> (user_smalltalk) {
       select(%(
-        min(user_smalltalks.id) as user_smalltalk_id,
         smalltalk_id,
+        min(user_smalltalks.id) as user_smalltalk_id,
+        min(user_smalltalks.user_id) as user_id,
         array_agg(user_smalltalks.user_id) as user_ids,
         (bool_and(#{user_smalltalk.format_match_expression})) as has_matched_format,
         (bool_and(#{user_smalltalk.gender_match_expression})) as has_matched_gender,
