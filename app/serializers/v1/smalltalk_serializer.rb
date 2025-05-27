@@ -12,7 +12,8 @@ module V1
       :last_message,
       :number_of_unread_messages,
       :has_personal_post,
-      :members
+      :members,
+      :meeting_url
 
     lazy_relationship :last_chat_message
     lazy_relationship :chat_messages_count

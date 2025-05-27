@@ -42,6 +42,12 @@ class Smalltalk < ApplicationRecord
     "#{ENV['MOBILE_HOST']}/app/smalltalks/#{uuid_v2}"
   end
 
+  def meeting_url
+    return unless meeting
+
+    meeting.meet_link
+  end
+
   def create_meeting
     update!(meeting: Meeting.new(
       title: accepted_members.map(&:first_name).join(', '),
