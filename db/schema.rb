@@ -453,6 +453,16 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.index ["instance_type", "instance_id"], name: "index_matchings_on_instance_type_and_instance_id"
   end
 
+  create_table "meetings", force: :cascade do |t|
+    t.string "title"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.text "participant_emails", default: [], array: true
+    t.string "meet_link"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "messages", id: :serial, force: :cascade do |t|
     t.string "content", null: false
     t.datetime "created_at", null: false
@@ -860,10 +870,13 @@ ActiveRecord::Schema.define(version: 202405021415000) do
 
   create_table "smalltalks", force: :cascade do |t|
     t.string "uuid_v2", limit: 12
-    t.integer "number_of_people"
-    t.integer "number_of_root_chat_messages"
+    t.integer "number_of_people", default: 0
+    t.integer "number_of_root_chat_messages", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "match_format", default: 0
+    t.bigint "meeting_id"
+    t.index ["meeting_id"], name: "index_smalltalks_on_meeting_id"
     t.index ["uuid_v2"], name: "index_smalltalks_on_uuid_v2", unique: true
   end
 
