@@ -52,6 +52,7 @@ module Admin
           entourages.*,
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated
         ))
+        .order(Arel.sql("metadata->>'starts_at' DESC"))
         .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
         .order(Arel.sql("entourages.created_at DESC"))
     end
