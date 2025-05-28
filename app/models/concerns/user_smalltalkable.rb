@@ -9,7 +9,7 @@ module UserSmalltalkable
         .reciprocity_match(user_smalltalk)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
-        .where("user_smalltalks.status IS NULL or user_smalltalks.status = '#{JoinRequest::ACCEPTED_STATUS}'")
+        .where("user_smalltalks.member_status IS NULL or user_smalltalks.member_status = '#{JoinRequest::ACCEPTED_STATUS}'")
         .order("unmatch_count")
         .order(Arel.sql("CASE WHEN (bool_and(#{user_smalltalk.interest_match_expression})) THEN 1 ELSE 0 END"))
     }
@@ -21,7 +21,7 @@ module UserSmalltalkable
         .merge(matchable_smalltalks)
         .where.not(user_id: user_smalltalk.user_id)
         .where("user_smalltalks.deleted_at IS NULL")
-        .where("user_smalltalks.status IS NULL or user_smalltalks.status = '#{JoinRequest::ACCEPTED_STATUS}'")
+        .where("user_smalltalks.member_status IS NULL or user_smalltalks.member_status = '#{JoinRequest::ACCEPTED_STATUS}'")
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
         .where(user_smalltalk.locality_match_expression)
