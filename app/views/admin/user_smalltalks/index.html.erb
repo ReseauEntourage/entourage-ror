@@ -1,6 +1,6 @@
 <div class="container">
   <div style="margin: auto">
-    <h1>Demandes de papotages</h1>
+    <h1>Demandes de bonnes ondes</h1>
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
@@ -26,7 +26,7 @@
               <th>match_gender</th>
               <th>match_interest</th>
               <th>matched</th>
-              <th>Papotage matché</th>
+              <th>Bonne onde matchée</th>
               <th></th>
               <th></th>
             </tr>
@@ -64,13 +64,13 @@
       <% else %>
         <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
           <div style="flex-grow: 1">
-            Aucune demande de papotage n'a encore été réalisée.
+            Aucune demande de bonnes ondes n'a encore été réalisée.
           </div>
         </div>
       <% end %>
     </div>
 
-    <%= page_entries_info @user_smalltalks, entry_name: 'Demandes de papotages' %>
+    <%= page_entries_info @user_smalltalks, entry_name: 'Demandes de bonnes ondes' %>
     <div class="container">
       <%= paginate(@user_smalltalks) %>
     </div>

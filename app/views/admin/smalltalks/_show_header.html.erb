@@ -1,6 +1,6 @@
   <div class="row">
     <ol class="breadcrumb">
-      <li><%= link_to "Papotages", admin_smalltalks_path %></li>
+      <li><%= link_to "Bonnes ondes", admin_smalltalks_path %></li>
       <li><%= @smalltalk[:id] %> (<%= @smalltalk[:uuid_v2] %>)</li>
     </ol>
 
@@ -11,7 +11,7 @@
 
     <ul class="nav nav-tabs">
       <li role="presentation" class="<%= :active if tab == :show %>">
-        <%= link_to "Papotage", admin_smalltalk_path(@smalltalk) %>
+        <%= link_to "Bonne onde", admin_smalltalk_path(@smalltalk) %>
       </li>
 
       <li role="presentation" class="<%= :active if tab == :show_members %>">
