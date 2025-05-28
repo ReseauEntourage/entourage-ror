@@ -25,7 +25,7 @@ module V1
     end
 
     def name
-      I18n.t('activerecord.attributes.smalltalk.object', lang: lang)
+      I18n.t('activerecord.attributes.smalltalk.new_message', lang: lang)
     end
 
     def subname
