@@ -9,6 +9,16 @@ class PushNotificationLinker
           instance: "neighborhood",
           instance_id: object.id
         }
+      elsif object.is_a?(Smalltalk)
+        {
+          instance: "smalltalk",
+          instance_id: object.id
+        }
+      elsif object.is_a?(UserSmalltalk)
+        {
+          instance: "user_smalltalk",
+          instance_id: object.id
+        }
       elsif object.is_a?(User)
         {
           instance: "user",

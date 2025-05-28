@@ -308,6 +308,7 @@ class PushNotificationTrigger
 
     return comment_on_create if @record.has_parent?
     return post_on_create if @record.messageable.is_a?(Neighborhood)
+    return post_on_create if @record.messageable.is_a?(Smalltalk)
     return post_on_create if @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
     return public_chat_message_on_create if @record.messageable.respond_to?(:action?) && @record.messageable.action?
 
@@ -377,6 +378,8 @@ class PushNotificationTrigger
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :post_on_create_to_neighborhood
+    elsif @record.messageable.is_a?(Smalltalk)
+      :post_on_create_to_smalltalk
     elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
       :post_on_create_to_outing
     else
@@ -411,6 +414,8 @@ class PushNotificationTrigger
 
     tracking = if @record.messageable.is_a?(Neighborhood)
       :comment_on_create_to_neighborhood
+    elsif @record.messageable.is_a?(Smalltalk)
+      :comment_on_create_to_outing
     elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
       :comment_on_create_to_outing
     else
@@ -492,6 +497,7 @@ class PushNotificationTrigger
 
   def join_request_on_create
     return unless @record.accepted?
+    return join_request_on_create_smalltalk if @record.joinable.is_a?(Smalltalk)
     return if @record.joinable.is_a?(Entourage) && @record.joinable.conversation?
     return if @record.joinable && @record.joinable.user == @record.user
 
@@ -503,6 +509,8 @@ class PushNotificationTrigger
 
     tracking = if @record.joinable.is_a?(Neighborhood)
       :join_request_on_create_to_neighborhood
+    elsif @record.joinable.is_a?(Smalltalk)
+      :join_request_on_create_to_smalltalk
     elsif @record.joinable.respond_to?(:outing?) && @record.joinable.outing?
       :join_request_on_create_to_outing
     else
@@ -524,6 +532,49 @@ class PushNotificationTrigger
           group_type: group_type(@record.joinable),
           type: "JOIN_REQUEST_ACCEPTED",
           user_id: @record.user_id
+        }
+      }
+    )
+  end
+
+  def join_request_on_create_smalltalk
+    join_request_on_create_smalltalk_user
+    join_request_on_create_smalltalk_siblings
+  end
+
+  def join_request_on_create_smalltalk_user
+    return unless @record.joinable.is_a?(Smalltalk)
+
+    notify(
+      sender_id: @record.user_id,
+      referent: @record.joinable,
+      instance: @record.joinable,
+      users: @record.user,
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_user_object'),
+        content: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_user_content'),
+        extra: {
+          tracking: :join_request_on_create_smalltalk_user
+        }
+      }
+    )
+  end
+
+  def join_request_on_create_smalltalk_siblings
+    return unless @record.joinable.is_a?(Smalltalk)
+    return unless (user_ids = @record.joinable.accepted_member_ids.uniq - [@record.user_id]).any?
+
+    # no batches hack: user_ids has to be small (<= 5)
+    notify(
+      sender_id: @record.user_id,
+      referent: @record.joinable,
+      instance: @record.joinable,
+      users: User.where(id: user_ids),
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_sibling_object'),
+        content: I18nStruct.new(i18n: 'push_notifications.join_request.create_smalltalk_sibling_content'),
+        extra: {
+          tracking: :join_request_on_create_smalltalk_siblings
         }
       }
     )
@@ -648,6 +699,7 @@ class PushNotificationTrigger
   end
 
   def title object
+    return I18nStruct.new(i18n: 'activerecord.attributes.smalltalk.object') if object.is_a?(Smalltalk)
     return unless object.respond_to?(:title)
     return if object.respond_to?(:conversation?) && object.conversation?
 

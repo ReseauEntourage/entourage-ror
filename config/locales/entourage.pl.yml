@@ -62,6 +62,88 @@ pl:
       offer: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
       ask: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
 
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Witamy %s 🙂 Cieszymy się, że do nas dołączyłeś! Przedstaw się w kilku słowach, aby grupa mogła Cię lepiej poznać.
+      destroy_member: | # first_name
+        %s opuścił grupę. Dziękujemy za udział i życzymy powodzenia!
+      banned_member: | # first_name
+        %s nie jest już członkiem grupy. Jego zachowanie nie odpowiadało duchowi solidarności naszej społeczności. Liczymy na Was, że nadal będziecie tworzyć to miejsce z życzliwością i dobrą energią 🙏
+      incomplete: |
+        Przygotowujemy dla Was wspaniałą grupę Dobrych Wibracji ✨ W oczekiwaniu na kolejne osoby, małe wyzwanie: spróbujcie zgadnąć imię następnego uczestnika. Szanse są niewielkie... ale kto wie? 👀
+      complete: |
+        Grupa jest kompletna! 🎉
+
+        Witamy w Waszej grupie Dobrych Wibracji, przestrzeni do nawiązywania relacji w prosty i życzliwy sposób ✨
+
+        Wasza misja: rozmawiać, dzielić się i może nawet spotkać się – online lub na żywo?
+        Oto link do pierwszego wspólnego spotkania wideo: [Link meet] Link meet
+
+        👋 Nie wahajcie się przedstawić, jeśli jeszcze tego nie zrobiliście.
+
+        🔥 A już od jutra... zaczynamy 7 dni małych wyzwań, aby lepiej się poznać i zbudować prawdziwe więzi 🫶
+
+        Liczymy na Wasze pełne zaangażowanie! 😉
+      complete_j1: |
+        Dzisiejsze wyzwanie: Trzy prawdy, jedno kłamstwo – podziel się trzema prawdziwymi faktami o sobie i jednym fałszywym. Reszta grupy musi zgadnąć, który to blef!
+      complete_j2: |
+        Dzisiejsze wyzwanie: Mój dzień w trzech emoji – opisz swój dzień używając tylko trzech emoji. Pozostali spróbują odgadnąć, co się wydarzyło!
+      complete_j3: |
+        Zadaj grupie najciekawsze pytanie, na które nigdy nie znalazłeś satysfakcjonującej odpowiedzi. Zobaczmy, czy grupa może Ci pomóc w przemyśleniach!
+      complete_j4: |
+        Dzisiejsze wyzwanie: Podziel się czymś, czego ludzie nie domyślają się na pierwszy rzut oka – pasją, nawykiem, cechą charakteru...
+      complete_j5: |
+        Dzisiejsze wyzwanie: Przez 24 godziny jedno powszechne słowo jest zakazane w grupie (np. "tak", "ja", "jeść"). Jeśli ktoś je napisze... musi opowiedzieć zabawną anegdotę o sobie!
+      complete_j6: |
+        Dzisiejsze wyzwanie: Każdy dzieli się tym, co pomaga mu nawiązać kontakt z innymi – spojrzenie, miejsce, zdanie... lub trik na przezwyciężenie nieśmiałości!
+      complete_j7: |
+        Dzisiejsze wyzwanie: Podziel się nadchodzącym wydarzeniem w Twojej okolicy lub online! Jeśli ktoś inny wspomni o tym samym lub podobnym wydarzeniu, to może idealny moment, aby wybrać się razem (lub spotkać się online)!
+      complete_congratulations: | # meeting_url
+        Gratulacje dla wszystkich za udział! Poświęciliście czas na dzielenie się, słuchanie i budowanie więzi – to już wielki sukces 🧡
+
+        Teraz czas na wspólne spotkanie! Online lub na żywo, to moment, aby ożywić Wasze rozmowy, zobaczyć się nawzajem i utrwalić te dobre wibracje 🤝
+
+        Kilka pomysłów:
+
+        Spokojne spotkanie wideo, każdy u siebie (piżama mile widziana 😄)
+
+        Kawa lub aperitif, jeśli mieszkacie blisko siebie
+
+        Piknik lub wspólna aktywność, jeśli macie ochotę (i pogoda dopisze)
+
+        Aby łatwo się zorganizować, stworzyliśmy ten link do spotkania wideo: %s
+        Podzielcie się pomysłami, zaproponujcie termin i przede wszystkim... czujcie się jak u siebie ✨
+      complete_j21: |
+        Witajcie wszyscy! 👋
+
+        Mamy nadzieję, że Wasze rozmowy przebiegły pomyślnie, czy to pisemnie, wideo czy na żywo!
+        Jeśli macie uwagi lub coś poszło nie tak, nie wahajcie się nam powiedzieć. Zespół Entourage jest tutaj, aby Was wysłuchać i wspierać z życzliwością 🧡
+
+        A jeśli wszystko jest w porządku, dajcie nam znać! Wasze opinie pomagają nam dalej rozwijać Dobre Wibracje jak najlepiej.
+
+        Dziękujemy za zaufanie ✨
+      inactive_j3: |
+        Hej, ekipo! Jesteśmy ciekawi, co skłoniło Was do dołączenia do tej grupy?
+      inactive_j5: |
+        Nie czujesz się komfortowo w pisaniu? Żaden problem! Możesz również wybrać spokojne spotkanie wideo lub kawę w małym gronie. Powiedz nam, co by Ci najbardziej odpowiadało!
+      inactive_j7: |
+        Grupa jest teraz spokojna... Jeśli nie otrzymamy wiadomości w ciągu 7 dni, pozwolimy grupie spokojnie się zamknąć. Dziękujemy, że byliście z nami, i kto wie... do zobaczenia wkrótce gdzieś!
+      happy_birthday: | # first_name
+        Cała ekipa Papotage życzy %s wszystkiego najlepszego z okazji urodzin! 🎉 Ciesz się swoim dniem i nie wahaj się opowiedzieć, jak będziesz go świętować!
+      chart_recall: |
+        Małe przypomnienie z życzliwością: Papotage to miejsce do rozmów w dobrej atmosferze i z szacunkiem. Znajdziecie naszą kartę etyczną tutaj! Dziękujemy wszystkim!
+      smalltalk_anniversary_six_months: |
+        Nasza grupa świętuje już sześć miesięcy istnienia! 🎉 Dziękujemy za Wasze rozmowy i miłe chwile spędzone razem!
+      smalltalk_anniversary_one_year: |
+        Nasza grupa świętuje już rok istnienia! 🎉 Dziękujemy za Wasze rozmowy i miłe chwile spędzone razem!
+      user_one_year_membership: | # first_name
+        Dziś %s obchodzi rocznicę roku z nami! 🎉 Dziękujemy, że jesteś z nami od tak długiego czasu, podziel się z nami pamiętnym momentem!
+      smalltalk_500_messages: |
+        Jesteście niesamowici! 🔥 Już 500 wiadomości wymienionych w grupie, rozmowy kwitną! Kontynuujemy? Następny cel: 1000 wiadomości?
+      smalltalk_1000_messages: |
+        Niesamowite, właśnie osiągnęliście 1000 wymienionych wiadomości! 🤯 Oficjalnie jesteście mistrzami paplaniny!
+
   pois:
     soliguide:
       public:

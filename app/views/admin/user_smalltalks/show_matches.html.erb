@@ -1,0 +1,34 @@
+<div class="container">
+  <%= render 'show_header', tab: :show_matches %>
+
+  <% if @matches.any? %>
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Utilisateurs</th>
+          <th>smalltalk</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @matches.each do |matche| %>
+          <tr>
+            <td><%= link_to matche.user_smalltalk.id, admin_user_smalltalk_path(matche.user_smalltalk.id) %></td>
+            <td>
+              <% matche.users.each do |user| %>
+                <p><%= link_to user.full_name, edit_admin_user_path(user) %></p>
+              <% end %>
+            </td>
+            <td><%= link_to matche.smalltalk_id, admin_smalltalk_path(matche.smalltalk_id) if matche.smalltalk_id %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        Aucun match exact n'est possible.
+      </div>
+    </div>
+  <% end %>
+</div>

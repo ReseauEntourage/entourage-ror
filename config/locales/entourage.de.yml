@@ -62,6 +62,58 @@ de:
       offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
       ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
 
+  smalltalks:
+    messager:
+      new_member: "Willkommen %s 🙂 Wir freuen uns sehr, dass du dabei bist! Stell dich kurz vor, damit die Gruppe dich kennenlernen kann."
+      destroy_member: "%s hat die Gruppe verlassen. Vielen Dank für deine Teilnahme und alles Gute!"
+      banned_member: "%s ist nicht mehr Teil der Gruppe. Sein Verhalten passte nicht ganz zum Geist der solidarischen Banden. Wir zählen auf euch, diesen Raum weiterhin mit Freundlichkeit und guter Laune zu füllen 🙏"
+      incomplete: "Wir bereiten eine schöne Gute-Vibes-Gruppe vor ✨ Während wir auf die nächsten Personen warten, eine kleine Herausforderung: Versucht, den Namen der nächsten Person zu erraten, die beitritt. Die Chancen sind gering... aber wer weiß? 👀"
+      complete: |
+        Die Gruppe ist komplett! 🎉
+
+        Willkommen in eurer Gute-Vibes-Gruppe, ein Raum, um einfach und freundlich Kontakte zu knüpfen ✨
+
+        Eure Mission: austauschen, teilen und vielleicht sogar treffen, per Video oder im echten Leben?
+        Hier ist der Link für ein erstes gemeinsames Video: [Meet-Link] Meet-Link
+
+        👋 Zögert nicht, euch vorzustellen, falls ihr es noch nicht getan habt.
+
+        🔥 Und ab morgen... geht's los mit 7 Tagen kleiner Herausforderungen, um sich kennenzulernen und echte Verbindungen zu knüpfen 🫶
+
+        Wir zählen auf euch, voll mitzumachen! 😉
+      complete_j1: "Tagesaufgabe: Drei Wahrheiten und eine Lüge. Teile drei wahre Fakten über dich und eine falsche. Lass die anderen raten, was die Lüge ist!"
+      complete_j2: "Tagesaufgabe: Heute in meinem Leben... Beschreibe deinen Tag mit nur drei Emojis. Die anderen sollen versuchen zu erraten, was passiert ist!"
+      complete_j3: "Stelle der Gruppe die interessanteste Frage, auf die du noch nie eine zufriedenstellende Antwort gefunden hast. Mal sehen, ob die Gruppe dir helfen kann, darüber nachzudenken!"
+      complete_j4: "Tagesaufgabe: Teile etwas, das man dir nicht auf den ersten Blick ansieht: eine Leidenschaft, eine Gewohnheit, eine Charaktereigenschaft..."
+      complete_j5: "Tagesaufgabe: Für 24 Stunden ist ein gängiges Wort in der Gruppe verboten (z. B. 'ja', 'ich', 'essen'). Wenn jemand es schreibt... muss er eine lustige Anekdote über sich erzählen!"
+      complete_j6: "Tagesaufgabe: Jeder teilt, was ihm hilft, auf jemanden zuzugehen: ein Blick, ein Ort, ein Satz... oder ein Anti-Schüchternheits-Tipp!"
+      complete_j7: "Tagesaufgabe: Teile ein bevorstehendes Ereignis in deiner Nähe oder online! Wenn jemand anderes dasselbe oder ein ähnliches Ereignis erwähnt, ist es vielleicht der perfekte Moment, gemeinsam hinzugehen (oder sich online zu treffen)!"
+      complete_congratulations: "Herzlichen Glückwunsch an alle für eure Teilnahme! Ihr habt euch die Zeit genommen, zu teilen, zuzuhören und Verbindungen zu schaffen: das ist bereits ein großer Erfolg 🧡
+
+        Jetzt ist es Zeit für das Gruppentreffen! Ob online oder persönlich, es ist der Moment, eure Austausche zum Leben zu erwecken, Gesichter zu den Namen zu bringen und die guten Vibes am Leben zu erhalten 🤝
+
+        Einige Ideen:
+
+        - Ein entspanntes Video, jeder zu Hause (Pyjama willkommen 😄)
+        - Ein Kaffee oder ein Aperitif, wenn ihr in der Nähe wohnt
+        - Ein Picknick oder eine gemeinsame Aktivität, wenn euch danach ist (und das Wetter mitspielt)
+
+        Um euch einfach zu organisieren, haben wir diesen Video-Link erstellt: %s
+        Teilt eure Ideen, schlagt einen Zeitpunkt vor und vor allem... fühlt euch wie zu Hause ✨"
+      complete_j21: "Hallo zusammen! 👋
+
+        Wir hoffen, eure Austausche liefen gut, sei es schriftlich, per Video oder persönlich!
+        Wenn ihr Feedback teilen möchtet oder etwas nicht gut gelaufen ist, zögert nicht, es uns mitzuteilen. Das Entourage-Team ist hier, um zuzuhören und euch mit Freundlichkeit zu unterstützen 🧡
+
+        Und wenn alles gut gelaufen ist, lasst es uns auch wissen! Euer Feedback hilft uns, die Guten Vibes lebendig und gut zu halten.
+
+        Vielen Dank für euer Vertrauen ✨"
+      inactive_j3: "Hallo Team! Wir sind neugierig zu wissen, was euch dazu gebracht hat, dieser Gruppe beizutreten?"
+      inactive_j5: "Nicht besonders wohl beim Schreiben? Kein Problem! Ihr könnt auch ein entspanntes Video oder ein kleines Kaffeetreffen wählen. Lasst uns wissen, was euch am besten passt!"
+      inactive_j7: "Die Gruppe ist momentan ruhig
+::contentReference[oaicite:10]{index=10}
+
+
   pois:
     soliguide:
       public:

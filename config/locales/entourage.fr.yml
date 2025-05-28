@@ -292,6 +292,8 @@ fr:
           act: Agir
           inspire: S'inspirer
           understand: Comprendre
+      smalltalk:
+        object: Bonnes ondes
 
   community:
     entourage:
@@ -383,6 +385,10 @@ fr:
       update_on_neighborhood: "Vous venez de rejoindre un groupe de %s"
       create: "%s vient de rejoindre votre %s \"%s\""
       create_outing: "%s vient de rejoindre votre événement \"%s\" du %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
     contribution:
       create: "Un voisin propose une nouvelle entraide"
     solicitation:
@@ -434,6 +440,88 @@ fr:
     nord: Nord
     idf: Ile-de-France
     centre_est: Centre-Est
+
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Bienvenue %s 🙂 On est ravis que tu nous rejoignes ! Présente-toi en quelques mots pour que le groupe apprenne à te connaître.
+      destroy_member: | # first_name
+        %s vient de quitter le groupe. Merci pour ta participation et bonne continuation à toi !
+      banned_member: | # first_name
+        %s ne fait plus partie du groupe. Son comportement ne collait pas tout à fait avec l’esprit des bandes solidaires. On compte sur vous pour continuer à faire vivre cet espace avec bienveillance et bonne humeur 🙏
+      incomplete: |
+        On vous prépare un joli groupe de Bonnes Ondes ✨ En attendant les prochaines personnes, petit défi : tentez de deviner le prénom du ou de la prochaine à rejoindre. Les chances de tomber juste sont minces... mais qui sait ? 👀
+      complete: |
+        Le groupe est au complet ! 🎉
+
+        Bienvenue dans votre groupe des bonnes ondes, un espace pour créer du lien simplement, avec bienveillance ✨
+
+        Votre mission : échanger, partager et pourquoi pas vous rencontrer, en visio ou dans la vraie vie ?
+        Voici le lien pour une première visio ensemble : [Lien meet] Lien meet
+
+        👋 N'hésitez pas à vous présenter si ce n’est pas encore fait.
+
+        🔥 Et dès demain... c’est parti pour 7 jours de petits défis pour se découvrir et tisser de vrais liens 🫶
+
+        On compte sur vous pour jouer le jeu à fond ! 😉
+      complete_j1: |
+        Défi du jour : Trois faits, un mensonge : partage trois faits vrais sur toi et un faux. Aux autres de deviner lequel est l’intrus !
+      complete_j2: |
+        Défi du jour : Aujourd’hui dans ma vie... Raconte ta journée en seulement trois emojis. Les autres doivent essayer de deviner ce qui s’est passé !
+      complete_j3: |
+        Posez au groupe la question la plus intéressante à laquelle vous n'avez jamais trouvé de réponse satisfaisante. Voyons si le groupe peut vous aider à y réfléchir !
+      complete_j4: |
+        Défi du jour : Partagez un petit quelque chose que les gens ne devinent pas au premier abord : une passion, une habitude, un trait de caractère...
+      complete_j5: |
+        Défi du jour : Pendant 24h, un mot courant est interdit dans le groupe (ex : "oui", "je", "manger"). Si quelqu’un l’écrit... il doit raconter une anecdote marrante sur lui !
+      complete_j6: |
+        Défi du jour : Chacun partage ce qui l’aide à aller vers quelqu’un : un regard, un lieu, une phrase... ou une astuce anti-timidité !
+      complete_j7: |
+        Défi du jour : Partagez un événement sympa à venir près de chez vous ou en ligne ! Si quelqu’un d’autre mentionne le même ou un événement similaire, c’est peut-être le moment parfait pour y aller ensemble (ou vous retrouver en ligne) !
+      complete_congratulations: | # meeting_url
+        Bravo à tous pour votre participation ! Vous avez pris le temps de partager, d’écouter et de créer des liens : c’est déjà une belle réussite 🧡
+
+        Maintenant, place à la rencontre collective ! En visio ou en vrai, c’est le moment de donner vie à vos échanges, de mettre des visages sur les mots et de faire durer ces bonnes ondes 🤝
+
+        Quelques idées :
+
+        Une visio tranquille, chacun chez soi (pyjama bienvenu 😄)
+
+        Un café ou un apéro si vous n’habitez pas loin les uns des autres
+
+        Un pique-nique ou une activité commune si le cœur (et la météo) vous en dit
+
+        Pour vous organiser facilement, on a créé ce lien visio : %s
+        Lancez vos idées, proposez un moment, et surtout... faites comme chez vous ✨
+      complete_j21: |
+        Bonjour à tous ! 👋
+
+        On espère que vos échanges se sont bien passés, que ce soit par écrit, en visio ou en vrai !
+        Si vous avez des retours à partager ou si quelque chose ne s’est pas bien passé, n’hésitez surtout pas à nous le dire. L’équipe Entourage est là pour vous écouter et vous accompagner, en toute bienveillance 🧡
+
+        Et si tout va bien, dites-le nous aussi ! Vos retours nous aident à continuer de faire vivre les Bonnes Ondes au plus juste.
+
+        Merci pour votre confiance ✨
+      inactive_j3: |
+        Hello la team ! On serait curieux de savoir, qu’est-ce qui vous a donné envie de rejoindre ce groupe ?
+      inactive_j5: |
+        Pas ultra à l’aise à l’écrit ? Aucun souci ! Vous pouvez aussi opter pour une visio tranquille ou un café en petit comité. Dites-nous ce qui vous conviendrait le mieux !
+      inactive_j7: |
+        Le groupe est calme en ce moment... Si on n’a pas de nouvelles d’ici 7 jours, on laissera le groupe se refermer doucement. Merci d’avoir été là, et qui sait... à bientôt quelque part !
+      happy_birthday: | # first_name
+        Toute la bande Bonnes Ondes souhaite un joyeux anniversaire à %s ! 🎉 Profite bien de ta journée et n’hésite pas à nous raconter comment tu vas fêter ça !
+      chart_recall: |
+        Petit rappel bienveillant : les Bonnes Ondes, c’est fait pour échanger dans la bonne humeur et le respect. Vous trouverez la charte éthique juste ici ! Merci à toustes !
+      smalltalk_anniversary_six_months: |
+        Notre groupe fête déjà ses six mois aujourd’hui ! 🎉 Merci pour vos échanges et bons moments passés ensemble !
+      smalltalk_anniversary_one_year: |
+        Notre groupe fête déjà ses un an aujourd’hui ! 🎉 Merci pour vos échanges et bons moments passés ensemble !
+      user_one_year_membership: | # first_name
+        Aujourd’hui, %s fête 1 an parmi nous ! 🎉 Merci d’être avec nous depuis tout ce temps, raconte-nous un moment marquant !
+      smalltalk_500_messages: |
+        Vous êtes en feu ! 🔥 500 messages déjà échangés dans le groupe, ça papote sévère par ici !  On continue comme ça ? Prochain objectif : 1000 messages ?
+      smalltalk_1000_messages: |
+        Incroyable, vous venez d’atteindre les 1000 messages échangés ! 🤯 Vous êtes officiellement les champions·nes des Bonnes Ondes !
 
   pois:
     soliguide:

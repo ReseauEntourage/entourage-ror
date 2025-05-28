@@ -260,6 +260,14 @@ Rails.application.routes.draw do
         get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
       end
 
+      resources :smalltalks, only: [:index, :show] do
+        member do
+          get :show_members
+          get :show_messages
+          post :message
+        end
+      end
+
       resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
           get :search
@@ -301,6 +309,14 @@ Rails.application.routes.draw do
           post 'rebroadcast'
           post 'clone'
           post 'kill'
+        end
+      end
+
+      resources :user_smalltalks do
+        member do
+          get :show_matches
+          get :show_almost_matches
+          post :match
         end
       end
 
@@ -508,6 +524,10 @@ Rails.application.routes.draw do
       end
 
       resources :outings do
+        collection do
+          get :smalltalk
+        end
+
         member do
           put :batch_update
           get :siblings
@@ -649,6 +669,65 @@ Rails.application.routes.draw do
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups
+      end
+
+      resources :user_smalltalks, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          # these collection routes aim to define routes on in-progress user_smalltalk configuration
+          get :current
+          put :update
+          delete :destroy
+
+          post :match
+          post :force_match
+          get :matches
+          get :almost_matches
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+        end
+
+        member do
+          post :match
+          post :force_match
+          get :matches
+          get :almost_matches
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+        end
+      end
+
+      resources :smalltalks, only: [:index, :show] do
+        resources :chat_messages, :controller => 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy] do
+          member do
+            get :comments
+          end
+
+          collection do
+            post :presigned_upload
+          end
+
+          resources :reactions, :controller => 'smalltalks/chat_messages/reactions', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+
+            member do
+              get :details
+            end
+          end
+
+          resources :survey_responses, :controller => 'smalltalks/chat_messages/survey_responses', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+          end
+        end
+
+        resources :users, :controller => 'smalltalks/users', only: [:index] do
+          collection do
+            delete :destroy
+          end
+        end
       end
 
       resources :links, only: [] do
