@@ -27,6 +27,8 @@ class Meeting < ApplicationRecord
       conference_data_version: 1
     )
 
+    return unless created_event.respond_to?(:hangout_link)
+
     update!(meet_link: created_event.hangout_link)
   end
 end

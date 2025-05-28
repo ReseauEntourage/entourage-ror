@@ -84,7 +84,8 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
                 "avatar_url" => nil,
                 "community_roles" => []
               }
-            ]
+            ],
+            "meeting_url" => nil,
           }
         }
       })}
