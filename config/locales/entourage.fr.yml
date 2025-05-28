@@ -294,6 +294,7 @@ fr:
           understand: Comprendre
       smalltalk:
         object: Bonnes ondes
+        new_message: Nouveau message
 
   community:
     entourage:
