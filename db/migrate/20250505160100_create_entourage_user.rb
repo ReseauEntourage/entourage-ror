@@ -1,5 +1,8 @@
 class CreateEntourageUser < ActiveRecord::Migration[6.1]
   def up
+    return if EnvironmentHelper.test?
+    return if User.find_entourage_user.present?
+
     raise ArgumentError unless phone = ENV["ENTOURAGE_USER_PHONE"]
 
     return if User.find_entourage_user.present?
