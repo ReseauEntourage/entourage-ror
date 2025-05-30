@@ -279,6 +279,9 @@ class User < ApplicationRecord
     end
   end
 
+  def self.find_entourage_user
+    User.find_by_phone(ENV["ENTOURAGE_USER_PHONE"])
+  end
 
   def self.find_by_id_or_phone identifier
     return find_by_id(identifier) unless identifier.is_a?(String)
