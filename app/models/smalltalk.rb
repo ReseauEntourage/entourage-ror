@@ -5,6 +5,7 @@ class Smalltalk < ApplicationRecord
   enum match_format: { one: 0, many: 1 }
 
   after_create :create_meeting
+  after_update :update_completed_at, if: :saved_change_to_number_of_people?
 
   has_many :user_smalltalks
   has_many :chat_messages, as: :messageable, dependent: :destroy
@@ -55,5 +56,23 @@ class Smalltalk < ApplicationRecord
       start_time: 1.week.from_now,
       end_time: 1.week.from_now + 1.hour
     ))
+  end
+
+  def complete?
+    ! incomplete?
+  end
+
+  def incomplete?
+    return number_of_people < 2 if one?
+
+    number_of_people < 5
+  end
+
+  private
+
+  def update_completed_at
+    return if completed_at.present?
+
+    update_column(:completed_at, Time.current) if complete?
   end
 end
