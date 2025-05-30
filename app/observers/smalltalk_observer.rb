@@ -2,9 +2,9 @@ class SmalltalkObserver < ActiveRecord::Observer
   observe :smalltalk
 
   def after_commit smalltalk
-    return unless verb.present?
+    return unless verb(smalltalk).present?
 
-    SmalltalkServices::Messager.new(smalltalk, verb).run
+    SmalltalkServices::Messager.new(smalltalk, verb(smalltalk)).run
   end
 
   private
