@@ -4,7 +4,7 @@ module SmalltalkServices
 
     def initialize join_request
       @entourage_user = User.find_entourage_user
-      @join_request = @join_request
+      @join_request = join_request
     end
 
     def run
