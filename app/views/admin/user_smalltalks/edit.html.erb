@@ -1,0 +1,13 @@
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Demandes de bonnes ondes", admin_user_smalltalks_path %></li>
+    <li class="active">Modifier</li>
+  </ol>
+
+  <h2>
+    <span class="text-muted">#<%= @user_smalltalk.id %></span>
+    <%= @user_smalltalk.uuid_v2 %>
+  </h2>
+
+  <%= render partial: 'form' %>
+</div>

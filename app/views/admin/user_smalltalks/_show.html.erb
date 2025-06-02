@@ -1,0 +1,34 @@
+<p>
+  <strong>Id</strong>
+  <%= @user_smalltalk.id %>
+</p>
+
+<p>
+  <strong>Utilisateur</strong>
+  <%= link_to @user_smalltalk.user.full_name, edit_admin_user_path(@user_smalltalk.user) %>
+</p>
+
+<p>
+  <strong>Demande créée le</strong>
+  <%= l @user_smalltalk.created_at.to_date %>
+</p>
+
+<p>
+  <strong>Match format</strong>
+  <%= @user_smalltalk.match_format %>
+</p>
+
+<p>
+  <strong>Match locality</strong>
+  <%= @user_smalltalk.match_locality %>
+</p>
+
+<p>
+  <strong>Match gender</strong>
+  <%= @user_smalltalk.match_gender %>
+</p>
+
+<p>
+  <strong>Match</strong>
+  <%= link_to @user_smalltalk.smalltalk.uuid_v2, admin_smalltalk_path(@user_smalltalk.smalltalk) if @user_smalltalk.smalltalk.present? %>
+</p>

@@ -1,0 +1,60 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @user_smalltalk } %>
+
+<%= form_for [:admin, @user_smalltalk], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :match_format, "Format" %>
+    <%= f.select :match_format, UserSmalltalk.match_formats.keys.map { |k| [k.humanize, k] }, { include_blank: false }, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Même localité" %>
+    <%= f.check_box :match_locality, { checked: @user_smalltalk.match_locality, 'data-toggle': :toggle }, 'true', 'false' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Même genre" %>
+    <%= f.check_box :match_gender, { checked: @user_smalltalk.match_gender, 'data-toggle': :toggle }, 'true', 'false' %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag :participants, "Participant" %>
+    <%= select_user_tag("user_smalltalk", @user_smalltalk.user) %>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Annuler", admin_user_smalltalks_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  $(document).ready(function() {
+    $('.user-select').select2({
+      placeholder: 'utilisateur (prénom ou téléphone)',
+      minimumInputLength: 1,
+      ajax: {
+        url: '/users/search',
+        dataType: 'json',
+        delay: 250,
+        data: function(params) {
+          return {
+            query: params.term // le terme de recherche
+          };
+        },
+        processResults: function(data) {
+          return {
+            results: data.map(function(user) {
+              return {
+                id: user.id,
+                text: user.first_name + ' ' + user.last_name + ' (' + user.phone + ')'
+              };
+            })
+          };
+        },
+        cache: true
+      }
+    });
+  });
+</script>

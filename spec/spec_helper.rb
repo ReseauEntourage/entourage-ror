@@ -24,6 +24,7 @@ end
 ENV['ADMIN_HOST'] = 'https://this.is.local'
 ENV["DISABLE_CRYPT"] = "TRUE"
 ENV['ENTOURAGE_SECRET'] = 'test_entourage_secret'
+ENV['ENTOURAGE_USER_PHONE'] = '+33612345678'
 ENV["SLACK_DEFAULT_INTERLOCUTOR"] = "laure"
 ENV["MODERATOR_PHONE"] = "+33768037348"
 ENV['SLACK_WEBHOOK_URL'] = "https://url.to.slack.com"

@@ -1,0 +1,57 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Groupes de bonnes ondes</h1>
+
+    <div class="row">
+      <% if @smalltalks.any? %>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>Nombre</th>
+              <th>Utilisateur</th>
+              <th>match_locality</th>
+              <th>match_gender</th>
+              <th>match_interest</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @smalltalks.each do |smalltalk| %>
+              <tr>
+                <td><%= link_to "#{smalltalk.id} (#{smalltalk.uuid_v2})", admin_smalltalk_path(smalltalk) %></td>
+                <td><%= smalltalk.match_format %></td>
+                <td><%= smalltalk.number_of_people %></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <% smalltalk.user_smalltalks.each do |user_smalltalk| %>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><%= link_to user_smalltalk.user.full_name, edit_admin_user_path(user_smalltalk.user_id) %></td>
+                  <td><%= boolean_label user_smalltalk.match_locality, default: user_smalltalk.user.city %></td>
+                  <td><%= boolean_label user_smalltalk.match_gender, default: user_smalltalk.match_gender %></td>
+                  <td>
+                    <% user_smalltalk.interest_names.each do |interest_name| %>
+                      <span class="badge bg-success"><%= interest_name %></span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+          <div style="flex-grow: 1">
+            Aucun matching de bonnes ondes n'a encore été réalisé.
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

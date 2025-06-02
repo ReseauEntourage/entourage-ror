@@ -11,14 +11,16 @@ FactoryBot.define do
 
     after(:build) do |join_request, _|
       joinable = join_request.joinable
+
       next unless join_request.role == 'auto' && joinable.present?
-      join_request.role = joinable.is_a?(Neighborhood) ? 'member' :
-        case [joinable.community, joinable.group_type]
-        when ['entourage', 'action'        ] then 'member'
-        when ['entourage', 'outing'        ] then 'participant'
-        when ['entourage', 'conversation'  ] then 'participant'
-        when ['entourage', 'group'         ] then 'member'
-        else raise 'Unhandled: %s:%s' % [joinable.community.slug, joinable.group_type]
+
+      join_request.role = joinable.is_a?(Neighborhood) || joinable.is_a?(Smalltalk) ? 'member' :
+        case joinable.group_type
+          when 'action' then 'member'
+          when 'outing' then 'participant'
+          when 'conversation' then 'participant'
+          when 'group' then 'member'
+        else raise 'Unhandled: %s:%s' % [joinable.group_type]
         end
     end
 

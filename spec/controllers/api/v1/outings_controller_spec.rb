@@ -880,4 +880,23 @@ describe Api::V1::OutingsController do
       it { expect(response.status).to eq 400 }
     end
   end
+
+  describe 'GET smalltalk' do
+    let(:online) { true }
+    let!(:outing) { create(:outing, status: "open", title: "Événement Papotages", online: online) }
+
+    before { get :smalltalk, params: { token: user.token } }
+
+    context 'online' do
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key("outing") }
+      it { expect(subject["outing"]["id"]).to eq(outing.id) }
+    end
+
+    context 'offline' do
+      let(:online) { false }
+
+      it { expect(response.status).to eq 400 }
+    end
+  end
 end
