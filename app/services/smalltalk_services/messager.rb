@@ -4,7 +4,7 @@ module SmalltalkServices
 
     def initialize smalltalk, verb
       @entourage_user = User.find_entourage_user
-      @smalltalk = @smalltalk
+      @smalltalk = smalltalk
       @verb = verb
     end
 
@@ -13,18 +13,12 @@ module SmalltalkServices
       return unless entourage_user
 
       return run_after_create if create?
-      return run_new_member if new_member?
       return run_complete if complete?
     end
 
     def run_after_create
       return create_message(:incomplete) if incomplete?
-
-      create_message(:complete)
-    end
-
-    def run_new_member
-      create_message(:new_member)
+      return create_message(:complete) if complete?
     end
 
     def run_complete
@@ -45,18 +39,11 @@ module SmalltalkServices
     private
 
     def create_message i18n_key, at = Time.zone.now
-      SmalltalkAutoChatMessageJob.perform_at(at, smalltalk.id, i18n_key)
+      SmalltalkAutoChatMessageJob.perform_at(at, smalltalk.id, i18n_key, nil)
     end
 
     def create?
       verb == :create
-    end
-
-    def new_member?
-      return unless smalltalk.many?
-      return unless number_of_people_changed?
-
-      number_of_people_changed_up?
     end
 
     def complete?
@@ -65,6 +52,13 @@ module SmalltalkServices
       return unless number_of_people_changed?
 
       smalltalk.complete?
+    end
+
+    def incomplete?
+      return unless smalltalk.many?
+      return unless number_of_people_changed?
+
+      smalltalk.incomplete?
     end
 
     def number_of_people_changed?
