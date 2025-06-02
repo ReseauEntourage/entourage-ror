@@ -30,6 +30,6 @@ describe Api::V1::LinksController do
     before { get :mesure_impact, params: { id: user.uuid } }
 
     it { expect(response.status).to eq(302) }
-    it { should redirect_to "https://entourage-asso.typeform.com/to/R7mfZUa7#email=#{user.email}&phone=#{user.phone}" }
+    it { should redirect_to "https://entourage-asso.typeform.com/to/w1OHXk1E#email=#{user.email}&phone=#{user.phone}" }
   end
 end

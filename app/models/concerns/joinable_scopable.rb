@@ -41,12 +41,6 @@ module JoinableScopable
   def members_has_changed!
     update_column(:number_of_people, accepted_members.count) if has_attribute?(:number_of_people)
     update_column(:number_of_confirmed_people, confirmed_members.count) if has_attribute?(:number_of_confirmed_people)
-
-    ActiveSupport::Notifications.instrument('members_changed.joinable', {
-      object: self,
-      number_of_people: number_of_people,
-      number_of_confirmed_people: number_of_confirmed_people
-    })
   end
 
   def members_count

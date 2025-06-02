@@ -1,21 +1,21 @@
 class SmalltalkObserver < ActiveRecord::Observer
-  observe :smalltalk, :join_request
+  observe :smalltalk
 
-  def after_commit record
-    return unless verb(record).present?
+  def after_commit smalltalk
+    return unless verb(smalltalk).present?
 
-    SmalltalkServices::Messager.new(record, verb(record)).run
+    SmalltalkServices::Messager.new(smalltalk, verb(smalltalk)).run
   end
 
   private
 
-  def commit_is? record, actions
-    record.send(:transaction_include_any_action?, actions)
+  def commit_is? smalltalk, actions
+    smalltalk.send(:transaction_include_any_action?, actions)
   end
 
-  def verb record
-    return :create if commit_is?(record, [:create])
-    return :update if commit_is?(record, [:update])
+  def verb smalltalk
+    return :create if commit_is?(smalltalk, [:create])
+    return :update if commit_is?(smalltalk, [:update])
 
     nil
   end
