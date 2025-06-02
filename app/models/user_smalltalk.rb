@@ -136,7 +136,7 @@ class UserSmalltalk < ApplicationRecord
     self.user_latitude = user.latitude
     self.user_longitude = user.longitude
     self.user_gender = user.gender
-    self.user_profile = user.is_offer_help? ? :offer_help : :ask_for_help
+    self.user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
     self.user_interest_ids = user.interest_ids
   end
 
