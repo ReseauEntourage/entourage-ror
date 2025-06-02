@@ -138,7 +138,7 @@ module Api
       end
 
       def smalltalk
-        if @outing = Outing.where("title ilike '\%papotage\%'").find_by(online: true)
+        if @outing = Outing.future_or_ongoing.where("title ilike '\%papotage\%'").find_by(online: true)
           render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
         else
           render json: { message: 'Could not find outing' }, status: 400
