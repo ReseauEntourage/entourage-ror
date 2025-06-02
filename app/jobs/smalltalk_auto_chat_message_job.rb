@@ -1,13 +1,13 @@
 class SmalltalkAutoChatMessageJob
   include Sidekiq::Worker
 
-  def perform smalltalk_id, i18n_key
+  def perform smalltalk_id, i18n_key, i18n_arg
     return unless entourage_user = User.find_entourage_user
     return unless smalltalk = Smalltalk.find_by_id(smalltalk_id)
 
     ChatMessage.new(
       user: entourage_user,
-      content: I18n.t("smalltalks.messager.#{i18n_key}"),
+      content: I18n.t("smalltalks.messager.#{i18n_key}") % i18n_arg,
       joinable: smalltalk
     )
   end
