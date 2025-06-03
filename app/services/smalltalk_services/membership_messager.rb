@@ -20,8 +20,8 @@ module SmalltalkServices
 
     private
 
-    def create_message i18n_key, at = Time.zone.now
-      SmalltalkAutoChatMessageJob.perform_at(at, join_request.id, i18n_key, username)
+    def create_message i18n_key
+      SmalltalkAutoChatMessageJob.perform_at(Time.zone.now, join_request.id, i18n_key, username)
     end
 
     def username

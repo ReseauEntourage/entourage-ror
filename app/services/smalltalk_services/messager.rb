@@ -25,21 +25,21 @@ module SmalltalkServices
       complete_time = time || now.change(hour: 18, min: 0, sec: 0)
       complete_time += 1.day if complete_time < now
 
-      create_message(:complete, complete_time)
-      create_message(:complete_j1, (Time.zone.now + 1.days).change(hour: 10, min: 0))
-      create_message(:complete_j2, (Time.zone.now + 2.days).change(hour: 10, min: 0))
-      create_message(:complete_j3, (Time.zone.now + 3.days).change(hour: 10, min: 0))
-      create_message(:complete_j4, (Time.zone.now + 4.days).change(hour: 10, min: 0))
-      create_message(:complete_j5, (Time.zone.now + 5.days).change(hour: 10, min: 0))
-      create_message(:complete_j6, (Time.zone.now + 6.days).change(hour: 10, min: 0))
-      create_message(:complete_j7, (Time.zone.now + 7.days).change(hour: 10, min: 0))
-      create_message(:complete_j21, (Time.zone.now + 21.days).change(hour: 18, min: 0))
+      create_message(:complete, at: complete_time, i18n_arg: smalltalk.meeting_url)
+      create_message(:complete_j1, at: (Time.zone.now + 1.days).change(hour: 10, min: 0))
+      create_message(:complete_j2, at: (Time.zone.now + 2.days).change(hour: 10, min: 0))
+      create_message(:complete_j3, at: (Time.zone.now + 3.days).change(hour: 10, min: 0))
+      create_message(:complete_j4, at: (Time.zone.now + 4.days).change(hour: 10, min: 0))
+      create_message(:complete_j5, at: (Time.zone.now + 5.days).change(hour: 10, min: 0))
+      create_message(:complete_j6, at: (Time.zone.now + 6.days).change(hour: 10, min: 0))
+      create_message(:complete_j7, at: (Time.zone.now + 7.days).change(hour: 10, min: 0))
+      create_message(:complete_j21, at: (Time.zone.now + 21.days).change(hour: 18, min: 0))
     end
 
     private
 
-    def create_message i18n_key, at = Time.zone.now
-      SmalltalkAutoChatMessageJob.perform_at(at, smalltalk.id, i18n_key, nil)
+    def create_message i18n_key, at: Time.zone.now, i18n_arg: nil
+      SmalltalkAutoChatMessageJob.perform_at(at, smalltalk.id, i18n_key, i18n_arg)
     end
 
     def create?
