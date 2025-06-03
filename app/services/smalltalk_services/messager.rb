@@ -9,7 +9,6 @@ module SmalltalkServices
     end
 
     def run
-      return
       return unless entourage_user
 
       return run_after_create if create?
