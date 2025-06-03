@@ -8,7 +8,7 @@ class SmalltalkAutoChatMessageJob
     ChatMessage.new(
       user: entourage_user,
       content: I18n.t("smalltalks.messager.#{i18n_key}") % i18n_arg,
-      joinable: smalltalk
+      messageable: smalltalk
     )
   end
 end
