@@ -9,6 +9,6 @@ class SmalltalkAutoChatMessageJob
       user: entourage_user,
       content: I18n.t("smalltalks.messager.#{i18n_key}") % i18n_arg,
       messageable: smalltalk
-    )
+    ).save!
   end
 end
