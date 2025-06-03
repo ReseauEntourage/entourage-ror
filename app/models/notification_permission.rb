@@ -62,6 +62,14 @@ class NotificationPermission < ApplicationRecord
     permissions["chat_message"]
   end
 
+  def user_smalltalk instance_id = nil
+    true
+  end
+
+  def smalltalk instance_id = nil
+    true
+  end
+
   def action instance_id = nil
     return true unless permissions && permissions.has_key?("action")
     permissions["action"]
