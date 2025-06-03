@@ -67,8 +67,9 @@ class Smalltalk < ApplicationRecord
     number_of_people < 5
   end
 
-  # overwrite JoinableScopable#handle_membership_change
-  def handle_membership_change
+  def members_has_changed!
+    super
+
     return if completed_at.present?
     return unless complete?
 

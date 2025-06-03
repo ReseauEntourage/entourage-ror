@@ -9,7 +9,7 @@ module SmalltalkServices
 
     def run
       return unless entourage_user
-      return unless join_request.saved_change_to_status?
+      return unless status_changed?
 
       return create_message(:new_member) if join_request.accepted?
       return create_message(:destroy_member) if join_request.cancelled?
@@ -26,6 +26,14 @@ module SmalltalkServices
 
     def username
       join_request.user.first_name
+    end
+
+    def status_changed?
+      changes.key?("status")
+    end
+
+    def changes
+      join_request.previous_changes
     end
   end
 end
