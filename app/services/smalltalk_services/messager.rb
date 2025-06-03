@@ -16,8 +16,8 @@ module SmalltalkServices
     end
 
     def run_after_create
-      return create_message(:incomplete) if incomplete?
-      return create_message(:complete) if complete?
+      return create_message(:incomplete) if smalltalk.incomplete?
+      return create_message(:complete) if smalltalk.complete?
     end
 
     def run_complete
@@ -48,16 +48,8 @@ module SmalltalkServices
     def complete?
       return unless smalltalk.many?
       return unless completed_at_changed? # ensures run_complete is called only one time
-      return unless number_of_people_changed?
 
       smalltalk.complete?
-    end
-
-    def incomplete?
-      return unless smalltalk.many?
-      return unless number_of_people_changed?
-
-      smalltalk.incomplete?
     end
 
     def number_of_people_changed?

@@ -70,6 +70,20 @@ module JoinableScopable
     join_request
   end
 
+  def join_requests_changed?
+    return false unless association(:join_requests).loaded?
+
+    current_count = join_requests.size
+    persisted_count = join_requests.reload.size
+
+    current_count != persisted_count ||
+      join_requests.any?(&:changed?) ||
+      join_requests.any?(&:new_record?) ||
+      join_requests.any?(&:marked_for_destruction?)
+  end
+
+  alias_method :members_changed?, :join_requests_changed?
+
   MembershipStruct = Struct.new(:joinable) do
     def initialize(joinable: nil)
       @joinable = joinable
