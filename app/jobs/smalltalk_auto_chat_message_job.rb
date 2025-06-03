@@ -6,6 +6,7 @@ class SmalltalkAutoChatMessageJob
     return unless smalltalk = Smalltalk.find_by_id(smalltalk_id)
 
     ChatMessage.new(
+      message_type: 'auto',
       user: entourage_user,
       content: I18n.t("smalltalks.messager.#{i18n_key}") % i18n_arg,
       messageable: smalltalk
