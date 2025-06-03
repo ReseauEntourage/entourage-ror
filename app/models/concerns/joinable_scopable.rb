@@ -41,6 +41,8 @@ module JoinableScopable
   def members_has_changed!
     update_column(:number_of_people, accepted_members.count) if has_attribute?(:number_of_people)
     update_column(:number_of_confirmed_people, confirmed_members.count) if has_attribute?(:number_of_confirmed_people)
+
+    handle_membership_change
   end
 
   def members_count
@@ -70,19 +72,9 @@ module JoinableScopable
     join_request
   end
 
-  def join_requests_changed?
-    return false unless association(:join_requests).loaded?
-
-    current_count = join_requests.size
-    persisted_count = join_requests.reload.size
-
-    current_count != persisted_count ||
-      join_requests.any?(&:changed?) ||
-      join_requests.any?(&:new_record?) ||
-      join_requests.any?(&:marked_for_destruction?)
+  def handle_membership_change
+    # This method may be overridden in the including class
   end
-
-  alias_method :members_changed?, :join_requests_changed?
 
   MembershipStruct = Struct.new(:joinable) do
     def initialize(joinable: nil)

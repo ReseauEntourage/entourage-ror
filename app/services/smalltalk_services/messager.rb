@@ -12,7 +12,7 @@ module SmalltalkServices
       return unless entourage_user
 
       return run_after_create if create?
-      return run_complete if complete?
+      return run_complete if completed_at_changed?
     end
 
     def run_after_create
@@ -46,29 +46,8 @@ module SmalltalkServices
       verb == :create
     end
 
-    def complete?
-      return unless smalltalk.many?
-      return unless completed_at_changed? # ensures run_complete is called only one time
-
-      smalltalk.complete?
-    end
-
-    def number_of_people_changed?
-      changes.key?("number_of_people")
-    end
-
     def completed_at_changed?
-      changes.key?("completed_at") && changes["completed_at"].first.nil?
-    end
-
-    def number_of_people_changed_up?
-      changes["number_of_people"].present? && changes["number_of_people"].last > changes["number_of_people"].first
-    end
-
-    private
-
-    def changes
-      smalltalk.changes
+      smalltalk.changes.key?("completed_at") && smalltalk.changes["completed_at"].first.nil?
     end
 
     def now
