@@ -17,12 +17,13 @@ module SmalltalkServices
 
     def run_after_create
       return create_message(:incomplete) if smalltalk.incomplete?
-      return create_message(:complete) if smalltalk.complete?
+
+      run_complete(now)
     end
 
-    def run_complete
-      complete_time = Time.zone.now.change(hour: 18, min: 0, sec: 0)
-      complete_time += 1.day if complete_time < Time.zone.now
+    def run_complete time = nil
+      complete_time = time || now.change(hour: 18, min: 0, sec: 0)
+      complete_time += 1.day if complete_time < now
 
       create_message(:complete, complete_time)
       create_message(:complete_j1, (Time.zone.now + 1.days).change(hour: 10, min: 0))
@@ -68,6 +69,10 @@ module SmalltalkServices
 
     def changes
       smalltalk.changes
+    end
+
+    def now
+      @now ||= Time.zone.now
     end
   end
 end
