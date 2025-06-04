@@ -38,6 +38,16 @@ RSpec.configure do |config|
       # klass.any_instance.stub(:text_translation).and_return("foo")
       klass.any_instance.stub(:translate_field!).and_return("foo")
     end
+
+    # google calendar
+    fake_event = Google::Apis::CalendarV3::Event.new(
+      id: 'fake_event_id',
+      html_link: 'https://calendar.google.com/fake_event',
+      summary: 'Stubbed Event',
+      hangout_link: 'https://meet.google.com/stubbed-meet-link'
+    )
+
+    allow(GOOGLE_CALENDAR_SERVICE).to receive(:insert_event).and_return(fake_event)
   end
 end
 
