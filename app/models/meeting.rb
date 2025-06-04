@@ -18,7 +18,11 @@ class Meeting < ApplicationRecord
           request_id: SecureRandom.uuid,
           conference_solution_key: { type: 'hangoutsMeet' }
         }
-      }
+      },
+      anyone_can_add_self: true,
+      guest_can_modify: false,
+      guest_can_invite_others: false,
+      guest_can_see_other_guests: true
     )
 
     created_event = GOOGLE_CALENDAR_SERVICE.insert_event(
