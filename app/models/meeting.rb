@@ -14,6 +14,7 @@ class Meeting < ApplicationRecord
       },
       attendees: participant_emails.map { |email| { email: email } },
       conference_data: {
+        visibility: 'public',
         create_request: {
           request_id: SecureRandom.uuid,
           conference_solution_key: { type: 'hangoutsMeet' }
