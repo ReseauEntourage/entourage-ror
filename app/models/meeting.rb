@@ -17,6 +17,24 @@ class Meeting < ApplicationRecord
         create_request: {
           request_id: SecureRandom.uuid,
           conference_solution_key: { type: 'hangoutsMeet' }
+        },
+        entry_points: [
+          {
+            entry_point_type: 'video',
+            uri: '', # filled in by Google
+            access_code: '',
+            meeting_code: '',
+            passcode: '',
+            password: ''
+          }
+        ],
+        conference_parameters: {
+          add_on_parameters: {
+            parameters: {
+              'external_only' => 'false',
+              'auto_admit_policy' => 'EVERYONE'
+            }
+          }
         }
       }
     )
