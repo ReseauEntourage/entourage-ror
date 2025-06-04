@@ -52,7 +52,7 @@ class UserSmalltalk < ApplicationRecord
 
   def find_and_save_match!
     return unless find_match
-    return if joined_smalltalks.count >= 3
+    return if joined_smalltalks.count >= 100
 
     match_with_user_smalltalk!(find_match.id)
   end
