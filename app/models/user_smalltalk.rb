@@ -69,7 +69,9 @@ class UserSmalltalk < ApplicationRecord
     match_with_user_smalltalk!(find_match.id)
   end
 
-  def force_and_save_match! smalltalk_id:, user_smalltalk_id:
+  def force_and_save_match! unmatch:, smalltalk_id:, user_smalltalk_id:
+    return unless unmatch_criteria(unmatch)
+
     return match_with_smalltalk!(smalltalk_id) if smalltalk_id.present?
 
     match_with_user_smalltalk!(user_smalltalk_id) if user_smalltalk_id.present?
@@ -191,5 +193,13 @@ class UserSmalltalk < ApplicationRecord
         unmatch_count: record.unmatch_count
       )
     end
+  end
+
+  def unmatch_criteria unmatch
+    return unless unmatch
+    return unless has_attribute?(unmatch)
+    return unless CRITERIA.include?(unmatch.to_sym)
+
+    update_attribute(unmatch, false)
   end
 end
