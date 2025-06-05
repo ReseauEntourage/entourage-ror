@@ -1,0 +1,30 @@
+
+<div style="margin: auto">
+  <div class="row">
+    <% unless interface.fields.none? %>
+      <table class="table custom-table">
+        <thead>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Label</th>
+          <th>Synchronized</th>
+          <th>Required</th>
+        </thead>
+
+        <% interface.fields.each_with_index do |field, i| %>
+          <% parite = i.even? ? 'pair' : 'impair' %>
+
+          <tr class="above-row row-<%= parite %>">
+            <td>
+              <span class="custom-badge info"><%= field[:name] %></span>
+            </td>
+            <td><%= field[:type] %></td>
+            <td><%= field[:label] %></td>
+            <td><%= check_box_tag '', '', interface.instance_mapping.values.include?(field[:name]), disabled: true %></td>
+            <td><%= check_box_tag '', '', field[:required], disabled: true %></td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+  </div>
+</div>

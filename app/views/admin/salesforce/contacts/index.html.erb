@@ -1,0 +1,31 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Contacts</h1>
+
+    <div class="row">
+      <% unless @contacts.none? %>
+        <table class="table custom-table">
+          <thead>
+            <% @interface.instance_mapping.values.each do |field_name| %>
+              <th><%= field_name%></th>
+            <% end %>
+          </thead>
+          <% @contacts.each_with_index do |contact, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <% @interface.instance_mapping.values.each do |field_name| %>
+                <td><%= contact[field_name] %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @contacts, entry_name: 'Contacts' %>
+    <div class="container">
+      <%= paginate(@contacts) %>
+    </div>
+  </div>
+</div>

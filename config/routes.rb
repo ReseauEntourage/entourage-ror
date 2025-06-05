@@ -14,6 +14,21 @@ Rails.application.routes.draw do
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
       delete 'user_relationships' => "user_relationships#destroy"
 
+      namespace :salesforce do
+        resources :schemas, only: [] do
+          collection do
+            get :show_user
+            get :show_outing
+            get :show_lead
+            get :show_contact
+          end
+        end
+
+        resources :users, only: [:index, :show]
+        resources :outings, only: [:index, :show]
+        resources :contacts, only: [:index]
+      end
+
       namespace :super_admin do
         get '/soliguide', action: :soliguide
         get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
