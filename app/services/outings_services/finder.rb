@@ -28,6 +28,7 @@ module OutingsServices
         .active
         .future_or_ongoing
         .match_at_least_one_interest(interests)
+        .for_user(user)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)

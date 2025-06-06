@@ -63,6 +63,13 @@
     </div>
 
     <div class="control-group">
+      <%= f.label :exclusive_to, class: "control-label" %>
+      <div class="controls" style="max-width: 400px">
+        <%= f.select :exclusive_to, User::GOALS.map { |key| [t("community.entourage.goals_compact.#{key}"), key] }, { include_blank: "Pour tous", class: "form-control" } %>
+      </div>
+    </div>
+
+    <div class="control-group">
       <%= f.label :outing_image_url, class: "control-label" %>
       <% if @entourage.new_record? %>
         <div class="text-muted">
