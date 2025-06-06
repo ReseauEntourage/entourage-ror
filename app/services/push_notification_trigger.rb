@@ -302,7 +302,7 @@ class PushNotificationTrigger
 
   def chat_message_on_create
     return unless @record.visible?
-    return unless ['text', 'broadcast'].include? @record.message_type
+    return unless ['text', 'broadcast', 'auto'].include? @record.message_type
 
     chat_message_on_mention
 
