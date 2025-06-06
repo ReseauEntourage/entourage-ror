@@ -334,13 +334,12 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.integer "number_of_confirmed_people", default: 0
     t.boolean "auto_post_at_create", default: false
     t.integer "number_of_root_chat_messages", default: 0
+    t.string "exclusive_to"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["created_at"], name: "index_entourages_on_created_at"
-    t.index ["description"], name: "index_entourages_on_description", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["group_type"], name: "index_entourages_on_group_type"
-    t.index ["title"], name: "index_entourages_on_title", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
     t.index ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true
