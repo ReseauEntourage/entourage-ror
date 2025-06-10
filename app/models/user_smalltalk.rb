@@ -18,6 +18,8 @@ class UserSmalltalk < ApplicationRecord
     .where("member_status is null or member_status != 'cancelled'")
   }
 
+  validate :quota_must_not_be_reached
+
   scope :not_matched, -> { where(matched_at: nil) }
   scope :with_match_filter, -> (matched) {
     return where.not(matched_at: nil) if matched
@@ -50,9 +52,19 @@ class UserSmalltalk < ApplicationRecord
     super(user_id)
   end
 
+  def quota_reached?
+    joined_smalltalks.count >= 3
+  end
+
+  def quota_must_not_be_reached
+    if quota_reached?
+      errors.add(:base, "Quota has been reached. You can only join up to 3 smalltalks at a time.")
+    end
+  end
+
   def find_and_save_match!
     return unless find_match
-    return if joined_smalltalks.count >= 3
+    return if quota_reached?
 
     match_with_user_smalltalk!(find_match.id)
   end
@@ -82,7 +94,7 @@ class UserSmalltalk < ApplicationRecord
   def match_with_smalltalk! smalltalk_id
     return unless smalltalk_id
     return unless target_smalltalk = Smalltalk.find_by(id: smalltalk_id)
-    return if joined_smalltalks.count >= 3
+    return if quota_reached?
 
     Smalltalk.transaction do
       associate_user_smalltalk(self, target_smalltalk)
