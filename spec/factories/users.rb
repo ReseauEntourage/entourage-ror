@@ -54,10 +54,15 @@ FactoryBot.define do
       goal { 'offer_help' }
     end
 
+    trait :ask_for_help do
+      goal { 'ask_for_help' }
+    end
+
     factory :pro_user,    traits: [:pro]
     factory :public_user, traits: [:public]
     factory :partner_user, traits: [:public, :partner]
     factory :admin_user,  traits: [:admin]
+    factory :ask_for_help_user,  traits: [:public, :ask_for_help]
     factory :offer_help_user,  traits: [:public, :offer_help]
     factory :pro_user_paris, traits: [:pro, :paris]
   end
