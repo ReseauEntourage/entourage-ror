@@ -108,6 +108,16 @@ class ChatMessage < ApplicationRecord
         .gsub(/\{\{\s*availability\s*\}\}/, user.availability_formatted.to_s)
         .gsub(/\{\{\s*interlocutor\s*\}\}/, author&.first_name.to_s)
     end
+
+    def with_moderator_reads_for(user:)
+      joins(%(
+        left join moderator_reads on (
+          moderator_reads.user_id = #{user.id} and
+          moderator_reads.moderatable_id = chat_messages.messageable_id and
+          moderator_reads.moderatable_type = chat_messages.messageable_type
+        )
+      ))
+    end
   end
 
   def active?
