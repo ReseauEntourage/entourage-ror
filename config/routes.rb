@@ -657,6 +657,7 @@ Rails.application.routes.draw do
         end
 
         collection do
+          get :memberships
           get :privates
           get :private
           get :outings
