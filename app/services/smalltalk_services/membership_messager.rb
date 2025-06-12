@@ -8,6 +8,7 @@ module SmalltalkServices
     end
 
     def run
+      return unless join_request.smalltalk?
       return unless entourage_user
       return unless is_new? || status_changed?
 
@@ -20,7 +21,7 @@ module SmalltalkServices
     private
 
     def create_message i18n_key
-      SmalltalkAutoChatMessageJob.perform_at(Time.zone.now, join_request.id, i18n_key, username)
+      SmalltalkAutoChatMessageJob.perform_at(Time.zone.now, join_request.joinable_id, i18n_key, username)
     end
 
     def username
