@@ -3,7 +3,8 @@ require 'rails_helper'
 describe TranslationObserver do
   describe "action" do
     context "chat_message" do
-      let(:record) { create(:chat_message) }
+      let!(:entourage) { create(:entourage) }
+      let(:record) { create(:chat_message, messageable: entourage) }
 
       before { expect_any_instance_of(described_class).to receive(:action).with(:create, instance_of(ChatMessage)) }
 
