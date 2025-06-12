@@ -85,8 +85,6 @@ module Translatable
     translation.completed_translations
   end
 
-  private
-
   def from_lang
     return @from_lang if @from_lang.present?
     return @from_lang = Translation::DEFAULT_LANG unless respond_to?(:user) && user.lang

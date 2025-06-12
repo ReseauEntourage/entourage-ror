@@ -55,7 +55,7 @@ module UserSmalltalkable
     }
 
     scope :profile_match, -> (user_smalltalk) {
-      where.not(user_profile: user_smalltalk.user_profile_before_type_cast)
+      where("(user_smalltalks.user_profile != ? OR smalltalks.id is not null)", user_smalltalk.user_profile_before_type_cast)
     }
 
     scope :reciprocity_match, -> (user_smalltalk) {

@@ -6,6 +6,7 @@ class TranslationObserver < ActiveRecord::Observer
 
     return if record.is_a?(Entourage) && record.conversation?
     return unless record.persisted?
+    return unless relevant_change?(record)
 
     return action(:create, record) if commit_is?(record, [:create])
     return action(:update, record) if commit_is?(record, [:update])
@@ -20,5 +21,11 @@ class TranslationObserver < ActiveRecord::Observer
 
   def commit_is? record, actions
     record.send(:transaction_include_any_action?, actions)
+  end
+
+  def relevant_change? record
+    return true if record.previous_changes.key?('id')
+
+    (record.previous_changes.keys.map(&:to_s) & record.translation_keys).any?
   end
 end
