@@ -28,7 +28,6 @@ class Neighborhood < ApplicationRecord
   has_many :neighborhoods_entourages
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
-  has_many :conversation_messages, as: :messageable, dependent: :destroy
   has_many :recent_chat_messages, -> {
     where("chat_messages.created_at > date_trunc('day', NOW() - interval '1 month')")
   }, as: :messageable, class_name: :ChatMessage

@@ -36,8 +36,6 @@ class Entourage < ApplicationRecord
   has_one :chat_messages_count, -> {
     select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').group('messageable_id, messageable_type')
   }, as: :messageable, class_name: 'ChatMessage'
-  has_many :conversation_messages, as: :messageable, dependent: :destroy
-  has_many :parent_conversation_messages, -> { where(ancestry: nil) }, as: :messageable, dependent: :destroy, class_name: :ChatMessage
   has_many :entourage_invitations, foreign_key: :invitable_id, dependent: :destroy
 
   has_one :entourage_score, dependent: :destroy

@@ -40,24 +40,24 @@ module Admin
       sanitized_user_id = ActiveRecord::Base.connection.quote user_id
 
       entourages = Entourage
-        .joins("LEFT JOIN conversation_messages on conversation_messages.messageable_type = 'Entourage' and conversation_messages.messageable_id = entourages.id and conversation_messages.user_id = #{sanitized_user_id}")
+        .joins("LEFT JOIN chat_messages on chat_messages.messageable_type = 'Entourage' and chat_messages.messageable_id = entourages.id and chat_messages.user_id = #{sanitized_user_id}")
         .where([
-          'conversation_messages.user_id is not null or entourages.user_id = ?',
+          'chat_messages.user_id is not null or entourages.user_id = ?',
           user_id
         ])
         .group('entourages.id')
-        .order(Arel.sql('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc'))
+        .order(Arel.sql('GREATEST(entourages.created_at, MAX(chat_messages.created_at)) desc'))
         .page(params[:page]).per(10)
 
-      messages = ConversationMessage
+      messages = ChatMessage
         .where(user_id: user_id, messageable_type: :Entourage, messageable_id: entourages)
-        .select('created_at, content, messageable_id as entourage_id, status, full_object_type, full_object_id')
+        .select('created_at, content, messageable_id, status')
 
-      messages += entourages.select('entourages.created_at, entourages.description as content, entourages.id as entourage_id')
+      messages += entourages.select('entourages.created_at, entourages.description as content, entourages.id as messageable_id')
 
       @entourage_messages =
         messages
-        .group_by(&:entourage_id)
+        .group_by(&:messageable_id)
         .sort_by { |_, ms| ms.map(&:created_at).max }
         .reverse
 
