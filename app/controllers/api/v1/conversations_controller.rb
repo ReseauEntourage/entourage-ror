@@ -24,7 +24,12 @@ module Api
       end
 
       def memberships
-        memberships = current_user.accepted_join_requests.includes(:joinable)
+        memberships = current_user
+          .accepted_join_requests
+          .order(updated_at: :desc)
+          .includes(:joinable)
+          .page(page)
+          .per(per)
 
         render json: memberships, root: :memberships, each_serializer: ::V1::MembershipSerializer, scope: {
           user: current_user

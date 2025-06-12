@@ -10,6 +10,10 @@ module V1
       :number_of_unread_messages,
       :last_chat_message
 
+    def joinable_status
+      object.joinable.try(:status)
+    end
+
     def name
       object.joinable.try(:name) || object.joinable.try(:title)
     end
