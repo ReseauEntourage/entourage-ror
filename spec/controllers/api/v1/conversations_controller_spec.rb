@@ -140,6 +140,25 @@ describe Api::V1::ConversationsController do
     end
   end
 
+  describe 'GET memberships' do
+    subject { JSON.parse(response.body)["memberships"] }
+
+    let(:request) { get :memberships, params: { token: user.token }}
+    let(:participant) { create :public_user, first_name: :Jane }
+
+    context 'conversations, outings, neighborhoods and smalltalks' do
+      let!(:conversation) { create :conversation, participants: [user, participant] }
+      let!(:outing) { create :outing, participants: [user] }
+      let!(:neighborhood) { create :neighborhood, participants: [user] }
+      let!(:smalltalk) { create :smalltalk, participants: [user] }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject.count).to eq(4) }
+    end
+  end
+
   describe 'GET private' do
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
