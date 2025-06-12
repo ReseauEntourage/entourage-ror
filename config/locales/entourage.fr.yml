@@ -384,6 +384,7 @@ fr:
       update_on_action: "Vous venez de rejoindre une action de %s"
       update_on_outing: "Vous venez de rejoindre un événement de %s"
       update_on_neighborhood: "Vous venez de rejoindre un groupe de %s"
+      update_on_smalltalk: "Vous venez de rejoindre une nouvelle bande de Bonnes Ondes"
       create: "%s vient de rejoindre votre %s \"%s\""
       create_outing: "%s vient de rejoindre votre événement \"%s\" du %s"
       create_smalltalk_user_object: smalltalk_user_object

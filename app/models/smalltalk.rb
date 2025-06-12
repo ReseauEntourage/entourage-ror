@@ -36,6 +36,10 @@ class Smalltalk < ApplicationRecord
     }
   end
 
+  # @code_legacy
+  def user
+  end
+
   def share_url
     return unless uuid_v2
 

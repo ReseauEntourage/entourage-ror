@@ -695,6 +695,8 @@ class PushNotificationTrigger
   end
 
   def username user
+    return unless user
+
     UserPresenter.new(user: user).display_name
   end
 

@@ -9,13 +9,12 @@ module SmalltalkServices
 
     def run
       return unless entourage_user
-      return unless status_changed?
+      return unless is_new? || status_changed?
 
-      return create_message(:new_member) if join_request.accepted?
       return create_message(:destroy_member) if join_request.cancelled?
       return create_message(:banned_member) if join_request.rejected?
 
-      nil
+      create_message(:new_member)
     end
 
     private
@@ -26,6 +25,10 @@ module SmalltalkServices
 
     def username
       join_request.user.first_name
+    end
+
+    def is_new?
+      changes.key?("id")
     end
 
     def status_changed?
