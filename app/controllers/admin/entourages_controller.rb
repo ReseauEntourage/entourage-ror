@@ -106,7 +106,7 @@ module Admin
         .includes(:user)
         .to_a
 
-      @chat_messages = @entourage.parent_conversation_messages.includes(:survey, :translation).order(created_at: :desc)
+      @chat_messages = @entourage.parent_chat_messages.includes(:survey, :translation).order(created_at: :desc)
           .includes(:user)
           .with_content
           .page(params[:page])
