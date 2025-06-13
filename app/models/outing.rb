@@ -89,6 +89,17 @@ class Outing < Entourage
 
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
+  scope :for_user, -> (user) {
+    return unless user
+    return if user.association?
+    return if user.ambassador?
+
+    return where("exclusive_to is null or exclusive_to = 'ask_for_help'") if user.is_ask_for_help?
+    return where("exclusive_to is null or exclusive_to = 'offer_help'") if user.is_offer_help?
+
+    where(exclusive_to: nil)
+  }
+
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
   def initialize_dup original_outing
