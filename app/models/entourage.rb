@@ -30,6 +30,7 @@ class Entourage < ApplicationRecord
   has_many :neighborhoods, through: :neighborhoods_entourages
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
+  has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, dependent: :destroy, class_name: :ChatMessage
   has_one :last_chat_message, -> {
     select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at desc')
   }, as: :messageable, class_name: 'ChatMessage'
