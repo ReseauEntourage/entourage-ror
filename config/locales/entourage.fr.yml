@@ -94,6 +94,7 @@ fr:
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation
         sf_category: Type d'événement
+        exclusive_to: Événement réservé à
         categories:
           social: Social
           resource: Ressource
