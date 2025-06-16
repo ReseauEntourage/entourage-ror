@@ -8,6 +8,14 @@ module UserServices
       unread_conversations.count
     end
 
+    def number_of_unread_for_joinable_types joinable_types
+      JoinRequest.where(user_id: user.id, joinable_type: joinable_types)
+        .with_unread_messages
+        .pluck(:joinable_id)
+        .uniq
+        .count
+    end
+
     def unread_by_group_type
       unreads = unread_conversations_by_group_type
 
