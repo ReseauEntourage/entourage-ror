@@ -1,6 +1,6 @@
 module Admin
   class UserSmalltalksController < Admin::BaseController
-    before_action :set_user_smalltalk, only: [:show, :show_matches, :show_almost_matches, :edit, :update, :match]
+    before_action :set_user_smalltalk, only: [:show, :show_matches, :show_almost_matches, :edit, :update, :match, :notify_almost_match]
 
     def index
       @params = params.permit(:matched).to_h
@@ -53,6 +53,12 @@ module Admin
 
     def match
       @user_smalltalk.find_and_save_match!
+
+      redirect_to admin_user_smalltalks_path
+    end
+
+    def notify_almost_match
+      PushNotificationTrigger.new(@user_smalltalk, :almost_match, Hash.new).run
 
       redirect_to admin_user_smalltalks_path
     end
