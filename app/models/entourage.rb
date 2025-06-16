@@ -63,7 +63,6 @@ class Entourage < ApplicationRecord
   validates_inclusion_of :group_type, in: -> (e) { e.community&.group_types&.keys || [] }
   validates_inclusion_of :public, in: -> (e) { e.public_accessibility_options }
   validates_inclusion_of :online, in: -> (e) { e.online_setting_options }
-  validates_inclusion_of :exclusive_to, in: User::GOALS, allow_nil: true
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
   validate :validate_place_limit, if: :outing?

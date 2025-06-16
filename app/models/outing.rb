@@ -13,6 +13,7 @@ class Outing < Entourage
   before_validation :update_relatives_dates, if: :force_relatives_dates
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
+  before_validation :normalize_exclusive_to
 
   after_validation :add_creator_as_member, if: :new_record?
   after_validation :dup_neighborhoods_entourages, if: :original_outing
@@ -60,6 +61,7 @@ class Outing < Entourage
   validate :validate_outings_starts_at
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
+  validates_inclusion_of :exclusive_to, in: User::GOALS, allow_nil: true
 
   default_scope { where(group_type: :outing).order(Arel.sql("metadata->>'starts_at'")) }
 
@@ -269,6 +271,10 @@ class Outing < Entourage
     else
       remove_entourage_image_id!
     end
+  end
+
+  def normalize_exclusive_to
+    self.exclusive_to = nil if exclusive_to.blank?
   end
 
   def set_uuid!
