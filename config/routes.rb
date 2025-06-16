@@ -317,6 +317,7 @@ Rails.application.routes.draw do
           get :show_matches
           get :show_almost_matches
           post :match
+          post :notify_almost_match
         end
       end
 
