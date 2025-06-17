@@ -4,13 +4,17 @@ class Meeting < ApplicationRecord
   def create_google_meet_event
     meeting_space = create_individual_meet_space
 
-    if meeting_space
-      created_event = create_calendar_event_with_space(meeting_space)
-      update_meet_link(meeting_space['meetingUri'], created_event)
-    else
-      created_event = create_standard_calendar_event
-      update_meet_link(nil, created_event)
+    unless meeting_space.present? && meeting_space['meetingUri'] && meeting_space['name']
+      Rails.logger.error("Google Meet space creation failed: invalid or incomplete response") and return
     end
+
+    created_event = create_calendar_event_with_space(meeting_space)
+
+    unless created_event&.html_link
+      Rails.logger.error("Google Calendar creation event failed") and return
+    end
+
+    update_meet_link(meeting_space['meetingUri'], created_event)
   end
 
   private
@@ -34,42 +38,41 @@ class Meeting < ApplicationRecord
       body: space_config.to_json
     )
 
-    response.success? ? JSON.parse(response.body) : nil
-  rescue
+    if response.success?
+      JSON.parse(response.body)
+    else
+      Rails.logger.error("API Meet error: #{response.code} - #{response.parsed_response}")
+      nil
+    end
+  rescue => e
+    Rails.logger.error("Meet space creation exception: #{e.class} - #{e.message}")
     nil
   end
 
   def create_calendar_event_with_space(meeting_space)
     meeting_uri = meeting_space['meetingUri']
-    space_name = meeting_space['name']
+    space_name  = meeting_space['name']
 
-    event = build_calendar_event({
+    entry_point = Google::Apis::CalendarV3::EntryPoint.new(
+      entry_point_type: 'video',
+      uri: meeting_uri,
+      label: 'Rejoindre avec Google Meet'
+    )
+
+    conference_data = Google::Apis::CalendarV3::ConferenceData.new(
       conference_id: space_name,
-      signature: SecureRandom.uuid,
-      entry_points: [
-        {
-          entry_point_type: 'video',
-          uri: meeting_uri,
-          label: 'Rejoindre avec Google Meet'
-        }
-      ]
-    })
+      entry_points: [entry_point]
+    )
+
+    event = build_calendar_event(conference_data: conference_data)
 
     GOOGLE_CALENDAR_SERVICE.insert_event('primary', event, conference_data_version: 1)
+  rescue Google::Apis::ClientError => e
+    Rails.logger.error("Google API error: #{e.message}")
+    nil
   end
 
-  def create_standard_calendar_event
-    event = build_calendar_event({
-      create_request: {
-        request_id: SecureRandom.uuid,
-        conference_solution_key: { type: 'hangoutsMeet' }
-      }
-    })
-
-    GOOGLE_CALENDAR_SERVICE.insert_event('primary', event, conference_data_version: 1)
-  end
-
-  def build_calendar_event(conference_data)
+  def build_calendar_event(conference_data:)
     Google::Apis::CalendarV3::Event.new(
       summary: title,
       start: {
