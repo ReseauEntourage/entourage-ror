@@ -85,7 +85,7 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
                 "community_roles" => []
               }
             ],
-            "meeting_url" => "https://meet.google.com/stubbed-meet-link",
+            "meeting_url" => nil,
           }
         }
       })}
