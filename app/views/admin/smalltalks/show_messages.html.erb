@@ -76,6 +76,18 @@
               <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
             <% end %>
           </div>
+          <div class="conversation-actions">
+            <div class="dropdown" style="display: inline-block">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                <li>
+                  <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       <% end %>
     <% end %>
