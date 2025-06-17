@@ -29,6 +29,9 @@ RSpec.configure do |config|
     # deactivate salesforce updates
     SalesforceJob.any_instance.stub(:perform).and_return(nil)
 
+    # deactivate google meet creations
+    CreateGoogleMeetJob.any_instance.stub(:perform).and_return(nil)
+
     # deactivate openai assistant
     OpenaiRequestJob.any_instance.stub(:perform).and_return(nil)
 
