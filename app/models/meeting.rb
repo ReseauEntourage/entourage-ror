@@ -1,5 +1,12 @@
 class Meeting < ApplicationRecord
-  after_create :create_google_meet_event
+  after_create :schedule_meet_creation
+
+  def schedule_meet_creation
+    return if create_google_meet_event
+
+    # retry unless successfully created
+    CreateGoogleMeetJob.set(wait: 2.minutes).perform_later(id)
+  end
 
   def create_google_meet_event
     meeting_space = create_individual_meet_space
@@ -90,6 +97,7 @@ class Meeting < ApplicationRecord
 
   def update_meet_link(meeting_uri, created_event)
     link = meeting_uri || created_event&.hangout_link
+
     update!(meet_link: link) if link
   end
 end
