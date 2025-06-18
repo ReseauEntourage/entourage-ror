@@ -658,14 +658,13 @@ class PushNotificationTrigger
     notify(
       sender_id: nil,
       referent: @record,
-      instance: @record,
+      instance: :almost_matches,
       users: [@record.user],
       params: {
         object: I18nStruct.new(i18n: 'push_notifications.matching.almost_match_title'),
         content: I18nStruct.new(i18n: 'push_notifications.matching.almost_match_content'),
         extra: {
-          tracking: :almost_match,
-          popup: :almost_match
+          tracking: :almost_match
         }
       }
     )
