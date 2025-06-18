@@ -19,7 +19,7 @@ class ChatMessage < ApplicationRecord
 
   has_ancestry
 
-  belongs_to :messageable, polymorphic: true
+  belongs_to :messageable, polymorphic: true, touch: true
   belongs_to :entourage, -> {
     where("chat_messages.messageable_type = 'Entourage'")
   }, foreign_key: :messageable_id, optional: true # why optional? Cause it might belongs_to Neighborhood
