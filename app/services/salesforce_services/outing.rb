@@ -12,7 +12,7 @@ module SalesforceServices
       return false unless user = instance.user
       return false unless instance.address.present?
 
-      user.team?
+      user.team? || user.ambassador?
     end
 
     def upsert
