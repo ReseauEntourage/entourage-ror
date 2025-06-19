@@ -56,7 +56,10 @@ module SalesforceServices
     end
 
     def fetch_fields fields
-      client.query("select #{fields.join(', ')} from #{interface.table_name} where #{interface.external_id_value} = #{instance.send(interface.external_id_key)}").first
+      value = instance.send(interface.external_id_key)
+      value = "'#{value}'" unless value.is_a?(Float) || value.is_a?(Integer)
+
+      client.query("select #{fields.join(', ')} from #{interface.table_name} where #{interface.external_id_value} = #{value}").first
     end
 
     def update
