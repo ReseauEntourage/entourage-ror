@@ -282,7 +282,7 @@ RSpec.describe Entourage, type: :model do
 
     describe "on new chat_message of type status_update" do
       subject { create :chat_message, :closed_as_success, messageable: group }
-      include_examples "is not updated"
+      include_examples "is updated"
     end
   end
 

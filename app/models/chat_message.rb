@@ -56,6 +56,7 @@ class ChatMessage < ApplicationRecord
   after_create :update_recipients_report_prompt_status
 
   after_commit :update_parent_comments_count
+  after_save :touch_messageable_timestamp
 
   alias_attribute :name, :content
 
@@ -321,6 +322,13 @@ class ChatMessage < ApplicationRecord
       .where(messageable_id: messageable_id)
       .count
     )
+  end
+
+  def touch_messageable_timestamp
+    return unless messageable.present?
+    return unless messageable.respond_to?(:updated_at)
+
+    messageable.update_column(:updated_at, Time.current)
   end
 
   def update_sender_report_prompt_status

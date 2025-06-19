@@ -1,7 +1,7 @@
   <div class="row">
     <ol class="breadcrumb">
       <li><%= link_to "Bonnes ondes", admin_smalltalks_path %></li>
-      <li><%= @smalltalk[:id] %> (<%= @smalltalk[:uuid_v2] %>)</li>
+      <li><%= @smalltalk[:id] %> - <%= @smalltalk.meeting_url %></li>
     </ol>
 
     <h2>
