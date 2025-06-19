@@ -18,6 +18,7 @@ module SalesforceServices
       reseau: "R_seaux__c",
       record_type_id: "RecordTypeId",
       type: "Type",
+      type_public: "Public_sensibilis__c",
       type_evenement: "Type_evenement__c"
     }
 
@@ -126,6 +127,10 @@ module SalesforceServices
 
       def type
         "Event"
+      end
+
+      def type_public
+        "Grand public"
       end
 
       def type_evenement
