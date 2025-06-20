@@ -137,6 +137,8 @@ module SalesforceServices
       end
 
       def last_sign_in_date
+        return unless user.last_sign_in_at.present?
+
         user.last_sign_in_at.strftime("%Y-%m-%d")
       end
 
