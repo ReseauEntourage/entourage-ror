@@ -89,7 +89,7 @@ module Salesforcable
     end
 
     unless force
-      return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
+      return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
     end
 
     if salesforce_id.nil?

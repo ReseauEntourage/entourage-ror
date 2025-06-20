@@ -12,7 +12,7 @@ module SalesforceServices
     end
 
     def upsert
-      contact_id = lead_id ? contact_id : contact_id!
+      contact_id = lead_id.present? ? contact_id : contact_id!
 
       upsert_from_fields(
         interface.mapped_fields.merge({
