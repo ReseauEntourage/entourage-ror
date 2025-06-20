@@ -404,6 +404,12 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  def departement
+    return unless postal_code.present?
+
+    postal_code[0..1]
+  end
+
   def starts_at
     return unless outing?
     return unless metadata
