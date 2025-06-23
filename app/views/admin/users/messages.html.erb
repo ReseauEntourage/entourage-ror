@@ -42,7 +42,7 @@
 
         <tr>
           <td>
-            <% if message.is_a?(ConversationMessage) && message.deleted? %>
+            <% if message.is_a?(ChatMessage) && message.deleted? %>
               <p style="color: red;"> Ce message a été supprimé par <%= message.deleter&.full_name %> le <%= l message.deleted_at, format: :short %> : </p>
               <em><%= simple_format message.content(true) %></em>
             <% else %>

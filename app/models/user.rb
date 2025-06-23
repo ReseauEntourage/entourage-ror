@@ -62,7 +62,6 @@ class User < ApplicationRecord
   has_many :contribution_memberships, -> { where(group_type: :action, entourage_type: :contribution).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
 
   has_many :chat_messages
-  has_many :conversation_messages
   has_many :user_applications
   has_many :user_relationships, foreign_key: "source_user_id", dependent: :destroy
   has_many :relations, through: :user_relationships, source: "target_user"
