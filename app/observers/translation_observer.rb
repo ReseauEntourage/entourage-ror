@@ -26,6 +26,6 @@ class TranslationObserver < ActiveRecord::Observer
   def relevant_change? record
     return true if record.previous_changes.key?('id')
 
-    (record.previous_changes.keys.map(&:to_s) & record.translation_keys).any?
+    (record.previous_changes.keys.map(&:to_s) & record.translation_keys.map(&:to_s)).any?
   end
 end
