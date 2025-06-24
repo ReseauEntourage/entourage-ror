@@ -13,6 +13,14 @@ module EntourageServices
       entourage.update(updates)
     end
 
+    def self.get_postal_code latitude, longitude
+      return unless latitude.present? && longitude.present?
+
+      EntourageServices::GeocodingService.search_postal_code(latitude, longitude).second
+    rescue
+      nil
+    end
+
     def self.search_postal_code latitude, longitude
       # this will raise in case of an API error
       # see config/initializers/geocoder.rb
