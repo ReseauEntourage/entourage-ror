@@ -404,6 +404,10 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  def postal_code
+    self[:postal_code] ||= EntourageServices::GeocodingService.get_postal_code(latitude, longitude)
+  end
+
   def departement
     return unless postal_code.present?
 
