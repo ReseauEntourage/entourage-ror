@@ -405,8 +405,17 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  # gets departement from postal_code
+  # in case postal_code is not defined, tries to get it from coordinates
   def departement
+    return postal_code[0..1] if postal_code.present?
+
+    return unless latitude.present? && longitude.present?
+
+    _, postal_code, _ = EntourageServices::GeocodingService.search_postal_code(latitude, longitude)
+
     return unless postal_code.present?
+    return unless postal_code.length >= 2
 
     postal_code[0..1]
   end
