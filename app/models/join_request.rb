@@ -50,6 +50,17 @@ class JoinRequest < ApplicationRecord
     where(user_id: User.search_by_first_name(strip))
   }
 
+  scope :with_joinable_type, -> (joinable_type) {
+    return unless joinable_type.present?
+    return unless joinable_type.respond_to?(:to_s)
+
+    return where(joinable_type: :Entourage).where(
+      joinable_id: Entourage.where(group_type: joinable_type.to_s.downcase)
+    ) if ['action', 'outing', 'conversation'].include?(joinable_type.to_s.downcase)
+
+    where(joinable_type: joinable_type)
+  }
+
   after_save :joinable_callback
   after_destroy :joinable_callback
   before_save :reset_confirmed_at_unless_accepted

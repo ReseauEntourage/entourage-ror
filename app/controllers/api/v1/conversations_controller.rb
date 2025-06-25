@@ -26,6 +26,7 @@ module Api
       def memberships
         memberships = current_user
           .accepted_join_requests
+          .with_joinable_type(params[:type])
           .order(updated_at: :desc)
           .includes(:joinable)
           .page(page)
