@@ -12,7 +12,7 @@ module SmalltalkServices
         SmalltalkAutoChatMessageJob.new.perform(
           smalltalk.id,
           event,
-          nil
+          smalltalk.meeting_url
         )
       end
     end
