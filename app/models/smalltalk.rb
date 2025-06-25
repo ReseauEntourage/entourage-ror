@@ -25,6 +25,24 @@ class Smalltalk < ApplicationRecord
 
   scope :with_people, -> { where("number_of_people > 1") }
 
+  scope :complete, -> {
+    where("match_format = :one and number_of_people = 2 or number_of_people = 5", one: UserSmalltalk.match_formats[:one])
+  }
+
+  scope :having_last_message_during_day, -> (datetime) {
+    where(
+      id: ChatMessage.select(:messageable_id)
+        .where(messageable_type: 'Smalltalk')
+        .where(message_type: 'text')
+        .group(:messageable_type, :messageable_id)
+        .having("MAX(created_at) between ? and ?", datetime.beginning_of_day, datetime.end_of_day)
+    )
+  }
+
+  scope :without_event, -> (event) {
+    where("events ->> :event IS NULL", event: event)
+  }
+
   # @code_legacy
   def group_type
     'smalltalk'
@@ -98,5 +116,13 @@ class Smalltalk < ApplicationRecord
 
   def cancel_auto_messages!
     SmalltalkAutoChatMessageJob.cancel_jobs_for_smalltalk(id)
+  end
+
+  def add_event! key
+    return if key.blank?
+
+    update_column(:events, events.merge({
+      key => Time.zone.now
+    }))
   end
 end
