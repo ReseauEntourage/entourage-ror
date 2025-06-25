@@ -6,6 +6,7 @@ module Admin
       @smalltalks = Smalltalk.includes(user_smalltalks: { user: :address }).order(updated_at: :desc).page(page).per(per)
 
       @chart_data = ChatMessage.where(
+        message_type: 'text',
         messageable_type: 'Smalltalk',
         messageable_id: @smalltalks.pluck(:id),
         created_at: 7.days.ago.beginning_of_day..
