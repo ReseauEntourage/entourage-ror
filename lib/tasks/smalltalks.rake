@@ -6,7 +6,7 @@ namespace :smalltalks do
 
   desc "Inactivity"
   task inactivity: :environment do
-    [3, 5, 7].each do |days|
+    (1..21).each do |days|
       SmalltalkServices::Inactivity.new(days).chat_messages!
     end
   end
