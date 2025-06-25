@@ -3,7 +3,17 @@ module Admin
     before_action :set_smalltalk, only: [:show, :show_members, :show_messages, :message]
 
     def index
-      @smalltalks = Smalltalk.includes(:accepted_members).order(updated_at: :desc).page(page).per(per)
+      @smalltalks = Smalltalk.includes(user_smalltalks: { user: :address }).order(updated_at: :desc).page(page).per(per)
+
+      @chart_data = ChatMessage.where(
+        messageable_type: 'Smalltalk',
+        messageable_id: @smalltalks.pluck(:id),
+        created_at: 7.days.ago.beginning_of_day..
+      ).group(:messageable_id, "DATE(created_at)::text")
+       .count
+
+      @max_messages_per_day = @chart_data.values.max || 0
+      @max_messages_per_day = (@max_messages_per_day * 1.1).ceil
     end
 
     def show
