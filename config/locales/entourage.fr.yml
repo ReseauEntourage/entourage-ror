@@ -401,6 +401,11 @@ fr:
       create: "%s a répondu à votre sondage : %s"
     matching:
       create: "Ce contenu pourrait vous intéresser"
+    user_smalltalk:
+      expire_object: "Toujours pas de match 😕"
+      expire_content: |
+        Ta demande de Bonnes Ondes a expiré.
+        Essaies peut-être avec des critères un peu plus souples ? ✨
 
   timeliner:
     h1:
