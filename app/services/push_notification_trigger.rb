@@ -676,8 +676,8 @@ class PushNotificationTrigger
 
     notify(
       sender_id: nil,
-      referent: @record,
-      instance: @record,
+      referent: nil,
+      instance: nil,
       users: [@record.user],
       params: {
         object: I18nStruct.new(i18n: 'push_notifications.smalltalk.expire'),
