@@ -8,6 +8,7 @@
           <thead>
             <tr>
               <th>#</th>
+              <th>Messages</th>
               <th>Type</th>
               <th>Nombre</th>
               <th>Utilisateur</th>
@@ -20,6 +21,30 @@
             <% @smalltalks.each do |smalltalk| %>
               <tr>
                 <td><%= link_to "#{smalltalk.id} (#{smalltalk.uuid_v2})", admin_smalltalk_path(smalltalk) %></td>
+                <td>
+                  <%= column_chart chart_data(smalltalk.id, @chart_data),
+                      height: "100px",
+                      width: "200px",
+                      colors: ["#007bff"],
+                      library: {
+                        legend: { display: false },
+                        scales: {
+                          y: {
+                            display: false,
+                            beginAtZero: true,
+                            max: @max_messages_per_day
+                          },
+                          x: {
+                            display: true,
+                            ticks: {
+                              font: { size: 10 },
+                              maxRotation: 45,
+                              minRotation: 0
+                            }
+                          }
+                        }
+                      } %>
+                </td>
                 <td><%= smalltalk.match_format %></td>
                 <td><%= smalltalk.number_of_people %></td>
                 <td></td>
