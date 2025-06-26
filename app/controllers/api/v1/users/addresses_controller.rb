@@ -52,7 +52,7 @@ module Api
 
         def enforce_id
           unless params[:user_id] == 'me'
-            render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 401)
+            render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 403)
           end
         end
 
