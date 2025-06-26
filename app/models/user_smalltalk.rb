@@ -52,6 +52,10 @@ class UserSmalltalk < ApplicationRecord
     super(user_id)
   end
 
+  def deleted?
+    deleted_at.present?
+  end
+
   def quota_reached?
     joined_smalltalks.count >= 3
   end
