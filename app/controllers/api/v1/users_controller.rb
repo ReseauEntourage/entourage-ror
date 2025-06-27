@@ -218,7 +218,7 @@ module Api
       def presigned_avatar_upload
         user = params[:id] == "me" ? current_user : community.users.find(params[:id])
         if user != current_user
-          return render_error(code: "UNAUTHORIZED", message: "You can only update your own avatar.", status: 401)
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own avatar.", status: 403)
         end
 
         allowed_types = %w(image/jpeg image/gif)
@@ -245,7 +245,7 @@ module Api
 
       def address
         if !params[:id].in?(['me', UserService.external_uuid(current_user_or_anonymous)])
-          return render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 401)
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 403)
         end
 
         updater = UserServices::AddressService.new(user: current_user_or_anonymous, position: 1, params: address_params)
@@ -271,7 +271,7 @@ module Api
 
       def following
         if !params[:id].in?(['me', UserService.external_uuid(current_user_or_anonymous)])
-          return render_error(code: "UNAUTHORIZED", message: "You can only update your own followings.", status: 401)
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own followings.", status: 403)
         end
 
         partner_id = following_params[:partner_id]
