@@ -42,11 +42,11 @@ resource Api::V1::Users::AddressesController do
       end
     end
 
-    context '401' do
+    context '403' do
       let(:user_id) { user.id }
 
       example_request 'Create address at position for id is forbidden' do
-        expect(response_status).to eq(401)
+        expect(response_status).to eq(403)
       end
     end
   end
