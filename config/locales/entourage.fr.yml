@@ -461,6 +461,10 @@ fr:
         %s ne fait plus partie du groupe. Son comportement ne collait pas tout à fait avec l’esprit des bandes solidaires. On compte sur vous pour continuer à faire vivre cet espace avec bienveillance et bonne humeur 🙏
       incomplete: |
         On vous prépare un joli groupe de Bonnes Ondes ✨ En attendant les prochaines personnes, petit défi : tentez de deviner le prénom du ou de la prochaine à rejoindre. Les chances de tomber juste sont minces... mais qui sait ? 👀
+      close: |
+        Tous les membres de ce groupe de Bonnes Ondes ont décidé de quitter la conversation, vous vous retrouvez donc seul(e) ici. Le groupe est désormais fermé. Vous pouvez toujours consulter l'historique des échanges et y revenir si besoin.
+
+        Si vous souhaitez continuer à partager de Bonnes Ondes, n'hésitez pas à créer une nouvelle demande pour rejoindre un autre groupe. À bientôt 👋
       complete: |
         Le groupe est au complet ! 🎉
 
