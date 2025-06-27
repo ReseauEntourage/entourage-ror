@@ -680,10 +680,10 @@ class PushNotificationTrigger
       instance: nil,
       users: [@record.user],
       params: {
-        object: I18nStruct.new(i18n: 'push_notifications.smalltalk.expire'),
-        content: I18nStruct.new(i18n: 'push_notifications.smalltalk.expire.content'),
+        object: I18nStruct.new(i18n: 'push_notifications.user_smalltalk.expire_object'),
+        content: I18nStruct.new(i18n: 'push_notifications.user_smalltalk.expire_content'),
         extra: {
-          tracking: :smalltalk_expire
+          tracking: :user_smalltalk_expire
         }
       }
     )
