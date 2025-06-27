@@ -19,6 +19,12 @@ module SalesforceServices
       find_id || super
     end
 
+    def destroy
+      return unless id = find_id
+
+      client.update(interface.table_name, Id: id, Status: "Aborted")
+    end
+
     def updatable_fields
       [:status, :title, :metadata, :sf_category, :sf_category_list]
     end
