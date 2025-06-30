@@ -114,6 +114,8 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_almost_matches
+    update_column(:last_almost_match_computation_at, Time.zone.now)
+
     build_matches(UserSmalltalk.best_matches(self).limit(10))
   end
 
