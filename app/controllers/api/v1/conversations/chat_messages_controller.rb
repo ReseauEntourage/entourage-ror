@@ -97,11 +97,11 @@ module Api
         end
 
         def chat_messages_params
-          params.require(:chat_message).permit(:content)
+          params.require(:chat_message).permit(:content, :image_url)
         end
 
         def chat_message_update_params
-          params.require(:chat_message).permit(:content)
+          params.require(:chat_message).permit(:content, :image_url)
         end
 
         def set_conversation
