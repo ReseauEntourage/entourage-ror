@@ -6,6 +6,7 @@ module V1
        :content,
        :user,
        :created_at,
+       :image_url,
        :read,
        :status
 
