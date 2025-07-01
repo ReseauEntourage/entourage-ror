@@ -15,7 +15,7 @@
             <% parite = i.even? ? 'pair' : 'impair' %>
 
             <tr class="above-row row-<%= parite %>">
-              <td><%= link_to outing["Id_app_de_l_event__c"], admin_salesforce_outing_path(outing["Id_app_de_l_event__c"]) %></td>
+              <td><%= link_to outing["Id_app_de_l_event__c"], admin_salesforce_outing_path(outing["Id_app_de_l_event__c"]) if outing["Id_app_de_l_event__c"].present? %></td>
               <% @interface.instance_mapping.values.each do |field_name| %>
                 <td><%= outing[field_name] %></td>
               <% end %>
