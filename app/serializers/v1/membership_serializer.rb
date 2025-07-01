@@ -3,6 +3,7 @@ module V1
     attributes :status,
       :joinable_status,
       :name,
+      :subname,
       :joinable_type,
       :joinable_id,
       :number_of_people,
@@ -25,7 +26,15 @@ module V1
     end
 
     def name
+      return name_for_conversation if object.conversation?
+
       object.joinable.try(:name) || object.joinable.try(:title)
+    end
+
+    def subname
+      return unless object.outing?
+
+      object.joinable.starts_at
     end
 
     def number_of_people
@@ -40,6 +49,20 @@ module V1
     end
 
     def last_chat_message
+    end
+
+    private
+
+    def name_for_conversation
+      return unless other_participant
+
+      UserPresenter.new(user: other_participant).display_name
+    end
+
+    def other_participant
+      return unless object.conversation?
+
+      @other_participant ||= object.joinable.interlocutor_of(scope[:user])
     end
   end
 end

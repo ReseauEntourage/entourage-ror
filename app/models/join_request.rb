@@ -97,6 +97,10 @@ class JoinRequest < ApplicationRecord
     entourage? && joinable.outing?
   end
 
+  def conversation?
+    entourage? && joinable.conversation?
+  end
+
   def neighborhood?
     joinable_type == 'Neighborhood'
   end
