@@ -90,28 +90,28 @@ module SalesforceServices
       def starts_date
         return unless outing.starts_at.present?
 
-        (outing.starts_at - 1.hour).strftime("%Y-%m-%d")
+        (outing.starts_at + 1.hour).strftime("%Y-%m-%d")
       end
 
       # hack one hour to avoid timezone issues on salesforce
       def starts_time
         return unless outing.starts_at.present?
 
-        (outing.starts_at - 1.hour).strftime("%H:%M:%S")
+        (outing.starts_at + 1.hour).strftime("%H:%M:%S")
       end
 
       # hack one hour to avoid timezone issues on salesforce
       def ends_date
         return unless outing.ends_at.present?
 
-        (outing.ends_at - 1.hour).strftime("%Y-%m-%d")
+        (outing.ends_at + 1.hour).strftime("%Y-%m-%d")
       end
 
       # hack one hour to avoid timezone issues on salesforce
       def ends_time
         return unless outing.ends_at.present?
 
-        (outing.ends_at - 1.hour).strftime("%H:%M:%S")
+        (outing.ends_at + 1.hour).strftime("%H:%M:%S")
       end
 
       def ongoing?
