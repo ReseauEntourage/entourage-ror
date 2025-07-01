@@ -13,7 +13,7 @@ module SalesforceServices
       ends_date: "EndDate",
       ends_time: "Heure_de_fin__c",
       ongoing?: "IsActive",
-      not_ongoing?: "Status",
+      sf_status: "Status",
       status: "Statut_d_Entourage__c",
       reseau: "R_seaux__c",
       record_type_id: "RecordTypeId",
@@ -118,8 +118,10 @@ module SalesforceServices
         outing.ongoing?
       end
 
-      def not_ongoing?
-        ! outing.ongoing?
+      def sf_status
+        "Aborted" unless outing.ongoing?
+
+        "Planned"
       end
 
       def status
