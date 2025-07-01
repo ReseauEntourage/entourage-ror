@@ -1,5 +1,7 @@
 module UserServices
   class AddressService
+    require_dependency 'geocoding_services/finder' unless defined?(GeocodingServices::Finder)
+
     def initialize(user:, position:, params:)
       @user = user
       @position = position
