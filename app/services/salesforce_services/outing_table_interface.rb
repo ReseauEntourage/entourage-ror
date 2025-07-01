@@ -31,7 +31,7 @@ module SalesforceServices
     end
 
     def external_id_value
-      "OutingId__C"
+      "OutingId__c"
     end
 
     def mapping
