@@ -86,20 +86,32 @@ module SalesforceServices
         outing.postal_code
       end
 
+      # hack one hour to avoid timezone issues on salesforce
       def starts_date
-        outing.starts_at.strftime("%Y-%m-%d")
+        return unless outing.starts_at.present?
+
+        (outing.starts_at - 1.hour).strftime("%Y-%m-%d")
       end
 
+      # hack one hour to avoid timezone issues on salesforce
       def starts_time
-        outing.starts_at.strftime("%H:%M:%S")
+        return unless outing.starts_at.present?
+
+        (outing.starts_at - 1.hour).strftime("%H:%M:%S")
       end
 
+      # hack one hour to avoid timezone issues on salesforce
       def ends_date
-        outing.ends_at.strftime("%Y-%m-%d")
+        return unless outing.ends_at.present?
+
+        (outing.ends_at - 1.hour).strftime("%Y-%m-%d")
       end
 
+      # hack one hour to avoid timezone issues on salesforce
       def ends_time
-        outing.ends_at.strftime("%H:%M:%S")
+        return unless outing.ends_at.present?
+
+        (outing.ends_at - 1.hour).strftime("%H:%M:%S")
       end
 
       def ongoing?
