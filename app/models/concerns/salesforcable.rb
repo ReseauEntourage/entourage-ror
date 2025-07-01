@@ -85,7 +85,7 @@ module Salesforcable
     end
 
     if has_attribute?(:status)
-      return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && status == "deleted"
+      return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && ["deleted", "closed", "cancelled"].include?(status.to_s)
     end
 
     unless force
