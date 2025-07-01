@@ -14,6 +14,16 @@ module V1
       object.joinable.try(:status)
     end
 
+    # joinable_types: Smalltalk, Neighborhood, Outing, Conversation
+    def joinable_type
+      return object.joinable_type unless object.entourage?
+
+      return 'Outing' if object.outing?
+      return 'Conversation' if object.conversation?
+
+      object.joinable_type
+    end
+
     def name
       object.joinable.try(:name) || object.joinable.try(:title)
     end
