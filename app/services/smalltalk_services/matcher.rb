@@ -12,6 +12,9 @@ module SmalltalkServices
       end
 
       def almost_match! user_smalltalk
+        # temporary deactivation
+        return
+
         return unless user_smalltalk.created_at < 4.days.ago
         return unless user_smalltalk.last_almost_match_computation_at.blank? || user_smalltalk.last_almost_match_computation_at < 4.days.ago
 
