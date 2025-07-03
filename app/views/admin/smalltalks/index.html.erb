@@ -78,5 +78,10 @@
         </div>
       <% end %>
     </div>
+
+    <%= page_entries_info @smalltalks, entry_name: 'Bonnes ondes' %>
+    <div class="container">
+      <%= paginate(@smalltalks) %>
+    </div>
   </div>
 </div>
