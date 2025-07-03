@@ -18,7 +18,7 @@ class UserSmalltalk < ApplicationRecord
     .where("member_status is null or member_status != 'cancelled'")
   }
 
-  validate :quota_must_not_be_reached, on: :create
+  validate :quota_must_not_be_reached
 
   scope :not_matched, -> { where(matched_at: nil) }
   scope :with_match_filter, -> (matched) {
