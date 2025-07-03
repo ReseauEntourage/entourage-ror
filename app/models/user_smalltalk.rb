@@ -114,6 +114,8 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def find_almost_matches
+    update_column(:last_almost_match_computation_at, Time.zone.now)
+
     build_matches(UserSmalltalk.best_matches(self).limit(10))
   end
 
@@ -173,11 +175,13 @@ class UserSmalltalk < ApplicationRecord
     JoinRequest.where(user: user, joinable_type: :Smalltalk, status: JoinRequest::ACCEPTED_STATUS)
   end
 
-  def build_matches(matches)
+  def build_matches matches, max_unmatch_count = 1
     user_ids = matches.flat_map(&:user_ids) + matches.map(&:user_id)
     users_by_id = User.where(id: user_ids.uniq).index_by(&:id)
 
-    matches.map do |record|
+    matches.reject do |record|
+      record.unmatch_count > max_unmatch_count
+    end.map do |record|
       UserSmalltalkMatch.new(
         id: record.id,
         smalltalk_id: record.smalltalk_id,

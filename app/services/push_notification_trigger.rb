@@ -651,6 +651,25 @@ class PushNotificationTrigger
     )
   end
 
+  def user_smalltalk_on_almost_match
+    return unless @record.is_a?(UserSmalltalk)
+    return if @record.matched_at.present?
+
+    notify(
+      sender_id: nil,
+      referent: @record,
+      instance: :almost_matches,
+      users: [@record.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.matching.almost_match_title'),
+        content: I18nStruct.new(i18n: 'push_notifications.matching.almost_match_content'),
+        extra: {
+          tracking: :almost_match
+        }
+      }
+    )
+  end
+
   # use params[:extra] to be compliant with v7
   def notify sender_id:, referent:, instance:, users:, params: {}
     notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)

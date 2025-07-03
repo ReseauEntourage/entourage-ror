@@ -54,7 +54,6 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
           "has_matched_locality" => nil,
           "has_matched_interest" => nil,
           "unmatch_count" => nil,
-          "last_match_computation_at" => nil,
           "matched_at" => nil,
           "deleted_at" => nil,
           "created_at" => user_smalltalk.created_at.iso8601(3),

@@ -401,6 +401,8 @@ fr:
       create: "%s a répondu à votre sondage : %s"
     matching:
       create: "Ce contenu pourrait vous intéresser"
+      almost_match_title: "Suggestion de groupe"
+      almost_match_content: "Ce(s) groupe(s) de discussions bonnes ondes pourraient correspondre à ce que vous recherchez !"
 
   timeliner:
     h1:

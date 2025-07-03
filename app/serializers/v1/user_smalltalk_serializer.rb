@@ -11,7 +11,6 @@ module V1
       :has_matched_locality,
       :has_matched_interest,
       :unmatch_count,
-      :last_match_computation_at,
       :matched_at,
       :deleted_at,
       :created_at
