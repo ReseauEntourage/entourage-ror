@@ -38,7 +38,7 @@ module Api
           ::Preloaders::JoinRequest.preload_siblings(smalltalk_memberships, sibling_scope: JoinRequest.accepted)
         end
 
-        memberships.select(&:smalltalk?).presence&.tap do |smalltalk_memberships|
+        memberships.presence&.tap do |smalltalk_memberships|
           ::Preloaders::JoinRequest.preload_last_chat_message(smalltalk_memberships, message_scope: ChatMessage.no_deleted_without_comments)
         end
 
