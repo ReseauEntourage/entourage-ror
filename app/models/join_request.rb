@@ -61,6 +61,12 @@ class JoinRequest < ApplicationRecord
     where(joinable_type: joinable_type)
   }
 
+  scope :without_joinable_type, -> (joinable_type) {
+    return unless joinable_type.present?
+
+    where.not(joinable_type: joinable_type)
+  }
+
   after_save :joinable_callback
   after_destroy :joinable_callback
   before_save :reset_confirmed_at_unless_accepted

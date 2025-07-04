@@ -27,6 +27,7 @@ module Api
         memberships = current_user
           .accepted_join_requests
           .with_joinable_type(params[:type])
+          .without_joinable_type(:Neighborhood)
           .order(updated_at: :desc)
           .includes(:joinable)
           .page(page)
