@@ -32,27 +32,26 @@ module Preloaders
 
       join_keys = join_requests.map { |jr| [jr.joinable_type, jr.joinable_id] }.uniq
 
-      # Construire condition sécurisée pour les chat_messages
-      conditions_sql = join_keys.map do |type, id|
-        sanitize_sql(["(messageable_type = ? AND messageable_id = ?)", type, id])
-      end.join(" OR ")
+      # Générer la table virtuelle VALUES pour jointure
+      values_clause = join_keys.map do |type, id|
+        ActiveRecord::Base.send(:sanitize_sql_array, ["(?, ?)", type, id])
+      end.join(", ")
+      values_table = "(VALUES #{values_clause}) AS keys(messageable_type, messageable_id)"
 
-      # Appliquer un scope sur les messages si fourni
-      base_scope = ChatMessage.where(conditions_sql).order(:created_at)
-      scoped_messages = message_scope ? base_scope.merge(message_scope) : base_scope
+      # Récupérer 1 message par messageable via DISTINCT ON
+      ranked_messages = ChatMessage
+        .select("DISTINCT ON (chat_messages.messageable_type, chat_messages.messageable_id) chat_messages.*")
+        .joins("JOIN #{values_table} ON chat_messages.messageable_type = keys.messageable_type AND chat_messages.messageable_id = keys.messageable_id")
+        .merge(message_scope || ChatMessage.all)
+        .order("chat_messages.messageable_type, chat_messages.messageable_id, chat_messages.created_at DESC")
 
-      # Charger tous les messages
-      all_messages = scoped_messages.to_a
-      messages_by_key = all_messages.group_by { |msg| [msg.messageable_type, msg.messageable_id] }
+      messages_by_key = ranked_messages.index_by { |msg| [msg.messageable_type, msg.messageable_id] }
 
-      # Injecter le dernier message pour chaque join_request
       join_requests.each do |jr|
-        messages = messages_by_key[[jr.joinable_type, jr.joinable_id]] || []
-        last_message = messages.last  # Le dernier car on a trié par created_at
-
-        jr.last_chat_message = last_message
+        jr.last_chat_message = messages_by_key[[jr.joinable_type, jr.joinable_id]]
       end
     end
+
 
     def self.sanitize_sql(condition)
       ActiveRecord::Base.send(:sanitize_sql_array, condition)
