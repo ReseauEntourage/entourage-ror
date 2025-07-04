@@ -147,16 +147,19 @@ describe Api::V1::ConversationsController do
     let(:participant) { create :public_user, first_name: :Jane }
 
     context 'conversations, outings, neighborhoods and smalltalks' do
+      let(:subject_smalltalk) { subject.select { |membership| membership["joinable_type"] == "Smalltalk" }.first }
+
       let!(:conversation) { create :conversation, participants: [user, participant] }
       let!(:outing) { create :outing, participants: [user] }
       let!(:neighborhood) { create :neighborhood, participants: [user] }
-      let!(:smalltalk) { create :smalltalk, participants: [user] }
+      let!(:smalltalk) { create :smalltalk, participants: [user, participant] }
 
       before { request }
 
       it { expect(response.status).to eq(200) }
       it { expect(subject.count).to eq(3) }
       it { expect(subject.map { |membership| membership["joinable_id"] }).to match_array([conversation.id, outing.id, smalltalk.id]) }
+      it { expect(subject_smalltalk["name"]).to eq("Bonnes ondes avec : Jane") }
     end
   end
 

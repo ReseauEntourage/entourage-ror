@@ -18,6 +18,14 @@ class JoinRequest < ApplicationRecord
     where("join_requests.joinable_type = 'Entourage'")
   }, foreign_key: :joinable_id, optional: true # why optional? Cause it might belongs_to Neighborhood
 
+  has_many :siblings, -> (join_request) {
+    where(joinable_type: join_request.joinable_type, joinable_id: join_request.joinable_id)
+      .where.not(id: join_request.id)
+    },
+    class_name: 'JoinRequest',
+    foreign_key: :joinable_id,
+    primary_key: :joinable_id
+
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
