@@ -27,6 +27,7 @@ module V1
 
     def name
       return name_for_conversation if object.conversation?
+      return name_for_smalltalk if object.smalltalk?
 
       object.joinable.try(:name) || object.joinable.try(:title)
     end
@@ -57,6 +58,12 @@ module V1
       return unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
+    end
+
+    def name_for_smalltalk
+      return unless (other_participants = object.siblings.map(&:user)).any?
+
+      I18n.t("activerecord.attributes.smalltalk.title_with_participants", lang: scope[:user].lang) % other_participants.map(&:first_name).join(', ')
     end
 
     def other_participant

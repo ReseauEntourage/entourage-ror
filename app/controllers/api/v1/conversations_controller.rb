@@ -33,6 +33,11 @@ module Api
           .page(page)
           .per(per)
 
+        # manual preload
+        memberships.select(&:smalltalk?).presence&.tap do |smalltalk_memberships|
+          JoinRequestsServices::Preloader.preload_siblings(smalltalk_memberships, sibling_scope: JoinRequest.accepted)
+        end
+
         render json: memberships, root: :memberships, each_serializer: ::V1::MembershipSerializer, scope: {
           user: current_user
         }
