@@ -155,7 +155,8 @@ describe Api::V1::ConversationsController do
       before { request }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject.count).to eq(4) }
+      it { expect(subject.count).to eq(3) }
+      it { expect(subject.map { |membership| membership["joinable_id"] }).to match_array([conversation.id, outing.id, smalltalk.id]) }
     end
   end
 
