@@ -50,6 +50,9 @@ module V1
     end
 
     def last_chat_message
+      return unless object.last_chat_message
+
+      object.last_chat_message.content
     end
 
     private

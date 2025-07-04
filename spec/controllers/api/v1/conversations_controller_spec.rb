@@ -153,6 +153,7 @@ describe Api::V1::ConversationsController do
       let!(:outing) { create :outing, participants: [user] }
       let!(:neighborhood) { create :neighborhood, participants: [user] }
       let!(:smalltalk) { create :smalltalk, participants: [user, participant] }
+      let!(:smalltalk_chat_message) { create :chat_message, messageable: smalltalk, content: "my_message" }
 
       before { request }
 
@@ -160,6 +161,7 @@ describe Api::V1::ConversationsController do
       it { expect(subject.count).to eq(3) }
       it { expect(subject.map { |membership| membership["joinable_id"] }).to match_array([conversation.id, outing.id, smalltalk.id]) }
       it { expect(subject_smalltalk["name"]).to eq("Bonnes ondes avec : Jane") }
+      it { expect(subject_smalltalk["last_chat_message"]).to eq("my_message") }
     end
   end
 
