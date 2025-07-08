@@ -57,14 +57,6 @@ module SalesforceServices
       self.class.records(table_name, fields: fields, per: per, page: page)
     end
 
-    def tracked_fields_with_types
-      self.class.tracked_fields_with_types(table_name)
-    end
-
-    def has_cdc?
-      self.class.has_cdc?(table_name)
-    end
-
     class << self
       def client
         SalesforceServices::Connect.client
@@ -168,23 +160,6 @@ module SalesforceServices
       def count_records table_name
         response = client.query("SELECT COUNT() FROM #{table_name}")
         response.size
-      end
-
-      # check whether table has fields with history tracking (flows)
-      def tracked_fields_with_types table_name
-        client.query(%(
-          SELECT DeveloperName, DataType FROM FieldDefinition
-          WHERE EntityDefinition.QualifiedApiName = '#{table_name}'
-          AND IsFieldHistoryTracked = true
-        )).map { |field| { name: field.DeveloperName, type: field.DataType }}
-      end
-
-      def has_cdc? table_name
-        client.get("/services/data/v55.0/sobjects/#{table_name}ChangeEvent/describe")
-
-        true
-      rescue Restforce::NotFoundError
-        false
       end
     end
   end
