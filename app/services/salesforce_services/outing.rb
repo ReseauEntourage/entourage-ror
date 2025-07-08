@@ -16,7 +16,9 @@ module SalesforceServices
     end
 
     def upsert
-      find_id || super
+      (find_id || super).tap do |campaign_id|
+        setup_campaign_member_statuses_on_campaign!(campaign_id)
+      end
     end
 
     def destroy
@@ -27,6 +29,10 @@ module SalesforceServices
 
     def updatable_fields
       [:status, :title, :metadata, :sf_category, :sf_category_list]
+    end
+
+    def setup_campaign_member_statuses_on_campaign! campaign_id
+      SalesforceServices::CampaignMember.setup_campaign_statuses(campaign_id)
     end
   end
 end
