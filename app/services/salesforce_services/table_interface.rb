@@ -80,10 +80,14 @@ module SalesforceServices
             "fullName" => "#{table_name}.#{field_name}__c",
             "label" => field_label,
             "type" => field_type,
-            "nillable" => !required,
-            "defaultValue" => format_default_value(field_type, default_value)
+            "required" => required
           }.compact
         }
+
+        if field_type.downcase == 'number'
+          field_payload["Metadata"]["precision"] = 18
+          field_payload["Metadata"]["scale"] = 0
+        end
 
         return unless client.post(CREATE_ENDPOINT, field_payload.to_json, 'Content-Type' => 'application/json').success?
 
@@ -112,16 +116,6 @@ module SalesforceServices
 
       def permission_sets
         client.query("SELECT Id, ProfileId FROM PermissionSet WHERE IsOwnedByProfile = true")
-      end
-
-      def format_default_value field_type, default_value
-        return nil if default_value.nil?
-
-        return default_value ? "true" : "false" if field_type == "Checkbox"
-        return "\"#{default_value}\"" if ["Text", "String", "Picklist"].include?(field_type)
-        return "\"#{default_value.strftime('%Y-%m-%d')}\"" if field_type == "Date" && default_value.is_a?(Date)
-
-        default_value
       end
 
       # describe table fields
