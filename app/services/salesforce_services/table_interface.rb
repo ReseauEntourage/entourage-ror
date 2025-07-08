@@ -57,14 +57,6 @@ module SalesforceServices
       self.class.records(table_name, fields: fields, per: per, page: page)
     end
 
-    def tracked_fields_with_types
-      self.class.tracked_fields_with_types(table_name)
-    end
-
-    def has_cdc?
-      self.class.has_cdc?(table_name)
-    end
-
     class << self
       def client
         SalesforceServices::Connect.client
@@ -80,10 +72,14 @@ module SalesforceServices
             "fullName" => "#{table_name}.#{field_name}__c",
             "label" => field_label,
             "type" => field_type,
-            "nillable" => !required,
-            "defaultValue" => format_default_value(field_type, default_value)
+            "required" => required
           }.compact
         }
+
+        if field_type.downcase == 'number'
+          field_payload["Metadata"]["precision"] = 18
+          field_payload["Metadata"]["scale"] = 0
+        end
 
         return unless client.post(CREATE_ENDPOINT, field_payload.to_json, 'Content-Type' => 'application/json').success?
 
@@ -112,16 +108,6 @@ module SalesforceServices
 
       def permission_sets
         client.query("SELECT Id, ProfileId FROM PermissionSet WHERE IsOwnedByProfile = true")
-      end
-
-      def format_default_value field_type, default_value
-        return nil if default_value.nil?
-
-        return default_value ? "true" : "false" if field_type == "Checkbox"
-        return "\"#{default_value}\"" if ["Text", "String", "Picklist"].include?(field_type)
-        return "\"#{default_value.strftime('%Y-%m-%d')}\"" if field_type == "Date" && default_value.is_a?(Date)
-
-        default_value
       end
 
       # describe table fields
@@ -174,23 +160,6 @@ module SalesforceServices
       def count_records table_name
         response = client.query("SELECT COUNT() FROM #{table_name}")
         response.size
-      end
-
-      # check whether table has fields with history tracking (flows)
-      def tracked_fields_with_types table_name
-        client.query(%(
-          SELECT DeveloperName, DataType FROM FieldDefinition
-          WHERE EntityDefinition.QualifiedApiName = '#{table_name}'
-          AND IsFieldHistoryTracked = true
-        )).map { |field| { name: field.DeveloperName, type: field.DataType }}
-      end
-
-      def has_cdc? table_name
-        client.get("/services/data/v55.0/sobjects/#{table_name}ChangeEvent/describe")
-
-        true
-      rescue Restforce::NotFoundError
-        false
       end
     end
   end
