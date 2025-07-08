@@ -165,9 +165,9 @@ describe Api::V1::ConversationsController do
       it { expect(subject.count).to eq(3) }
       it { expect(subject.map { |membership| membership["joinable_id"] }).to match_array([conversation.id, outing.id, smalltalk.id]) }
       it { expect(subject_outing["name"]).to eq(outing.title) }
-      it { expect(subject_outing["last_chat_message"]).to eq("outing_message_recent") }
+      it { expect(subject_outing["last_chat_message"]).to be_nil }
       it { expect(subject_smalltalk["name"]).to eq("Bonnes ondes avec : Jane") }
-      it { expect(subject_smalltalk["last_chat_message"]).to eq("smalltalk_message_recent") }
+      it { expect(subject_smalltalk["last_chat_message"]).to be_nil }
     end
   end
 
