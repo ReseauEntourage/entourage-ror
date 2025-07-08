@@ -51,7 +51,7 @@ module Admin
 
       messages = ChatMessage
         .where(user_id: user_id, messageable_type: :Entourage, messageable_id: entourages)
-        .select('created_at, content, messageable_id, status')
+        .select('created_at, content, messageable_id, status, deleter_id, deleted_at')
 
       messages += entourages.select('entourages.created_at, entourages.description as content, entourages.id as messageable_id')
 
