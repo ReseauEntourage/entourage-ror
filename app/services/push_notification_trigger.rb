@@ -670,6 +670,25 @@ class PushNotificationTrigger
     )
   end
 
+  def user_smalltalk_on_expire
+    return unless @record.deleted?
+    return unless moderator = ModerationServices.moderator_for_user(@record.user)
+
+    notify(
+      sender_id: nil,
+      referent: nil,
+      instance: nil,
+      users: [@record.user],
+      params: {
+        object: I18nStruct.new(i18n: 'push_notifications.user_smalltalk.expire_object'),
+        content: I18nStruct.new(i18n: 'push_notifications.user_smalltalk.expire_content'),
+        extra: {
+          tracking: :user_smalltalk_expire
+        }
+      }
+    )
+  end
+
   # use params[:extra] to be compliant with v7
   def notify sender_id:, referent:, instance:, users:, params: {}
     notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
