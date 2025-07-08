@@ -77,6 +77,7 @@ module Salesforcable
   def sync_salesforce force=false
     return if is_a?(Entourage) && action? # hack due to Salesforcable included in Entourage
     return if is_a?(Entourage) && conversation? # hack due to Salesforcable included in Entourage
+    return if is_a?(JoinRequest) && !outing?
 
     return unless sf.is_synchable?
 
