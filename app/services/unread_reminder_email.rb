@@ -260,8 +260,6 @@ module UnreadReminderEmail
           type = group.display_category
         when 'outing'
           type = 'event'
-        when 'group' # good_waves hack
-          type = 'social'
         when 'conversation'
           other = group.members.where.not(id: @user.id).first
           image_url = UserServices::Avatar.new(user: other).thumbnail_url(expire: 7.days)

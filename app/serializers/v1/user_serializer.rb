@@ -64,7 +64,7 @@ module V1
           events_count: groups['outing'],
           outings_count: groups['outing'],
           neighborhoods_count: object.neighborhood_memberships.count,
-          good_waves_participation: groups['group'] > 0
+          good_waves_participation: false
       }
     end
 
