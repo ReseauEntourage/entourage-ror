@@ -517,7 +517,6 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    simplify_rb (0.4.0)
     slack-notifier (2.4.0)
     sorbet-runtime (0.5.11637)
     spring (2.1.1)
@@ -642,7 +641,6 @@ DEPENDENCIES
   sentry-raven
   shoulda-matchers
   sidekiq (~> 6)
-  simplify_rb (~> 0)
   slack-notifier
   spring (~> 2.1.0)
   spring-commands-rspec
