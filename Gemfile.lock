@@ -506,7 +506,6 @@ GEM
     select2-rails (4.0.13)
     sentry-raven (3.1.2)
       faraday (>= 1.0)
-    shorturl (1.0.0)
     shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
     sidekiq (6.5.12)
@@ -641,7 +640,6 @@ DEPENDENCIES
   sass-rails
   select2-rails
   sentry-raven
-  shorturl (~> 1.0.0)
   shoulda-matchers
   sidekiq (~> 6)
   simplify_rb (~> 0)
