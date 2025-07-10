@@ -16,9 +16,5 @@ module UserServices
 
     private
     attr_reader :user
-
-    def url_shortener
-      @url_shortener ||= ShortURL
-    end
   end
 end
