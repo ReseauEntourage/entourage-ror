@@ -766,9 +766,9 @@ class Entourage < ApplicationRecord
   def set_default_online_attributes
     if online?
       metadata.merge!(
-        place_name:      "Visioconférence en ligne",
-        street_address:  "Visioconférence en ligne",
-        display_address: "Visioconférence en ligne",
+        place_name:      "Événement en ligne",
+        street_address:  "Événement en ligne",
+        display_address: "Événement en ligne",
         google_place_id: "_online_"
       )
       self.latitude = 0
