@@ -287,8 +287,6 @@ Rails.application.routes.draw do
         collection do
           get :search
           get 'moderate'
-          get 'fake'
-          post 'generate'
           get 'download_list_export'
         end
 

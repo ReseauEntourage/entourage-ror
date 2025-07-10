@@ -63,9 +63,6 @@
             <li><%= link_to "Demandes de changement de téléphone", admin_users_path(status: :pending) %></li>
             <li><%= link_to "Demandes de bonnes ondes", admin_user_smalltalks_path %></li>
             <li><%= link_to "Bonnes ondes", admin_smalltalks_path %></li>
-            <% if EnvironmentHelper.staging? %>
-              <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
-            <% end %>
           </ul>
         </li>
 
