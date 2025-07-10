@@ -13,7 +13,7 @@ class EntourageInvitation < ApplicationRecord
   belongs_to :invitee, class_name: "User", foreign_key: "invitee_id"
 
   validates :invitable_id, :status, :inviter, :phone_number, :invitation_mode, presence: true
-  validates_inclusion_of :invitation_mode, in: [EntourageInvitation::MODE_SMS, 'good_waves', 'partner_following']
+  validates_inclusion_of :invitation_mode, in: [EntourageInvitation::MODE_SMS, 'partner_following']
   validates_uniqueness_of :phone_number, scope: [:inviter_id, :invitable_id]
   validates :metadata, schema: -> (i) { "#{i.invitation_mode}:metadata" }
 
@@ -34,11 +34,6 @@ class EntourageInvitation < ApplicationRecord
         {}
       when 'partner_following:metadata'
         {}
-      when 'good_waves:metadata'
-        {
-          name: { type: :string },
-          email: { type: [:string, :null] }
-        }
       end
     end
   end

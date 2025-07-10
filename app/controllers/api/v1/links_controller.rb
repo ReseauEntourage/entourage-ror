@@ -5,7 +5,7 @@ module Api
       skip_before_action :ensure_community!
 
       def redirect
-        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'good_waves', 'action_faq', 'propose-poi'])
+        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'action_faq', 'propose-poi'])
           return render json: {message: 'unauthorized'}, status: :unauthorized
         end
 
@@ -75,17 +75,6 @@ module Api
             'entourage' => 'https://www.entourage.social/politique-de-confidentialite/',
             'pfp'       => 'https://docs.google.com/document/d/e/2PACX-1vS9nOfDChubzKpL5gEz-6sOjYAJ1Y2nJjjC1nI1Y-Y7ewP9pg1Z8Qvd4e0UkrE_AkZWTbsCvFzkOrlq/pub'
           }[community.slug],
-          'good_waves' =>
-            lambda do |user|
-              url = "https://entourage-asso.typeform.com/to/yewmHjSo"
-              url += "#" + {
-                user_id: user&.id,
-                postal_code: user&.address&.postal_code,
-                phone: user&.phone,
-                email: user&.email,
-                first_name: user&.first_name
-              }.to_query
-            end,
           'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#publier-une-action-solidaire',
           'hub_1' => 'https://entourage-asso.typeform.com/to/RyxV8mhG',
           'hub_2' => 'https://www.simplecommebonjour.org/',
