@@ -35,7 +35,7 @@ gem 'safety_mailer'
 gem 'ransack',                        '~> 2'
 gem 'httparty'
 gem 'sentry-raven'
-gem 'ruby-stemmer'
+gem 'ruby-stemmer' # used by sensitive_word
 gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
 gem 'google-api-client', '~> 0.53'
