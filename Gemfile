@@ -89,7 +89,6 @@ group :test do
 end
 
 group :production do
-  gem 'rails_12factor'
   gem 'rails_stdout_logging'
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'

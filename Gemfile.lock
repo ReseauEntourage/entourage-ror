@@ -394,10 +394,6 @@ GEM
       nokogiri (~> 1.14)
     rails-observers (0.1.5)
       activemodel (>= 4.0)
-    rails_12factor (0.0.3)
-      rails_serve_static_assets
-      rails_stdout_logging
-    rails_serve_static_assets (0.0.5)
     rails_stdout_logging (0.0.5)
     railties (6.1.7.10)
       actionpack (= 6.1.7.10)
@@ -610,7 +606,6 @@ DEPENDENCIES
   rails (~> 6.0)
   rails-controller-testing
   rails-observers
-  rails_12factor
   rails_stdout_logging
   ransack (~> 2)
   redis (~> 4)
