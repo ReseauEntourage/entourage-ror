@@ -41,7 +41,6 @@ gem 'icalendar'
 gem 'google-api-client', '~> 0.53'
 gem 'whenever'
 gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
-gem 'airrecord',                      '~> 1'
 gem 'select2-rails'
 gem 'rails-observers'
 gem 'mini_magick'
