@@ -362,7 +362,6 @@ GEM
     patience_diff (1.2.0)
       optimist (~> 3.0)
     pg (1.5.9)
-    phonelib (0.9.3)
     polylines (0.4.0)
     public_suffix (6.0.1)
     puma (6.4.3)
@@ -613,7 +612,6 @@ DEPENDENCIES
   momentjs-rails (~> 2)
   nexmo
   pg (~> 1)
-  phonelib
   puma
   rack-attack
   rack-timeout

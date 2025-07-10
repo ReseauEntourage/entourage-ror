@@ -29,7 +29,7 @@
                     organization_admin_member_path(invitee),
                     class: "text-bold color-black hover-underline" %>
             </div>
-            <div><%= invitee.email.presence || Phonelib.parse(@phone).national %></div>
+            <div><%= invitee.email.presence %></div>
             <div>Invité(e) par <span class="color-black"><%= UserPresenter.full_name(invitation.inviter) %></span></div>
             <div>Est membre depuis le <%= l invitation.accepted_at, format: "%-d %B %Y" %></div>
           <% else %>
