@@ -299,15 +299,6 @@ module Admin
       end
     end
 
-    def fake
-    end
-
-    def generate
-      @users = []
-
-      render :fake
-    end
-
     private
     attr_reader :user
 
