@@ -15,7 +15,6 @@ gem 'uglifier' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
 gem 'turbolinks', '~> 5' # html
-gem 'coffee-rails', '~> 5' # assets
 gem 'momentjs-rails', '~> 2'
 gem 'select2-rails'
 
