@@ -527,8 +527,6 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    uglifier (4.2.1)
-      execjs (>= 0.3.0, < 3)
     unicode-display_width (2.6.0)
     uniform_notifier (1.16.0)
     uri (0.13.1)
@@ -620,7 +618,6 @@ DEPENDENCIES
   timecop
   tinymce-rails
   turbolinks (~> 5)
-  uglifier
   webmock
   whenever
 

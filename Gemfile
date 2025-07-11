@@ -11,7 +11,6 @@ gem 'activerecord-postgis-adapter', '~> 6.0'
 # Templating
 gem 'terser' # config.assets.js_compressor in production
 gem 'sass-rails' # css
-gem 'uglifier' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
 gem 'turbolinks', '~> 5' # html
