@@ -2,55 +2,74 @@ source 'https://rubygems.org'
 
 ruby '3.1.0'
 
-gem 'rails',                          '~> 6.0'
+gem 'rails', '~> 6.0'
 
-gem 'sass-rails'
-gem 'uglifier'
-gem 'terser'
-gem 'jquery-rails',                   '~> 4'
-gem 'jquery-ui-rails',                '~> 5'
-gem 'turbolinks',                     '~> 5'
-gem 'coffee-rails',                   '~> 5'
-gem 'active_model_serializers',       '~> 0.10'
-gem 'geocoder',                       '~> 1'
-gem 'rpush', git: 'https://github.com/rpush/rpush.git', ref: '840125aa568740f87e1e4a60f052748ddbe9c668'
-gem 'aws-sdk-sns',                    '~> 1'
-gem 'nexmo'
-gem 'googlestaticmap',                git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
-gem 'momentjs-rails',                 '~> 2'
-gem 'pg',                             '~> 1'
-gem 'kaminari',                       '~> 1'
-gem 'redis',                          '~> 4'
-gem 'bcrypt',                         '~> 3'
-gem 'sidekiq',                        '~> 6'
-gem 'lograge'
-gem 'logstash-event'
-gem 'aws-sdk-s3',                     '~> 1'
-gem 'ruby-openai'
-gem 'activerecord-postgis-adapter',   '~> 6.0'
-gem 'slack-notifier'
-gem 'mailjet'
-gem 'safety_mailer'
-gem 'ransack',                        '~> 2'
-gem 'httparty'
-gem 'sentry-raven'
-gem 'ruby-stemmer' # used by sensitive_word
-gem 'json-schema',                    '~> 2.8.1'
-gem 'icalendar'
-gem 'google-api-client', '~> 0.53'
-gem 'whenever'
-gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
+# database
+gem 'pg', '~> 1'
+gem 'activerecord-postgis-adapter', '~> 6.0'
+
+# Templating
+gem 'terser' # config.assets.js_compressor in production
+gem 'sass-rails' # css
+gem 'uglifier' # css
+gem 'jquery-rails', '~> 4' # js
+gem 'jquery-ui-rails', '~> 5' # js
+gem 'turbolinks', '~> 5' # html
+gem 'coffee-rails', '~> 5' # assets
+gem 'momentjs-rails', '~> 2'
 gem 'select2-rails'
-gem 'rails-observers'
-gem 'mini_magick'
-gem 'rspec_api_documentation'
-gem 'ams_lazy_relationships'
-gem 'acts-as-taggable-on',            '~> 8.0'
+
+# models
+gem 'active_model_serializers', '~> 0.10'
 gem 'ancestry'
+gem 'json-schema', '~> 2.8.1'
+gem 'rails-observers'
+gem 'acts-as-taggable-on', '~> 8.0'
 gem 'store_attribute'
+gem 'ruby-stemmer' # used by sensitive_word
+gem 'mini_magick' # used by S3ImageUploader.resized_image (entourages thumbnails)
+
+# controllers
+gem 'ams_lazy_relationships' # used in serializers
+gem 'ransack', '~> 2'
+
+# template
 gem 'tinymce-rails'
 gem 'chartkick'
+
+# datadog & logs
+gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
+gem 'lograge'
+gem 'logstash-event'
+gem 'kaminari', '~> 1'
+
+# servers
+gem 'aws-sdk-s3', '~> 1'
+gem 'sidekiq', '~> 6'
+gem 'redis', '~> 4'
+gem 'sentry-raven'
+
+# api
+gem 'ruby-openai'
+gem 'icalendar'
+gem 'google-api-client', '~> 0.53'
 gem 'restforce', '~> 7.2.0'
+gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
+
+# communication
+gem 'rpush', git: 'https://github.com/rpush/rpush.git', ref: '840125aa568740f87e1e4a60f052748ddbe9c668'
+gem 'aws-sdk-sns',  '~> 1'
+gem 'nexmo'
+gem 'safety_mailer'
+gem 'mailjet'
+gem 'slack-notifier'
+
+# others
+gem 'geocoder', '~> 1'
+gem 'bcrypt', '~> 3'
+gem 'httparty'
+gem 'whenever'
+gem 'rspec_api_documentation'
 gem 'ffi', '>= 1.15', '< 1.17'
 
 group :development, :test do
