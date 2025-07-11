@@ -1,0 +1,80 @@
+@import "settings";
+
+.navbar {
+    background-color: white;
+    border: unset !important;
+    font-family: 'Poppins', 'Roboto' !important;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.05);
+    height: 80px;
+
+
+    .navbar-brand {
+        height: 80px;
+        border-right: 1px solid rgb(245, 245, 245);
+        line-height: 20px;
+        font-size: 15px;
+        color: rgb(153, 153, 153);
+        .images {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            gap: 12px;
+            img {
+                height: 40px;
+                &.nav-thumbnail {
+                    border-radius: 40px;
+                }
+            }
+        }
+
+    }
+
+    .nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        > li.custom-nav-item {
+            flex: 1;
+            height: 80px;
+            border-right: 1px solid rgb(245, 245, 245);
+            &:hover {
+                cursor: pointer;
+            }
+            &.active {
+                border-bottom: $orange 3px solid;
+            }
+            &.open > a {
+                background-color: unset;
+            }
+            &.custom-nav-item-reversed {
+                background-color: rgb(255, 248, 246);
+                
+            }
+            > .dropdown-toggle, > a {
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                box-sizing: border-box;
+                font-size: 15px;
+                color: rgb(153, 153, 153);
+                &:hover {
+                    background-color: unset;
+                    opacity: 0.5;
+                }
+            }
+        }
+        .dropdown-menu {
+            li {
+                a {
+                    padding: 5px 20px;
+                    &:hover {
+                        background-color: unset;
+                        opacity: 0.5;
+                    }
+                }
+            } 
+        }
+    }
+}

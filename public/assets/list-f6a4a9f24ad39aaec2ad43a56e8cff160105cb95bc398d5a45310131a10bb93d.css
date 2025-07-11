@@ -1,0 +1,23 @@
+#list {
+  background-color: #ddd;
+  padding-top: 1px; /* top separator */
+}
+.list-element {
+  display: flex;
+  background-color: #fff;
+}
+.list-element + .list-element {
+  margin-top: 1px; /* separators */
+}
+.list-element > * {
+  padding: 8px;
+}
+.list-element-id {
+  width: 80px;
+}
+.list-element-content {
+  flex-grow: 1;
+}
+.list-element-image {
+  width: calc(255px + 8px * 2);
+}
