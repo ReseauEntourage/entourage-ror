@@ -39,7 +39,6 @@
             <% if member.email.present? %>
               <span><%= member.email %></span> •
             <% end %>
-            <span><%= Phonelib.parse(member.phone).national %></span>
           </div>
         </div>
         <%= link_to_if can_edit, "", edit_organization_admin_member_path(member), class: "overlay" %>

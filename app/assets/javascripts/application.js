@@ -18,8 +18,6 @@
 //= require turbolinks
 //= require moment
 //= require daterangepicker
-//= require handlebars.runtime
-//= require handlebars_helpers
 //= require bootstrap-multiselect
 //= require jquery.ui.widget
 //= require jquery.fileupload
