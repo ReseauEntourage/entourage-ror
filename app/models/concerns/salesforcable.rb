@@ -89,7 +89,7 @@ module Salesforcable
       return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && ["deleted", "closed", "cancelled"].include?(status.to_s)
     end
 
-    unless force
+    unless force || is_a?(JoinRequest)
       return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
     end
 
