@@ -403,6 +403,11 @@ fr:
       create: "Ce contenu pourrait vous intéresser"
       almost_match_title: "Suggestion de groupe"
       almost_match_content: "Ce(s) groupe(s) de discussions bonnes ondes pourraient correspondre à ce que vous recherchez !"
+    user_smalltalk:
+      expire_object: "Toujours pas de match 😕"
+      expire_content: |
+        Ta demande de Bonnes Ondes a expiré.
+        Essaies peut-être avec des critères un peu plus souples ? ✨
 
   timeliner:
     h1:
