@@ -10,7 +10,7 @@ module Api
       before_action :validate_request!, only: [:check]
       before_action :ensure_community!, except: [:options]
       before_action :authenticate_user!, except: [:check, :options]
-      before_action :set_raven_context
+      before_action :set_sentry_context
 
       after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
@@ -160,12 +160,12 @@ module Api
       def track_session
         SessionHistory.track user_id: current_user.id, platform: api_request_platform
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       end
 
-      def set_raven_context
-        Raven.user_context(id: current_user.try(:id))
-        Raven.extra_context(
+      def set_sentry_context
+        Sentry.set_user(id: current_user.try(:id))
+        Sentry.set_extras(
           params: params.to_unsafe_h,
           url: request.url,
           platform: api_request_platform,
@@ -200,7 +200,7 @@ module Api
           params: params
         ).run
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       end
     end
   end
