@@ -30,7 +30,7 @@ module ChatServices
 
           true
         rescue => e
-          Raven.capture_exception(e)
+          Sentry.capture_exception(e)
           false
         end
       else

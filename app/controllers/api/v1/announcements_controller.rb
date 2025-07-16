@@ -42,7 +42,7 @@ module Api
           uri.query = URI.encode_www_form(url_params).presence
           url = uri.to_s
         rescue => e
-          Raven.capture_exception(e)
+          Sentry.capture_exception(e)
         end
 
         redirect_to url

@@ -402,7 +402,7 @@ module Api
         user.roles.push :ethics_charter_signed
         user.save!
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       ensure
         head :ok
       end

@@ -20,7 +20,7 @@ module OrganizationAdmin
           on.duplicate { raise "This should never happen" }
 
           on.failure do |user|
-            Raven.capture_exception(ActiveRecord::RecordInvalid.new(user))
+            Sentry.capture_exception(ActiveRecord::RecordInvalid.new(user))
             error = :unknown
           end
 

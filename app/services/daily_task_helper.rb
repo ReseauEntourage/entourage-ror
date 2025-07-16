@@ -5,14 +5,7 @@ module DailyTaskHelper
       begin
         yield record
       rescue => e
-        Raven.capture_exception(
-          e,
-          extra: options.merge(
-            at_day: n,
-            record_class: record&.class,
-            record_id: record&.id
-          )
-        )
+        Sentry.capture_exception(e)
       end
     end
   end
