@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.1.0'
+ruby '3.2.0'
 
 gem 'rails', '~> 6.0'
 
@@ -45,13 +45,13 @@ gem 'kaminari', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
 gem 'sidekiq', '~> 6'
 gem 'redis', '~> 4'
-gem 'sentry-raven'
+gem 'sentry-ruby'
 
 # api
 gem 'ruby-openai'
 gem 'icalendar'
 gem 'google-api-client', '~> 0.53'
-gem 'restforce', '~> 7.2.0'
+gem 'restforce', '~> 7.6'
 gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
 
 # communication
@@ -68,11 +68,10 @@ gem 'bcrypt', '~> 3'
 gem 'httparty'
 gem 'whenever'
 gem 'rspec_api_documentation'
-gem 'ffi', '>= 1.15', '< 1.17'
+gem 'ffi', '~> 1.17'
 
 group :development, :test do
-  # gem 'annotate'
-  # gem 'byebug',                       '~> 5.0.0'
+  gem 'foreman'
   gem 'spring',                       '~> 2.1.0'
   gem 'spring-commands-rspec'#,        '~> 1.0.4'
   gem 'dotenv-rails'#,                 '~> 2.0.2'
