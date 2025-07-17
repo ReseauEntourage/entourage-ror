@@ -452,6 +452,10 @@ fr:
     idf: Ile-de-France
     centre_est: Centre-Est
 
+  conversations:
+    participants:
+      alone: Vous
+
   smalltalks:
     messager:
       new_member: | # first_name
