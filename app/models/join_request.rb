@@ -7,6 +7,7 @@ class JoinRequest < ApplicationRecord
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
   include JoinRequestAcceptTracking
+  include Salesforcable
 
   belongs_to :user
   belongs_to :validated_user, -> {
