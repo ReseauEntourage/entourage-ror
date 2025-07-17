@@ -18,6 +18,16 @@ class JoinRequest < ApplicationRecord
     where("join_requests.joinable_type = 'Entourage'")
   }, foreign_key: :joinable_id, optional: true # why optional? Cause it might belongs_to Neighborhood
 
+  has_many :siblings, -> (join_request) {
+    where(joinable_type: join_request.joinable_type, joinable_id: join_request.joinable_id)
+      .where.not(id: join_request.id)
+    },
+    class_name: 'JoinRequest',
+    foreign_key: :joinable_id,
+    primary_key: :joinable_id
+
+  attr_accessor :last_chat_message, :siblings
+
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
@@ -48,6 +58,23 @@ class JoinRequest < ApplicationRecord
     return unless strip.present?
 
     where(user_id: User.search_by_first_name(strip))
+  }
+
+  scope :with_joinable_type, -> (joinable_type) {
+    return unless joinable_type.present?
+    return unless joinable_type.respond_to?(:to_s)
+
+    return where(joinable_type: :Entourage).where(
+      joinable_id: Entourage.where(group_type: joinable_type.to_s.downcase)
+    ) if ['action', 'outing', 'conversation'].include?(joinable_type.to_s.downcase)
+
+    where(joinable_type: joinable_type)
+  }
+
+  scope :without_joinable_type, -> (joinable_type) {
+    return unless joinable_type.present?
+
+    where.not(joinable_type: joinable_type)
   }
 
   after_save :joinable_callback
@@ -84,6 +111,10 @@ class JoinRequest < ApplicationRecord
 
   def outing?
     entourage? && joinable.outing?
+  end
+
+  def conversation?
+    entourage? && joinable.conversation?
   end
 
   def neighborhood?

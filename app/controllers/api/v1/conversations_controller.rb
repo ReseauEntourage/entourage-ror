@@ -23,6 +23,30 @@ module Api
         }
       end
 
+      def memberships
+        memberships = current_user
+          .accepted_join_requests
+          .with_joinable_type(params[:type])
+          .without_joinable_type(:Neighborhood)
+          .order(updated_at: :desc)
+          .includes(:joinable)
+          .page(page)
+          .per(per)
+
+        # manual preloads
+        memberships.select(&:smalltalk?).presence&.tap do |smalltalk_memberships|
+          ::Preloaders::JoinRequest.preload_siblings(smalltalk_memberships, sibling_scope: JoinRequest.accepted)
+        end
+
+        memberships.presence&.tap do |smalltalk_memberships|
+          ::Preloaders::JoinRequest.preload_last_chat_message(smalltalk_memberships, message_scope: ChatMessage.no_deleted_without_comments)
+        end
+
+        render json: memberships, root: :memberships, each_serializer: ::V1::MembershipSerializer, scope: {
+          user: current_user
+        }
+      end
+
       def privates
         privates = Entourage.joins(:members)
           .includes(user: :partner)
