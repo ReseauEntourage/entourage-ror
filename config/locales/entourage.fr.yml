@@ -296,7 +296,7 @@ fr:
       smalltalk:
         object: Bonnes ondes
         new_message: Nouveau message
-        title_with_participants: "Bonnes ondes avec : %s"
+        title_with_participants: "%s"
 
   community:
     entourage:
