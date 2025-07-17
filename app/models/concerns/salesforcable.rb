@@ -77,6 +77,7 @@ module Salesforcable
   def sync_salesforce force=false
     return if is_a?(Entourage) && action? # hack due to Salesforcable included in Entourage
     return if is_a?(Entourage) && conversation? # hack due to Salesforcable included in Entourage
+    return if is_a?(JoinRequest) && !outing?
 
     return unless sf.is_synchable?
 
@@ -88,7 +89,7 @@ module Salesforcable
       return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && ["deleted", "closed", "cancelled"].include?(status.to_s)
     end
 
-    unless force
+    unless force || new_record?
       return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
     end
 
