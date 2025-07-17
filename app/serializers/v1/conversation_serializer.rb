@@ -60,7 +60,7 @@ module V1
 
     def name
       return object.title unless private_conversation?
-      return unless other_participant
+      return no_other_participant unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
     end
@@ -124,6 +124,12 @@ module V1
 
     def members
       object.accepted_members.limit(5)
+    end
+
+    private
+
+    def no_other_participant
+      I18n.t("conversations.participants.alone", lang: scope[:user].lang)
     end
   end
 end
