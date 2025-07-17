@@ -58,13 +58,13 @@ module V1
     private
 
     def name_for_conversation
-      return unless other_participant
+      return no_other_participant unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
     end
 
     def name_for_smalltalk
-      return unless (other_participants = object.siblings.map(&:user)).any?
+      return no_other_participant unless (other_participants = object.siblings.map(&:user)).any?
 
       I18n.t("activerecord.attributes.smalltalk.title_with_participants", lang: scope[:user].lang) % other_participants.map(&:first_name).join(', ')
     end
@@ -73,6 +73,10 @@ module V1
       return unless object.conversation?
 
       @other_participant ||= object.joinable.interlocutor_of(scope[:user])
+    end
+
+    def no_other_participant
+      I18n.t("conversations.participants.alone", lang: scope[:user].lang)
     end
   end
 end
