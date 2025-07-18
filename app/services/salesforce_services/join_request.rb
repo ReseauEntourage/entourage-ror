@@ -15,7 +15,7 @@ module SalesforceServices
     end
 
     def is_synchable?
-      instance.outing?
+      @outing.sf.is_synchable?
     end
 
     def upsert
