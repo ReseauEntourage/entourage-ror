@@ -89,6 +89,7 @@ group :development do
   # gem 'stackprof',                    '~> 0.2.8'
   # gem 'letter_opener',                '~> 1.4.1'
   # gem 'mailcatcher'
+  gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rails', require: false
 end
