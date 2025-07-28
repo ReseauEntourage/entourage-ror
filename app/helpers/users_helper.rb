@@ -17,11 +17,11 @@ module UsersHelper
     content_tag :span, validation_status, class: "label #{state_to_class[validation_status]}"
   end
 
-  def user_avatar_image user, *args
+  def user_avatar_image(user, *)
     url = UserServices::Avatar.new(user: user).thumbnail_url
     return unless url
 
-    image_tag(url, *args)
+    image_tag(url, *)
   end
 
   def user_profiles

@@ -128,7 +128,7 @@ module UnreadReminderEmail
     end
 
     private
-    def greater_than(*args); UnreadReminderEmail.greater_than(*args); end
+    def greater_than(*); UnreadReminderEmail.greater_than(*); end
   end
 
   class Presenter

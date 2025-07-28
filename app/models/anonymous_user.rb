@@ -7,7 +7,7 @@ class AnonymousUser
     :community,
   ].freeze
 
-  attr_reader *ATTRIBUTES
+  attr_reader(*ATTRIBUTES)
 
   def initialize(attributes={})
     attributes.symbolize_keys!

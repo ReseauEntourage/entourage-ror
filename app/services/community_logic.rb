@@ -33,9 +33,9 @@ module CommunityLogic
       end
     end
 
-    def method_missing method, *args
+    def method_missing(method, *)
       if @community_logic.respond_to?(method)
-        @community_logic.send method, *args
+        @community_logic.send(method, *)
       elsif CommunityLogic.debug?
         Rails.logger.warn "undefined method `#{method}' for #{@community_logic.name}"
       end

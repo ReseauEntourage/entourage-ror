@@ -621,6 +621,7 @@ DEPENDENCIES
   rpush!
   rspec-rails
   rspec_api_documentation
+  rubocop
   rubocop-rails
   rubocop-rspec
   ruby-openai

@@ -1,3 +1,35 @@
+require:
+  - rubocop-rails
+
 AllCops:
-  TargetRubyVersion: 2.6
-  TargetRailsVersion: 5.0
+  TargetRubyVersion: 3.2
+  NewCops: enable
+
+# Cops spécifiques pour détecter les problèmes d'arguments
+Style/ArgumentsForwarding:
+  Enabled: true
+  UseAnonymousForwarding: true
+
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: ruby19_no_mixed_keys
+
+Lint/AmbiguousOperator:
+  Enabled: true
+
+# Détection des méthodes avec arguments mixtes
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  EnforcedStyle: require_parentheses
+
+# Pour Rails spécifiquement (nécessite rubocop-rails)
+Rails/HttpPositionalArguments:
+  Enabled: true
+
+# Autres cops Rails utiles pour Ruby 3.2
+Rails/ActionControllerTestCase:
+  Enabled: true
+
+Rails/HttpStatus:
+  Enabled: true
+  EnforcedStyle: numeric
