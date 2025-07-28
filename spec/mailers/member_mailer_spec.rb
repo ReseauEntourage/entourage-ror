@@ -18,7 +18,7 @@ end
 
 def expect_mailjet_email opts={}, &block
   let(:options) do
-    options = opts.merge(instance_eval &block).reverse_merge(
+    options = opts.merge(instance_eval(&block)).reverse_merge(
       from: %("Le Réseau Entourage" <guillaume@entourage.social>),
       variables: {},
       payload: {}

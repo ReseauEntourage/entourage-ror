@@ -4,12 +4,12 @@ class AsyncService
     @job = AsyncServiceJob
   end
 
-  def method_missing(symbol, *args)
+  def method_missing(symbol, *)
     if active_job_method?(symbol)
-      @job = @job.send symbol, *args
+      @job = @job.send(symbol, *)
       self
     elsif handled_method?(symbol)
-      @job.perform_later @klass.name, symbol.to_s, *args
+      @job.perform_later(@klass.name, symbol.to_s, *)
     else
       super
     end
