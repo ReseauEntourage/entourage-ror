@@ -55,8 +55,8 @@ module FeedServices
       @evaluated = false
     end
 
-    def method_missing(method_name, *args, &block)
-      _area.send(method_name, *args, &block)
+    def method_missing(method_name, *, &)
+      _area.send(method_name, *, &)
     end
 
     def == other
