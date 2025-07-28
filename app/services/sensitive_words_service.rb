@@ -94,10 +94,10 @@ module SensitiveWordsService
     /(?<![[:alnum:]])(#{expressions.uniq.join('|')})(?![[:alnum:]])/
   end
 
-  def self.highlight string, expressions, &block
+  def self.highlight(string, expressions, &)
     return string if string.blank? || expressions.empty?
     regex = regex_for_expressions expressions
-    string.gsub(regex, &block).html_safe
+    string.gsub(regex, &).html_safe
   end
 
   def self.highlight_entourage entourage, options={}
