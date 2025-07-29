@@ -36,7 +36,7 @@ gem 'tinymce-rails'
 gem 'chartkick'
 
 # datadog & logs
-gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
+# gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
 gem 'lograge'
 gem 'logstash-event'
 gem 'kaminari', '~> 1'

@@ -144,16 +144,7 @@ GEM
       rexml
     crass (1.0.6)
     csv (3.3.0)
-    datadog-ci (0.8.3)
-      msgpack
     date (3.4.0)
-    ddtrace (1.23.3)
-      datadog-ci (~> 0.8.1)
-      debase-ruby_core_source (= 3.3.1)
-      libdatadog (~> 7.0.0.1.0)
-      libddwaf (~> 1.14.0.0.0)
-      msgpack
-    debase-ruby_core_source (3.3.1)
     declarative (0.0.20)
     diff-lcs (1.5.1)
     dotenv (3.1.4)
@@ -255,19 +246,6 @@ GEM
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
     language_server-protocol (3.17.0.3)
-    libdatadog (7.0.0.1.0)
-    libdatadog (7.0.0.1.0-aarch64-linux)
-    libdatadog (7.0.0.1.0-x86_64-linux)
-    libddwaf (1.14.0.0.0)
-      ffi (~> 1.0)
-    libddwaf (1.14.0.0.0-aarch64-linux)
-      ffi (~> 1.0)
-    libddwaf (1.14.0.0.0-arm64-darwin)
-      ffi (~> 1.0)
-    libddwaf (1.14.0.0.0-x86_64-darwin)
-      ffi (~> 1.0)
-    libddwaf (1.14.0.0.0-x86_64-linux)
-      ffi (~> 1.0)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -294,7 +272,6 @@ GEM
     minitest (5.25.1)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
-    msgpack (1.7.3)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.4.1)
@@ -565,7 +542,6 @@ DEPENDENCIES
   bcrypt (~> 3)
   bullet
   chartkick
-  ddtrace (~> 1.0)
   dotenv-rails
   factory_bot_rails (~> 4)
   fakeredis
