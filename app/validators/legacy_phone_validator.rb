@@ -26,7 +26,7 @@ class LegacyPhoneValidator
   end
 
   def formatted
-    phone.gsub(" ", "")
+    phone.delete(" ")
          .gsub(/(\A\+\d+)\(0+\)/, '\1') # remove parenthesized zeroes after international prefix
   end
 

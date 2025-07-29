@@ -52,7 +52,7 @@ module FeedServices
       if entourage_types.nil?
         entourage_types = Entourage::ENTOURAGE_TYPES
       else
-        entourage_types = entourage_types.gsub(' ', '').split(',') & Entourage::ENTOURAGE_TYPES
+        entourage_types = entourage_types.delete(' ').split(',') & Entourage::ENTOURAGE_TYPES
       end
 
       entourage_types = entourage_types.flat_map do |entourage_type|
