@@ -1,7 +1,7 @@
 module CommunityHelper
   def with_community community
     community = Community.new(community)
-    around(:each) do |example|
+    around do |example|
       default_community = $server_community
       $server_community = community
       example.run
