@@ -18,7 +18,7 @@ RSpec.describe Api::V1::NewsletterSubscriptionsController, type: :controller do
   end
 
   describe "POST create" do
-    before(:each) do
+    before do
       stub_request(:post, "https://api.mailjet.com/v3/REST/contactslist/2822632/managecontact").to_return(
         status: 200,
         body: {
