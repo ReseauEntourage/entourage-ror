@@ -47,7 +47,7 @@ module Api
         end
 
         def invite_params
-          params.require(:invite).permit(:mode, phone_numbers:[])
+          params.require(:invite).permit(:mode, phone_numbers: [])
         end
       end
     end
