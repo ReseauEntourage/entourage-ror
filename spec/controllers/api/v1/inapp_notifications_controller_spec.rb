@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::InappNotificationsController, :type => :controller do
+describe Api::V1::InappNotificationsController, type: :controller do
   let(:user) { create :pro_user }
 
   context 'index' do

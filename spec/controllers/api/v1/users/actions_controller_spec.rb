@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::Users::ActionsController, :type => :controller do
+describe Api::V1::Users::ActionsController, type: :controller do
   render_views
 
   let(:user) { FactoryBot.create(:pro_user) }

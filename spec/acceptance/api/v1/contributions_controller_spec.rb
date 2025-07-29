@@ -46,15 +46,15 @@ resource Api::V1::ContributionsController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :contribution, :required => true do
+    with_options scope: :contribution, required: true do
       parameter :title
       parameter :description
 
-      with_options :scope => "contribution[metadata]", :required => true do
+      with_options scope: "contribution[metadata]", required: true do
         parameter :city
       end
 
-      with_options :scope => "contribution[location]", :required => true do
+      with_options scope: "contribution[location]", required: true do
         parameter :latitude
         parameter :longitude
       end
@@ -100,15 +100,15 @@ resource Api::V1::ContributionsController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :contribution, :required => true do
+    with_options scope: :contribution, required: true do
       parameter :title
       parameter :description
 
-      with_options :scope => "contribution[metadata]" do
+      with_options scope: "contribution[metadata]" do
         parameter :city
       end
 
-      with_options :scope => "contribution[location]" do
+      with_options scope: "contribution[location]" do
         parameter :latitude
         parameter :longitude
       end
@@ -142,7 +142,7 @@ resource Api::V1::ContributionsController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :report, :required => true do
+    with_options scope: :report, required: true do
       parameter :signals, type: :array
       parameter :message, type: :string
     end

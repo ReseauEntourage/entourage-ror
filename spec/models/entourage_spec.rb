@@ -114,18 +114,18 @@ RSpec.describe Entourage, type: :model do
     it { expect(outing.metadata[:starts_at].time_zone.name).to eq(Time.zone.name) }
 
     it { expect(outing.metadata).to eq(
-      starts_at: now,
-      ends_at: now + 3.hours,
-      previous_at: nil,
-      display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
-      place_name: "Café la Renaissance",
-      street_address: "44 rue de l’Assomption, 75016 Paris, France",
-      google_place_id: "foobar",
-      landscape_url: nil,
-      landscape_thumbnail_url: nil,
-      portrait_url: nil,
-      portrait_thumbnail_url: nil,
-      place_limit: nil,
+      :starts_at => now,
+      :ends_at => now + 3.hours,
+      :previous_at => nil,
+      :display_address => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+      :place_name => "Café la Renaissance",
+      :street_address => "44 rue de l’Assomption, 75016 Paris, France",
+      :google_place_id => "foobar",
+      :landscape_url => nil,
+      :landscape_thumbnail_url => nil,
+      :portrait_url => nil,
+      :portrait_thumbnail_url => nil,
+      :place_limit => nil,
       :$id=>"urn:entourage:outing:metadata"
     ) }
     it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(

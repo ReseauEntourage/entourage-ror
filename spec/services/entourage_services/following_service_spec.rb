@@ -51,15 +51,15 @@ describe FollowingService do
           "solicitation",
           action.id,
           {
-            :tracking => :solicitation_on_create,
-            :instance => "solicitation",
-            :instance_id => action.id,
-            :type => "ENTOURAGE_INVITATION",
-            :entourage_id => action.id,
-            :group_type => 'action',
-            :inviter_id => nil,
-            :invitee_id => nil,
-            :invitation_id => nil,
+            tracking: :solicitation_on_create,
+            instance: "solicitation",
+            instance_id: action.id,
+            type: "ENTOURAGE_INVITATION",
+            entourage_id: action.id,
+            group_type: 'action',
+            inviter_id: nil,
+            invitee_id: nil,
+            invitation_id: nil,
           }
         )
       }

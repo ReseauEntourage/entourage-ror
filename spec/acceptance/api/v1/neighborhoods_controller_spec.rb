@@ -48,7 +48,7 @@ resource Api::V1::NeighborhoodsController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :neighborhood, :required => true do
+    with_options scope: :neighborhood, required: true do
       parameter :name, "Name"
       parameter :description, "Description"
       parameter :welcome_message, "Welcome message", required: false
@@ -104,7 +104,7 @@ resource Api::V1::NeighborhoodsController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :neighborhood, :required => true do
+    with_options scope: :neighborhood, required: true do
       parameter :name, "Name", required: false
       parameter :ethics, "Ethics", required: false
       parameter :latitude, "Latitude", required: false
@@ -138,7 +138,7 @@ resource Api::V1::NeighborhoodsController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :report, :required => true do
+    with_options scope: :report, required: true do
       parameter :signals, type: :array
       parameter :message, type: :string
     end

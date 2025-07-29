@@ -2,7 +2,7 @@ module Matchable
   extend ActiveSupport::Concern
 
   included do
-    after_save :match_on_save, :if => :matchable_field_changed?
+    after_save :match_on_save, if: :matchable_field_changed?
 
     has_one :openai_request, as: :instance
     has_many :matchings, as: :instance

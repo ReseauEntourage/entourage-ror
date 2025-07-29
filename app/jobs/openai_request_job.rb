@@ -3,7 +3,7 @@ require 'json'
 class OpenaiRequestJob
   include Sidekiq::Worker
 
-  sidekiq_options :retry => false, queue: :openai_requests
+  sidekiq_options retry: false, queue: :openai_requests
 
   def perform openai_request_id
     openai_request = OpenaiRequest.find(openai_request_id)

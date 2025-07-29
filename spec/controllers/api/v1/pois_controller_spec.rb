@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::PoisController, :type => :controller do
+describe Api::V1::PoisController, type: :controller do
   render_views
 
   context 'authorized' do
@@ -155,7 +155,7 @@ describe Api::V1::PoisController, :type => :controller do
         let!(:poi4) { create :poi, category: category3, validated: true }
 
         context 'v1' do
-          before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), :format => :json } }
+          before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), format: :json } }
           it { expect(assigns(:categories)).to match_array([category1, category2, category3]) }
           it { expect(assigns(:pois)).to match_array([poi1, poi3]) }
 

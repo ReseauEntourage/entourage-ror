@@ -13,8 +13,8 @@ class GroupMailer < MailjetMailer
           :entourage_title,
           :entourage_share_url,
         ],
-        event_date_time: event.metadata_datetimes_formatted,
-        event_place_name: event.metadata[:display_address],
+        :event_date_time => event.metadata_datetimes_formatted,
+        :event_place_name => event.metadata[:display_address],
       ]
     )
   end

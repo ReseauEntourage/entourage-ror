@@ -43,7 +43,7 @@ module EntourageBack
     config.active_record.observers = [:entourage_denorm_observer, :user_block_observer, :join_request_observer, :push_notification_trigger_observer, :translation_observer, :denorm_chat_message_observer, :smalltalk_observer, :smalltalk_membership_observer]
 
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
-    config.action_mailer.default_url_options = { :host => ENV["HOST"] }
+    config.action_mailer.default_url_options = { host: ENV["HOST"] }
 
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#per-form-csrf-tokens
     # config.action_controller.per_form_csrf_tokens = true

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Neighborhood, :type => :model do
+RSpec.describe Neighborhood, type: :model do
   describe 'auto_post_at_create' do
     let(:user) { create(:user) }
     let(:neighborhood) { create(:neighborhood, participants: [user]) }

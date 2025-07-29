@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-RSpec.describe Api::V1::UptimesController, :type => :controller do
+RSpec.describe Api::V1::UptimesController, type: :controller do
   let(:user) { FactoryBot.create(:public_user) }
   let(:superadmin) { FactoryBot.create(:public_user, super_admin: true) }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::Users::OutingsController, :type => :controller do
+describe Api::V1::Users::OutingsController, type: :controller do
   render_views
 
   let(:user) { create(:pro_user) }

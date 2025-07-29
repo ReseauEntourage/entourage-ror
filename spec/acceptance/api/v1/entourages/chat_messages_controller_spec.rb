@@ -40,10 +40,10 @@ resource Api::V1::Entourages::ChatMessagesController do
     parameter :token, type: :string, required: true
     parameter :entourage_id, type: :integer, required: true
 
-    with_options :scope => :chat_message, :required => true do
+    with_options scope: :chat_message, required: true do
       parameter :content, type: :string
       parameter :message_type, "text, status_update, share", type: :string
-      with_options :scope => "chat_message[metadata]", :required => true do
+      with_options scope: "chat_message[metadata]", required: true do
         parameter :status, "(status_update)", type: :string
         parameter :outcome_success, "(status_update)", type: :boolean
         parameter :type, "entourage, poi (share)", type: :string

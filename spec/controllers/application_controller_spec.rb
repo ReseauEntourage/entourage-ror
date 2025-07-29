@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-describe ApplicationController, :type => :controller do
+describe ApplicationController, type: :controller do
   render_views
 
   describe 'authenticate_user!' do

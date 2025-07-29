@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe User, :type => :model do
+describe User, type: :model do
   describe "public user" do
     it { expect(build(:public_user, phone: nil).save).to be false }
     it { expect(build(:public_user, sms_code: nil).save).to be false }

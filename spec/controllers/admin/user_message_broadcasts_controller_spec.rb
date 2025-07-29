@@ -116,7 +116,7 @@ describe Admin::UserMessageBroadcastsController do
 
     context "archive" do
       before {
-        put :update, params: { id: user_message_broadcast.id, :archive => true, user_message_broadcast: { goal: 'ask_for_help' } }
+        put :update, params: { id: user_message_broadcast.id, archive: true, user_message_broadcast: { goal: 'ask_for_help' } }
         user_message_broadcast.reload
       }
       it { expect(user_message_broadcast.status).to eq('archived') }

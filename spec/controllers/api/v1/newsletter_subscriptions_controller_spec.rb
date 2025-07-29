@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller do
+RSpec.describe Api::V1::NewsletterSubscriptionsController, type: :controller do
   let(:user) { create :public_user }
 
   describe "GET show" do
@@ -20,21 +20,21 @@ RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller 
   describe "POST create" do
     before(:each) do
       stub_request(:post, "https://api.mailjet.com/v3/REST/contactslist/2822632/managecontact").to_return(
-        :status => 200,
-        :body => {
+        status: 200,
+        body: {
           count: 1,
           data: {
             name: "foo",
             properties: {
-              :newsletter_entourage => true,
-              :antenne_entourage => "NANTES",
-              :profil_entourage => "PARTICULIER"
+              newsletter_entourage: true,
+              antenne_entourage: "NANTES",
+              profil_entourage: "PARTICULIER"
             },
             action: "addnoforce",
             email: "foo@bar.fr"
           }
         }.to_json,
-        :headers => {}
+        headers: {}
       )
     end
 
@@ -65,7 +65,7 @@ RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller 
       let(:params) {{ newsletter_subscription: {
         not_email_param: "subscriber@newsletter.com",
         not_active_param: true
-      }, :format => :json }}
+      }, format: :json }}
 
       before { request }
 

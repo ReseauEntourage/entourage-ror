@@ -39,16 +39,16 @@ resource Api::V1::UsersController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :user, :required => true do
-      parameter :first_name, "First name", type: :string, :required => false
-      parameter :last_name, "Last name", type: :string, :required => false
-      parameter :email, "Email", type: :string, :required => false
-      parameter :sms_code, "SMS code", type: :string, :required => false
-      parameter :phone, "Phone", type: :string, :required => false
-      parameter :avatar_key, "Avatar key", type: :string, :required => false
-      parameter :about, "About", type: :string, :required => false
-      parameter :goal, "offer_help, ask_for_help, organization", type: :string, :required => false
-      parameter :interests, "Interests", type: :array, :required => false
+    with_options scope: :user, required: true do
+      parameter :first_name, "First name", type: :string, required: false
+      parameter :last_name, "Last name", type: :string, required: false
+      parameter :email, "Email", type: :string, required: false
+      parameter :sms_code, "SMS code", type: :string, required: false
+      parameter :phone, "Phone", type: :string, required: false
+      parameter :avatar_key, "Avatar key", type: :string, required: false
+      parameter :about, "About", type: :string, required: false
+      parameter :goal, "offer_help, ask_for_help, organization", type: :string, required: false
+      parameter :interests, "Interests", type: :array, required: false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -75,7 +75,7 @@ resource Api::V1::UsersController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :user, :required => true do
+    with_options scope: :user, required: true do
       parameter :first_name, "First name", type: :string
       parameter :last_name, "Last name", type: :string
       parameter :email, "Email", type: :string
@@ -109,11 +109,11 @@ resource Api::V1::UsersController do
 
     parameter :id, required: true
 
-    with_options :scope => :user, :required => true do
+    with_options scope: :user, required: true do
       parameter :phone, "Phone", type: :string
     end
 
-    with_options :scope => :code do
+    with_options scope: :code do
       parameter :action, "regenerate", type: :string
     end
 
@@ -138,7 +138,7 @@ resource Api::V1::UsersController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :user, :required => true do
+    with_options scope: :user, required: true do
       parameter :current_phone, "Current phone", type: :string, required: true
       parameter :requested_phone, "Requested phone", type: :string, required: true
       parameter :email, "Email", type: :string
@@ -252,7 +252,7 @@ resource Api::V1::UsersController do
     parameter :id, "Reported user id", type: :integer, required: true
     parameter :token, "Reportings user token", type: :string, required: true
 
-    with_options :scope => :user_report, :required => true do
+    with_options scope: :user_report, required: true do
       parameter :message, "Message", type: :string
     end
 
@@ -305,7 +305,7 @@ resource Api::V1::UsersController do
     parameter :id, "Id or 'me'", type: :integer, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :address, :required => true do
+    with_options scope: :address, required: true do
       parameter :place_name, "Place name", type: :string
       parameter :latitude, "Latitude", type: :number
       parameter :longitude, "Longitude", type: :number

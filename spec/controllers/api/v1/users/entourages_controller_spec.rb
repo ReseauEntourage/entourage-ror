@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::Users::EntouragesController, :type => :controller do
+describe Api::V1::Users::EntouragesController, type: :controller do
   render_views
 
   let(:user) { FactoryBot.create(:pro_user) }

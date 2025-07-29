@@ -21,7 +21,7 @@ module V1
     attribute :source,       if: :v2? || :default?
     attribute :category_ids, if: :v2? || :default?
 
-    has_one :category, :serializer => V1::CategorySerializer, if: :v1_list? || :default?
+    has_one :category, serializer: V1::CategorySerializer, if: :v1_list? || :default?
 
     def v1_list?; version == :v1_list; end
     def v2_list?; version == :v2_list; end

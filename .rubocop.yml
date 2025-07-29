@@ -1,35 +1,206 @@
 require:
   - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 3.2
   NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'vendor/**/*'
+    - 'db/schema.rb'
+    - 'bin/**/*'
+    - 'node_modules/**/*'
 
-# Cops spécifiques pour détecter les problèmes d'arguments
+#==============================================================================
+# PROBLÈMES SPÉCIFIQUES RUBY 3.2
+#==============================================================================
+
+# Arguments forwarding
 Style/ArgumentsForwarding:
   Enabled: true
   UseAnonymousForwarding: true
 
-Style/HashSyntax:
-  Enabled: true
-  EnforcedStyle: ruby19_no_mixed_keys
-
+# Opérateurs ambigus
 Lint/AmbiguousOperator:
   Enabled: true
 
-# Détection des méthodes avec arguments mixtes
+# Pattern matching (nouveau en Ruby 3.2)
+Style/InPatternThen:
+  Enabled: true
+
+# Hash syntax moderne
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: ruby19_no_mixed_keys
+  EnforcedShorthandSyntax: either
+
+#==============================================================================
+# DÉTECTION DES INCOMPATIBILITÉS KEYWORD ARGUMENTS
+#==============================================================================
+
+# Détection des méthodes avec arguments mixtes dangereux
 Style/MethodCallWithArgsParentheses:
   Enabled: true
   EnforcedStyle: require_parentheses
+  AllowParenthesesInStringInterpolation: true
 
-# Pour Rails spécifiquement (nécessite rubocop-rails)
+# Variables non utilisées (peuvent cacher des problèmes d'arguments)
+Lint/UnusedMethodArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: false
+
+Lint/UnusedBlockArgument:
+  Enabled: true
+
+#==============================================================================
+# STDLIB CHANGES & DEPRECATIONS RUBY 3.2
+#==============================================================================
+
+# Détection de l'usage de méthodes dépréciées
+Lint/DeprecatedConstants:
+  Enabled: true
+
+# Classes qui ont changé en Ruby 3.2
+Style/ClassCheck:
+  Enabled: true
+  EnforcedStyle: kind_of?
+
+# String methods changes
+Style/RedundantStringEscape:
+  Enabled: true
+
+#==============================================================================
+# PERFORMANCE & MEMORY (important pour Ruby 3.2)
+#==============================================================================
+
+Performance/StringReplacement:
+  Enabled: true
+
+Performance/MethodObjectAsBlock:
+  Enabled: true
+
+Performance/MapCompact:
+  Enabled: true
+
+Performance/SelectMap:
+  Enabled: true
+
+Performance/RedundantSortBlock:
+  Enabled: true
+
+Performance/Sum:
+  Enabled: true
+
+#==============================================================================
+# FIBER & CONCURRENCY (nouvelles features Ruby 3.2)
+#==============================================================================
+
+# Thread safety
+Style/GlobalStdStream:
+  Enabled: true
+
+# Variable assignment dans des contextes concurrents
+Lint/AssignmentInCondition:
+  Enabled: true
+  AllowSafeAssignment: false
+
+#==============================================================================
+# RAILS SPÉCIFIQUES POUR RUBY 3.2
+#==============================================================================
+
+# HTTP methods avec keyword arguments
 Rails/HttpPositionalArguments:
   Enabled: true
 
-# Autres cops Rails utiles pour Ruby 3.2
+# ActionController tests compatibility
 Rails/ActionControllerTestCase:
   Enabled: true
 
+# HTTP status codes (style plus cohérent)
 Rails/HttpStatus:
   Enabled: true
   EnforcedStyle: numeric
+
+# Date/Time handling (amélioré en Ruby 3.2)
+Rails/Date:
+  Enabled: true
+
+Rails/TimeZone:
+  Enabled: true
+
+# ActiveRecord query methods
+Rails/WhereExists:
+  Enabled: true
+
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: true
+
+#==============================================================================
+# PATTERN MATCHING & DESTRUCTURING (Ruby 3.2 features)
+#==============================================================================
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+#==============================================================================
+# LINTING AVANCÉ POUR RUBY 3.2
+#==============================================================================
+
+# Variables définies mais non utilisées
+Lint/UselessAssignment:
+  Enabled: true
+
+# Méthodes redéfinies
+Lint/DuplicateMethods:
+  Enabled: true
+
+# Rescue sans classe spécifiée
+Style/RescueStandardError:
+  Enabled: true
+  EnforcedStyle: explicit
+
+# Blocks avec une seule ligne
+Style/SingleLineBlockParams:
+  Enabled: true
+
+#==============================================================================
+# COMPATIBILITY & SAFETY
+#==============================================================================
+
+# Éviter les monkey patches dangereux
+Style/OpenStructUse:
+  Enabled: true
+
+# Méthodes deprecated
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+# Regex avec des échappements problématiques
+Style/RegexpLiteral:
+  Enabled: true
+  EnforcedStyle: slashes
+
+#==============================================================================
+# RSPEC POUR RUBY 3.2 (si vous utilisez RSpec)
+#==============================================================================
+
+RSpec/RepeatedDescription:
+  Enabled: true
+
+RSpec/RepeatedExample:
+  Enabled: true
+
+RSpec/EmptyLineAfterSubject:
+  Enabled: true
+
+RSpec/HookArgument:
+  Enabled: true
+  EnforcedStyle: implicit

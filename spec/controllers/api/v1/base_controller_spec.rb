@@ -1,7 +1,7 @@
 require 'rails_helper'
 include CommunityHelper
 
-RSpec.describe Api::V1::BaseController, :type => :controller do
+RSpec.describe Api::V1::BaseController, type: :controller do
   render_views
 
   describe 'validate_request!' do

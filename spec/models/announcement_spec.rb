@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Announcement, :type => :model do
+RSpec.describe Announcement, type: :model do
   it { should validate_presence_of(:title) }
   it { should allow_value(nil).for(:webapp_url) }
   it { should_not allow_value("foo").for(:webapp_url) }

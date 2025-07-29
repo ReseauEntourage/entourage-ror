@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::SmalltalksController, :type => :controller do
+describe Api::V1::SmalltalksController, type: :controller do
   let(:user) { create :pro_user, goal: :offer_help }
   let(:smalltalk) { create :smalltalk, participants: [user] }
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 include AuthHelper
 include CommunityHelper
 
-RSpec.describe Api::V1::TagsController, :type => :controller do
+RSpec.describe Api::V1::TagsController, type: :controller do
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET interests' do

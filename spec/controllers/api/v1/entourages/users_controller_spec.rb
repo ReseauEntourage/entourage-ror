@@ -293,11 +293,11 @@ describe Api::V1::Entourages::UsersController do
           "solicitation",
           entourage.id,
           {
-            :joinable_id => entourage.id,
-            :joinable_type => "Entourage",
-            :group_type => 'action',
-            :type => "JOIN_REQUEST_ACCEPTED",
-            :user_id => requester.id,
+            joinable_id: entourage.id,
+            joinable_type: "Entourage",
+            group_type: 'action',
+            type: "JOIN_REQUEST_ACCEPTED",
+            user_id: requester.id,
             instance: "solicitation",
             instance_id: entourage.id
           }
