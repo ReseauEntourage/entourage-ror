@@ -4,7 +4,7 @@ module Offensable
   included do
     has_one :openai_request, as: :instance
 
-    after_save :offense_on_save, :if => :offensable_field_changed?
+    after_save :offense_on_save, if: :offensable_field_changed?
   end
 
   def build_openai_request(attributes = {})

@@ -63,7 +63,7 @@ module Admin
 
     private
     def poi_params
-      params.require(:poi).permit(:name, :adress, :description, :audience, :email, :website, :phone, :category_id, :validated, :longitude, :latitude, :category_ids => [])
+      params.require(:poi).permit(:name, :adress, :description, :audience, :email, :website, :phone, :category_id, :validated, :longitude, :latitude, category_ids: [])
     end
 
     def set_poi

@@ -46,15 +46,15 @@ resource Api::V1::SolicitationsController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :solicitation, :required => true do
+    with_options scope: :solicitation, required: true do
       parameter :title
       parameter :description
 
-      with_options :scope => "solicitation[metadata]", :required => true do
+      with_options scope: "solicitation[metadata]", required: true do
         parameter :city
       end
 
-      with_options :scope => "solicitation[location]", :required => true do
+      with_options scope: "solicitation[location]", required: true do
         parameter :latitude
         parameter :longitude
       end
@@ -100,15 +100,15 @@ resource Api::V1::SolicitationsController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :solicitation, :required => true do
+    with_options scope: :solicitation, required: true do
       parameter :title
       parameter :description
 
-      with_options :scope => "solicitation[metadata]" do
+      with_options scope: "solicitation[metadata]" do
         parameter :city
       end
 
-      with_options :scope => "solicitation[location]" do
+      with_options scope: "solicitation[location]" do
         parameter :latitude
         parameter :longitude
       end
@@ -142,7 +142,7 @@ resource Api::V1::SolicitationsController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :report, :required => true do
+    with_options scope: :report, required: true do
       parameter :signals, type: :array
       parameter :message, type: :string
     end

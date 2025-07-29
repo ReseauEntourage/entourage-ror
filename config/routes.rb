@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/super_admin/sidekiq', :constraints => SuperAdminConstraint.new
 
   #ADMIN
-  constraints :subdomain => /\A(admin|admin-preprod|admin-test|admin-preprod-test)\z/ do
-    scope :module => "admin", :as => "admin" do
+  constraints subdomain: /\A(admin|admin-preprod|admin-test|admin-preprod-test)\z/ do
+    scope module: "admin", as: "admin" do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
       get '/sessions/new', to: redirect('/admin/sessions/new')
@@ -31,11 +31,11 @@ Rails.application.routes.draw do
 
       namespace :super_admin do
         get '/soliguide', action: :soliguide
-        get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
+        get '/soliguide_show/:id' => :soliguide_show, :as => :soliguide_show
       end
 
       resources :actions, only: [:index] do
-        resources :matchings, :controller => 'actions/matchings', only: [:index] do
+        resources :matchings, controller: 'actions/matchings', only: [:index] do
           collection do
             post :notify_best
             post :mail_best
@@ -102,7 +102,7 @@ Rails.application.routes.draw do
           get :show_members
           get :show_messages
           get :show_neighborhoods
-          get 'comments/:message_id' => :show_comments, as: :show_comments
+          get 'comments/:message_id' => :show_comments, :as => :show_comments
           get :show_matchings
           get :show_siblings
           post :send_matching
@@ -161,23 +161,23 @@ Rails.application.routes.draw do
           put :unjoin
           get :show_members
           get :show_outings
-          get 'outing_posts/:outing_id' => :show_outing_posts, as: :show_outing_posts
-          get 'outing_post_comments/:post_id' => :show_outing_post_comments, as: :show_outing_post_comments
+          get 'outing_posts/:outing_id' => :show_outing_posts, :as => :show_outing_posts
+          get 'outing_post_comments/:post_id' => :show_outing_post_comments, :as => :show_outing_post_comments
           get :show_posts
-          get 'post_comments/:post_id' => :show_post_comments, as: :show_post_comments
+          get 'post_comments/:post_id' => :show_post_comments, :as => :show_post_comments
           get :edit_owner
           post :update_owner
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
           post :read_all_messages
           post :message
-          post 'outing_message/:outing_id' => :outing_message, as: :outing_message
-          delete 'destroy_outing_message/:chat_message_id' => :destroy_outing_message, as: :destroy_outing_message
+          post 'outing_message/:outing_id' => :outing_message, :as => :outing_message
+          delete 'destroy_outing_message/:chat_message_id' => :destroy_outing_message, :as => :destroy_outing_message
         end
 
         collection do
-          post 'unread_message/:chat_message_id' => :unread_message, as: :unread_message
-          delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
+          post 'unread_message/:chat_message_id' => :unread_message, :as => :unread_message
+          delete 'destroy_message/:chat_message_id' => :destroy_message, :as => :destroy_message
         end
       end
 
@@ -271,8 +271,8 @@ Rails.application.routes.draw do
         post :offensive_text
         post :user_unblock
         get :csv
-        get 'entourage_links/:id' => :entourage_links, as: :entourage_links
-        get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
+        get 'entourage_links/:id' => :entourage_links, :as => :entourage_links
+        get 'neighborhood_links/:id' => :neighborhood_links, :as => :neighborhood_links
       end
 
       resources :smalltalks, only: [:index, :show] do
@@ -351,7 +351,7 @@ Rails.application.routes.draw do
   #API
   namespace :api do
     namespace :v1 do
-      match '(*path)' => 'base#options', via: [:options]
+      match '(*path)' => 'base#options', :via => [:options]
 
       resources :home, only: [:index] do
         collection do
@@ -421,20 +421,20 @@ Rails.application.routes.draw do
           post :following
         end
 
-        resources :entourages, :controller => 'users/entourages', only: [:index]
-        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index] do
+        resources :entourages, controller: 'users/entourages', only: [:index]
+        resources :neighborhoods, controller: 'users/neighborhoods', only: [:index] do
           collection do
             get :default
           end
         end
 
-        resources :outings, :controller => 'users/outings', only: [:index] do
+        resources :outings, controller: 'users/outings', only: [:index] do
           collection do
             get :past
           end
         end
 
-        resources :actions, :controller => 'users/actions', only: [:index]
+        resources :actions, controller: 'users/actions', only: [:index]
 
         resources :addresses, controller: 'users/addresses', only: [] do
           collection do
@@ -463,7 +463,7 @@ Rails.application.routes.draw do
           post :report # report an issue with the neighborhood
         end
 
-        resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :show, :create, :update, :destroy] do
+        resources :chat_messages, controller: 'neighborhoods/chat_messages', only: [:index, :show, :create, :update, :destroy] do
           post :report # report an issue with a chat_message
 
           member do
@@ -474,7 +474,7 @@ Rails.application.routes.draw do
             post :presigned_upload
           end
 
-          resources :reactions, :controller => 'neighborhoods/chat_messages/reactions', only: [:index, :create] do
+          resources :reactions, controller: 'neighborhoods/chat_messages/reactions', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -485,7 +485,7 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :survey_responses, :controller => 'neighborhoods/chat_messages/survey_responses', only: [:index, :create] do
+          resources :survey_responses, controller: 'neighborhoods/chat_messages/survey_responses', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -493,23 +493,23 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :users, :controller => 'neighborhoods/users', only: [:index, :create, :destroy] do
+        resources :users, controller: 'neighborhoods/users', only: [:index, :create, :destroy] do
           collection do
             # we want to avoid specific id to unjoin
             delete :destroy
           end
         end
 
-        resources :outings, :controller => 'neighborhoods/outings', only: [:index, :create]
+        resources :outings, controller: 'neighborhoods/outings', only: [:index, :create]
       end
 
       resources :resources, only: [:index, :show] do
         collection do
           get :home
-          get "tag/:tag" => :tag, as: :tag
+          get "tag/:tag" => :tag, :as => :tag
         end
 
-        resources :users, :controller => 'resources/users', only: [:create, :destroy] do
+        resources :users, controller: 'resources/users', only: [:create, :destroy] do
           collection do
             # we want to avoid specific id to unjoin
             delete :destroy
@@ -524,9 +524,9 @@ Rails.application.routes.draw do
           get :owned
           get :invited
         end
-        resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
-        resources :invitations, :controller => 'entourages/invitations', only: [:create]
-        resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
+        resources :users, controller: 'entourages/users', only: [:index, :destroy, :update, :create]
+        resources :invitations, controller: 'entourages/invitations', only: [:create]
+        resources :chat_messages, controller: 'entourages/chat_messages', only: [:index, :create]
 
         member do
           put :read
@@ -549,7 +549,7 @@ Rails.application.routes.draw do
           post :cancel
         end
 
-        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :show, :create, :update, :destroy] do
+        resources :chat_messages, controller: 'outings/chat_messages', only: [:index, :show, :create, :update, :destroy] do
           post :report # report an issue with a chat_message
 
           member do
@@ -560,7 +560,7 @@ Rails.application.routes.draw do
             post :presigned_upload
           end
 
-          resources :reactions, :controller => 'outings/chat_messages/reactions', only: [:index, :create] do
+          resources :reactions, controller: 'outings/chat_messages/reactions', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -571,7 +571,7 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :survey_responses, :controller => 'outings/chat_messages/survey_responses', only: [:index, :create] do
+          resources :survey_responses, controller: 'outings/chat_messages/survey_responses', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -579,7 +579,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :users, :controller => 'outings/users', only: [:index, :create, :destroy] do
+        resources :users, controller: 'outings/users', only: [:index, :create, :destroy] do
           member do
             post :confirm
           end
@@ -611,7 +611,7 @@ Rails.application.routes.draw do
       end
 
       resources :conversations do
-        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create, :update, :destroy] do
+        resources :chat_messages, controller: 'conversations/chat_messages', only: [:index, :create, :update, :destroy] do
           member do
             get :comments
           end
@@ -620,7 +620,7 @@ Rails.application.routes.draw do
             post :presigned_upload
           end
 
-          resources :reactions, :controller => 'conversations/chat_messages/reactions', only: [:index, :create] do
+          resources :reactions, controller: 'conversations/chat_messages/reactions', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -631,7 +631,7 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :survey_responses, :controller => 'conversations/chat_messages/survey_responses', only: [:index, :create] do
+          resources :survey_responses, controller: 'conversations/chat_messages/survey_responses', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -639,7 +639,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :users, :controller => 'conversations/users', only: [:index, :create] do
+        resources :users, controller: 'conversations/users', only: [:index, :create] do
           member do
             post :invite
           end
@@ -696,7 +696,7 @@ Rails.application.routes.draw do
           post :force_match
           get :matches
           get :almost_matches
-          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, :as => :matches_by_criteria
         end
 
         member do
@@ -704,12 +704,12 @@ Rails.application.routes.draw do
           post :force_match
           get :matches
           get :almost_matches
-          get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+          get "matches_by_criteria/:criteria" => :matches_by_criteria, :as => :matches_by_criteria
         end
       end
 
       resources :smalltalks, only: [:index, :show] do
-        resources :chat_messages, :controller => 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy] do
+        resources :chat_messages, controller: 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy] do
           member do
             get :comments
           end
@@ -718,7 +718,7 @@ Rails.application.routes.draw do
             post :presigned_upload
           end
 
-          resources :reactions, :controller => 'smalltalks/chat_messages/reactions', only: [:index, :create] do
+          resources :reactions, controller: 'smalltalks/chat_messages/reactions', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -729,7 +729,7 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :survey_responses, :controller => 'smalltalks/chat_messages/survey_responses', only: [:index, :create] do
+          resources :survey_responses, controller: 'smalltalks/chat_messages/survey_responses', only: [:index, :create] do
             collection do
               get :users
               delete :destroy
@@ -737,7 +737,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :users, :controller => 'smalltalks/users', only: [:index] do
+        resources :users, controller: 'smalltalks/users', only: [:index] do
           collection do
             delete :destroy
           end
@@ -754,7 +754,7 @@ Rails.application.routes.draw do
       resources :announcements, only: [:index] do
         member do
           get :icon
-          get 'redirect/:token' => :redirect, as: :redirect
+          get 'redirect/:token' => :redirect, :as => :redirect
         end
       end
 
@@ -798,7 +798,7 @@ Rails.application.routes.draw do
   }.compact
 
   scope organization_admin_scope.merge(
-    as: :organization_admin, :module => :organization_admin,
+    as: :organization_admin, module: :organization_admin,
     constraints: organization_admin_scope.slice(:host)) do
 
     get '/' => 'base#home'
@@ -856,7 +856,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'apps' => 'home#apps', as: :apps
+  get 'apps' => 'home#apps', :as => :apps
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
   get 'ping' => 'application#ping'

@@ -1,7 +1,7 @@
 class UnreadChatMessageJob
   include Sidekiq::Worker
 
-  sidekiq_options :retry => true, queue: :default
+  sidekiq_options retry: true, queue: :default
 
   def perform messageable_type, messageable_id
     compute_unread_on(messageable_type, messageable_id)

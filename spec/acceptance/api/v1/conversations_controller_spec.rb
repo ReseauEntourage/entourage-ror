@@ -70,7 +70,7 @@ resource Api::V1::ConversationsController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :conversation, :required => true do
+    with_options scope: :conversation, required: true do
       parameter :user_id, type: :integer
     end
 
