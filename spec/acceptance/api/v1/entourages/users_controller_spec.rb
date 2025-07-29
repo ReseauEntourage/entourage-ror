@@ -59,7 +59,7 @@ resource Api::V1::Entourages::UsersController do
     parameter :entourage_id, type: :integer, required: true
     parameter :id, "User id", type: :integer
 
-    with_options :scope => :user, :required => true do
+    with_options scope: :user, required: true do
       parameter :status, type: :string
     end
 

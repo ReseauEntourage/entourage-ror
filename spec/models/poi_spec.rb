@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Poi, :type => :model do
+describe Poi, type: :model do
   it { should validate_presence_of(:name) }
 
   describe 'poi validation' do

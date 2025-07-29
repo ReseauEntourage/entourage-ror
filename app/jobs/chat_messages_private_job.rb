@@ -3,7 +3,7 @@ require 'sidekiq/api'
 # @todo RSPEC tests
 class ChatMessagesPrivateJob
   include Sidekiq::Worker
-  sidekiq_options :retry => false, queue: :default
+  sidekiq_options retry: false, queue: :default
 
   # @todo RSPEC tests
   # @caution we must perform as many jobs as the number of messages we have to create

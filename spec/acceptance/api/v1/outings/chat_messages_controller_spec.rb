@@ -70,10 +70,10 @@ resource Api::V1::Outings::ChatMessagesController do
     parameter :token, type: :string, required: true
     parameter :outing_id, type: :integer, required: true
 
-    with_options :scope => :chat_message, :required => true do
+    with_options scope: :chat_message, required: true do
       parameter :content, "content is optional whenever image_url is defined", type: :string, required: false
       parameter :image_url, type: :string, required: false
-      parameter :parent_id, "parent chat_message id", :required => false
+      parameter :parent_id, "parent chat_message id", required: false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -149,7 +149,7 @@ resource Api::V1::Outings::ChatMessagesController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :report, :required => true do
+    with_options scope: :report, required: true do
       parameter :signals, type: :array
       parameter :message, type: :string
     end

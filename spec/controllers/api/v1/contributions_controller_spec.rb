@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::ContributionsController, :type => :controller do
+describe Api::V1::ContributionsController, type: :controller do
   render_views
 
   let(:user) { create :pro_user }

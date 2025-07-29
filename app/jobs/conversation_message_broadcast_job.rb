@@ -2,7 +2,7 @@ require 'sidekiq/api'
 
 class ConversationMessageBroadcastJob
   include Sidekiq::Worker
-  sidekiq_options :retry => false, queue: :broadcast
+  sidekiq_options retry: false, queue: :broadcast
 
   # @caution we must perform as many jobs as the number of messages we have to create
   # performs the creation of a message from the sender to a specific recipient
