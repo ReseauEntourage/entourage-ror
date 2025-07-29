@@ -68,6 +68,7 @@ describe MemberMailer, type: :mailer do
     before { ENV["POI_REPORT_EMAIL"] = poi_report_email }
     after { ENV.delete("POI_REPORT_EMAIL") }
     subject { MemberMailer.poi_report(poi, user, message) }
+
     it { expect(subject.from).to eq ['contact@entourage.social'] }
     it { expect(subject.to).to eq [poi_report_email] }
     it { expect(subject.subject).to eq 'Correction de POI' }

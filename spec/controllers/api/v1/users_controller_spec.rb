@@ -1190,6 +1190,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   describe 'POST #address' do
     let(:user) { create :public_user }
     subject { post 'address', params: { address: address, id: UserService.external_uuid(user), token: user.token } }
+
     context "valid params" do
       let(:address) { { place_name: "75012", latitude: 48.835085, longitude: 2.382165 } }
       before { subject }

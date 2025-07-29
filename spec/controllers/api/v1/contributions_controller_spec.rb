@@ -261,6 +261,7 @@ describe Api::V1::ContributionsController, type: :controller do
 
   context 'create' do
     subject { JSON.parse(response.body) }
+
     let(:result) { Contribution.find(subject['contribution']['id']) }
 
     let(:params) { {

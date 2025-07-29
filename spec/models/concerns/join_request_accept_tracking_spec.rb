@@ -78,6 +78,7 @@ describe JoinRequestAcceptTracking do
   context "when updating a join request to pending" do
     let(:request) { Timecop.freeze(5.hours.ago) { create :join_request, status: status } }
     subject { request.update(status: :pending) }
+
     context "when status was pending" do
       let(:status) { :pending }
       it "doesn't change requested_at" do
@@ -114,6 +115,7 @@ describe JoinRequestAcceptTracking do
   context "when updating a join request to a state other than pending or accepted" do
     let(:request) { Timecop.freeze(5.hours.ago) { create :join_request, status: status } }
     subject { request.update(status: :cancelled) }
+
     context "when status was pending" do
       let(:status) { :pending }
       it "doesn't change requested_at" do

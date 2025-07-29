@@ -6,6 +6,7 @@ describe Poi, type: :model do
   describe 'poi validation' do
     let!(:poi) { FactoryBot.create :poi }
     subject { poi }
+
     context 'should succeed when the fields are not blank' do
       it { should be_valid }
     end

@@ -3,6 +3,7 @@ require 'rails_helper'
 describe MailjetController do
   describe 'POST event' do
     subject { post :event, params: { _json: [event] } }
+
     let(:user) { create :public_user }
     let(:category) { create :email_category }
 

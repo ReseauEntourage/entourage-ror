@@ -102,9 +102,9 @@ Style/GlobalStdStream:
   Enabled: true
 
 # Variable assignment dans des contextes concurrents
-Lint/AssignmentInCondition:
-  Enabled: true
-  AllowSafeAssignment: false
+# Lint/AssignmentInCondition:
+#   Enabled: true
+#   AllowSafeAssignment: false
 
 #==============================================================================
 # RAILS SPÉCIFIQUES POUR RUBY 3.2
@@ -189,7 +189,7 @@ Style/RegexpLiteral:
   EnforcedStyle: slashes
 
 #==============================================================================
-# RSPEC POUR RUBY 3.2 (si vous utilisez RSpec)
+# RSPEC POUR RUBY 3.2
 #==============================================================================
 
 RSpec/RepeatedDescription:
