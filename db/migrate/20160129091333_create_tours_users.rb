@@ -3,7 +3,7 @@ class CreateToursUsers < ActiveRecord::Migration[4.2]
     create_table :tours_users do |t|
       t.integer :user_id, null: false
       t.integer :tour_id, null: false
-      t.string :status,   null: false, default: "pending"
+      t.string :status,   null: false, default: 'pending'
 
       t.timestamps null: false
     end

@@ -1,10 +1,10 @@
-require "active_support/core_ext/integer/time"
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.hosts << "api.entourage.localhost"
-  config.hosts << "admin.entourage.localhost"
+  config.hosts << 'api.entourage.localhost'
+  config.hosts << 'admin.entourage.localhost'
 
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
@@ -79,7 +79,7 @@ Rails.application.configure do
 
   if ENV['ENABLE_MAILCATCHER']
     config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings   = { address: "localhost", port: 1025 }
+    config.action_mailer.smtp_settings   = { address: 'localhost', port: 1025 }
   elsif ENV['ENABLE_MAILJET'] == 'true'
     config.action_mailer.delivery_method = :safety_mailer
 
@@ -120,8 +120,8 @@ Rails.application.configure do
     end
 
     {
-      "params" => params,
-      "API_KEY" => payload[:api_key]
+      'params' => params,
+      'API_KEY' => payload[:api_key]
     }
   end
   config.lograge.formatter = Lograge::Formatters::KeyValue.new

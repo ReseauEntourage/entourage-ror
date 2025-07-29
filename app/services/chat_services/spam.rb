@@ -15,16 +15,16 @@ module ChatServices
       SPAM_PERIOD = 7.days
 
       scope :spam_entourages_for, -> (chat_message) {
-        select("previous_messages.messageable_type, previous_messages.messageable_id")
+        select('previous_messages.messageable_type, previous_messages.messageable_id')
         .joins(%(
           left join chat_messages previous_messages
             on previous_messages.user_id = chat_messages.user_id
             and previous_messages.id <> chat_messages.id
         ))
-        .where("chat_messages.id = ?", chat_message.id)
-        .where("similarity(chat_messages.content, previous_messages.content) > ?", SPAM_SIMILARITY)
-        .where("previous_messages.created_at between ? and ?", chat_message.created_at - SPAM_PERIOD, chat_message.created_at)
-        .group("chat_messages.id, previous_messages.messageable_type, previous_messages.messageable_id")
+        .where('chat_messages.id = ?', chat_message.id)
+        .where('similarity(chat_messages.content, previous_messages.content) > ?', SPAM_SIMILARITY)
+        .where('previous_messages.created_at between ? and ?', chat_message.created_at - SPAM_PERIOD, chat_message.created_at)
+        .group('chat_messages.id, previous_messages.messageable_type, previous_messages.messageable_id')
       }
     end
 

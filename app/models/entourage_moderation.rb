@@ -7,7 +7,7 @@ class EntourageModeration < ApplicationRecord
 
   after_commit :auto_post_at_create
 
-  SUCCESSFUL_VALUES = ["Oui", "Échange de coordonnées", "Orientation via modérateur"]
+  SUCCESSFUL_VALUES = ['Oui', 'Échange de coordonnées', 'Orientation via modérateur']
 
   VALUES = {
     # Emetteur. community.targeting_profiles + the following:
@@ -21,26 +21,26 @@ class EntourageModeration < ApplicationRecord
     ],
     # Type d’action
     action_type: [
-      "Autre",
-      "Autre : Information",
-      "Mat : Alimentaire",
-      "Mat : Argent",
-      "Mat : Équipement",
-      "Mat : Hébergement",
-      "Mat : hors alim, hyg, vest, hébergement, argent",
-      "Mat : Hygiène",
-      "Mat : Vestimentaire",
-      "Non Mat : Mise à disposition espace, douche, lessive, voiture, temps etc.",
-      "Non Mat : Bénévolat hors maraudes",
-      "Non Mat : Compétence hors Médical",
-      "Non Mat : Emploi / Formation",
-      "Non Mat : Maraude",
-      "Non Mat : Médical",
-      "Non Mat : soins animaliers",
-      "Social : Évènement Entourage",
-      "Social : Évenement non Entourage",
-      "Social : Lien",
-      "Hors sujet",
+      'Autre',
+      'Autre : Information',
+      'Mat : Alimentaire',
+      'Mat : Argent',
+      'Mat : Équipement',
+      'Mat : Hébergement',
+      'Mat : hors alim, hyg, vest, hébergement, argent',
+      'Mat : Hygiène',
+      'Mat : Vestimentaire',
+      'Non Mat : Mise à disposition espace, douche, lessive, voiture, temps etc.',
+      'Non Mat : Bénévolat hors maraudes',
+      'Non Mat : Compétence hors Médical',
+      'Non Mat : Emploi / Formation',
+      'Non Mat : Maraude',
+      'Non Mat : Médical',
+      'Non Mat : soins animaliers',
+      'Social : Évènement Entourage',
+      'Social : Évenement non Entourage',
+      'Social : Lien',
+      'Hors sujet',
     ],
     # Consentement
     action_recipient_consent_obtained: [
@@ -51,13 +51,13 @@ class EntourageModeration < ApplicationRecord
 
     # Moyen de contact
     moderation_contact_channel: [
-      "Appelé",
-      "SMS",
-      "Message vocal laissé",
-      "Mail envoyé",
-      "Message via appli",
-      "Appel + Mail",
-      "Message vocal + Mail",
+      'Appelé',
+      'SMS',
+      'Message vocal laissé',
+      'Mail envoyé',
+      'Message via appli',
+      'Appel + Mail',
+      'Message vocal + Mail',
       "Pas besoin d'accompagnement",
     ],
     # Action
@@ -82,9 +82,9 @@ class EntourageModeration < ApplicationRecord
     ],
     # Raison de la réussite
     action_success_reason: [
-      "Mise en relation",
-      "Création de lien",
-      "Donnation",
+      'Mise en relation',
+      'Création de lien',
+      'Donnation',
       "Transmission d'information",
       "Succès de l'apéro",
     ],
@@ -92,12 +92,12 @@ class EntourageModeration < ApplicationRecord
     action_failure_reason: [
       "Personne n'a rejoint l'action",
       "Le créateur de l'action ne répond plus",
-      "Pas de message échangé",
+      'Pas de message échangé',
       "Personne n'était disponible",
       "Personne ne s'est présenté au RDV",
-      "Le bénéficiare perdu de vue",
-      "Un utilisateur ne répond plus",
-      "Sans consentement",
+      'Le bénéficiare perdu de vue',
+      'Un utilisateur ne répond plus',
+      'Sans consentement',
     ],
   }
 

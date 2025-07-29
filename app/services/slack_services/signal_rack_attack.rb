@@ -15,7 +15,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Attaque détectée",
+        username: 'Attaque détectée',
         channel: webhook('attack-channel'),
       }
     end

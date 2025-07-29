@@ -8,9 +8,9 @@ module UserSmalltalkable
         .merge(matchable_smalltalks)
         .reciprocity_match(user_smalltalk)
         .where.not(user_id: user_smalltalk.user_id)
-        .where("user_smalltalks.deleted_at IS NULL")
+        .where('user_smalltalks.deleted_at IS NULL')
         .where("user_smalltalks.member_status IS NULL or user_smalltalks.member_status = '#{JoinRequest::ACCEPTED_STATUS}'")
-        .order("unmatch_count")
+        .order('unmatch_count')
         .order(Arel.sql("CASE WHEN (bool_and(#{user_smalltalk.interest_match_expression})) THEN 1 ELSE 0 END"))
     }
 
@@ -20,7 +20,7 @@ module UserSmalltalkable
         .reciprocity_match(user_smalltalk)
         .merge(matchable_smalltalks)
         .where.not(user_id: user_smalltalk.user_id)
-        .where("user_smalltalks.deleted_at IS NULL")
+        .where('user_smalltalks.deleted_at IS NULL')
         .where("user_smalltalks.member_status IS NULL or user_smalltalks.member_status = '#{JoinRequest::ACCEPTED_STATUS}'")
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
@@ -49,13 +49,13 @@ module UserSmalltalkable
 
     scope :matchable_smalltalks, -> {
       left_outer_joins(:smalltalk).where(
-        "user_smalltalks.smalltalk_id IS NULL OR smalltalks.id IN (?)",
+        'user_smalltalks.smalltalk_id IS NULL OR smalltalks.id IN (?)',
         Smalltalk.matchable.select(:id)
       )
     }
 
     scope :profile_match, -> (user_smalltalk) {
-      where("(user_smalltalks.user_profile != ? OR smalltalks.id is not null)", user_smalltalk.user_profile_before_type_cast)
+      where('(user_smalltalks.user_profile != ? OR smalltalks.id is not null)', user_smalltalk.user_profile_before_type_cast)
     }
 
     scope :reciprocity_match, -> (user_smalltalk) {
@@ -78,7 +78,7 @@ module UserSmalltalkable
       return where(match_gender: false) unless user_smalltalk.user_gender_before_type_cast.present?
 
       where(
-        "user_smalltalks.match_gender = false OR user_smalltalks.id IN (?)",
+        'user_smalltalks.match_gender = false OR user_smalltalks.id IN (?)',
         UserSmalltalk.where(user_gender: user_smalltalk.user_gender_before_type_cast).select(:id)
       )
     }
@@ -103,15 +103,15 @@ module UserSmalltalkable
   end
 
   def gender_match_expression
-    return "1=1" unless match_gender
-    return "1=1" unless user_gender_before_type_cast
+    return '1=1' unless match_gender
+    return '1=1' unless user_gender_before_type_cast
 
     "user_smalltalks.user_gender = #{user_gender_before_type_cast}"
   end
 
   def locality_match_expression
-    return "1=1" unless match_locality
-    return "1=1" unless user_latitude && user_longitude
+    return '1=1' unless match_locality
+    return '1=1' unless user_latitude && user_longitude
 
     return %(
       ST_DWithin(
@@ -131,7 +131,7 @@ module UserSmalltalkable
   end
 
   def interest_match_expression
-    return "1=1" unless user_interest_ids.any?
+    return '1=1' unless user_interest_ids.any?
 
     "user_smalltalks.user_interest_ids ?| ARRAY[#{
       user_interest_ids.map { |id| "'#{id}'" }.join(', ')

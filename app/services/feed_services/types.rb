@@ -40,7 +40,7 @@ module FeedServices
       allowed_types = TYPES[user.community.slug]
       allowed_types.merge!(TYPES['entourage_pro']) if user.pro?
 
-      types = (types || "").split(',').map(&:strip)
+      types = (types || '').split(',').map(&:strip)
       types = types.map { |t| allowed_types[t] || t }
 
       types += ['ask_for_help_event', 'contribution_event'] if types.include?('outing')
@@ -60,7 +60,7 @@ module FeedServices
         FeedServices::Types::TYPES['entourage'].values.find_all { |type| type.starts_with?(prefix) }
       end
 
-      return entourage_types.join(",").presence
+      return entourage_types.join(',').presence
     end
   end
 end

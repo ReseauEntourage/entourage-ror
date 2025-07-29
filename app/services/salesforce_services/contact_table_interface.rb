@@ -1,21 +1,21 @@
 module SalesforceServices
   class ContactTableInterface < TableInterface
-    TABLE_NAME = "Contact"
+    TABLE_NAME = 'Contact'
 
     INSTANCE_MAPPING = {
-      first_name: "FirstName",
-      last_name: "LastName",
-      email: "Email",
-      phone: "Phone",
-      record_type_id: "RecordTypeId",
-      antenne: "Antenne__c",
-      reseau: "Reseaux__c",
-      casquette: "Casquettes_r_les__c",
-      postal_code: "MailingPostalCode",
+      first_name: 'FirstName',
+      last_name: 'LastName',
+      email: 'Email',
+      phone: 'Phone',
+      record_type_id: 'RecordTypeId',
+      antenne: 'Antenne__c',
+      reseau: 'Reseaux__c',
+      casquette: 'Casquettes_r_les__c',
+      postal_code: 'MailingPostalCode',
     }
 
     CASQUETTES_MAPPING = {
-      ambassador: "ENT Ambassadeur",
+      ambassador: 'ENT Ambassadeur',
       default: "ENT User de l'app",
     }
 
@@ -28,7 +28,7 @@ module SalesforceServices
     end
 
     def external_id_value
-      "ID_externe__c"
+      'ID_externe__c'
     end
 
     def mapping
@@ -95,7 +95,7 @@ module SalesforceServices
       end
 
       def reseau
-        "Entourage"
+        'Entourage'
       end
 
       def casquette

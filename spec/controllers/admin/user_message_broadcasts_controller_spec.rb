@@ -5,14 +5,14 @@ describe Admin::UserMessageBroadcastsController do
   let!(:user) { admin_basic_login }
 
   describe 'GET #index' do
-    context "has user_message_broadcasts" do
+    context 'has user_message_broadcasts' do
       let!(:user_message_broadcast_list) { create_list(:user_message_broadcast, 2) }
       before { get :index }
 
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array(user_message_broadcast_list.pluck(:id)) }
     end
 
-    context "has no user_message_broadcasts" do
+    context 'has no user_message_broadcasts' do
       before { get :index }
       it { expect(assigns(:user_message_broadcasts)).to eq([]) }
     end
@@ -23,12 +23,12 @@ describe Admin::UserMessageBroadcastsController do
     let!(:ask_for_help) { create(:user_message_broadcast, goal: 'ask_for_help') }
     let!(:offer_help) { create(:user_message_broadcast, goal: 'offer_help') }
 
-    context "has goal user_message_broadcasts" do
+    context 'has goal user_message_broadcasts' do
       before { get :index, params: { goal: 'ask_for_help' } }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([ask_for_help].pluck(:id)) }
     end
 
-    context "has goal user_message_broadcasts" do
+    context 'has goal user_message_broadcasts' do
       before { get :index, params: { goal: 'offer_help' } }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([offer_help].pluck(:id)) }
     end
@@ -38,12 +38,12 @@ describe Admin::UserMessageBroadcastsController do
     let!(:dep_75) { create(:user_message_broadcast, area_type: 'list', areas: ['75']) }
     let!(:hors_zone) { create(:user_message_broadcast, area_type: 'hors_zone') }
 
-    context "has area user_message_broadcasts" do
+    context 'has area user_message_broadcasts' do
       before { get :index, params: { area: 'dep_75' } }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([dep_75].pluck(:id)) }
     end
 
-    context "has area user_message_broadcasts" do
+    context 'has area user_message_broadcasts' do
       before { get :index, params: { area: 'hors_zone' } }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([hors_zone].pluck(:id)) }
     end
@@ -53,29 +53,29 @@ describe Admin::UserMessageBroadcastsController do
     let!(:sent) { create(:user_message_broadcast, status: 'sent') }
     let!(:archived) { create(:user_message_broadcast, status: 'archived', archived_at: Time.now) }
 
-    context "has default status user_message_broadcasts" do
+    context 'has default status user_message_broadcasts' do
       before { get :index }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([sent].pluck(:id)) }
     end
 
-    context "has status user_message_broadcasts" do
+    context 'has status user_message_broadcasts' do
       before { get :index, params: { status: 'sent' } }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([sent].pluck(:id)) }
     end
 
-    context "has status user_message_broadcasts" do
+    context 'has status user_message_broadcasts' do
       before { get :index, params: { status: 'archived' } }
       it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([archived].pluck(:id)) }
     end
   end
 
-  describe "GET #new" do
+  describe 'GET #new' do
     before { get :new }
     it { expect(assigns(:user_message_broadcast)).to be_a_new(ConversationMessageBroadcast) }
   end
 
-  describe "POST #create" do
-    context "create success" do
+  describe 'POST #create' do
+    context 'create success' do
       let(:user_message_broadcast) { post :create, params: { 'user_message_broadcast' => {
         area_type: 'list',
         areas: ['75'],
@@ -86,7 +86,7 @@ describe Admin::UserMessageBroadcastsController do
       it { expect { user_message_broadcast }.to change { ConversationMessageBroadcast.count }.by(1) }
     end
 
-    context "create failure" do
+    context 'create failure' do
       let(:user_message_broadcast) { post :create, params: { 'user_message_broadcast' => {
         area: nil,
         content: 'Contenu du broadcast',
@@ -97,16 +97,16 @@ describe Admin::UserMessageBroadcastsController do
     end
   end
 
-  describe "GET #edit" do
+  describe 'GET #edit' do
     let!(:user_message_broadcast) { create(:user_message_broadcast) }
     before { get :edit, params: { id: user_message_broadcast.to_param } }
     it { expect(assigns(:user_message_broadcast)).to eq(user_message_broadcast) }
   end
 
-  describe "PUT #update" do
+  describe 'PUT #update' do
     let!(:user_message_broadcast) { create(:user_message_broadcast, goal: 'offer_help') }
 
-    context "common field" do
+    context 'common field' do
       before {
         put :update, params: { id: user_message_broadcast.id, user_message_broadcast: { goal: 'ask_for_help' } }
         user_message_broadcast.reload
@@ -114,7 +114,7 @@ describe Admin::UserMessageBroadcastsController do
       it { expect(user_message_broadcast.goal).to eq('ask_for_help')}
     end
 
-    context "archive" do
+    context 'archive' do
       before {
         put :update, params: { id: user_message_broadcast.id, archive: true, user_message_broadcast: { goal: 'ask_for_help' } }
         user_message_broadcast.reload
@@ -124,7 +124,7 @@ describe Admin::UserMessageBroadcastsController do
     end
   end
 
-  describe "PUT #clone" do
+  describe 'PUT #clone' do
     let!(:user_message_broadcast) { create(:user_message_broadcast, title: 'Broadcast to be cloned') }
     before { put :clone, params: { id: user_message_broadcast.id } }
     it {
@@ -134,10 +134,10 @@ describe Admin::UserMessageBroadcastsController do
     }
   end
 
-  describe "POST #broadcast" do
+  describe 'POST #broadcast' do
     let(:user_message_broadcast) { create(:user_message_broadcast, status: :draft) }
 
-    describe "single sending" do
+    describe 'single sending' do
       it {
         expect(ConversationMessageBroadcastJob).to receive(:perform_later).once
 
@@ -145,7 +145,7 @@ describe Admin::UserMessageBroadcastsController do
       }
     end
 
-    describe "double sending" do
+    describe 'double sending' do
       it {
         expect(ConversationMessageBroadcastJob).to receive(:perform_later).once
 

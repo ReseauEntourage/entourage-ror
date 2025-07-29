@@ -1,16 +1,16 @@
 class EntourageInvitation < ApplicationRecord
-  MODE_SMS="SMS"
+  MODE_SMS='SMS'
 
-  PENDING_STATUS="pending"
-  ACCEPTED_STATUS="accepted"
-  REJECTED_STATUS="rejected"
-  CANCELLED_STATUS="cancelled"
+  PENDING_STATUS='pending'
+  ACCEPTED_STATUS='accepted'
+  REJECTED_STATUS='rejected'
+  CANCELLED_STATUS='cancelled'
 
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
-  belongs_to :invitable, class_name: "Entourage"
-  belongs_to :inviter, class_name: "User"
-  belongs_to :invitee, class_name: "User", foreign_key: "invitee_id"
+  belongs_to :invitable, class_name: 'Entourage'
+  belongs_to :inviter, class_name: 'User'
+  belongs_to :invitee, class_name: 'User', foreign_key: 'invitee_id'
 
   validates :invitable_id, :status, :inviter, :phone_number, :invitation_mode, presence: true
   validates_inclusion_of :invitation_mode, in: [EntourageInvitation::MODE_SMS, 'partner_following']

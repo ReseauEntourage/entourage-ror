@@ -26,7 +26,7 @@ module Admin
       @recommandation_image.assign_attributes(recommandation_image_params)
 
       if @recommandation_image.save
-        redirect_to edit_admin_recommandation_image_path(@recommandation_image), notice: "La photo a bien été modifiée"
+        redirect_to edit_admin_recommandation_image_path(@recommandation_image), notice: 'La photo a bien été modifiée'
       else
         render :edit
       end

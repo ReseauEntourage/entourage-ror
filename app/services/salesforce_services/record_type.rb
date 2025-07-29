@@ -1,13 +1,13 @@
 module SalesforceServices
   class RecordType
-    TABLE_NAME = "RecordType"
+    TABLE_NAME = 'RecordType'
 
     DEVELOPER_NAME_USER_MAPPING = {
-      ask_for_help: "Personne_preca",
-      offer_help: "Riverain",
+      ask_for_help: 'Personne_preca',
+      offer_help: 'Riverain',
     }
 
-    DEVELOPER_NAME_OUTING = "Campagne"
+    DEVELOPER_NAME_OUTING = 'Campagne'
 
     RecordTypeStruct = Struct.new(:record_type) do
       def initialize(record_type: nil)
@@ -15,9 +15,9 @@ module SalesforceServices
       end
 
       def upsert
-        salesforce_config = SalesforceConfig.find_or_initialize_by(salesforce_id: @record_type["Id"])
+        salesforce_config = SalesforceConfig.find_or_initialize_by(salesforce_id: @record_type['Id'])
         salesforce_config.klass = TABLE_NAME
-        salesforce_config.developer_name = @record_type["DeveloperName"]
+        salesforce_config.developer_name = @record_type['DeveloperName']
         salesforce_config.save
       end
     end

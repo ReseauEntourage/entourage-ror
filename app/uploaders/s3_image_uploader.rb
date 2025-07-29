@@ -116,7 +116,7 @@ class S3ImageUploader
   end
 
   def self.s3_object_with_public_url url
-    base_url = storage.object("").public_url
+    base_url = storage.object('').public_url
     return nil unless url.starts_with?(base_url)
     key = url[base_url.length..-1]
     storage.object(key)

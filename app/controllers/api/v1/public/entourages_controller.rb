@@ -8,7 +8,7 @@ module Api
           if @entourage
             render json: @entourage, serializer: ::V1::Public::EntourageSerializer
           else
-            render json: { message: "Could not found Entourage" }, status: 404
+            render json: { message: 'Could not found Entourage' }, status: 404
           end
         end
 

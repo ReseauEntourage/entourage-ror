@@ -52,7 +52,7 @@ module Onboarding
             builder.create do |on|
               on.failure do |message|
                 success = false
-                raise ActiveRecord::RecordNotSaved.new("Failed to save the record", message)
+                raise ActiveRecord::RecordNotSaved.new('Failed to save the record', message)
               end
             end
 

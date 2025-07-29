@@ -9,7 +9,7 @@ module SensitiveWordsService
     return result if string.blank?
 
     whitelist = [
-      [["grâce", "Grâce"]]
+      [['grâce', 'Grâce']]
     ]
 
     regex = regex_for_expressions(whitelist)
@@ -101,7 +101,7 @@ module SensitiveWordsService
   end
 
   def self.highlight_entourage entourage, options={}
-    options[:class] ||= "highlight"
+    options[:class] ||= 'highlight'
 
     if entourage.sensitive_words_check&.status&.to_sym == :validated
       matches = {}

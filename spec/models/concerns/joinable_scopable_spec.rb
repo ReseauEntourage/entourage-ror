@@ -7,10 +7,10 @@ describe JoinableScopable do
   let(:conversation) { create(:conversation) }
   let(:neighborhood) { create(:neighborhood, user: user) }
 
-  describe "members_has_changed!" do
+  describe 'members_has_changed!' do
     let(:join_request) { create :join_request, status: :accepted, joinable: joinable }
 
-    context "on create join_request on action" do
+    context 'on create join_request on action' do
       let(:joinable) { action }
 
       it {
@@ -26,7 +26,7 @@ describe JoinableScopable do
       }
     end
 
-    context "on update join_request on action" do
+    context 'on update join_request on action' do
       let(:joinable) { action }
       let(:subject) { join_request.update_attribute(:status, :cancelled) }
 
@@ -45,7 +45,7 @@ describe JoinableScopable do
       }
     end
 
-    context "on create join_request on conversation" do
+    context 'on create join_request on conversation' do
       let(:joinable) { conversation }
 
       it {
@@ -61,7 +61,7 @@ describe JoinableScopable do
       }
     end
 
-    context "on update join_request on conversation" do
+    context 'on update join_request on conversation' do
       let(:joinable) { conversation }
       let(:subject) { join_request.update_attribute(:status, :cancelled) }
 
@@ -80,7 +80,7 @@ describe JoinableScopable do
       }
     end
 
-    context "on create join_request on neighborhood" do
+    context 'on create join_request on neighborhood' do
       it {
         expect_any_instance_of(Neighborhood).to receive(:members_has_changed!)
 
@@ -94,7 +94,7 @@ describe JoinableScopable do
       }
     end
 
-    context "on update join_request on neighborhood" do
+    context 'on update join_request on neighborhood' do
       let(:join_request) { JoinRequest.find_by(joinable: neighborhood, user: neighborhood.user, status: :accepted) }
       let(:subject) { join_request.update_attribute(:status, :cancelled) }
 

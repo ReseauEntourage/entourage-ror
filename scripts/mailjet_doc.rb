@@ -164,7 +164,7 @@ end
 # vars = vars2
 
 lines = []
-r = ["Nom dans Mailjet", :campagne, :template] + shared_vars
+r = ['Nom dans Mailjet', :campagne, :template] + shared_vars
 lines.push r
 
 def mailjet_id decimal
@@ -193,11 +193,11 @@ data.each do |m|
     defined = var.in?(m[:vars])
     val =
       if defined && used
-        "Oui"
+        'Oui'
       elsif defined && !used
-        "(Oui)"
+        '(Oui)'
       elsif !defined && used
-        "Manquante"
+        'Manquante'
       elsif !defined && !used
         nil
       else
@@ -215,11 +215,11 @@ data.each do |m|
     defined = var.in?(m[:vars])
     val =
       if defined && used
-        "Oui"
+        'Oui'
       elsif defined && !used
-        "(Oui)"
+        '(Oui)'
       elsif !defined && used
-        "Manquante"
+        'Manquante'
       elsif !defined && !used
         nil
       else
@@ -242,22 +242,22 @@ def calc_widths lines
 end
 
 def line a, widths
-  "| " + a.zip(widths).map { |word, width| word.to_s.ljust(width, ' ') }.join(" | ") + " |\n"
+  '| ' + a.zip(widths).map { |word, width| word.to_s.ljust(width, ' ') }.join(' | ') + " |\n"
 end
 
 def spacer widths
-  "|" + widths.map {|w| '-' * (w+2) }.join("|") + "|\n"
+  '|' + widths.map {|w| '-' * (w+2) }.join('|') + "|\n"
 end
 
-start_comment = "<!--generated:start-->"
-end_comment   = "<!--generated:end-->"
-timestamp = Time.zone.now.strftime("%d/%m/%Y")
+start_comment = '<!--generated:start-->'
+end_comment   = '<!--generated:end-->'
+timestamp = Time.zone.now.strftime('%d/%m/%Y')
 widths = calc_widths(lines)
 
 table = StringIO.new
 
 table.puts start_comment
-table.puts "### Répartition de ces variables dans les templates"
+table.puts '### Répartition de ces variables dans les templates'
 table.puts "_Mis à jour le #{timestamp}_"
 table.puts
 table.puts line(lines[0], widths)
@@ -267,10 +267,10 @@ lines[1..-1].each do |line|
 end
 
 table.puts
-table.puts "(Oui) : variable disponible mais pas utilisée dans le template"
+table.puts '(Oui) : variable disponible mais pas utilisée dans le template'
 table.puts
 
-table.puts "### Variables uniques"
+table.puts '### Variables uniques'
 data.each do |m|
   next unless m[:unique_vars].any?
   table.puts "#### #{template_names[m[:template]]} (#{m[:campaign]}, #{m[:template]})"
@@ -286,7 +286,7 @@ end
 table.print end_comment
 
 regexp = Regexp.new(
-  [Regexp.quote(start_comment), ".*", Regexp.quote(end_comment)].join,
+  [Regexp.quote(start_comment), '.*', Regexp.quote(end_comment)].join,
   Regexp::MULTILINE
 )
 

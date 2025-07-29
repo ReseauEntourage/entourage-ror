@@ -29,7 +29,7 @@ module PoiServices
           :name => row['Nom'],
           :adress => row['Adresse'],
           # we use different notation because of poi_geocoder specifications
-          "adress" => row['Adresse'],
+          'adress' => row['Adresse'],
           :description => row['Description'],
           :audience => row['Public'] || row['Public(s) bénéficiaire(s)'],
           :email => row['Email'],

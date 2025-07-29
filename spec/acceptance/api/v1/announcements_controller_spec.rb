@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::AnnouncementsController do
-  explanation "Announcements"
-  header "Content-Type", "application/json"
+  explanation 'Announcements'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/announcements' do
-    route_summary "Allows users to find announcements that fit her goal and area"
+    route_summary 'Allows users to find announcements that fit her goal and area'
     # route_description "no description"
 
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
 
     let(:address) { FactoryBot.create(:address) }
     let(:user) { FactoryBot.create(:public_user, goal: :offer_help, addresses: [address]) }
@@ -25,10 +25,10 @@ resource Api::V1::AnnouncementsController do
   end
 
   get '/api/v1/announcements/:id/icon' do
-    route_summary "Announcement icon"
+    route_summary 'Announcement icon'
 
     parameter :id, required: true
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
     let(:announcement) { FactoryBot.create(:announcement, icon: 'icon.png', user_goals: [:offer_help], areas: [:dep_75]) }
@@ -44,10 +44,10 @@ resource Api::V1::AnnouncementsController do
   end
 
   get '/api/v1/announcements/:id/redirect/:token' do
-    route_summary "Announcement redirection whenever a given announcement has defined an URL"
+    route_summary 'Announcement redirection whenever a given announcement has defined an URL'
 
     parameter :id, required: true
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
     let(:announcement) { FactoryBot.create(:announcement, url: 'https://www.google.fr/', user_goals: [:offer_help], areas: [:dep_75]) }

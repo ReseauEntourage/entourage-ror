@@ -4,7 +4,7 @@ RSpec.describe ConversationMessageBroadcast, type: :model do
   let(:user) { create(:public_user) }
 
   describe '#content_for_user' do
-    let(:conversation_message_broadcast) { create(:conversation_message_broadcast, content: "Bonjour {{first_name}}, votre email est {{email}}, votre téléphone est {{phone}} et votre ville {{city}}.") }
+    let(:conversation_message_broadcast) { create(:conversation_message_broadcast, content: 'Bonjour {{first_name}}, votre email est {{email}}, votre téléphone est {{phone}} et votre ville {{city}}.') }
 
     let(:subject) { conversation_message_broadcast.content_for_user(user) }
 

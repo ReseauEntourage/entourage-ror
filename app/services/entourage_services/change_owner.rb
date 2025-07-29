@@ -1,7 +1,7 @@
 module EntourageServices
   class ChangeOwner
     USER_NOT_FOUND = "L'utilisateur n'a pas pu être trouvé"
-    INVALID_JOINABLE = "Le créateur ne peut être changé que pour les actions épinglées, les événements ou les groupes de voisinage"
+    INVALID_JOINABLE = 'Le créateur ne peut être changé que pour les actions épinglées, les événements ou les groupes de voisinage'
 
     attr_reader :user
 
@@ -45,7 +45,7 @@ module EntourageServices
     private
 
     def creator_join_requests
-      @joinable.join_requests.where("role in (?)", [:creator, :organizer])
+      @joinable.join_requests.where('role in (?)', [:creator, :organizer])
     end
 
     def joinable_is_valid?

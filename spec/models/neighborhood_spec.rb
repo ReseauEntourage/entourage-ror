@@ -6,10 +6,10 @@ RSpec.describe Neighborhood, type: :model do
   it { should validate_presence_of(:latitude) }
   it { should validate_presence_of(:longitude) }
 
-  describe "has a v2 uuid" do
+  describe 'has a v2 uuid' do
     let(:neighborhood) { create :neighborhood }
 
-    describe "format" do
+    describe 'format' do
       it { expect(neighborhood.uuid_v2).not_to be_nil }
       it { expect(neighborhood.uuid_v2[0]).to eq 'e' }
       it { expect(neighborhood.uuid_v2.length).to eq 12 }
@@ -178,18 +178,18 @@ RSpec.describe Neighborhood, type: :model do
     it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
   end
 
-  describe "status_changed_at" do
+  describe 'status_changed_at' do
     let(:neighborhood) { create(:neighborhood, status: :open) }
 
     context 'set status_changed_at' do
       before { neighborhood.update(status: :closed) }
 
-      it { expect(neighborhood.status).to eq("closed") }
+      it { expect(neighborhood.status).to eq('closed') }
       it { expect(neighborhood.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
 
-  describe "notify_slack" do
+  describe 'notify_slack' do
     let(:neighborhood) { build(:neighborhood) }
 
     before {
@@ -201,7 +201,7 @@ RSpec.describe Neighborhood, type: :model do
     it { expect(Experimental::NeighborhoodSlack).to have_received(:notify) }
   end
 
-  describe "share_url" do
+  describe 'share_url' do
     let(:neighborhood) { create(:neighborhood) }
 
     it { expect(neighborhood.share_url).to match(/neighborhoods/) }

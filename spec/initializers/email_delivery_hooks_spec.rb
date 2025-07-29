@@ -36,8 +36,8 @@ describe EmailDeliveryHooks do
 
   let(:user) { create :public_user }
 
-  describe "email tracking" do
-    describe "sending timestamp_tracked_email" do
+  describe 'email tracking' do
+    describe 'sending timestamp_tracked_email' do
       subject { -> { @mailer.timestamp_tracked_email(user.id).deliver_now } }
 
       it "doesn't create an EmailDelivery" do
@@ -53,7 +53,7 @@ describe EmailDeliveryHooks do
       end
     end
 
-    describe "sending fully_tracked_email" do
+    describe 'sending fully_tracked_email' do
       subject { -> { @mailer.fully_tracked_email(user.id).deliver_now } }
 
       it "updates the user's last_email_sent_at" do
@@ -64,7 +64,7 @@ describe EmailDeliveryHooks do
         .to(time)
       end
 
-      it "creates a correct EmailDelivery" do
+      it 'creates a correct EmailDelivery' do
         # rounding seconds to ignore differences nanoseconds precision in db
         time = Time.at(Time.now.to_i)
         Timecop.freeze(time) { subject.call }
@@ -77,33 +77,33 @@ describe EmailDeliveryHooks do
       end
     end
 
-    describe "sending 2 unique_email" do
+    describe 'sending 2 unique_email' do
       let(:subject) {
         @mailer.unique_email(user.id).deliver_now
         @mailer.unique_email(user.id).deliver_now
       }
-      it "delivers only one email" do
+      it 'delivers only one email' do
         expect { subject }.to change { ActionMailer::Base.deliveries.count }.by 1
       end
 
-      it "creates only one EmailDelivery" do
+      it 'creates only one EmailDelivery' do
         expect { subject }.to change { EmailDelivery.count }.by 1
       end
     end
 
-    describe "sending untracked_email" do
+    describe 'sending untracked_email' do
       let(:subject) { @mailer.untracked_email.deliver_now }
-      it "sends the email (no interference)" do
+      it 'sends the email (no interference)' do
         expect { subject }.to change { ActionMailer::Base.deliveries.count }.by 1
       end
     end
   end
 
-  describe "email sampling" do
+  describe 'email sampling' do
     before { EmailDeliveryHooks.stub(:sample) { sample } }
     subject { @mailer.sampled_email.deliver_now.bcc }
 
-    context "when the message is sampled" do
+    context 'when the message is sampled' do
       let(:sample) { true }
       it do
         expect(EmailDeliveryHooks)
@@ -113,7 +113,7 @@ describe EmailDeliveryHooks do
       it { expect(subject).to include 'samples@example.com' }
     end
 
-    context "when the message is not sampled" do
+    context 'when the message is not sampled' do
       let(:sample) { false }
       it { expect(subject).to be nil }
     end

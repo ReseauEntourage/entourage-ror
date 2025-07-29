@@ -2,18 +2,18 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::MapController do
-  explanation "Pois map"
-  header "Content-Type", "application/json"
+  explanation 'Pois map'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/map' do
-    route_summary "Get pois with the corresponding categories"
+    route_summary 'Get pois with the corresponding categories'
     # route_description "no description"
 
-    parameter :token, "User token", type: :string, required: true
-    parameter :limit, "per", type: :integer, default: 45
-    parameter :distance, "Distance", type: :integer
-    parameter :latitude, "Latitude", type: :number
-    parameter :longitude, "Longitude", type: :number
+    parameter :token, 'User token', type: :string, required: true
+    parameter :limit, 'per', type: :integer, default: 45
+    parameter :distance, 'Distance', type: :integer
+    parameter :latitude, 'Latitude', type: :number
+    parameter :longitude, 'Longitude', type: :number
 
     let!(:poi) { FactoryBot.create :poi }
     let(:user) { FactoryBot.create(:public_user) }

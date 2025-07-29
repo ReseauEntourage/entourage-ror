@@ -11,11 +11,11 @@ module UserServices
     def report reporting_user:
       yield callback if block_given?
 
-      return callback.on_failure.try(:call, "reporting_user can not be null") if reporting_user.nil?
-      return callback.on_failure.try(:call, "reported_user can not be null") if reported_user.nil?
-      return callback.on_failure.try(:call, "reported_user can not be self") if reported_user == reporting_user
-      return callback.on_failure.try(:call, "Signal is invalid") if params[:signals] && signals.none?
-      return callback.on_failure.try(:call, "Message is required") if params[:signals].nil? && message.blank?
+      return callback.on_failure.try(:call, 'reporting_user can not be null') if reporting_user.nil?
+      return callback.on_failure.try(:call, 'reported_user can not be null') if reported_user.nil?
+      return callback.on_failure.try(:call, 'reported_user can not be self') if reported_user == reporting_user
+      return callback.on_failure.try(:call, 'Signal is invalid') if params[:signals] && signals.none?
+      return callback.on_failure.try(:call, 'Message is required') if params[:signals].nil? && message.blank?
 
       # ActiveJob can't serialize AnonymousUser, it's not an ActiveRecord model.
       reporting_user = reporting_user.token if reporting_user.anonymous?

@@ -2,26 +2,26 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::FeedsController do
-  explanation "Feeds"
-  header "Content-Type", "application/json"
+  explanation 'Feeds'
+  header 'Content-Type', 'application/json'
 
   get 'api/v1/feeds' do
-    route_summary "Get the feed"
-    route_description "Gets the list of actions and outings"
+    route_summary 'Get the feed'
+    route_description 'Gets the list of actions and outings'
 
     parameter :token, type: :string, required: true
-    parameter :latitude, "Latitude", type: :number
-    parameter :longitude, "Longitude", type: :number
-    parameter :show_past_events, "True to include past events in the results", type: :boolean
-    parameter :partners_only, "Boolean to get only partners", type: :boolean
-    parameter :distance, "Distance from GPS coordinates from which actions and events should be found", type: :number
-    parameter :announcements, "Insert announcements when equals to v1", type: :string
+    parameter :latitude, 'Latitude', type: :number
+    parameter :longitude, 'Longitude', type: :number
+    parameter :show_past_events, 'True to include past events in the results', type: :boolean
+    parameter :partners_only, 'Boolean to get only partners', type: :boolean
+    parameter :distance, 'Distance from GPS coordinates from which actions and events should be found', type: :number
+    parameter :announcements, 'Insert announcements when equals to v1', type: :string
     parameter :page_token
-    parameter :before, "Find entourages created before a date, when no pagination is given", type: :boolean
-    parameter :time_range, "Find entourages created in the last hours (default 24)", type: :integer
+    parameter :before, 'Find entourages created before a date, when no pagination is given', type: :boolean
+    parameter :time_range, 'Find entourages created in the last hours (default 24)', type: :integer
 
     let(:user) { FactoryBot.create(:pro_user) }
-    let(:entourage) { FactoryBot.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
+    let(:entourage) { FactoryBot.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: 'ask_for_help') }
 
     let(:token) { user.token }
     let(:announcements) { 'v1' }
@@ -37,12 +37,12 @@ resource Api::V1::FeedsController do
   end
 
   get 'api/v1/feeds/outings' do
-    route_summary "Get outings"
+    route_summary 'Get outings'
 
     parameter :token, type: :string, required: true
-    parameter :latitude, "Latitude", type: :number, required: true
-    parameter :longitude, "Longitude", type: :number, required: true
-    parameter :starting_after, "Date to get events after", type: :datetime
+    parameter :latitude, 'Latitude', type: :number, required: true
+    parameter :longitude, 'Longitude', type: :number, required: true
+    parameter :starting_after, 'Date to get events after', type: :datetime
 
     let(:user) { FactoryBot.create(:pro_user) }
     let(:token) { user.token }

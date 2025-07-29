@@ -8,7 +8,7 @@ module Api
           user: current_user_or_anonymous,
           page: params[:page],
           per: params[:per],
-          unread_only: (params[:unread_only].to_s == "true")
+          unread_only: (params[:unread_only].to_s == 'true')
         ).feeds
 
         render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user_or_anonymous, include_last_message: true).to_json, status: 200

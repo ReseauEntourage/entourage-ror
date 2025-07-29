@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Neighborhoods::UsersController do
-  explanation "Users"
-  header "Content-Type", "application/json"
+  explanation 'Users'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/neighborhoods/:neighborhood_id/users' do
-    route_summary "Get neighborhood members"
+    route_summary 'Get neighborhood members'
 
     parameter :token, type: :string, required: true
     parameter :neighborhood_id, type: :integer, required: true
@@ -28,7 +28,7 @@ resource Api::V1::Neighborhoods::UsersController do
   end
 
   post '/api/v1/neighborhoods/:neighborhood_id/users' do
-    route_summary "Join neighborhood"
+    route_summary 'Join neighborhood'
 
     parameter :token, type: :string, required: true
     parameter :neighborhood_id, type: :integer, required: true

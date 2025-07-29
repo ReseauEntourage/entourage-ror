@@ -5,7 +5,7 @@ describe Onboarding::ChatMessagesService, type: :service do
     let(:run_time) { 1.week.from_now.monday.change(hour: 10, minute: rand(60)) }
     let(:onboarding_time) { run_time.advance(seconds: -rand(6.hours..7.hours)) }
     let!(:admin) { create :admin_user, first_name: 'foobar' }
-    let(:moderation_area) { create :moderation_area, animator: admin, welcome_message_1_offer_help: "Bonjour {{first_name}}, je suis {{interlocutor}}" }
+    let(:moderation_area) { create :moderation_area, animator: admin, welcome_message_1_offer_help: 'Bonjour {{first_name}}, je suis {{interlocutor}}' }
     let!(:user) { create :public_user, first_name: nil }
     let(:address) { build :address }
 
@@ -22,7 +22,7 @@ describe Onboarding::ChatMessagesService, type: :service do
 
     it { expect { subject }.to change { ChatMessage.count }.by(1) }
 
-    describe "event tracking" do
+    describe 'event tracking' do
       def event
         Event.where(name: 'onboarding.chat_messages.welcome.sent', user_id: user.id).first
       end
@@ -30,7 +30,7 @@ describe Onboarding::ChatMessagesService, type: :service do
       it { expect { subject }.to change { event.present? }.to true }
     end
 
-    describe "chat message" do
+    describe 'chat message' do
       before { subject }
       let(:messages) { ChatMessage.last(2) }
 
@@ -43,7 +43,7 @@ describe Onboarding::ChatMessagesService, type: :service do
       end }
 
       it {
-        expect(messages.first.content).to eq "Bonjour Lily-rose, je suis foobar"
+        expect(messages.first.content).to eq 'Bonjour Lily-rose, je suis foobar'
       }
     end
 

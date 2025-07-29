@@ -18,7 +18,7 @@ module UserServices
     def create_login_history!
       user.login_histories.create(connected_at: DateTime.now)
       #don't check login history for 1h
-      $redis.setex(redis_key, 60*60, "1")
+      $redis.setex(redis_key, 60*60, '1')
     end
 
     def redis_key

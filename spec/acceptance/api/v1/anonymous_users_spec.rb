@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::AnonymousUsersController do
-  explanation "AnonymousUsers"
-  header "Content-Type", "application/json"
+  explanation 'AnonymousUsers'
+  header 'Content-Type', 'application/json'
 
   post '/api/v1/anonymous_users' do
-    route_summary "Create an anonymous user"
+    route_summary 'Create an anonymous user'
     # route_description "no description"
 
     let!(:user) { AnonymousUserService.create_user $server_community }

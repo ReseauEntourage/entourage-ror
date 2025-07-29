@@ -2,29 +2,29 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::UsersController do
-  explanation "Users"
-  header "Content-Type", "application/json"
+  explanation 'Users'
+  header 'Content-Type', 'application/json'
 
   post '/api/v1/login' do
-    route_summary "Login"
+    route_summary 'Login'
     # route_description "no description"
 
-    parameter :phone, "Phone", type: :string, required: true
-    parameter :sms_code, "SMS code", type: :string, required: true
+    parameter :phone, 'Phone', type: :string, required: true
+    parameter :sms_code, 'SMS code', type: :string, required: true
 
-    let(:user) { FactoryBot.create(:pro_user, sms_code: "123456") }
+    let(:user) { FactoryBot.create(:pro_user, sms_code: '123456') }
 
     let(:raw_post) { {
       format: :json,
       user: {
         phone: user.phone,
-        sms_code: "123456"
+        sms_code: '123456'
       }
     }.to_json }
 
     context '200' do
-      before { ENV["DISABLE_CRYPT"] = "FALSE" }
-      after { ENV["DISABLE_CRYPT"] = "TRUE" }
+      before { ENV['DISABLE_CRYPT'] = 'FALSE' }
+      after { ENV['DISABLE_CRYPT'] = 'TRUE' }
 
       example_request 'Login' do
         expect(response_status).to eq(200)
@@ -40,15 +40,15 @@ resource Api::V1::UsersController do
     parameter :token, type: :string, required: true
 
     with_options scope: :user, required: true do
-      parameter :first_name, "First name", type: :string, required: false
-      parameter :last_name, "Last name", type: :string, required: false
-      parameter :email, "Email", type: :string, required: false
-      parameter :sms_code, "SMS code", type: :string, required: false
-      parameter :phone, "Phone", type: :string, required: false
-      parameter :avatar_key, "Avatar key", type: :string, required: false
-      parameter :about, "About", type: :string, required: false
-      parameter :goal, "offer_help, ask_for_help, organization", type: :string, required: false
-      parameter :interests, "Interests", type: :array, required: false
+      parameter :first_name, 'First name', type: :string, required: false
+      parameter :last_name, 'Last name', type: :string, required: false
+      parameter :email, 'Email', type: :string, required: false
+      parameter :sms_code, 'SMS code', type: :string, required: false
+      parameter :phone, 'Phone', type: :string, required: false
+      parameter :avatar_key, 'Avatar key', type: :string, required: false
+      parameter :about, 'About', type: :string, required: false
+      parameter :goal, 'offer_help, ask_for_help, organization', type: :string, required: false
+      parameter :interests, 'Interests', type: :array, required: false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -57,7 +57,7 @@ resource Api::V1::UsersController do
     let(:raw_post) { {
       token: user.token,
       user: {
-        first_name: "foo",
+        first_name: 'foo',
         interests: [:sport]
       }
     }.to_json }
@@ -71,20 +71,20 @@ resource Api::V1::UsersController do
   end
 
   post '/api/v1/users' do
-    route_summary "Creates an action"
+    route_summary 'Creates an action'
 
     parameter :token, type: :string, required: true
 
     with_options scope: :user, required: true do
-      parameter :first_name, "First name", type: :string
-      parameter :last_name, "Last name", type: :string
-      parameter :email, "Email", type: :string
-      parameter :sms_code, "SMS code", type: :string, required: true
-      parameter :phone, "Phone", type: :string
-      parameter :avatar_key, "Avatar key", type: :string
-      parameter :about, "About", type: :string
-      parameter :goal, "offer_help, ask_for_help, organization", type: :string
-      parameter :interests, "Interests", type: :array
+      parameter :first_name, 'First name', type: :string
+      parameter :last_name, 'Last name', type: :string
+      parameter :email, 'Email', type: :string
+      parameter :sms_code, 'SMS code', type: :string, required: true
+      parameter :phone, 'Phone', type: :string
+      parameter :avatar_key, 'Avatar key', type: :string
+      parameter :about, 'About', type: :string
+      parameter :goal, 'offer_help, ask_for_help, organization', type: :string
+      parameter :interests, 'Interests', type: :array
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -110,11 +110,11 @@ resource Api::V1::UsersController do
     parameter :id, required: true
 
     with_options scope: :user, required: true do
-      parameter :phone, "Phone", type: :string
+      parameter :phone, 'Phone', type: :string
     end
 
     with_options scope: :code do
-      parameter :action, "regenerate", type: :string
+      parameter :action, 'regenerate', type: :string
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -134,14 +134,14 @@ resource Api::V1::UsersController do
   end
 
   post '/api/v1/users/request_phone_change' do
-    route_summary "Request a new phone number"
+    route_summary 'Request a new phone number'
 
     parameter :token, type: :string, required: true
 
     with_options scope: :user, required: true do
-      parameter :current_phone, "Current phone", type: :string, required: true
-      parameter :requested_phone, "Requested phone", type: :string, required: true
-      parameter :email, "Email", type: :string
+      parameter :current_phone, 'Current phone', type: :string, required: true
+      parameter :requested_phone, 'Requested phone', type: :string, required: true
+      parameter :email, 'Email', type: :string
     end
 
     let!(:user) { FactoryBot.create(:pro_user, phone: '+33623456789') }
@@ -164,7 +164,7 @@ resource Api::V1::UsersController do
   end
 
   get '/api/v1/users/:id' do
-    route_summary "Get a user"
+    route_summary 'Get a user'
 
     parameter :id, "Either a user id or 'me'", required: true
     parameter :token, type: :string, required: true
@@ -186,7 +186,7 @@ resource Api::V1::UsersController do
     end
 
     context '200' do
-      let(:id) { "me" }
+      let(:id) { 'me' }
 
       example_request 'Get my user using me' do
         expect(response_status).to eq(200)
@@ -207,7 +207,7 @@ resource Api::V1::UsersController do
   end
 
   get '/api/v1/users/unread' do
-    route_summary "Get unread count"
+    route_summary 'Get unread count'
 
     parameter :token, type: :string, required: true
 
@@ -226,9 +226,9 @@ resource Api::V1::UsersController do
   end
 
   delete '/api/v1/users/:id' do
-    route_summary "Delete a user"
+    route_summary 'Delete a user'
 
-    parameter :id, "My id", required: true
+    parameter :id, 'My id', required: true
     parameter :token, type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
@@ -247,13 +247,13 @@ resource Api::V1::UsersController do
   end
 
   post '/api/v1/users/:id/report' do
-    route_summary "Reports a user"
+    route_summary 'Reports a user'
 
-    parameter :id, "Reported user id", type: :integer, required: true
-    parameter :token, "Reportings user token", type: :string, required: true
+    parameter :id, 'Reported user id', type: :integer, required: true
+    parameter :token, 'Reportings user token', type: :string, required: true
 
     with_options scope: :user_report, required: true do
-      parameter :message, "Message", type: :string
+      parameter :message, 'Message', type: :string
     end
 
     let(:reporting_user) { FactoryBot.create(:pro_user) }
@@ -276,11 +276,11 @@ resource Api::V1::UsersController do
   end
 
   post '/api/v1/users/:id/presigned_avatar_upload' do
-    route_summary "Upload new avatar"
+    route_summary 'Upload new avatar'
 
     parameter :id, "My id or 'me'", type: :integer, required: true
     parameter :token, type: :string, required: true
-    parameter :content_type, "image/jpeg, image/gif", type: :string, required: true
+    parameter :content_type, 'image/jpeg, image/gif', type: :string, required: true
 
     let(:user) { FactoryBot.create(:pro_user) }
     let(:id) { user.id }
@@ -300,15 +300,15 @@ resource Api::V1::UsersController do
   end
 
   post '/api/v1/users/:id/address' do
-    route_summary "Update user address"
+    route_summary 'Update user address'
 
     parameter :id, "Id or 'me'", type: :integer, required: true
     parameter :token, type: :string, required: true
 
     with_options scope: :address, required: true do
-      parameter :place_name, "Place name", type: :string
-      parameter :latitude, "Latitude", type: :number
-      parameter :longitude, "Longitude", type: :number
+      parameter :place_name, 'Place name', type: :string
+      parameter :latitude, 'Latitude', type: :number
+      parameter :longitude, 'Longitude', type: :number
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -333,7 +333,7 @@ resource Api::V1::UsersController do
   end
 
   post '/api/v1/users/lookup' do
-    route_summary "Lookup for a phone number"
+    route_summary 'Lookup for a phone number'
 
     parameter :id, "Id or 'me'", type: :integer, required: true
     parameter :token, type: :string, required: true
@@ -355,11 +355,11 @@ resource Api::V1::UsersController do
   end
 
   get '/api/v1/users/:id/email_preferences' do
-    route_summary "Update email preferences"
+    route_summary 'Update email preferences'
 
     parameter :id, required: true
-    parameter :category, "Default: all", type: :string
-    parameter :signature, "[user_id]", type: :string
+    parameter :category, 'Default: all', type: :string
+    parameter :signature, '[user_id]', type: :string
     parameter :accepts_emails, type: :boolean
 
     let(:user) { FactoryBot.create(:public_user) }
@@ -387,11 +387,11 @@ resource Api::V1::UsersController do
   end
 
   get '/api/v1/users/:id/address_suggestion' do
-    route_summary "Confirm address suggestion"
+    route_summary 'Confirm address suggestion'
 
     parameter :id, required: true
     parameter :postal_code, type: :string
-    parameter :signature, "[user_id]:[postal_code]", type: :string
+    parameter :signature, '[user_id]:[postal_code]', type: :string
 
     let(:user) { FactoryBot.create(:public_user) }
     let(:id) { user.id }

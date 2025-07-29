@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Public::EntouragesController do
-  explanation "Users"
-  header "Content-Type", "application/json"
+  explanation 'Users'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/public/entourages/:uuid' do
-    route_summary "Get entourage"
+    route_summary 'Get entourage'
     # route_description "no description"
 
     parameter :token, type: :string, required: true

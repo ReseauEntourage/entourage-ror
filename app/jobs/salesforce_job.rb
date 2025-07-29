@@ -8,8 +8,8 @@ class SalesforceJob
   def perform(class_name, id, verb)
     instance = class_name.constantize.find(id)
 
-    return perform_destroy(instance) if verb == "destroy"
-    return perform_upsert(instance) if ["create", "upsert"].include?(verb)
+    return perform_destroy(instance) if verb == 'destroy'
+    return perform_upsert(instance) if ['create', 'upsert'].include?(verb)
 
     perform_default(instance, verb)
   end

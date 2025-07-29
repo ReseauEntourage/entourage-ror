@@ -23,9 +23,9 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
 
   def departements
     @departements ||= Neighborhood
-      .select("left(postal_code, 2) as departement")
+      .select('left(postal_code, 2) as departement')
       .where(id: conversation_ids)
-      .group("left(postal_code, 2)")
+      .group('left(postal_code, 2)')
       .map(&:departement)
   end
 
@@ -40,7 +40,7 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
 
     like_departements = departements.map { |departement| "#{departement}%" }
 
-    Neighborhood.where("postal_code LIKE ANY ( array[?] )", like_departements).pluck(:id)
+    Neighborhood.where('postal_code LIKE ANY ( array[?] )', like_departements).pluck(:id)
   end
 
   # indicates whether the broadcast concerns all the neighborhoods of the concerned departements

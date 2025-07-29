@@ -12,13 +12,13 @@ class Meeting < ApplicationRecord
     meeting_space = create_individual_meet_space
 
     unless meeting_space.present? && meeting_space['meetingUri'] && meeting_space['name']
-      Rails.logger.error("Google Meet space creation failed: invalid or incomplete response") and return
+      Rails.logger.error('Google Meet space creation failed: invalid or incomplete response') and return
     end
 
     created_event = create_calendar_event_with_space(meeting_space)
 
     unless created_event&.html_link
-      Rails.logger.error("Google Calendar creation event failed") and return
+      Rails.logger.error('Google Calendar creation event failed') and return
     end
 
     update_meet_link(meeting_space['meetingUri'], created_event)

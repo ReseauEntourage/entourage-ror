@@ -6,9 +6,9 @@ module PoiServices
     end
 
     def geocode
-      return poi if params["latitude"] && params["longitude"]
+      return poi if params['latitude'] && params['longitude']
 
-      poi.adress = params["adress"] || params[:adress]
+      poi.adress = params['adress'] || params[:adress]
       poi.latitude = poi.longitude = nil
 
       if poi.geocode.nil?

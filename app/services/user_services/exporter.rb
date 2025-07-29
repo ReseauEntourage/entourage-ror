@@ -30,7 +30,7 @@ module UserServices
           ')
           .joins(:join_requests)
           .joins("left join chat_messages on chat_messages.messageable_type = 'Entourage' and chat_messages.messageable_id = entourages.id")
-          .joins("left join users on users.id = chat_messages.user_id")
+          .joins('left join users on users.id = chat_messages.user_id')
           .where(["join_requests.user_id = ? and (chat_messages.user_id = ? or group_type = 'conversation')", user.id, user.id])
           .where(group_type: group_type)
           .order('entourages.id, chat_messages.created_at')
@@ -39,7 +39,7 @@ module UserServices
             former_entourage_id = nil
 
             entourages.each do |entourage|
-              writer << [""] unless entourage.id == former_entourage_id
+              writer << [''] unless entourage.id == former_entourage_id
               writer << [t_group_type, "Rejoint(e) le #{entourage.join_request_created_at}", (entourage.conversation? ? nil : entourage.title)] unless entourage.id == former_entourage_id
               writer << [entourage.email, entourage.chat_message_created_at, entourage.chat_message_content]
 

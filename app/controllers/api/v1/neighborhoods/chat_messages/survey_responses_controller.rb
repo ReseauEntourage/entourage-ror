@@ -26,7 +26,7 @@ module Api
               render json: survey, status: 201, serializer: ::V1::SurveyResponseSerializer
             else
               render json: {
-                message: "Could not create survey", reasons: survey.errors.full_messages
+                message: 'Could not create survey', reasons: survey.errors.full_messages
               }, status: 400
             end
           end
@@ -35,7 +35,7 @@ module Api
             if survey_id = @chat_message.survey_responses.destroy(user: current_user)
               render json: { survey_id: survey_id }, status: 200
             else
-              render json: { message: "Could not delete survey" }, status: 400
+              render json: { message: 'Could not delete survey' }, status: 400
             end
           end
 

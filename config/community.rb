@@ -110,7 +110,7 @@ class Community < BasicObject
   end
 
   def self.slugs
-    @list ||= ::Dir[::File.expand_path("../communities/*.yml", __FILE__)].map do |path|
+    @list ||= ::Dir[::File.expand_path('../communities/*.yml', __FILE__)].map do |path|
       ::File.basename(path, '.yml')
     end
   end

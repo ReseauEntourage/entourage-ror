@@ -22,7 +22,7 @@ module Api
         if partner_join_request.save
           render json: {}, status: 200
         else
-          render_error(code: "INVALID_PARTNER_JOIN_REQUEST", message: partner_join_request.errors.full_messages, status: 400)
+          render_error(code: 'INVALID_PARTNER_JOIN_REQUEST', message: partner_join_request.errors.full_messages, status: 400)
         end
       end
 

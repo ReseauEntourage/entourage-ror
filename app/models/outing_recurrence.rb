@@ -24,7 +24,7 @@ class OutingRecurrence < ApplicationRecord
       OutingRecurrence.joins(:outings)
         .where(continue: true)
         .where("entourages.metadata ->> 'ends_at' > ?", Time.now)
-        .where("entourages.status IN (?)", %w[open full])
+        .where('entourages.status IN (?)', %w[open full])
         .distinct
     end
   end

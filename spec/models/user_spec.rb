@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe User, type: :model do
-  describe "public user" do
+  describe 'public user' do
     it { expect(build(:public_user, phone: nil).save).to be false }
     it { expect(build(:public_user, sms_code: nil).save).to be false }
     it { expect(build(:public_user, token: nil).save).to be false }
@@ -26,7 +26,7 @@ describe User, type: :model do
   it { should have_many :entourages }
   it { should have_many :user_applications }
 
-  describe "community" do
+  describe 'community' do
     let(:user) { create :public_user }
     it { should_not allow_value(nil).for(:community) }
     it { expect { user.community = ''; user.community }.to raise_error Community::NotFound }
@@ -34,7 +34,7 @@ describe User, type: :model do
     it { expect { user.community = 'invalid'; user.community }.to raise_error Community::NotFound }
   end
 
-  describe "birthdate" do
+  describe 'birthdate' do
     it { expect(build(:public_user, birthdate: nil).save).to be true }
     it { expect(build(:public_user, birthdate: '').save).to be true }
     it { expect(build(:public_user, birthdate: '11').save).to be false }
@@ -48,7 +48,7 @@ describe User, type: :model do
     it { expect(build(:public_user, birthdate: '2020-02-31').save).to be false }
   end
 
-  describe "phone number" do
+  describe 'phone number' do
     it { expect(build(:public_user, phone: '+33623456789').save).to be true }
     it { expect(build(:public_user, phone: '0623456789').save).to be true }
     it { expect(build(:public_user, phone: '+33 6 23 45 67 89').save).to be true }
@@ -86,19 +86,19 @@ describe User, type: :model do
     it { expect(build(:public_user, phone: '+336191919191919').save).to be false }
   end
 
-  describe "sms_code" do
+  describe 'sms_code' do
     it { expect(build(:public_user, sms_code: '123456').save).to be true }
     it { expect(build(:public_user, sms_code: '12345').save).to be false }
     it { expect(build(:public_user, sms_code: '12345678901').save).to be true }
     it { expect(build(:public_user, sms_code: '1234567').save).to be true }
   end
 
-  describe "sms_code_password" do
+  describe 'sms_code_password' do
     it { expect(build(:public_user, sms_code_password: '123456').save).to be true }
     it { expect(build(:public_user, sms_code_password: '12345').save).to be false }
   end
 
-  describe "gender=" do
+  describe 'gender=' do
     let(:user) { create(:public_user, gender: gender) }
 
     context "with invalid gender" do
@@ -126,7 +126,7 @@ describe User, type: :model do
     end
   end
 
-  describe "discovery_source=" do
+  describe 'discovery_source=' do
     let(:user) { create(:public_user, discovery_source: discovery_source) }
 
     context "with invalid discovery_source" do
@@ -154,18 +154,18 @@ describe User, type: :model do
     end
   end
 
-  describe "goal=" do
-    it { expect(build(:public_user, goal: "offer_help").goal_choice).to eq("offer_help") }
-    it { expect(build(:public_user, goal: "offer_help").goal).to eq("offer_help") }
+  describe 'goal=' do
+    it { expect(build(:public_user, goal: 'offer_help').goal_choice).to eq('offer_help') }
+    it { expect(build(:public_user, goal: 'offer_help').goal).to eq('offer_help') }
 
-    it { expect(build(:public_user, goal: "ask_for_help").goal_choice).to eq("ask_for_help") }
-    it { expect(build(:public_user, goal: "ask_for_help").goal).to eq("ask_for_help") }
+    it { expect(build(:public_user, goal: 'ask_for_help').goal_choice).to eq('ask_for_help') }
+    it { expect(build(:public_user, goal: 'ask_for_help').goal).to eq('ask_for_help') }
 
-    it { expect(build(:public_user, goal: "ask_and_offer_help").goal_choice).to eq("ask_and_offer_help") }
-    it { expect(build(:public_user, goal: "ask_and_offer_help").goal).to eq("ask_for_help") }
+    it { expect(build(:public_user, goal: 'ask_and_offer_help').goal_choice).to eq('ask_and_offer_help') }
+    it { expect(build(:public_user, goal: 'ask_and_offer_help').goal).to eq('ask_for_help') }
   end
 
-  it "validates uniqueness of token" do
+  it 'validates uniqueness of token' do
     expect(build(:public_user, token: 'foo').save).to be true
     expect(build(:public_user, token: 'foo').save).to be false
   end
@@ -175,12 +175,12 @@ describe User, type: :model do
     expect(build(:public_user, email: 'foo@bar.com').save).to be true
   end
 
-  it "validates uniqueness of phone" do
+  it 'validates uniqueness of phone' do
     expect(build(:public_user, token: '+33123456789').save).to be true
     expect(build(:public_user, token: '+33123456789').save).to be false
   end
 
-  it "allows reuse of phone for different communities" do
+  it 'allows reuse of phone for different communities' do
     expect(build(:public_user, phone: '+33623456789', community: 'entourage').save).to be true
     expect(build(:public_user, phone: '+33623456789', community: 'pfp'      ).save).to be true
   end
@@ -198,50 +198,50 @@ describe User, type: :model do
     it { should eq 'John Doe' }
   end
 
-  describe "search_by" do
-    context "wrong search" do
-      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
-      it { expect(User.search_by("Foobar").pluck(:id)).to eq([]) }
+  describe 'search_by' do
+    context 'wrong search' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Foo', last_name: 'Bar') }
+      it { expect(User.search_by('Foobar').pluck(:id)).to eq([]) }
     end
 
-    context "without trailing spaces" do
-      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
-      it { expect(User.search_by("Foo Bar").pluck(:id)).to eq([user.id]) }
+    context 'without trailing spaces' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Foo', last_name: 'Bar') }
+      it { expect(User.search_by('Foo Bar').pluck(:id)).to eq([user.id]) }
     end
 
-    context "with trailing spaces" do
-      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
-      it { expect(User.search_by("  Foo Bar  ").pluck(:id)).to eq([user.id]) }
+    context 'with trailing spaces' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Foo', last_name: 'Bar') }
+      it { expect(User.search_by('  Foo Bar  ').pluck(:id)).to eq([user.id]) }
     end
 
-    context "without trailing spaces on first_name" do
-      let!(:user) { FactoryBot.create(:public_user, first_name: "Foo", last_name: "Bar") }
-      it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
-      it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
-    end
-  end
-
-  describe "set_phone" do
-    it { expect(FactoryBot.create(:public_user, phone: "0612345678").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "06 12 34 56 78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "+336 12 34 56 78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "06.12.34.56.78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "+336.12.34.56.78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "06-12-34-56-78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "+336-12-34-56-78").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "+33612345678").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:public_user, phone: "+32455512121").phone).to eq('+32455512121') } #belgian number
-
-    context "updates with invalid phone number" do
-      let(:user) { FactoryBot.create(:public_user, phone: "+33612345678") }
-      it { user.update(phone: "92345"); expect(user.reload.phone).to eq('+33612345678') }
-      it { user.update(phone: ""); expect(user.reload.phone).to eq('+33612345678') }
-      it { user.update(phone: "nil"); expect(user.reload.phone).to eq('+33612345678') }
+    context 'without trailing spaces on first_name' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Foo', last_name: 'Bar') }
+      it { expect(User.search_by('Foo').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Foo ').pluck(:id)).to eq([user.id]) }
     end
   end
 
-  describe "password" do
-    let(:user) { create(:public_user, password: "something") }
+  describe 'set_phone' do
+    it { expect(FactoryBot.create(:public_user, phone: '0612345678').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '06 12 34 56 78').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '+336 12 34 56 78').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '06.12.34.56.78').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '+336.12.34.56.78').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '06-12-34-56-78').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '+336-12-34-56-78').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '+33612345678').phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:public_user, phone: '+32455512121').phone).to eq('+32455512121') } #belgian number
+
+    context 'updates with invalid phone number' do
+      let(:user) { FactoryBot.create(:public_user, phone: '+33612345678') }
+      it { user.update(phone: '92345'); expect(user.reload.phone).to eq('+33612345678') }
+      it { user.update(phone: ''); expect(user.reload.phone).to eq('+33612345678') }
+      it { user.update(phone: 'nil'); expect(user.reload.phone).to eq('+33612345678') }
+    end
+  end
+
+  describe 'password' do
+    let(:user) { create(:public_user, password: 'something') }
 
     def update params={}
       if user.update(params)
@@ -253,51 +253,51 @@ describe User, type: :model do
 
     it { expect(update updated_at: Time.now).to be :unchanged }
     it { expect(update password: nil).to be :unchanged }
-    it { expect(update password: '').to eq password: ["est trop court (au moins 8 caractères)"] }
+    it { expect(update password: '').to eq password: ['est trop court (au moins 8 caractères)'] }
     it { expect(update password: ' ' * 10).to be :changed }
     it { expect(update password: 'x' * 10).to be :changed }
   end
 
-  it "has many entourage_participations" do
+  it 'has many entourage_participations' do
     user = FactoryBot.create(:public_user)
     entourage = FactoryBot.create(:entourage)
     create(:join_request, user: user, joinable: entourage)
     expect(user.entourage_participations).to eq([entourage])
   end
 
-  it "has many relations" do
+  it 'has many relations' do
     user1 = FactoryBot.create(:public_user)
     user2 = FactoryBot.create(:public_user)
     UserRelationship.create!(source_user: user1, target_user: user2, relation_type: UserRelationship::TYPE_INVITE )
     expect(user1.relations).to eq([user2])
   end
 
-  it "has many invitations" do
+  it 'has many invitations' do
     user = FactoryBot.create(:public_user)
     invitation = FactoryBot.create(:entourage_invitation, invitee: user)
     expect(user.invitations).to eq([invitation])
   end
 
-  it "has many active followings" do
+  it 'has many active followings' do
     user = FactoryBot.create(:public_user)
     following = FactoryBot.create(:following, user: user, active: true)
     expect(user.followings).to eq([following])
   end
 
-  it "has many non active followings" do
+  it 'has many non active followings' do
     user = FactoryBot.create(:public_user)
     following = FactoryBot.create(:following, user: user, active: false)
     expect(user.followings).to eq([])
   end
 
-  it "has many active subscriptions" do
+  it 'has many active subscriptions' do
     user = FactoryBot.create(:public_user)
     partner = FactoryBot.create(:partner)
     following = FactoryBot.create(:following, user: user, partner: partner, active: true)
     expect(user.subscriptions).to eq([partner])
   end
 
-  it "has many non active subscriptions" do
+  it 'has many non active subscriptions' do
     user = FactoryBot.create(:public_user)
     partner = FactoryBot.create(:partner)
     following = FactoryBot.create(:following, user: user, partner: partner, active: false)
@@ -498,33 +498,33 @@ describe User, type: :model do
     let(:availability) { Hash.new }
     subject { build(:public_user, availability: availability) }
 
-    context "is valid with valid availability" do
+    context 'is valid with valid availability' do
       let(:availability) {{
-        "1" => ["09:00-12:00", "14:00-18:00"],
-        "2" => ["10:00-12:00"]
+        '1' => ['09:00-12:00', '14:00-18:00'],
+        '2' => ['10:00-12:00']
       }}
 
       it { should be_valid }
     end
 
-    context "is not valid with an invalid availability day" do
+    context 'is not valid with an invalid availability day' do
       let(:availability) {{
-        "8" => ["09:00-12:00"] # Jour invalide (devrait être entre 1 et 7)
+        '8' => ['09:00-12:00'] # Jour invalide (devrait être entre 1 et 7)
       }}
 
       it { should_not be_valid }
     end
 
-    context "is not valid with an invalid availability format" do
+    context 'is not valid with an invalid availability format' do
       let(:availability) {{
-        "1" => ["09:00-25:00"] # Format d'heure invalide
+        '1' => ['09:00-25:00'] # Format d'heure invalide
       }}
 
       it { should_not be_valid }
     end
 
-    context "is not valid with an invalid availability format" do
-      let(:availability) { "invalid data" }
+    context 'is not valid with an invalid availability format' do
+      let(:availability) { 'invalid data' }
 
       it { should_not be_valid }
     end

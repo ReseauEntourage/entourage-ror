@@ -7,7 +7,7 @@ class NotificationJob
     NotificationJob.perform_async(sender, object, content, device_token, community, extra.to_json)
   end
 
-  def perform sender, object, content, device_token, community, extra="{}"
+  def perform sender, object, content, device_token, community, extra='{}'
     return if device_token.blank?
     return unless user_application = UserApplication.find_by_push_token(device_token)
 

@@ -1,22 +1,22 @@
 module NewsletterServices
   class Contact
-    MAILJET_LIST_ID = "2822632"
+    MAILJET_LIST_ID = '2822632'
     STATUS = {
-      particulier: "PARTICULIER",
-      association: "ASSOCIATION",
-      entreprise: "ENTREPRISE"
+      particulier: 'PARTICULIER',
+      association: 'ASSOCIATION',
+      entreprise: 'ENTREPRISE'
     }
     ZONES = {
-      bordeaux: { name: "BORDEAUX", departments: ["33"] },
-      lorient: { name: "LORIENT", departments: ["56"] },
-      marseille: { name: "MARSEILLE", departments: ["13"] },
-      nantes: { name: "NANTES", departments: ["44"] },
-      paris: { name: "PARIS", departments: ["75", "92", "93", "94", "95"] },
-      lyon: { name: "LYON", departments: ["69"] },
-      lille: { name: "LILLE", departments: ["59", "62"] },
-      rennes: { name: "RENNES", departments: ["35"] },
-      saint_malo: { name: "SAINT-MALO", departments: ["35"] },
-      hors_zone: { name: "HORS ZONE", departments: ["00"] }
+      bordeaux: { name: 'BORDEAUX', departments: ['33'] },
+      lorient: { name: 'LORIENT', departments: ['56'] },
+      marseille: { name: 'MARSEILLE', departments: ['13'] },
+      nantes: { name: 'NANTES', departments: ['44'] },
+      paris: { name: 'PARIS', departments: ['75', '92', '93', '94', '95'] },
+      lyon: { name: 'LYON', departments: ['69'] },
+      lille: { name: 'LILLE', departments: ['59', '62'] },
+      rennes: { name: 'RENNES', departments: ['35'] },
+      saint_malo: { name: 'SAINT-MALO', departments: ['35'] },
+      hors_zone: { name: 'HORS ZONE', departments: ['00'] }
     }
 
     attr_reader :callback, :email, :zone, :status, :active
@@ -84,7 +84,7 @@ module NewsletterServices
 
     def get_list_recipient
       return unless contact = get_contact
-      return unless list_recipient = Mailjet::Listrecipient.first(Contact: contact["id"], ContactsList: MAILJET_LIST_ID)
+      return unless list_recipient = Mailjet::Listrecipient.first(Contact: contact['id'], ContactsList: MAILJET_LIST_ID)
 
       list_recipient.attributes
     end
@@ -113,7 +113,7 @@ module NewsletterServices
           antenne_entourage: zone,
           profil_entourage: status
         },
-        action: "addnoforce",
+        action: 'addnoforce',
         email: email
       )
     end
@@ -121,7 +121,7 @@ module NewsletterServices
     def delete_in_mailjet
       return unless list_recipient = get_list_recipient
 
-      Mailjet::Listrecipient.find(list_recipient["id"]).delete
+      Mailjet::Listrecipient.find(list_recipient['id']).delete
     end
   end
 end

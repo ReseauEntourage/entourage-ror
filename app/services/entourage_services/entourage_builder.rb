@@ -134,7 +134,7 @@ module EntourageServices
         entourage.moderation.action_outcome =
           case moderation_params[:success]
           when nil, ''
-            entourage.errors.add(:base, "outcome.success must be a boolean")
+            entourage.errors.add(:base, 'outcome.success must be a boolean')
             return false
           when *ActiveModel::Type::Boolean::FALSE_VALUES
             'Non'

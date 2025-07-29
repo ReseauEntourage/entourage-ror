@@ -6,62 +6,62 @@ class PushNotificationLinker
 
       if object.is_a?(Neighborhood)
         {
-          instance: "neighborhood",
+          instance: 'neighborhood',
           instance_id: object.id
         }
       elsif object.is_a?(Smalltalk)
         {
-          instance: "smalltalk",
+          instance: 'smalltalk',
           instance_id: object.id
         }
       elsif object.is_a?(UserSmalltalk)
         {
-          instance: "user_smalltalk",
+          instance: 'user_smalltalk',
           instance_id: object.id
         }
       elsif object.is_a?(User)
         {
-          instance: "user",
+          instance: 'user',
           instance_id: object.id
         }
       elsif object.is_a?(Poi)
         {
-          instance: "poi",
+          instance: 'poi',
           instance_id: object.id
         }
       elsif object.is_a?(Resource)
         {
-          instance: "resource",
+          instance: 'resource',
           instance_id: object.id
         }
       elsif object.is_a?(Partner)
         {
-          instance: "partner",
+          instance: 'partner',
           instance_id: object.id
         }
       elsif object.is_a?(Entourage) && object.conversation?
         {
-          instance: "conversation",
+          instance: 'conversation',
           instance_id: object.id
         }
       elsif object.is_a?(Entourage) && object.outing?
         {
-          instance: "outing",
+          instance: 'outing',
           instance_id: object.id
         }
       elsif object.is_a?(Entourage) && object.action? && object.contribution?
         {
-          instance: "contribution",
+          instance: 'contribution',
           instance_id: object.id
         }
       elsif object.is_a?(Entourage) && object.action? && object.solicitation?
         {
-          instance: "solicitation",
+          instance: 'solicitation',
           instance_id: object.id
         }
       elsif object.is_a?(ChatMessage) && action?(object.messageable)
         {
-          instance: "conversation",
+          instance: 'conversation',
           instance_id: object.messageable_id
         }
       elsif object.is_a?(ChatMessage) && outing?(object.messageable)

@@ -2,16 +2,16 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::OutingsController do
-  explanation "Outings"
-  header "Content-Type", "application/json"
+  explanation 'Outings'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/outings' do
-    route_summary "Find outings"
+    route_summary 'Find outings'
 
-    parameter :token, "User token", type: :string, required: true
-    parameter :latitude, "latitude", type: :number, required: false
-    parameter :longitude, "longitude", type: :number, required: false
-    parameter :travel_distance, "travel_distance", type: :number, required: false
+    parameter :token, 'User token', type: :string, required: true
+    parameter :latitude, 'latitude', type: :number, required: false
+    parameter :longitude, 'longitude', type: :number, required: false
+    parameter :travel_distance, 'travel_distance', type: :number, required: false
 
     let(:user) { FactoryBot.create(:pro_user) }
     let!(:outing) { FactoryBot.create(:outing) }
@@ -29,7 +29,7 @@ resource Api::V1::OutingsController do
   end
 
   get 'api/v1/outings/:id' do
-    route_summary "Get a outing"
+    route_summary 'Get a outing'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -48,7 +48,7 @@ resource Api::V1::OutingsController do
   end
 
   post 'api/v1/outings' do
-    route_summary "Creates a outing"
+    route_summary 'Creates a outing'
 
     parameter :token, type: :string, required: true
 
@@ -65,7 +65,7 @@ resource Api::V1::OutingsController do
       parameter :entourage_image_id
       parameter :neighborhood_ids
 
-      with_options scope: "outing[metadata]", required: true do
+      with_options scope: 'outing[metadata]', required: true do
         parameter :starts_at
         parameter :ends_at
         parameter :place_name
@@ -85,7 +85,7 @@ resource Api::V1::OutingsController do
     let(:raw_post) { {
       token: user.token,
       outing: {
-        title: "Apéro Entourage",
+        title: 'Apéro Entourage',
         latitude: 48.868959,
         longitude: 2.390185,
         neighborhood_ids: [neighborhood_1.id, neighborhood_2.id],
@@ -95,9 +95,9 @@ resource Api::V1::OutingsController do
         metadata: {
           starts_at: 1.day.from_now,
           ends_at: 1.day.from_now + 1.hour,
-          place_name: "Le Dorothy",
-          street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
-          google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
+          place_name: 'Le Dorothy',
+          street_address: '85 bis rue de Ménilmontant, 75020 Paris, France',
+          google_place_id: 'ChIJFzXXy-xt5kcRg5tztdINnp0',
           place_limit: 5
         }
       }
@@ -112,7 +112,7 @@ resource Api::V1::OutingsController do
   end
 
   put 'api/v1/outings/:id' do
-    route_summary "Updates an outing"
+    route_summary 'Updates an outing'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -130,7 +130,7 @@ resource Api::V1::OutingsController do
       parameter :entourage_image_id
       parameter :neighborhood_ids
 
-      with_options scope: "outing[metadata]", required: false do
+      with_options scope: 'outing[metadata]', required: false do
         parameter :starts_at
         parameter :ends_at
         parameter :place_name
@@ -142,7 +142,7 @@ resource Api::V1::OutingsController do
 
     let(:outing) { FactoryBot.create(:outing, :with_recurrence, user: user) }
     let(:user) { FactoryBot.create(:pro_user) }
-    let(:params) { { title: "new title" } }
+    let(:params) { { title: 'new title' } }
 
     let(:id) { outing.id }
     let(:raw_post) { {
@@ -177,7 +177,7 @@ resource Api::V1::OutingsController do
   end
 
   put 'api/v1/outings/:id/batch_update' do
-    route_summary "Batch updates an outing"
+    route_summary 'Batch updates an outing'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -195,7 +195,7 @@ resource Api::V1::OutingsController do
       parameter :entourage_image_id
       parameter :neighborhood_ids
 
-      with_options scope: "outing[metadata]", required: false do
+      with_options scope: 'outing[metadata]', required: false do
         parameter :starts_at
         parameter :ends_at
         parameter :place_name
@@ -208,7 +208,7 @@ resource Api::V1::OutingsController do
     let(:outing) { FactoryBot.create(:outing, user: user) }
     let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
     let(:user) { FactoryBot.create(:pro_user) }
-    let(:params) { { title: "new title" } }
+    let(:params) { { title: 'new title' } }
 
     let(:id) { outing.id }
     let(:raw_post) { {
@@ -225,7 +225,7 @@ resource Api::V1::OutingsController do
   end
 
   post 'api/v1/outings/:id/cancel' do
-    route_summary "Cancel a outing"
+    route_summary 'Cancel a outing'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true

@@ -19,10 +19,10 @@ class CreateEmailPreferences < ActiveRecord::Migration[4.2]
       description: "messages automatiques liées à vos actions dans l'app")
     EmailCategory.create(
       name: :newsletter,
-      description: "newsletter mensuelle")
+      description: 'newsletter mensuelle')
     EmailCategory.create(
       name: :unread_reminder,
-      description: "notification de nouveau message")
+      description: 'notification de nouveau message')
 
     # disable MailChimp callback
     EmailPreferencesService.define_singleton_method(:enable_mailchimp_callback?) { false }

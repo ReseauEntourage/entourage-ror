@@ -45,7 +45,7 @@ module EntourageServices
 
     def message
       @message ||= begin
-        inviter_name = UserPresenter.new(user: inviter).display_name || "un ami"
+        inviter_name = UserPresenter.new(user: inviter).display_name || 'un ami'
         inviter_name = sms_transliterate(inviter_name).truncate(32, omission: '..')
         "Bonjour, #{inviter_name} vous invite sur Entourage, le réseau solidaire. Votre code : #{invitee_sms_code}. Trouvez l'application ici : #{link}"
       end
@@ -61,7 +61,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : "bit.ly/applientourage"
+      link = Rails.env.test? ? 'http://foo.bar' : 'bit.ly/applientourage'
     end
   end
 end

@@ -13,7 +13,7 @@ module UserServices
     def thumbnail_url expire: 1.day
       return unless user.avatar_key
       return if user.blocked?
-      return "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg" if Rails.env.test?
+      return 'https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg' if Rails.env.test?
       avatars.public_url(key: thumbnail_key)
     end
 

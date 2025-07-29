@@ -5,25 +5,25 @@ module EntourageServices
     end
 
     def accepted?
-      join_request.status=="accepted"
+      join_request.status=='accepted'
     end
 
     def pending?
-      join_request.status=="pending"
+      join_request.status=='pending'
     end
 
     def rejected?
-      join_request.status=="rejected"
+      join_request.status=='rejected'
     end
 
     def cancelled?
-      join_request.status=="cancelled"
+      join_request.status=='cancelled'
     end
 
     def accept!
       return true if accepted?
 
-      join_request.update!(status: "accepted")
+      join_request.update!(status: 'accepted')
 
       true
     end
@@ -33,9 +33,9 @@ module EntourageServices
       return false if cancelled?
 
       if pending?
-        join_request.update(status: "rejected")
+        join_request.update(status: 'rejected')
       elsif accepted?
-        join_request.update!(status: "rejected")
+        join_request.update!(status: 'rejected')
       end
 
       true
@@ -45,9 +45,9 @@ module EntourageServices
       return true if cancelled?
 
       if pending?
-        join_request.update(status: "cancelled")
+        join_request.update(status: 'cancelled')
       elsif accepted?
-        join_request.update!(status: "cancelled")
+        join_request.update!(status: 'cancelled')
       end
 
       true
@@ -57,15 +57,15 @@ module EntourageServices
       return true if pending?
 
       if accepted?
-        join_request.update!(status: "pending")
+        join_request.update!(status: 'pending')
       elsif joinable.public?
-        join_request.update!(status: "accepted")
+        join_request.update!(status: 'accepted')
 
         JoinRequestsServices::JoinRequestBuilder.notify_auto_join_to_creator(join_request)
 
         true
       else
-        join_request.update(status: "pending")
+        join_request.update(status: 'pending')
       end
     end
 

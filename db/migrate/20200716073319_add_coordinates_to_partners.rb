@@ -11,7 +11,7 @@ class AddCoordinatesToPartners < ActiveRecord::Migration[4.2]
 
     reversible do |dir|
       dir.up do
-        Category.find_or_initialize_by(id: 8).update(name: "Partenaires")
+        Category.find_or_initialize_by(id: 8).update(name: 'Partenaires')
         Partner.reset_column_information
         Poi.reset_column_information
         Partner.find_each do |partner|

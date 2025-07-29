@@ -1,4 +1,4 @@
-require "active_support/core_ext/integer/time"
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -56,21 +56,21 @@ Rails.application.configure do
   config.active_record.logger.level = Logger::INFO
 
   # DEV / TEST CREDENTIALS
-  ENV["ANDROID_GCM_API_KEY"] = "foobar"
+  ENV['ANDROID_GCM_API_KEY'] = 'foobar'
 
-  config.action_mailer.default_url_options = { host: "localhost" }
+  config.action_mailer.default_url_options = { host: 'localhost' }
 
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
 
-  ENV["ENTOURAGE_IMAGES_BUCKET"]="foobar"
-  ENV["ENTOURAGE_AVATARS_BUCKET"]="foobar"
-  ENV["ENTOURAGE_AWS_ACCESS_KEY_ID"]="foo"
-  ENV["ENTOURAGE_AWS_SECRET_ACCESS_KEY"]="bar"
+  ENV['ENTOURAGE_IMAGES_BUCKET']='foobar'
+  ENV['ENTOURAGE_AVATARS_BUCKET']='foobar'
+  ENV['ENTOURAGE_AWS_ACCESS_KEY_ID']='foo'
+  ENV['ENTOURAGE_AWS_SECRET_ACCESS_KEY']='bar'
 
-  ENV["HOST"]='localhost'
-  ENV["ORGANIZATION_ADMIN_URL"]="localhost"
-  ENV["ENTOURAGE_SOLIGUIDE_HOST"]="https://localhost:8080/api/v1/pois"
+  ENV['HOST']='localhost'
+  ENV['ORGANIZATION_ADMIN_URL']='localhost'
+  ENV['ENTOURAGE_SOLIGUIDE_HOST']='https://localhost:8080/api/v1/pois'
 
   # Limit slow down due to password hashing
   BCrypt::Engine.cost = BCrypt::Engine::MIN_COST

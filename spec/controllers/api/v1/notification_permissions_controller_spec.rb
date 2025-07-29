@@ -28,10 +28,10 @@ describe Api::V1::NotificationPermissionsController, type: :controller do
         it { expect(response.status).to eq 200 }
         it { expect(result).to have_key('notification_permissions') }
         it { expect(result['notification_permissions']).to eq({
-          "neighborhood" => true,
-          "outing" => true,
-          "chat_message" => false,
-          "action" => false
+          'neighborhood' => true,
+          'outing' => true,
+          'chat_message' => false,
+          'action' => false
         }) }
       end
 
@@ -41,10 +41,10 @@ describe Api::V1::NotificationPermissionsController, type: :controller do
         it { expect(response.status).to eq 200 }
         it { expect(result).to have_key('notification_permissions') }
         it { expect(result['notification_permissions']).to eq({
-          "neighborhood" => true,
-          "outing" => true,
-          "chat_message" => true,
-          "action" => true
+          'neighborhood' => true,
+          'outing' => true,
+          'chat_message' => true,
+          'action' => true
         }) }
       end
     end
@@ -71,8 +71,8 @@ describe Api::V1::NotificationPermissionsController, type: :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(subject.permissions).to eq({
-          "neighborhood" => true,
-          "outing" => true
+          'neighborhood' => true,
+          'outing' => true
         }) }
       end
 
@@ -88,10 +88,10 @@ describe Api::V1::NotificationPermissionsController, type: :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(subject.permissions).to eq({
-          "neighborhood" => true,
-          "outing" => true,
-          "chat_message" => false,
-          "action" => false,
+          'neighborhood' => true,
+          'outing' => true,
+          'chat_message' => false,
+          'action' => false,
         }) }
       end
     end

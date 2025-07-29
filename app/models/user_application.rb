@@ -1,7 +1,7 @@
 class UserApplication < ApplicationRecord
-  ANDROID="ANDROID"
-  IOS="IOS"
-  WEB="WEB"
+  ANDROID='ANDROID'
+  IOS='IOS'
+  WEB='WEB'
 
   belongs_to :user
 

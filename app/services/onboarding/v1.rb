@@ -69,8 +69,8 @@ module Onboarding
       area = ENTOURAGES.invert[entourage.id]
       is_onboarding = area.present?
 
-      mp_params = { "is Onboarding Entourage" => is_onboarding }
-      mp_params["Onboarding Entourage Area"] = area if is_onboarding
+      mp_params = { 'is Onboarding Entourage' => is_onboarding }
+      mp_params['Onboarding Entourage Area'] = area if is_onboarding
       [is_onboarding, mp_params]
     end
 

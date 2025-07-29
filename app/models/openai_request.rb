@@ -23,7 +23,7 @@ class OpenaiRequest < ApplicationRecord
   end
 
   def error?
-    status.to_s == "error"
+    status.to_s == 'error'
   end
 
   def assistant_link

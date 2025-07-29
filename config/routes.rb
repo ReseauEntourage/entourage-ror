@@ -6,13 +6,13 @@ Rails.application.routes.draw do
 
   #ADMIN
   constraints subdomain: /\A(admin|admin-preprod|admin-test|admin-preprod-test)\z/ do
-    scope module: "admin", as: "admin" do
+    scope module: 'admin', as: 'admin' do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
       get '/sessions/new', to: redirect('/admin/sessions/new')
 
-      get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-      delete 'user_relationships' => "user_relationships#destroy"
+      get 'public_user_autocomplete' => 'users_search#public_user_autocomplete'
+      delete 'user_relationships' => 'user_relationships#destroy'
 
       namespace :salesforce do
         resources :schemas, only: [] do
@@ -541,7 +541,7 @@ Rails.application.routes.draw do
       resources :resources, only: [:index, :show] do
         collection do
           get :home
-          get "tag/:tag" => :tag, :as => :tag
+          get 'tag/:tag' => :tag, :as => :tag
         end
 
         resources :users, controller: 'resources/users', only: [:create, :destroy] do
@@ -736,7 +736,7 @@ Rails.application.routes.draw do
           post :force_match
           get :matches
           get :almost_matches
-          get "matches_by_criteria/:criteria" => :matches_by_criteria, :as => :matches_by_criteria
+          get 'matches_by_criteria/:criteria' => :matches_by_criteria, :as => :matches_by_criteria
         end
 
         member do
@@ -744,7 +744,7 @@ Rails.application.routes.draw do
           post :force_match
           get :matches
           get :almost_matches
-          get "matches_by_criteria/:criteria" => :matches_by_criteria, :as => :matches_by_criteria
+          get 'matches_by_criteria/:criteria' => :matches_by_criteria, :as => :matches_by_criteria
         end
       end
 
@@ -910,7 +910,7 @@ Rails.application.routes.draw do
 
   #PUBLIC USER
   namespace :public_user do
-    root to: "users#edit"
+    root to: 'users#edit'
 
     resources :users, only: [:edit, :update]
   end

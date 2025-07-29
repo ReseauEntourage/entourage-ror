@@ -18,17 +18,17 @@ module SlackServices
           },
           {
             callback_id: [:offensive_text, @chat_message.id].join(':'),
-            fallback: "",
+            fallback: '',
             actions: [
               {
-                text:  "Annuler le caractère offensant",
+                text:  'Annuler le caractère offensant',
                 type:  :button,
                 style: :primary,
                 name:  :action,
                 value: :is_not_offensive
               },
               {
-                text:  "Confirmer le contenu offensant",
+                text:  'Confirmer le contenu offensant',
                 type:  :button,
                 style: :danger,
                 name:  :action,
@@ -36,7 +36,7 @@ module SlackServices
               },
               {
 
-                text: "Afficher",
+                text: 'Afficher',
                 type: :button,
                 url: link_to(@chat_message.messageable)
               }
@@ -48,7 +48,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Texte offensant",
+        username: 'Texte offensant',
         channel: webhook('channel'),
       }
     end

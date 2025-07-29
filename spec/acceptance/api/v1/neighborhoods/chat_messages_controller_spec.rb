@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Neighborhoods::ChatMessagesController do
-  explanation "Chat messages"
-  header "Content-Type", "application/json"
+  explanation 'Chat messages'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/neighborhoods/:neighborhood_id/chat_messages' do
-    route_summary "Find user chat_messages in a neighborhood"
+    route_summary 'Find user chat_messages in a neighborhood'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -34,16 +34,16 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
   end
 
   post '/api/v1/neighborhoods/:neighborhood_id/chat_messages' do
-    route_summary "Create chat_messages"
+    route_summary 'Create chat_messages'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
     parameter :neighborhood_id, type: :integer, required: true
 
     with_options scope: :chat_message, required: true do
-      parameter :content, "content is optional whenever image_url is defined", type: :string, required: false
+      parameter :content, 'content is optional whenever image_url is defined', type: :string, required: false
       parameter :image_url, type: :string, required: false
-      parameter :parent_id, "parent chat_message id", required: false
+      parameter :parent_id, 'parent chat_message id', required: false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -56,7 +56,7 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     let(:raw_post) { {
       token: user.token,
       chat_message: {
-        content: "foo",
+        content: 'foo',
         parent_id: parent_id
       }
     }.to_json }
@@ -89,11 +89,11 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
   end
 
   post '/api/v1/neighborhoods/:neighborhood_id/chat_messages/presigned_upload' do
-    route_summary "Presigned upload"
+    route_summary 'Presigned upload'
 
     parameter :neighborhood_id, type: :integer, required: true
     parameter :token, type: :string, required: true
-    parameter :content_type, "image/jpeg, image/png", type: :string, required: true
+    parameter :content_type, 'image/jpeg, image/png', type: :string, required: true
 
     let(:user) { FactoryBot.create(:pro_user) }
     let(:neighborhood) { FactoryBot.create(:neighborhood) }
@@ -115,7 +115,7 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
   end
 
   post 'api/v1/neighborhoods/:neighborhood_id/chat_messages/:chat_message_id/report' do
-    route_summary "Sends an alert about a chat_message"
+    route_summary 'Sends an alert about a chat_message'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -128,7 +128,7 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
 
     let(:neighborhood) { create :neighborhood }
     let(:chat_message) { create :chat_message, messageable: neighborhood }
-    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: 'accepted') }
 
     let(:neighborhood_id) { neighborhood.id }
     let(:chat_message_id) { chat_message.id }

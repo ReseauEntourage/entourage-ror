@@ -23,7 +23,7 @@ module SlackServices
     end
 
     def env
-      "{}"
+      '{}'
     end
 
     def find_user user

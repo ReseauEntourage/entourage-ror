@@ -1,7 +1,7 @@
 module Translatable
   extend ActiveSupport::Concern
 
-  BASE_URI = "https://translate.google.com/m?sl=%s&tl=%s&q=%s"
+  BASE_URI = 'https://translate.google.com/m?sl=%s&tl=%s&q=%s'
   TRANSLATION_KEYS = {
     chat_message: [:content],
     entourage: [:title, :description],
@@ -64,7 +64,7 @@ module Translatable
     end
 
     return unless response.present?
-    return unless response.code == "200"
+    return unless response.code == '200'
     return unless response.body.present?
 
     Nokogiri::HTML(response.body, nil, 'UTF-8').css('.result-container').text

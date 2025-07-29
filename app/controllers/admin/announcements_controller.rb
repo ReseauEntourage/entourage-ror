@@ -89,7 +89,7 @@ module Admin
     end
 
     def reorder
-      ordered_ids = (params[:ordered_ids] || "").to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
+      ordered_ids = (params[:ordered_ids] || '').to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
 
       ApplicationRecord.transaction do
         Announcement

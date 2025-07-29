@@ -29,13 +29,13 @@ module Api
 
       rescue_from ActionController::ParameterMissing do |e|
         Rails.logger.error e
-        render_error(code: "PARAMETER_MISSING", message: e.message, status: :bad_request)
+        render_error(code: 'PARAMETER_MISSING', message: e.message, status: :bad_request)
       end
 
       def allow_cors
-        headers["Access-Control-Allow-Origin"] = "*"
-        headers["Access-Control-Allow-Methods"] = %w{GET POST PUT PATCH DELETE}.join(",")
-        headers["Access-Control-Allow-Headers"] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token X-API-KEY}.join(",")
+        headers['Access-Control-Allow-Origin'] = '*'
+        headers['Access-Control-Allow-Methods'] = %w{GET POST PUT PATCH DELETE}.join(',')
+        headers['Access-Control-Allow-Headers'] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token X-API-KEY}.join(',')
       end
 
       def options
@@ -118,7 +118,7 @@ module Api
       def ping_op_lapin
         from_date = ENV['OP_LAPIN_FROM_DATE'] || '2021-09-20'
 
-        render json: { status: :ok, count: User.where("created_at > ?", from_date).count }
+        render json: { status: :ok, count: User.where('created_at > ?', from_date).count }
       end
 
       def api_request

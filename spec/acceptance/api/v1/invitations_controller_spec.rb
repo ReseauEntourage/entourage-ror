@@ -2,12 +2,12 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::InvitationsController do
-  explanation "Invitations"
-  header "Content-Type", "application/json"
+  explanation 'Invitations'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/invitations' do
     parameter :token, type: :string, required: true
-    parameter :status, "accepted, cancelled, rejected, pending", type: :string
+    parameter :status, 'accepted, cancelled, rejected, pending', type: :string
 
     let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
@@ -22,7 +22,7 @@ resource Api::V1::InvitationsController do
   end
 
   patch '/api/v1/invitations/:id' do
-    parameter :id, "Invitation id", type: :integer, required: true
+    parameter :id, 'Invitation id', type: :integer, required: true
     parameter :token, type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
@@ -42,7 +42,7 @@ resource Api::V1::InvitationsController do
   end
 
   delete '/api/v1/invitations/:id' do
-    parameter :id, "Invitation id", type: :integer, required: true
+    parameter :id, 'Invitation id', type: :integer, required: true
     parameter :token, type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }

@@ -18,7 +18,7 @@ module Api
       end
 
       def current
-        return render json: { error: "UserSmalltalk not found" }, status: :not_found unless @user_smalltalk.present?
+        return render json: { error: 'UserSmalltalk not found' }, status: :not_found unless @user_smalltalk.present?
 
         redirect_to user_smalltalk_path(@user_smalltalk)
       end
@@ -30,7 +30,7 @@ module Api
         if @user_smalltalk.save
           render json: @user_smalltalk, status: 201, serializer: ::V1::UserSmalltalkSerializer
         else
-          render json: { message: "Could not create UserSmalltalk", reasons: @user_smalltalk.errors.full_messages }, status: 400
+          render json: { message: 'Could not create UserSmalltalk', reasons: @user_smalltalk.errors.full_messages }, status: 400
         end
       end
 
@@ -78,10 +78,10 @@ module Api
 
       def destroy
         if @user_smalltalk.update(deleted_at: Time.zone.now)
-          render json: @user_smalltalk, root: "user", status: 200, serializer: ::V1::UserSmalltalkSerializer
+          render json: @user_smalltalk, root: 'user', status: 200, serializer: ::V1::UserSmalltalkSerializer
         else
           render json: {
-            message: "Could not delete user_smalltalk", reasons: @user_smalltalk.errors.full_messages
+            message: 'Could not delete user_smalltalk', reasons: @user_smalltalk.errors.full_messages
           }, status: :bad_request
         end
       end

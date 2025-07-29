@@ -14,6 +14,6 @@ class AddStatusToPartnerInvitations < ActiveRecord::Migration[4.2]
     remove_index :partner_invitations, name: :index_accepted_partner_invitations_on_partner_and_invitee_id
     remove_column :partner_invitations, :status, :string, null: false
     add_index :partner_invitations, [:partner_id, :invitee_email], unique: true
-    add_index :partner_invitations, [:partner_id, :invitee_id], where: "accepted_at is not null", unique: true
+    add_index :partner_invitations, [:partner_id, :invitee_id], where: 'accepted_at is not null', unique: true
   end
 end

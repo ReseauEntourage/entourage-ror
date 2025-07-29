@@ -1,5 +1,5 @@
 namespace :redis do
-  desc "database_cleanup"
+  desc 'database_cleanup'
   task database_cleanup: :environment do
     redis.keys('rpush:notifications:*').each do |key|
       next unless redis.ttl(key) == -1

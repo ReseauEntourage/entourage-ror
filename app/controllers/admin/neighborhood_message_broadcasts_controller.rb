@@ -50,7 +50,7 @@ module Admin
       @neighborhood_message_broadcast.assign_attributes(neighborhood_message_broadcast_neighborhoods_param)
 
       if @neighborhood_message_broadcast.save!
-        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), notice: "Votre modification a bien été prise en compte"
+        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), notice: 'Votre modification a bien été prise en compte'
       else
         redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "Votre modification n'a pas pu être prise en compte"
       end

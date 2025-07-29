@@ -22,7 +22,7 @@ module Admin
           moderator_reads is null and entourages.created_at >= now() - interval '1 week' and has_image_url as unread_images
         ))
         .like(params[:search])
-        .group("entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id")
+        .group('entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id')
         .joins(%(left outer join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
         .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
         .order(Arel.sql(%(
@@ -147,8 +147,8 @@ module Admin
     def show_matchings
       @action = Action.find(params[:id])
       @matchings = @action.matchings_with_notifications
-        .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
-        .group("matchings.id")
+        .select('matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at')
+        .group('matchings.id')
         .includes(:match)
 
       render :show
@@ -194,7 +194,7 @@ module Admin
       return redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être identifiée" unless @recurrence
 
       if @recurrence.update_attribute(:continue, false)
-        redirect_to show_siblings_admin_entourage_path(@outing), notice: "La récurrence a été annulée"
+        redirect_to show_siblings_admin_entourage_path(@outing), notice: 'La récurrence a été annulée'
       else
         redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être annulée : #{@outing.errors.full_messages.to_sentence}"
       end
@@ -264,9 +264,9 @@ module Admin
           end
         end if group_type_change
 
-        redirect_to edit_admin_entourage_path(@entourage), notice: "Entourage mis à jour"
+        redirect_to edit_admin_entourage_path(@entourage), notice: 'Entourage mis à jour'
       else
-        render :edit, alert: "Erreur lors de la mise à jour"
+        render :edit, alert: 'Erreur lors de la mise à jour'
       end
     end
 
@@ -282,7 +282,7 @@ module Admin
     end
 
     def cancellation
-      redirect_to [:edit, :admin, @entourage], alert: "Seuls les événements peuvent être annulés" unless @entourage.outing?
+      redirect_to [:edit, :admin, @entourage], alert: 'Seuls les événements peuvent être annulés' unless @entourage.outing?
     end
 
     def cancel
@@ -355,7 +355,7 @@ module Admin
 
       EntourageServices::ChangeOwner.new(@entourage).to(user_id, message) do |success, error_message|
         if success
-          redirect_to admin_entourage_path(@entourage), notice: "Mise à jour réussie"
+          redirect_to admin_entourage_path(@entourage), notice: 'Mise à jour réussie'
         else
           redirect_to edit_owner_admin_entourage_path(@entourage), alert: error_message
         end
@@ -392,7 +392,7 @@ module Admin
 
     def destroy_message
       unless ['JoinRequest', 'ChatMessage'].include?(params[:type])
-        return redirect_to admin_entourages_path, alert: "Wrong type param for destroy_message"
+        return redirect_to admin_entourages_path, alert: 'Wrong type param for destroy_message'
       end
 
       return destroy_join_request if params[:type] == 'JoinRequest'
@@ -415,7 +415,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end
@@ -444,14 +444,14 @@ module Admin
 
     def update_neighborhoods
       unless @entourage.outing?
-        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: 'Seuls les événements peuvent être associés à des groupes de voisins'
       end
 
       @outing = Outing.find(@entourage.id)
       @outing.assign_attributes(outing_neighborhoods_param)
 
       if @outing.save(validate: false) # we do not want validation on starts_at or neighborhood_ids memberships
-        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Votre modification a bien été prise en compte"
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: 'Votre modification a bien été prise en compte'
       else
         redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Votre modification n'a pas pu être prise en compte"
       end

@@ -78,7 +78,7 @@ module PoiServices
 
       scope = scope.unscope(:select)
       projections = [
-        "pois.id",
+        'pois.id',
         "to_char(pois.updated_at, 'YYYYMMDDHH24MISSUS000')"
       ]
 
@@ -88,8 +88,8 @@ module PoiServices
         # To solve this, we cluster in a CTE, then sort again in the main query.
 
         cte_projections = [
-          "pois.id", "pois.updated_at",     # for the metadata
-          "pois.latitude", "pois.longitude" # for the sorting by distance
+          'pois.id', 'pois.updated_at',     # for the metadata
+          'pois.latitude', 'pois.longitude' # for the sorting by distance
         ]
 
         # prefix a `distinct on` clause to the first expression for clustering

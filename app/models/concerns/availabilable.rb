@@ -47,6 +47,6 @@ module Availabilable
   end
 
   def self.day_name day_number
-    I18n.t("date.day_names")[day_number.to_i % 7]
+    I18n.t('date.day_names')[day_number.to_i % 7]
   end
 end

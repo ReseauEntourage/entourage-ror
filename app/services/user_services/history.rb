@@ -2,7 +2,7 @@ module UserServices
   class History
     attr_accessor :user
 
-    ACCOUNT_CREATION = "Création du compte"
+    ACCOUNT_CREATION = 'Création du compte'
 
     def initialize user
       @user = user

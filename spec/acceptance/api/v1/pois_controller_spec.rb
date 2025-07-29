@@ -2,20 +2,20 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::PoisController do
-  explanation "Pois"
-  header "Content-Type", "application/json"
+  explanation 'Pois'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/pois' do
-    route_summary "Find POI for a given location."
+    route_summary 'Find POI for a given location.'
     route_description "To find Pois from Soliguide, values (v=2, no_redirect!='true') are expected. Soliguide is currently provided only for Paris."
 
-    parameter :v, "Version to be used, 1 or 2 (default 1)", type: :integer
-    parameter :latitude, "User latitude", type: :number, required: true
-    parameter :longitude, "User longitude", type: :number, required: true
-    parameter :distance, "Distance from GPS coordinates from which POI should be found", type: :number
-    parameter :category_ids, "Comma separated category_ids", type: :string
-    parameter :partners_filters, "Comma separated partners (either donations or volunteers)", type: :string
-    parameter :query, "Filter POI by name", type: :string
+    parameter :v, 'Version to be used, 1 or 2 (default 1)', type: :integer
+    parameter :latitude, 'User latitude', type: :number, required: true
+    parameter :longitude, 'User longitude', type: :number, required: true
+    parameter :distance, 'Distance from GPS coordinates from which POI should be found', type: :number
+    parameter :category_ids, 'Comma separated category_ids', type: :string
+    parameter :partners_filters, 'Comma separated partners (either donations or volunteers)', type: :string
+    parameter :query, 'Filter POI by name', type: :string
     parameter :no_redirect, type: :boolean
 
     let!(:category) { create :category }
@@ -35,7 +35,7 @@ resource Api::V1::PoisController do
   end
 
   get 'api/v1/pois/:id' do
-    route_summary "Get a POI"
+    route_summary 'Get a POI'
 
     parameter :id, required: true
 
@@ -54,7 +54,7 @@ resource Api::V1::PoisController do
   # it is available only using typeform
 
   post 'api/v1/pois/:id/report' do
-    route_summary "Report a POI to Entourage team"
+    route_summary 'Report a POI to Entourage team'
 
     parameter :token, type: :string, required: true
     parameter :id, type: :integer, required: true
@@ -69,7 +69,7 @@ resource Api::V1::PoisController do
     let(:id) { poi.id }
     let(:raw_post) { {
       token: user.token,
-      message: "message"
+      message: 'message'
     }.to_json }
 
     context '201' do

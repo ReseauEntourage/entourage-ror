@@ -25,7 +25,7 @@ module OrganizationAdmin
       partner = current_user.partner
       member = partner.users.find(params[:id])
       if member.update(member_params)
-        flash[:success] = "Modifications enregistrées !"
+        flash[:success] = 'Modifications enregistrées !'
       else
         flash[:error] = member.errors.full_messages.to_sentence
       end
@@ -42,11 +42,11 @@ module OrganizationAdmin
       end
 
       if OrganizationAdminService.remove_member(author: current_user, member: member)
-        flash[:success] = "Membre retiré !"
+        flash[:success] = 'Membre retiré !'
         redirect_to organization_admin_members_path
       else
         pp member.errors
-        flash[:error] = member.errors.full_messages.to_sentence.presence || "Impossible de retirer le membre."
+        flash[:error] = member.errors.full_messages.to_sentence.presence || 'Impossible de retirer le membre.'
         redirect_to edit_organization_admin_member_path(member)
       end
     end

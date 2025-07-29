@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Neighborhoods::OutingsController do
-  explanation "Outings"
-  header "Content-Type", "application/json"
+  explanation 'Outings'
+  header 'Content-Type', 'application/json'
 
   post '/api/v1/neighborhoods/:neighborhood_id/outings' do
-    route_summary "Create outings"
+    route_summary 'Create outings'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -14,18 +14,18 @@ resource Api::V1::Neighborhoods::OutingsController do
 
     with_options scope: :outing, required: false do
       parameter :title, required: true
-      parameter :description, "Description", type: :string
-      parameter :event_url, "Event url", type: :string
-      parameter :latitude, "Latitude", type: :string, required: true
-      parameter :longitude, "Longitude", type: :string, required: true
-      parameter :entourage_image_id, "Entourage image id", type: :integer
-      parameter :metadata, "Metadata", required: false
-      with_options scope: "outing[metadata]", required: true do
-        parameter :starts_at, "Start time"
-        parameter :ends_at, "End time"
-        parameter :place_name, "Place name"
-        parameter :street_address, "Street address"
-        parameter :google_place_id, "Google place ID"
+      parameter :description, 'Description', type: :string
+      parameter :event_url, 'Event url', type: :string
+      parameter :latitude, 'Latitude', type: :string, required: true
+      parameter :longitude, 'Longitude', type: :string, required: true
+      parameter :entourage_image_id, 'Entourage image id', type: :integer
+      parameter :metadata, 'Metadata', required: false
+      with_options scope: 'outing[metadata]', required: true do
+        parameter :starts_at, 'Start time'
+        parameter :ends_at, 'End time'
+        parameter :place_name, 'Place name'
+        parameter :street_address, 'Street address'
+        parameter :google_place_id, 'Google place ID'
       end
     end
 

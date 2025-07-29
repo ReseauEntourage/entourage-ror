@@ -42,13 +42,13 @@ class NotificationPermission < ApplicationRecord
 
   # accessors
   def neighborhood instance_id = nil
-    return true unless permissions && permissions.has_key?("neighborhood")
-    permissions["neighborhood"]
+    return true unless permissions && permissions.has_key?('neighborhood')
+    permissions['neighborhood']
   end
 
   def outing instance_id = nil
-    return true unless permissions && permissions.has_key?("outing")
-    permissions["outing"]
+    return true unless permissions && permissions.has_key?('outing')
+    permissions['outing']
   end
 
   def conversation instance_id = nil
@@ -58,8 +58,8 @@ class NotificationPermission < ApplicationRecord
   end
 
   def chat_message instance_id = nil
-    return true unless permissions && permissions.has_key?("chat_message")
-    permissions["chat_message"]
+    return true unless permissions && permissions.has_key?('chat_message')
+    permissions['chat_message']
   end
 
   def user_smalltalk instance_id = nil
@@ -71,8 +71,8 @@ class NotificationPermission < ApplicationRecord
   end
 
   def action instance_id = nil
-    return true unless permissions && permissions.has_key?("action")
-    permissions["action"]
+    return true unless permissions && permissions.has_key?('action')
+    permissions['action']
   end
 
   def resource instance_id = nil
@@ -85,18 +85,18 @@ class NotificationPermission < ApplicationRecord
 
   # setters
   def neighborhood= accepted
-    permissions["neighborhood"] = ActiveModel::Type::Boolean.new.cast(accepted)
+    permissions['neighborhood'] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 
   def outing= accepted
-    permissions["outing"] = ActiveModel::Type::Boolean.new.cast(accepted)
+    permissions['outing'] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 
   def chat_message= accepted
-    permissions["chat_message"] = ActiveModel::Type::Boolean.new.cast(accepted)
+    permissions['chat_message'] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 
   def action= accepted
-    permissions["action"] = ActiveModel::Type::Boolean.new.cast(accepted)
+    permissions['action'] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 end

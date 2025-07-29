@@ -5,7 +5,7 @@ describe RouteCompletionService do
 
   let(:completor) { RouteCompletionService.new(user: user, controller_name: controller_name, action_name: action_name, params: params) }
 
-  let(:controller_name) { "resources" }
+  let(:controller_name) { 'resources' }
   let(:action_name) { :index }
   let(:params) { Hash.new }
 
@@ -22,7 +22,7 @@ describe RouteCompletionService do
       end
 
       context 'undefined controller_name' do
-        let(:controller_name) { "foo" }
+        let(:controller_name) { 'foo' }
 
         before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_recommandation!) }
 
@@ -30,7 +30,7 @@ describe RouteCompletionService do
       end
 
       context 'undefined action_name' do
-        let(:action_name) { "foo" }
+        let(:action_name) { 'foo' }
 
         before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_recommandation!) }
 
@@ -38,8 +38,8 @@ describe RouteCompletionService do
       end
 
       context 'index' do
-        let(:controller_name) { "neighborhoods" }
-        let(:action_name) { "index" }
+        let(:controller_name) { 'neighborhoods' }
+        let(:action_name) { 'index' }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_index) }
 
@@ -47,8 +47,8 @@ describe RouteCompletionService do
       end
 
       context 'show' do
-        let(:controller_name) { "neighborhoods" }
-        let(:action_name) { "show" }
+        let(:controller_name) { 'neighborhoods' }
+        let(:action_name) { 'show' }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_show) }
         before { expect_any_instance_of(RouteCompletionService).not_to receive(:after_show_webview) }
@@ -57,8 +57,8 @@ describe RouteCompletionService do
       end
 
       context 'show webview' do
-        let(:controller_name) { "webviews" }
-        let(:action_name) { "show" }
+        let(:controller_name) { 'webviews' }
+        let(:action_name) { 'show' }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_show_webview) }
 
@@ -66,8 +66,8 @@ describe RouteCompletionService do
       end
 
       context 'create' do
-        let(:controller_name) { "neighborhoods" }
-        let(:action_name) { "create" }
+        let(:controller_name) { 'neighborhoods' }
+        let(:action_name) { 'create' }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_create) }
         before { expect_any_instance_of(RouteCompletionService).not_to receive(:after_create_user) }
@@ -76,8 +76,8 @@ describe RouteCompletionService do
       end
 
       context 'join neighborhood' do
-        let(:controller_name) { "users" }
-        let(:action_name) { "create" }
+        let(:controller_name) { 'users' }
+        let(:action_name) { 'create' }
         let(:params) { { neighborhood_id: 1 } }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_neighborhood) }
@@ -86,8 +86,8 @@ describe RouteCompletionService do
       end
 
       context 'join outing' do
-        let(:controller_name) { "users" }
-        let(:action_name) { "create" }
+        let(:controller_name) { 'users' }
+        let(:action_name) { 'create' }
         let(:params) { { outing_id: 1 } }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_outing) }
@@ -96,8 +96,8 @@ describe RouteCompletionService do
       end
 
       context 'join resource' do
-        let(:controller_name) { "users" }
-        let(:action_name) { "create" }
+        let(:controller_name) { 'users' }
+        let(:action_name) { 'create' }
         let(:params) { { resource_id: 1 } }
 
         before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_resource) }
@@ -122,10 +122,10 @@ describe RouteCompletionService do
 
   describe 'after_show on webview' do
     let(:subject) { completor.after_show(instance, params) }
-    let(:controller_name) { "webviews" }
-    let(:params) { { url: "foobar" } }
+    let(:controller_name) { 'webviews' }
+    let(:params) { { url: 'foobar' } }
 
-    it { expect(subject).to eq({ instance: :webview, action: :show, instance_url: "foobar" }) }
+    it { expect(subject).to eq({ instance: :webview, action: :show, instance_url: 'foobar' }) }
   end
 
   describe 'after_create' do
@@ -136,14 +136,14 @@ describe RouteCompletionService do
 
   describe 'after_create on user' do
     let(:subject) { completor.after_create(instance, params) }
-    let(:controller_name) { "users" }
+    let(:controller_name) { 'users' }
 
     it { expect(subject).to be_nil }
   end
 
   describe 'after_create on join neighborhood' do
     let(:subject) { completor.after_create(instance, params) }
-    let(:controller_name) { "users" }
+    let(:controller_name) { 'users' }
     let(:params) { { neighborhood_id: 1 } }
 
     it { expect(subject).to eq({ instance: :neighborhood, action: :join }) }
@@ -151,7 +151,7 @@ describe RouteCompletionService do
 
   describe 'after_create on join outing' do
     let(:subject) { completor.after_create(instance, params) }
-    let(:controller_name) { "users" }
+    let(:controller_name) { 'users' }
     let(:params) { { outing_id: 1 } }
 
     it { expect(subject).to eq({ instance: :outing, action: :join }) }
@@ -159,7 +159,7 @@ describe RouteCompletionService do
 
   describe 'after_create on join resource' do
     let(:subject) { completor.after_create(instance, params) }
-    let(:controller_name) { "users" }
+    let(:controller_name) { 'users' }
     let(:params) { { resource_id: 1 } }
 
     it { expect(subject).to eq({ instance: :resource, action: :show, instance_id: 1 }) }

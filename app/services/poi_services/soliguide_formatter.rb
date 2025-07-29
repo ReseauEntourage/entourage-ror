@@ -160,7 +160,7 @@ module PoiServices
 
     def self.format_administrative administrative, lang
       return nil unless administrative.present?
-      return nil if administrative.sort == ["asylum", "refugee", "regular", "undocumented"].sort
+      return nil if administrative.sort == ['asylum', 'refugee', 'regular', 'undocumented'].sort
 
       # regular : personne en situation régulière
       # asylum : personne demandeur⋅euse d'asile
@@ -249,7 +249,7 @@ module PoiServices
     def self.format_hours hours, lang
       return [] unless hours
 
-      available_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+      available_days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
       # excluded keys are: closedHolidays, description
 
       hours.slice(*available_days).sort_by do |days, value|
@@ -258,13 +258,13 @@ module PoiServices
         next unless hours.present?
 
         day = {
-          'monday'    => I18n.t("date.abbr_day_names", locale: lang)[1],
-          'tuesday'   => I18n.t("date.abbr_day_names", locale: lang)[2],
-          'wednesday' => I18n.t("date.abbr_day_names", locale: lang)[3],
-          'thursday'  => I18n.t("date.abbr_day_names", locale: lang)[4],
-          'friday'    => I18n.t("date.abbr_day_names", locale: lang)[5],
-          'saturday'  => I18n.t("date.abbr_day_names", locale: lang)[6],
-          'sunday'    => I18n.t("date.abbr_day_names", locale: lang)[0],
+          'monday'    => I18n.t('date.abbr_day_names', locale: lang)[1],
+          'tuesday'   => I18n.t('date.abbr_day_names', locale: lang)[2],
+          'wednesday' => I18n.t('date.abbr_day_names', locale: lang)[3],
+          'thursday'  => I18n.t('date.abbr_day_names', locale: lang)[4],
+          'friday'    => I18n.t('date.abbr_day_names', locale: lang)[5],
+          'saturday'  => I18n.t('date.abbr_day_names', locale: lang)[6],
+          'sunday'    => I18n.t('date.abbr_day_names', locale: lang)[0],
         }[day]
 
         if hours['timeslot'].blank?
@@ -289,7 +289,7 @@ module PoiServices
       return if seconds.nil? || seconds == -1
       hours = seconds / 100
       minutes = seconds % 100
-      "%dh%02d" % [hours, minutes]
+      '%dh%02d' % [hours, minutes]
     end
 
     def self.format_title place_name, entity_name, lang
@@ -353,292 +353,292 @@ module PoiServices
 
     CATEGORIES_EQUIVALENTS = {
       # Santé (toutes)  Se soigner
-      "health" => 3, # SANTE
-      "addiction" => 3, # ADDICTION
-      "std_testing" => 3, # DEPISTAGE
-      "psychological_support" => 3, # PSYCHOLOGIE
-      "child_care" => 3, # SOINS_ENFANTS
-      "general_practitioner" => 3, # GENERALISTE
-      "dental_care" => 3, # DENTAIRE
-      "pregnancy_care" => 3, # SUIVI_GROSSESSE
-      "vaccination" => 3, # VACCINATION
-      "infirmary" => 3, # INFIRMERIE
-      "vet_care" => 3, # VETERINAIRE
+      'health' => 3, # SANTE
+      'addiction' => 3, # ADDICTION
+      'std_testing' => 3, # DEPISTAGE
+      'psychological_support' => 3, # PSYCHOLOGIE
+      'child_care' => 3, # SOINS_ENFANTS
+      'general_practitioner' => 3, # GENERALISTE
+      'dental_care' => 3, # DENTAIRE
+      'pregnancy_care' => 3, # SUIVI_GROSSESSE
+      'vaccination' => 3, # VACCINATION
+      'infirmary' => 3, # INFIRMERIE
+      'vet_care' => 3, # VETERINAIRE
 
       # Formation et emploi (toutes)  Se réinsérer
-      "training_and_jobs" => 7, # FORMATION_EMPLOI
-      "digital_tools_training" => 7, # FORMATION_NUMERIQUE
-      "french_course" => 7, # FORMATION_FRANCAIS
-      "job_coaching" => 7, # ACCOMPAGNEMENT_EMPLOI
-      "integration_through_economic_activity" => 7, # INSERTION_ACTIVITE_ECONOMIQUE
-      "tutoring" => 7, # SOUTIEN_SCOLAIRE
+      'training_and_jobs' => 7, # FORMATION_EMPLOI
+      'digital_tools_training' => 7, # FORMATION_NUMERIQUE
+      'french_course' => 7, # FORMATION_FRANCAIS
+      'job_coaching' => 7, # ACCOMPAGNEMENT_EMPLOI
+      'integration_through_economic_activity' => 7, # INSERTION_ACTIVITE_ECONOMIQUE
+      'tutoring' => 7, # SOUTIEN_SCOLAIRE
 
       # Hygiène et bien-être  Hygiène et bien-être  S'occuper de soi
-      "hygiene_and_wellness" => 6, # HYGIENE
-      "shower" => 42, # DOUCHE
-      "laundry" => 43, # LAVERIE
-      "wellness" => 6, # BIEN_ETRE
-      "toilets" => 40, # TOILETTES
-      "hygiene_products" => 6, # PROTECTIONS_PERIODIQUES
-      "face_masks" => 3, # MASQUES
+      'hygiene_and_wellness' => 6, # HYGIENE
+      'shower' => 42, # DOUCHE
+      'laundry' => 43, # LAVERIE
+      'wellness' => 6, # BIEN_ETRE
+      'toilets' => 40, # TOILETTES
+      'hygiene_products' => 6, # PROTECTIONS_PERIODIQUES
+      'face_masks' => 3, # MASQUES
 
       # Conseil -> S'orienter
-      "counseling" => 5, # CONSEIL
-      "legal_advice" => 5, # PERMANENCE_JURIDIQUE
-      "domiciliation" => 5, # DOMICILIATION
-      "social_accompaniment" => 5, # ACCOMPAGNEMENT_SOCIAL
-      "public_writer" => 5, # ECRIVAIN_PUBLIC
-      "disability_advice" => 5, # CONSEIL_HANDICAP
-      "administrative_assistance" => 5, # CONSEIL_ADMINISTRATIF
-      "parent_assistance" => 5, # CONSEIL_PARENTS
-      "budget_advice" => 5, # CONSEIL_BUGDET
+      'counseling' => 5, # CONSEIL
+      'legal_advice' => 5, # PERMANENCE_JURIDIQUE
+      'domiciliation' => 5, # DOMICILIATION
+      'social_accompaniment' => 5, # ACCOMPAGNEMENT_SOCIAL
+      'public_writer' => 5, # ECRIVAIN_PUBLIC
+      'disability_advice' => 5, # CONSEIL_HANDICAP
+      'administrative_assistance' => 5, # CONSEIL_ADMINISTRATIF
+      'parent_assistance' => 5, # CONSEIL_PARENTS
+      'budget_advice' => 5, # CONSEIL_BUGDET
 
       # Technologie (toutes)  S'orienter
-      "technology" => 5, # TECHNOLOGIE
-      "computers_at_your_disposal" => 5, # ORDINATEUR
-      "wifi" => 5, # WIFI
-      "electrical_outlets_available" => 5, # PRISE
-      "telephone_at_your_disposal" => 5, # TELEPHONE
-      "digital_safe" => 5, # COFFRE_FORT_NUMERIQUE
+      'technology' => 5, # TECHNOLOGIE
+      'computers_at_your_disposal' => 5, # ORDINATEUR
+      'wifi' => 5, # WIFI
+      'electrical_outlets_available' => 5, # PRISE
+      'telephone_at_your_disposal' => 5, # TELEPHONE
+      'digital_safe' => 5, # COFFRE_FORT_NUMERIQUE
 
       # Alimentation (toutes sauf Fontaine)  Se nourrir
-      "food" => 1, # ALIMENTATION
-      "food_distribution" => 1, # DISTRIBUTION_ALIMENTAIRE
-      "seated_catering" => 1, # RESTAURATION_ASSISE
-      "food_packages" => 1, # COLIS_ALIMENTAIRE
-      "social_grocery_stores" => 1, # EPICERIE_SOCIALE
-      "fountain" => 41, # FONTAINE
-      "baby_parcel" => 1, # COLIS_BEBE
-      "food_voucher" => 1, # CHEQUE_ALIMENTAIRE
-      "shared_kitchen" => 1, # CUISINE_PARTAGEE
-      "cooking_workshop" => 1, # ATELIER_CUISINE
-      "community_garden" => 1, # JARDIN_SOLIDAIRE
-      "solidarity_fridge" => 1, # FRIGO_SOLIDAIRE
+      'food' => 1, # ALIMENTATION
+      'food_distribution' => 1, # DISTRIBUTION_ALIMENTAIRE
+      'seated_catering' => 1, # RESTAURATION_ASSISE
+      'food_packages' => 1, # COLIS_ALIMENTAIRE
+      'social_grocery_stores' => 1, # EPICERIE_SOCIALE
+      'fountain' => 41, # FONTAINE
+      'baby_parcel' => 1, # COLIS_BEBE
+      'food_voucher' => 1, # CHEQUE_ALIMENTAIRE
+      'shared_kitchen' => 1, # CUISINE_PARTAGEE
+      'cooking_workshop' => 1, # ATELIER_CUISINE
+      'community_garden' => 1, # JARDIN_SOLIDAIRE
+      'solidarity_fridge' => 1, # FRIGO_SOLIDAIRE
 
       # Accueil Accueil S'orienter
-      "welcome" => 5, # ACCUEIL
-      "day_hosting" => 5, # ACCUEIL_JOUR
-      "rest_area" => 6,
-      "babysitting" => 7,
-      "family_area" => 6,
-      "information_point" => 7,
+      'welcome' => 5, # ACCUEIL
+      'day_hosting' => 5, # ACCUEIL_JOUR
+      'rest_area' => 6,
+      'babysitting' => 7,
+      'family_area' => 6,
+      'information_point' => 7,
 
       # Activités (Toutes)  S'occuper de soi
-      "activities" => 6, # ACTIVITES
-      "sport_activities" => 6, # ACTIVITES_SPORTIVES
-      "museums" => 6, # MUSEE
-      "libraries" => 6, # BIBLIOTHEQUE
-      "other_activities" => 6, # ACTIVITES_DIVERSES
+      'activities' => 6, # ACTIVITES
+      'sport_activities' => 6, # ACTIVITES_SPORTIVES
+      'museums' => 6, # MUSEE
+      'libraries' => 6, # BIBLIOTHEQUE
+      'other_activities' => 6, # ACTIVITES_DIVERSES
       805 => 6, # ANIMATIONS_LOISIRS
 
       # Matériel -> S'occuper de soi
-      "equipment" => 6, # MATERIEL
-      "luggage_storage" => 63, # BAGAGERIE
-      "solidarity_store" => 6, # BOUTIQUE_SOLIDAIRE
-      "clothing" => 61, # VETEMENTS
-      "animal_assitance" => 6, # ANIMAUX
+      'equipment' => 6, # MATERIEL
+      'luggage_storage' => 63, # BAGAGERIE
+      'solidarity_store' => 6, # BOUTIQUE_SOLIDAIRE
+      'clothing' => 61, # VETEMENTS
+      'animal_assitance' => 6, # ANIMAUX
 
       # Spécialistes  (Toutes)  Se soigner
-      "health_specialists" => 3, # SPECIALISTES
-      "allergology" => 3, # ALLERGOLOGIE
-      "cardiology" => 3, # CARDIOLOGIE
-      "dermatology" => 3, # DERMATOLOGIE
-      "echography" => 3, # ECHOGRAPHIE
-      "endocrinology" => 3, # ENDOCRINOLOGIE
-      "gastroenterology" => 3, # GASTRO_ENTEROLOGIE
-      "gynecology" => 3, # GYNECOLOGIE
-      "kinesitherapy" => 3, # KINESITHERAPIE
-      "mammography" => 3, # MAMMOGRAPHIE
-      "ophthalmology" => 3, # OPHTALMOLOGIE
-      "otorhinolaryngology" => 3, # OTO_RHINO_LARYNGOLOGIE
-      "nutrition" => 3, # NUTRITION
-      "pedicure" => 3, # PEDICURE
-      "phlebology" => 3, # PHLEBOLOGIE
-      "pneumology" => 3, # PNEUMOLOGIE
-      "radiology" => 3, # RADIOLOGIE
-      "rheumatology" => 3, # RHUMATOLOGIE
-      "urology" => 3, # UROLOGIE
-      "speech_therapy" => 3, # ORTHOPHONIE
-      "stomatology" => 3, # STOMATOLOGIE
-      "osteopathy" => 3, # OSTEO
-      "acupuncture" => 3, # ACUPUNCTURE
+      'health_specialists' => 3, # SPECIALISTES
+      'allergology' => 3, # ALLERGOLOGIE
+      'cardiology' => 3, # CARDIOLOGIE
+      'dermatology' => 3, # DERMATOLOGIE
+      'echography' => 3, # ECHOGRAPHIE
+      'endocrinology' => 3, # ENDOCRINOLOGIE
+      'gastroenterology' => 3, # GASTRO_ENTEROLOGIE
+      'gynecology' => 3, # GYNECOLOGIE
+      'kinesitherapy' => 3, # KINESITHERAPIE
+      'mammography' => 3, # MAMMOGRAPHIE
+      'ophthalmology' => 3, # OPHTALMOLOGIE
+      'otorhinolaryngology' => 3, # OTO_RHINO_LARYNGOLOGIE
+      'nutrition' => 3, # NUTRITION
+      'pedicure' => 3, # PEDICURE
+      'phlebology' => 3, # PHLEBOLOGIE
+      'pneumology' => 3, # PNEUMOLOGIE
+      'radiology' => 3, # RADIOLOGIE
+      'rheumatology' => 3, # RHUMATOLOGIE
+      'urology' => 3, # UROLOGIE
+      'speech_therapy' => 3, # ORTHOPHONIE
+      'stomatology' => 3, # STOMATOLOGIE
+      'osteopathy' => 3, # OSTEO
+      'acupuncture' => 3, # ACUPUNCTURE
 
       # Mobilité
-      "mobility" => 7, # "Transport & mobilité" (se réinsérer)
-      "carpooling" => 7, # "Co-voiturage" (se réinsérer)
-      "provision_of_vehicles" => 7, # "Mise à disposition de véhicule" (se réinsérer)
-      "chauffeur_driven_transport" => 7, # "Transport avec chauffeur" (se réinsérer)
-      "mobility_assistance" => 7, # Aide à la mobilité (se réinsérer)
+      'mobility' => 7, # "Transport & mobilité" (se réinsérer)
+      'carpooling' => 7, # "Co-voiturage" (se réinsérer)
+      'provision_of_vehicles' => 7, # "Mise à disposition de véhicule" (se réinsérer)
+      'chauffeur_driven_transport' => 7, # "Transport avec chauffeur" (se réinsérer)
+      'mobility_assistance' => 7, # Aide à la mobilité (se réinsérer)
 
       # Hébergement
-      "accomodation_and_housing" => 2, # HEBERGEMENT_LOGEMENT
-      "overnight_stop" => 2, # HALTE_NUIT
-      "emergency_accommodation" => 2, # HEBERGERMENT_URGENCE
-      "long_term_accomodation" => 2, # HEBERGEMENT_LONG_TERME
-      "citizen_housing" => 2, # HEBERGEMENT_CITOYEN
-      "access_to_housing" => 2, # CONSEIL_LOGEMENT
+      'accomodation_and_housing' => 2, # HEBERGEMENT_LOGEMENT
+      'overnight_stop' => 2, # HALTE_NUIT
+      'emergency_accommodation' => 2, # HEBERGERMENT_URGENCE
+      'long_term_accomodation' => 2, # HEBERGEMENT_LONG_TERME
+      'citizen_housing' => 2, # HEBERGEMENT_CITOYEN
+      'access_to_housing' => 2, # CONSEIL_LOGEMENT
     }
 
     CATEGORIES_EQUIVALENTS_REVERSED = {
-      1 => ["food"],
-      2 => ["legal_advice", "welcome"],
-      3 => ["health", "health_specialists"],
-      4 => ["hygiene_and_wellness"],
-      5 => ["counseling", "technology", "welcome"],
-      6 => ["hygiene_and_wellness", "rest_area", "family_area", "activities", "equipment"],
-      7 => ["training_and_jobs", "babysitting", "information_point"],
-      40 => ["toilets"],
-      41 => ["fountain"],
-      42 => ["shower"],
-      43 => ["laundry"],
-      61 => ["clothing"],
-      63 => ["luggage_storage"],
+      1 => ['food'],
+      2 => ['legal_advice', 'welcome'],
+      3 => ['health', 'health_specialists'],
+      4 => ['hygiene_and_wellness'],
+      5 => ['counseling', 'technology', 'welcome'],
+      6 => ['hygiene_and_wellness', 'rest_area', 'family_area', 'activities', 'equipment'],
+      7 => ['training_and_jobs', 'babysitting', 'information_point'],
+      40 => ['toilets'],
+      41 => ['fountain'],
+      42 => ['shower'],
+      43 => ['laundry'],
+      61 => ['clothing'],
+      63 => ['luggage_storage'],
     }
 
     ISO_LANGS = {
-      ab: "Abkhaz",
-      aa: "Afar (Erythtrée / Ethiopie)",
-      af: "Afrikaans",
-      ak: "Akan (Ghana Cote ivoire)",
-      sq: "Albanais",
-      am: "Amharique",
-      ar: "Arabe",
-      brk: "Kabyle",
-      brc: "Berbere Chleuh",
-      an: "Aragonais",
-      hy: "Arménien",
-      ay: "Aymara",
-      az: "Azerbaïdjanais",
-      bm: "Bambara",
-      ba: "Bachkir",
-      be: "Biélorusse",
-      bn: "Bengali (Bangladesh)",
-      bh: "Bihari",
-      bi: "Bislama",
-      bs: "Bosniaque",
-      bg: "Bulgare",
-      my: "Birman",
-      ca: "Catalan; Valencien",
-      ce: "Tchétchène",
-      ny: "Chichewa; Chewa; Nyanja",
-      zh: "Chinois",
-      cv: "Tchouvache",
-      kw: "Cornouaillais",
-      co: "Corse",
-      hr: "Croate",
-      cs: "Tchèque",
-      da: "Danois",
-      dar: "Dari, persan Afghan",
-      dv: "Divehi; Dhivehi; Maldivien;",
-      nl: "Néerlandais",
-      en: "Anglais (English)",
-      eo: "Esperanto",
-      et: "Estonien",
-      ee: "Ewe",
-      fo: "Féroïen",
-      fi: "Finlandais",
-      fr: "Français",
-      ff: "Fula; Fulah; Pulaar; Pular",
-      gl: "Galicien",
-      ka: "Georgien",
-      de: "Allemand",
-      el: "Grec moderne",
-      gn: "Guaraní",
-      gu: "Gujarati",
-      ht: "Haitien; Creole",
-      he: "Hebreux (Moderne)",
-      hi: "Hindi",
-      ho: "Hiri Motu",
-      hu: "Hongrois",
-      id: "Indonésien",
-      ga: "Irlandais",
-      ig: "Igbo (Nigéria)",
-      is: "Islandais",
-      it: "Italien",
-      ja: "Japonais",
-      ks: "Kashmiri",
-      kk: "Kazakh",
-      km: "Khmer",
-      ki: "Kikuyu, Gikuyu",
-      rw: "Kinyarwanda",
-      ky: "Kirghiz, Kirghizistan",
-      kg: "Kongo",
-      ko: "Coréen",
-      ku: "Kurde",
-      kj: "Kwanyama, Kuanyama",
-      lb: "Luxembourgeois, Letzeburgesch",
-      lg: "Luganda",
-      li: "Limbourgeois, Limbourg, Limbourg",
-      ln: "Lingala",
-      lo: "Lao",
-      lt: "Lituanien",
-      lu: "Luba-Katanga",
-      lv: "Letton",
-      mk: "Macedonien",
-      mg: "Malagache",
-      ms: "Malais",
-      ml: "Malayalam",
-      mt: "Maltais",
-      mr: "Marathi (Marāṭhī)",
-      mh: "Marshallese",
-      mn: "Mongol",
-      na: "Nauru",
-      nv: "Navajo, Navaho",
-      nd: "Ndébélés Nord",
-      ne: "Nepalais",
-      ng: "Ndonga",
-      ii: "Nuosu",
-      nr: "Ndébélés Sud",
-      oc: "Occitan",
-      om: "Oromo",
-      os: "Ossète, Ossétique",
-      pe: "Peul",
-      pa: "Panjabi, Punjabi",
-      pac: "Pachto",
-      fa: "Persan, Farsi Iranien",
-      pl: "Polonais",
-      ps: "Pashto, Pushto",
-      pt: "Portugais",
-      qu: "Quechua (Pérou)",
-      rm: "Romanche",
-      rn: "Kirundi (Burundi)",
-      ro: "Roumain, Moldave",
-      ru: "Russe",
-      sa: "Sanskrit (Saṁskṛta)",
-      sd: "Sindhi",
-      sm: "Samoan",
-      sg: "Sango (Centreafrique)",
-      sr: "Serbe",
-      sn: "Shona (Zimbabwe)",
-      si: "Cinghalais (Sri-lanka)",
-      sk: "Slovaque",
-      sl: "Slovène",
-      so: "Somali",
-      son: "Soninke",
-      st: "Sotho du Sud",
-      es: "Espanol",
-      sw: "Swahili",
-      ss: "Swati",
-      sv: "Suédois",
-      ta: "Tamil",
-      te: "Telugu",
-      tg: "Tajik",
-      th: "Thaïlandais",
-      bo: "Tibétain Standard, Tibétain, Central",
-      tk: "Turkmène",
-      tl: "Tagalog / Philipain",
-      tr: "Turc",
-      ts: "Tsonga",
-      tt: "Tatar",
-      tw: "Twi",
-      ty: "Tahitien",
-      ug: "Ouïgour, ouïghour",
-      uk: "Ukrainien",
-      ur: "Urdu",
-      uz: "Ouzbek",
-      vi: "Vietnamien",
-      wo: "Wolof",
-      yi: "Yiddish",
+      ab: 'Abkhaz',
+      aa: 'Afar (Erythtrée / Ethiopie)',
+      af: 'Afrikaans',
+      ak: 'Akan (Ghana Cote ivoire)',
+      sq: 'Albanais',
+      am: 'Amharique',
+      ar: 'Arabe',
+      brk: 'Kabyle',
+      brc: 'Berbere Chleuh',
+      an: 'Aragonais',
+      hy: 'Arménien',
+      ay: 'Aymara',
+      az: 'Azerbaïdjanais',
+      bm: 'Bambara',
+      ba: 'Bachkir',
+      be: 'Biélorusse',
+      bn: 'Bengali (Bangladesh)',
+      bh: 'Bihari',
+      bi: 'Bislama',
+      bs: 'Bosniaque',
+      bg: 'Bulgare',
+      my: 'Birman',
+      ca: 'Catalan; Valencien',
+      ce: 'Tchétchène',
+      ny: 'Chichewa; Chewa; Nyanja',
+      zh: 'Chinois',
+      cv: 'Tchouvache',
+      kw: 'Cornouaillais',
+      co: 'Corse',
+      hr: 'Croate',
+      cs: 'Tchèque',
+      da: 'Danois',
+      dar: 'Dari, persan Afghan',
+      dv: 'Divehi; Dhivehi; Maldivien;',
+      nl: 'Néerlandais',
+      en: 'Anglais (English)',
+      eo: 'Esperanto',
+      et: 'Estonien',
+      ee: 'Ewe',
+      fo: 'Féroïen',
+      fi: 'Finlandais',
+      fr: 'Français',
+      ff: 'Fula; Fulah; Pulaar; Pular',
+      gl: 'Galicien',
+      ka: 'Georgien',
+      de: 'Allemand',
+      el: 'Grec moderne',
+      gn: 'Guaraní',
+      gu: 'Gujarati',
+      ht: 'Haitien; Creole',
+      he: 'Hebreux (Moderne)',
+      hi: 'Hindi',
+      ho: 'Hiri Motu',
+      hu: 'Hongrois',
+      id: 'Indonésien',
+      ga: 'Irlandais',
+      ig: 'Igbo (Nigéria)',
+      is: 'Islandais',
+      it: 'Italien',
+      ja: 'Japonais',
+      ks: 'Kashmiri',
+      kk: 'Kazakh',
+      km: 'Khmer',
+      ki: 'Kikuyu, Gikuyu',
+      rw: 'Kinyarwanda',
+      ky: 'Kirghiz, Kirghizistan',
+      kg: 'Kongo',
+      ko: 'Coréen',
+      ku: 'Kurde',
+      kj: 'Kwanyama, Kuanyama',
+      lb: 'Luxembourgeois, Letzeburgesch',
+      lg: 'Luganda',
+      li: 'Limbourgeois, Limbourg, Limbourg',
+      ln: 'Lingala',
+      lo: 'Lao',
+      lt: 'Lituanien',
+      lu: 'Luba-Katanga',
+      lv: 'Letton',
+      mk: 'Macedonien',
+      mg: 'Malagache',
+      ms: 'Malais',
+      ml: 'Malayalam',
+      mt: 'Maltais',
+      mr: 'Marathi (Marāṭhī)',
+      mh: 'Marshallese',
+      mn: 'Mongol',
+      na: 'Nauru',
+      nv: 'Navajo, Navaho',
+      nd: 'Ndébélés Nord',
+      ne: 'Nepalais',
+      ng: 'Ndonga',
+      ii: 'Nuosu',
+      nr: 'Ndébélés Sud',
+      oc: 'Occitan',
+      om: 'Oromo',
+      os: 'Ossète, Ossétique',
+      pe: 'Peul',
+      pa: 'Panjabi, Punjabi',
+      pac: 'Pachto',
+      fa: 'Persan, Farsi Iranien',
+      pl: 'Polonais',
+      ps: 'Pashto, Pushto',
+      pt: 'Portugais',
+      qu: 'Quechua (Pérou)',
+      rm: 'Romanche',
+      rn: 'Kirundi (Burundi)',
+      ro: 'Roumain, Moldave',
+      ru: 'Russe',
+      sa: 'Sanskrit (Saṁskṛta)',
+      sd: 'Sindhi',
+      sm: 'Samoan',
+      sg: 'Sango (Centreafrique)',
+      sr: 'Serbe',
+      sn: 'Shona (Zimbabwe)',
+      si: 'Cinghalais (Sri-lanka)',
+      sk: 'Slovaque',
+      sl: 'Slovène',
+      so: 'Somali',
+      son: 'Soninke',
+      st: 'Sotho du Sud',
+      es: 'Espanol',
+      sw: 'Swahili',
+      ss: 'Swati',
+      sv: 'Suédois',
+      ta: 'Tamil',
+      te: 'Telugu',
+      tg: 'Tajik',
+      th: 'Thaïlandais',
+      bo: 'Tibétain Standard, Tibétain, Central',
+      tk: 'Turkmène',
+      tl: 'Tagalog / Philipain',
+      tr: 'Turc',
+      ts: 'Tsonga',
+      tt: 'Tatar',
+      tw: 'Twi',
+      ty: 'Tahitien',
+      ug: 'Ouïgour, ouïghour',
+      uk: 'Ukrainien',
+      ur: 'Urdu',
+      uz: 'Ouzbek',
+      vi: 'Vietnamien',
+      wo: 'Wolof',
+      yi: 'Yiddish',
     }
   end
 end

@@ -24,7 +24,7 @@ module OpenaiServices
     def recommandations
       return [] unless @parsed_response
 
-      @parsed_response["recommandations"]
+      @parsed_response['recommandations']
     end
 
     def best_recommandation
@@ -40,11 +40,11 @@ module OpenaiServices
 
     def each_recommandation &block
       recommandations.each_with_index do |recommandation, index|
-        next unless recommandation["id"]
-        next unless TYPES.include?(recommandation["type"])
-        next unless instance = recommandation["type"].classify.constantize.find_by_id(recommandation["id"])
+        next unless recommandation['id']
+        next unless TYPES.include?(recommandation['type'])
+        next unless instance = recommandation['type'].classify.constantize.find_by_id(recommandation['id'])
 
-        yield(instance, recommandation["score"], recommandation["explanation"], index)
+        yield(instance, recommandation['score'], recommandation['explanation'], index)
       end
     end
   end

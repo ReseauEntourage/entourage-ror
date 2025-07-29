@@ -2,16 +2,16 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::ContributionsController do
-  explanation "Contributions"
-  header "Content-Type", "application/json"
+  explanation 'Contributions'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/contributions' do
-    route_summary "Find contributions"
+    route_summary 'Find contributions'
 
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
 
     let(:user) { FactoryBot.create(:pro_user) }
-    let!(:contribution) { FactoryBot.create(:contribution, title: "foobar") }
+    let!(:contribution) { FactoryBot.create(:contribution, title: 'foobar') }
     let(:token) { user.token }
 
     context '200' do
@@ -23,7 +23,7 @@ resource Api::V1::ContributionsController do
   end
 
   get 'api/v1/contributions/:id' do
-    route_summary "Get a contribution"
+    route_summary 'Get a contribution'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -42,7 +42,7 @@ resource Api::V1::ContributionsController do
   end
 
   post 'api/v1/contributions' do
-    route_summary "Creates a contribution"
+    route_summary 'Creates a contribution'
 
     parameter :token, type: :string, required: true
 
@@ -50,17 +50,17 @@ resource Api::V1::ContributionsController do
       parameter :title
       parameter :description
 
-      with_options scope: "contribution[metadata]", required: true do
+      with_options scope: 'contribution[metadata]', required: true do
         parameter :city
       end
 
-      with_options scope: "contribution[location]", required: true do
+      with_options scope: 'contribution[location]', required: true do
         parameter :latitude
         parameter :longitude
       end
 
       parameter :postal_code
-      parameter :section, "Category: social, services, clothes, equipment or hygiene"
+      parameter :section, 'Category: social, services, clothes, equipment or hygiene'
       parameter :recipient_consent_obtained
     end
 
@@ -71,8 +71,8 @@ resource Api::V1::ContributionsController do
     let(:raw_post) { {
       token: user.token,
       contribution: {
-        title: "Apéro Entourage",
-        description: "Au Social Bar",
+        title: 'Apéro Entourage',
+        description: 'Au Social Bar',
         metadata: {
           city: 'Nantes',
         },
@@ -95,7 +95,7 @@ resource Api::V1::ContributionsController do
   end
 
   patch 'api/v1/contributions/:id' do
-    route_summary "Updates a contribution"
+    route_summary 'Updates a contribution'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -104,17 +104,17 @@ resource Api::V1::ContributionsController do
       parameter :title
       parameter :description
 
-      with_options scope: "contribution[metadata]" do
+      with_options scope: 'contribution[metadata]' do
         parameter :city
       end
 
-      with_options scope: "contribution[location]" do
+      with_options scope: 'contribution[location]' do
         parameter :latitude
         parameter :longitude
       end
 
       parameter :postal_code
-      parameter :section, "Category: social, services, clothes, equipment or hygiene"
+      parameter :section, 'Category: social, services, clothes, equipment or hygiene'
       parameter :recipient_consent_obtained
     end
 
@@ -125,7 +125,7 @@ resource Api::V1::ContributionsController do
     let(:raw_post) { {
       token: user.token,
       contribution: {
-        title: "new title",
+        title: 'new title',
       }
     }.to_json }
 
@@ -138,7 +138,7 @@ resource Api::V1::ContributionsController do
   end
 
   post 'api/v1/contributions/:id/report' do
-    route_summary "Sends an alert about a contribution"
+    route_summary 'Sends an alert about a contribution'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true

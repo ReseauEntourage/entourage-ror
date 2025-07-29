@@ -18,19 +18,19 @@ describe V1::ActionSerializer do
     end
 
     context 'section is defined' do
-      let(:action) { FactoryBot.create(:contribution, section: "clothes", display_category: nil) }
+      let(:action) { FactoryBot.create(:contribution, section: 'clothes', display_category: nil) }
 
       it { expect(serialized[:section]).to eq('clothes') }
     end
 
     context 'display_category is defined' do
-      let(:action) { FactoryBot.create(:contribution, section: nil, display_category: "resource") }
+      let(:action) { FactoryBot.create(:contribution, section: nil, display_category: 'resource') }
 
       it { expect(serialized[:section]).to eq('services') }
     end
 
     context 'section, display_category are defined (created in v7, updated in v8, accessed from v8)' do
-      let(:action) { FactoryBot.create(:contribution, section: "clothes", display_category: "resource") }
+      let(:action) { FactoryBot.create(:contribution, section: 'clothes', display_category: 'resource') }
 
       it { expect(serialized[:section]).to eq('clothes') }
     end

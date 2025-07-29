@@ -47,7 +47,7 @@ module SmalltalkServices
     end
 
     def completed_at_changed?
-      changes.key?("completed_at") && changes["completed_at"].first.nil?
+      changes.key?('completed_at') && changes['completed_at'].first.nil?
     end
 
     def changes
