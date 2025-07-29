@@ -13,12 +13,12 @@ describe UserRelationship do
   end
 
 
-  describe "has unique relationship" do
+  describe 'has unique relationship' do
     let(:user1) {FactoryBot.create(:public_user)}
     let(:user2) {FactoryBot.create(:public_user)}
 
-    context "first relationship" do
-      it "saves the relationship" do
+    context 'first relationship' do
+      it 'saves the relationship' do
         ur = UserRelationship.new(source_user: user1,
 
                                   target_user: user2,
@@ -28,12 +28,12 @@ describe UserRelationship do
     end
 
 
-    context "user relationship already exists" do
+    context 'user relationship already exists' do
       before { UserRelationship.create(source_user: user1,
                                     target_user: user2,
                                     relation_type: UserRelationship::TYPE_INVITE ) }
 
-      it "refuses same relationship" do
+      it 'refuses same relationship' do
         ur = UserRelationship.new(source_user: user1,
 
                                   target_user: user2,
@@ -41,7 +41,7 @@ describe UserRelationship do
         expect(ur.save).to be false
       end
 
-      it "accepts relationship of different type" do
+      it 'accepts relationship of different type' do
         ur = UserRelationship.new(source_user: user1,
 
                                   target_user: user2,
@@ -49,7 +49,7 @@ describe UserRelationship do
         expect(ur.save).to be true
       end
 
-      it "accepts relationship with different user" do
+      it 'accepts relationship with different user' do
         ur = UserRelationship.new(source_user: FactoryBot.create(:public_user),
 
                                   target_user: user2,

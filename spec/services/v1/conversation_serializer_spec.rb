@@ -8,7 +8,7 @@ describe V1::ConversationSerializer do
     let(:user) { FactoryBot.create(:public_user) }
     let(:participant) { create :public_user, first_name: :Jane }
     let(:conversation) { FactoryBot.create(:conversation, participants: [user, participant]) }
-    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation, content: "foo")}
+    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation, content: 'foo')}
 
     let(:serialized) { V1::ConversationSerializer.new(conversation, scope: { user: user }).serializable_hash }
 
@@ -26,7 +26,7 @@ describe V1::ConversationSerializer do
       it { expect(serialized[:id]).to eq(conversation.id) }
       it { expect(serialized[:type]).to eq(:private) }
       it { expect(serialized[:name]).to eq('Jane D.') }
-      it { expect(serialized[:last_message][:text]).to eq("foo") }
+      it { expect(serialized[:last_message][:text]).to eq('foo') }
       it { expect(serialized[:number_of_unread_messages]).to eq(1) }
       it { expect(serialized[:has_personal_post]).to eq(false) }
     end

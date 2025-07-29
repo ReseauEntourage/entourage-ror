@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Conversations::UsersController do
-  explanation "Users"
-  header "Content-Type", "application/json"
+  explanation 'Users'
+  header 'Content-Type', 'application/json'
 
   delete '/api/v1/conversations/:conversation_id/users' do
-    route_summary "Delete user joined status"
+    route_summary 'Delete user joined status'
     # route_description "no description"
 
     parameter :token, type: :string, required: true

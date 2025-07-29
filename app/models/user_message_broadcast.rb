@@ -28,13 +28,13 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     def created_after(users, user_creation_date)
       return users unless user_creation_date
 
-      users.where("users.created_at > ?", user_creation_date)
+      users.where('users.created_at > ?', user_creation_date)
     end
 
     def engaged_after(users, last_engagement_date)
       return users unless last_engagement_date
 
-      users.engaged.where("denorm_daily_engagements.date > ?", last_engagement_date)
+      users.engaged.where('denorm_daily_engagements.date > ?', last_engagement_date)
     end
 
     def with_interests(users, interests)
@@ -91,7 +91,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     return unless area_type&.to_s == 'list'
 
     errors.add(:areas, 'ne doit pas être vide') if areas.compact.empty?
-    errors.add(:areas, "doit contenir 2 chiffres (pour cibler un département) ou 5 chiffres (pour cibler une ville)") if areas.filter { |area| area !~ AREA_FORMAT }.any?
+    errors.add(:areas, 'doit contenir 2 chiffres (pour cibler un département) ou 5 chiffres (pour cibler une ville)') if areas.filter { |area| area !~ AREA_FORMAT }.any?
   end
 
   # @deprecated
@@ -136,7 +136,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
   public
 
   def has_engagement
-    value = self["specific_filters"]["has_engagement"]
+    value = self['specific_filters']['has_engagement']
 
     return nil if value.nil?
     return nil if value.blank?
@@ -145,13 +145,13 @@ class UserMessageBroadcast < ConversationMessageBroadcast
   end
 
   def user_creation_date
-    Date.parse(self["specific_filters"]["user_creation_date"]) unless self["specific_filters"]["user_creation_date"].nil?
+    Date.parse(self['specific_filters']['user_creation_date']) unless self['specific_filters']['user_creation_date'].nil?
   rescue ArgumentError
     nil
   end
 
   def last_engagement_date
-    Date.parse(self["specific_filters"]["last_engagement_date"]) unless self["specific_filters"]["last_engagement_date"].nil?
+    Date.parse(self['specific_filters']['last_engagement_date']) unless self['specific_filters']['last_engagement_date'].nil?
   rescue ArgumentError
     nil
   end

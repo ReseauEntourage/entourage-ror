@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Entourages::UsersController do
-  explanation "Users"
-  header "Content-Type", "application/json"
+  explanation 'Users'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/entourages/:entourage_id/users' do
-    route_summary "Get users"
+    route_summary 'Get users'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -27,7 +27,7 @@ resource Api::V1::Entourages::UsersController do
   end
 
   post '/api/v1/entourages/:entourage_id/users' do
-    route_summary "Request user to join entourage"
+    route_summary 'Request user to join entourage'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -52,12 +52,12 @@ resource Api::V1::Entourages::UsersController do
   end
 
   patch '/api/v1/entourages/:entourage_id/users/:id' do
-    route_summary "Update user joined status (deprecated)"
+    route_summary 'Update user joined status (deprecated)'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
     parameter :entourage_id, type: :integer, required: true
-    parameter :id, "User id", type: :integer
+    parameter :id, 'User id', type: :integer
 
     with_options scope: :user, required: true do
       parameter :status, type: :string
@@ -74,9 +74,9 @@ resource Api::V1::Entourages::UsersController do
     }.to_json }
 
     context '204' do
-      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: 'accepted') }
       let(:requester) { FactoryBot.create(:pro_user) }
-      let!(:requester_join_request) { create(:join_request, user: requester, joinable: entourage, status: "pending") }
+      let!(:requester_join_request) { create(:join_request, user: requester, joinable: entourage, status: 'pending') }
 
       example_request 'Update user joined status (deprecated)' do
         expect(response_status).to eq(204)
@@ -86,12 +86,12 @@ resource Api::V1::Entourages::UsersController do
   end
 
   delete '/api/v1/entourages/:entourage_id/users/:id' do
-    route_summary "Delete user joined status"
+    route_summary 'Delete user joined status'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
     parameter :entourage_id, type: :integer, required: true
-    parameter :id, "User id", type: :integer
+    parameter :id, 'User id', type: :integer
 
     let(:user) { FactoryBot.create(:pro_user) }
     let(:id) { user.id }

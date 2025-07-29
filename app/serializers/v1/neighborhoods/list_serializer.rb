@@ -17,7 +17,7 @@ module V1
 
       def user
         # fake data: not used in mobile app
-        { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" }
+        { id: 1, lang: 'fr', avatar_url: 'n/a', display_name: 'n/a' }
       end
 
       def name
@@ -29,18 +29,18 @@ module V1
       end
 
       def member
-        raise NoMethodError, "You must implement member in a subclass"
+        raise NoMethodError, 'You must implement member in a subclass'
       end
 
       def members
         # fake data: not really used in mobile app
         # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
         # so we want this method to return an array of "members" elements
-        Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
+        Array.new([object.members_count, 99].min, { id: 1, lang: 'fr', avatar_url: 'n/a', display_name: 'n/a' })
       end
 
       def unread_posts_count
-        raise NoMethodError, "You must implement unread_posts_count in a subclass"
+        raise NoMethodError, 'You must implement unread_posts_count in a subclass'
       end
 
       def image_url

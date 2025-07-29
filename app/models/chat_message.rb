@@ -10,7 +10,7 @@ class ChatMessage < ApplicationRecord
   include Surveyable
 
   CONTENT_TYPES = %w(image/jpeg)
-  BUCKET_PREFIX = "chat_messages"
+  BUCKET_PREFIX = 'chat_messages'
 
   STATUSES = [:active, :updated, :deleted, :offensible, :offensive]
 
@@ -36,7 +36,7 @@ class ChatMessage < ApplicationRecord
   validate :validate_ancestry!
   validate :validate_private_conversation_is_not_blocked!
 
-  scope :ordered, -> { order("created_at DESC") }
+  scope :ordered, -> { order('created_at DESC') }
   scope :with_content, -> { where("content <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
 
@@ -146,7 +146,7 @@ class ChatMessage < ApplicationRecord
 
   # @param force true to bypass deletion
   def content force = false
-    return "" if deleted? && !force
+    return '' if deleted? && !force
 
     self[:content]
   end
@@ -282,19 +282,19 @@ class ChatMessage < ApplicationRecord
     [
       "#{action} un évènement :",
       metadata[:title],
-      I18n.l(starts_at, format: "le %d/%m à %Hh%M,"),
+      I18n.l(starts_at, format: 'le %d/%m à %Hh%M,'),
       metadata[:display_address]
     ].join("\n")
   end
 
   def status_update_content
     op = {
-      closed: "a clôturé",
-      open: "a rouvert",
-      user_deleted: "a clôturé",
-      user_blocked: "a clôturé",
-      user_anonymized: "a clôturé",
-      cancelled: "a annulé"
+      closed: 'a clôturé',
+      open: 'a rouvert',
+      user_deleted: 'a clôturé',
+      user_blocked: 'a clôturé',
+      user_anonymized: 'a clôturé',
+      cancelled: 'a annulé'
     }[metadata[:status].to_sym]
 
     "#{op} #{GroupService.name messageable, :l}#{[' : ', content].join if content.present?}"
@@ -343,7 +343,7 @@ class ChatMessage < ApplicationRecord
 
   def update_recipients_report_prompt_status
     return if messageable.group_type != 'conversation'
-    return if ChatMessage.where(messageable: messageable).where("id < ?", id).exists?
+    return if ChatMessage.where(messageable: messageable).where('id < ?', id).exists?
 
     return if user.moderator?
     return if user.ambassador?

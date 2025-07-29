@@ -1,6 +1,6 @@
 module PoiServices
   class SoliguideShow
-    SHOW_URI = "https://api.soliguide.fr/place/%s/%s"
+    SHOW_URI = 'https://api.soliguide.fr/place/%s/%s'
     UPTIME_DEFAULT = 0
 
     class << self

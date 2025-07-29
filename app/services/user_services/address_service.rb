@@ -190,7 +190,7 @@ module UserServices
 
       # try to find an existing entry for this postal code
       similar_address =
-        Address.where("place_name = postal_code")
+        Address.where('place_name = postal_code')
                .where(postal_code: params[:postal_code], country: params[:country])
                .first
 

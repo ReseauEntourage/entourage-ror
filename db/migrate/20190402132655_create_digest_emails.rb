@@ -9,7 +9,7 @@ class CreateDigestEmails < ActiveRecord::Migration[4.2]
 
     digest_email_category = EmailCategory.create!(
       name: :digest_email,
-      description: "actions recommandées à proximité (toutes les deux semaines)"
+      description: 'actions recommandées à proximité (toutes les deux semaines)'
     )
 
     EmailPreference.transaction do

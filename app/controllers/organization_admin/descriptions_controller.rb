@@ -11,7 +11,7 @@ module OrganizationAdmin
     def update
       partner = current_user.partner
       if partner.update(partner_params)
-        flash[:success] = "Description modifiée !"
+        flash[:success] = 'Description modifiée !'
         redirect_to edit_organization_admin_description_path
       else
         flash[:error] = partner.errors.full_messages.to_sentence
@@ -34,7 +34,7 @@ module OrganizationAdmin
 
     def logo_upload_success
       PartnerLogoUploader.handle_success(params)
-      flash[:success] = "Logo modifié !"
+      flash[:success] = 'Logo modifié !'
       redirect_to edit_organization_admin_description_path
     end
 

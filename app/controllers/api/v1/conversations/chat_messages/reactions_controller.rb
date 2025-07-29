@@ -45,7 +45,7 @@ module Api
               render json: reaction, status: 201, serializer: ::V1::ReactionSerializer
             else
               render json: {
-                message: "Could not create reaction", reasons: reaction.errors.full_messages
+                message: 'Could not create reaction', reasons: reaction.errors.full_messages
               }, status: 400
             end
           end
@@ -54,7 +54,7 @@ module Api
             if reaction_id = @chat_message.reactions.destroy(user: current_user)
               render json: { reaction_id: reaction_id }, status: 200
             else
-              render json: { message: "Could not delete reaction" }, status: 400
+              render json: { message: 'Could not delete reaction' }, status: 400
             end
           end
 

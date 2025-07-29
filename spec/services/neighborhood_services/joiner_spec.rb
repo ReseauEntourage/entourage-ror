@@ -4,26 +4,26 @@ describe NeighborhoodServices::Joiner do
   let(:user) { FactoryBot.create(:public_user) }
   let(:neighborhood) { FactoryBot.create(:neighborhood, id: 8) }
 
-  describe "join_default_neighborhood!" do
+  describe 'join_default_neighborhood!' do
     let(:subject) { NeighborhoodServices::Joiner.new(user).join_default_neighborhood! }
 
     before { described_class.any_instance.stub(:default_neighborhood).and_return(neighborhood) }
 
-    context "unexisting neighborhood with id 8" do
+    context 'unexisting neighborhood with id 8' do
       before { described_class.any_instance.stub(:default_neighborhood).and_return(nil) }
 
       it { expect(subject).to be_nil }
       it { expect { subject }.not_to change { JoinRequest.count } }
     end
 
-    context "unexisting join_request" do
+    context 'unexisting join_request' do
       before { neighborhood }
 
       it { expect(subject).to eq(true) }
       it { expect { subject }.to change { JoinRequest.count }.by(1) }
     end
 
-    context "existing join_request but not accepted" do
+    context 'existing join_request but not accepted' do
       let(:join_request) { create :join_request, user: user, joinable: neighborhood, status: :pending }
 
       before { join_request }
@@ -32,7 +32,7 @@ describe NeighborhoodServices::Joiner do
       it { expect { subject }.to change { JoinRequest.count }.by(0) }
     end
 
-    context "existing join_request and cancelled" do
+    context 'existing join_request and cancelled' do
       let(:join_request) { create :join_request, user: user, joinable: neighborhood, status: :cancelled }
 
       before { join_request }
@@ -41,7 +41,7 @@ describe NeighborhoodServices::Joiner do
       it { expect { subject }.to change { JoinRequest.count }.by(0) }
     end
 
-    context "existing join_request and accepted" do
+    context 'existing join_request and accepted' do
       let(:join_request) { create :join_request, user: user, joinable: neighborhood, status: :accepted }
 
       before { join_request }
@@ -51,10 +51,10 @@ describe NeighborhoodServices::Joiner do
     end
   end
 
-  describe "default_neighborhood" do
+  describe 'default_neighborhood' do
     let(:subject) { NeighborhoodServices::Joiner.new(user).default_neighborhood }
 
-    context "people not in lille, lyon, marseille, paris, rennes: order by distance" do
+    context 'people not in lille, lyon, marseille, paris, rennes: order by distance' do
       let(:nantes) { create(:address, postal_code: '44000' )}
       let(:user) { create(:public_user, address: nantes) }
 
@@ -65,11 +65,11 @@ describe NeighborhoodServices::Joiner do
       it { expect(subject.id).to eq(neighborhood_15.id) } # this one because of coordinates
     end
 
-    describe "lille" do
+    describe 'lille' do
       let(:lille) { create(:address, postal_code: '59130' )}
       let(:user) { create(:public_user, address: lille) }
 
-      context "people in lille: order by postal_code" do
+      context 'people in lille: order by postal_code' do
         let!(:neighborhood_lille) { create(:neighborhood, zone: :ville, postal_code: '59800', latitude: lille.latitude + 0.1, longitude: lille.longitude + 0.1 ) }
         let!(:neighborhood_not_lille) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: lille.latitude, longitude: lille.longitude ) }
 
@@ -86,11 +86,11 @@ describe NeighborhoodServices::Joiner do
       end
     end
 
-    describe "lyon" do
+    describe 'lyon' do
       let(:lyon) { create(:address, postal_code: '69003' )}
       let(:user) { create(:public_user, address: lyon) }
 
-      context "people in lyon: order by postal_code" do
+      context 'people in lyon: order by postal_code' do
         let!(:neighborhood_lyon) { create(:neighborhood, zone: :ville, postal_code: '69007', latitude: lyon.latitude + 0.1, longitude: lyon.longitude + 0.1 ) }
         let!(:neighborhood_not_lyon) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: lyon.latitude, longitude: lyon.longitude ) }
 
@@ -107,11 +107,11 @@ describe NeighborhoodServices::Joiner do
       end
     end
 
-    describe "marseille" do
+    describe 'marseille' do
       let(:marseille) { create(:address, postal_code: '13003' )}
       let(:user) { create(:public_user, address: marseille) }
 
-      context "people in marseille: order by postal_code" do
+      context 'people in marseille: order by postal_code' do
         let!(:neighborhood_marseille) { create(:neighborhood, zone: :ville, postal_code: '13015', latitude: marseille.latitude + 0.1, longitude: marseille.longitude + 0.1 ) }
         let!(:neighborhood_not_marseille) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: marseille.latitude, longitude: marseille.longitude ) }
 
@@ -128,11 +128,11 @@ describe NeighborhoodServices::Joiner do
       end
     end
 
-    describe "paris" do
+    describe 'paris' do
       let(:paris) { create(:address, postal_code: '75001' )}
       let(:user) { create(:public_user, address: paris) }
 
-      context "people in paris: order by postal_code" do
+      context 'people in paris: order by postal_code' do
         let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: paris.latitude + 0.1, longitude: paris.longitude + 0.1 ) }
         let!(:neighborhood_not_paris) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
 
@@ -149,11 +149,11 @@ describe NeighborhoodServices::Joiner do
       end
     end
 
-    describe "rennes" do
+    describe 'rennes' do
       let(:rennes) { create(:address, postal_code: '35200' )}
       let(:user) { create(:public_user, address: rennes) }
 
-      context "people in rennes: order by postal_code" do
+      context 'people in rennes: order by postal_code' do
         let!(:neighborhood_rennes) { create(:neighborhood, zone: :ville, postal_code: '35700', latitude: rennes.latitude + 0.1, longitude: rennes.longitude + 0.1 ) }
         let!(:neighborhood_not_rennes) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: rennes.latitude, longitude: rennes.longitude ) }
 

@@ -2,9 +2,9 @@ module OpenaiServices
   class OffensePerformer < BasicPerformer
     def user_message
       {
-        role: "user",
+        role: 'user',
         content: [
-          { type: "text", text: get_formatted_prompt },
+          { type: 'text', text: get_formatted_prompt },
         ]
       }
     end
@@ -26,7 +26,7 @@ module OpenaiServices
     end
 
     def get_formatted_prompt
-      @configuration.prompt.gsub("{{text}}", instance.content)
+      @configuration.prompt.gsub('{{text}}', instance.content)
     end
   end
 end

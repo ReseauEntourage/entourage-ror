@@ -39,7 +39,7 @@ module OpenaiServices
 
       response = get_response_class.new(response: find_run_message(thread['id'], run['id']))
 
-      return handle_failure("Response not valid", response) unless response.valid?
+      return handle_failure('Response not valid', response) unless response.valid?
 
       handle_success(response)
     rescue => e
@@ -73,12 +73,12 @@ module OpenaiServices
 
     # format: { role: string, content: { type: "text", text: string }}
     def user_message
-      raise NotImplementedError, "this method user_message has to be defined in your class"
+      raise NotImplementedError, 'this method user_message has to be defined in your class'
     end
 
     # example: MatchingResponse
     def get_response_class
-      raise NotImplementedError, "this method get_response_class has to be defined in your class"
+      raise NotImplementedError, 'this method get_response_class has to be defined in your class'
     end
 
     def handle_success response

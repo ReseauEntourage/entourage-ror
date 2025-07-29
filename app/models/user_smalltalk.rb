@@ -63,7 +63,7 @@ class UserSmalltalk < ApplicationRecord
 
   def quota_must_not_be_reached
     if quota_reached?
-      errors.add(:base, "Quota has been reached. You can only join up to 3 smalltalks at a time.")
+      errors.add(:base, 'Quota has been reached. You can only join up to 3 smalltalks at a time.')
     end
   end
 

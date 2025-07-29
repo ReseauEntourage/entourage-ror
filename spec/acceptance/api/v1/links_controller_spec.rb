@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::LinksController do
-  explanation "Deeplinks"
-  header "Content-Type", "application/json"
+  explanation 'Deeplinks'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/links/:id/redirect' do
-    route_summary "Gets a deeplink redirect"
+    route_summary 'Gets a deeplink redirect'
 
-    parameter :id, "see app/controller/api/v1/links_controller for full list"
-    parameter :token, "Required except for some parameter id. See same file", type: :string
+    parameter :id, 'see app/controller/api/v1/links_controller for full list'
+    parameter :token, 'Required except for some parameter id. See same file', type: :string
 
     let(:user) { FactoryBot.create(:public_user) }
 

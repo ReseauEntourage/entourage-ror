@@ -31,7 +31,7 @@ module CoordinatesScopable
       return unless has_attribute?(:zone)
 
       where(zone: :departement).where(
-        "postal_code is not null and left(postal_code, 2) = ?", departement
+        'postal_code is not null and left(postal_code, 2) = ?', departement
       )
     }
     scope :order_by_paris_for_user, -> (user) {

@@ -7,12 +7,12 @@ describe Api::V1::AnnouncementsController do
   describe 'GET index' do
     subject { JSON.parse(response.body) }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { get :index }
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
+    context 'signed in' do
       before { get :index, params: { token: user.token } }
 
       it { expect(subject).to have_key('announcements') }

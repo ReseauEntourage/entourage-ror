@@ -11,9 +11,9 @@ module ModerationHelper
     end.to_h
 
     {
-      "Partout" => {},
+      'Partout' => {},
     }.merge(departement_filters).merge({
-      "Hors zone" => {
+      'Hors zone' => {
         postal_code_not_start_all: ModerationArea.only_departements
       },
     })

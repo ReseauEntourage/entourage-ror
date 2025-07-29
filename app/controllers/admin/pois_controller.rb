@@ -17,12 +17,12 @@ module Admin
 
     def update
       return redirect_to edit_admin_poi_path(params[:id]), flash: {
-        error: "Vous ne pouvez pas mettre à jour un POI Soliguide"
+        error: 'Vous ne pouvez pas mettre à jour un POI Soliguide'
       } if @poi.source_soliguide?
 
       @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
       if @poi.errors.blank? && @poi.update(poi_params)
-        redirect_to admin_pois_path, notice: "Le POI a bien été mis à jour"
+        redirect_to admin_pois_path, notice: 'Le POI a bien été mis à jour'
       else
         render :edit
       end
@@ -38,7 +38,7 @@ module Admin
       @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
 
       if @poi.errors.blank? && @poi.save
-        redirect_to admin_pois_url, notice: "Le POI a bien été créé"
+        redirect_to admin_pois_url, notice: 'Le POI a bien été créé'
       else
         render :new
       end
@@ -46,7 +46,7 @@ module Admin
 
     def import
       MemberMailer.poi_import(
-        csv: CSV.read(params["poi"]["file"].path, headers: true).to_csv,
+        csv: CSV.read(params['poi']['file'].path, headers: true).to_csv,
         recipient: current_user.email
       ).deliver_later
 
