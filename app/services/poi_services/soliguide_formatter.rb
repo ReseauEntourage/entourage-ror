@@ -29,7 +29,7 @@ module PoiServices
         phone: format_phones(phones, lang).first,
         phones: format_phones(phones, lang).join(', '),
         website: poi['entity']['website'].presence,
-        email:poi['entity']['mail'].presence,
+        email: poi['entity']['mail'].presence,
         audience: format_audience(poi['publics'], poi['modalities'], lang),
         category_ids: format_category_ids(poi, lang),
         source_category: source_categories.compact.first,
