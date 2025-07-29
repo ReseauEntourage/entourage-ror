@@ -4,6 +4,7 @@ describe ModerationServices::EntourageModeration do
 
   describe '#.on_create' do
     subject { described_class.on_create(entourage) }
+
     let(:entourage) { create :entourage, updated_at: 10.hours.ago }
 
     context 'when admin exists' do
