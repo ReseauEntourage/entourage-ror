@@ -6,7 +6,7 @@ describe Api::ApplicationKey do
 
     context "known api key" do
       let(:application_key) { Api::ApplicationKey.new(api_key: "api_debug") }
-      it { expect(application_key.key_infos).to eq( {version: "1.0", device: "rspec", :device_family=>UserApplication::ANDROID, community: 'entourage'}) }
+      it { expect(application_key.key_infos).to eq( {version: "1.0", device: "rspec", device_family: UserApplication::ANDROID, community: 'entourage'}) }
     end
 
     context "unknown api key" do

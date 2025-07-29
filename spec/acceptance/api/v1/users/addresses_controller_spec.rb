@@ -11,7 +11,7 @@ resource Api::V1::Users::AddressesController do
     parameter :token, type: :string, required: true
     parameter :user_id, "me", type: :string, required: true
     parameter :position, type: :number, required: true
-    with_options :scope => :address, :required => true do
+    with_options scope: :address, required: true do
       parameter :place_name, type: :string
       parameter :latitude, type: :number
       parameter :longitude, type: :number

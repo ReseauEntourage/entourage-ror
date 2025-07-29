@@ -58,7 +58,7 @@ Rails.application.configure do
   # DEV / TEST CREDENTIALS
   ENV["ANDROID_GCM_API_KEY"] = "foobar"
 
-  config.action_mailer.default_url_options = { :host => "localhost" }
+  config.action_mailer.default_url_options = { host: "localhost" }
 
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []

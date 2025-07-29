@@ -59,7 +59,7 @@ module Translatable
 
     uri = URI(BASE_URI % [from_lang, lang, CGI.escape(text)])
 
-    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request Net::HTTP::Get.new(uri, {})
     end
 

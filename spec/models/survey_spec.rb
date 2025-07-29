@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Survey, :type => :model do
+RSpec.describe Survey, type: :model do
   describe "choices" do
     let(:survey) { create :survey, choices: ["foo", "bar"] }
 

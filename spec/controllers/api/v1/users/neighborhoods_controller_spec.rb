@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::Users::NeighborhoodsController, :type => :controller do
+describe Api::V1::Users::NeighborhoodsController, type: :controller do
   let(:user) { create(:pro_user) }
   let(:result) { JSON.parse(response.body) }
 
