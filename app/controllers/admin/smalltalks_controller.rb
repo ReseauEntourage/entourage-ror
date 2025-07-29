@@ -10,7 +10,7 @@ module Admin
         messageable_type: 'Smalltalk',
         messageable_id: @smalltalks.pluck(:id),
         created_at: 7.days.ago.beginning_of_day..
-      ).group(:messageable_id, "DATE(created_at)::text")
+      ).group(:messageable_id, 'DATE(created_at)::text')
        .count
 
       @max_messages_per_day = @chart_data.values.max || 0

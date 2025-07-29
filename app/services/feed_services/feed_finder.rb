@@ -12,8 +12,8 @@ module FeedServices
                    latitude:,
                    longitude:,
                    types: nil,
-                   show_past_events: "false",
-                   partners_only: "false",
+                   show_past_events: 'false',
+                   partners_only: 'false',
                    time_range: 24,
                    distance: nil,
                    announcements: nil,
@@ -24,8 +24,8 @@ module FeedServices
       @latitude = latitude
       @longitude = longitude
       @types = formated_types(types)
-      @show_past_events = show_past_events=="true"
-      @partners_only = partners_only=="true"
+      @show_past_events = show_past_events=='true'
+      @partners_only = partners_only=='true'
       @time_range = time_range.to_i
       @distance = UserService.travel_distance(user: user, forced_distance: distance)
       @announcements = announcements.try(:to_sym)
@@ -46,14 +46,14 @@ module FeedServices
         @latitude  = Float(latitude)
         @longitude = Float(longitude)
       rescue
-        raise Api::V1::ApiError, "Invalid latitude/longitude."
+        raise Api::V1::ApiError, 'Invalid latitude/longitude.'
       end
 
       @area = FeedServices::FeedRequestArea.new(@latitude, @longitude)
 
       if page_token.present?
         @page = self.class.decode_page_token(params_sig: params_sig, token: page_token)
-        raise Api::V1::ApiError, "Invalid page token." if page.nil?
+        raise Api::V1::ApiError, 'Invalid page token.' if page.nil?
 
       elsif before
         # extract cursor from `before` parameter
@@ -82,7 +82,7 @@ module FeedServices
       if types != nil
         feeds = feeds.where(feed_category: types)
       elsif !user.pro?
-        feeds = feeds.where(feedable_type: "Entourage")
+        feeds = feeds.where(feedable_type: 'Entourage')
       end
 
       unless show_past_events
@@ -94,7 +94,7 @@ module FeedServices
       end
 
       # actions are filtered out based on update date
-      feeds = feeds.where("group_type not in (?) or feeds.updated_at >= ?", [:action], time_range.hours.ago)
+      feeds = feeds.where('group_type not in (?) or feeds.updated_at >= ?', [:action], time_range.hours.ago)
 
       bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
       feeds = feeds.where("(#{bounding_box_sql}) OR online = true")
@@ -199,7 +199,7 @@ module FeedServices
       distance_from_center = PostgisHelper.distance_from(latitude, longitude)
 
       feeds
-        .order(Arel.sql("case when online then 1 else 2 end"))
+        .order(Arel.sql('case when online then 1 else 2 end'))
         .order(Arel.sql(distance_from_center))
         .order(created_at: :desc)
     end
@@ -222,9 +222,9 @@ module FeedServices
       end
       feedable_ids.delete 'Announcement'
       return if feedable_ids.empty?
-      clause = ["(joinable_type = ? and joinable_id in (?))"]
+      clause = ['(joinable_type = ? and joinable_id in (?))']
       user_join_requests = user.join_requests
-        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
+        .where((clause * feedable_ids.count).join(' OR '), *feedable_ids.flatten)
       user_join_requests =
         Hash[user_join_requests.map { |r| [[r.joinable_type, r.joinable_id], r] }]
       feeds.each do |feed|

@@ -34,7 +34,7 @@ def expect_mailjet_email opts={}, &block
     options
   end
 
-  context "when user has no email" do
+  context 'when user has no email' do
     before { user.update_column(:email, nil) }
     it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
   end
@@ -53,11 +53,11 @@ end
 describe MemberMailer, type: :mailer do
   let(:user) { create :public_user }
 
-  context "when first_name is not capitalized" do
-    let(:user) { create :public_user, first_name: " bob" }
+  context 'when first_name is not capitalized' do
+    let(:user) { create :public_user, first_name: ' bob' }
     let(:mail) { MemberMailer.mailjet_email(to: user, template_id: 0, campaign_name: :c) }
     let(:json_variables) { JSON.parse(mail['X-MJ-Vars'].value) }
-    it { expect(json_variables['first_name']).to eq "Bob" }
+    it { expect(json_variables['first_name']).to eq 'Bob' }
   end
 
   describe '#poi_report' do
@@ -65,8 +65,8 @@ describe MemberMailer, type: :mailer do
     let!(:user) { create :pro_user }
     let!(:message) { 'message' }
     let!(:poi_report_email) { 'report_email' }
-    before { ENV["POI_REPORT_EMAIL"] = poi_report_email }
-    after { ENV.delete("POI_REPORT_EMAIL") }
+    before { ENV['POI_REPORT_EMAIL'] = poi_report_email }
+    after { ENV.delete('POI_REPORT_EMAIL') }
     subject { MemberMailer.poi_report(poi, user, message) }
 
     it { expect(subject.from).to eq ['contact@entourage.social'] }
@@ -78,7 +78,7 @@ describe MemberMailer, type: :mailer do
 
   describe '#welcome' do
     let(:mail) { MemberMailer.welcome(user) }
-    let!(:outing) { create(:outing, :outing_class, online: true, title: "JO 2024", event_url: "Paris", sf_category: :welcome_entourage_local) }
+    let!(:outing) { create(:outing, :outing_class, online: true, title: 'JO 2024', event_url: 'Paris', sf_category: :welcome_entourage_local) }
 
     expect_mailjet_email do
       {
@@ -91,7 +91,7 @@ describe MemberMailer, type: :mailer do
             name: 'JO 2024',
             address: 'Paris',
             date: I18n.l(outing.metadata[:starts_at].to_date, format: :short),
-            hour: outing.metadata[:starts_at].strftime("%Hh%M"),
+            hour: outing.metadata[:starts_at].strftime('%Hh%M'),
             image_url: nil,
             url: outing.share_url
           }]
@@ -99,7 +99,7 @@ describe MemberMailer, type: :mailer do
       }
     end
 
-    describe "community customization" do
+    describe 'community customization' do
       before { allow(user).to receive(:community).and_return(community) }
       let(:community) { OpenStruct.new(
         slug: 'slug',
@@ -124,21 +124,21 @@ describe MemberMailer, type: :mailer do
         variables: [
           :first_name,
           :login_link,
-          entourage_title: "foobaz"
+          entourage_title: 'foobaz'
         ]
       )
 
       expect_json_eq(
         mail['X-MJ-Vars'].value,
         default_variables.slice(:first_name, :login_link, :unsubscribe_url)
-                         .merge(entourage_title: "foobaz")
+                         .merge(entourage_title: 'foobaz')
       )
 
     end
   end
 
   describe 'group variables' do
-    let(:event) { build :outing, title: "lol", uuid_v2: "e12345" }
+    let(:event) { build :outing, title: 'lol', uuid_v2: 'e12345' }
 
     it do
       Timecop.freeze
@@ -155,8 +155,8 @@ describe MemberMailer, type: :mailer do
       expect_json_eq(
         mail['X-MJ-Vars'].value,
         default_variables.merge(
-          event_title: "lol",
-          event_share_url: "https://app.entourage.social/actions/e12345"
+          event_title: 'lol',
+          event_share_url: 'https://app.entourage.social/actions/e12345'
         )
       )
 

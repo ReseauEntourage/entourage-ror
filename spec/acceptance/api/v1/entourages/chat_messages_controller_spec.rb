@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Entourages::ChatMessagesController do
-  explanation "Chat messages"
-  header "Content-Type", "application/json"
+  explanation 'Chat messages'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/entourages/:entourage_id/chat_messages' do
-    route_summary "Find chat_messages a user has joined"
+    route_summary 'Find chat_messages a user has joined'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -34,7 +34,7 @@ resource Api::V1::Entourages::ChatMessagesController do
   end
 
   post '/api/v1/entourages/:entourage_id/chat_messages' do
-    route_summary "Create chat_messages"
+    route_summary 'Create chat_messages'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -42,12 +42,12 @@ resource Api::V1::Entourages::ChatMessagesController do
 
     with_options scope: :chat_message, required: true do
       parameter :content, type: :string
-      parameter :message_type, "text, status_update, share", type: :string
-      with_options scope: "chat_message[metadata]", required: true do
-        parameter :status, "(status_update)", type: :string
-        parameter :outcome_success, "(status_update)", type: :boolean
-        parameter :type, "entourage, poi (share)", type: :string
-        parameter :uuid, "(share)", type: :string
+      parameter :message_type, 'text, status_update, share', type: :string
+      with_options scope: 'chat_message[metadata]', required: true do
+        parameter :status, '(status_update)', type: :string
+        parameter :outcome_success, '(status_update)', type: :boolean
+        parameter :type, 'entourage, poi (share)', type: :string
+        parameter :uuid, '(share)', type: :string
       end
     end
 
@@ -58,7 +58,7 @@ resource Api::V1::Entourages::ChatMessagesController do
     let(:raw_post) { {
       token: user.token,
       chat_message: {
-        content: "foo"
+        content: 'foo'
       }
     }.to_json }
 

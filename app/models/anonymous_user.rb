@@ -13,10 +13,10 @@ class AnonymousUser
     attributes.symbolize_keys!
 
     @uuid = attributes[:uuid].to_str
-    raise "uuid must be present" if @uuid.blank?
+    raise 'uuid must be present' if @uuid.blank?
 
     @community = Community.new(attributes[:community])
-    raise "community must be present" if @community.blank?
+    raise 'community must be present' if @community.blank?
 
     if attributes.key?(:token)
       @token = attributes[:token].to_str

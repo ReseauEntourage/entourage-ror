@@ -18,7 +18,7 @@ class ChatMessageUploader < S3ImageUploader
     raise if payload.nil?
 
     chat_message = ChatMessage.find(payload[:chat_message_id])
-    chat_message.update_column(:image_url, params[:key].gsub("chat_messages/", ""))
+    chat_message.update_column(:image_url, params[:key].gsub('chat_messages/', ''))
 
     chat_message
   end

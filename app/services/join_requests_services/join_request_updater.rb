@@ -52,7 +52,7 @@ module JoinRequestsServices
     attr_reader :join_request, :callback, :status, :message, :current_user
 
     def accept
-      unless status == "accepted"
+      unless status == 'accepted'
         return callback.on_invalid_status.try(:call, status)
       end
 
@@ -74,7 +74,7 @@ module JoinRequestsServices
     end
 
     def quit
-      unless status == "cancelled"
+      unless status == 'cancelled'
         return callback.on_invalid_status.try(:call, status)
       end
 
@@ -91,7 +91,7 @@ module JoinRequestsServices
     end
 
     def pending
-      unless status == "pending"
+      unless status == 'pending'
         return callback.on_invalid_status.try(:call, status)
       end
 

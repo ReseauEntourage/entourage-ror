@@ -61,7 +61,7 @@ module Admin
         email, user_id: recipient.id, department: params[:department])
 
       if status == :success
-        flash[:success] = "Email envoyé !"
+        flash[:success] = 'Email envoyé !'
       else
         flash[:error] = "Erreur (#{status.inspect}). L'email n'a pas été envoyé."
       end

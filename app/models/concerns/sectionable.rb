@@ -20,7 +20,7 @@ module Sectionable
     }
 
     scope :with_sections, -> (sections) {
-      return tagged_with_any_sections(sections) unless attribute_names.include?("display_category")
+      return tagged_with_any_sections(sections) unless attribute_names.include?('display_category')
 
       tagged_with_any_sections(sections).or(
         unscope(:order).where(display_category: ActionServices::Mapper.display_categories_from_sections(sections))
@@ -31,7 +31,7 @@ module Sectionable
       return unless section_list
       return unless section_list.any?
 
-      join_sections.where("tags.name IN (?)", section_list)
+      join_sections.where('tags.name IN (?)', section_list)
     }
   end
 

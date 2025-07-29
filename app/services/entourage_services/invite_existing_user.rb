@@ -15,7 +15,7 @@ module EntourageServices
           invitable: entourage,
           inviter: inviter
         )
-        .where("(invitee_id = ? OR phone_number = ?)", invitee.id, invitee.phone)
+        .where('(invitee_id = ? OR phone_number = ?)', invitee.id, invitee.phone)
         .first
       if invite.nil?
         invite = create_invite!
@@ -70,7 +70,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : "https://api.entourage.social/store_redirection"
+      link = Rails.env.test? ? 'http://foo.bar' : 'https://api.entourage.social/store_redirection'
     end
   end
 end

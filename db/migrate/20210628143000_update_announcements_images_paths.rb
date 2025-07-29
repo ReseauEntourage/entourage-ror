@@ -14,7 +14,7 @@ class UpdateAnnouncementsImagesPaths < ActiveRecord::Migration[5.1]
   def down
     Announcement.all.each do |announcement|
       ['image_url', 'image_portrait_url'].each do |field|
-        unless announcement[field].blank? || announcement[field].include?("https://")
+        unless announcement[field].blank? || announcement[field].include?('https://')
           announcement.update_attribute(field,
             "https://#{ENV['ENTOURAGE_AVATARS_BUCKET']}.s3.eu-west-1.amazonaws.com/#{announcement[field]}"
           )

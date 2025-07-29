@@ -12,7 +12,7 @@ module ChatServices
     def notify_moderator_not_available
       return unless messageable
 
-      content = I18n.t("community.chat_messages.status_update.moderator_working_hours", locale: user.lang) % [user.first_name, private_message_interlocutor.first_name]
+      content = I18n.t('community.chat_messages.status_update.moderator_working_hours', locale: user.lang) % [user.first_name, private_message_interlocutor.first_name]
 
       if messageable.chat_messages.new(user: private_message_interlocutor, content: content).save
         messageable.update_columns(working_hours_sent_at: Time.zone.now)

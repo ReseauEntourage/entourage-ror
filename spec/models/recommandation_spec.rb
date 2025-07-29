@@ -16,9 +16,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show webview' do
       let(:instance) { :webview }
       let(:action) { :show }
-      let(:argument_value) { "path/to/webview" }
+      let(:argument_value) { 'path/to/webview' }
 
-      let(:criteria) { [{ "instance" => "webview", "action" => "show", "instance_id" => nil, "instance_url" => "path/to/webview"}] }
+      let(:criteria) { [{ 'instance' => 'webview', 'action' => 'show', 'instance_id' => nil, 'instance_url' => 'path/to/webview'}] }
 
       it { expect(subject).to be(true) }
     end
@@ -26,9 +26,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show webview wrong url' do
       let(:instance) { :webview }
       let(:action) { :show }
-      let(:argument_value) { "path/to/foo" }
+      let(:argument_value) { 'path/to/foo' }
 
-      let(:criteria) { [{ "instance" => "webview", "action" => "show", "instance_id" => nil, "instance_url" => "path/to/webview"}] }
+      let(:criteria) { [{ 'instance' => 'webview', 'action' => 'show', 'instance_id' => nil, 'instance_url' => 'path/to/webview'}] }
 
       it { expect(subject).to be(false) }
     end
@@ -36,9 +36,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show webview wrong parameter for url' do
       let(:instance) { :webview }
       let(:action) { :show }
-      let(:argument_value) { "path/to/webview" }
+      let(:argument_value) { 'path/to/webview' }
 
-      let(:criteria) { [{ "instance" => "webview", "action" => "show", "instance_id" => "path/to/webview", "instance_url" => nil}] }
+      let(:criteria) { [{ 'instance' => 'webview', 'action' => 'show', 'instance_id' => 'path/to/webview', 'instance_url' => nil}] }
 
       it { expect(subject).to be(false) }
     end
@@ -46,9 +46,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show webview wrong instance' do
       let(:instance) { :webview }
       let(:action) { :show }
-      let(:argument_value) { "path/to/webview" }
+      let(:argument_value) { 'path/to/webview' }
 
-      let(:criteria) { [{ "instance" => "resource", "action" => "show", "instance_id" => nil, "instance_url" => "path/to/webview"}] }
+      let(:criteria) { [{ 'instance' => 'resource', 'action' => 'show', 'instance_id' => nil, 'instance_url' => 'path/to/webview'}] }
 
       it { expect(subject).to be(false) }
     end
@@ -56,9 +56,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show resource' do
       let(:instance) { :resource }
       let(:action) { :show }
-      let(:argument_value) { "42" }
+      let(:argument_value) { '42' }
 
-      let(:criteria) { [{ "instance" => "resource", "action" => "show", "instance_id" => 42, "instance_url" => nil }] }
+      let(:criteria) { [{ 'instance' => 'resource', 'action' => 'show', 'instance_id' => 42, 'instance_url' => nil }] }
 
       it { expect(subject).to be(true) }
     end
@@ -66,9 +66,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show resource wrong id' do
       let(:instance) { :resource }
       let(:action) { :show }
-      let(:argument_value) { "1" }
+      let(:argument_value) { '1' }
 
-      let(:criteria) { [{ "instance" => "resource", "action" => "show", "instance_id" => 42, "instance_url" => nil }] }
+      let(:criteria) { [{ 'instance' => 'resource', 'action' => 'show', 'instance_id' => 42, 'instance_url' => nil }] }
 
       it { expect(subject).to be(false) }
     end
@@ -76,9 +76,9 @@ RSpec.describe Recommandation, type: :model do
     context 'show resource wrong instance' do
       let(:instance) { :resource }
       let(:action) { :show }
-      let(:argument_value) { "42" }
+      let(:argument_value) { '42' }
 
-      let(:criteria) { [{ "instance" => "webview", "action" => "show", "instance_id" => 42, "instance_url" => nil }] }
+      let(:criteria) { [{ 'instance' => 'webview', 'action' => 'show', 'instance_id' => 42, 'instance_url' => nil }] }
 
       it { expect(subject).to be(false) }
     end
@@ -87,7 +87,7 @@ RSpec.describe Recommandation, type: :model do
       let(:instance) { :neighborhood }
       let(:action) { :show_joined }
 
-      let(:criteria) { [{ "instance" => "neighborhood", "action" => "show", "instance_id" => :foo, "instance_url" => :bar }] }
+      let(:criteria) { [{ 'instance' => 'neighborhood', 'action' => 'show', 'instance_id' => :foo, 'instance_url' => :bar }] }
 
       it { expect(subject).to be(true) }
     end
@@ -96,7 +96,7 @@ RSpec.describe Recommandation, type: :model do
       let(:instance) { :neighborhood }
       let(:action) { :show_not_joined }
 
-      let(:criteria) { [{ "instance" => "neighborhood", "action" => "show", "instance_id" => :foo, "instance_url" => :bar }] }
+      let(:criteria) { [{ 'instance' => 'neighborhood', 'action' => 'show', 'instance_id' => :foo, 'instance_url' => :bar }] }
 
       it { expect(subject).to be(true) }
     end
@@ -105,7 +105,7 @@ RSpec.describe Recommandation, type: :model do
       let(:instance) { :neighborhood }
       let(:action) { :show_not_joined }
 
-      let(:criteria) { [{ "instance" => "resource", "action" => "show", "instance_id" => :foo, "instance_url" => :bar }] }
+      let(:criteria) { [{ 'instance' => 'resource', 'action' => 'show', 'instance_id' => :foo, 'instance_url' => :bar }] }
 
       it { expect(subject).to be(false) }
     end
@@ -114,7 +114,7 @@ RSpec.describe Recommandation, type: :model do
       let(:instance) { :neighborhood }
       let(:action) { :create }
 
-      let(:criteria) { [{ "instance" => "neighborhood", "action" => "create", "instance_id" => :foo, "instance_url" => :bar }] }
+      let(:criteria) { [{ 'instance' => 'neighborhood', 'action' => 'create', 'instance_id' => :foo, 'instance_url' => :bar }] }
 
       it { expect(subject).to be(true) }
     end
@@ -123,7 +123,7 @@ RSpec.describe Recommandation, type: :model do
       let(:instance) { :neighborhood }
       let(:action) { :index }
 
-      let(:criteria) { [{ "instance" => "neighborhood", "action" => "index", "instance_id" => :foo, "instance_url" => :bar }] }
+      let(:criteria) { [{ 'instance' => 'neighborhood', 'action' => 'index', 'instance_id' => :foo, 'instance_url' => :bar }] }
 
       it { expect(subject).to be(true) }
     end
@@ -131,12 +131,12 @@ RSpec.describe Recommandation, type: :model do
     context 'multi criteria' do
       let(:instance) { :resource }
       let(:action) { :show }
-      let(:argument_value) { "23" }
+      let(:argument_value) { '23' }
 
       let(:criteria) { [
-        { "action" => "index", "instance" => "resource", "instance_id" => nil, "instance_url" => nil },
-        { "action" => "show", "instance" => "resource", "instance_id" => 18, "instance_url" => nil },
-        { "action" => "show", "instance" => "resource", "instance_id" => 23, "instance_url" => nil }
+        { 'action' => 'index', 'instance' => 'resource', 'instance_id' => nil, 'instance_url' => nil },
+        { 'action' => 'show', 'instance' => 'resource', 'instance_id' => 18, 'instance_url' => nil },
+        { 'action' => 'show', 'instance' => 'resource', 'instance_id' => 23, 'instance_url' => nil }
       ]}
 
       it { expect(subject).to be(true) }

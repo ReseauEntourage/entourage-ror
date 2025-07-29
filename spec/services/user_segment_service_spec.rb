@@ -8,21 +8,21 @@ describe UserSegmentService do
         let(:user_attributes) { {} }
         let(:segment) { UserSegmentService.at_day(1, after: :last_session) }
 
-        context "common case" do
+        context 'common case' do
           it { expect(segment.pluck(:id)).to include user.id }
         end
 
-        context "deleted user" do
+        context 'deleted user' do
           let(:user_attributes) { {deleted: true} }
           it { expect(segment.pluck(:id)).not_to include user.id }
         end
 
-        context "other community" do
+        context 'other community' do
           let(:user_attributes) { {community: :pfp} }
           it { expect(segment.pluck(:id)).not_to include user.id }
         end
 
-        context "blank email" do
+        context 'blank email' do
           let(:user_attributes) { {email: ''} }
           it { expect(segment.pluck(:id)).not_to include user.id }
         end
@@ -34,7 +34,7 @@ describe UserSegmentService do
       let!(:user) { create :public_user, user_attributes }
       let(:segment) { UserSegmentService.at_day(n, after: :registration) }
 
-      context "the user registered at the target date" do
+      context 'the user registered at the target date' do
         let(:user_attributes) { {onboarding_sequence_start_at: n.days.ago} }
         it { expect(segment.pluck(:id)).to include user.id }
       end
@@ -50,7 +50,7 @@ describe UserSegmentService do
       let!(:user) { create :public_user, user_attributes }
       let(:segment) { UserSegmentService.at_day(n, after: :last_session) }
 
-      context "the user registered at the target date" do
+      context 'the user registered at the target date' do
         let(:user_attributes) { {last_sign_in_at: n.days.ago} }
         it { expect(segment.pluck(:id)).to include user.id }
       end
@@ -73,22 +73,22 @@ describe UserSegmentService do
 
       let(:segment) { UserSegmentService.at_day(n, after: :action_creation) }
 
-      context "the action was created at the target date" do
+      context 'the action was created at the target date' do
         let(:group_attributes) { {created_at: n.days.ago} }
         it { expect(segment.pluck(:id)).to include group.id }
       end
 
-      context "the action was not created at the target date" do
+      context 'the action was not created at the target date' do
         let(:group_attributes) { {created_at: (n - 1).days.ago} }
         it { expect(segment.pluck(:id)).not_to include group.id }
       end
 
-      context "the group is not an action" do
+      context 'the group is not an action' do
         let(:group_attributes) { {group_type: :conversation} }
         it { expect(segment.pluck(:id)).not_to include group.id }
       end
 
-      context "the owner is not in the default user scope" do
+      context 'the owner is not in the default user scope' do
         let(:user_attributes) { {email: ''} }
         it { expect(segment.pluck(:id)).not_to include group.id }
       end
@@ -111,22 +111,22 @@ describe UserSegmentService do
       describe 'organizer' do
         let(:segment) { UserSegmentService.at_day(n, before: :event, role: :organizer) }
 
-        context "valid event" do
+        context 'valid event' do
           let(:group_attributes) { {metadata: {starts_at: n.day.from_now} } }
           it { expect(segment.pluck(:user_id)).to eq [organizer.id] }
         end
 
-        context "event at another date" do
+        context 'event at another date' do
           let(:group_attributes) { {metadata: {starts_at: (n - 10).day.from_now} } }
           it { expect(segment.pluck(:user_id)).to eq [] }
         end
 
-        context "user is not in the default user scope" do
+        context 'user is not in the default user scope' do
           let(:user_attributes) { {deleted: true} }
           it { expect(segment.pluck(:user_id)).to eq [] }
         end
 
-        context "event end date" do
+        context 'event end date' do
           let(:segment) { UserSegmentService.at_day(n, after: :event, role: :organizer) }
           let(:group_attributes) { {metadata: {starts_at: (n + 3).day.ago, ends_at: n.day.ago} } }
           it { expect(segment.pluck(:user_id)).to eq [organizer.id] }
@@ -136,27 +136,27 @@ describe UserSegmentService do
       describe 'participant' do
         let(:segment) { UserSegmentService.at_day(n, before: :event, role: :participant) }
 
-        context "valid event" do
+        context 'valid event' do
           let(:group_attributes) { {metadata: {starts_at: n.day.from_now} } }
           it { expect(segment.pluck(:user_id)).to eq [participant.id] }
         end
 
-        context "valid event with a valid previous_at" do
+        context 'valid event with a valid previous_at' do
           let(:group_attributes) { {metadata: {starts_at: n.day.from_now, previous_at: 2.days.ago} } }
           it { expect(segment.pluck(:user_id)).to eq [participant.id] }
         end
 
-        context "valid event with an invalid previous_at" do
+        context 'valid event with an invalid previous_at' do
           let(:group_attributes) { {metadata: {starts_at: n.day.from_now, previous_at: 2.hour.ago} } }
           it { expect(segment.pluck(:user_id)).to eq [] }
         end
 
-        context "join request is not accepted" do
+        context 'join request is not accepted' do
           let(:participation_attributes) { {status: :cancelled} }
           it { expect(segment.pluck(:user_id)).to eq [] }
         end
 
-        context "the group is not an event" do
+        context 'the group is not an event' do
           let(:group_attributes) { {group_type: :conversation, metadata: {}, default_metadata: {}} }
           let(:participation_attributes) { {role: :participant} }
           it { expect(segment.pluck(:user_id)).to eq [] }

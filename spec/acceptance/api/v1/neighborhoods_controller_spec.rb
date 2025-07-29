@@ -2,17 +2,17 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::NeighborhoodsController do
-  explanation "Neighborhoods"
-  header "Content-Type", "application/json"
+  explanation 'Neighborhoods'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/neighborhoods' do
-    route_summary "Find neighborhoods"
+    route_summary 'Find neighborhoods'
 
-    parameter :token, "User token", type: :string, required: true
-    parameter :q, "Search text", type: :string, required: false
+    parameter :token, 'User token', type: :string, required: true
+    parameter :q, 'Search text', type: :string, required: false
 
     let(:user) { FactoryBot.create(:pro_user) }
-    let!(:neighborhood) { FactoryBot.create(:neighborhood, name: "foobar") }
+    let!(:neighborhood) { FactoryBot.create(:neighborhood, name: 'foobar') }
     let(:token) { user.token }
     let(:q) { :foo }
 
@@ -25,7 +25,7 @@ resource Api::V1::NeighborhoodsController do
   end
 
   get 'api/v1/neighborhoods/:id' do
-    route_summary "Get a neighborhood"
+    route_summary 'Get a neighborhood'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -44,21 +44,21 @@ resource Api::V1::NeighborhoodsController do
   end
 
   post 'api/v1/neighborhoods' do
-    route_summary "Creates a neighborhood"
+    route_summary 'Creates a neighborhood'
 
     parameter :token, type: :string, required: true
 
     with_options scope: :neighborhood, required: true do
-      parameter :name, "Name"
-      parameter :description, "Description"
-      parameter :welcome_message, "Welcome message", required: false
-      parameter :ethics, "Ethics", required: false
-      parameter :latitude, "Latitude"
-      parameter :longitude, "Longitude"
-      parameter :interests, "Interests", required: false
-      parameter :other_interest, "Other interest", required: false
-      parameter :neighborhood_image_id, "Neighborhood image id", required: false
-      parameter :google_place_id, "Google place id", required: false
+      parameter :name, 'Name'
+      parameter :description, 'Description'
+      parameter :welcome_message, 'Welcome message', required: false
+      parameter :ethics, 'Ethics', required: false
+      parameter :latitude, 'Latitude'
+      parameter :longitude, 'Longitude'
+      parameter :interests, 'Interests', required: false
+      parameter :other_interest, 'Other interest', required: false
+      parameter :neighborhood_image_id, 'Neighborhood image id', required: false
+      parameter :google_place_id, 'Google place id', required: false
     end
 
     let(:neighborhood) { build :neighborhood }
@@ -99,18 +99,18 @@ resource Api::V1::NeighborhoodsController do
   end
 
   patch 'api/v1/neighborhoods/:id' do
-    route_summary "Updates a neighborhood"
+    route_summary 'Updates a neighborhood'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
     with_options scope: :neighborhood, required: true do
-      parameter :name, "Name", required: false
-      parameter :ethics, "Ethics", required: false
-      parameter :latitude, "Latitude", required: false
-      parameter :longitude, "Longitude", required: false
-      parameter :interests, "Interests", required: false
-      parameter :image_url, "Image url", required: false
+      parameter :name, 'Name', required: false
+      parameter :ethics, 'Ethics', required: false
+      parameter :latitude, 'Latitude', required: false
+      parameter :longitude, 'Longitude', required: false
+      parameter :interests, 'Interests', required: false
+      parameter :image_url, 'Image url', required: false
     end
 
     let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
@@ -120,8 +120,8 @@ resource Api::V1::NeighborhoodsController do
     let(:raw_post) { {
       token: user.token,
       neighborhood: {
-        name: "new name",
-        ethics: "new ethics",
+        name: 'new name',
+        ethics: 'new ethics',
       }
     }.to_json }
 
@@ -134,7 +134,7 @@ resource Api::V1::NeighborhoodsController do
   end
 
   post 'api/v1/neighborhoods/:id/report' do
-    route_summary "Sends an alert about a neighborhood"
+    route_summary 'Sends an alert about a neighborhood'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true

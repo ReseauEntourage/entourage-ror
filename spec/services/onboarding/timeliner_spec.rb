@@ -8,7 +8,7 @@ describe Onboarding::Timeliner do
 
   before { User.any_instance.stub(:default_neighborhood).and_return(neighborhood) }
 
-  describe "offer_help_on_h1_after_registration" do
+  describe 'offer_help_on_h1_after_registration' do
     let(:verb) { :h1_after_registration }
 
     after { subject }
@@ -22,7 +22,7 @@ describe Onboarding::Timeliner do
     ) }
   end
 
-  describe "ask_for_help_on_h1_after_registration" do
+  describe 'ask_for_help_on_h1_after_registration' do
     let(:verb) { :h1_after_registration }
     let!(:user) { create(:public_user, goal: :ask_for_help) }
 
@@ -36,7 +36,7 @@ describe Onboarding::Timeliner do
     # ) }
   end
 
-  describe "offer_help_on_j2_after_registration" do
+  describe 'offer_help_on_j2_after_registration' do
     let(:verb) { :j2_after_registration }
 
     after { subject }
@@ -44,12 +44,12 @@ describe Onboarding::Timeliner do
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
       Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j2.title'),
       Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j2.offer'),
-      [user], "neighborhood", neighborhood.id,
-      { instance: "neighborhood", instance_id: neighborhood.id, stage: :j2 }
+      [user], 'neighborhood', neighborhood.id,
+      { instance: 'neighborhood', instance_id: neighborhood.id, stage: :j2 }
     ) }
   end
 
-  describe "ask_help_on_j2_after_registration" do
+  describe 'ask_help_on_j2_after_registration' do
     let(:verb) { :j2_after_registration }
     let!(:user) { create(:public_user, goal: :ask_for_help) }
 
@@ -58,12 +58,12 @@ describe Onboarding::Timeliner do
     # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
-  describe "offer_help_on_j5_after_registration" do
+  describe 'offer_help_on_j5_after_registration' do
     let(:verb) { :j5_after_registration }
 
     after { subject }
 
-    context "outing, no action" do
+    context 'outing, no action' do
       before { OutingsServices::Finder.any_instance.stub(:find_all) { Entourage.where(id: create(:outing, online: false)) } }
 
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
@@ -75,7 +75,7 @@ describe Onboarding::Timeliner do
       ) }
     end
 
-    context "no outing, action" do
+    context 'no outing, action' do
       before { SolicitationServices::Finder.any_instance.stub(:find_all) { Entourage.where(id: create(:entourage)) } }
 
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
@@ -87,7 +87,7 @@ describe Onboarding::Timeliner do
       ) }
     end
 
-    context "no outing, no action" do
+    context 'no outing, no action' do
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         nil,
         Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.title_create_action'),
@@ -98,7 +98,7 @@ describe Onboarding::Timeliner do
     end
   end
 
-  describe "ask_help_on_j5_after_registration" do
+  describe 'ask_help_on_j5_after_registration' do
     let(:verb) { :j5_after_registration }
     let!(:user) { create(:public_user, goal: :ask_for_help) }
 
@@ -107,7 +107,7 @@ describe Onboarding::Timeliner do
     # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
-  describe "offer_help_on_j8_after_registration" do
+  describe 'offer_help_on_j8_after_registration' do
     let(:verb) { :j8_after_registration }
 
     after { subject }
@@ -115,7 +115,7 @@ describe Onboarding::Timeliner do
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
-  describe "ask_help_on_j8_after_registration" do
+  describe 'ask_help_on_j8_after_registration' do
     let(:verb) { :j8_after_registration }
     let!(:user) { create(:public_user, goal: :ask_for_help) }
 
@@ -124,7 +124,7 @@ describe Onboarding::Timeliner do
     # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
-  describe "offer_help_on_j11_after_registration" do
+  describe 'offer_help_on_j11_after_registration' do
     let(:verb) { :j11_after_registration }
 
     after { subject }
@@ -132,7 +132,7 @@ describe Onboarding::Timeliner do
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
-  describe "ask_help_on_j11_after_registration" do
+  describe 'ask_help_on_j11_after_registration' do
     let(:verb) { :j11_after_registration }
     let!(:user) { create(:public_user, goal: :ask_for_help) }
 

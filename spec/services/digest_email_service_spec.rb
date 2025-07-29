@@ -4,7 +4,7 @@ describe DigestEmailService, type: :service do
   describe '.next_delivery' do
     before { Timecop.freeze(Time.zone.local(2019, 3, 28, 18, 30)) }
 
-    it "same day later" do
+    it 'same day later' do
       expect(DigestEmailService.next_delivery day: :thursday,
                                        time: 19,
                                        min_interval: 2.weeks,
@@ -14,7 +14,7 @@ describe DigestEmailService, type: :service do
       )
     end
 
-    it "same day earlier" do
+    it 'same day earlier' do
       expect(DigestEmailService.next_delivery day: :thursday,
                                        time: 18,
                                        min_interval: 2.weeks,
@@ -24,7 +24,7 @@ describe DigestEmailService, type: :service do
       )
     end
 
-    it "previous delivery farther than min interval" do
+    it 'previous delivery farther than min interval' do
       expect(DigestEmailService.next_delivery day: :thursday,
                                        time: 19,
                                        min_interval: 2.weeks,
@@ -34,7 +34,7 @@ describe DigestEmailService, type: :service do
       )
     end
 
-    it "previous delivery closer than min interval" do
+    it 'previous delivery closer than min interval' do
       expect(DigestEmailService.next_delivery day: :thursday,
                                        time: 19,
                                        min_interval: 2.weeks,

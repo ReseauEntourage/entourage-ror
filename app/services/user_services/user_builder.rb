@@ -1,4 +1,4 @@
-require "securerandom"
+require 'securerandom'
 
 module UserServices
   class UserBuilder
@@ -50,7 +50,7 @@ module UserServices
     attr_reader :params, :callback
 
     def new_user
-      raise "should be overriden by subclasses"
+      raise 'should be overriden by subclasses'
     end
   end
 end

@@ -14,7 +14,7 @@ RSpec.describe Action, type: :model do
   }
 
   describe '#matchings_with_notifications' do
-    subject { action.matchings_with_notifications.select("matchings.*, inapp_notifications.id as inapp_notification_id") }
+    subject { action.matchings_with_notifications.select('matchings.*, inapp_notifications.id as inapp_notification_id') }
 
     it 'returns matchings with inapp_notification_id set to true when notification exists' do
       result = subject.find { |m| m.id == matching_with_notification.id }
@@ -26,7 +26,7 @@ RSpec.describe Action, type: :model do
       expect(result.inapp_notification_id).to be_falsey
     end
 
-    context "without matchings" do
+    context 'without matchings' do
       let(:matching_with_notification) { nil }
       let(:matching_without_notification) { nil }
 

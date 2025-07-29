@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::ConversationsController do
-  explanation "Conversations"
-  header "Content-Type", "application/json"
+  explanation 'Conversations'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/conversations' do
-    route_summary "Find conversations"
+    route_summary 'Find conversations'
 
     parameter :token, type: :string, required: true
 
@@ -15,7 +15,7 @@ resource Api::V1::ConversationsController do
     let(:other_user) { FactoryBot.create(:public_user, first_name: 'Michel', last_name: 'Ange') }
 
     # conversations
-    let(:entourage) { FactoryBot.create(:outing, title: "foo", status: :open, created_at: 2.hours.ago) }
+    let(:entourage) { FactoryBot.create(:outing, title: 'foo', status: :open, created_at: 2.hours.ago) }
     let(:conversation) { FactoryBot.create(:conversation, user: user, participants: [other_user], created_at: 1.hour.ago) }
 
     # memberships
@@ -34,18 +34,18 @@ resource Api::V1::ConversationsController do
       example_request 'Get conversations' do
         expect(response_status).to eq(200)
         expect(subject).to have_key('conversations')
-        expect(subject["conversations"].count).to eq(2)
-        expect(subject["conversations"][0]["name"]).to eq("Michel A.")
-        expect(subject["conversations"][1]["name"]).to eq("Foo")
+        expect(subject['conversations'].count).to eq(2)
+        expect(subject['conversations'][0]['name']).to eq('Michel A.')
+        expect(subject['conversations'][1]['name']).to eq('Foo')
 
-        expect(subject["conversations"][0]["has_personal_post"]).to eq(true)
-        expect(subject["conversations"][1]["has_personal_post"]).to eq(false)
+        expect(subject['conversations'][0]['has_personal_post']).to eq(true)
+        expect(subject['conversations'][1]['has_personal_post']).to eq(false)
       end
     end
   end
 
   get 'api/v1/conversations/:id' do
-    route_summary "Get a conversation"
+    route_summary 'Get a conversation'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -65,7 +65,7 @@ resource Api::V1::ConversationsController do
   end
 
   post '/api/v1/conversations' do
-    route_summary "Create private conversation"
+    route_summary 'Create private conversation'
     # route_description "no description"
 
     parameter :token, type: :string, required: true

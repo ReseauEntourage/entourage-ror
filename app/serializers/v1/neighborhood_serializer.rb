@@ -50,7 +50,7 @@ module V1
       # fake data: not really used in mobile app
       # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
-      Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
+      Array.new([object.members_count, 99].min, { id: 1, lang: 'fr', avatar_url: 'n/a', display_name: 'n/a' })
     end
 
     def unread_posts_count

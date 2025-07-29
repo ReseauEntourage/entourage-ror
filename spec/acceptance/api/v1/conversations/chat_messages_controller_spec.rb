@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Conversations::ChatMessagesController do
-  explanation "Chat messages"
-  header "Content-Type", "application/json"
+  explanation 'Chat messages'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/conversations/:conversation_id/chat_messages' do
-    route_summary "Find user chat_messages in a conversation"
+    route_summary 'Find user chat_messages in a conversation'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -34,7 +34,7 @@ resource Api::V1::Conversations::ChatMessagesController do
   end
 
   post '/api/v1/conversations/:conversation_id/chat_messages' do
-    route_summary "Create chat_messages"
+    route_summary 'Create chat_messages'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
@@ -52,7 +52,7 @@ resource Api::V1::Conversations::ChatMessagesController do
     let(:raw_post) { {
       token: user.token,
       chat_message: {
-        content: "foo"
+        content: 'foo'
       }
     }.to_json }
 

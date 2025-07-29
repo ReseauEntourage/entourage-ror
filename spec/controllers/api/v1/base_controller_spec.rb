@@ -7,18 +7,18 @@ RSpec.describe Api::V1::BaseController, type: :controller do
   describe 'validate_request!' do
     before { Rails.env.stub(:test?) { false } }
 
-    context "missing api key" do
+    context 'missing api key' do
       before { get :check }
       it { expect(response.status).to eq(426) }
     end
 
-    context "invalid api key" do
+    context 'invalid api key' do
       before { @request.env['X-API-KEY'] = 'foobar' }
       before { get :check }
       it { expect(response.status).to eq(426) }
     end
 
-    context "valid api key" do
+    context 'valid api key' do
       before { @request.env['X-API-KEY'] = 'api_debug' }
       before { get :check }
       it { expect(response.status).to eq(200) }
@@ -26,38 +26,38 @@ RSpec.describe Api::V1::BaseController, type: :controller do
   end
 
   describe 'authenticate_user!' do
-    context "nil last_sign_in_at" do
+    context 'nil last_sign_in_at' do
       let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: nil) }
       before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at).to_not be_nil }
     end
 
-    context "last_sign_in_at yesterday" do
+    context 'last_sign_in_at yesterday' do
       let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: 1.day.ago) }
       before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at.today?).to be true}
     end
 
-    context "last_sign_in_at yesterday" do
-      let(:date) { DateTime.parse("2015-07-07T10:31:43.000+02:00") }
+    context 'last_sign_in_at yesterday' do
+      let(:date) { DateTime.parse('2015-07-07T10:31:43.000+02:00') }
       before { Timecop.freeze(date) }
-      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse("2014-07-07T00:00:00.000")) }
+      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse('2014-07-07T00:00:00.000')) }
       before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at).to eq(date)}
     end
 
-    context "last_sign_in_at today" do
-      let(:date) { DateTime.parse("2015-07-07T10:31:43.000+02:00") }
+    context 'last_sign_in_at today' do
+      let(:date) { DateTime.parse('2015-07-07T10:31:43.000+02:00') }
       before { Timecop.freeze(date) }
-      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse("2015-07-07T00:00:00.000")) }
+      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse('2015-07-07T00:00:00.000')) }
       before { get :ping, params: { token: user.token } }
-      it { expect(user.reload.last_sign_in_at).to eq(DateTime.parse("2015-07-07T00:00:00.000"))}
+      it { expect(user.reload.last_sign_in_at).to eq(DateTime.parse('2015-07-07T00:00:00.000'))}
     end
 
-    describe "session tracking" do
+    describe 'session tracking' do
       before { SessionHistory.stub(:enable_tracking?) { true } }
 
-      context "logged-in user" do
+      context 'logged-in user' do
         let(:user) { create :public_user }
         before { get :ping, params: { token: user.token } }
         it { expect(SessionHistory.where(user_id: user.id, date: Time.zone.today, platform: 'rspec').count).to eq 1 }
@@ -82,47 +82,47 @@ RSpec.describe Api::V1::BaseController, type: :controller do
     end
     subject { response.status }
 
-    context "with a valid api key" do
-      context "on the entourage server" do
+    context 'with a valid api key' do
+      context 'on the entourage server' do
         with_community :entourage
         let(:api_key) { 'api_debug' }
         it { is_expected.to eq(200) }
       end
     end
 
-    context "with an api key for the wrong community" do
-      context "on the entourage server" do
+    context 'with an api key for the wrong community' do
+      context 'on the entourage server' do
         with_community :entourage
         let(:api_key) { 'api_debug_pfp' }
         it { is_expected.to eq(401) }
       end
     end
 
-    context "with an invalid api key" do
+    context 'with an invalid api key' do
       let(:api_key) { 'foobar' }
 
-      context "on the entourage server" do
+      context 'on the entourage server' do
         with_community :entourage
         it { is_expected.to eq(200) }
         it { expect(Rails.logger).to have_received(:warn).with(/code=no_api_key/) }
       end
 
-      context "on the pfp server" do
+      context 'on the pfp server' do
         with_community :pfp
         it { is_expected.to eq(401) }
       end
     end
 
-    context "with no api key" do
+    context 'with no api key' do
       let(:api_key) { '' }
 
-      context "on the entourage server" do
+      context 'on the entourage server' do
         with_community :entourage
         it { is_expected.to eq(200) }
         it { expect(Rails.logger).to have_received(:warn).with(/code=no_api_key/) }
       end
 
-      context "on the pfp server" do
+      context 'on the pfp server' do
         with_community :pfp
         it { is_expected.to eq(401) }
       end
