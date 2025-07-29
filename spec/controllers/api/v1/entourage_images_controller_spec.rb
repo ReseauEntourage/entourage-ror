@@ -14,6 +14,7 @@ describe Api::V1::EntourageImagesController do
     context "signed in" do
       before { get :index, params: { token: user.token } }
       subject { JSON.parse(response.body) }
+
       it { expect(response.status).to eq(200) }
       it { expect(subject['entourage_images'].count).to eq(2) }
       it {
@@ -31,6 +32,7 @@ describe Api::V1::EntourageImagesController do
 
     before { get :show, params: { token: user.token, id: entourage_image.id } }
     subject { JSON.parse(response.body) }
+
     it { expect(subject['entourage_image']['id']).to eq(entourage_image.id) }
   end
 end
