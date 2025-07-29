@@ -93,7 +93,7 @@ module Api
       end
 
       def render_error(code:, message:, status:)
-        render json: {"error":{"code":code, "message":message}}, status: status
+        render json: {"error": {"code": code, "message": message}}, status: status
       end
 
       #curl -H "X-API-KEY: api_debug" "http://api.entourage.social/api/v1/check.json"

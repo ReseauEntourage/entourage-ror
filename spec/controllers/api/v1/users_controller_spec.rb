@@ -283,7 +283,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       after { ENV['DISABLE_CRYPT']='TRUE' }
 
       context 'params are valid' do
-        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: 'secret' }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email: 'new@e.mail', sms_code: '654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: 'secret' }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.lang).to eq('pl') }
         it { expect(user.reload.email).to eq('new@e.mail') }
@@ -315,26 +315,26 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
 
       context 'strips first_name, last_name and email' do
-        before { patch 'update', params: { token:user.token, user: { first_name: 'Claude ', last_name: 'Shannon ', email:'cs@bell.com '} } }
+        before { patch 'update', params: { token: user.token, user: { first_name: 'Claude ', last_name: 'Shannon ', email: 'cs@bell.com '} } }
         it { expect(user.reload.first_name).to eq('Claude') }
         it { expect(user.reload.last_name).to eq('Shannon') }
         it { expect(user.reload.email).to eq('cs@bell.com') }
       end
 
       context 'try to update phone number: no phone update is possible through API' do
-        before { patch 'update', params: { token:user.token, user: { phone: '+33654876754' }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { phone: '+33654876754' }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.phone).not_to eq('+33654876754') }
       end
 
       context 'params are invalid' do
-        before { patch 'update', params: { token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { email: 'bademail', sms_code: 'badcode' }, format: :json } }
         it { expect(response.status).to eq(400) }
         it { expect(result).to eq({'error'=>{'code'=>'CANNOT_UPDATE_USER', 'message'=>["Email n'est pas valide"]}}) }
       end
 
       context 'about is too long' do
-        before { patch 'update', params: { token:user.token, user: { about: 'x' * 201 }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { about: 'x' * 201 }, format: :json } }
         it { expect(response.status).to eq(400) }
         it { expect(result).to eq({'error'=>{'code'=>'CANNOT_UPDATE_USER', 'message'=>['À propos est trop long (pas plus de 200 caractères)']}}) }
       end
@@ -551,7 +551,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       context 'updated email is valid' do
         before {
           expect_any_instance_of(SlackServices::SignalUserCreation).not_to receive(:notify)
-          patch 'update', params: { token:user.token, user: { email:'new@e.mail' }, format: :json }
+          patch 'update', params: { token: user.token, user: { email: 'new@e.mail' }, format: :json }
         }
         it { expect(response.status).to eq(200) }
       end
@@ -559,14 +559,14 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       context 'updated email is blocked' do
         before {
           expect_any_instance_of(SlackServices::SignalUserCreation).to receive(:notify)
-          patch 'update', params: { token:user.token, user: { email:'blocked@email.com' }, format: :json }
+          patch 'update', params: { token: user.token, user: { email: 'blocked@email.com' }, format: :json }
         }
         it { expect(response.status).to eq(200) }
       end
     end
 
     context 'bad authentication' do
-      before { patch 'update', params: { token:'badtoken', user: { email:'new@e.mail', sms_code:'654321' }, format: :json } }
+      before { patch 'update', params: { token: 'badtoken', user: { email: 'new@e.mail', sms_code: '654321' }, format: :json } }
       it { expect(response.status).to eq(401) }
     end
 
@@ -575,7 +575,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       context 'valid params' do
         it 'sets user avatar key' do
-          patch 'update', params: { token:user.token, user: { avatar: avatar }, format: :json }
+          patch 'update', params: { token: user.token, user: { avatar: avatar }, format: :json }
           expect(user.reload.avatar_key).to eq('avatar')
         end
       end
