@@ -1,10 +1,10 @@
 module DigestEmailConfig
   CITIES = {
-    Paris:    75,
-    Lyon:     69,
+    :Paris => 75,
+    :Lyon => 69,
     'Hauts-de-Seine' => 92,
-    Lille:    59,
-    Rennes:   35,
+    :Lille => 59,
+    :Rennes => 35,
   }
 
   SCHEDULE = {

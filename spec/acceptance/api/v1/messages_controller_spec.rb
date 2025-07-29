@@ -10,11 +10,11 @@ resource Api::V1::MessagesController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :message do
-      parameter :content, :required => true
-      parameter :first_name, "First name", :required => false
-      parameter :last_name, "Last name", :required => false
-      parameter :email, "Email", :required => false
+    with_options scope: :message do
+      parameter :content, required: true
+      parameter :first_name, "First name", required: false
+      parameter :last_name, "Last name", required: false
+      parameter :email, "Email", required: false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }

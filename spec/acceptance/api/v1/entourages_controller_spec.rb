@@ -141,10 +141,10 @@ resource Api::V1::EntouragesController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :entourage, :required => true do
+    with_options scope: :entourage, required: true do
       parameter :group_type, "action", required: true
       parameter :title, "Title"
-      with_options :scope => "entourage[location]", :required => true do
+      with_options scope: "entourage[location]", required: true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
@@ -154,14 +154,14 @@ resource Api::V1::EntouragesController do
       parameter :description, required: false
       parameter :category, "mat_help, non_mat_help or social", required: false
       parameter :public, "deprecated", required: false
-      with_options :scope => "entourage[outcome]", :required => false do
+      with_options scope: "entourage[outcome]", required: false do
         parameter :success, "whether the action was successful or not"
       end
       parameter :recipient_consent_obtained, "Consent is required when creating an action for someone else", required: false
-      with_options :scope => "entourage[metadata]" do
+      with_options scope: "entourage[metadata]" do
         parameter :display_address, "Address", type: :string
         parameter :city, "City", type: :string
-        parameter :close_message, "A message to post when closing an action", type: :string, :required => false
+        parameter :close_message, "A message to post when closing an action", type: :string, required: false
       end
     end
 
@@ -197,10 +197,10 @@ resource Api::V1::EntouragesController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :entourage, :required => true do
+    with_options scope: :entourage, required: true do
       parameter :group_type, "outing", required: true
       parameter :title, "Title"
-      with_options :scope => "entourage[location]", :required => true do
+      with_options scope: "entourage[location]", required: true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
@@ -210,7 +210,7 @@ resource Api::V1::EntouragesController do
       parameter :description, required: false
       parameter :category, "mat_help, non_mat_help or social", required: false
       parameter :public, "deprecated", required: false
-      with_options :scope => "entourage[metadata]", :required => true do
+      with_options scope: "entourage[metadata]", required: true do
         parameter :starts_at, "Start date"
         parameter :place_name, "Place name", required: false
         parameter :street_address, "Street address", required: false
@@ -261,9 +261,9 @@ resource Api::V1::EntouragesController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :entourage, :required => true do
+    with_options scope: :entourage, required: true do
       parameter :title, "Title"
-      with_options :scope => "entourage[location]", :required => true do
+      with_options scope: "entourage[location]", required: true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
@@ -273,14 +273,14 @@ resource Api::V1::EntouragesController do
       parameter :description, required: false
       parameter :category, "mat_help, non_mat_help or social", required: false
       parameter :public, "deprecated", required: false
-      with_options :scope => "entourage[outcome]", :required => false do
+      with_options scope: "entourage[outcome]", required: false do
         parameter :success, "whether the action was successful or not"
       end
       parameter :recipient_consent_obtained, "Consent is required when creating an action for someone else", required: false
-      with_options :scope => "entourage[metadata]" do
+      with_options scope: "entourage[metadata]" do
         parameter :display_address, "Address", type: :string
         parameter :city, "City", type: :string
-        parameter :close_message, "A message to post when closing an action", type: :string, :required => false
+        parameter :close_message, "A message to post when closing an action", type: :string, required: false
       end
     end
 
@@ -309,9 +309,9 @@ resource Api::V1::EntouragesController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :entourage, :required => true do
+    with_options scope: :entourage, required: true do
       parameter :title, "Title"
-      with_options :scope => "entourage[location]", :required => true do
+      with_options scope: "entourage[location]", required: true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
@@ -321,7 +321,7 @@ resource Api::V1::EntouragesController do
       parameter :description, required: false
       parameter :category, "mat_help, non_mat_help or social", required: false
       parameter :public, "deprecated", required: false
-      with_options :scope => "entourage[metadata]", required: true do
+      with_options scope: "entourage[metadata]", required: true do
         parameter :starts_at, "Start date"
         parameter :place_name, "Place name", required: false
         parameter :street_address, "Street address", required: false
@@ -384,7 +384,7 @@ resource Api::V1::EntouragesController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :entourage_report, :required => true do
+    with_options scope: :entourage_report, required: true do
       parameter :message, type: :string
     end
 

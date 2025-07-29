@@ -848,9 +848,9 @@ describe Api::V1::EntouragesController do
 
         it { expect(user_entourage.reload.metadata).to eq({
           :$id => "urn:entourage:action:metadata",
-          city: "",
-          display_address: "",
-          close_message: "foo"
+          :city => "",
+          :display_address => "",
+          :close_message => "foo"
         }) }
       end
 

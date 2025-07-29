@@ -40,7 +40,7 @@ resource Api::V1::Conversations::ChatMessagesController do
     parameter :token, type: :string, required: true
     parameter :conversation_id, type: :integer, required: true
 
-    with_options :scope => :chat_message, :required => true do
+    with_options scope: :chat_message, required: true do
       parameter :content, type: :string
     end
 

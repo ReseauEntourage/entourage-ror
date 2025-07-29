@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe NeighborhoodImage, :type => :model do
+RSpec.describe NeighborhoodImage, type: :model do
   describe 'size image_url_medium_or_default' do
     let(:image_resize_action) { create :image_resize_action, destination_path: "bar" }
     let(:neighborhood_image) { create :neighborhood_image, image_url: "foo", image_url_medium: image_resize_action }

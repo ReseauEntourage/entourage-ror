@@ -108,11 +108,11 @@ Rails.application.configure do
       allowed_matchers: [ /@entourage\.social\z/, /\Aabn\.audit\.[123]@advens\.fr\z/ ],
       delivery_method: :smtp,
       delivery_method_settings: {
-        :port =>           '587',
-        :address =>        'in-v3.mailjet.com',
-        :user_name =>      ENV['MAILJET_API_KEY'],
-        :password =>       ENV['MAILJET_SECRET_KEY'],
-        :authentication => :plain
+        port: '587',
+        address: 'in-v3.mailjet.com',
+        user_name: ENV['MAILJET_API_KEY'],
+        password: ENV['MAILJET_SECRET_KEY'],
+        authentication: :plain
       }
     }
   end
@@ -126,11 +126,11 @@ Rails.application.configure do
   end
 
   config.action_mailer.smtp_settings = {
-    :port =>           '587',
-    :address =>        'in-v3.mailjet.com',
-    :user_name =>      ENV['MAILJET_API_KEY'],
-    :password =>       ENV['MAILJET_SECRET_KEY'],
-    :authentication => :plain
+    port: '587',
+    address: 'in-v3.mailjet.com',
+    user_name: ENV['MAILJET_API_KEY'],
+    password: ENV['MAILJET_SECRET_KEY'],
+    authentication: :plain
   }
 
   # Inserts middleware to perform automatic connection switching.

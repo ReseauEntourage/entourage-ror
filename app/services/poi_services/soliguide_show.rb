@@ -26,7 +26,7 @@ module PoiServices
 
         uri = URI(SHOW_URI % [id, lang])
 
-        Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+        Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
           http.request Net::HTTP::Get.new(uri, headers)
         end
       end

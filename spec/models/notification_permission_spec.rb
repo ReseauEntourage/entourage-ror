@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe NotificationPermission, :type => :model do
+RSpec.describe NotificationPermission, type: :model do
   it { should validate_presence_of(:user) }
 
   describe 'notify?' do
