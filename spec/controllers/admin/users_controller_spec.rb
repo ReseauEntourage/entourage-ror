@@ -271,7 +271,7 @@ describe Admin::UsersController do
 
     context "signed in" do
       let!(:user) { admin_basic_login }
-      before(:each) do
+      before do
         stub_request(:delete, "https://foobar.s3.eu-west-1.amazonaws.com/#{validated_user_with_avatar.avatar_key}").
             to_return(status: 200, body: "", headers: {})
         stub_request(:delete, "https://foobar.s3.eu-west-1.amazonaws.com/300x300/#{validated_user_with_avatar.avatar_key}").

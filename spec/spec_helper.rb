@@ -16,7 +16,7 @@ RSpec.configure do |config|
   config.color = true
   config.formatter = :documentation
 
-  config.before(:each) do
+  config.before do
     Timecop.return
   end
 end
