@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :option do
-    key { "key" }
+    key { 'key' }
     active { true }
 
     trait :soliguide do

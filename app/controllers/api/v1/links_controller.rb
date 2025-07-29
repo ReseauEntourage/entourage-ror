@@ -13,7 +13,7 @@ module Api
           if current_user
             UserServices::EncodedId.encode(current_user.id)
           else
-            "anonymous"
+            'anonymous'
           end
 
         redirections = {
@@ -28,10 +28,10 @@ module Api
             'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
-              url = "https://entourage.iraiser.eu/jedonne/~mon-don?utm_source=appentourage&utm_medium=formulaire&utm_campaign=dons2020"
+              url = 'https://entourage.iraiser.eu/jedonne/~mon-don?utm_source=appentourage&utm_medium=formulaire&utm_campaign=dons2020'
 
               if !user.anonymous?
-                url += "&" + {
+                url += '&' + {
                   firstname: user.first_name,
                   lastname: user.last_name,
                   email: user.email,
@@ -39,7 +39,7 @@ module Api
                   utm_term: "db#{UserServices::EncodedId.encode(user.id)}"
                 }.to_query
               else
-                url += "&utm_term=anonymous"
+                url += '&utm_term=anonymous'
               end
 
               url
@@ -95,8 +95,8 @@ module Api
       def mesure_impact
         user = User.find_by_uuid(params[:id])
 
-        url = "https://entourage-asso.typeform.com/to/R7mfZUa7"
-        url = "https://entourage-asso.typeform.com/to/R5QNTEos" if user && user.is_ask_for_help?
+        url = 'https://entourage-asso.typeform.com/to/R7mfZUa7'
+        url = 'https://entourage-asso.typeform.com/to/R5QNTEos' if user && user.is_ask_for_help?
 
         redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}"
       end

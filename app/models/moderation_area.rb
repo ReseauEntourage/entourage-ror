@@ -3,14 +3,14 @@ class ModerationArea < ApplicationRecord
   belongs_to :sourcing, class_name: :User, optional: true
   belongs_to :community_builder, class_name: :User, optional: true
 
-  scope :no_hz, -> { where.not(departement: "*") }
+  scope :no_hz, -> { where.not(departement: '*') }
   scope :in_region, -> (region) {
     return unless region.present?
 
     where(departement: ModerationServices::Region.departments_in(region))
   }
 
-  HORS_ZONE = "*"
+  HORS_ZONE = '*'
 
   def region
     ModerationServices::Region.for_department(departement)
@@ -104,11 +104,11 @@ class ModerationArea < ApplicationRecord
   end
 
   def self.national
-    new(name: "National", departement: "FR")
+    new(name: 'National', departement: 'FR')
   end
 
   def self.no_zone
-    new(name: "Sans zone", departement: "_")
+    new(name: 'Sans zone', departement: '_')
   end
 
   def self.all_with_national_with_no_zone

@@ -10,19 +10,19 @@ describe Api::V1::Public::EntouragesController do
       get :show, params: { uuid: identifier }
     end
 
-    context "could get entourage with v1 uuid" do
+    context 'could get entourage with v1 uuid' do
       let(:identifier) { entourage.uuid.to_param }
       it { expect(response.status).to eq(200) }
       it { expect(JSON.parse(response.body)).to have_key('entourage') }
     end
 
-    context "could get entourage with v2 uuid" do
+    context 'could get entourage with v2 uuid' do
       let(:identifier) { entourage.uuid_v2.to_param }
       it { expect(response.status).to eq(200) }
       it { expect(JSON.parse(response.body)).to have_key('entourage') }
     end
 
-    context "could not get entourage with id" do
+    context 'could not get entourage with id' do
       let(:identifier) { entourage.id.to_param }
 
       it { expect(response.status).to eq(404) }

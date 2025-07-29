@@ -31,7 +31,7 @@ module EmailPreferencesService
           on email_preferences.email_category_id = email_categories.id and
              email_preferences.user_id = #{Integer(user.id)}
       ))
-      .select(:name, :description, "coalesce(subscribed, true) as subscribed")
+      .select(:name, :description, 'coalesce(subscribed, true) as subscribed')
   end
 
   def self.update_subscription user:, subscribed:, category:
@@ -54,7 +54,7 @@ module EmailPreferencesService
 
   def self.update user:, preferences:
     # @fixme Ugly quick fix
-    true_values = Set.new([true, 1, "1", "t", "T", "true", "TRUE", "on", "ON"])
+    true_values = Set.new([true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON'])
 
     preferences.symbolize_keys
     current_value = Hash[user_preferences(user).map { |c| [c.name.to_sym, c.subscribed] }]

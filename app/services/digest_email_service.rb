@@ -123,7 +123,7 @@ module DigestEmailService
       .where(community: :entourage)
       .joins(:address)
       .where("country = 'FR'")
-      .where("substring(postal_code for 2) = ?", department_code.to_s)
+      .where('substring(postal_code for 2) = ?', department_code.to_s)
       .where(last_sign_in_at: 6.months.ago.midnight..Time.now)
       .accepts_email_category(UNSUBSCRIBE_CATEGORY)
       .where(deleted: false)
@@ -135,7 +135,7 @@ module DigestEmailService
       .where(community: :entourage)
       .where(group_type: :outing)
       .where("country = 'FR'")
-      .where("substring(postal_code for 2) = ?", department_code.to_s)
+      .where('substring(postal_code for 2) = ?', department_code.to_s)
       .where("metadata->>'ends_at' >= ?", date.in_time_zone.advance(days: 2).midnight)
       .order("metadata->>'starts_at'")
       .limit(5)
@@ -151,7 +151,7 @@ module DigestEmailService
   def self.next_delivery day:, time:, previous_delivery:, min_interval:
     if previous_delivery
       unless min_interval.is_a?(ActiveSupport::Duration)
-        raise "min_interval must be an ActiveSupport::Duration"
+        raise 'min_interval must be an ActiveSupport::Duration'
       end
 
       starting_point = previous_delivery.in_time_zone.midnight + min_interval
@@ -239,7 +239,7 @@ module DigestEmailService
 
   def self.group_payload group, url_parameters: {}
     participant_count = group.join_requests.accepted.count
-    description = TextHelper.pluralize(participant_count, "participant")
+    description = TextHelper.pluralize(participant_count, 'participant')
 
     icon =
       case group.group_type
@@ -252,17 +252,17 @@ module DigestEmailService
     if group.group_type == 'outing'
       date =
         if group.metadata[:starts_at].midnight == group.metadata[:ends_at].midnight
-          I18n.l group.metadata[:starts_at], format: "le %A %-d %B"
+          I18n.l group.metadata[:starts_at], format: 'le %A %-d %B'
         else
-          [I18n.l(group.metadata[:starts_at], format: "du %A %-d %B "),
-           I18n.l(group.metadata[:ends_at],   format: "au %A %-d %B")].join
+          [I18n.l(group.metadata[:starts_at], format: 'du %A %-d %B '),
+           I18n.l(group.metadata[:ends_at],   format: 'au %A %-d %B')].join
         end
       location = "#{date}, à #{location}"
     end
 
     url = group.share_url
     url_parameters.compact!
-    url += "?" + url_parameters.compact.to_query if url_parameters.any?
+    url += '?' + url_parameters.compact.to_query if url_parameters.any?
 
     {
       title: group.title,
@@ -294,7 +294,7 @@ module DigestEmailService
       arrondissement = postal_code.last(2).to_i
       arrondissement =
         if arrondissement == 1
-          "1er"
+          '1er'
         else
           "#{arrondissement}ème"
         end

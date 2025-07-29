@@ -5,7 +5,7 @@ module OpenaiServices
     end
 
     def offensive?
-      "true" == result.to_s
+      'true' == result.to_s
     end
 
     def display_result
@@ -15,7 +15,7 @@ module OpenaiServices
     def result
       return unless @parsed_response.present?
 
-      @parsed_response["result"]
+      @parsed_response['result']
     end
   end
 end

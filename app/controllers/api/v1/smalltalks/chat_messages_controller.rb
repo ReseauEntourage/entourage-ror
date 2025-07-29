@@ -51,18 +51,18 @@ module Api
         def destroy
           ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete do |on|
             on.success do |chat_message|
-              render json: chat_message, root: "user", status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
+              render json: chat_message, root: 'user', status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
             end
 
             on.failure do |chat_message|
               render json: {
-                message: "Could not delete chat_message", reasons: chat_message.errors.full_messages
+                message: 'Could not delete chat_message', reasons: chat_message.errors.full_messages
               }, status: :bad_request
             end
 
             on.not_authorized do
               render json: {
-                message: "You are not authorized to delete this chat_message"
+                message: 'You are not authorized to delete this chat_message'
               }, status: :unauthorized
             end
           end
@@ -80,7 +80,7 @@ module Api
 
           unless params[:content_type].in? allowed_types
             type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-            return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+            return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
           end
 
           extension = MiniMime.lookup_by_content_type(params[:content_type]).extension

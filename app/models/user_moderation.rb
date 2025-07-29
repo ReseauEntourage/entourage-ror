@@ -4,13 +4,13 @@ class UserModeration < ApplicationRecord
   VALUES = {
     # Attentes
     expectations: [
-      "Connaissance du public SDF",
-      "Devenir bénévole",
-      "Etre accompagné dans la création du lien",
-      "Echanger avec des professionnels",
-      "Trouver des solutions",
-      "Contirbuer avec des dons",
-      "Créer du lien",
+      'Connaissance du public SDF',
+      'Devenir bénévole',
+      'Etre accompagné dans la création du lien',
+      'Echanger avec des professionnels',
+      'Trouver des solutions',
+      'Contirbuer avec des dons',
+      'Créer du lien',
       "Pas d'attente",
     ],
     # Connaissance d’Entourage
@@ -26,18 +26,18 @@ class UserModeration < ApplicationRecord
     ],
     # Contenu envoyé
     content_sent: [
-      "Simple comme bonjour",
-      "Idées d’actions faciles",
-      "Devenir ambassadeur-relais",
-      "Vidéo de présentation d’1’30",
+      'Simple comme bonjour',
+      'Idées d’actions faciles',
+      'Devenir ambassadeur-relais',
+      'Vidéo de présentation d’1’30',
       '"Les sans abris vous écrivent"',
-      "FAQ",
-      "Charte éthique",
-      "Les guides de solidarité",
-      "Mission de service civique",
-      "Stage chez entourage",
-      "Site Entourage",
-      "Blog Entourage",
+      'FAQ',
+      'Charte éthique',
+      'Les guides de solidarité',
+      'Mission de service civique',
+      'Stage chez entourage',
+      'Site Entourage',
+      'Blog Entourage',
     ],
     # Compétence
     skills: [

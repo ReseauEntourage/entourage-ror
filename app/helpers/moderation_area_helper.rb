@@ -17,7 +17,7 @@ module ModerationAreaHelper
         end
       end
 
-      concat form.select "#{attribute}_id".to_sym, options_for_select(moderators_for_select, area.public_send("#{attribute}_id")), { include_blank: true }, class: "form-control"
+      concat form.select "#{attribute}_id".to_sym, options_for_select(moderators_for_select, area.public_send("#{attribute}_id")), { include_blank: true }, class: 'form-control'
     end
   end
 end

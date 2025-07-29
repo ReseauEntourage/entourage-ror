@@ -24,26 +24,26 @@ describe PoiServices::Soliguide do
       } }
 
       it { expect(subject).to eq({
-        uuid: "s123",
+        uuid: 's123',
         source: :soliguide,
         source_id: 123,
-        source_url: "https://soliguide.fr/fiche/",
-        name: "foo",
-        description: "",
+        source_url: 'https://soliguide.fr/fiche/',
+        name: 'foo',
+        description: '',
         longitude: 1,
         latitude: 2,
         address: nil,
         postal_code: '75001',
         phone: nil,
-        phones: "",
+        phones: '',
         website: nil,
         email: nil,
-        audience: "",
+        audience: '',
         category_ids: [],
         source_category: nil,
         source_categories: [],
         hours: [],
-        languages: "Anglais (English)"
+        languages: 'Anglais (English)'
       }) }
     end
 
@@ -85,13 +85,13 @@ describe PoiServices::Soliguide do
     } }
 
     it { expect(subject).to eq({
-      uuid: "s123",
+      uuid: 's123',
       source_id: 123,
-      name: "foo",
+      name: 'foo',
       longitude: 1,
       latitude: 2,
       address: nil,
-      postal_code: "75001",
+      postal_code: '75001',
       phone: nil,
       category_id: 0,
       partner_id: nil
@@ -135,36 +135,36 @@ describe PoiServices::Soliguide do
 
     context 'wrong category' do
       let(:poi) { { 'services_all' => [
-        { 'category' => "foobar" }
+        { 'category' => 'foobar' }
       ] } }
       it { expect(subject).to eq([]) }
     end
 
     context 'soliguide category' do
       let(:poi) { { 'services_all' => [
-        { 'category' => "health" }
+        { 'category' => 'health' }
       ] } }
       it { expect(subject).to eq([3]) }
     end
 
     context 'multiple soliguide category' do
       let(:poi) { { 'services_all' => [
-        { 'category' => "health" },
-        { 'category' => "addiction" },
-        { 'category' => "job_coaching" },
-        { 'category' => "wellness" },
-        { 'category' => "toilets" },
+        { 'category' => 'health' },
+        { 'category' => 'addiction' },
+        { 'category' => 'job_coaching' },
+        { 'category' => 'wellness' },
+        { 'category' => 'toilets' },
       ] } }
       it { expect(subject).to eq([3, 7, 6, 40]) }
     end
 
     context 'multiple soliguide category with other categorys' do
       let(:poi) { { 'services_all' => [
-        { 'category' => "integration_through_economic_activity" },
-        { 'category' => "family_area" },
-        { 'category' => "emergency_accommodation" },
-        { 'category' => "long_term_accomodation" },
-        { 'category' => "access_to_housing" },
+        { 'category' => 'integration_through_economic_activity' },
+        { 'category' => 'family_area' },
+        { 'category' => 'emergency_accommodation' },
+        { 'category' => 'long_term_accomodation' },
+        { 'category' => 'access_to_housing' },
       ] } }
       it { expect(subject).to match_array([7, 6, 2]) }
     end
@@ -180,7 +180,7 @@ describe PoiServices::Soliguide do
         'description' => 'foo',
         'administrative' => ['refugee']
       } }
-      it { expect(subject).to eq(["Accueil préférentiel : de 16 à 35 ans", "Accueil : personnes réfugiés", "Autres informations importantes : foo"]) }
+      it { expect(subject).to eq(['Accueil préférentiel : de 16 à 35 ans', 'Accueil : personnes réfugiés', 'Autres informations importantes : foo']) }
     end
 
     context 'without description' do
@@ -190,7 +190,7 @@ describe PoiServices::Soliguide do
         'description' => nil,
         'administrative' => ['refugee']
       } }
-      it { expect(subject).to eq(["Accueil préférentiel : de 16 à 35 ans", "Accueil : personnes réfugiés"]) }
+      it { expect(subject).to eq(['Accueil préférentiel : de 16 à 35 ans', 'Accueil : personnes réfugiés']) }
     end
   end
 
@@ -199,22 +199,22 @@ describe PoiServices::Soliguide do
 
     context 'no accueil' do
       let(:accueil) { nil }
-      it { expect(subject).to eq("inconditionnel") }
+      it { expect(subject).to eq('inconditionnel') }
     end
 
     context 'accueil 0' do
       let(:accueil) { 0 }
-      it { expect(subject).to eq("inconditionnel") }
+      it { expect(subject).to eq('inconditionnel') }
     end
 
     context 'accueil 1' do
       let(:accueil) { 1 }
-      it { expect(subject).to eq("préférentiel") }
+      it { expect(subject).to eq('préférentiel') }
     end
 
     context 'accueil 2' do
       let(:accueil) { 2 }
-      it { expect(subject).to eq("exclusif") }
+      it { expect(subject).to eq('exclusif') }
     end
   end
 
@@ -290,32 +290,32 @@ describe PoiServices::Soliguide do
     end
 
     context 'all format_administrative' do
-      let(:administrative) { ["regular", "asylum", "refugee", "undocumented"] }
+      let(:administrative) { ['regular', 'asylum', 'refugee', 'undocumented'] }
       it { expect(subject).to eq(nil) }
     end
 
     context 'regular' do
-      let(:administrative) { ["regular"] }
-      it { expect(subject).to eq("personnes en situation régulière") }
+      let(:administrative) { ['regular'] }
+      it { expect(subject).to eq('personnes en situation régulière') }
     end
 
     context 'asylum' do
-      let(:administrative) { ["asylum"] }
+      let(:administrative) { ['asylum'] }
       it { expect(subject).to eq("personnes demandeurs d'asile") }
     end
 
     context 'undocumented' do
-      let(:administrative) { ["undocumented"] }
-      it { expect(subject).to eq("personnes sans papiers") }
+      let(:administrative) { ['undocumented'] }
+      it { expect(subject).to eq('personnes sans papiers') }
     end
 
     context 'refugee' do
-      let(:administrative) { ["refugee"] }
-      it { expect(subject).to eq("personnes réfugiés") }
+      let(:administrative) { ['refugee'] }
+      it { expect(subject).to eq('personnes réfugiés') }
     end
 
     context 'asylum and refugee' do
-      let(:administrative) { ["asylum", "refugee"] }
+      let(:administrative) { ['asylum', 'refugee'] }
       it { expect(subject).to eq("personnes demandeurs d'asile, réfugiés") }
     end
   end
@@ -340,12 +340,12 @@ describe PoiServices::Soliguide do
 
     context 'student format_other' do
       let(:other) { ['student', 'foo'] }
-      it { expect(subject).to eq(["étudiant(e)"]) }
+      it { expect(subject).to eq(['étudiant(e)']) }
     end
 
     context 'some format_other' do
       let(:other) { ['violence', 'prison'] }
-      it { expect(subject).to eq(["victime de violence", "sortant de prison"]) }
+      it { expect(subject).to eq(['victime de violence', 'sortant de prison']) }
     end
 
     context 'invalid format_other' do
@@ -364,12 +364,12 @@ describe PoiServices::Soliguide do
 
     context 'animal not authorized' do
       let(:animal) { { 'checked' => false } }
-      it { expect(subject).to eq("Animaux non autorisés") }
+      it { expect(subject).to eq('Animaux non autorisés') }
     end
 
     context 'animal authorized' do
       let(:animal) { { 'checked' => true } }
-      it { expect(subject).to eq("Animaux autorisés") }
+      it { expect(subject).to eq('Animaux autorisés') }
     end
   end
 
@@ -388,7 +388,7 @@ describe PoiServices::Soliguide do
 
     context 'other authorized' do
       let(:other) { { 'other' => 'foo' } }
-      it { expect(subject).to eq(["Autres précisions : foo"]) }
+      it { expect(subject).to eq(['Autres précisions : foo']) }
     end
   end
 
@@ -402,7 +402,7 @@ describe PoiServices::Soliguide do
 
     context 'with inconditionnel' do
       let(:modalities) { { 'inconditionnel' => true } }
-      it { expect(subject).to eq(["Accueil sans rendez-vous"]) }
+      it { expect(subject).to eq(['Accueil sans rendez-vous']) }
     end
 
     context 'with inconditionnel and inscription' do
@@ -413,7 +413,7 @@ describe PoiServices::Soliguide do
           'precisions' => 'foo'
         }
       } }
-      it { expect(subject).to eq(["Accueil sans rendez-vous"]) }
+      it { expect(subject).to eq(['Accueil sans rendez-vous']) }
     end
 
     context 'with appointment' do
@@ -496,52 +496,52 @@ describe PoiServices::Soliguide do
     context 'on monday, tuesday' do
       let(:hours) {
         {
-          "closedHolidays"=>"UNKNOWN",
-          "description"=>nil,
-          "friday"=> {
-            "open"=>true,
-            "timeslot"=>[
-              { "end"=>1230, "start"=>800 },
-              { "end"=>1645, "start"=>1400 }
+          'closedHolidays'=>'UNKNOWN',
+          'description'=>nil,
+          'friday'=> {
+            'open'=>true,
+            'timeslot'=>[
+              { 'end'=>1230, 'start'=>800 },
+              { 'end'=>1645, 'start'=>1400 }
             ]
           },
-          "monday"=> {
-            "open"=>true,
-            "timeslot"=>[
-              { "end"=>1230, "start"=>800 },
-              { "end"=>1645, "start"=>1400 }
+          'monday'=> {
+            'open'=>true,
+            'timeslot'=>[
+              { 'end'=>1230, 'start'=>800 },
+              { 'end'=>1645, 'start'=>1400 }
             ]
           },
-          "saturday"=>{
-            "open"=>false,
-            "timeslot"=>[]
+          'saturday'=>{
+            'open'=>false,
+            'timeslot'=>[]
           },
-          "sunday"=> {
-            "open"=>true,
-            "timeslot"=>[
-              { "end"=>1230, "start"=>900 },
-              { "end"=>1645, "start"=>1400 }
+          'sunday'=> {
+            'open'=>true,
+            'timeslot'=>[
+              { 'end'=>1230, 'start'=>900 },
+              { 'end'=>1645, 'start'=>1400 }
             ]
           },
-          "thursday"=> {
-            "open"=>true,
-            "timeslot"=>[
-              { "end"=>1230, "start"=>800 },
-              { "end"=>1645, "start"=>1400 }
+          'thursday'=> {
+            'open'=>true,
+            'timeslot'=>[
+              { 'end'=>1230, 'start'=>800 },
+              { 'end'=>1645, 'start'=>1400 }
             ]
           },
-          "tuesday"=> {
-            "open"=>true,
-            "timeslot"=>[
-              { "end"=>1230, "start"=>800 },
-              { "end"=>1645, "start"=>1400 }
+          'tuesday'=> {
+            'open'=>true,
+            'timeslot'=>[
+              { 'end'=>1230, 'start'=>800 },
+              { 'end'=>1645, 'start'=>1400 }
             ]
           },
-          "wednesday"=> {
-            "open"=>true,
-            "timeslot"=>[
-              { "end"=>1230, "start"=>800 },
-              { "end"=>1645, "start"=>1400 }
+          'wednesday'=> {
+            'open'=>true,
+            'timeslot'=>[
+              { 'end'=>1230, 'start'=>800 },
+              { 'end'=>1645, 'start'=>1400 }
             ]
           }
         }
@@ -557,31 +557,31 @@ describe PoiServices::Soliguide do
     context 'no names' do
       let(:place_name) { nil }
       let(:entity_name) { nil }
-      it { expect(subject).to eq("") }
+      it { expect(subject).to eq('') }
     end
 
     context 'only place_name' do
-      let(:place_name) { "Lorem ipsum dolor sit amet" }
+      let(:place_name) { 'Lorem ipsum dolor sit amet' }
       let(:entity_name) { nil }
-      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+      it { expect(subject).to eq('Lorem ipsum dolor sit amet') }
     end
 
     context 'only entity_name' do
       let(:place_name) { nil }
-      let(:entity_name) { "Lorem ipsum dolor sit amet" }
-      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+      let(:entity_name) { 'Lorem ipsum dolor sit amet' }
+      it { expect(subject).to eq('Lorem ipsum dolor sit amet') }
     end
 
     context 'both names without similarity' do
-      let(:place_name) { "Lorem ipsum dolor sit amet" }
-      let(:entity_name) { "consectetur adipiscing elit" }
-      it { expect(subject).to eq("Lorem ipsum dolor sit amet - consectetur adipiscing elit") }
+      let(:place_name) { 'Lorem ipsum dolor sit amet' }
+      let(:entity_name) { 'consectetur adipiscing elit' }
+      it { expect(subject).to eq('Lorem ipsum dolor sit amet - consectetur adipiscing elit') }
     end
 
     context 'both names with high similarity' do
-      let(:place_name) { "Lorem ipsum dolor sit amet" }
-      let(:entity_name) { "Lorem ipsum dolor sit amet, consectetur adipiscing" }
-      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+      let(:place_name) { 'Lorem ipsum dolor sit amet' }
+      let(:entity_name) { 'Lorem ipsum dolor sit amet, consectetur adipiscing' }
+      it { expect(subject).to eq('Lorem ipsum dolor sit amet') }
     end
   end
 
@@ -590,22 +590,22 @@ describe PoiServices::Soliguide do
 
     context 'no description' do
       let(:description) { nil }
-      it { expect(subject).to eq("") }
+      it { expect(subject).to eq('') }
     end
 
     context 'plaintext description' do
-      let(:description) { "Lorem ipsum dolor sit amet" }
-      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+      let(:description) { 'Lorem ipsum dolor sit amet' }
+      it { expect(subject).to eq('Lorem ipsum dolor sit amet') }
     end
 
     context 'html description' do
-      let(:description) { "<p>Lorem ipsum dolor sit amet</p>" }
-      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+      let(:description) { '<p>Lorem ipsum dolor sit amet</p>' }
+      it { expect(subject).to eq('Lorem ipsum dolor sit amet') }
     end
 
     context 'html accent description' do
-      let(:description) { "<p>Lorem to caf&#233;t&#233;ria</p>" }
-      it { expect(subject).to eq("Lorem to cafétéria") }
+      let(:description) { '<p>Lorem to caf&#233;t&#233;ria</p>' }
+      it { expect(subject).to eq('Lorem to cafétéria') }
     end
   end
 
@@ -647,13 +647,13 @@ describe PoiServices::Soliguide do
     end
 
     context 'empty words' do
-      let(:words) { "" }
+      let(:words) { '' }
       it { expect(subject).to eq([]) }
     end
 
     context 'with 3 or less words' do
-      let(:words) { "Lorem ipsum dolor sit amet" }
-      it { expect(subject).to eq(["lorem", "ipsum", "dolor", "amet"]) }
+      let(:words) { 'Lorem ipsum dolor sit amet' }
+      it { expect(subject).to eq(['lorem', 'ipsum', 'dolor', 'amet']) }
     end
   end
 
@@ -672,7 +672,7 @@ describe PoiServices::Soliguide do
 
     context 'invalid entourage_category' do
       let(:entourage_category) { 1 }
-      it { expect(subject).to eq(["food", "food_distribution", "seated_catering", "food_packages", "social_grocery_stores", "baby_parcel", "food_voucher", "shared_kitchen", "cooking_workshop", "community_garden", "solidarity_fridge"]) }
+      it { expect(subject).to eq(['food', 'food_distribution', 'seated_catering', 'food_packages', 'social_grocery_stores', 'baby_parcel', 'food_voucher', 'shared_kitchen', 'cooking_workshop', 'community_garden', 'solidarity_fridge']) }
     end
   end
 end

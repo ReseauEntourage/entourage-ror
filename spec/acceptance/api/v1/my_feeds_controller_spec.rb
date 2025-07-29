@@ -2,17 +2,17 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::MyfeedsController do
-  explanation "MyFeeds"
-  header "Content-Type", "application/json"
+  explanation 'MyFeeds'
+  header 'Content-Type', 'application/json'
 
   get 'api/v1/myfeeds' do
-    route_summary "Get the feed"
-    route_description "Gets the list of actions and outings"
+    route_summary 'Get the feed'
+    route_description 'Gets the list of actions and outings'
 
     parameter :token, type: :string, required: true
-    parameter :page, "Page", type: :integer, default: 1
-    parameter :per, "Page", type: :integer, default: 25
-    parameter :unread_only, "Only unread entourages", type: :boolean, default: false
+    parameter :page, 'Page', type: :integer, default: 1
+    parameter :per, 'Page', type: :integer, default: 25
+    parameter :unread_only, 'Only unread entourages', type: :boolean, default: false
 
     let(:user) { FactoryBot.create(:pro_user) }
     let(:token) { user.token }

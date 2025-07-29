@@ -22,9 +22,9 @@ module FeedServices
       end
 
       if entourages_only
-        k = "entourages"
+        k = 'entourages'
       else
-        k = "feeds"
+        k = 'feeds'
       end
       feeds = feeds.where.not(status: :blacklisted)
       feeds = feeds.where("#{k}.status != 'suspended' OR #{k}.user_id = ?", user.id)
@@ -44,25 +44,25 @@ module FeedServices
       )
 
       if unread_only
-        clauses = ["(feed_updated_at is not null and (last_message_read < feed_updated_at or last_message_read is null))"]
+        clauses = ['(feed_updated_at is not null and (last_message_read < feed_updated_at or last_message_read is null))']
 
         # DEPRECATION WARNING: Dangerous query method (method whose arguments are used as raw SQL) called with non-attribute argument(s): "distinct joinable_id". Non-attribute arguments will be disallowed in Rails 6.0. This method should not be called with user-provided values, such as request parameters or model attributes. Known-safe values can be passed by wrapping them in Arel.sql()
         entourage_ids_for_pending_join_requests =
           JoinRequest
           .where(status: :pending)
           .joins(:entourage).merge(user.entourages.findable)
-          .pluck(Arel.sql("distinct joinable_id"))
+          .pluck(Arel.sql('distinct joinable_id'))
 
         if entourage_ids_for_pending_join_requests.any?
           if entourages_only
-            l = "entourages.id"
+            l = 'entourages.id'
           else
-            l = "feedable_id"
+            l = 'feedable_id'
           end
           clauses << "#{l} in (%s)" % entourage_ids_for_pending_join_requests.join(',')
         end
 
-        feeds = feeds.where(clauses.join(" or "))
+        feeds = feeds.where(clauses.join(' or '))
       end
 
       feeds
@@ -119,9 +119,9 @@ module FeedServices
       end
       feedable_ids.delete 'Announcement'
       return if feedable_ids.empty?
-      clause = ["(joinable_type = ? and joinable_id in (?))"]
+      clause = ['(joinable_type = ? and joinable_id in (?))']
       user_join_requests = user.join_requests
-        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
+        .where((clause * feedable_ids.count).join(' OR '), *feedable_ids.flatten)
       user_join_requests =
         Hash[user_join_requests.map { |r| [[r.joinable_type, r.joinable_id], r] }]
       feeds.each do |feed|
@@ -140,13 +140,13 @@ module FeedServices
       end
       feedable_ids.delete 'Announcement'
       return if feedable_ids.empty?
-      clause = ["(messageable_type = ? and messageable_id in (?))"]
+      clause = ['(messageable_type = ? and messageable_id in (?))']
       last_chat_messages = ChatMessage
-        .select("distinct on (messageable_type, messageable_id) messageable_type, messageable_id")
-        .order("messageable_type, messageable_id, created_at desc")
+        .select('distinct on (messageable_type, messageable_id) messageable_type, messageable_id')
+        .order('messageable_type, messageable_id, created_at desc')
         .select(:id, :content, :user_id, :status, :created_at)
         .includes(:user)
-        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
+        .where((clause * feedable_ids.count).join(' OR '), *feedable_ids.flatten)
       last_chat_messages =
         Hash[last_chat_messages.map { |m| [[m.messageable_type, m.messageable_id], m] }]
       feeds.each do |feed|
@@ -165,13 +165,13 @@ module FeedServices
       end
       feedable_ids.delete 'Announcement'
       return if feedable_ids.empty?
-      clause = ["(joinable_type = ? and joinable_id in (?))"]
+      clause = ['(joinable_type = ? and joinable_id in (?))']
       last_join_requests = JoinRequest
-        .select("distinct on (joinable_type, joinable_id) joinable_type, joinable_id")
-        .order("joinable_type, joinable_id, created_at desc")
+        .select('distinct on (joinable_type, joinable_id) joinable_type, joinable_id')
+        .order('joinable_type, joinable_id, created_at desc')
         .select(:id, :status, :user_id, :created_at)
         .where(status: :pending)
-        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
+        .where((clause * feedable_ids.count).join(' OR '), *feedable_ids.flatten)
       last_join_requests =
         Hash[last_join_requests.map { |r| [[r.joinable_type, r.joinable_id], r] }]
       feeds.each do |feed|

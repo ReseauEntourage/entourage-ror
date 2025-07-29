@@ -22,7 +22,7 @@ module SalesforceServices
     def destroy
       return unless id = find_id
 
-      client.update(interface.table_name, Id: id, Status: "Aborted")
+      client.update(interface.table_name, Id: id, Status: 'Aborted')
     end
 
     def updatable_fields

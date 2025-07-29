@@ -21,18 +21,18 @@ module Api
       def destroy
         ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete do |on|
           on.success do |chat_message|
-            render json: chat_message, root: "user", status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
+            render json: chat_message, root: 'user', status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
           end
 
           on.failure do |chat_message|
             render json: {
-              message: "Could not delete chat_message", reasons: chat_message.errors.full_messages
+              message: 'Could not delete chat_message', reasons: chat_message.errors.full_messages
             }, status: :bad_request
           end
 
           on.not_authorized do
             render json: {
-              message: "You are not authorized to delete this chat_message"
+              message: 'You are not authorized to delete this chat_message'
             }, status: :unauthorized
           end
         end

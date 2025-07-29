@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :reaction do
-    name { "Coeur" }
+    name { 'Coeur' }
     key { :heart }
   end
 end

@@ -1,7 +1,7 @@
 class SessionHistory < ApplicationRecord
   belongs_to :user
 
-  INSERT_SQL = "insert into session_histories (user_id, platform, date) values (%s, %s, %s) on conflict do nothing".freeze
+  INSERT_SQL = 'insert into session_histories (user_id, platform, date) values (%s, %s, %s) on conflict do nothing'.freeze
   UPSERT_NOTIFICATIONS_PERMISSIONS_SQL = %(
     insert into session_histories (user_id, platform, date, notifications_permissions) values (%s, %s, %s, %s)
     on conflict (user_id, platform, date) do update set notifications_permissions = excluded.notifications_permissions

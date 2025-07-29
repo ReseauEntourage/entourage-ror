@@ -3,7 +3,7 @@ require 'lingua/stemmer'
 class SensitiveWord < ApplicationRecord
   MATCH_TYPES = %w(stem exact)
   SCOPES = %w(all public)
-  OFFENSABLE_CATEGORIES = ["Arme", "Insulte", "Violence / Sexualité / Famille"]
+  OFFENSABLE_CATEGORIES = ['Arme', 'Insulte', 'Violence / Sexualité / Famille']
 
   before_validation do
     next unless raw.present? && match_type.present? && (raw_changed? || match_type_changed?)

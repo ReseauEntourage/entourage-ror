@@ -5,7 +5,7 @@ describe PoiServices::SoliguideIndex do
     subject { PoiServices::SoliguideIndex.post params }
 
     before {
-      stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: body, headers: {})
+      stub_request(:post, 'https://api.soliguide.fr/new-search').to_return(status: 200, body: body, headers: {})
     }
 
     context 'no response' do
@@ -16,7 +16,7 @@ describe PoiServices::SoliguideIndex do
     end
 
     context 'empty response' do
-      let(:body) { "{}" }
+      let(:body) { '{}' }
       let(:params) { {} }
 
       it { expect(subject).to eq([]) }
@@ -31,7 +31,7 @@ describe PoiServices::SoliguideIndex do
           position: {
             location: { coordinates: [ 2.1, 48.2] },
             address: '174 rue Championnet 75018 Paris',
-            postalCode: "75018"
+            postalCode: '75018'
           },
         }]
       }) }
@@ -39,14 +39,14 @@ describe PoiServices::SoliguideIndex do
 
       it { expect(subject).to eq(
         [{
-          uuid: "s1",
+          uuid: 's1',
           source_id: 1,
-          name: "Entourage",
+          name: 'Entourage',
           longitude: 2.1,
           latitude: 48.2,
-          address: "174 rue Championnet 75018 Paris",
-          postal_code: "75018",
-          phone: "0102030405",
+          address: '174 rue Championnet 75018 Paris',
+          postal_code: '75018',
+          phone: '0102030405',
           category_id: 0,
           partner_id: nil
         }]

@@ -15,11 +15,11 @@ module Api
             .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
-          return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
+          return render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
             user: current_user
           } if @join_request.present? && @join_request.accepted?
 
@@ -30,7 +30,7 @@ module Api
           end
 
           if @join_request.save
-            render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not create conversation participation request', reasons: @join_request.errors.full_messages
@@ -43,7 +43,7 @@ module Api
 
           user = User.find(params[:id])
 
-          return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
+          return render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
             user: user
           } if @join_request.present? && @join_request.accepted?
 
@@ -54,7 +54,7 @@ module Api
           end
 
           if @join_request.save
-            render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: user }
+            render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: user }
           else
             render json: {
               message: 'Could not create conversation participation request', reasons: @join_request.errors.full_messages

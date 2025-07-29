@@ -4,5 +4,5 @@ class Experimental::PendingRequestReminder < ApplicationRecord
 
   RECENCY_DEFINITION = 1.week
 
-  scope :recent, -> { where("created_at >= ?", RECENCY_DEFINITION.ago) }
+  scope :recent, -> { where('created_at >= ?', RECENCY_DEFINITION.ago) }
 end
