@@ -266,22 +266,26 @@ RSpec.describe Entourage, type: :model do
 
     describe "on new pending join requests" do
       subject { create :join_request, status: :pending, joinable: group }
+
       include_examples "is updated"
     end
 
     describe "when an existing join request is made pending again" do
       let!(:join_request) { create :join_request, status: :cancelled, joinable: group }
       subject { join_request.update(status: :pending) }
+
       include_examples "is updated"
     end
 
     describe "on new chat_messages" do
       subject { create :chat_message, messageable: group }
+
       include_examples "is updated"
     end
 
     describe "on new chat_message of type status_update" do
       subject { create :chat_message, :closed_as_success, messageable: group }
+
       include_examples "is updated"
     end
   end
@@ -303,22 +307,26 @@ RSpec.describe Entourage, type: :model do
 
     describe "on new pending join requests" do
       subject { create :join_request, status: :pending, joinable: group }
+
       include_examples "is updated"
     end
 
     describe "when an existing join request is made pending again" do
       let!(:join_request) { create :join_request, status: :cancelled, joinable: group }
       subject { join_request.update(status: :pending) }
+
       include_examples "is updated"
     end
 
     describe "on new chat_messages" do
       subject { create :chat_message, messageable: group }
+
       include_examples "is updated"
     end
 
     describe "on new chat_message of type status_update" do
       subject { create :chat_message, :closed_as_success, messageable: group }
+
       include_examples "is not updated"
     end
   end
