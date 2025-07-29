@@ -6,7 +6,7 @@ module Phone
 
     def format
       return if @phone.nil?
-      @phone = @phone.gsub(" ", "")
+      @phone = @phone.delete(" ")
                      .gsub(/(\A\+\d+)\(0+\)/, '\1')
                      .gsub(/[\s.()\-\u{202c}\u{202d}]/, "")
       add_international_code_for_french_numbers
