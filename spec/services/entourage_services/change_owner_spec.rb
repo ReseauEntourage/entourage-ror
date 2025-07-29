@@ -11,46 +11,46 @@ describe EntourageServices::ChangeOwner do
   let(:outing) { create(:outing, user: creator, participants: [creator, member]) }
   let(:neighborhood) { create(:neighborhood, user: creator, participants: [creator, member]) }
 
-  describe "to" do
+  describe 'to' do
     let(:instance) { klass.new(joinable) }
-    let(:subject) { instance.to(member.id, "foo") {} }
+    let(:subject) { instance.to(member.id, 'foo') {} }
 
-    context "entourage" do
+    context 'entourage' do
       let(:joinable) { entourage }
 
-      context "yield" do
-        it { expect { |b| instance.to(member.id, "foo", &b) }.to yield_with_args(false, klass::INVALID_JOINABLE) }
+      context 'yield' do
+        it { expect { |b| instance.to(member.id, 'foo', &b) }.to yield_with_args(false, klass::INVALID_JOINABLE) }
       end
 
-      context "joinable" do
+      context 'joinable' do
         before { subject }
 
         it { expect(joinable.user_id).to eq(creator.id) }
       end
     end
 
-    context "outing" do
+    context 'outing' do
       let(:joinable) { outing }
 
-      context "yield" do
-        it { expect { |b| instance.to(member.id, "foo", &b) }.to yield_with_args(true) }
+      context 'yield' do
+        it { expect { |b| instance.to(member.id, 'foo', &b) }.to yield_with_args(true) }
       end
 
-      context "joinable" do
+      context 'joinable' do
         before { subject }
 
         it { expect(joinable.user_id).to eq(member.id) }
       end
     end
 
-    context "neighborhood" do
+    context 'neighborhood' do
       let(:joinable) { neighborhood }
 
-      context "yield" do
-        it { expect { |b| instance.to(member.id, "foo", &b) }.to yield_with_args(true) }
+      context 'yield' do
+        it { expect { |b| instance.to(member.id, 'foo', &b) }.to yield_with_args(true) }
       end
 
-      context "joinable" do
+      context 'joinable' do
         before { subject }
 
         it { expect(joinable.user_id).to eq(member.id) }

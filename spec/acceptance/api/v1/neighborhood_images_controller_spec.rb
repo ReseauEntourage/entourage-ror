@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::NeighborhoodImagesController do
-  explanation "Galerie de photos de groupes de voisinage"
-  header "Content-Type", "application/json"
+  explanation 'Galerie de photos de groupes de voisinage'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/neighborhood_images' do
-    route_summary "Get neighborhood images"
+    route_summary 'Get neighborhood images'
     # route_description "no description"
 
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
     let!(:neighborhood_image) { create :neighborhood_image, image_url: 'path-to-img.jpeg' }
     let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
@@ -23,7 +23,7 @@ resource Api::V1::NeighborhoodImagesController do
   end
 
   get 'api/v1/neighborhood_images/:id' do
-    route_summary "Get a neighborhood image"
+    route_summary 'Get a neighborhood image'
 
     parameter :id, required: true
     parameter :token, type: :string, required: true

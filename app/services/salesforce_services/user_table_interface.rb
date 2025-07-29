@@ -1,42 +1,42 @@
 module SalesforceServices
   class UserTableInterface < TableInterface
-    TABLE_NAME = "Compte_App__c"
+    TABLE_NAME = 'Compte_App__c'
 
     INSTANCE_MAPPING = {
-      first_name: "Prenom__c",
-      last_name: "Nom__c",
-      email: "Email__c",
-      phone: "Telephone__c",
-      profil_declare: "ProfilDeclare__c",
-      profil_moderation: "ProfilModeration__c",
-      antenne: "Antenne__c",
-      postal_code: "Code_postal__c",
-      latitude: "Geolocalisation__Latitude__s",
-      longitude: "Geolocalisation__Longitude__s",
-      created_date: "DateCreationCompte__c",
-      last_sign_in_date: "DateDerniereConnexion__c",
-      last_engagement_date: "LastEngagementDate__c",
-      is_engaged: "IsEngaged__c",
-      status: "Status__c"
+      first_name: 'Prenom__c',
+      last_name: 'Nom__c',
+      email: 'Email__c',
+      phone: 'Telephone__c',
+      profil_declare: 'ProfilDeclare__c',
+      profil_moderation: 'ProfilModeration__c',
+      antenne: 'Antenne__c',
+      postal_code: 'Code_postal__c',
+      latitude: 'Geolocalisation__Latitude__s',
+      longitude: 'Geolocalisation__Longitude__s',
+      created_date: 'DateCreationCompte__c',
+      last_sign_in_date: 'DateDerniereConnexion__c',
+      last_engagement_date: 'LastEngagementDate__c',
+      is_engaged: 'IsEngaged__c',
+      status: 'Status__c'
     }
 
     GOAL_MAPPING = {
-      ask_for_help: "preca",
-      offer_help: "riverain",
-      organization: "asso",
-      default: "inconnu"
+      ask_for_help: 'preca',
+      offer_help: 'riverain',
+      organization: 'asso',
+      default: 'inconnu'
     }
     TARGETING_PROFILE_MAPPING = {
-      asks_for_help: "preca",
-      offers_help: "riverain",
-      partner: "asso",
-      team: "asso",
-      ambassador: "riverain",
-      default: "inconnu"
+      asks_for_help: 'preca',
+      offers_help: 'riverain',
+      partner: 'asso',
+      team: 'asso',
+      ambassador: 'riverain',
+      default: 'inconnu'
     }
     DELETED_MAPPING = {
-      true => "supprimé",
-      false => "actif"
+      true => 'supprimé',
+      false => 'actif'
     }
 
     def initialize instance:
@@ -48,7 +48,7 @@ module SalesforceServices
     end
 
     def external_id_value
-      "UserId__c"
+      'UserId__c'
     end
 
     def mapping
@@ -133,19 +133,19 @@ module SalesforceServices
       end
 
       def created_date
-        user.created_at.strftime("%Y-%m-%d")
+        user.created_at.strftime('%Y-%m-%d')
       end
 
       def last_sign_in_date
         return unless user.last_sign_in_at.present?
 
-        user.last_sign_in_at.strftime("%Y-%m-%d")
+        user.last_sign_in_at.strftime('%Y-%m-%d')
       end
 
       def last_engagement_date
         return unless denorm_daily_engagement = user.denorm_daily_engagements.order(id: :desc).first
 
-        denorm_daily_engagement.date.strftime("%Y-%m-%d")
+        denorm_daily_engagement.date.strftime('%Y-%m-%d')
       end
 
       def is_engaged

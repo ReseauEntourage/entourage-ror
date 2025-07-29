@@ -4,22 +4,22 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :current_admin, :current_manager, :current_super_admin
 
   def authenticate_admin!
-    login_error "Vous devez vous authentifier avec un compte admin pour accéder à cette page" unless current_admin
+    login_error 'Vous devez vous authentifier avec un compte admin pour accéder à cette page' unless current_admin
   end
 
   def authenticate_manager!
-    login_error "Vous devez vous authentifier avec un compte manager pour accéder à cette page" unless current_manager
+    login_error 'Vous devez vous authentifier avec un compte manager pour accéder à cette page' unless current_manager
   end
 
   def authenticate_super_admin!
-    login_error "Vous devez vous authentifier avec un compte super_admin pour accéder à cette page" unless current_super_admin
+    login_error 'Vous devez vous authentifier avec un compte super_admin pour accéder à cette page' unless current_super_admin
   end
 
   def authenticate_user!
     if current_user || current_admin
       UserServices::LoginHistoryService.new(user: current_user).record_login! unless current_admin
     else
-      login_error "Vous devez vous authentifier pour accéder à cette page"
+      login_error 'Vous devez vous authentifier pour accéder à cette page'
     end
   end
 

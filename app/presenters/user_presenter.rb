@@ -23,16 +23,16 @@ class UserPresenter < ApplicationPresenter
   end
 
   def destroy_avatar_link
-    link_to("Supprimer la photo de profil", Rails.application.routes.url_helpers.destroy_avatar_admin_user_path(user), method: :put, class: "custom-button custom-primary-inverted", data: { confirm: "Vous allez supprimer la photo de profil, êtes vous sûr ?" })
+    link_to('Supprimer la photo de profil', Rails.application.routes.url_helpers.destroy_avatar_admin_user_path(user), method: :put, class: 'custom-button custom-primary-inverted', data: { confirm: 'Vous allez supprimer la photo de profil, êtes vous sûr ?' })
   end
 
   def validation_status_action_link
     return if user.anonymized?
 
     if user.validated?
-      link_to("Bloquer", Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: "custom-button custom-primary-inverted red", data: { confirm: "Vous allez supprimer l'avatar et bloquer l'utilisateur, êtes vous sûr ?" })
+      link_to('Bloquer', Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: 'custom-button custom-primary-inverted red', data: { confirm: "Vous allez supprimer l'avatar et bloquer l'utilisateur, êtes vous sûr ?" })
     else
-      link_to("Valider", Rails.application.routes.url_helpers.validate_admin_user_path(user), method: :put, class: "custom-button custom-primary-inverted green")
+      link_to('Valider', Rails.application.routes.url_helpers.validate_admin_user_path(user), method: :put, class: 'custom-button custom-primary-inverted green')
     end
   end
 
@@ -92,7 +92,7 @@ class UserPresenter < ApplicationPresenter
   end
 
   def self.partner_role_title user
-    format_name_part(user.partner_role_title) || "Membre"
+    format_name_part(user.partner_role_title) || 'Membre'
   end
 
   private

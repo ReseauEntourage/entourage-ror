@@ -10,22 +10,22 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
   describe 'index' do
     let!(:user_reaction) { create(:user_reaction, instance: chat_message) }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { get :index, params: { conversation_id: conversation.to_param, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
+    context 'signed in' do
       before { get :index, params: { conversation_id: conversation.to_param, token: user.token, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('reactions')}
       it { expect(result).to eq({
-        "reactions" => [{
+        'reactions' => [{
           'chat_message_id' => user_reaction.instance_id,
-          "reaction_id" => user_reaction.reaction_id,
-          "reactions_count" => 1,
+          'reaction_id' => user_reaction.reaction_id,
+          'reactions_count' => 1,
         }]
       }) }
     end
@@ -35,13 +35,13 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
     let!(:user_reaction_1) { create(:user_reaction, instance: chat_message) }
     let!(:user_reaction_2) { create(:user_reaction, instance: chat_message) }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { get :details, params: { id: user_reaction_1.reaction_id, conversation_id: conversation.to_param, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
+    context 'signed in' do
       before { get :details, params: { id: user_reaction_1.reaction_id, conversation_id: conversation.to_param, token: user.token, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(200) }
@@ -57,13 +57,13 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
     let!(:user_reaction_1) { create(:user_reaction, instance: chat_message) }
     let!(:user_reaction_2) { create(:user_reaction, instance: chat_message) }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { get :users, params: { conversation_id: conversation.to_param, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
+    context 'signed in' do
       before { get :users, params: { conversation_id: conversation.to_param, token: user.token, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(200) }
@@ -98,16 +98,16 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
     let(:reaction) { create(:reaction) }
     let(:request) { post :create, params: { conversation_id: conversation.to_param, chat_message_id: chat_message.id, token: user.token, reaction_id: reaction.id } }
 
-    context "not member" do
+    context 'not member' do
       before { request }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "member" do
+    context 'member' do
       let!(:join_request) { create(:join_request, joinable: conversation, user: user, status: :accepted) }
 
-      context "unexisting reaction for user" do
+      context 'unexisting reaction for user' do
         context do
           before { request }
 
@@ -119,7 +119,7 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
         end
       end
 
-      context "existing reaction for user" do
+      context 'existing reaction for user' do
         let!(:user_reaction) { create(:user_reaction, instance: chat_message, user: user) }
 
         context do
@@ -140,16 +140,16 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
 
     let(:request) { delete :destroy, params: { conversation_id: conversation.to_param, chat_message_id: chat_message.id, token: user.token } }
 
-    context "not member" do
+    context 'not member' do
       before { request }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "member" do
+    context 'member' do
       let!(:join_request) { create(:join_request, joinable: conversation, user: user, status: :accepted) }
 
-      context "unexisting reaction for user" do
+      context 'unexisting reaction for user' do
         let!(:user_reaction) { create(:user_reaction, instance: chat_message) }
 
         context do
@@ -163,7 +163,7 @@ describe Api::V1::Conversations::ChatMessages::ReactionsController do
         end
       end
 
-      context "existing reaction for user" do
+      context 'existing reaction for user' do
         context do
           before { request }
 

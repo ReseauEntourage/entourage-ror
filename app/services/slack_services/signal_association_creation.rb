@@ -14,35 +14,35 @@ module SlackServices
 
       {
         blocks: [
-          { type: "divider" },
+          { type: 'divider' },
           {
-            type: "section",
+            type: 'section',
             text: {
-              type: "mrkdwn",
+              type: 'mrkdwn',
               text: ":pushpin: *Nom :* #{@user.full_name} (#{@user.postal_code}, #{@user.city})"
             }
           },
           {
-            type: "section",
+            type: 'section',
             text: {
-              type: "mrkdwn",
+              type: 'mrkdwn',
               text: ":telephone_receiver: *Contact :* #{contact_info}"
             }
           },
           {
-            type: "section",
+            type: 'section',
             text: {
-              type: "mrkdwn",
+              type: 'mrkdwn',
               text: "👀 <@#{slack_moderator_id(@user)}> merci de vérifier ce compte !"
             }
           },
           {
-            type: "actions",
+            type: 'actions',
             elements: [{
-              type: "button",
+              type: 'button',
               text: {
-                type: "plain_text",
-                text: "Voir le profil",
+                type: 'plain_text',
+                text: 'Voir le profil',
                 emoji: true
               },
               url: link_to_user(@user.id)
@@ -54,7 +54,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Création d’un compte association",
+        username: 'Création d’un compte association',
         channel: webhook('channel-associations'),
       }
     end

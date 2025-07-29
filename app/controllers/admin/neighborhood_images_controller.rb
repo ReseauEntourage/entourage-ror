@@ -26,7 +26,7 @@ module Admin
       @neighborhood_image.assign_attributes(neighborhood_image_params)
 
       if @neighborhood_image.save
-        redirect_to edit_admin_neighborhood_image_path(@neighborhood_image), notice: "La photo a bien été modifiée"
+        redirect_to edit_admin_neighborhood_image_path(@neighborhood_image), notice: 'La photo a bien été modifiée'
       else
         render :edit
       end

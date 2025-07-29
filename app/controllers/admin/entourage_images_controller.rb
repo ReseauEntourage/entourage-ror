@@ -26,7 +26,7 @@ module Admin
       @entourage_image.assign_attributes(entourage_image_params)
 
       if @entourage_image.save
-        redirect_to edit_admin_entourage_image_path(@entourage_image), notice: "La photo a bien été modifiée"
+        redirect_to edit_admin_entourage_image_path(@entourage_image), notice: 'La photo a bien été modifiée'
       else
         render :edit
       end

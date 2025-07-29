@@ -20,11 +20,11 @@ module EmailDeliveryHooks
       detailed = deliver_only_once if detailed == :auto
 
       if deliver_only_once && campaign.blank?
-        raise "`deliver_only_once` requires campaign to be present"
+        raise '`deliver_only_once` requires campaign to be present'
       end
 
       if deliver_only_once && !detailed
-        raise "`deliver_only_once` can not be used without `detailed` tracking"
+        raise '`deliver_only_once` can not be used without `detailed` tracking'
       end
 
       set_delivery_hook_data(
@@ -87,7 +87,7 @@ module EmailDeliveryHooks
 
   def self.drop_duplicates(message)
     attributes = data(message)[:tracking]&.slice(:user_id, :campaign)
-    raise "Tracking header required to drop duplicates" if attributes.nil?
+    raise 'Tracking header required to drop duplicates' if attributes.nil?
 
     if EmailDelivery.for_campaign(attributes[:campaign])
                     .exists?(user_id: attributes[:user_id])
@@ -121,7 +121,7 @@ module EmailDeliveryHooks
     user_id = data(message).dig(:tracking, :user_id)
     if user_id
       User.where(id: user_id).update_all([
-        "last_email_sent_at = greatest(last_email_sent_at, ?)",
+        'last_email_sent_at = greatest(last_email_sent_at, ?)',
         Time.now
       ])
     end

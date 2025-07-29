@@ -12,8 +12,8 @@ class LegacyPhoneValidator
   end
 
   def foreign_number?
-    formatted.start_with?("+") &&
-    !formatted.start_with?("+33")
+    formatted.start_with?('+') &&
+    !formatted.start_with?('+33')
   end
 
   def french_number?
@@ -26,7 +26,7 @@ class LegacyPhoneValidator
   end
 
   def formatted
-    phone.delete(" ")
+    phone.delete(' ')
          .gsub(/(\A\+\d+)\(0+\)/, '\1') # remove parenthesized zeroes after international prefix
   end
 

@@ -33,7 +33,7 @@ describe Api::V1::InappNotificationsController, type: :controller do
         it { expect(result['inapp_notifications'][0]['instance']).to eq(inapp_notification.instance) }
         it { expect(result['inapp_notifications'][0]['instance_id']).to eq(inapp_notification.instance_id) }
         it { expect(result['inapp_notifications'][0]['image_url']).to eq(nil) }
-        it { expect(result['inapp_notifications'][0]['context']).to eq("chat_message_created") }
+        it { expect(result['inapp_notifications'][0]['context']).to eq('chat_message_created') }
       end
 
       context 'displayed inapp_notifications is not updated' do

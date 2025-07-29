@@ -13,7 +13,7 @@ module Admin
       @option.assign_attributes(option_params)
 
       if @option.save
-        flash[:notice] = "L'option #{@option.key} est maintenant %s" % (@option.active? ? "active" : "inactive")
+        flash[:notice] = "L'option #{@option.key} est maintenant %s" % (@option.active? ? 'active' : 'inactive')
       else
         flash[:error] = @option.errors.full_messages.to_sentence
       end
