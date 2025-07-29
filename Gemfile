@@ -2,14 +2,15 @@ source 'https://rubygems.org'
 
 ruby '3.2.0'
 
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 7.0'
 
 # database
 gem 'pg', '~> 1'
-gem 'activerecord-postgis-adapter', '~> 6.0'
+gem 'activerecord-postgis-adapter', '~> 7.0'
 
 # Templating
 gem 'terser' # config.assets.js_compressor in production
+gem 'sprockets-rails', '~> 3.2'
 gem 'sass-rails' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
