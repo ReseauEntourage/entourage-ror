@@ -12,7 +12,7 @@ resource Api::V1::Entourages::InvitationsController do
     parameter :token, type: :string, required: true
     parameter :entourage_id, type: :integer, required: true
 
-    with_options :scope => :invitation, :required => true do
+    with_options scope: :invitation, required: true do
       parameter :mode, "SMS or partner_following", required: true
       parameter :phone_numbers, '[array]', type: :array, required: true
     end

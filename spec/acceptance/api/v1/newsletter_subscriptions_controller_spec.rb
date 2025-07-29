@@ -24,21 +24,21 @@ resource Api::V1::NewsletterSubscriptionsController do
     context '201' do
       before {
         stub_request(:post, "https://api.mailjet.com/v3/REST/contactslist/2822632/managecontact").to_return(
-          :status => 200,
-          :body => {
+          status: 200,
+          body: {
             count: 1,
             data: {
               name: "foo",
               properties: {
-                :newsletter_entourage => true,
-                :antenne_entourage => "NANTES",
-                :profil_entourage => "PARTICULIER"
+                newsletter_entourage: true,
+                antenne_entourage: "NANTES",
+                profil_entourage: "PARTICULIER"
               },
               action: "addnoforce",
               email: "foo@bar.fr"
             }
           }.to_json,
-          :headers => {}
+          headers: {}
         )
       }
 

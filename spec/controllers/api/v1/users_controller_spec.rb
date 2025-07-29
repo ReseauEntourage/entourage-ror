@@ -2,7 +2,7 @@ require 'rails_helper'
 include AuthHelper
 include CommunityHelper
 
-RSpec.describe Api::V1::UsersController, :type => :controller do
+RSpec.describe Api::V1::UsersController, type: :controller do
   render_views
 
   let(:result) { JSON.parse(response.body) }

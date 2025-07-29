@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::ContactSubscriptionsController, :type => :controller do
+RSpec.describe Api::V1::ContactSubscriptionsController, type: :controller do
   describe "POST create" do
     let(:contact_subscription_attributes) { attributes_for(:contact_subscription) }
 
@@ -37,7 +37,7 @@ RSpec.describe Api::V1::ContactSubscriptionsController, :type => :controller do
     end
 
     describe "with incorrect parameters" do
-      before { post 'create', params: { contact_subscription: {not_email_param: "subscriber@contact.com", not_active_param: true}, :format => :json } }
+      before { post 'create', params: { contact_subscription: {not_email_param: "subscriber@contact.com", not_active_param: true}, format: :json } }
 
       it { expect(response.status).to eq(400) }
     end

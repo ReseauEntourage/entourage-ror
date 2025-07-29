@@ -131,9 +131,9 @@ class MailjetMailer < ActionMailer::Base
 
     # then overwrite the headers
     headers(
-      from:    from,
-      to:      user.email,
-      subject: nil,
+      :from => from,
+      :to => user.email,
+      :subject => nil,
 
       'X-MJ-TemplateID' => template_id,
       'X-MJ-TemplateLanguage' => 1,
