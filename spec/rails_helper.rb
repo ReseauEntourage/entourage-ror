@@ -15,7 +15,7 @@ RSpec.configure do |config|
     /vendor/
   ]
 
-  config.before(:each) do
+  config.before do
     ActionMailer::Base.deliveries.clear
 
     stub_request(:any, /.*api.mailjet.com.*/).to_return(status: 200, body: { id: 1 }.to_json, headers: {})
