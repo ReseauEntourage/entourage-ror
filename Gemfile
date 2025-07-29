@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 
 ruby '3.2.0'
 
-gem 'rails', '~> 7.0'
+gem 'rails', '~> 7.1.0'
 
 # database
-gem 'pg', '~> 1'
-gem 'activerecord-postgis-adapter', '~> 7.0'
+gem 'pg', '~> 1.1'
+gem 'activerecord-postgis-adapter', '~> 9.0'
 
 # Templating
 gem 'terser' # config.assets.js_compressor in production
@@ -23,14 +23,14 @@ gem 'active_model_serializers', '~> 0.10'
 gem 'ancestry'
 gem 'json-schema', '~> 2.8.1'
 gem 'rails-observers'
-gem 'acts-as-taggable-on', '~> 8.0'
+gem 'acts-as-taggable-on', '~> 12.0'
 gem 'store_attribute'
 gem 'ruby-stemmer' # used by sensitive_word
 gem 'mini_magick' # used by S3ImageUploader.resized_image (entourages thumbnails)
 
 # controllers
 gem 'ams_lazy_relationships' # used in serializers
-gem 'ransack', '~> 2'
+gem 'ransack', '~> 4.1'
 
 # template
 gem 'tinymce-rails'
@@ -56,7 +56,7 @@ gem 'restforce', '~> 7.6'
 gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
 
 # communication
-gem 'rpush', git: 'https://github.com/rpush/rpush.git', ref: '840125aa568740f87e1e4a60f052748ddbe9c668'
+gem 'rpush', '~> 9.1.0'
 gem 'aws-sdk-sns',  '~> 1'
 gem 'nexmo'
 gem 'safety_mailer'
