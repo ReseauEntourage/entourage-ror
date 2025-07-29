@@ -27,20 +27,20 @@ class Poi < ApplicationRecord
     return unless partners_filters.present?
     return unless partners_filters.any?
 
-    @pois = @pois.joins("left join partners on partners.id = partner_id")
-    clauses = ["partner_id is null"]
-    clauses << "donations_needs is not null"  if partners_filters.include?(:donations)
-    clauses << "volunteers_needs is not null" if partners_filters.include?(:volunteers)
-    @pois = @pois.where(clauses.join(" OR "))
+    @pois = @pois.joins('left join partners on partners.id = partner_id')
+    clauses = ['partner_id is null']
+    clauses << 'donations_needs is not null'  if partners_filters.include?(:donations)
+    clauses << 'volunteers_needs is not null' if partners_filters.include?(:volunteers)
+    @pois = @pois.where(clauses.join(' OR '))
   }
 
   scope :in_departement, -> (departement) do
     if departement.to_sym == :hors_zone
       departements = ModerationArea.only_departements.join('|')
 
-      where("adress !~ ?", "(,|\s)#{departements}\\d{3}")
+      where('adress !~ ?', "(,|\s)#{departements}\\d{3}")
     else
-      where("adress ~ ?", "(,|\s)#{departement}\\d{3}")
+      where('adress ~ ?', "(,|\s)#{departement}\\d{3}")
     end
   end
 

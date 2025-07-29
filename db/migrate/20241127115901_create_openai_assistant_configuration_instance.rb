@@ -1,7 +1,7 @@
 class CreateOpenaiAssistantConfigurationInstance < ActiveRecord::Migration[6.1]
   def change
     unless Rails.env.test?
-      prompt = "I created a {{action_type}} \"{{name}}\" : {{description}}. What are the most relevant recommandations? The following text contains all the possible recommandations."
+      prompt = 'I created a {{action_type}} "{{name}}" : {{description}}. What are the most relevant recommandations? The following text contains all the possible recommandations.'
 
       # OpenaiAssistantConfiguration.new(
       #   version: 1,

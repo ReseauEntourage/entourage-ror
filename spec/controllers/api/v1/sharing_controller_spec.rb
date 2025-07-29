@@ -6,12 +6,12 @@ describe Api::V1::SharingController do
   describe 'GET groups' do
     subject { JSON.parse(response.body) }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { get :groups }
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
+    context 'signed in' do
       before { get :groups, params: { token: user.token } }
 
       it { expect(subject).to have_key('sharing') }

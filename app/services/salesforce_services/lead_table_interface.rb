@@ -1,6 +1,6 @@
 module SalesforceServices
   class LeadTableInterface < TableInterface
-    TABLE_NAME = "Lead"
+    TABLE_NAME = 'Lead'
 
     INSTANCE_MAPPING = {
     }
@@ -14,7 +14,7 @@ module SalesforceServices
     end
 
     def external_id_value
-      "ID_externe__c"
+      'ID_externe__c'
     end
 
     def instance_mapping

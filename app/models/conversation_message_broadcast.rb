@@ -37,7 +37,7 @@ class ConversationMessageBroadcast < ApplicationRecord
   end
 
   def read_count
-    "n/a"
+    'n/a'
   end
 
   validates_presence_of :content, :title

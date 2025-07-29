@@ -8,11 +8,11 @@ RSpec.describe Api::V1::TagsController, type: :controller do
   describe 'GET interests' do
     before { get :interests }
     it { expect(response.status).to eq(200) }
-    it { expect(result).to have_key("interests") }
-    it { expect(result["interests"]).to be_a(Hash) }
-    it { expect(result["interests"]).to have_key("sport") }
-    it { expect(result["interests"]).to have_key("other") }
-    it { expect(result["interests"]["sport"]).to eq("Sport") }
-    it { expect(result["interests"]["other"]).to eq("Autre") }
+    it { expect(result).to have_key('interests') }
+    it { expect(result['interests']).to be_a(Hash) }
+    it { expect(result['interests']).to have_key('sport') }
+    it { expect(result['interests']).to have_key('other') }
+    it { expect(result['interests']['sport']).to eq('Sport') }
+    it { expect(result['interests']['other']).to eq('Autre') }
   end
 end

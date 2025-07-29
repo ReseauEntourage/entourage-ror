@@ -2,11 +2,11 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Users::NeighborhoodsController do
-  explanation "Neighborhoods"
-  header "Content-Type", "application/json"
+  explanation 'Neighborhoods'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/users/:user_id/neighborhoods' do
-    route_summary "Find neighborhoods a user has joined"
+    route_summary 'Find neighborhoods a user has joined'
     # route_description "no description"
 
     parameter :token, type: :string, required: true

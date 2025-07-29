@@ -1,8 +1,8 @@
 module SalesforceServices
   class TableInterface
-    CREATE_ENDPOINT = "/services/data/v55.0/tooling/sobjects/CustomField/"
-    DELETE_ENDPOINT = "/services/data/v55.0/tooling/sobjects/CustomField/%s.%s"
-    PERMISSION_ENDPOINT = "/services/data/v55.0/sobjects/FieldPermissions/"
+    CREATE_ENDPOINT = '/services/data/v55.0/tooling/sobjects/CustomField/'
+    DELETE_ENDPOINT = '/services/data/v55.0/tooling/sobjects/CustomField/%s.%s'
+    PERMISSION_ENDPOINT = '/services/data/v55.0/sobjects/FieldPermissions/'
 
     attr_accessor :table_name, :instance
 
@@ -71,12 +71,13 @@ module SalesforceServices
         return if field_exists?(table_name, field_name)
 
         field_payload = {
-          "FullName" => "#{table_name}.#{field_name}__c",
-          "Metadata" => {
-            "fullName" => "#{table_name}.#{field_name}__c",
-            "label" => field_label,
-            "type" => field_type,
-            "required" => required
+          'FullName' => "#{table_name}.#{field_name}__c",
+          'Metadata' => {
+            'fullName' => "#{table_name}.#{field_name}__c",
+            'label' => field_label,
+            'type' => field_type,
+            'nillable' => !required,
+            'defaultValue' => format_default_value(field_type, default_value)
           }.compact
         }
 
@@ -99,11 +100,11 @@ module SalesforceServices
       def set_visibility_for_table_field table_name, field_name
         permission_sets.each do |perm_set|
           permission_payload = {
-            "ParentId" => perm_set["Id"],
-            "SObjectType" => table_name,
-            "Field" => "#{table_name}.#{field_name}",
-            "PermissionsRead" => true,
-            "PermissionsEdit" => true
+            'ParentId' => perm_set['Id'],
+            'SObjectType' => table_name,
+            'Field' => "#{table_name}.#{field_name}",
+            'PermissionsRead' => true,
+            'PermissionsEdit' => true
           }
 
           client.post(PERMISSION_ENDPOINT, permission_payload.to_json, 'Content-Type' => 'application/json')
@@ -111,7 +112,17 @@ module SalesforceServices
       end
 
       def permission_sets
-        client.query("SELECT Id, ProfileId FROM PermissionSet WHERE IsOwnedByProfile = true")
+        client.query('SELECT Id, ProfileId FROM PermissionSet WHERE IsOwnedByProfile = true')
+      end
+
+      def format_default_value field_type, default_value
+        return nil if default_value.nil?
+
+        return default_value ? 'true' : 'false' if field_type == 'Checkbox'
+        return "\"#{default_value}\"" if ['Text', 'String', 'Picklist'].include?(field_type)
+        return "\"#{default_value.strftime('%Y-%m-%d')}\"" if field_type == 'Date' && default_value.is_a?(Date)
+
+        default_value
       end
 
       # describe table fields
@@ -148,7 +159,7 @@ module SalesforceServices
       # example: field_has_value?("Campaign", "Type_evenement__c", SalesforceServices::Outing::TYPE_EVENEMENT)
       def field_has_value? table_name, field_name, value
         field_values(table_name, field_name).any? do |config|
-          config["value"] == value
+          config['value'] == value
         end
       end
 
@@ -156,7 +167,7 @@ module SalesforceServices
         "#{ENV['SALESFORCE_LOGIN_URL']}/lightning/r/#{table_name}/#{record_id}/view"
       end
 
-      def records table_name, fields: ["Id"], per: 50, page: 1
+      def records table_name, fields: ['Id'], per: 50, page: 1
         query = "SELECT #{fields.join(', ')} FROM #{table_name} ORDER BY Id DESC LIMIT #{per} OFFSET #{(page - 1) * per}"
 
         {

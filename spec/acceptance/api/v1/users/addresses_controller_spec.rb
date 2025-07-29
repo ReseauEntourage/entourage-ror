@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Users::AddressesController do
-  explanation "Addresses"
-  header "Content-Type", "application/json"
+  explanation 'Addresses'
+  header 'Content-Type', 'application/json'
 
   post '/api/v1/users/:user_id/addresses/:position' do
-    route_summary "Create or update address"
+    route_summary 'Create or update address'
 
     parameter :token, type: :string, required: true
-    parameter :user_id, "me", type: :string, required: true
+    parameter :user_id, 'me', type: :string, required: true
     parameter :position, type: :number, required: true
     with_options scope: :address, required: true do
       parameter :place_name, type: :string
@@ -34,7 +34,7 @@ resource Api::V1::Users::AddressesController do
     } }
 
     context '200' do
-      let(:user_id) { "me" }
+      let(:user_id) { 'me' }
 
       example_request 'Create address at position for me' do
         expect(response_status).to eq(200)
@@ -52,14 +52,14 @@ resource Api::V1::Users::AddressesController do
   end
 
   delete '/api/v1/users/:user_id/addresses/:position' do
-    route_summary "Delete user address"
+    route_summary 'Delete user address'
 
     parameter :token, type: :string, required: true
-    parameter :user_id, "me", type: :string, required: true
+    parameter :user_id, 'me', type: :string, required: true
     parameter :position, type: :number, required: true
 
     let(:user) { FactoryBot.create(:pro_user) }
-    let(:user_id) { "me" }
+    let(:user_id) { 'me' }
 
     let!(:address_1) { create(:address, :blank, position: 1, place_name: 'home', latitude: 48.3, longitude: 2.7, user_id: user.id) }
     let!(:address_2) { create(:address, :blank, position: 2, place_name: 'work', latitude: 48.3, longitude: 2.7, user_id: user.id) }

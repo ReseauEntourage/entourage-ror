@@ -62,7 +62,7 @@ module Api
         entourages = Entourage
           .where(status: :open)
           .where(group_type: [:action])
-          .where("entourages.created_at > ?", 1.year.ago)
+          .where('entourages.created_at > ?', 1.year.ago)
           .where(user: current_user)
           .order(updated_at: :desc)
 
@@ -168,7 +168,7 @@ module Api
           SlackServices::SignalConversation.new(
             conversation: @entourage,
             reporting_user: current_user_or_anonymous,
-            signals: ["n/a"],
+            signals: ['n/a'],
             message: message
           ).notify
         else

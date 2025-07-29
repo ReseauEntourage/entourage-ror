@@ -2,8 +2,8 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::HomeController do
-  explanation "Home"
-  header "Content-Type", "application/json"
+  explanation 'Home'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/home' do
     parameter :token, type: :string, required: true
@@ -15,7 +15,7 @@ resource Api::V1::HomeController do
     let(:latitude) { 48.854367553784954 }
     let(:longitude) { 2.270340589096274 }
 
-    let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open", latitude: 48.85436, longitude: 2.270340) }
+    let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: 'open', latitude: 48.85436, longitude: 2.270340) }
     let!(:outing) { FactoryBot.create(:outing) }
     let!(:announcement) { FactoryBot.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
     let!(:announcement_ask) { FactoryBot.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }

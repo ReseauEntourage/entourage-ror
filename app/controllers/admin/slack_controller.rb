@@ -49,7 +49,7 @@ module Admin
         return send_data(
           open(@url).read,
           filename: "#{@filename}.csv",
-          type: "application/csv",
+          type: 'application/csv',
           disposition: 'inline',
           stream: 'true',
           buffer_size: '4096'

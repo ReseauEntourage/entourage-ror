@@ -1,6 +1,6 @@
-require "rack/attack"
+require 'rack/attack'
 
-Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: ENV["HEROKU_REDIS_GOLD_URL"], ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE })
+Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: ENV['HEROKU_REDIS_GOLD_URL'] || ENV['REDIS_URL'], ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE })
 
 class Rack::Attack
 
@@ -99,9 +99,9 @@ class Rack::Attack
   # end
 
   ### Blocking IP
-  Rack::Attack.blocklist_ip("54.36.101.21")
-  Rack::Attack.blocklist_ip("185.220.101.25")
-  Rack::Attack.blocklist_ip("185.220.101.50")
+  Rack::Attack.blocklist_ip('54.36.101.21')
+  Rack::Attack.blocklist_ip('185.220.101.25')
+  Rack::Attack.blocklist_ip('185.220.101.50')
 
   ### Notify against matched attack
 

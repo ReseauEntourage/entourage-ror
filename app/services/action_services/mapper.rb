@@ -4,17 +4,17 @@ module ActionServices
       DEFAULT_DISPLAY_CATEGORY = 'social'
 
       DISPLAY_CATEGORY_MAPPING = {
-        social: "social",
-        resource: "services",
-        mat_help: "equipment",
-        other: "services"
+        social: 'social',
+        resource: 'services',
+        mat_help: 'equipment',
+        other: 'services'
       }
       SECTION_MAPPING = {
-        social: "social",
-        services: "resource",
-        clothes: "mat_help",
-        equipment: "mat_help",
-        hygiene: "mat_help"
+        social: 'social',
+        services: 'resource',
+        clothes: 'mat_help',
+        equipment: 'mat_help',
+        hygiene: 'mat_help'
       }
 
       def section_from_display_category display_category

@@ -20,7 +20,7 @@ def color code, text
 end
 
 def print_error_details text
-  puts color 31, "Error"
+  puts color 31, 'Error'
   text.to_s.each_line do |line|
     puts "    #{color 31, '>'} #{line}"
   end
@@ -72,9 +72,9 @@ end
 def usage
   puts "Usage: #{$PROGRAM_NAME} [mode]"
   puts
-  puts "Modes:"
-  puts "  all       All html templates"
-  puts "  changed   Only html templates with uncommited changes"
+  puts 'Modes:'
+  puts '  all       All html templates'
+  puts '  changed   Only html templates with uncommited changes'
 end
 
 if ARGV.count != 1
@@ -114,6 +114,6 @@ text_files.each do |f|
   if patterns.any?
     puts
     puts "#{color 33, 'Warning:'} dangerous patterns detected in #{f}:"
-    puts "  " + patterns.join(', ')
+    puts '  ' + patterns.join(', ')
   end
 end

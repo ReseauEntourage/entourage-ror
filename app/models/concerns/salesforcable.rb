@@ -51,28 +51,28 @@ module Salesforcable
     end
 
     def from_address_to_antenne
-      return "National" unless @instance.present? && @instance.respond_to?(:departement)
+      return 'National' unless @instance.present? && @instance.respond_to?(:departement)
 
       departement = @instance.departement
 
-      return "National" unless departement.present?
+      return 'National' unless departement.present?
 
-      return "Paris" if departement == "75"
-      return "Lille" if departement == "59"
-      return "Lyon" if departement == "69"
-      return "Rennes" if departement == "35"
-      return "Seine Saint Denis" if departement == "93"
-      return "Hauts de Seine" if departement == "92"
-      return "Marseille" if departement == "13"
-      return "IDF" if departement == "77" || departement == "78" || departement == "91" || departement == "94" || departement == "95"
-      return "Lorient" if departement == "56"
-      return "Nantes" if departement == "44"
-      return "Bordeaux" if departement == "33"
-      return "Saint-Etienne" if departement == "42"
-      return "Toulouse" if departement == "31"
-      return "Grenoble" if departement == "38"
+      return 'Paris' if departement == '75'
+      return 'Lille' if departement == '59'
+      return 'Lyon' if departement == '69'
+      return 'Rennes' if departement == '35'
+      return 'Seine Saint Denis' if departement == '93'
+      return 'Hauts de Seine' if departement == '92'
+      return 'Marseille' if departement == '13'
+      return 'IDF' if departement == '77' || departement == '78' || departement == '91' || departement == '94' || departement == '95'
+      return 'Lorient' if departement == '56'
+      return 'Nantes' if departement == '44'
+      return 'Bordeaux' if departement == '33'
+      return 'Saint-Etienne' if departement == '42'
+      return 'Toulouse' if departement == '31'
+      return 'Grenoble' if departement == '38'
 
-      "Hors zone"
+      'Hors zone'
     end
   end
 
@@ -88,11 +88,11 @@ module Salesforcable
     return unless sf.is_synchable?
 
     if has_attribute?(:deleted)
-      return SalesforceJob.perform_later(self, "destroy") if saved_change_to_deleted? && deleted?
+      return SalesforceJob.perform_later(self, 'destroy') if saved_change_to_deleted? && deleted?
     end
 
     if has_attribute?(:status)
-      return SalesforceJob.perform_later(self, "destroy") if saved_change_to_status? && ["deleted", "closed", "cancelled"].include?(status.to_s)
+      return SalesforceJob.perform_later(self, 'destroy') if saved_change_to_status? && ['deleted', 'closed', 'cancelled'].include?(status.to_s)
     end
 
     unless force || new_record?
@@ -100,9 +100,9 @@ module Salesforcable
     end
 
     if salesforce_id.nil?
-      SalesforceJob.perform_later(self, "upsert")
+      SalesforceJob.perform_later(self, 'upsert')
     else
-      SalesforceJob.perform_later(self, "update")
+      SalesforceJob.perform_later(self, 'update')
     end
   end
 

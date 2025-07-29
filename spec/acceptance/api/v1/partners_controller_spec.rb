@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::PartnersController do
-  explanation "Partners"
-  header "Content-Type", "application/json"
+  explanation 'Partners'
+  header 'Content-Type', 'application/json'
 
   get '/api/v1/partners' do
-    route_summary "Allows users to find partners"
+    route_summary 'Allows users to find partners'
     # route_description "no description"
 
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:partner) { FactoryBot.create(:partner) }
@@ -24,10 +24,10 @@ resource Api::V1::PartnersController do
   end
 
   get '/api/v1/partners/:id' do
-    route_summary "Allows users to find a given partner"
+    route_summary 'Allows users to find a given partner'
     # route_description "no description"
 
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:partner) { FactoryBot.create(:partner) }
@@ -43,14 +43,14 @@ resource Api::V1::PartnersController do
   end
 
   post '/api/v1/partners/join_request' do
-    route_summary "Allows users to request to join a partner"
+    route_summary 'Allows users to request to join a partner'
     # route_description "no description"
 
-    parameter :token, "User token", type: :string, required: true
+    parameter :token, 'User token', type: :string, required: true
     parameter :partner_id, "Partner id; 'partner_id' or 'new_partner_name' must be present", type: :integer, required: false
     parameter :new_partner_name, "New partner name; 'new_partner_name' must be nil when 'partner_id' is present", type: :string, required: false
-    parameter :postal_code, "Postal code", type: :string, required: true
-    parameter :partner_role_title, "Partner role title", type: :string, required: true
+    parameter :postal_code, 'Postal code', type: :string, required: true
+    parameter :partner_role_title, 'Partner role title', type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:partner) { FactoryBot.create(:partner) }

@@ -27,8 +27,8 @@ class InappNotification < ApplicationRecord
 
   def instance= instance
     self.instance_baseclass = instance.to_s.camelize
-    self.instance_baseclass = "ChatMessage" if [:neighborhood_post, :outing_post].include?(instance&.to_sym)
-    self.instance_baseclass = "Entourage" if [:contribution, :solicitation, :outing].include?(instance&.to_sym)
+    self.instance_baseclass = 'ChatMessage' if [:neighborhood_post, :outing_post].include?(instance&.to_sym)
+    self.instance_baseclass = 'Entourage' if [:contribution, :solicitation, :outing].include?(instance&.to_sym)
 
     super(instance)
   end

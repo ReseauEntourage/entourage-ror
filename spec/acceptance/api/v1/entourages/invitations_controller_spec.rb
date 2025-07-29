@@ -2,18 +2,18 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::Entourages::InvitationsController do
-  explanation "Invitations"
-  header "Content-Type", "application/json"
+  explanation 'Invitations'
+  header 'Content-Type', 'application/json'
 
   post '/api/v1/entourages/:entourage_id/invitations' do
-    route_summary "Create invitations"
+    route_summary 'Create invitations'
     # route_description "no description"
 
     parameter :token, type: :string, required: true
     parameter :entourage_id, type: :integer, required: true
 
     with_options scope: :invitation, required: true do
-      parameter :mode, "SMS or partner_following", required: true
+      parameter :mode, 'SMS or partner_following', required: true
       parameter :phone_numbers, '[array]', type: :array, required: true
     end
 
@@ -24,8 +24,8 @@ resource Api::V1::Entourages::InvitationsController do
     let(:raw_post) { {
       token: user.token,
       invite: {
-        mode: "SMS",
-        phone_numbers: ["+33612345678", "+33612345679"]
+        mode: 'SMS',
+        phone_numbers: ['+33612345678', '+33612345679']
       }
     }.to_json }
 

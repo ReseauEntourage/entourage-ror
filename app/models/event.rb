@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :user
 
-  INSERT_SQL = "insert into events (name, user_id, created_at) values (%s, %s, %s) on conflict do nothing".freeze
+  INSERT_SQL = 'insert into events (name, user_id, created_at) values (%s, %s, %s) on conflict do nothing'.freeze
 
   def self.track name, user_id:, at: Time.now
     connection.execute(
@@ -14,6 +14,6 @@ class Event < ApplicationRecord
   end
 
   def self.names
-    connection.execute("select unnest(enum_range(null::event_name))").column_values(0)
+    connection.execute('select unnest(enum_range(null::event_name))').column_values(0)
   end
 end

@@ -5,79 +5,79 @@ describe Api::V1::InvitationsController do
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
-    context "user not signed in" do
+    context 'user not signed in' do
       before { get :index }
       it { expect(response.status).to eq(401) }
     end
 
-    context "user signed in" do
+    context 'user signed in' do
       let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: user) }
       before { get :index, params: { token: user.token } }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({
-        "invitations"=>[{
-          "id" => invitation.id,
-          "invitation_mode" => "SMS",
-          "phone_number" => "+33612345678",
-          "entourage_id" => invitation.invitable_id,
-          "title" => invitation.invitable.title,
-          "status" => "pending",
-          "inviter" => {
-            "display_name" => "John D."
+        'invitations'=>[{
+          'id' => invitation.id,
+          'invitation_mode' => 'SMS',
+          'phone_number' => '+33612345678',
+          'entourage_id' => invitation.invitable_id,
+          'title' => invitation.invitable.title,
+          'status' => 'pending',
+          'inviter' => {
+            'display_name' => 'John D.'
           }
         }]
       }) }
     end
 
-    context "accepted invitation" do
+    context 'accepted invitation' do
       let!(:accepted_invitation) { FactoryBot.create(:entourage_invitation, invitee: user) }
       let!(:join_request) { create(:join_request, user: user, joinable: accepted_invitation.invitable, status: JoinRequest::ACCEPTED_STATUS) }
       before { get :index, params: { token: user.token } }
-      it { expect(result["invitations"][0]["status"]).to eq("accepted")}
+      it { expect(result['invitations'][0]['status']).to eq('accepted')}
     end
 
-    context "rejected invitation" do
+    context 'rejected invitation' do
       let!(:rejected_invitation) { FactoryBot.create(:entourage_invitation, invitee: user) }
       let!(:join_request) { create(:join_request, user: user, joinable: rejected_invitation.invitable, status: JoinRequest::REJECTED_STATUS) }
       before { get :index, params: { token: user.token } }
-      it { expect(result["invitations"][0]["status"]).to eq("rejected")}
+      it { expect(result['invitations'][0]['status']).to eq('rejected')}
     end
 
-    context "cancelled invitation" do
+    context 'cancelled invitation' do
       let!(:cancelled_invitation) { FactoryBot.create(:entourage_invitation, invitee: user) }
       let!(:join_request) { create(:join_request, user: user, joinable: cancelled_invitation.invitable, status: JoinRequest::CANCELLED_STATUS) }
       before { get :index, params: { token: user.token } }
-      it { expect(result["invitations"][0]["status"]).to eq("cancelled")}
+      it { expect(result['invitations'][0]['status']).to eq('cancelled')}
     end
 
-    context "belongs to entourage" do
+    context 'belongs to entourage' do
       let!(:entourage) { FactoryBot.create(:entourage) }
       before { FactoryBot.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS) }
       let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: user, invitable: entourage ) }
       before { get :index, params: { token: user.token } }
-      it { expect(result["invitations"][0]["status"]).to eq("accepted") }
+      it { expect(result['invitations'][0]['status']).to eq('accepted') }
     end
 
-    context "filter accepted invitations" do
-      let!(:accepted_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: "accepted") }
-      let!(:pending_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: "pending") }
-      let!(:rejected_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: "rejected") }
-      let!(:cancelled_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: "cancelled") }
-      before { get :index, params: { token: user.token, status: "accepted" } }
-      it { expect(result["invitations"].map {|invite| invite["id"]}).to eq([accepted_invitation.id])}
+    context 'filter accepted invitations' do
+      let!(:accepted_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: 'accepted') }
+      let!(:pending_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: 'pending') }
+      let!(:rejected_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: 'rejected') }
+      let!(:cancelled_invitation) { FactoryBot.create(:entourage_invitation, invitee: user, status: 'cancelled') }
+      before { get :index, params: { token: user.token, status: 'accepted' } }
+      it { expect(result['invitations'].map {|invite| invite['id']}).to eq([accepted_invitation.id])}
     end
   end
 
-  describe "PUT update" do
+  describe 'PUT update' do
     let(:group) { create :entourage, :joined }
     let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: user, invitable: group) }
-    context "user not signed in" do
+    context 'user not signed in' do
       before { put :update, params: { id: invitation.to_param }}
       it { expect(response.status).to eq(401) }
     end
 
-    context "user signed in" do
-      context "accept my invite" do
+    context 'user signed in' do
+      context 'accept my invite' do
         before { put :update, params: { id: invitation.to_param, token: user.token } }
         it { expect(response.status).to eq(204) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS).count).to eq(1) }
@@ -85,7 +85,7 @@ describe Api::V1::InvitationsController do
         it { expect(invitation.invitable.reload.number_of_people).to eq invitation.invitable.join_requests.accepted.count }
       end
 
-      context "accept another user invite" do
+      context 'accept another user invite' do
         let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: FactoryBot.create(:public_user)) }
         before { put :update, params: { id: invitation.to_param, token: user.token } }
         it { expect(response.status).to eq(403) }
@@ -94,22 +94,22 @@ describe Api::V1::InvitationsController do
     end
   end
 
-  describe "DELETE destroy" do
+  describe 'DELETE destroy' do
     let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: user) }
-    context "user not signed in" do
+    context 'user not signed in' do
       before { delete :destroy, params: { id: invitation.to_param }}
       it { expect(response.status).to eq(401) }
     end
 
-    context "user signed in" do
-      context "refuse my invite" do
+    context 'user signed in' do
+      context 'refuse my invite' do
         before { delete :destroy, params: { id: invitation.to_param, token: user.token } }
         it { expect(response.status).to eq(204) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS).count).to eq(1) }
         it { expect(EntourageInvitation.last.status).to eq(EntourageInvitation::REJECTED_STATUS) }
       end
 
-      context "refuse another user invite" do
+      context 'refuse another user invite' do
         let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: FactoryBot.create(:public_user)) }
         before { delete :destroy, params: { id: invitation.to_param, token: user.token } }
         it { expect(response.status).to eq(403) }

@@ -19,7 +19,7 @@ module Api
 
             on.failure do |user, address|
               render_error(
-                code: "CANNOT_UPDATE_ADDRESS",
+                code: 'CANNOT_UPDATE_ADDRESS',
                 message: address.errors.full_messages +
                 user.errors.full_messages,
                 status: 400
@@ -32,8 +32,8 @@ module Api
           position = params[:position]&.to_i
           if position.blank? || position < 2 || position > Address::USER_MAX_ADDRESSES
             return render_error(
-                code: "CANNOT_DELETE_ADDRESS",
-                message: "Invalid address id",
+                code: 'CANNOT_DELETE_ADDRESS',
+                message: 'Invalid address id',
                 status: 400
             )
           end
@@ -52,7 +52,7 @@ module Api
 
         def enforce_id
           unless params[:user_id] == 'me'
-            render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 403)
+            render_error(code: 'UNAUTHORIZED', message: 'You can only update your own address.', status: 403)
           end
         end
 
