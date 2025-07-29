@@ -3,7 +3,7 @@ class CreateEntouragesUsers < ActiveRecord::Migration[4.2]
     create_table :entourages_users do |t|
       t.integer :user_id,       null: false
       t.integer :entourage_id,  null: false
-      t.string  :status,        null: false, default: "pending"
+      t.string  :status,        null: false, default: 'pending'
 
       t.timestamps null: false
     end

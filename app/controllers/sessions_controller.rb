@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   def new
-    render layout: "login"
+    render layout: 'login'
   end
 
   def create
@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
   def destroy
     session[:user_id] = nil
     session[:admin_user_id] = nil
-    flash[:notice] = "Vous êtes déconnecté"
+    flash[:notice] = 'Vous êtes déconnecté'
     redirect_to root_url
   end
 end

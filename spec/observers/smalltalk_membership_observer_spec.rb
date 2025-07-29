@@ -3,7 +3,7 @@ require 'rails_helper'
 describe SmalltalkMembershipObserver do
   let(:entourage_user) { create(:user) }
 
-  describe "after create" do
+  describe 'after create' do
     let!(:smalltalk) { create(:smalltalk) }
     let(:join_request) { create :join_request, joinable: smalltalk }
 
@@ -13,7 +13,7 @@ describe SmalltalkMembershipObserver do
     it { join_request }
   end
 
-  describe "after update" do
+  describe 'after update' do
     let!(:smalltalk) { create(:smalltalk) }
     let!(:join_request) { create :join_request, joinable: smalltalk }
 

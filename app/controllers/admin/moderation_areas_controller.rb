@@ -23,7 +23,7 @@ module Admin
       @area = ModerationArea.new(area_params)
 
       if @area.save
-        redirect_to admin_moderation_areas_path, notice: "La zone de modération a bien été créée"
+        redirect_to admin_moderation_areas_path, notice: 'La zone de modération a bien été créée'
       else
         render :new
       end
@@ -42,7 +42,7 @@ module Admin
       @area.assign_attributes(area_params)
 
       if @area.save
-        redirect_to edit_admin_moderation_area_path(@area), notice: "Zone mise à jour"
+        redirect_to edit_admin_moderation_area_path(@area), notice: 'Zone mise à jour'
       else
         render :edit
       end
@@ -52,7 +52,7 @@ module Admin
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(animator_id: params[:animator_id])
       respond_to do |format|
-        format.js { render "admin/moderation_areas/update/animator" }
+        format.js { render 'admin/moderation_areas/update/animator' }
         format.html { redirect_to admin_moderation_areas, notice: 'Com-anim mis à jour avec succès.' }
       end
     end
@@ -61,7 +61,7 @@ module Admin
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(sourcing_id: params[:sourcing_id])
       respond_to do |format|
-        format.js { render "admin/moderation_areas/update/sourcing" }
+        format.js { render 'admin/moderation_areas/update/sourcing' }
         format.html { redirect_to admin_moderation_areas, notice: 'Sourcing mis à jour avec succès.' }
       end
     end
@@ -70,7 +70,7 @@ module Admin
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(community_builder_id: params[:community_builder_id])
       respond_to do |format|
-        format.js { render "admin/moderation_areas/update/community_builder" }
+        format.js { render 'admin/moderation_areas/update/community_builder' }
         format.html { redirect_to admin_moderation_areas, notice: 'Community builder mis à jour avec succès.' }
       end
     end

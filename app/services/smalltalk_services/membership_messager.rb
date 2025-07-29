@@ -29,11 +29,11 @@ module SmalltalkServices
     end
 
     def is_new?
-      changes.key?("id")
+      changes.key?('id')
     end
 
     def status_changed?
-      changes.key?("status")
+      changes.key?('status')
     end
 
     def changes

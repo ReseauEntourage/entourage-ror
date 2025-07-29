@@ -6,7 +6,7 @@ module JoinableScopable
 
     has_many :members, through: :join_requests, source: :user
     has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
-    has_many :confirmed_members, -> { where("join_requests.status = 'accepted'").where("confirmed_at is not null") }, through: :join_requests, source: :user
+    has_many :confirmed_members, -> { where("join_requests.status = 'accepted'").where('confirmed_at is not null') }, through: :join_requests, source: :user
     has_many :creators_or_organizers, -> {
       where("join_requests.status = 'accepted'").where("join_requests.role in ('creator', 'organizer')")
     }, through: :join_requests, source: :user
@@ -18,7 +18,7 @@ module JoinableScopable
       where.not(id: JoinRequest.select(:joinable_id).where(joinable_type: name, user: user, status: JoinRequest::ACCEPTED_STATUS))
     }
     scope :order_by_unread_messages, -> {
-      order(Arel.sql("join_requests.unread_messages_count DESC"))
+      order(Arel.sql('join_requests.unread_messages_count DESC'))
     }
 
     scope :search_by_member, -> (search) {
@@ -78,7 +78,7 @@ module JoinableScopable
     def stacked_by group = :month
       [
         {
-          name: I18n.t("charts.conversations.memberships"),
+          name: I18n.t('charts.conversations.memberships'),
           data: join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
         }
       ]

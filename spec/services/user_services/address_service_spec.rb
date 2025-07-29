@@ -69,19 +69,19 @@ describe UserServices::AddressService do
 
     before { subject }
 
-    context "Nantes from google_place_id" do
+    context 'Nantes from google_place_id' do
       let(:google_place_id) { 'nantes_google_place_id' }
 
       it { expect(address.reload.city).to eq('Nantes') }
     end
 
-    context "Paris from google_place_id" do
+    context 'Paris from google_place_id' do
       let(:google_place_id) { 'paris_google_place_id' }
 
       it { expect(address.reload.city).to eq('Paris') }
     end
 
-    context "Rennes from google_place_id" do
+    context 'Rennes from google_place_id' do
       let(:google_place_id) { nil }
       let(:latitude) { rennes[:lat] }
       let(:longitude) { rennes[:long] }
@@ -89,7 +89,7 @@ describe UserServices::AddressService do
       it { expect(address.reload.city).to eq('Rennes') }
     end
 
-    context "Lille from google_place_id" do
+    context 'Lille from google_place_id' do
       let(:google_place_id) { nil }
       let(:latitude) { lille[:lat] }
       let(:longitude) { lille[:long] }

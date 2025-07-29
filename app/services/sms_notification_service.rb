@@ -101,7 +101,7 @@ class SmsNotificationService
       text: "À #{phone_number} (#{EnvironmentHelper.env})\n"\
             "```\n"\
             "#{message}"\
-            "```"
+            '```'
     )
 
     return 'Ok'

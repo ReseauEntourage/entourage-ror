@@ -7,7 +7,7 @@ module WithAreas
     validates :areas, presence: true
 
     scope :for_areas, -> (area_slugs) {
-      where("areas ?| array[%s]" % area_slugs.map { |a| ApplicationRecord.connection.quote(a) }.join(','))
+      where('areas ?| array[%s]' % area_slugs.map { |a| ApplicationRecord.connection.quote(a) }.join(','))
     }
 
     before_validation do

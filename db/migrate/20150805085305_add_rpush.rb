@@ -46,7 +46,7 @@ class AddRpush < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[5.0
       create_table :rapns_notifications do |t|
         t.integer   :badge,                 null: true
         t.string    :device_token,          null: false, limit: 64
-        t.string    :sound,                 null: true,  default: "1.aiff"
+        t.string    :sound,                 null: true,  default: '1.aiff'
         t.string    :alert,                 null: true
         t.text      :attributes_for_device, null: true
         t.integer   :expiry,                null: false, default: 1.day.to_i
@@ -196,20 +196,20 @@ class AddRpush < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[5.0
       remove_column :rapns_notifications, :app
 
       if ActiveRecord.version >= Gem::Version.new('5.1')
-        if index_name_exists?(:rapns_notifications, "index_rapns_notifications_multi")
-          remove_index :rapns_notifications, name: "index_rapns_notifications_multi"
-        elsif index_name_exists?(:rapns_notifications, "index_rapns_notifications_on_delivered_failed_deliver_after")
-          remove_index :rapns_notifications, name: "index_rapns_notifications_on_delivered_failed_deliver_after"
+        if index_name_exists?(:rapns_notifications, 'index_rapns_notifications_multi')
+          remove_index :rapns_notifications, name: 'index_rapns_notifications_multi'
+        elsif index_name_exists?(:rapns_notifications, 'index_rapns_notifications_on_delivered_failed_deliver_after')
+          remove_index :rapns_notifications, name: 'index_rapns_notifications_on_delivered_failed_deliver_after'
         end
       else
-        if index_name_exists?(:rapns_notifications, "index_rapns_notifications_multi", true)
-          remove_index :rapns_notifications, name: "index_rapns_notifications_multi"
-        elsif index_name_exists?(:rapns_notifications, "index_rapns_notifications_on_delivered_failed_deliver_after", false)
-          remove_index :rapns_notifications, name: "index_rapns_notifications_on_delivered_failed_deliver_after"
+        if index_name_exists?(:rapns_notifications, 'index_rapns_notifications_multi', true)
+          remove_index :rapns_notifications, name: 'index_rapns_notifications_multi'
+        elsif index_name_exists?(:rapns_notifications, 'index_rapns_notifications_on_delivered_failed_deliver_after', false)
+          remove_index :rapns_notifications, name: 'index_rapns_notifications_on_delivered_failed_deliver_after'
         end
       end
 
-      add_index :rapns_notifications, [:app_id, :delivered, :failed, :deliver_after], name: "index_rapns_notifications_multi"
+      add_index :rapns_notifications, [:app_id, :delivered, :failed, :deliver_after], name: 'index_rapns_notifications_multi'
     end
 
     def self.down

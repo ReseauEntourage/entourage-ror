@@ -76,7 +76,7 @@ def process_row row, regular_setups, first_donations
   host = nil
 
   if row[:context_referer]
-    row[:context_referer].split(" -> ").each do |url|
+    row[:context_referer].split(' -> ').each do |url|
       url = URI(url)
       query = CGI.parse(url.query || '')
       source = query['utm_source']&.first if source.nil?
@@ -102,8 +102,8 @@ def process_row row, regular_setups, first_donations
   emails = extract_emails row
   app_user_id = User
     .where(community: :entourage)
-    .where("lower(email) in (?)", emails)
-    .order("last_sign_in_at desc nulls last, created_at desc")
+    .where('lower(email) in (?)', emails)
+    .order('last_sign_in_at desc nulls last, created_at desc')
     .limit(1)
     .pluck(:id)
     .first
@@ -146,7 +146,7 @@ def extract_emails row
   candidates << row[:payment_gateway_ticket_EMAIL]
 
   if row[:context_referer]
-    row[:context_referer].split(" -> ").each do |url|
+    row[:context_referer].split(' -> ').each do |url|
       params = CGI.parse(URI(url).query || '')
       candidates += params.values.flatten.uniq
     end
