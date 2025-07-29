@@ -3,12 +3,15 @@ class MailjetMailer < ActionMailer::Base
   include MailerHelpers
   include MailerErrorHandling
 
-  def mailjet_email to:, template_id:, campaign_name:,
-                    from: email_with_name('communaute@entourage.social', 'Le Réseau Entourage'),
-                    variables: {},
-                    payload: {},
-                    unsubscribe_category: :default,
-                    deliver_only_once: false
+  def mailjet_email(params = {})
+    to = params.fetch(:to)
+    template_id = params.fetch(:template_id)
+    campaign_name = params.fetch(:campaign_name)
+    from = params.fetch(:from, email_with_name('communaute@entourage.social', 'Le Réseau Entourage'))
+    variables = params.fetch(:variables, {})
+    payload = params.fetch(:payload, {})
+    unsubscribe_category = params.fetch(:unsubscribe_category, :default)
+    deliver_only_once = params.fetch(:deliver_only_once, false)
 
     user = to
     return unless user.email.present? &&
@@ -126,7 +129,7 @@ class MailjetMailer < ActionMailer::Base
     # This is required so that attachments will be the second and later parts,
     # which is needed for attachments to work with Mailjet.
     mail do |format|
-      format.text { nil }
+      format.text { "" }
     end
 
     # then overwrite the headers
