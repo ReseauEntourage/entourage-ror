@@ -1,6 +1,6 @@
 module FeedServices
   class FeedWithCursor
-    def initialize entries, cursor:, next_page_token:, metadata:{}
+    def initialize entries, cursor:, next_page_token:, metadata: {}
       @cursor = cursor
       @next_page_token = next_page_token
       @entries = entries
