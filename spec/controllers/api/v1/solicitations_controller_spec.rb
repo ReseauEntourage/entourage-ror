@@ -261,6 +261,7 @@ describe Api::V1::SolicitationsController, type: :controller do
 
   context 'create' do
     subject { JSON.parse(response.body) }
+
     let(:result) { Solicitation.find(subject['solicitation']['id']) }
 
     let(:params) { {

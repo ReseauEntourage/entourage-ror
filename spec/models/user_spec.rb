@@ -143,6 +143,7 @@ describe User, type: :model do
 
   describe '#full_name' do
     subject { User.new(first_name: 'John', last_name: 'Doe').full_name }
+
     it { should eq 'John Doe' }
   end
 
@@ -384,6 +385,7 @@ describe User, type: :model do
     let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
 
     subject { user.block! moderator, 'explanation' }
+
     before { expect { subject }.to change { UserHistory.count }.by(1) }
 
     it { expect(UserHistory.last.kind).to eq('block') }
@@ -396,6 +398,7 @@ describe User, type: :model do
     let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
 
     subject { user.temporary_block! moderator, 'explanation' }
+
     before { expect { subject }.to change { UserHistory.count }.by(1) }
 
     it { expect(UserHistory.last.kind).to eq('block') }
@@ -408,6 +411,7 @@ describe User, type: :model do
     let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
 
     subject { user.unblock! moderator, 'explanation' }
+
     before { expect { subject }.to change { UserHistory.count }.by(1) }
 
     it { expect(UserHistory.last.kind).to eq('unblock') }
@@ -420,6 +424,7 @@ describe User, type: :model do
     let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
 
     subject { user.anonymize! moderator }
+
     before { expect { subject }.to change { UserHistory.count }.by(2) }
 
     it { expect(UserHistory.first.kind).to eq('anonymize') }
@@ -431,6 +436,7 @@ describe User, type: :model do
     let(:user) { create(:public_user, phone: '+33600000000', token: 'foo', email: 'foo@bar.com') }
 
     subject { user.update_attribute(:deleted, true) }
+
     before { expect { subject }.to change { UserHistory.count }.by(1) }
 
     it { expect(UserHistory.last.kind).to eq('deleted') }
