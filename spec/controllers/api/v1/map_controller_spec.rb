@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::MapController, :type => :controller do
+RSpec.describe Api::V1::MapController, type: :controller do
   render_views
 
   let!(:user) { FactoryBot.create :pro_user }
@@ -8,18 +8,18 @@ RSpec.describe Api::V1::MapController, :type => :controller do
   describe "GET index" do
     context "Access control" do
       it "returns http success if user is logged in" do
-        get 'index', params: { token: user.token, :format => :json }
+        get 'index', params: { token: user.token, format: :json }
         expect(response.status).to eq(200)
       end
       it "returns an error if user is not logged in" do
-        get 'index', :format => :json
+        get 'index', format: :json
         expect(response.status).to eq(401)
       end
     end
 
     context "view scope variable assignment" do
       let!(:poi) { FactoryBot.create :poi }
-      before { get 'index', params: { token: user.token, :format => :json } }
+      before { get 'index', params: { token: user.token, format: :json } }
       it "assigns @categories" do
         expect(assigns(:categories)).to eq([poi.category])
       end
@@ -38,11 +38,11 @@ RSpec.describe Api::V1::MapController, :type => :controller do
       let!(:poi2) { FactoryBot.create :poi }
       let!(:category) { FactoryBot.create :category }
       it "returns all pois" do
-        get 'index', params: { token: user.token, :format => :json }
+        get 'index', params: { token: user.token, format: :json }
         expect(assigns(:pois)).to eq([poi1, poi2])
       end
       it "returns only one poi" do
-        get 'index', params: { token: user.token, :limit => 1, :format => :json }
+        get 'index', params: { token: user.token, limit: 1, format: :json }
         expect(assigns(:pois)).to eq([poi1])
       end
     end
@@ -53,19 +53,19 @@ RSpec.describe Api::V1::MapController, :type => :controller do
       let!(:poi3) { FactoryBot.create(:poi, latitude: 48.9, longitude: 2.5) }
       let!(:category) { FactoryBot.create :category }
       it "returns all pois if no coordinates provided" do
-        get 'index', params: { token: user.token, :format => :json }
+        get 'index', params: { token: user.token, format: :json }
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
       end
       it "returns 1 poi if coordinates provided and 1 km distance" do
-        get 'index', params: { token: user.token, latitude: 48.7, longitude: 2.3, distance: 1, :format => :json }
+        get 'index', params: { token: user.token, latitude: 48.7, longitude: 2.3, distance: 1, format: :json }
         expect(assigns(:pois)).to eq([poi1])
       end
       it "returns 2 pois if coordinates provided and 15 km distance" do
-        get 'index', params: { token: user.token, latitude: 48.7, longitude: 2.3, distance: 15, :format => :json }
+        get 'index', params: { token: user.token, latitude: 48.7, longitude: 2.3, distance: 15, format: :json }
         expect(assigns(:pois)).to eq([poi1, poi2])
       end
       it "returns 3 pois if coordinates provided and 30 km distance" do
-        get 'index', params: { token: user.token, latitude: 48.7, longitude: 2.3, distance: 30, :format => :json }
+        get 'index', params: { token: user.token, latitude: 48.7, longitude: 2.3, distance: 30, format: :json }
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
       end
     end
