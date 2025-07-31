@@ -8,7 +8,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   let(:address_paris) { FactoryBot.create(:address, latitude: paris[:latitude], longitude: paris[:longitude]) }
 
   let(:user) { create :public_user, first_name: 'John' }
-  let(:user_paris) { create :public_user, first_name: 'Doe', addresses: [address_paris], goal: :ask_for_help }
+  let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :ask_for_help }
   let(:participant) { create :public_user, first_name: 'Jane' }
 
   # define shared_examples on PushNotificationTrigger
@@ -698,7 +698,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'contribution with ask_for_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', addresses: [address_paris], goal: :ask_for_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :ask_for_help }
 
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
@@ -711,7 +711,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'contribution with offer_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', addresses: [address_paris], goal: :offer_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :offer_help }
 
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
@@ -724,7 +724,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'solicitation with ask_for_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', addresses: [address_paris], goal: :ask_for_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :ask_for_help }
 
         let!(:entourage) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
@@ -737,7 +737,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'solicitation with offer_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', addresses: [address_paris], goal: :offer_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :offer_help }
 
         let!(:entourage) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
