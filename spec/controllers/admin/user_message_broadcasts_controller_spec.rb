@@ -138,6 +138,8 @@ describe Admin::UserMessageBroadcastsController do
     let(:user_message_broadcast) { create(:user_message_broadcast, status: :draft) }
 
     describe 'single sending' do
+      before { ConversationMessageBroadcast.any_instance.stub(:sending?).and_return(false) }
+
       it {
         expect(ConversationMessageBroadcastJob).to receive(:perform_later).once
 
