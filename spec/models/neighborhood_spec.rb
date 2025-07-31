@@ -63,7 +63,7 @@ RSpec.describe Neighborhood, type: :model do
 
     let(:travel_distance) { 1 }
     let(:address) { create :address, latitude: 48.80, longitude: 2 }
-    let!(:user) { create :user, travel_distance: travel_distance, address: address, addresses: [address] }
+    let!(:user) { create :user, travel_distance: travel_distance, address: address }
 
     # distance is about 26_500 meters
     subject { Neighborhood.inside_user_perimeter(user) }
