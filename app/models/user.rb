@@ -71,7 +71,6 @@ class User < ApplicationRecord
   has_many :entourage_scores
   has_one :moderation, class_name: 'UserModeration'
   has_many :entourage_moderations, foreign_key: :moderator_id
-  has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
   belongs_to :address, optional: true
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests

@@ -360,12 +360,4 @@ describe Admin::UsersController do
       it { expect(blocked_user.reload.validation_status).to eq("validated") }
     end
   end
-
-  describe "experimental_pending_request_reminder" do
-    context "signed in" do
-      let!(:user) { admin_basic_login }
-      before { post :experimental_pending_request_reminder, params: { id: user.to_param } }
-      it { should redirect_to root_path }
-    end
-  end
 end
