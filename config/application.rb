@@ -29,6 +29,10 @@ module EntourageBack
       g.factory_bot dir: 'spec/factories'
     end
 
+    # Controllers
+    # api::v1::basecontroller defines after_action :set_completed_route on actions that may not exists in the controller
+    config.action_controller.raise_on_missing_callback_actions = false
+
     # ActiveJob adapter
     config.active_job.queue_adapter = :sidekiq
 
