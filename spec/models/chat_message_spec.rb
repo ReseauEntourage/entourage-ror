@@ -32,8 +32,7 @@ RSpec.describe ChatMessage, type: :model do
         '1' => ['09:00-12:00', '14:00-18:00'],
         '2' => ['10:00-12:00']
       },
-      address: address,
-      addresses: [address]
+      address: address
     )}
 
     let(:other_user) { create(:public_user) }
