@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -232,13 +232,6 @@ module Admin
     def validate
       @user.validate!
       redirect_to moderate_admin_users_path
-    end
-
-    def experimental_pending_request_reminder
-      reminders = @user.experimental_pending_request_reminders
-      last_reminder_at = reminders.maximum(:created_at)
-      reminders.create! if last_reminder_at.nil? || !last_reminder_at.today?
-      redirect_back(fallback_location: root_path, flash: { _experimental_pending_request_reminder_created: 1 })
     end
 
     def download_export

@@ -312,7 +312,6 @@ Rails.application.routes.draw do
           get 'download_export'
           get 'send_export'
           put 'anonymize'
-          post 'experimental_pending_request_reminder'
         end
       end
 
