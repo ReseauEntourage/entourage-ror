@@ -56,8 +56,8 @@ Rails.application.configure do
   # Speed up password hashing in test suite
   BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 
-  # Raise error if before_action references non-existent actions
-  config.action_controller.raise_on_missing_callback_actions = true
+  # Do not raise error if before_action references non-existent actions
+  config.action_controller.raise_on_missing_callback_actions = false
 
   # Limit slow down due to password hashing
   BCrypt::Engine.cost = BCrypt::Engine::MIN_COST

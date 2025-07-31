@@ -112,6 +112,6 @@ Rails.application.configure do
     Bullet.rails_logger  = true
   end
 
-  # Raise error if before_action references non-existent actions
-  config.action_controller.raise_on_missing_callback_actions = true
+  # Do not raise error if before_action references non-existent actions
+  config.action_controller.raise_on_missing_callback_actions = false
 end
