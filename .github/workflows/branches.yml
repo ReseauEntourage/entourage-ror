@@ -55,4 +55,5 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         REDIS_URL: redis://redis:6379
+        HOST: localhost
       run: bundle exec rake
