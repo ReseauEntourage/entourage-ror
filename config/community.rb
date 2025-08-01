@@ -1,6 +1,5 @@
 require 'pp'
 require_relative '../lib/experimental/memoize'
-require_relative '../lib/experimental/symbol_set'
 
 class Community < BasicObject
   include ::Kernel
@@ -34,19 +33,19 @@ class Community < BasicObject
   end
 
   def roles
-    memoize(:roles) { ::Experimental::SymbolSet(struct.roles) }
+    memoize(:roles) { symbol_set(struct.roles) }
   end
 
   def admin_roles
-    memoize(:admin_roles) { ::Experimental::SymbolSet(struct.admin_roles) }
+    memoize(:admin_roles) { symbol_set(struct.admin_roles) }
   end
 
   def targeting_profiles
-    memoize(:targeting_profiles) { ::Experimental::SymbolSet(struct.targeting_profiles) }
+    memoize(:targeting_profiles) { symbol_set(struct.targeting_profiles) }
   end
 
   def goals
-    memoize(:goals) { ::Experimental::SymbolSet(struct.goals) }
+    memoize(:goals) { symbol_set(struct.goals) }
   end
 
   def group_types
@@ -121,6 +120,10 @@ class Community < BasicObject
 
   def from_global_memory
     @@struct[slug]
+  end
+
+  def symbol_set value
+    Array(value).map { |v| v.try(:to_sym) }.compact.uniq
   end
 
   def load_from_file
