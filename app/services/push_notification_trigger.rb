@@ -183,14 +183,15 @@ class PushNotificationTrigger
   def entourage_on_create_for_neighbors user
     return unless @record.action?
 
-    neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
-    neighbor_ids = User.where(id: neighbor_ids)
+    user_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+    users = User.where(id: user_ids)
       .where(deleted: false)
       .where.not(id: user.id)
       .where('last_sign_in_at > ?', 1.year.ago)
 
-    neighbor_ids = neighbor_ids.offer_help.pluck(:id) if @record.solicitation?
-    neighbor_ids = neighbor_ids.ask_for_help.pluck(:id) if @record.contribution?
+    neighbor_ids = []
+    neighbor_ids = users.offer_help.pluck(:id) if @record.solicitation?
+    neighbor_ids = users.ask_for_help.pluck(:id) if @record.contribution?
 
     return unless neighbor_ids.any?
 
