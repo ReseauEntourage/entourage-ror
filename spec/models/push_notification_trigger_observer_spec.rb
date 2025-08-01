@@ -5,11 +5,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
   let(:paris) { { latitude: 48.87, longitude: 2.33 } }
   let(:nantes) { { latitude: 47.22, longitude: -1.55 } }
-  let(:address_paris) { FactoryBot.create(:address, latitude: paris[:latitude], longitude: paris[:longitude]) }
 
-  let(:user) { create :public_user, first_name: 'John' }
-  let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :ask_for_help }
+  let(:user) { create :public_user, first_name: 'Pic' }
+  let(:user_paris) { create :public_user, first_name: 'Pac', goal: :ask_for_help }
   let(:participant) { create :public_user, first_name: 'Jane' }
+
+  let(:address_paris) { FactoryBot.create(:address, user: user_paris, latitude: paris[:latitude], longitude: paris[:longitude]) }
 
   # define shared_examples on PushNotificationTrigger
   [
@@ -645,9 +646,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'contribution with neighbor' do
-        let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
 
-        before { user_paris }
+        before { address_paris }
+        before { entourage }
 
         after { moderation }
 
@@ -671,6 +673,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       describe 'contribution with neighbor recent last_sign_in_at' do
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
 
+        before { address_paris }
         before { user_paris.update_attribute(:last_sign_in_at, 2.months.ago) }
 
         after { moderation }
@@ -698,12 +701,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'contribution with ask_for_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :ask_for_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', goal: :ask_for_help }
 
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
 
-        before { user_paris }
+        before { address_paris }
 
         after { moderation }
 
@@ -711,12 +714,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'contribution with offer_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :offer_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', goal: :offer_help }
 
         let!(:entourage) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
 
-        before { user_paris }
+        before { address_paris }
 
         after { moderation }
 
@@ -724,12 +727,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'solicitation with ask_for_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :ask_for_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', goal: :ask_for_help }
 
         let!(:entourage) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
 
-        before { user_paris }
+        before { address_paris }
 
         after { moderation }
 
@@ -737,12 +740,12 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe 'solicitation with offer_help neighbor' do
-        let(:user_paris) { create :public_user, first_name: 'Doe', address: address_paris, goal: :offer_help }
+        let(:user_paris) { create :public_user, first_name: 'Doe', goal: :offer_help }
 
         let!(:entourage) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
         let!(:notification_permission) { create :notification_permission, user: user_paris }
 
-        before { user_paris }
+        before { address_paris }
 
         after { moderation }
 
