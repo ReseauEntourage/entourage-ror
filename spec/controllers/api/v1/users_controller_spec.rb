@@ -793,7 +793,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe 'GET show' do
     let(:partner) { create :partner }
-    let!(:user) { create :pro_user, partner: partner }
+    let(:user) { create :pro_user, partner: partner }
 
     context 'not signed in' do
       before { get :show, params: { id: user.id } }
@@ -802,85 +802,93 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     context 'user signed in' do
       context 'get your own profile' do
-        before { get :show, params: { id: user.id, token: user.token } }
-        it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({
-          'user' => {
-            'id' => user.id,
-            'uuid' => user.id.to_s,
-            'email' => user.email,
-            'lang' => user.lang,
-            'availability' => user.availability,
-            'display_name' => 'John D.',
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'roles' => ['Association'],
-            'about' => nil,
-            'token' => user.token,
-            'user_type' => 'pro',
-            'avatar_url' => nil,
-            'has_password' => false,
-            'address' => nil,
-            'address_2' => nil,
-            'stats' => {
-               'tour_count' => 0,
-               'encounter_count' => 0,
-               'entourage_count' => 0,
-               'actions_count' => 0,
-               'ask_for_help_creation_count' => 0,
-               'contribution_creation_count' => 0,
-               'events_count' => 0,
-               'outings_count' => 0,
-               'neighborhoods_count' => 0,
-               'good_waves_participation' => false,
-            },
-            'partner' => {
-              'id' => partner.id,
-              'name' => 'MyString',
-              'large_logo_url' => 'MyString',
-              'small_logo_url' => 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png',
-              'description' => 'MyDescription',
-              'donations_needs' => nil,
-              'volunteers_needs' => nil,
-              'phone' => nil,
-              'address'  =>  '174 rue Championnet, Paris',
-              'website_url' => nil,
-              'email' => nil,
-              'default' => true,
-              'user_role_title' => nil},
-            'memberships' => [],
-            'conversation' => {
-              'uuid' => "1_list_#{user.id}"
-            },
-            'firebase_properties' => {
-             'ActionZoneDep' => 'not_set',
-             'ActionZoneCP' => 'not_set',
-             'Goal' => 'no_set',
-             'Interests' => 'none'
-            },
-            'anonymous' => false,
-            'feature_flags' => {
-              'organization_admin' => false
-            },
-            'engaged' => false,
-            'goal' => nil,
-            'phone' => user.phone,
-            'unread_count' => 0,
-            'interests' => [],
-            'involvements' => [],
-            'concerns' => [],
-            'travel_distance' => 40,
-            'birthday' => nil,
-            'permissions' => {
-              'outing' => { 'creation' => true }
-            },
-            'created_at' => user.created_at.iso8601(3),
-          }
-        }) }
+        let(:request) { get :show, params: { id: user.id, token: user.token } }
+
+        context 'when you does not have an address' do
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(JSON.parse(response.body)).to eq({
+            'user' => {
+              'id' => user.id,
+              'uuid' => user.id.to_s,
+              'email' => user.email,
+              'lang' => user.lang,
+              'availability' => user.availability,
+              'display_name' => 'John D.',
+              'first_name' => 'John',
+              'last_name' => 'Doe',
+              'roles' => ['Association'],
+              'about' => nil,
+              'token' => user.token,
+              'user_type' => 'pro',
+              'avatar_url' => nil,
+              'has_password' => false,
+              'address' => nil,
+              'address_2' => nil,
+              'stats' => {
+                 'tour_count' => 0,
+                 'encounter_count' => 0,
+                 'entourage_count' => 0,
+                 'actions_count' => 0,
+                 'ask_for_help_creation_count' => 0,
+                 'contribution_creation_count' => 0,
+                 'events_count' => 0,
+                 'outings_count' => 0,
+                 'neighborhoods_count' => 0,
+                 'good_waves_participation' => false,
+              },
+              'partner' => {
+                'id' => partner.id,
+                'name' => 'MyString',
+                'large_logo_url' => 'MyString',
+                'small_logo_url' => 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png',
+                'description' => 'MyDescription',
+                'donations_needs' => nil,
+                'volunteers_needs' => nil,
+                'phone' => nil,
+                'address'  =>  '174 rue Championnet, Paris',
+                'website_url' => nil,
+                'email' => nil,
+                'default' => true,
+                'user_role_title' => nil},
+              'memberships' => [],
+              'conversation' => {
+                'uuid' => "1_list_#{user.id}"
+              },
+              'firebase_properties' => {
+               'ActionZoneDep' => 'not_set',
+               'ActionZoneCP' => 'not_set',
+               'Goal' => 'no_set',
+               'Interests' => 'none'
+              },
+              'anonymous' => false,
+              'feature_flags' => {
+                'organization_admin' => false
+              },
+              'engaged' => false,
+              'goal' => nil,
+              'phone' => user.phone,
+              'unread_count' => 0,
+              'interests' => [],
+              'involvements' => [],
+              'concerns' => [],
+              'travel_distance' => 40,
+              'birthday' => nil,
+              'permissions' => {
+                'outing' => { 'creation' => true }
+              },
+              'created_at' => user.created_at.iso8601(3),
+            }
+          }) }
+        end
 
         context 'when you have an address' do
-          let(:address) { create :address }
-          let(:user) { create :public_user, addresses: [address] }
+          let(:user) { create :public_user }
+          let!(:address) { create :address, user: user }
+
+          before { request }
+
           it {
             expect(JSON.parse(response.body)['user']['address']).to eq(
               'latitude' => 1.5,
@@ -1018,7 +1026,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'concerns' => [],
             'memberships' => [],
             'conversation' => {
-              'uuid' => "1_list_#{user.id}-#{other_user.id}"
+              'uuid' => "1_list_#{other_user.id}-#{user.id}"
             },
             'created_at' => other_user.created_at.iso8601(3),
             'address' => nil,
@@ -1052,8 +1060,11 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       context 'firebase_properties' do
         context 'action zone' do
-          let(:user) { create :public_user, addresses: [address].compact }
+          let(:user) { create :public_user }
+
+          before { address }
           before { get :show, params: { id: user.id, token: user.token } }
+
           let(:firebase_properties) { result['user']['firebase_properties'] }
 
           context 'no action zone' do
@@ -1065,7 +1076,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           end
 
           context 'outside of FR' do
-            let(:address) { create :address, country: :BE }
+            let(:address) { create :address, country: :BE, user: user }
             it { expect(firebase_properties).to include(
               'ActionZoneDep' => 'not_FR',
               'ActionZoneCP'  => 'not_FR'
@@ -1073,7 +1084,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           end
 
           context 'only department' do
-            let(:address) { create :address, country: :FR, postal_code: '69XXX' }
+            let(:address) { create :address, country: :FR, postal_code: '69XXX', user: user }
             it { expect(firebase_properties).to include(
               'ActionZoneDep' => '69',
               'ActionZoneCP'  => 'not_set'
@@ -1081,7 +1092,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           end
 
           context 'full postal code' do
-            let(:address) { create :address, country: :FR, postal_code: '75012' }
+            let(:address) { create :address, country: :FR, postal_code: '75012', user: user }
             it { expect(firebase_properties).to include(
               'ActionZoneDep' => '75',
               'ActionZoneCP'  => '75012'
