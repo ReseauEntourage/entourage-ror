@@ -148,6 +148,8 @@ describe Admin::UserMessageBroadcastsController do
     end
 
     describe 'double sending' do
+      before { ConversationMessageBroadcast.any_instance.stub(:sending?).and_return(false) }
+
       it {
         expect(ConversationMessageBroadcastJob).to receive(:perform_later).once
 

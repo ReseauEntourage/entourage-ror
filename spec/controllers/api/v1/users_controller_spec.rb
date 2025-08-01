@@ -809,7 +809,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
   describe 'GET show' do
     let(:partner) { create :partner }
-    let!(:user) { create :pro_user, partner: partner }
+    let(:user) { create :pro_user, partner: partner }
 
     context 'not signed in' do
       before { get :show, params: { id: user.id } }
@@ -896,8 +896,11 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         }) }
 
         context 'when you have an address' do
-          let(:address) { create :address }
-          let(:user) { create :public_user, addresses: [address] }
+          let(:user) { create :public_user }
+          let!(:address) { create :address, user: user }
+
+          before { request }
+
           it {
             expect(JSON.parse(response.body)['user']['address']).to eq(
               'latitude' => 1.5,
@@ -1036,7 +1039,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'concerns' => [],
             'memberships' => [],
             'conversation' => {
-              'uuid' => "1_list_#{user.id}-#{other_user.id}"
+              'uuid' => "1_list_#{other_user.id}-#{user.id}"
             },
             'created_at' => other_user.created_at.iso8601(3),
             'address' => nil,
@@ -1070,8 +1073,11 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       context 'firebase_properties' do
         context 'action zone' do
-          let(:user) { create :public_user, addresses: [address].compact }
+          let(:user) { create :public_user }
+
+          before { address }
           before { get :show, params: { id: user.id, token: user.token } }
+
           let(:firebase_properties) { result['user']['firebase_properties'] }
 
           context 'no action zone' do
@@ -1083,7 +1089,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           end
 
           context 'outside of FR' do
-            let(:address) { create :address, country: :BE }
+            let(:address) { create :address, country: :BE, user: user }
             it { expect(firebase_properties).to include(
               'ActionZoneDep' => 'not_FR',
               'ActionZoneCP'  => 'not_FR'
@@ -1091,7 +1097,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           end
 
           context 'only department' do
-            let(:address) { create :address, country: :FR, postal_code: '69XXX' }
+            let(:address) { create :address, country: :FR, postal_code: '69XXX', user: user }
             it { expect(firebase_properties).to include(
               'ActionZoneDep' => '69',
               'ActionZoneCP'  => 'not_set'
@@ -1099,7 +1105,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           end
 
           context 'full postal code' do
-            let(:address) { create :address, country: :FR, postal_code: '75012' }
+            let(:address) { create :address, country: :FR, postal_code: '75012', user: user }
             it { expect(firebase_properties).to include(
               'ActionZoneDep' => '75',
               'ActionZoneCP'  => '75012'

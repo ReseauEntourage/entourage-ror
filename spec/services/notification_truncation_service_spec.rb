@@ -9,7 +9,7 @@ describe NotificationTruncationService, type: :service do
       # a multi-byte character 'é'
       content = '-' * 4049 + 'xéabc'
 
-      notification = Rpush::Gcm::Notification.new
+      notification = Rpush::Fcm::Notification.new
       notification.data = {content: {message: content, extra: 'extra'}}
       expect(notification.payload_data_size).to eq 4097
       service.truncate_message! notification
@@ -50,8 +50,8 @@ describe NotificationTruncationService, type: :service do
   describe '.payload_data_byte_limit' do
     subject { service.payload_data_byte_limit(notification) }
 
-    context 'GCM' do
-      let(:notification) { Rpush::Gcm::Notification.new }
+    context 'FCM' do
+      let(:notification) { Rpush::Fcm::Notification.new }
       it { is_expected.to eq 4096 }
     end
   end
