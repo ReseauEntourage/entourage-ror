@@ -1,4 +1,4 @@
 class SensitiveWordsCheck < ApplicationRecord
-  belongs_to :record
+  belongs_to :record, polymorphic: true
   serialize :matches
 end
