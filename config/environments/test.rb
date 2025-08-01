@@ -15,6 +15,9 @@ Rails.application.configure do
   # Cache compiled views
   config.action_view.cache_template_loading = true
 
+  # Template rendering
+  config.default_url_options = { host: 'localhost' }
+
   # Configure public file server with caching headers for performance
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
