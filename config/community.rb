@@ -72,7 +72,7 @@ class Community < BasicObject
     end
   end
 
-  def as_json t
+  def as_json options = {}
     slug
   end
 
