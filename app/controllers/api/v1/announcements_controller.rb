@@ -45,7 +45,7 @@ module Api
           Sentry.capture_exception(e)
         end
 
-        redirect_to url
+        redirect_to url, allow_other_host: true
       end
     end
   end
