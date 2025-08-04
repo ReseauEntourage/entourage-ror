@@ -612,6 +612,9 @@ Rails.application.routes.draw do
         resources :users, :controller => 'outings/users', only: [:index, :create, :destroy] do
           member do
             post :confirm
+            post :participate
+            post :cancel_participation
+            post :photo_acceptance
           end
 
           collection do

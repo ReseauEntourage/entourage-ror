@@ -9,6 +9,8 @@ module V1
                :status,
                :message,
                :confirmed_at,
+               :participate_at,
+               :photo_acceptance,
                :requested_at,
                :avatar_url,
                :partner,
@@ -42,6 +44,10 @@ module V1
 
     def status
       object.simplified_status
+    end
+
+    def photo_acceptance
+      object.user.photo_acceptance
     end
 
     def avatar_url
