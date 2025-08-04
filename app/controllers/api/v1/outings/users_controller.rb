@@ -2,8 +2,9 @@ module Api
   module V1
     module Outings
       class UsersController < Api::V1::BaseController
-        before_action :set_outing, only: [:index, :create, :confirm, :destroy]
-        before_action :set_membership, only: [:create, :confirm]
+        before_action :set_outing, only: [:index, :create, :confirm, :participate, :cancel_participation, :photo_acceptance, :destroy]
+        before_action :set_current_user_membership, only: [:create, :confirm]
+        before_action :set_user_membership, only: [:participate, :cancel_participation, :photo_acceptance]
         before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
 
@@ -42,6 +43,42 @@ module Api
           end
         end
 
+        def participate
+          @membership.participate_at = Time.zone.now
+
+          if @membership.save
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not participate outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def cancel_participation
+          @membership.participate_at = nil
+
+          if @membership.save
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not participate outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def photo_acceptance
+          if @membership.user.update(photo_acceptance: true)
+            @membership.sync_salesforce(true)
+
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not photo_acceptance outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
         def destroy
           return render json: {
             message: 'Could not find outing participation for user'
@@ -66,12 +103,20 @@ module Api
           @join_request = JoinRequest.where(joinable: @outing, user: current_user).first
         end
 
-        def set_membership
-          @membership = JoinRequest.where(joinable: @outing, user: current_user).first
+        def set_current_user_membership
+          set_membership_for_user(current_user)
+        end
 
-          @membership ||= JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
+        def set_user_membership
+          set_membership_for_user(User.find(params[:id]))
+        end
+
+        def set_membership_for_user user
+          @membership = JoinRequest.where(joinable: @outing, user: user).first
+
+          @membership ||= JoinRequest.new(joinable: @outing, user: user, distance: params[:distance], role: :participant, status: :accepted)
           @membership.status = :accepted
-          @membership.role = if current_user.ambassador? && params[:role] == 'organizer'
+          @membership.role = if user.ambassador? && params[:role] == 'organizer'
             :organizer
           else
             :participant
