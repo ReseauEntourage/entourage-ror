@@ -267,6 +267,93 @@ describe Api::V1::Outings::UsersController do
     end
   end
 
+  describe 'POST participate' do
+    let(:request) { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+
+    context "requester is not organizer" do
+      before { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(Time.iso8601(result["user"]["participate_at"])).to be_a(Time) }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(Time.iso8601(result["user"]["participate_at"])).to be_a(Time) }
+    end
+  end
+
+  describe 'POST cancel_participation' do
+    let(:request) { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+
+    context "requester is not organizer" do
+      before { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["participate_at"]).to be_nil }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["participate_at"]).to be_nil }
+    end
+
+    context "as participant with participation_at" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, participate_at: Time.zone.now) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["participate_at"]).to be_nil }
+    end
+  end
+
+  describe 'POST photo_acceptance' do
+    let(:request) { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+
+    context "requester is not organizer" do
+      before { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["photo_acceptance"]).to eq(true) }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["photo_acceptance"]).to eq(true) }
+    end
+  end
+
   describe "DELETE destroy" do
     context "not signed in" do
       before { delete :destroy, params: { outing_id: outing.to_param, id: user.id } }
