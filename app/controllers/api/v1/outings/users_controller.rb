@@ -7,6 +7,7 @@ module Api
         before_action :set_user_membership, only: [:participate, :cancel_participation, :photo_acceptance]
         before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
+        before_action :should_be_organizer!, only: [:participate, :cancel_participation, :photo_acceptance]
 
         def index
           # outing members
@@ -68,9 +69,7 @@ module Api
         end
 
         def photo_acceptance
-          if @membership.user.update(photo_acceptance: true)
-            @membership.sync_salesforce(true)
-
+          if @membership.user.update(photo_acceptance: true) && @membership.update(participate_at: Time.zone.now)
             render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
           else
             render json: {
@@ -131,6 +130,12 @@ module Api
           unless current_user == User.find(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
+        end
+
+        def should_be_organizer!
+          return if current_user.id == @outing.user_id
+
+          render json: { message: 'You must be an organizer to perform this action' }, status: :unauthorized
         end
 
         def page
