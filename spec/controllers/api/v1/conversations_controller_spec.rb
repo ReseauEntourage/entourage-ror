@@ -140,6 +140,37 @@ describe Api::V1::ConversationsController do
     end
   end
 
+  describe 'GET memberships' do
+    subject { JSON.parse(response.body)["memberships"] }
+
+    let(:request) { get :memberships, params: { token: user.token }}
+    let(:participant) { create :public_user, first_name: :Jane }
+
+    context 'conversations, outings, neighborhoods and smalltalks' do
+      let(:subject_smalltalk) { subject.select { |membership| membership["joinable_id"] == smalltalk.id }.first }
+      let(:subject_outing) { subject.select { |membership| membership["joinable_id"] == outing.id }.first }
+
+      let!(:conversation) { create :conversation, participants: [user, participant] }
+      let!(:outing) { create :outing, participants: [user] }
+      let!(:outing_chat_message_old) { create :chat_message, messageable: outing, content: "outing_message_old", created_at: 3.minutes.ago }
+      let!(:outing_chat_message_recent) { create :chat_message, messageable: outing, content: "outing_message_recent", created_at: 2.minutes.ago }
+      let!(:neighborhood) { create :neighborhood, participants: [user] }
+      let!(:smalltalk) { create :smalltalk, participants: [user, participant] }
+      let!(:smalltalk_chat_message_recent) { create :chat_message, messageable: smalltalk, content: "smalltalk_message_recent", created_at: 2.minutes.ago }
+      let!(:smalltalk_chat_message_old) { create :chat_message, messageable: smalltalk, content: "smalltalk_message_old", created_at: 3.minutes.ago }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject.count).to eq(3) }
+      it { expect(subject.map { |membership| membership["joinable_id"] }).to match_array([conversation.id, outing.id, smalltalk.id]) }
+      it { expect(subject_outing["name"]).to eq(outing.title) }
+      it { expect(subject_outing["last_chat_message"]).to eq("outing_message_recent") }
+      it { expect(subject_smalltalk["name"]).to eq("Jane") }
+      it { expect(subject_smalltalk["last_chat_message"]).to eq("smalltalk_message_recent") }
+    end
+  end
+
   describe 'GET private' do
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
