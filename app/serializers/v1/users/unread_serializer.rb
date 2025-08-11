@@ -15,7 +15,7 @@ module V1
       def unread_conversations_count
         @unread_conversations_count ||= UserServices::UnreadMessages.new(
           user: object
-        ).number_of_unread_for_joinable_types(:Entourage, :Smalltalk)
+        ).number_of_unread_for_joinable_types([:Entourage, :Smalltalk])
       end
 
       # sums up unread conversations for neighborhood conversations
