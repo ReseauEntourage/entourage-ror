@@ -48,6 +48,9 @@ module OutingTasks
 
       action_ids = ActionServices::Finder.new(user, Hash.new).find_all
         .filtered_with_user_profile(user)
+        .with_moderation
+        .where("entourage_moderations.moderated_at is not null")
+        .group("entourages.id")
         .pluck(:id)
         .uniq
 
