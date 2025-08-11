@@ -56,7 +56,7 @@ module SalesforceServices
 
       def status
         return "A annulé" if join_request.cancelled?
-        return "Participé" if join_request.participated_at.present?
+        return "Participé" if join_request.participate_at.present?
 
         "Inscrit"
       end
