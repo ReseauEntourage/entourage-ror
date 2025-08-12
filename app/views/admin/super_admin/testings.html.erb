@@ -1,62 +1,75 @@
 <div class="container my-4">
-  <h2 class="mb-4">Outils de test</h2>
+  <h2>Outils de test</h2>
 
-  <div class="row g-4">
-    <!-- Groupe Notifications -->
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-primary text-white">
-          Notifications
-        </div>
-        <div class="card-body d-grid gap-2">
-          <%= link_to "Notification: almost match",
-                      user_smalltalk_on_almost_match_admin_testings_notifications_path,
-                      method: :post,
-                      class: "btn btn-primary" %>
-          <%= link_to "Notification : user reaction",
-                      user_reaction_on_create_admin_testings_notifications_path,
-                      method: :post,
-                      class: "btn btn-primary" %>
-        </div>
-      </div>
-    </div>
-
-    <!-- Groupe SMS -->
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-success text-white">
-          SMS
-        </div>
-        <div class="card-body d-grid gap-2">
-          <%= link_to "SMS : send welcome",
-                      send_welcome_admin_testings_sms_path,
-                      method: :post,
-                      class: "btn btn-success" %>
-          <%= link_to "SMS : regenerate",
-                      regenerate_admin_testings_sms_path,
-                      method: :post,
-                      class: "btn btn-warning" %>
-        </div>
-      </div>
-    </div>
-
-    <!-- Groupe Email & Salesforce -->
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-info text-white">
-          Email & Salesforce
-        </div>
-        <div class="card-body d-grid gap-2">
-          <%= link_to "Email : weekly planning",
-                      weekly_planning_admin_testings_emails_path,
-                      method: :post,
-                      class: "btn btn-info" %>
-          <%= link_to "Salesforce : outings sync",
-                      outing_sync_admin_testings_salesforce_index_path,
-                      method: :post,
-                      class: "btn btn-secondary" %>
-        </div>
-      </div>
+  <!-- Notifications -->
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Notifications</b><br/>
+      <b>Prérequis</b> : avoir créé une demande, qu'elle ait déjà été matchée ou non.<br/>
+      <b>Attendu</b> : recevoir une notification.
     </div>
   </div>
+
+  <%= link_to "Almost match",
+    user_smalltalk_on_almost_match_admin_testings_notifications_path,
+    method: :post,
+    class: "btn btn-primary"
+  %>
+
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Notifications</b><br/>
+      <b>Prérequis</b> : un utilisateur doit avoir réagi à l'un de nos messages.<br/>
+      <b>Attendu</b> : recevoir une notification.
+    </div>
+  </div>
+
+  <%= link_to "User reaction",
+    user_reaction_on_create_admin_testings_notifications_path,
+    method: :post,
+    class: "btn btn-primary"
+  %>
+
+  <!-- Sms -->
+  <div class="alert alert-warning" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Sms</b><br/>
+      <b>Prérequis</b> : aucun.<br/>
+      <b>Attendu</b> : recevoir une notification avec un code "xxxxxx".
+    </div>
+  </div>
+
+  <%= link_to "Send welcome", send_welcome_admin_testings_sms_path, method: :post, class: "btn btn-warning" %>
+
+  <div class="alert alert-warning" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Sms</b><br/>
+      <b>Prérequis</b> : aucun.<br/>
+      <b>Attendu</b> : recevoir une notification avec un nouveau code.
+    </div>
+  </div>
+
+  <%= link_to "Regenerate", regenerate_admin_testings_sms_path, method: :post, class: "btn btn-warning" %>
+
+  <!-- Email -->
+  <div class="alert alert-success" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Email</b><br/>
+      <b>Prérequis</b> : des actions et événements doivent exister.<br/>
+      <b>Attendu</b> : recevoir un email.
+    </div>
+  </div>
+
+  <%= link_to "Weekly planning", weekly_planning_admin_testings_emails_path, method: :post, class: "btn btn-success" %>
+
+  <!-- Salesforce -->
+  <div class="alert alert-danger" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Salesforce</b><br/>
+      <b>Prérequis</b> : un événement pas encore synchronisé, en présentiel, créé par un admin ou un ambassadeur, doit exister.<br/>
+      <b>Attendu</b> : l'événement doit être créé sur Salesforce.
+    </div>
+  </div>
+
+  <%= link_to "Synchronisation", outing_sync_admin_testings_salesforce_index_path, method: :post, class: "btn btn-danger" %>
 </div>
