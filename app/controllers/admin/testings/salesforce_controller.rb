@@ -7,9 +7,10 @@ module Admin
       before_action :authenticate_super_admin!
 
       def outing_sync
-        TestingServices::Salesforce.new(current_user, :outing_sync).run
+        service = TestingServices::Salesforce.new(current_user, :outing_sync)
+        service.run
 
-        redirect_to admin_super_admin_testings_path, flash: { success: "Synchronisation envoyée" }
+        redirect_to admin_super_admin_testings_path, flash: { success: "Synchronisation envoyée: #{service.outing.name} (#{service.outing.id})" }
       end
 
       private

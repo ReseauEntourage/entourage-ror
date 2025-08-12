@@ -15,15 +15,17 @@ module TestingServices
     end
 
     def outing_sync
-      record = Outing
+      raise 'Current user does not have any record of this method_name' unless outing
+
+      outing.sync_salesforce(true)
+    end
+
+    def outing
+      outing ||= Outing
         .where(salesforce_id: nil)
         .where(online: false)
         .where(user: User.where(targeting_profile: ['team', 'ambassador']))
         .last
-
-      raise 'Current user does not have any record of this method_name' unless record
-
-      record.sync_salesforce(true)
     end
   end
 end
