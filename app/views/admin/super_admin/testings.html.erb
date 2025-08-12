@@ -1,0 +1,62 @@
+<div class="container my-4">
+  <h2 class="mb-4">Outils de test</h2>
+
+  <div class="row g-4">
+    <!-- Groupe Notifications -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          Notifications
+        </div>
+        <div class="card-body d-grid gap-2">
+          <%= link_to "Notification: almost match",
+                      user_smalltalk_on_almost_match_admin_testings_notifications_path,
+                      method: :post,
+                      class: "btn btn-primary" %>
+          <%= link_to "Notification : user reaction",
+                      user_reaction_on_create_admin_testings_notifications_path,
+                      method: :post,
+                      class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Groupe SMS -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-success text-white">
+          SMS
+        </div>
+        <div class="card-body d-grid gap-2">
+          <%= link_to "SMS : send welcome",
+                      send_welcome_admin_testings_sms_path,
+                      method: :post,
+                      class: "btn btn-success" %>
+          <%= link_to "SMS : regenerate",
+                      regenerate_admin_testings_sms_path,
+                      method: :post,
+                      class: "btn btn-warning" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Groupe Email & Salesforce -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-info text-white">
+          Email & Salesforce
+        </div>
+        <div class="card-body d-grid gap-2">
+          <%= link_to "Email : weekly planning",
+                      weekly_planning_admin_testings_emails_path,
+                      method: :post,
+                      class: "btn btn-info" %>
+          <%= link_to "Salesforce : outings sync",
+                      outing_sync_admin_testings_salesforce_index_path,
+                      method: :post,
+                      class: "btn btn-secondary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
