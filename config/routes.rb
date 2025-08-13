@@ -89,12 +89,6 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :digest_emails, only: [:index, :show, :edit, :update] do
-        member do
-          post :send_test
-        end
-      end
-
       resources :entourages, only: [:index, :show, :new, :create, :edit, :update] do
         member do
           post :moderator_read
