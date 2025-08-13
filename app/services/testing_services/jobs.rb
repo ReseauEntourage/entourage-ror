@@ -22,7 +22,7 @@ module TestingServices
       i18n = PushNotificationTrigger::I18nStruct.new(instance: Outing.last, field: :name)
 
       # poi notification_permission always returns true
-      PushNotificationService.new.send_notification(:sender, i18n, i18n, [@user], 'poi', @user.id, { foo: :bar })
+      PushNotificationService.new.send_notification("sender", i18n, i18n, [@user], 'poi', @user.id, { foo: :bar })
     end
   end
 end
