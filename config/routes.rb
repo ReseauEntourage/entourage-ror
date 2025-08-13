@@ -279,6 +279,19 @@ Rails.application.routes.draw do
       end
 
       namespace :testings, only: [] do
+        resources :emails, only: [] do
+          collection do
+            post :weekly_planning
+          end
+        end
+
+        resources :jobs, only: [] do
+          collection do
+            post :push_notification_trigger_job
+            post :notification_job
+          end
+        end
+
         resources :notifications, only: [] do
           collection do
             post :user_smalltalk_on_almost_match
@@ -286,9 +299,9 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :emails, only: [] do
+        resources :salesforce, only: [] do
           collection do
-            post :weekly_planning
+            post :outing_sync
           end
         end
 
@@ -296,12 +309,6 @@ Rails.application.routes.draw do
           collection do
             post :send_welcome
             post :regenerate
-          end
-        end
-
-        resources :salesforce, only: [] do
-          collection do
-            post :outing_sync
           end
         end
       end
