@@ -102,11 +102,7 @@ module UserServices
     attr_reader :user, :position, :params, :callback
 
     def self.update_address user:, position:, params:
-      if user.anonymous?
-        address = Address.new(user_id: 0, position: position)
-      else
-        address = user.addresses.find_or_initialize_by(position: position)
-      end
+      address = user.addresses.find_or_initialize_by(position: position)
 
       if params[:google_place_id] != address.google_place_id
         address.postal_code = nil
@@ -117,14 +113,7 @@ module UserServices
 
       address.assign_attributes(params)
 
-      if user.anonymous?
-        success = address.valid? || address.errors.attribute_names == [:user] # address.user is declared as required
-        user.address = address
-      else
-        success = address.save
-      end
-
-      [address, success]
+      [address, address.save]
     end
 
     def fetch_google_place_details
