@@ -1,5 +1,7 @@
 module Experimental::EntourageSlack
-  def self.notify entourage
+  def self.notify entourage_id
+    return unless entourage = Entourage.find_by_id(entourage_id)
+
     notifier(entourage)&.ping(payload(entourage))
   end
 
@@ -166,7 +168,8 @@ module Experimental::EntourageSlack
       return unless community == 'entourage' && group_type.in?(['action', 'outing'])
       return unless [country, postal_code].all?(&:present?)
       return unless previous_changes.key?('country') || departement_changed?
-      AsyncService.new(Experimental::EntourageSlack).notify(self)
+
+      AsyncService.new(Experimental::EntourageSlack).notify(id)
     end
   end
 end

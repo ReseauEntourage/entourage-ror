@@ -37,10 +37,8 @@ module UserServices
         address.previous_changes.keys.include?('google_place_id') &&
         address.google_place_id.present?
 
-      if !fetched_google_place_details &&
-         (google_place_id_changed ||
-          can_update?(address, [:postal_code, :country]))
-        AsyncService.new(self.class).update_with_google_place_details(address)
+      if !fetched_google_place_details && (google_place_id_changed || can_update?(address, [:postal_code, :country]))
+        AsyncService.new(self.class).update_with_google_place_details(address.id)
       end
 
       callback.on_success.try(:call, user, address)
@@ -80,7 +78,9 @@ module UserServices
       address
     end
 
-    def self.update_with_google_place_details address
+    def self.update_with_google_place_details address_id
+      return unless address = Address.find_by_id(address_id)
+
       address.update!(fetch_google_place_details(address.google_place_id))
     end
 
