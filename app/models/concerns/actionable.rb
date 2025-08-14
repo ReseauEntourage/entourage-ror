@@ -14,6 +14,6 @@ module Actionable
   end
 
   def after_create_send_mail_to_creator
-    AsyncService.new(FollowingService).on_create_entourage(self)
+    AsyncService.new(FollowingService).on_create_entourage(id)
   end
 end

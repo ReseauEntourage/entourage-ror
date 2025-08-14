@@ -43,7 +43,9 @@ module SensitiveWordsService
     [entourage.title, entourage.description].join(' ')
   end
 
-  def self.analyze_entourage entourage
+  def self.analyze_entourage entourage_id
+    return unless entourage = Entourage.find_by_id(entourage_id)
+
     matches = entourage_matches(entourage)
     check = entourage.sensitive_words_check || entourage.build_sensitive_words_check
 
@@ -147,7 +149,8 @@ module SensitiveWordsService
       return unless SensitiveWordsService.enable_callback
       return unless community == 'entourage' && group_type.in?(['action', 'outing'])
       return unless (['title', 'description'] & previous_changes.keys).any?
-      AsyncService.new(SensitiveWordsService).analyze_entourage(self)
+
+      AsyncService.new(SensitiveWordsService).analyze_entourage(id)
     end
   end
 end

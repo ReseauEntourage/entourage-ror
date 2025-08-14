@@ -4,7 +4,7 @@ class MailjetController < ActionController::Base
   def event
     events = params[:_json] || []
     events.each do |event|
-      AsyncService.new(MailjetService).handle_event(event.as_json)
+      MailjetService.handle_event(event.as_json)
     end
     head :ok
   end

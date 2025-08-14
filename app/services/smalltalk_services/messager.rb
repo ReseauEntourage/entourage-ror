@@ -39,7 +39,7 @@ module SmalltalkServices
     private
 
     def create_message i18n_key, at: Time.zone.now, i18n_arg: nil
-      SmalltalkAutoChatMessageJob.perform_at(at, smalltalk.id, i18n_key, i18n_arg)
+      SmalltalkAutoChatMessageJob.perform_at(at, smalltalk.id, i18n_key.to_s, i18n_arg.to_s)
     end
 
     def create?

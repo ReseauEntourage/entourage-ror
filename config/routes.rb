@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       namespace :super_admin do
         get '/soliguide', action: :soliguide
         get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
+        get '/testings', action: :testings
       end
 
       resources :actions, only: [:index] do
@@ -85,12 +86,6 @@ Rails.application.routes.draw do
 
         collection do
           delete :destroy_message
-        end
-      end
-
-      resources :digest_emails, only: [:index, :show, :edit, :update] do
-        member do
-          post :send_test
         end
       end
 
@@ -280,6 +275,41 @@ Rails.application.routes.draw do
           get :show_members
           get :show_messages
           post :message
+        end
+      end
+
+      namespace :testings, only: [] do
+        resources :emails, only: [] do
+          collection do
+            post :weekly_planning
+          end
+        end
+
+        resources :jobs, only: [] do
+          collection do
+            post :push_notification_trigger_job
+            post :notification_job
+          end
+        end
+
+        resources :notifications, only: [] do
+          collection do
+            post :user_smalltalk_on_almost_match
+            post :user_reaction_on_create
+          end
+        end
+
+        resources :salesforce, only: [] do
+          collection do
+            post :outing_sync
+          end
+        end
+
+        resources :sms, only: [] do
+          collection do
+            post :send_welcome
+            post :regenerate
+          end
         end
       end
 

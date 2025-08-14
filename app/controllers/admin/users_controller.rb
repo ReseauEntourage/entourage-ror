@@ -308,7 +308,7 @@ module Admin
     end
 
     def email_preferences_params
-      params.permit(email_preferences: [:default, :newsletter, :unread_reminder, :digest_email])[:email_preferences] || {}
+      params.permit(email_preferences: [:default, :newsletter, :unread_reminder])[:email_preferences] || {}
     end
 
     def block_params

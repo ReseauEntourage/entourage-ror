@@ -1,5 +1,7 @@
 module Experimental::NeighborhoodSlack
-  def self.notify record
+  def self.notify neighborhood_id
+    return unless record = Neighborhood.find_by_id(neighborhood_id)
+
     notifier(record)&.ping(payload(record))
   end
 
@@ -104,7 +106,7 @@ module Experimental::NeighborhoodSlack
     private
 
     def notify_slack
-      AsyncService.new(Experimental::NeighborhoodSlack).notify(self)
+      AsyncService.new(Experimental::NeighborhoodSlack).notify(id)
     end
   end
 end
