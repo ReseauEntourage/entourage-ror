@@ -1,0 +1,130 @@
+<style>
+  .alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+  }
+
+  .alert-secondary {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+  }
+
+  .btn-primary {
+    color: #004085;
+  }
+
+  .btn-secondary {
+    color: #ffffff;
+    background-color: #929395;
+    border-color: #727375
+  }
+</style>
+
+<div class="container my-4">
+  <h2>Outils de test</h2>
+
+  <%# bootstrap alerts: danger dark info light primary secondary success warning %>
+
+  <!-- Jobs -->
+  <div class="alert alert-secondary" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Jobs</b><br/>
+      <b>Prérequis</b> : aucun.<br/>
+      <b>Attendu</b> : pas de message d'erreur => job créé.
+    </div>
+  </div>
+
+  <%= link_to "Push notification trigger job",
+    push_notification_trigger_job_admin_testings_jobs_path,
+    method: :post,
+    class: "btn btn-secondary"
+  %>
+
+  <div class="alert alert-secondary" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Jobs</b><br/>
+      <b>Prérequis</b> : aucun.<br/>
+      <b>Attendu</b> : pas de message d'erreur => job créé, recevoir une push notif.
+    </div>
+  </div>
+
+  <%= link_to "Notification job",
+    notification_job_admin_testings_jobs_path,
+    method: :post,
+    class: "btn btn-secondary"
+  %>
+
+  <!-- Notifications -->
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Notifications</b><br/>
+      <b>Prérequis</b> : avoir créé une demande, qu'elle ait déjà été matchée ou non.<br/>
+      <b>Attendu</b> : recevoir une notification.
+    </div>
+  </div>
+
+  <%= link_to "Almost match",
+    user_smalltalk_on_almost_match_admin_testings_notifications_path,
+    method: :post,
+    class: "btn btn-info"
+  %>
+
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Notifications</b><br/>
+      <b>Prérequis</b> : un utilisateur doit avoir réagi à l'un de nos messages.<br/>
+      <b>Attendu</b> : recevoir une notification.
+    </div>
+  </div>
+
+  <%= link_to "User reaction",
+    user_reaction_on_create_admin_testings_notifications_path,
+    method: :post,
+    class: "btn btn-info"
+  %>
+
+  <!-- Sms -->
+  <div class="alert alert-warning" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Sms</b><br/>
+      <b>Prérequis</b> : aucun.<br/>
+      <b>Attendu</b> : recevoir une notification avec un code "xxxxxx".
+    </div>
+  </div>
+
+  <%= link_to "Send welcome", send_welcome_admin_testings_sms_path, method: :post, class: "btn btn-warning" %>
+
+  <div class="alert alert-warning" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Sms</b><br/>
+      <b>Prérequis</b> : aucun.<br/>
+      <b>Attendu</b> : recevoir une notification avec un nouveau code.
+    </div>
+  </div>
+
+  <%= link_to "Regenerate", regenerate_admin_testings_sms_path, method: :post, class: "btn btn-warning" %>
+
+  <!-- Email -->
+  <div class="alert alert-success" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Email</b><br/>
+      <b>Prérequis</b> : des actions et événements doivent exister.<br/>
+      <b>Attendu</b> : recevoir un email.
+    </div>
+  </div>
+
+  <%= link_to "Weekly planning", weekly_planning_admin_testings_emails_path, method: :post, class: "btn btn-success" %>
+
+  <!-- Salesforce -->
+  <div class="alert alert-danger" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Salesforce</b><br/>
+      <b>Prérequis</b> : un événement pas encore synchronisé, en présentiel, créé par un admin ou un ambassadeur, doit exister.<br/>
+      <b>Attendu</b> : l'événement doit être créé sur Salesforce.
+    </div>
+  </div>
+
+  <%= link_to "Synchronisation", outing_sync_admin_testings_salesforce_index_path, method: :post, class: "btn btn-danger" %>
+</div>

@@ -37,10 +37,8 @@ module UserServices
         address.previous_changes.keys.include?('google_place_id') &&
         address.google_place_id.present?
 
-      if !fetched_google_place_details &&
-         (google_place_id_changed ||
-          can_update?(address, [:postal_code, :country]))
-        AsyncService.new(self.class).update_with_google_place_details(address)
+      if !fetched_google_place_details && (google_place_id_changed || can_update?(address, [:postal_code, :country]))
+        AsyncService.new(self.class).update_with_google_place_details(address.id)
       end
 
       callback.on_success.try(:call, user, address)
@@ -80,7 +78,9 @@ module UserServices
       address
     end
 
-    def self.update_with_google_place_details address
+    def self.update_with_google_place_details address_id
+      return unless address = Address.find_by_id(address_id)
+
       address.update!(fetch_google_place_details(address.google_place_id))
     end
 
@@ -102,11 +102,7 @@ module UserServices
     attr_reader :user, :position, :params, :callback
 
     def self.update_address user:, position:, params:
-      if user.anonymous?
-        address = Address.new(user_id: 0, position: position)
-      else
-        address = user.addresses.find_or_initialize_by(position: position)
-      end
+      address = user.addresses.find_or_initialize_by(position: position)
 
       if params[:google_place_id] != address.google_place_id
         address.postal_code = nil
@@ -117,14 +113,7 @@ module UserServices
 
       address.assign_attributes(params)
 
-      if user.anonymous?
-        success = address.valid? || address.errors.attribute_names == [:user] # address.user is declared as required
-        user.address = address
-      else
-        success = address.save
-      end
-
-      [address, success]
+      [address, address.save]
     end
 
     def fetch_google_place_details

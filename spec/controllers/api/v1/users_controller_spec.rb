@@ -1252,28 +1252,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             )
           end
         end
-
-        context "with an anonymous user" do
-          let(:user) { AnonymousUserService.create_user($server_community) }
-          it do
-            subject
-            expect(result).to eq(
-              "address"=>{
-                "display_address"=>", 00001",
-                "latitude"=>nil,
-                "longitude"=>nil,
-                "position"=>1,
-              },
-              "firebase_properties"=>{
-                "ActionZoneDep"=>"00",
-                "ActionZoneCP"=>"00001",
-                "Goal" => "no_set",
-                "Interests" => "none"
-              }
-            )
-          end
-          it { expect { subject }.not_to change { Address.count } }
-        end
       end
 
       context "when required attributes are present" do

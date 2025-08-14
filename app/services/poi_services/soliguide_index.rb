@@ -28,8 +28,10 @@ module PoiServices
         end
       end
 
-      def post_only_query params
-        get_results(params)
+      def post_only_query json_params
+        get_results(
+          JSON.parse(json_params)
+        )
       end
 
       def post_all_for_page page, format = :short

@@ -10,12 +10,12 @@ describe EntourageServices::GeocodingService do
     before { allow(EntourageServices::GeocodingService).to receive(:geocode) }
     it "geocodes on create" do
       entourage.save
-      expect(EntourageServices::GeocodingService).to have_received(:geocode).with(entourage)
+      expect(EntourageServices::GeocodingService).to have_received(:geocode).with(entourage.id)
     end
 
     it "geocodes on coordinates updates" do
       entourage.save
-      expect(EntourageServices::GeocodingService).to receive(:geocode).with(entourage)
+      expect(EntourageServices::GeocodingService).to receive(:geocode).with(entourage.id)
       entourage.update(latitude: 43)
     end
 

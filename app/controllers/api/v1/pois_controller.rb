@@ -110,7 +110,7 @@ module Api
         # we send this request just for Soliguide stats; Soliguide POIs have already been added from Entourage DB
         soliguide = PoiServices::Soliguide.new(soliguide_params)
 
-        AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_params) if soliguide.apply?
+        AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_params.to_json) if soliguide.apply?
       end
 
       def coordinates
