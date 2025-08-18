@@ -11,7 +11,10 @@ module Preloaders
         .index_by { |image| image.path }
 
       outings.each do |outing|
-        outing.preload_image_url = images[outing.landscape_url]
+        next unless image = images[outing.landscape_url]
+        next unless path = image.destination_path
+
+        outing.preload_image_url = EntourageImage.image_url_for(path)
       end
     end
 
