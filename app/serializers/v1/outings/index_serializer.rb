@@ -46,11 +46,9 @@ module V1
         landscape_url = object.preload_image_url || object.image_url_with_size(object.landscape_url, :small)
 
         return {
-          metadata: {
-            starts_at: object.metadata[:starts_at],
-            display_address: object.metadata[:display_address],
-            landscape_url: object.metadata[:landscape_url]
-          }
+          starts_at: object.metadata[:starts_at],
+          display_address: object.metadata[:display_address],
+          landscape_url: object.metadata[:landscape_url]
         }
       end
 
