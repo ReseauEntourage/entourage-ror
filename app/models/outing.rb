@@ -6,6 +6,8 @@ class Outing < Entourage
 
   RECENTLY_PAST_PERIOD = 7.days
 
+  METADATA_ACCESSOR = [:starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit]
+
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
   after_save :generate_initial_recurrences, if: :recurrency
@@ -102,7 +104,14 @@ class Outing < Entourage
     where(exclusive_to: nil)
   }
 
-  attr_accessor :recurrency, :original_outing, :force_relatives_dates
+  attr_accessor :recurrency, :original_outing, :force_relatives_dates, :preload_image_url, :preload_member_ids
+
+  # hack that fixes not working store_accessor accessors
+  METADATA_ACCESSOR.each do |metadata_accessor|
+    define_method(metadata_accessor) do
+      metadata[metadata_accessor]
+    end
+  end
 
   def initialize_dup original_outing
     set_uuid!
@@ -303,5 +312,11 @@ class Outing < Entourage
 
     google_place_details[:city]
   rescue
+  end
+
+  class << self
+    def bucket_name
+      EntourageImage.storage.bucket_name
+    end
   end
 end
