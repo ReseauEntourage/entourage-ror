@@ -4,6 +4,7 @@ module SalesforceServices
 
     INSTANCE_MAPPING = {
       status: "Status",
+      photo_acceptance: "Droit_l_image__c",
     }
 
     def initialize instance:
@@ -55,8 +56,13 @@ module SalesforceServices
 
       def status
         return "A annulé" if join_request.cancelled?
+        return "Participé" if join_request.participate_at.present?
 
         "Inscrit"
+      end
+
+      def photo_acceptance
+        join_request.user.photo_acceptance?
       end
     end
   end
