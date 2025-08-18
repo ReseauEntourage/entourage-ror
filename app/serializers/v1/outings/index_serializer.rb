@@ -48,7 +48,7 @@ module V1
         return {
           starts_at: object.metadata[:starts_at],
           display_address: object.metadata[:display_address],
-          landscape_url: object.metadata[:landscape_url]
+          landscape_url: landscape_url
         }
       end
 
