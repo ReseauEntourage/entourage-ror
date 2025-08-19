@@ -7,10 +7,6 @@ class ImageResizeAction < ApplicationRecord
     where(bucket: bucket, path: path)
   }
 
-  scope :with_size, -> (size) {
-    where(destination_size: size)
-  }
-
   class << self
     def find_path_for bucket:, path:, size:
       size = :default unless size.respond_to?(:to_sym) && ImageResizeAction::SIZES.include?(size.to_sym)

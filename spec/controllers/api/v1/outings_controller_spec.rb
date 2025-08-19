@@ -78,6 +78,20 @@ describe Api::V1::OutingsController do
       it { expect(subject['outings'][0]['id']).to eq(outing.id) }
     end
 
+    context "without confirmed members" do
+      before { get :index, params: { token: user.token } }
+
+      it { expect(subject['outings'][0]['confirmed_members_count']).to eq(0) }
+    end
+
+    context "with confirmed members" do
+      let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, confirmed_at: Time.zone.now, role: :organizer) }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(subject['outings'][0]['confirmed_members_count']).to eq(1) }
+    end
+
     describe 'period' do
       let!(:outing) { create :outing, latitude: latitude, longitude: longitude, metadata: { starts_at: starts_at } }
 
@@ -114,6 +128,13 @@ describe Api::V1::OutingsController do
       it { expect(response.status).to eq(200) }
       it { expect(subject).to have_key("outings") }
       it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"][0]).to have_key("members") }
+      it { expect(subject["outings"][0]["members"]).to match_array([{
+        "id" => kind_of(Integer),
+        "lang" => kind_of(String),
+        "display_name" => kind_of(String),
+        "avatar_url" => kind_of(String),
+      }]) }
     end
 
     context "some users are members" do
@@ -125,6 +146,8 @@ describe Api::V1::OutingsController do
       it { expect(response.status).to eq(200) }
       it { expect(subject).to have_key("outings") }
       it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"][0]).to have_key("members") }
+      it { expect(subject["outings"][0]["members"].count).to eq(3) }
     end
 
     context "user being a member" do
