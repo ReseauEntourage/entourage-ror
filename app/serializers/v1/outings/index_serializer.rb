@@ -45,10 +45,15 @@ module V1
       def metadata
         landscape_url = object.preload_image_url || object.image_url_with_size(object.landscape_url, :small)
 
+        # portrait_url is not used but it is required by ios version
         return {
           starts_at: object.metadata[:starts_at],
+          ends_at: object.metadata[:ends_at],
           display_address: object.metadata[:display_address],
-          landscape_url: landscape_url
+          place_name: object.metadata[:place_name],
+          street_address: object.metadata[:street_address],
+          landscape_url: landscape_url,
+          portrait_url: ""
         }
       end
 
