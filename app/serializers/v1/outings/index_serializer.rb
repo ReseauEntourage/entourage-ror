@@ -50,7 +50,7 @@ module V1
           starts_at: object.metadata[:starts_at],
           ends_at: object.metadata[:ends_at],
           display_address: object.metadata[:display_address],
-          landscape_url: landscape_url
+          landscape_url: landscape_url,
           portrait_url: ""
         }
       end
