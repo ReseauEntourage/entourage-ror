@@ -51,6 +51,7 @@ module V1
           ends_at: object.metadata[:ends_at],
           display_address: object.metadata[:display_address],
           place_name: object.metadata[:place_name],
+          street_address: object.metadata[:street_address],
           landscape_url: landscape_url,
           portrait_url: ""
         }
