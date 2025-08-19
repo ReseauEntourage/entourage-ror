@@ -8,11 +8,22 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: OutingsServices::Finder.new(current_user, index_params)
+        outings = OutingsServices::Finder.new(current_user, index_params)
           .find_all
-          .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
+          .includes(:translation, :user, :interests)
           .page(page)
-          .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+          .per(per)
+
+        # manual preloads
+        outings.tap do |outing|
+          ::Preloaders::Outing.preload_images(outing, scope: ImageResizeAction.with_size(:small))
+        end
+
+        outings.tap do |outing|
+          ::Preloaders::Outing.preload_member_ids(outing, scope: JoinRequest.accepted)
+        end
+
+        render json: outings, root: :outings, each_serializer: ::V1::Outings::IndexSerializer, scope: {
             user: current_user,
             latitude: latitude,
             longitude: longitude
