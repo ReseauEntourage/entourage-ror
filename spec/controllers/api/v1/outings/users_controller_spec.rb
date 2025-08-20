@@ -40,6 +40,8 @@ describe Api::V1::Outings::UsersController do
         "status" => "accepted",
         "message" => nil,
         "confirmed_at" => nil,
+        "participate_at" => nil,
+        "photo_acceptance" => nil,
         "requested_at" => JoinRequest.where(user: outing.user, joinable: outing).first.created_at.iso8601(3),
         "avatar_url" => nil,
         "partner" => nil,
@@ -54,6 +56,8 @@ describe Api::V1::Outings::UsersController do
         "status" => "accepted",
         "message" => nil,
         "confirmed_at" => nil,
+        "participate_at" => nil,
+        "photo_acceptance" => nil,
         "requested_at" => join_request.created_at.iso8601(3),
         "avatar_url" => nil,
         "partner" => nil,
@@ -84,6 +88,8 @@ describe Api::V1::Outings::UsersController do
             "status" => "accepted",
             "message" => nil,
             "confirmed_at" => nil,
+            "participate_at" => nil,
+            "photo_acceptance" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
@@ -108,6 +114,8 @@ describe Api::V1::Outings::UsersController do
             "status" => "accepted",
             "message" => nil,
             "confirmed_at" => nil,
+            "participate_at" => nil,
+            "photo_acceptance" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
@@ -221,6 +229,8 @@ describe Api::V1::Outings::UsersController do
             "message" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "confirmed_at" => JoinRequest.last.confirmed_at.iso8601(3),
+            "participate_at" => nil,
+            "photo_acceptance" => nil,
             "avatar_url" => nil,
             "partner" => nil,
             "partner_role_title" => nil,
@@ -246,12 +256,101 @@ describe Api::V1::Outings::UsersController do
             "message" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "confirmed_at" => JoinRequest.last.confirmed_at.iso8601(3),
+            "participate_at" => nil,
+            "photo_acceptance" => nil,
             "avatar_url" => nil,
             "partner" => nil,
             "partner_role_title" => nil,
           }
         )}
       end
+    end
+  end
+
+  describe 'POST participate' do
+    let(:request) { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+
+    context "requester is not organizer" do
+      before { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(Time.iso8601(result["user"]["participate_at"])).to be_a(Time) }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(Time.iso8601(result["user"]["participate_at"])).to be_a(Time) }
+    end
+  end
+
+  describe 'POST cancel_participation' do
+    let(:request) { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+
+    context "requester is not organizer" do
+      before { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["participate_at"]).to be_nil }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["participate_at"]).to be_nil }
+    end
+
+    context "as participant with participation_at" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, participate_at: Time.zone.now) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["participate_at"]).to be_nil }
+    end
+  end
+
+  describe 'POST photo_acceptance' do
+    let(:request) { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+
+    context "requester is not organizer" do
+      before { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["photo_acceptance"]).to eq(true) }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["photo_acceptance"]).to eq(true) }
     end
   end
 
@@ -279,6 +378,8 @@ describe Api::V1::Outings::UsersController do
             "status" => "not_requested",
             "message" => nil,
             "confirmed_at" => nil,
+            "participate_at" => nil,
+            "photo_acceptance" => nil,
             "requested_at" => my_join_request.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,
@@ -342,6 +443,8 @@ describe Api::V1::Outings::UsersController do
             "status" => "not_requested",
             "message" => nil,
             "confirmed_at" => nil,
+            "participate_at" => nil,
+            "photo_acceptance" => nil,
             "requested_at" => my_join_request.created_at.iso8601(3),
             "avatar_url" => nil,
             "partner" => nil,

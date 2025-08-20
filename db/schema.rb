@@ -360,7 +360,6 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.integer "number_of_root_chat_messages", default: 0
     t.string "salesforce_id"
     t.string "exclusive_to"
-    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"

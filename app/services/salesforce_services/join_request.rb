@@ -38,7 +38,7 @@ module SalesforceServices
     end
 
     def updatable_fields
-      [:status]
+      [:status, :participate_at]
     end
 
     private
