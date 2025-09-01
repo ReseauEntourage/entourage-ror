@@ -8,4 +8,9 @@ namespace :smalltalks do
   task match_pending: :environment do
     SmalltalkServices::Matcher.match_pending
   end
+
+  desc "schedule_meet_creation"
+  task schedule_meet_creation: :environment do
+    SmalltalkServices::Meeter.schedule_meet_creation
+  end
 end
