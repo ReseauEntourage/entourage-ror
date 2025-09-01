@@ -50,4 +50,21 @@ describe SalesforceServices::OutingTableInterface do
       it { expect(result[-date.length..]).to eq(date) }
     end
   end
+
+  describe "remove_emojis" do
+    let(:interface) { SalesforceServices::OutingTableInterface.new(instance: create(:outing)) }
+    let(:result) { interface.mapping.remove_emojis(str) }
+
+    context "without emoji" do
+      let(:str) { "titre" }
+
+      it { expect(result).to eq("titre") }
+    end
+
+    context "with emoji" do
+      let(:str) { "🏸 titre 🏸" }
+
+      it { expect(result).to eq("titre") }
+    end
+  end
 end
