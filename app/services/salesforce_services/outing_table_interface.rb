@@ -77,9 +77,19 @@ module SalesforceServices
         outing.sf.from_address_to_antenne
       end
 
+      # this method ensures that salesforce title will be 80 caracters max
+      # with city: at least 30 caracters
+      # with title: at least 30 caracters
+      # with starts_date: no truncation
       def title
-        # city // title - starts_at
-        "#{outing.city} // #{outing.title} - #{starts_date}"
+        slashes = ' // '
+        dot = ' - '
+
+        truncate_priority(
+          [outing.city, slashes, remove_emojis(outing.title), dot, starts_date.to_s],
+          max_length: 80,
+          min_lengths: [30, slashes.length, 30, dot.length, starts_date.to_s.length]
+        )
       end
 
       def postal_code
@@ -149,6 +159,25 @@ module SalesforceServices
 
       def type_evenement
         "Evenement de convivialité"
+      end
+
+      # private
+
+      def truncate_priority(parts, max_length:, min_lengths:)
+        str = parts.join
+        parts.each_with_index do |part, i|
+          while str.length > max_length && part.length > min_lengths[i]
+            parts[i] = part = part.truncate(min_lengths[i])
+            str = parts.join
+          end
+        end
+        str
+      end
+
+      def remove_emojis str
+        str.scan(/\X/).reject { |cluster|
+          cluster.match?(/[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F]/u)
+        }.join.strip
       end
     end
   end

@@ -26,7 +26,7 @@ class JoinRequest < ApplicationRecord
     foreign_key: :joinable_id,
     primary_key: :joinable_id
 
-  attr_accessor :last_chat_message, :siblings
+  attr_accessor :siblings
 
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
@@ -75,6 +75,21 @@ class JoinRequest < ApplicationRecord
     return unless joinable_type.present?
 
     where.not(joinable_type: joinable_type)
+  }
+
+  scope :order_by_joinable_last_chat_message, -> {
+    joins(%(
+      LEFT JOIN LATERAL (
+        SELECT created_at, content
+        FROM chat_messages
+        WHERE chat_messages.messageable_type = join_requests.joinable_type
+          AND chat_messages.messageable_id = join_requests.joinable_id
+        ORDER BY created_at DESC
+        LIMIT 1
+      ) AS last_chat_messages ON TRUE
+    ))
+    .select('join_requests.*, last_chat_messages.content as last_chat_message')
+    .order(Arel.sql('last_chat_messages.created_at DESC NULLS LAST'))
   }
 
   after_save :joinable_callback

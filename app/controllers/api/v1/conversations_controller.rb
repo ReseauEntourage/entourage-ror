@@ -28,8 +28,7 @@ module Api
           .accepted_join_requests
           .with_joinable_type(params[:type])
           .without_joinable_type(:Neighborhood)
-          .order(updated_at: :desc)
-          .includes(:joinable)
+          .order_by_joinable_last_chat_message
           .page(page)
           .per(per)
 
@@ -38,8 +37,8 @@ module Api
           ::Preloaders::JoinRequest.preload_siblings(smalltalk_memberships, sibling_scope: JoinRequest.accepted)
         end
 
-        memberships.presence&.tap do |smalltalk_memberships|
-          ::Preloaders::JoinRequest.preload_last_chat_message(smalltalk_memberships, message_scope: ChatMessage.no_deleted_without_comments)
+        memberships&.tap do |m|
+          ::Preloaders::JoinRequest.preload_joinable(m)
         end
 
         render json: memberships, root: :memberships, each_serializer: ::V1::MembershipSerializer, scope: {
