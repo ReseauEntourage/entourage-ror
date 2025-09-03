@@ -14,7 +14,8 @@ module V1
         :recommandations,
         :congratulations,
         :unclosed_action,
-        :moderator
+        :moderator,
+        :signable_permission
 
       def preference
         return :contribution if object.ask_for_help?
@@ -83,6 +84,10 @@ module V1
           display_name: UserPresenter.new(user: moderator).display_name,
           avatar_url: UserServices::Avatar.new(user: moderator).thumbnail_url
         }
+      end
+
+      def signable_permission
+        object.team? || object.ambassador?
       end
 
       private
