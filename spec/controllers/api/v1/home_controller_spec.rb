@@ -191,9 +191,18 @@ describe Api::V1::HomeController do
             "recommandations" => [],
             "congratulations" => [],
             "unclosed_action" => nil,
-            "moderator" => {}
+            "moderator" => {},
+            "signable_permission" => false
           }
         }) }
+      end
+
+      context "with signable_permission" do
+        let(:user) { create(:offer_help_user, targeting_profile: :ambassador) }
+
+        before { request }
+
+        it { expect(subject["user"]["signable_permission"]).to eq(true) }
       end
 
       let(:entourage) { FactoryBot.create(:entourage) }
