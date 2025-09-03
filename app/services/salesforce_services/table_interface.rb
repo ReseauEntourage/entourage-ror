@@ -170,12 +170,16 @@ module SalesforceServices
       def where_clause
       end
 
+      def order_clause
+      end
+
       private
 
       def build_query table_name, fields, per = nil, page = nil
         query = "SELECT #{fields.join(', ')} FROM #{table_name}"
         query += " WHERE #{where_clause}" if where_clause.present?
-        query += " ORDER BY Id DESC LIMIT #{per} OFFSET #{(page - 1) * per}" if per && page
+        query += " ORDER BY #{order_clause}" if order_clause.present? if per && page
+        query += " LIMIT #{per} OFFSET #{(page - 1) * per}" if per && page
         query
       end
     end
