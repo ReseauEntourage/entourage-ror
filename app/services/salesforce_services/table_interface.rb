@@ -55,6 +55,14 @@ module SalesforceServices
       self.class.record_url(table_name, record_id)
     end
 
+    def records_attributes fields: [], per: 50, page: 1
+      return unless records = records(fields: fields, per: per, page: page)
+      return unless records.is_a?(Hash)
+
+      records[:data]
+    end
+
+    # returns a hash { data: [...], total: n }
     def records fields: [], per: 50, page: 1
       fields = instance_mapping.values unless fields.any?
 
@@ -157,8 +165,12 @@ module SalesforceServices
       end
 
       def records table_name, fields: ["Id"], per: 500, page: 1
+        results = client.query(build_query(table_name, fields, per, page))
+        # exclude attributes
+        results = results.map { _1.to_h.except('attributes') }
+
         {
-          data: client.query(build_query(table_name, fields, per, page)).map(&:to_h),
+          data: results,
           total: count_records(table_name)
         }
       end

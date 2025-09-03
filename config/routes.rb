@@ -743,6 +743,10 @@ Rails.application.routes.draw do
         end
       end
 
+      namespace :salesforce do
+        resources :sf_entreprises, path: :entreprises, only: [:index]
+      end
+
       resources :smalltalks, only: [:index, :show] do
         resources :chat_messages, :controller => 'smalltalks/chat_messages', only: [:index, :create, :update, :destroy] do
           member do
