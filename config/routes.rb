@@ -21,12 +21,14 @@ Rails.application.routes.draw do
             get :show_outing
             get :show_lead
             get :show_contact
+            get :show_sf_entreprise
           end
         end
 
         resources :users, only: [:index, :show]
         resources :outings, only: [:index, :show]
         resources :contacts, only: [:index]
+        resources :sf_entreprises, only: [:index]
       end
 
       namespace :super_admin do
