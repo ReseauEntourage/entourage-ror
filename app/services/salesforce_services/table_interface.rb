@@ -156,18 +156,27 @@ module SalesforceServices
         "#{ENV['SALESFORCE_LOGIN_URL']}/lightning/r/#{table_name}/#{record_id}/view"
       end
 
-      def records table_name, fields: ["Id"], per: 50, page: 1
-        query = "SELECT #{fields.join(', ')} FROM #{table_name} ORDER BY Id DESC LIMIT #{per} OFFSET #{(page - 1) * per}"
-
+      def records table_name, fields: ["Id"], per: 500, page: 1
         {
-          data: client.query(query).map(&:to_h),
+          data: client.query(build_query(table_name, fields, per, page)).map(&:to_h),
           total: count_records(table_name)
         }
       end
 
       def count_records table_name
-        response = client.query("SELECT COUNT() FROM #{table_name}")
-        response.size
+        client.query(build_query(table_name, ["COUNT()"])).size
+      end
+
+      def where_clause
+      end
+
+      private
+
+      def build_query table_name, fields, per = nil, page = nil
+        query = "SELECT #{fields.join(', ')} FROM #{table_name}"
+        query += " WHERE #{where_clause}" if where_clause.present?
+        query += " ORDER BY Id DESC LIMIT #{per} OFFSET #{(page - 1) * per}" if per && page
+        query
       end
     end
   end
