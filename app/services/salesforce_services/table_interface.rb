@@ -51,6 +51,18 @@ module SalesforceServices
       self.class.field_has_value?(table_name, field, value)
     end
 
+    def record_url record_id
+      self.class.record_url(table_name, record_id)
+    end
+
+    def records_attributes fields: [], per: 50, page: 1
+      return unless records = records(fields: fields, per: per, page: page)
+      return unless records.is_a?(Hash)
+
+      records[:data]
+    end
+
+    # returns a hash { data: [...], total: n }
     def records fields: [], per: 50, page: 1
       fields = instance_mapping.values unless fields.any?
 
@@ -148,18 +160,39 @@ module SalesforceServices
         end
       end
 
-      def records table_name, fields: ["Id"], per: 50, page: 1
-        query = "SELECT #{fields.join(', ')} FROM #{table_name} ORDER BY Id DESC LIMIT #{per} OFFSET #{(page - 1) * per}"
+      def record_url table_name, record_id
+        "#{ENV['SALESFORCE_LOGIN_URL']}/lightning/r/#{table_name}/#{record_id}/view"
+      end
+
+      def records table_name, fields: ["Id"], per: 500, page: 1
+        results = client.query(build_query(table_name, fields, per, page))
+        # exclude attributes
+        results = results.map { _1.to_h.except('attributes') }
 
         {
-          data: client.query(query).map(&:to_h),
+          data: results,
           total: count_records(table_name)
         }
       end
 
       def count_records table_name
-        response = client.query("SELECT COUNT() FROM #{table_name}")
-        response.size
+        client.query(build_query(table_name, ["COUNT()"])).size
+      end
+
+      def where_clause
+      end
+
+      def order_clause
+      end
+
+      private
+
+      def build_query table_name, fields, per = nil, page = nil
+        query = "SELECT #{fields.join(', ')} FROM #{table_name}"
+        query += " WHERE #{where_clause}" if where_clause.present?
+        query += " ORDER BY #{order_clause}" if order_clause.present? if per && page
+        query += " LIMIT #{per} OFFSET #{(page - 1) * per}" if per && page
+        query
       end
     end
   end
