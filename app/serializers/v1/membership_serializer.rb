@@ -47,6 +47,7 @@ module V1
     end
 
     def number_of_unread_messages
+      object.unread_messages_count
     end
 
     def last_chat_message
