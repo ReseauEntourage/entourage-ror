@@ -18,6 +18,10 @@ module Salesforcable
       @instance = instance
     end
 
+    def url
+      @url ||= @service.url
+    end
+
     def show
       @service.fetch
     end

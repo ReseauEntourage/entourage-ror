@@ -51,6 +51,10 @@ module SalesforceServices
       self.class.field_has_value?(table_name, field, value)
     end
 
+    def record_url record_id
+      self.class.record_url(table_name, record_id)
+    end
+
     def records fields: [], per: 50, page: 1
       fields = instance_mapping.values unless fields.any?
 
@@ -146,6 +150,10 @@ module SalesforceServices
         field_values(table_name, field_name).any? do |config|
           config["value"] == value
         end
+      end
+
+      def record_url table_name, record_id
+        "#{ENV['SALESFORCE_LOGIN_URL']}/lightning/r/#{table_name}/#{record_id}/view"
       end
 
       def records table_name, fields: ["Id"], per: 50, page: 1

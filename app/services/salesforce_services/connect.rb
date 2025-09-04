@@ -36,6 +36,12 @@ module SalesforceServices
       raise NotImplementedError
     end
 
+    def url
+      return unless id = (instance&.salesforce_id || find_id)
+
+      interface.record_url(id)
+    end
+
     def is_synchable?
       true
     end
