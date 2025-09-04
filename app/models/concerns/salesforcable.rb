@@ -65,6 +65,8 @@ module Salesforcable
       return "Nantes" if departement == "44"
       return "Bordeaux" if departement == "33"
       return "Saint-Etienne" if departement == "42"
+      return "Toulouse" if departement == "31"
+      return "Grenoble" if departement == "38"
 
       "Hors zone"
     end
