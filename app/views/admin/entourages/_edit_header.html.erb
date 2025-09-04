@@ -8,6 +8,17 @@
         <% end %>
       </li>
       <li class="active">Modifier</li>
+
+      <% if @entourage.outing? %>
+        <li style="float: right;">
+          <% if @entourage.sf.url %>
+            <%= link_to "Lien vers SF", @entourage.sf.url %>
+          <% else %>
+            Pas synchronisé avec SF
+          <% end %>
+        </li>
+      <% end %>
+
       <li style="float: right;">
         <%= link_to nil, @entourage.share_url, target: :_blank %>
       </li>

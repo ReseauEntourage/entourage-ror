@@ -1,3 +1,18 @@
+<ol class="breadcrumb">
+  <li>
+    <%= link_to "Liste des utilisateurs", admin_users_path(@params) %>
+  </li>
+  <li class="active">Modifier</li>
+
+  <li style="float: right;">
+    <% if @user.sf.url %>
+      <%= link_to "Lien vers SF", @user.sf.url %>
+    <% else %>
+      Pas synchronisé avec SF
+    <% end %>
+  </li>
+</ol>
+
 <div class="h1">
   <span>
     <% if [@user.first_name, @user.last_name].any?(&:present?) %>
