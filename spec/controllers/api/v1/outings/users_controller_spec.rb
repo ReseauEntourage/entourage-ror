@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Api::V1::Outings::UsersController do
   let(:user) { create(:public_user) }
+  let(:manager) { create(:public_user, targeting_profile: :ambassador) }
   let(:outing) { create(:outing, title: "foobar1") }
   let!(:join_request_organizer) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
   let(:result) { JSON.parse(response.body) }
@@ -268,7 +269,7 @@ describe Api::V1::Outings::UsersController do
   end
 
   describe 'POST participate' do
-    let(:request) { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+    let(:request) { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: manager.token } }
 
     context "requester is not organizer" do
       before { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
@@ -276,9 +277,18 @@ describe Api::V1::Outings::UsersController do
       it { expect(response.status).to eq(401) }
     end
 
+    context "manager is not a manager" do
+      let(:manager) { create(:public_user) }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
     context "not as participant" do
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(Time.iso8601(result["user"]["participate_at"])).to be_a(Time) }
     end
@@ -288,13 +298,14 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(Time.iso8601(result["user"]["participate_at"])).to be_a(Time) }
     end
   end
 
   describe 'POST cancel_participation' do
-    let(:request) { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+    let(:request) { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: manager.token } }
 
     context "requester is not organizer" do
       before { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
@@ -302,9 +313,18 @@ describe Api::V1::Outings::UsersController do
       it { expect(response.status).to eq(401) }
     end
 
+    context "manager is not a manager" do
+      let(:manager) { create(:public_user) }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
     context "not as participant" do
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(result["user"]["participate_at"]).to be_nil }
     end
@@ -314,6 +334,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(result["user"]["participate_at"]).to be_nil }
     end
@@ -323,13 +344,14 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(result["user"]["participate_at"]).to be_nil }
     end
   end
 
   describe 'POST photo_acceptance' do
-    let(:request) { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: outing.user.token } }
+    let(:request) { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: manager.token } }
 
     context "requester is not organizer" do
       before { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
@@ -337,9 +359,18 @@ describe Api::V1::Outings::UsersController do
       it { expect(response.status).to eq(401) }
     end
 
+    context "manager is not a manager" do
+      let(:manager) { create(:public_user) }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
     context "not as participant" do
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(result["user"]["photo_acceptance"]).to eq(true) }
     end
@@ -349,6 +380,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
+      it { expect(response.status).to eq(201) }
       it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
       it { expect(result["user"]["photo_acceptance"]).to eq(true) }
     end
