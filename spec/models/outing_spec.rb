@@ -4,7 +4,7 @@ include CommunityHelper
 RSpec.describe Outing, type: :model do
   let(:member) { FactoryBot.create(:public_user)}
   let(:sf_category) { :convivialite }
-  let(:outing) { FactoryBot.create(:outing, :with_neighborhood, :with_recurrence, sf_category: sf_category, interests: [:sport]) }
+  let(:outing) { FactoryBot.create(:outing, :with_neighborhood, :with_recurrence, salesforce_id: "foo", sf_category: sf_category, interests: [:sport]) }
   let!(:chat_message) { FactoryBot.create(:chat_message, messageable: outing) }
   let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: member, status: :accepted) }
 
@@ -29,6 +29,7 @@ RSpec.describe Outing, type: :model do
 
     it { expect(result.id).not_to eq(outing.id) }
     it { expect(result.chat_messages.count).to eq(0) }
+    it { expect(result.salesforce_id).to be_nil }
     it { expect(result.members.count).to eq(1) }
     it { expect(result.members.first).to eq(dup.user) }
     it { expect(result.neighborhoods_entourages.count).to eq 1 }
