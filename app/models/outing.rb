@@ -126,6 +126,8 @@ class Outing < Entourage
     self.metadata[:starts_at] = last_outing.metadata[:starts_at] + diff
     self.metadata[:ends_at] = last_outing.metadata[:ends_at] + diff
 
+    self.salesforce_id = nil
+
     super
   end
 
