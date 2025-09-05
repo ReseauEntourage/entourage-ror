@@ -7,7 +7,7 @@ module Api
         before_action :set_user_membership, only: [:participate, :cancel_participation, :photo_acceptance]
         before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
-        before_action :should_be_organizer!, only: [:participate, :cancel_participation, :photo_acceptance]
+        before_action :check_management_permission!, only: [:participate, :cancel_participation, :photo_acceptance]
 
         def index
           # outing members
@@ -132,10 +132,10 @@ module Api
           end
         end
 
-        def should_be_organizer!
-          return if current_user.id == @outing.user_id
+        def check_management_permission!
+          return if current_user.ambassador? || current_user.team?
 
-          render json: { message: 'You must be an organizer to perform this action' }, status: :unauthorized
+          render json: { message: 'You must be an ambassador or team to perform this action' }, status: :unauthorized
         end
 
         def page
