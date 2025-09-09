@@ -1,14 +1,15 @@
 module SalesforceServices
-  class SfEntrepriseTableInterface < TableInterface
-    TABLE_NAME = "Account"
+  class SfEntrepriseOutingTableInterface < TableInterface
+    TABLE_NAME = "Campaign"
 
     INSTANCE_MAPPING = {
       id: "Id",
-      name: "Name",
-      type: "Type_org__c"
+      title: "Name"
     }
 
-    def initialize
+    def initialize sf_entreprise_id:
+      @sf_entreprise_id = sf_entreprise_id
+
       super(table_name: TABLE_NAME, instance: nil)
     end
 
@@ -17,9 +18,7 @@ module SalesforceServices
     end
 
     def base_query
-      super
-        .where("Type_org__c = 'Entreprise' AND Statut_0_synchro_contacts__c = '🟢 Partenaire'")
-        .order("Name ASC")
+      super.where("Organisateur__c = '#{@sf_entreprise_id}'")
     end
 
     def count_records

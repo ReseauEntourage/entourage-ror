@@ -744,7 +744,9 @@ Rails.application.routes.draw do
       end
 
       namespace :salesforce do
-        resources :sf_entreprises, path: :entreprises, only: [:index]
+        resources :sf_entreprises, path: :entreprises, only: [:index] do
+          resources :outings, module: :sf_entreprises, only: [:index]
+        end
       end
 
       resources :smalltalks, only: [:index, :show] do
