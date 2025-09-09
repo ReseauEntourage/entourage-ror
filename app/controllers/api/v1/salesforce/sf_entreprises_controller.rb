@@ -3,7 +3,8 @@ module Api
     module Salesforce
       class SfEntreprisesController < Api::V1::BaseController
         def index
-          render json: SalesforceServices::SfEntrepriseTableInterface.new.records_attributes(per: per, page: page)
+          render json: SalesforceServices::SfEntrepriseTableInterface.new
+            .records_attributes(per: per, page: page)
         end
 
         private

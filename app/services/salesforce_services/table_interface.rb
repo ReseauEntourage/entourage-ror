@@ -38,6 +38,10 @@ module SalesforceServices
       end
     end
 
+    def base_query
+      Query.new(table_name)
+    end
+
     # table structure
     def fields
       @fields ||= self.class.fields(table_name)
@@ -53,13 +57,6 @@ module SalesforceServices
 
     def record_url record_id
       self.class.record_url(table_name, record_id)
-    end
-
-    def records_attributes fields: [], per: 50, page: 1
-      return unless records = records(fields: fields, per: per, page: page)
-      return unless records.is_a?(Hash)
-
-      records[:data]
     end
 
     # returns a hash { data: [...], total: n }
