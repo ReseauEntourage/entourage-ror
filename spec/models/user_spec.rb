@@ -34,18 +34,18 @@ describe User, :type => :model do
     it { expect { user.community = 'invalid'; user.community }.to raise_error Community::NotFound }
   end
 
-  describe "birthday" do
-    it { expect(FactoryBot.build(:public_user, birthday: nil).save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '11').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '1-1').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '1-1-2020').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '0-1-2020').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '01-1-2020').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '01-12-2020').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '01-13-2020').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '31-01-2020').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '31-02-2020').save).to be false }
+  describe "birthdate" do
+    it { expect(FactoryBot.build(:public_user, birthdate: nil).save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthdate: '').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthdate: '11').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthdate: '1-1').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthdate: '1-1-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthdate: '0-1-2020').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthdate: '01-1-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthdate: '01-12-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthdate: '01-13-2020').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthdate: '31-01-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthdate: '31-02-2020').save).to be false }
   end
 
   describe "phone number" do
