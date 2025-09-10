@@ -87,6 +87,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "involvements" => [],
               "concerns" => [],
               "travel_distance" => 40,
+              "birthdate" => nil,
               "birthday" => nil,
               "permissions" => {
                 "outing" => { "creation" => true }
@@ -870,6 +871,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "involvements" => [],
             "concerns" => [],
             "travel_distance" => 40,
+            "birthdate" => nil,
             "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
@@ -961,6 +963,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "involvements" => [],
             "concerns" => [],
             "travel_distance" => 40,
+            "birthdate" => nil,
             "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }

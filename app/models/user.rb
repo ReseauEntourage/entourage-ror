@@ -32,7 +32,7 @@ class User < ApplicationRecord
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
   validate :validate_roles!
   validate :validate_partner!
-  validate :validate_birthday!
+  validate :validate_birthdate!
 
   before_save :slack_id_no_empty
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
@@ -328,12 +328,12 @@ class User < ApplicationRecord
     end
   end
 
-  def validate_birthday!
-    return unless birthday.present?
+  def validate_birthdate!
+    return unless birthdate.present?
 
-    Date.strptime(birthday, '%d-%m-%y')
+    Date.strptime(birthdate, '%d-%m-%y')
   rescue
-    errors.add(:birthday, "Date invalide")
+    errors.add(:birthdate, "Date invalide")
   end
 
   def validate_partner!
