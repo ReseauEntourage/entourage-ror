@@ -63,6 +63,7 @@ describe Api::V1::AnonymousUsersController do
         "involvements" => [],
         "concerns" => [],
         "travel_distance" => 10,
+        "birthdate" => nil,
         "birthday" => nil,
         "permissions" => {
           "outing" => {
