@@ -38,13 +38,14 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:public_user, birthday: nil).save).to be true }
     it { expect(FactoryBot.build(:public_user, birthday: '').save).to be true }
     it { expect(FactoryBot.build(:public_user, birthday: '11').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '1-1').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '0-1').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '01-1').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '01-12').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '01-13').save).to be false }
-    it { expect(FactoryBot.build(:public_user, birthday: '31-01').save).to be true }
-    it { expect(FactoryBot.build(:public_user, birthday: '31-02').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '1-1').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '1-1-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '0-1-2020').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '01-1-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '01-12-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '01-13-2020').save).to be false }
+    it { expect(FactoryBot.build(:public_user, birthday: '31-01-2020').save).to be true }
+    it { expect(FactoryBot.build(:public_user, birthday: '31-02-2020').save).to be false }
   end
 
   describe "phone number" do
