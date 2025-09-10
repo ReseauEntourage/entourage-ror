@@ -7,6 +7,12 @@ module UserServices
       "photo_acceptance" => :boolean
     }
 
+    GENDERS = {
+      female: "Femme",
+      male: "Homme",
+      not_binary: "Non binaire",
+    }
+
     DISCOVERY_SOURCES = {
       word_of_mouth: "Bouche à oreille",
       internet: "internet",
@@ -16,7 +22,16 @@ module UserServices
     }
 
     included do
+      validate :validate_gender_format
       validate :validate_discovery_source_format
+    end
+
+    def validate_gender_format
+      return if gender.nil?
+
+      unless GENDERS.keys.map(&:to_s).include?(gender.to_s)
+        return errors.add(:gender, "should be #{GENDERS.keys.join(', ')}")
+      end
     end
 
     def validate_discovery_source_format

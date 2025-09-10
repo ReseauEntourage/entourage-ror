@@ -99,9 +99,31 @@ describe User, :type => :model do
   end
 
   describe "gender=" do
-    it { expect(build(:public_user, gender: "male").gender).to eq("male") }
-    it { expect(build(:public_user, gender: "female").gender).to eq("female") }
-    it { expect(build(:public_user, gender: "non_binary").gender).to eq("non_binary") }
+    let(:user) { create(:public_user, gender: gender) }
+
+    context "with invalid gender" do
+      let(:gender) { "invalid" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with blank gender" do
+      let(:gender) { "" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with nil gender" do
+      let(:gender) { nil }
+      it { expect { user }.not_to raise_error }
+      it { expect(user.errors[:gender]).to be_empty }
+      it { expect(user.gender).to be_nil }
+    end
+
+    context "with valid gender" do
+      let(:gender) { "not_binary" }
+      it { expect { user }.not_to raise_error }
+      it { expect(user.errors[:gender]).to be_empty }
+      it { expect(user.gender).to eq("not_binary") }
+    end
   end
 
   describe "discovery_source=" do
@@ -119,14 +141,14 @@ describe User, :type => :model do
 
     context "with nil discovery_source" do
       let(:discovery_source) { nil }
-      it { expect { user }.not_to raise_error ActiveRecord::RecordInvalid }
+      it { expect { user }.not_to raise_error }
       it { expect(user.errors[:discovery_source]).to be_empty }
       it { expect(user.discovery_source).to be_nil }
     end
 
     context "with valid discovery_source" do
       let(:discovery_source) { "internet" }
-      it { expect { user }.not_to raise_error ActiveRecord::RecordInvalid }
+      it { expect { user }.not_to raise_error }
       it { expect(user.errors[:discovery_source]).to be_empty }
       it { expect(user.discovery_source).to eq("internet") }
     end
