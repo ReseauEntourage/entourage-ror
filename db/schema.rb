@@ -1235,7 +1235,7 @@ ActiveRecord::Schema.define(version: 202405021415000) do
     t.boolean "super_admin", default: false
     t.datetime "unblock_at"
     t.integer "travel_distance", default: 40
-    t.string "birthday", limit: 5
+    t.string "birthday", limit: 10
     t.string "other_interest"
     t.json "options", default: {}
     t.string "lang", default: "fr"
