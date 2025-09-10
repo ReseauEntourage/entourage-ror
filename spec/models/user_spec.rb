@@ -104,6 +104,34 @@ describe User, :type => :model do
     it { expect(build(:public_user, gender: "non_binary").gender).to eq("non_binary") }
   end
 
+  describe "discovery_source=" do
+    let(:user) { create(:public_user, discovery_source: discovery_source) }
+
+    context "with invalid discovery_source" do
+      let(:discovery_source) { "invalid" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with blank discovery_source" do
+      let(:discovery_source) { "" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with nil discovery_source" do
+      let(:discovery_source) { nil }
+      it { expect { user }.not_to raise_error ActiveRecord::RecordInvalid }
+      it { expect(user.errors[:discovery_source]).to be_empty }
+      it { expect(user.discovery_source).to be_nil }
+    end
+
+    context "with valid discovery_source" do
+      let(:discovery_source) { "internet" }
+      it { expect { user }.not_to raise_error ActiveRecord::RecordInvalid }
+      it { expect(user.errors[:discovery_source]).to be_empty }
+      it { expect(user.discovery_source).to eq("internet") }
+    end
+  end
+
   describe "goal=" do
     it { expect(build(:public_user, goal: "offer_help").goal_choice).to eq("offer_help") }
     it { expect(build(:public_user, goal: "offer_help").goal).to eq("offer_help") }
