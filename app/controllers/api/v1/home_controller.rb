@@ -43,6 +43,10 @@ module Api
 
       def metadata
         render json: {
+          user: {
+            genders: UserServices::Options::GENDERS,
+            discovery_sources: UserServices::Options::DISCOVERY_SOURCES
+          },
           tags: {
             sections: format_sections(Tag.sections),
             interests: format_tags(Tag.interests),
