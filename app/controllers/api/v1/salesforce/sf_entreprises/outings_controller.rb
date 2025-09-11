@@ -3,6 +3,8 @@ module Api
     module Salesforce
       module SfEntreprises
         class OutingsController < Api::V1::BaseController
+          skip_before_action :authenticate_user!, only: [:index]
+
           def index
             render json: SalesforceServices::SfEntrepriseOutingTableInterface.new(sf_entreprise_id: params[:sf_entreprise_id])
               .records_attributes(per: per, page: page)
