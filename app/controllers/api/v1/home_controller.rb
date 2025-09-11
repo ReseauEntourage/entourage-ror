@@ -2,6 +2,7 @@ module Api
   module V1
     class HomeController < Api::V1::BaseController
       skip_before_action :community_warning
+      skip_before_action :authenticate_user!, only: [:metadata]
 
       before_action :set_default_neighborhood, only: [:summary]
       before_action :set_user_recommandations, only: [:summary]
