@@ -19,7 +19,7 @@ module UserServices
       internet: "internet",
       media: "Télévision / média",
       social: "Réseaux sociaux",
-      corporate: "Sensibilisation entreprise"
+      entreprise: "Sensibilisation entreprise"
     }
 
     included do
