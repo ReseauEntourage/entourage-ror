@@ -1,6 +1,6 @@
 module Preloaders
   module Outing
-    def self.preload_images(outings, scope: nil)
+    def self.preload_images outings, scope: nil
       outings = outings.to_a
       return if outings.empty?
 
@@ -18,7 +18,7 @@ module Preloaders
       end
     end
 
-    def self.preload_member_ids(outings, scope: nil)
+    def self.preload_member_ids outings, scope: nil
       outings = outings.to_a
       return if outings.empty?
 
@@ -36,7 +36,7 @@ module Preloaders
       end
     end
 
-    def self.sanitize_sql(condition)
+    def self.sanitize_sql condition
       ActiveRecord::Base.send(:sanitize_sql_array, condition)
     end
   end

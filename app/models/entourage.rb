@@ -50,6 +50,7 @@ class Entourage < ApplicationRecord
   attr_accessor :user_status
   attr_accessor :cancellation_message
   attr_accessor :entourage_image_id
+  attr_accessor :preload_image_url
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -569,6 +570,12 @@ class Entourage < ApplicationRecord
     return unless key = image_key == :image_url ? image_url : metadata[image_key]
 
     EntourageImage.storage.public_url_with_size(key: key, size: size)
+  end
+
+  def landscape_url
+    return unless outing?
+
+    metadata[:landscape_url]
   end
 
   def close_entourage_from_user_status! user_status
