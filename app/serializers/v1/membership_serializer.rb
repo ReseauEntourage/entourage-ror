@@ -4,6 +4,7 @@ module V1
       :joinable_status,
       :name,
       :subname,
+      :image_url,
       :joinable_type,
       :joinable_id,
       :number_of_people,
@@ -36,6 +37,14 @@ module V1
       return unless object.outing?
 
       object.joinable.starts_at
+    end
+
+    def image_url
+      return unless object.outing?
+
+      outing = object.joinable
+
+      outing.preload_image_url || outing.image_url_with_size(outing.metadata[:landscape_url], :medium)
     end
 
     def number_of_people
