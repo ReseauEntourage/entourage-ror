@@ -16,7 +16,7 @@ module Api
 
         # manual preloads
         outings.tap do |outing|
-          ::Preloaders::Outing.preload_images(outing, scope: ImageResizeAction.with_size(:small))
+          ::Preloaders::Outing.preload_images(outing, scope: ImageResizeAction.with_size(:medium))
         end
 
         outings.tap do |outing|
