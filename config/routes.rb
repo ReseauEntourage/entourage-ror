@@ -615,6 +615,7 @@ Rails.application.routes.draw do
             post :participate
             post :cancel_participation
             post :photo_acceptance
+            post :cancel_photo_acceptance
           end
 
           collection do
