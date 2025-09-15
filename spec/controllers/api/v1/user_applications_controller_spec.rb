@@ -64,9 +64,5 @@ describe Api::V1::UserApplicationsController do
 
       it { expect(response.status).to eq(204) }
     end
-
-    context 'further tests' do
-      pending "add some examples to (or delete) #{__FILE__}"
-    end
   end
 end
