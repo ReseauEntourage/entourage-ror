@@ -22,6 +22,10 @@ module SalesforceServices
       return unless contact_id = find_or_initialize_contact_id
       return unless campaign_id = find_or_initialize_campaign_id
 
+      status = "Inscrit"
+      status = "Participé" if instance.participate_at.present?
+      status = "A annulé" if instance.cancelled?
+
       upsert_from_fields(
         interface.mapped_fields.merge({
           "ContactId" => contact_id,
