@@ -377,11 +377,13 @@ class PushNotificationTrigger
   def post_on_create
     return unless (user_ids = @record.recipient_ids).any?
 
+    messageable_is_outing = @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+
     tracking = if @record.messageable.is_a?(Neighborhood)
       :post_on_create_to_neighborhood
     elsif @record.messageable.is_a?(Smalltalk)
       :post_on_create_to_smalltalk
-    elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+    elsif messageable_is_outing
       :post_on_create_to_outing
     else
       :post_on_create
@@ -390,11 +392,14 @@ class PushNotificationTrigger
     content = I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)])
     content = I18nStruct.new(i18n: 'push_notifications.post.create_image', i18n_args: [username(@record.user)]) if @record.has_image?
 
+    redirection = @record.messageable
+    redirection = @record if messageable_is_outing
+
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
-        referent: @record.messageable,
-        instance: @record.messageable,
+        referent: redirection,
+        instance: redirection,
         users: batches,
         params: {
           object: title(@record.messageable),
@@ -416,11 +421,13 @@ class PushNotificationTrigger
     return unless @record.has_parent?
     return unless (user_ids = @record.recipient_ids).any?
 
+    messageable_is_outing = @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+
     tracking = if @record.messageable.is_a?(Neighborhood)
       :comment_on_create_to_neighborhood
     elsif @record.messageable.is_a?(Smalltalk)
       :comment_on_create_to_outing
-    elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+    elsif messageable_is_outing
       :comment_on_create_to_outing
     else
       :comment_on_create
@@ -430,11 +437,14 @@ class PushNotificationTrigger
     content = I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)])
     content = I18nStruct.new(i18n: 'push_notifications.comment.create_image', i18n_args: [username(@record.user)]) if @record.has_image?
 
+    redirection = @record.messageable
+    redirection = @record if messageable_is_outing
+
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       # should redirect to post
       notify(
         sender_id: @record.user_id,
-        referent: @record.messageable,
+        referent: redirection,
         instance: @record.parent,
         users: batches,
         params: {
@@ -461,11 +471,14 @@ class PushNotificationTrigger
 
     @method = "chat_message_on_mention"
 
+    redirection = @record.messageable
+    redirection = @record if @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
-        referent: @record.messageable,
-        instance: @record.has_parent? ? @record.parent : @record.messageable,
+        referent: redirection,
+        instance: @record.has_parent? ? @record.parent : redirection,
         users: batches,
         params: {
           object: I18nStruct.new(i18n: 'push_notifications.chat_message.mention', i18n_args: [username(@record.user)]),
