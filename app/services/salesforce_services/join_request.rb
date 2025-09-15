@@ -30,7 +30,7 @@ module SalesforceServices
         interface.mapped_fields.merge({
           "ContactId" => contact_id,
           "CampaignId" => campaign_id,
-          "Status" => "Inscrit"
+          "Status" => status
         })
       )
     end
