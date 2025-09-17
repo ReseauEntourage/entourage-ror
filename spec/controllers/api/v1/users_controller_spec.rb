@@ -283,13 +283,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: "not_binary" }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: "secret" }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.lang).to eq('pl') }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
         it { expect(user.reload.travel_distance).to eq(12) }
-        it { expect(user.reload.gender).to eq("not_binary") }
+        it { expect(user.reload.gender).to eq("secret") }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
 
         it "renders user" do
