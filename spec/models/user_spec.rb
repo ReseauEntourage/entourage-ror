@@ -119,10 +119,10 @@ describe User, :type => :model do
     end
 
     context "with valid gender" do
-      let(:gender) { "not_binary" }
+      let(:gender) { "secret" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:gender]).to be_empty }
-      it { expect(user.gender).to eq("not_binary") }
+      it { expect(user.gender).to eq("secret") }
     end
   end
 
