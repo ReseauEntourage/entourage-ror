@@ -10,7 +10,6 @@ module UserServices
     GENDERS = {
       female: "Femme",
       male: "Homme",
-      not_binary: "Non binaire",
       secret: "Autre",
     }
 
