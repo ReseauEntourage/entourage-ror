@@ -21,12 +21,16 @@ Rails.application.routes.draw do
             get :show_outing
             get :show_lead
             get :show_contact
+            get :show_sf_entreprise
           end
         end
 
         resources :users, only: [:index, :show]
         resources :outings, only: [:index, :show]
         resources :contacts, only: [:index]
+        resources :sf_entreprises, only: [:index] do
+          resources :outings, :controller => 'sf_entreprises/outings', only: [:index]
+        end
       end
 
       namespace :super_admin do
@@ -738,6 +742,12 @@ Rails.application.routes.draw do
           get :matches
           get :almost_matches
           get "matches_by_criteria/:criteria" => :matches_by_criteria, as: :matches_by_criteria
+        end
+      end
+
+      namespace :salesforce do
+        resources :sf_entreprises, path: :entreprises, only: [:index] do
+          resources :outings, module: :sf_entreprises, only: [:index]
         end
       end
 

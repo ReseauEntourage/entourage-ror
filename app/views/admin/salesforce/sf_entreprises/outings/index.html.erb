@@ -1,0 +1,37 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Entreprises</h1>
+
+    <div class="row">
+      <% unless @outings.none? %>
+        <table class="table custom-table">
+          <thead>
+            <% @interface.instance_mapping.values.each do |field_name| %>
+              <th><%= field_name%></th>
+            <% end %>
+          </thead>
+          <% @outings.each_with_index do |outing, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
+
+            <tr class="above-row row-<%= parite %>">
+              <% @interface.instance_mapping.values.each do |field_name| %>
+                <td>
+                  <% if field_name == "Id" %>
+                    <%= link_to outing[field_name], @interface.record_url(outing[field_name]) %>
+                  <% else %>
+                    <%= outing[field_name] %>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @outings, entry_name: 'Entreprises' %>
+    <div class="container">
+      <%= paginate(@outings) %>
+    </div>
+  </div>
+</div>
