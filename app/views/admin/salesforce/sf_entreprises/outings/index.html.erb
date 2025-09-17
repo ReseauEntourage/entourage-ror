@@ -3,39 +3,35 @@
     <h1>Entreprises</h1>
 
     <div class="row">
-      <% unless @sf_entreprises.none? %>
+      <% unless @outings.none? %>
         <table class="table custom-table">
           <thead>
             <% @interface.instance_mapping.values.each do |field_name| %>
               <th><%= field_name%></th>
             <% end %>
-
-            <th>Événements</th>
           </thead>
-          <% @sf_entreprises.each_with_index do |sf_entreprise, i| %>
+          <% @outings.each_with_index do |outing, i| %>
             <% parite = i.even? ? 'pair' : 'impair' %>
 
             <tr class="above-row row-<%= parite %>">
               <% @interface.instance_mapping.values.each do |field_name| %>
                 <td>
                   <% if field_name == "Id" %>
-                    <%= link_to sf_entreprise[field_name], @interface.record_url(sf_entreprise[field_name]) %>
+                    <%= link_to outing[field_name], @interface.record_url(outing[field_name]) %>
                   <% else %>
-                    <%= sf_entreprise[field_name] %>
+                    <%= outing[field_name] %>
                   <% end %>
                 </td>
               <% end %>
-
-              <td><%= link_to "Événements", admin_salesforce_sf_entreprise_outings_path(sf_entreprise["Id"]) %></td>
             </tr>
           <% end %>
         </table>
       <% end %>
     </div>
 
-    <%= page_entries_info @sf_entreprises, entry_name: 'Entreprises' %>
+    <%= page_entries_info @outings, entry_name: 'Entreprises' %>
     <div class="container">
-      <%= paginate(@sf_entreprises) %>
+      <%= paginate(@outings) %>
     </div>
   </div>
 </div>

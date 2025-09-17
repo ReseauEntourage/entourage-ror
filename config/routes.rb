@@ -28,7 +28,9 @@ Rails.application.routes.draw do
         resources :users, only: [:index, :show]
         resources :outings, only: [:index, :show]
         resources :contacts, only: [:index]
-        resources :sf_entreprises, only: [:index]
+        resources :sf_entreprises, only: [:index] do
+          resources :outings, :controller => 'sf_entreprises/outings', only: [:index]
+        end
       end
 
       namespace :super_admin do
