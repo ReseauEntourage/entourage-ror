@@ -11,7 +11,7 @@ module UserServices
       female: "Femme",
       male: "Homme",
       not_binary: "Non binaire",
-      secret: "Préfère ne rien dire",
+      secret: "Autre",
     }
 
     DISCOVERY_SOURCES = {
