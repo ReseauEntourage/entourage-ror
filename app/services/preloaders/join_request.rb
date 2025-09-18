@@ -49,7 +49,7 @@ module Preloaders
 
       # get outings
       outings = join_requests.map do |join_request|
-        return unless join_request.outing?
+        next unless join_request.outing?
 
         join_request.joinable
       end.compact.uniq
