@@ -154,7 +154,7 @@
       <%= link_to UserPresenter.new(user: current_admin).display_name, admin_user_path(current_admin), class: "conversation-sender" %>
     </div>
     <%= form_for ChatMessage.new, url: message_admin_conversation_path(conversation), remote: true do |f| %>
-      <%= f.text_area :content, class: "conversation-message-box", rows: 2 %>
+      <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
       <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
     <% end %>
   </div>
