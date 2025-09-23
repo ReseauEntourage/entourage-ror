@@ -73,6 +73,9 @@ module V1
       end
 
       def image_url
+        return if object.deleted?
+        return if object.offensive?
+
         object.image_url_with_size(image_size)
       end
 
