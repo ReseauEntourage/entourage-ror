@@ -1,6 +1,6 @@
 <div class="container">
   <div style="margin: auto">
-    <h1>Entreprises</h1>
+    <h1>Événements (Campaigns)</h1>
 
     <div class="row">
       <% unless @outings.none? %>
@@ -29,7 +29,7 @@
       <% end %>
     </div>
 
-    <%= page_entries_info @outings, entry_name: 'Entreprises' %>
+    <%= page_entries_info @outings, entry_name: 'Événements' %>
     <div class="container">
       <%= paginate(@outings) %>
     </div>

@@ -19,7 +19,7 @@ module SalesforceServices
     def base_query
       super
         .where("Type_org__c = 'Entreprise' AND Statut_0_synchro_contacts__c = '🟢 Partenaire'")
-        .where("Id IN (SELECT Organisateur__c FROM Campaign)")
+        .where("Id IN (SELECT Organisateur__c FROM Campaign WHERE StartDate >= #{Date.today.strftime("%Y-%m-%d")} AND IsActive = true)")
         .order("Name ASC")
     end
 

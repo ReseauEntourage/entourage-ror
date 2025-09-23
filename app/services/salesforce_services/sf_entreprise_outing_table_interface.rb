@@ -4,7 +4,14 @@ module SalesforceServices
 
     INSTANCE_MAPPING = {
       id: "Id",
-      title: "Name"
+      title: "Name",
+      postal_code: "Code_postal__c",
+      is_active: "IsActive",
+      status: "Status",
+      start_date: "StartDate",
+      start_time: "Heure_de_d_but__c",
+      end_date: "EndDate",
+      end_time: "Heure_de_fin__c",
     }
 
     def initialize sf_entreprise_id:
@@ -18,7 +25,10 @@ module SalesforceServices
     end
 
     def base_query
-      super.where("Organisateur__c = '#{@sf_entreprise_id}'")
+      super
+        .where("Organisateur__c = '#{@sf_entreprise_id}'")
+        .where("StartDate >= #{Date.today.strftime("%Y-%m-%d")}")
+        .where("IsActive = true")
     end
 
     def count_records
