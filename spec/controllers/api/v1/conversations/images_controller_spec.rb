@@ -6,8 +6,8 @@ describe Api::V1::Conversations::ImagesController do
   let(:conversation) { create :conversation }
   let(:result) { JSON.parse(response.body) }
 
-  let!(:chat_message_1) { create(:chat_message, messageable: conversation, user: user, image_url: 'chat_message_1.jpg') }
-  let!(:chat_message_2) { create(:chat_message, messageable: conversation, user: user, image_url: 'chat_message_2.jpg') }
+  let!(:chat_message_1) { create(:chat_message, messageable: conversation, user: user, image_url: 'chat_message_1.jpg', created_at: 1.day.ago) }
+  let!(:chat_message_2) { create(:chat_message, messageable: conversation, user: user, image_url: 'chat_message_2.jpg', created_at: 2.days.ago) }
   # not in the same conversation
   let!(:chat_message_3) { create(:chat_message, user: user, image_url: 'chat_message_3.jpg') }
 

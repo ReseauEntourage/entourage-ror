@@ -7,7 +7,7 @@ module Api
         before_action :ensure_is_member, only: [:index, :show]
 
         def index
-          chat_messages = @conversation.chat_messages.with_image.page(page).per(per)
+          chat_messages = @conversation.chat_messages.with_image.order(created_at: :desc).page(page).per(per)
 
           # manual preloads
           chat_messages.tap do |messages|
