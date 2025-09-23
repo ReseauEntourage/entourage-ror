@@ -17,6 +17,8 @@ class ChatMessage < ApplicationRecord
   store_attribute :options, :auto_post_type, :string
   store_attribute :options, :auto_post_id, :integer
 
+  attr_accessor :preload_image_url
+
   has_ancestry
 
   belongs_to :messageable, polymorphic: true
@@ -38,6 +40,7 @@ class ChatMessage < ApplicationRecord
 
   scope :ordered, -> { order("created_at DESC") }
   scope :with_content, -> { where("content <> ''") }
+  scope :with_image, -> { where("image_url <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
 
   attribute :metadata, :jsonb_with_schema
@@ -63,6 +66,14 @@ class ChatMessage < ApplicationRecord
   class << self
     def bucket
       Storage::Client.images
+    end
+
+    def bucket_name
+      bucket.bucket_name
+    end
+
+    def image_url_for url
+      bucket.public_url(key: url)
     end
 
     def presigned_url key, content_type
