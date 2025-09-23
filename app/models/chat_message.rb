@@ -169,6 +169,12 @@ class ChatMessage < ApplicationRecord
     self[:image_url]
   end
 
+  def image_url_with_bucket
+    return unless image_url
+
+    ChatMessage.path(image_url)
+  end
+
   def image_path force = false
     return unless image_url(force).present?
 
