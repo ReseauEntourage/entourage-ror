@@ -7,7 +7,7 @@ module Api
         before_action :ensure_is_member, only: [:index, :show]
 
         def index
-          chat_messages = @conversation.chat_messages.with_image.order(created_at: :desc).page(page).per(per)
+          chat_messages = @conversation.chat_messages.visible.with_image.order(created_at: :desc).page(page).per(per)
 
           # manual preloads
           chat_messages.tap do |messages|
@@ -34,6 +34,7 @@ module Api
         def set_chat_message
           @chat_message = @conversation.chat_messages.find_by_id(params[:id])
 
+          render json: { message: 'Image is not visible' }, status: 400 unless @chat_message.visible?
           render json: { message: 'Could not find chat_message in that conversation' }, status: 400 unless @chat_message.present?
         end
 

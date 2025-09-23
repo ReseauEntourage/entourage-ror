@@ -39,6 +39,7 @@ class ChatMessage < ApplicationRecord
   validate :validate_private_conversation_is_not_blocked!
 
   scope :ordered, -> { order("created_at DESC") }
+  scope :visible, -> { where(status: [:active, :updated]) }
   scope :with_content, -> { where("content <> ''") }
   scope :with_image, -> { where("image_url <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
@@ -129,6 +130,10 @@ class ChatMessage < ApplicationRecord
         )
       ))
     end
+  end
+
+  def visible?
+    active? || updated?
   end
 
   def active?
