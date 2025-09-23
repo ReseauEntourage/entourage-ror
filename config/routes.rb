@@ -687,7 +687,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :images, :controller => 'conversations/images', only: [:index]
+        resources :images, :controller => 'conversations/images', only: [:index, :show]
 
         member do
           post :report

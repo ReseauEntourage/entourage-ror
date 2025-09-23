@@ -6,12 +6,12 @@ module Preloaders
 
       images = ImageResizeAction
         .select("path, destination_path")
-        .with_bucket_and_path(::ChatMessage.bucket_name, chat_messages.map(&:image_url).compact.uniq)
+        .with_bucket_and_path(::ChatMessage.bucket_name, chat_messages.map(&:image_url_with_bucket).compact.uniq)
         .merge(scope || ImageResizeAction.all)
         .index_by { |image| image.path }
 
       chat_messages.each do |chat_message|
-        next unless image = images[chat_message.image_url]
+        next unless image = images[chat_message.image_url_with_bucket]
         next unless path = image.destination_path
 
         chat_message.preload_image_url = ::ChatMessage.image_url_for(path)
