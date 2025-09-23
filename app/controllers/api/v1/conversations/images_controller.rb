@@ -13,7 +13,7 @@ module Api
             ::Preloaders::ChatMessage.preload_images(messages, scope: ImageResizeAction.with_size(:medium))
           end
 
-          render json: { images: chat_messages.map(&:preload_image_url) }
+          render json: chat_messages, root: "images", each_serializer: ::V1::Images::ChatMessageSerializer
         end
 
         private

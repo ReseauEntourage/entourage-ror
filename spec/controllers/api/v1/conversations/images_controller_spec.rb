@@ -33,8 +33,14 @@ describe Api::V1::Conversations::ImagesController do
       it { expect(result).to have_key('images')}
       it { expect(result).to eq({
         'images' => [
-          "https://#{ENV['ENTOURAGE_IMAGES_BUCKET']}.s3.eu-west-1.amazonaws.com/path_1",
-          "https://#{ENV['ENTOURAGE_IMAGES_BUCKET']}.s3.eu-west-1.amazonaws.com/path_2"
+          {
+            "chat_message_id" => chat_message_1.id,
+            "url" => "https://#{ENV['ENTOURAGE_IMAGES_BUCKET']}.s3.eu-west-1.amazonaws.com/path_1"
+          },
+          {
+            "chat_message_id" => chat_message_2.id,
+            "url" => "https://#{ENV['ENTOURAGE_IMAGES_BUCKET']}.s3.eu-west-1.amazonaws.com/path_2"
+          }
         ]
       }) }
     end
