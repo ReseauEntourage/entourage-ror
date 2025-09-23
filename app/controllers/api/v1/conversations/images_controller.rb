@@ -2,8 +2,9 @@ module Api
   module V1
     module Conversations
       class ImagesController < Api::V1::BaseController
-        before_action :set_conversation, only: [:index]
-        before_action :ensure_is_member, only: [:index]
+        before_action :set_conversation, only: [:index, :show]
+        before_action :set_chat_message, only: [:show]
+        before_action :ensure_is_member, only: [:index, :show]
 
         def index
           chat_messages = @conversation.chat_messages.with_image.page(page).per(per)
@@ -13,7 +14,13 @@ module Api
             ::Preloaders::ChatMessage.preload_images(messages, scope: ImageResizeAction.with_size(:medium))
           end
 
-          render json: { images: chat_messages.map(&:preload_image_url) }
+          render json: chat_messages, root: "images", each_serializer: ::V1::Images::ChatMessageSerializer
+        end
+
+        def show
+          @chat_message.preload_image_url = @chat_message.image_url_with_size(:high)
+
+          render json: @chat_message, root: :image, serializer: ::V1::Images::ChatMessageSerializer
         end
 
         private
@@ -22,6 +29,12 @@ module Api
           @conversation = Entourage.find_by_id_through_context(params[:conversation_id], params)
 
           render json: { message: 'Could not find conversation' }, status: 400 unless @conversation.present?
+        end
+
+        def set_chat_message
+          @chat_message = @conversation.chat_messages.find_by_id(params[:id])
+
+          render json: { message: 'Could not find chat_message in that conversation' }, status: 400 unless @chat_message.present?
         end
 
         def ensure_is_member
