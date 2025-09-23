@@ -14,7 +14,7 @@ class User < ApplicationRecord
 
   TEMPORARY_BLOCK_PERIOD = 1.month
   PROFILES = [:offer_help, :ask_for_help, :ask_and_offer_help, :organization, :goal_not_known]
-  GOALS = %w[offer_help ask_for_help organization]
+  GOALS = %w[offer_help ask_for_help organization staff]
   STATUSES = [:validated, :blocked, :temporary_blocked, :deleted, :pending]
   ROLES = [:moderator, :admin]
 
