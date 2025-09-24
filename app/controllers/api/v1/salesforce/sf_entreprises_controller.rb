@@ -5,8 +5,12 @@ module Api
         skip_before_action :authenticate_user!, only: [:index]
 
         def index
-          render json: SalesforceServices::SfEntrepriseTableInterface.new
+          entreprises = SalesforceServices::SfEntrepriseTableInterface.new
             .records_attributes(per: per, page: page)
+
+          return render json: "[]", content_type: "application/json" if entreprises.empty?
+
+          render json: entreprises
         end
 
         private
