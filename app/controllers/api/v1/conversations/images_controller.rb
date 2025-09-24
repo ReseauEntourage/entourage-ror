@@ -34,8 +34,9 @@ module Api
         def set_chat_message
           @chat_message = @conversation.chat_messages.find_by_id(params[:id])
 
+          return render json: { message: 'Could not find chat_message in that conversation' }, status: 400 unless @chat_message.present?
+
           render json: { message: 'Image is not visible' }, status: 400 unless @chat_message.visible?
-          render json: { message: 'Could not find chat_message in that conversation' }, status: 400 unless @chat_message.present?
         end
 
         def ensure_is_member
