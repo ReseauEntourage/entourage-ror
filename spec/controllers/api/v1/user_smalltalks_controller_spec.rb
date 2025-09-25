@@ -17,12 +17,28 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
     end
 
     describe 'authorized' do
+      before { smalltalk.update(number_of_people: number_of_people) }
+
       before { get :index, params: { token: user.token } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key('user_smalltalks') }
-      it { expect(result['user_smalltalks'].count).to eq(1) }
-      it { expect(result['user_smalltalks'][0]['smalltalk_id']).to eq(smalltalk.id) }
+      describe 'without people in smalltalks' do
+        let(:number_of_people) { 1 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('user_smalltalks') }
+        it { expect(result['user_smalltalks'].count).to eq(0) }
+      end
+
+      describe 'with people in smalltalks' do
+        let(:number_of_people) { 2 }
+
+        before { get :index, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('user_smalltalks') }
+        it { expect(result['user_smalltalks'].count).to eq(1) }
+        it { expect(result['user_smalltalks'][0]['smalltalk_id']).to eq(smalltalk.id) }
+      end
     end
   end
 

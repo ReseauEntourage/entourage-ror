@@ -41,6 +41,8 @@ class Smalltalk < ApplicationRecord
     where("events ->> :event IS NULL", event: event)
   }
 
+  scope :with_people, -> { where("number_of_people > 1") }
+
   # @code_legacy
   def group_type
     'smalltalk'
