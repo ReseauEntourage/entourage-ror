@@ -28,9 +28,10 @@ class UserSmalltalk < ApplicationRecord
   }
 
   scope :with_accessible_smalltalks_for_user, -> (user) {
-    where(user: user)
+    joins(:smalltalk)
+      .merge(Smalltalk.with_people)
+      .where(user: user)
       .where(member_status: JoinRequest::ACCEPTED_STATUS)
-      .where.not(smalltalk_id: nil)
   }
 
   VIRTUAL_ATTRIBUTES.each do |virtual_attribute|
