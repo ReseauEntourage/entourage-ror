@@ -167,6 +167,10 @@ class ChatMessage < ApplicationRecord
     self[:content]
   end
 
+  def has_image?
+    image_url.present?
+  end
+
   # @param force true to bypass deletion
   def image_url force = false
     return if deleted? && !force
