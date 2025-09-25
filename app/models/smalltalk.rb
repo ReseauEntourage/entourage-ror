@@ -23,6 +23,8 @@ class Smalltalk < ApplicationRecord
       .where("number_of_people < ?", 5)
   }
 
+  scope :with_people, -> { where("number_of_people > 1") }
+
   # @code_legacy
   def group_type
     'smalltalk'
