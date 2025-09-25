@@ -323,6 +323,7 @@ class PushNotificationTrigger
   end
 
   # initial caller: chat_message_on_create
+  # @deprecated actions do not include conversations
   def public_chat_message_on_create
     return unless (user_ids = @record.recipient_ids).any?
 
@@ -391,6 +392,9 @@ class PushNotificationTrigger
     redirection = @record.messageable
     redirection = @record if messageable_is_outing
 
+    content = I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)])
+    content = I18nStruct.new(i18n: 'push_notifications.post.create_image', i18n_args: [username(@record.user)]) if @record.has_image?
+
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       notify(
         sender_id: @record.user_id,
@@ -399,7 +403,7 @@ class PushNotificationTrigger
         users: batches,
         params: {
           object: title(@record.messageable),
-          content: I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)]),
+          content: content,
           extra: {
             tracking: tracking,
             group_type: group_type(@record.messageable),
@@ -432,6 +436,10 @@ class PushNotificationTrigger
     redirection = @record.messageable
     redirection = @record if messageable_is_outing
 
+    # currently not necessary: comments are not available for images
+    content = I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)])
+    content = I18nStruct.new(i18n: 'push_notifications.comment.create_image', i18n_args: [username(@record.user)]) if @record.has_image?
+
     User.where(id: user_ids).find_in_batches(batch_size: 100) do |batches|
       # should redirect to post
       notify(
@@ -441,7 +449,7 @@ class PushNotificationTrigger
         users: batches,
         params: {
           object: title(@record.messageable),
-          content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
+          content: content,
           extra: {
             tracking: tracking
           }
