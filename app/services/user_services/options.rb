@@ -14,11 +14,13 @@ module UserServices
     }
 
     DISCOVERY_SOURCES = {
-      word_of_mouth: "Bouche à oreille",
-      internet: "internet",
-      media: "Télévision / média",
+      newspaper: "Articles de presse",
+      panel: "Affichage (panneaux, métro...)",
       social: "Réseaux sociaux",
-      entreprise: "Sensibilisation entreprise"
+      word_of_mouth: "Bouche à oreille",
+      television: "Télévision",
+      entreprise: "Partenariat entreprise (avec votre emloyeur)",
+      social_event: "Événement salon",
     }
 
     included do
