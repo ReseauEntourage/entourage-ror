@@ -1,0 +1,48 @@
+# config/i18n-tasks.yml
+base_locale: fr
+
+locales: 
+  - fr
+  - en
+  # - de
+  # - es
+  # - pl
+  # - ro
+  # - uk
+  # - ar
+
+# Où i18n-tasks va lire et écrire les fichiers
+data:
+  read:
+    - "config/locales/entourage.%{locale}.yml"
+  write:
+    - "config/locales/entourage.%{locale}.yml"
+
+# Détection de clés manquantes/inutilisées
+# search:
+#   paths:
+#     - app/
+#     - lib/
+#     - config/
+#   exclude:
+#     - config/locales/**
+
+# Formatage des fichiers YAML générés
+# yaml:
+#   write:
+#     # conserver l'ordre alphabétique
+#     line_width: -1
+#     sort_keys: true
+
+# Gestion des clés manquantes
+missing:
+  # valeur par défaut quand une traduction est manquante
+  # %{value} = valeur de la locale de base (ici fr)
+  # tu peux aussi mettre "[MISSING]" si tu veux que ça se voie encore plus
+  msg: "MISSING - %{value}"
+
+# Supprimer les clés non utilisées (si tu le souhaites)
+# unused:
+#   exclude:
+#     - "activerecord.*"
+#     - "simple_form.*"

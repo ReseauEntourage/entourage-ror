@@ -92,6 +92,8 @@ group :development do
   # gem 'mailcatcher'
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rails', require: false
+
+  gem 'i18n-tasks', '~> 1.0'
 end
 
 group :test do

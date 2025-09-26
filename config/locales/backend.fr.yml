@@ -1,0 +1,381 @@
+---
+fr:
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "&hellip;"
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "Aucun %{entry_name} trouvé"
+          one: "Affichage de <b>1</b> %{entry_name}"
+          other: "Affichage de <b>tous</b> les %{entry_name} (total : <b>%{count}</b>)"
+      more_pages:
+        display_entries: "Affichage des %{entry_name} <b>%{first}&nbsp;à&nbsp;%{last}</b> (total : <b>%{total}</b>)"
+  activerecord:
+    attributes:
+      user:
+        first_name: Prénom
+        last_name: Nom
+        full_name: Nom
+        email: Email
+        phone: Téléphone
+        organization: Association de maraude
+        about: À propos
+        roles: Rôles
+        targeting_profile: Profil modération
+        goal: Profil déclaré
+        partner: Association
+        partner_id: Association
+        admin_password: Mot de passe
+        admin_password_confirmation: Confirmation de mot de passe
+        created_at: Date de création
+        address: Adresse
+        cnil_explanation: Raisons de cette action
+        validation_status: Statut
+        last_sign_in_at: Date de dernière connexion
+        postal_codes: Codes postaux
+        postal_code: Code postal
+        engaged?: Engagé ?
+        deleted: Supprimé
+        organization_name: Association
+        subscriptions: Abonnements
+        action_creations_count: Nombre d'actions créées
+        action_participations_count: Nombre d'actions rejointes
+        outing_participations_count: Nombre d'événements rejoints
+        conversation_participations_count: Nombre de conversations rejointes
+      user_blocked_user:
+        user: Utilisateur
+        blocked_user: Utilisateur bloqué
+        status: Statut
+      user_history:
+        kind:
+          account: Compte créé
+          anonymize: Compte anonymisé
+          auto: auto
+          block: Compte bloqué
+          deleted: Compte supprimé
+          unblock: Compte débloqué
+          phone_change_cancel: Changement de téléphone annulé
+          phone_change_change: Numéro de téléphone changé
+          phone_change_request: Changement de téléphone demandé
+          signal-action: Signalement d'une action
+          signal-user: Signalement de l'utilisateur
+          spam-alert: Alerte des utilisateurs spammés
+          spam-detection: Spam détecté
+          sms: Code SMS redemandé
+        sms:
+          invite: Invitation
+          welcome: Bienvenue
+          regenerate: Demande de nouveau mot de passe
+      organization:
+        name: Nom
+        description: Description
+        phone: Téléphone
+        address: Adresse
+      entourage:
+        id: Id
+        title: Titre
+        description: Description
+        display_address: Adresse
+        latitude: Latitude
+        longitude: Longitude
+        recurrency: Récurrence
+        created_at: Créé le
+        starts_at: Commence le
+        ends_at: Fini le
+        image_url: Image URL
+        place_limit: Nombre de places disponibles
+        members_count: Nombre de participants
+        outing_image_url: Photo d'événement
+        cancellation_message: Message d'annulation
+        sf_category: Type d'événement
+        exclusive_to: Événement réservé à
+        categories:
+          social: Social
+          resource: Ressource
+          mat_help: Aide matérielle
+          non_mat_help: Aide non matérielle
+          other: Autre
+        entourage_types:
+          ask_for_help: Demande
+          contribution: Contribution
+        group_types:
+          action: Action
+          outing: Événement
+          conversation: Conversation
+        statuses:
+          open: Actif
+          closed: Clôturé
+          blacklisted: Blacklisté
+          suspended: Suspendu
+          full: Complet
+          cancelled: Annulé
+      entourage_image:
+        title: Titre
+        landscape_url: Photo horizontale
+        portrait_url: Photo verticale
+      entourage_moderation:
+        action_author_type: Emetteur
+        action_recipient_type: Audience
+        action_target_type: Cible
+        action_type: Type d’action
+        action_recipient_consent_obtained: Consentement
+
+        moderated_at: Date de modération
+        moderation_contact_channel: Moyen de contact
+        moderator_id: Interlocuteur
+        moderation_action: Action
+        moderation_comment: Notes
+
+        action_outcome_reported_at: Date de fin
+        action_outcome: Aboutissement
+        action_success_reason: Raison de la réussite
+        action_failure_reason: Raison de l'échec
+
+        section: Catégorie
+
+      inapp_notification:
+        context_types:
+          chat_message_on_create: chat_message_created
+          join_request_on_create: join_request_created
+          join_request_on_update: join_request_updated
+          neighborhoods_entourage_on_create: outing_created
+          outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
+
+      user_moderation:
+        expectations: Attentes
+        acquisition_channel: Connaissance d’Entourage
+        content_sent: Contenu envoyé
+        skills: Compétence
+
+        accepts_event_invitations: Apéro Entourage
+        accepts_volunteering_offers: Bénévolat
+        ambassador: Ambassadeur relais
+
+      partner:
+        name: Nom
+        description: Description
+        phone: Téléphone
+        address: Adresse
+        website_url: Site Web
+        email: Email
+        donations_needs: Dons acceptés
+        volunteers_needs: Bénévoles recherchés
+      poi:
+        id: ID
+        name: Nom
+        adress: Adresse
+        description: Description
+        audience: Public
+        email: Email
+        website: Website
+        phone: Téléphone
+        category_1: Catégorie 1
+        category_2: Catégorie 2
+        category_3: Catégorie 3
+        category_4: Catégorie 4
+        category_5: Catégorie 5
+        category_6: Catégorie 6
+        category_7: Catégorie 7
+      announcement:
+        title: Titre
+        icon: Picto
+        image_url: Image horizontale
+        image_portrait_url: Image verticale
+        body: Description
+        action: CTA
+        url: Lien
+        webview: Ouvrir dans
+        areas: Zones géographiques
+        user_goals: Publics
+        categories:
+          online: Événement en ligne
+          ambassador: Programme ambassadeur
+          poi_map: Lieux solidaires
+
+      moderation_area:
+        name: Nom de la zone
+        departement: Département
+        animator_id: PEC
+        sourcing_id: PI
+        community_builder_id: Community builder
+        welcome_message_1: Message de bienvenue
+        slack_moderator_id: Identifiant Slack
+      translation:
+        langs:
+          fr: Français
+          en: Anglais
+          es: Espagnol
+          de: Allemand
+          pl: Polonais
+          ro: Roumain
+          uk: Ukrainien
+          ar: Arabe
+      tour_area:
+        statuses:
+          active: Active
+          inactive: Inactive
+
+      conversation_message_broadcast:
+        moderation_area_id: Zone de modération
+        content: Contenu
+        goal: Public
+        title: Titre
+        archived_at: Archivé le
+        area: Zone
+        areas: Départements ou codes postaux
+        area_type: Zone
+        area_types:
+          national: National
+          hors_zone: Hors-zone
+          sans_zone: Sans-zone
+          list: Départements ou codes postaux
+      neighborhood:
+        name: Nom
+        description: Description
+        interests: Centres d'intérêts
+        image_url: Image
+        status: Statut
+        statuses:
+          active: Actif
+          deleted: Supprimé
+          blacklisted: Blacklisté
+      recommandation:
+        name: Nom
+        instance: Objet
+        action: Action
+        argument_type: Type d'argument
+        argument_value: Valeur de l'argument (id ou url)
+        user_goals: Profils
+        image_url: Image
+        status: Statut
+        actions:
+          index: Liste
+          show: Afficher
+          create: Créer
+          join: Rejoindre
+          show_joined: Afficher le plus proche déjà rejoint
+          show_not_joined: Afficher le plus proche pas déjà rejoint
+        instances:
+          user: Utilisateur
+          profile: Profil
+          neighborhood: Groupe de voisinage
+          outing: Événement
+          poi: POI
+          resource: Contenu pédagogique
+          webview: Webview
+          conversation: Conversation
+          contribution: Contribution
+          solicitation: Demande
+      resource:
+        name: Nom
+        category: Catégorie
+        description: Description
+        url: Url
+        is_video: Vidéo ?
+        duration: Durée
+        image_url: Image
+        tags:
+          neighborhood: "Groupes : l'importance de partager nos points communs"
+          outing: "Comment créer un événement ?"
+          action: "Entraide : ce que je peux proposer / demander"
+        categories:
+          act: Agir
+          inspire: S'inspirer
+          understand: Comprendre
+      smalltalk:
+        object: Bonnes ondes
+        new_message: Nouveau message
+        title_with_participants: "%s"
+
+  community:
+    entourage:
+      roles:
+        admin: Administrateur
+        ambassador: Ambassadeur
+        coordinator: Coordinateur
+        ethics_charter_signed: A validé la charte éthique
+        moderator: Modérateur
+        not_validated: Non validé
+        visitor: Visiteur
+      targeting_profiles:
+        offers_help: Riverain
+        asks_for_help: Personne préca
+        partner: Association
+        ambassador: Ambassadeur
+        team: Équipe Entourage
+      goals:
+        offer_help: Voisin solidaire
+        ask_for_help: Personne isolée ou en précarité
+        organization: Association ou service public
+        goal_not_known: Non défini
+        all: Tous profils
+      goals_compact:
+        offer_help: Riverain
+        ask_for_help: Personne préca
+        organization: Association
+        goal_not_known: Non défini
+        all: Tous profils
+      icons:
+        offer_help: user
+        ask_for_help: street-view
+        organization: sitemap
+        goal_not_known: question
+    user:
+      profiles:
+        offer_help: Voisin solidaire
+        ask_for_help: Personne préca
+        organization: Association
+        goal_not_known: Non défini
+        all: Tous profils
+      engagements:
+        engaged: Engagé
+        not_engaged: Non engagé
+      statuses:
+        validated: Validé
+        anonymized: Anonymisé
+        blocked: Bloqué
+        temporary_blocked: Bloqué temporairement
+        deleted: Supprimé
+        pending: En attente
+      roles:
+        moderator: Modérateur
+        admin: Administrateur
+    chat_messages:
+      status_update:
+        closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
+        moderator_working_hours: |
+          Merci de nous avoir contacté %s. Nous sommes actuellement en dehors de nos heures de travail (9h-18h en semaine). Nous vous répondrons dès que possible.
+          N'hésitez pas à poster un message sur votre groupe de voisins si vous pensez qu'une personne de la communauté peut vous conseiller et/ou apporter une réponse !
+          En cas d'urgence, contactez les numéros de services d'urgence : 18 (pompiers), 15 (samu) ou 115 (urgence sociale)
+          Nous vous remercions de votre compréhension et de votre patience.
+          %s
+
+  regions:
+    ouest: Ouest
+    sud_ouest: Sud-Ouest
+    sud_est: Sud-Est
+    aura: Auvergne-Rhône-Alpes
+    nord: Nord
+    idf: Ile-de-France
+    centre_est: Centre-Est
+
+  charts:
+    conversations:
+      memberships: "Participants"
+    users:
+      member_outings: "Participant événement"
+      member_neighborhoods: "Membre groupe de voisins"
+      reactions: "Réactions"
+      public_chat_messages: "Publications/Commentaires"
+      private_chat_messages: "Messages privés"
