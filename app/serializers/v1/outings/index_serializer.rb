@@ -43,7 +43,7 @@ module V1
       end
 
       def metadata
-        landscape_url = object.preload_image_url || object.image_url_with_size(object.landscape_url, :small)
+        landscape_url = object.preload_image_url || object.image_url_with_size(object.landscape_url, :medium)
 
         # portrait_url is not used but it is required by ios version
         return {

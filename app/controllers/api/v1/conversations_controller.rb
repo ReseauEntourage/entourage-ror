@@ -41,6 +41,10 @@ module Api
           ::Preloaders::JoinRequest.preload_joinable(m)
         end
 
+        memberships&.tap do |m|
+          ::Preloaders::JoinRequest.preload_image(m)
+        end
+
         render json: memberships, root: :memberships, each_serializer: ::V1::MembershipSerializer, scope: {
           user: current_user
         }

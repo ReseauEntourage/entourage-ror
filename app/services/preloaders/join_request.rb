@@ -1,6 +1,6 @@
 module Preloaders
   module JoinRequest
-    def self.preload_siblings(join_requests, sibling_scope: nil)
+    def self.preload_siblings join_requests, sibling_scope: nil
       join_requests = join_requests.to_a
       return if join_requests.empty?
 
@@ -26,7 +26,7 @@ module Preloaders
       end
     end
 
-    def self.preload_joinable(join_requests)
+    def self.preload_joinable join_requests
       join_requests = join_requests.to_a
       return if join_requests.empty?
 
@@ -43,8 +43,34 @@ module Preloaders
       end
     end
 
+    def self.preload_image join_requests, scope: nil
+      join_requests = join_requests.to_a
+      return if join_requests.empty?
 
-    def self.sanitize_sql(condition)
+      # get outings
+      outings = join_requests.map do |join_request|
+        next unless join_request.outing?
+
+        join_request.joinable
+      end.compact.uniq
+
+      # populate outings with images
+      outings.tap do |o|
+        Preloaders::Outing.preload_images(o, scope: scope)
+      end
+
+      outings = outings.index_by(&:id)
+
+      # populate join_requests with imageable outings
+      join_requests.each do |join_request|
+        next unless join_request.outing?
+        next unless outings.has_key?(join_request.joinable_id)
+
+        join_request.joinable = outings[join_request.joinable_id]
+      end
+    end
+
+    def self.sanitize_sql condition
       ActiveRecord::Base.send(:sanitize_sql_array, condition)
     end
   end
