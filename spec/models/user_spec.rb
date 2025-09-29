@@ -39,13 +39,13 @@ describe User, :type => :model do
     it { expect(build(:public_user, birthdate: '').save).to be true }
     it { expect(build(:public_user, birthdate: '11').save).to be false }
     it { expect(build(:public_user, birthdate: '1-1').save).to be false }
-    it { expect(build(:public_user, birthdate: '1-1-2020').save).to be true }
-    it { expect(build(:public_user, birthdate: '0-1-2020').save).to be false }
-    it { expect(build(:public_user, birthdate: '01-1-2020').save).to be true }
-    it { expect(build(:public_user, birthdate: '01-12-2020').save).to be true }
-    it { expect(build(:public_user, birthdate: '01-13-2020').save).to be false }
-    it { expect(build(:public_user, birthdate: '31-01-2020').save).to be true }
-    it { expect(build(:public_user, birthdate: '31-02-2020').save).to be false }
+    it { expect(build(:public_user, birthdate: '2020-1-1').save).to be true }
+    it { expect(build(:public_user, birthdate: '2020-1-0').save).to be false }
+    it { expect(build(:public_user, birthdate: '2020-1-01').save).to be true }
+    it { expect(build(:public_user, birthdate: '2020-12-01').save).to be true }
+    it { expect(build(:public_user, birthdate: '2020-13-01').save).to be false }
+    it { expect(build(:public_user, birthdate: '2020-01-31').save).to be true }
+    it { expect(build(:public_user, birthdate: '2020-02-31').save).to be false }
   end
 
   describe "phone number" do
@@ -147,10 +147,10 @@ describe User, :type => :model do
     end
 
     context "with valid discovery_source" do
-      let(:discovery_source) { "internet" }
+      let(:discovery_source) { "television" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:discovery_source]).to be_empty }
-      it { expect(user.discovery_source).to eq("internet") }
+      it { expect(user.discovery_source).to eq("television") }
     end
   end
 

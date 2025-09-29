@@ -376,6 +376,21 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      context 'birthdate' do
+        before { patch 'update', params: { token: user.token, user: { birthdate: '1970-12-30' } } }
+        it { expect(user.reload.birthdate).to eq('1970-12-30') }
+      end
+
+      context 'gender' do
+        before { patch 'update', params: { token: user.token, user: { gender: 'female' } } }
+        it { expect(user.reload.gender).to eq('female') }
+      end
+
+      context 'discovery_source' do
+        before { patch 'update', params: { token: user.token, user: { discovery_source: 'word_of_mouth' } } }
+        it { expect(user.reload.discovery_source).to eq('word_of_mouth') }
+      end
+
       # interest_list
       context 'interest_list' do
         context 'good value' do

@@ -331,7 +331,7 @@ class User < ApplicationRecord
   def validate_birthdate!
     return unless birthdate.present?
 
-    Date.strptime(birthdate, '%d-%m-%y')
+    Date.strptime(birthdate, '%Y-%m-%d')
   rescue
     errors.add(:birthdate, "Date invalide")
   end
