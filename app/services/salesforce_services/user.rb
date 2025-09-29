@@ -14,12 +14,20 @@ module SalesforceServices
     def upsert
       contact_id = lead_id.present? ? contact_id : contact_id!
 
+      contact_update
+
       upsert_from_fields(
         interface.mapped_fields.merge({
           "Prospect__c" => lead_id,
           "Contact__c" => contact_id
         })
       )
+    end
+
+    def update
+      super.tap do
+        contact_update
+      end
     end
 
     def destroy
@@ -42,6 +50,10 @@ module SalesforceServices
 
     def contact_id!
       Contact.new(instance).upsert
+    end
+
+    def contact_update
+      Contact.new(instance).update
     end
   end
 end
