@@ -100,12 +100,16 @@ describe OutingTasks do
     let(:starts_at) { Time.zone.now.tomorrow.change(hour: 12) }
     let(:outing_ref) { Outing.find(outing.id) } # forces class Outing rather than Entourage
 
+    let(:member) { create(:public_user) }
+    let!(:join_request) { create(:join_request, user: member, joinable: outing_ref, status: :accepted) }
+
     subject { OutingTasks.send_email_as_reminder }
 
     before { outing_ref.moderation.update_attribute(:moderated_at, moderated_at) }
 
     context "calls GroupMailer" do
-      it { expect_any_instance_of(GroupMailer).to receive(:event_participation_reminder).with(outing_ref) }
+      # it { expect_any_instance_of(GroupMailer).to receive(:event_participation_reminder) }
+      it { expect_any_instance_of(GroupMailer).to receive(:event_participation_reminder).with(outing_ref, member) }
 
       after { subject }
     end
