@@ -12,6 +12,12 @@ module Admin
         redirect_to admin_super_admin_testings_path, flash: { success: "Email envoyé" }
       end
 
+      def event_participation_reminder
+        TestingServices::Emails.new(current_user, :event_participation_reminder).run
+
+        redirect_to admin_super_admin_testings_path, flash: { success: "Email envoyé" }
+      end
+
       private
 
       def handle_standard_error error
