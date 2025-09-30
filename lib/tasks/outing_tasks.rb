@@ -43,7 +43,9 @@ module OutingTasks
         .where("users.admin = true OR users.targeting_profile IN ('team', 'ambassador')")
         .group("entourages.id")
         .each do |outing|
-          GroupMailer.event_participation_reminder(outing).deliver_later
+          outing.members.each do |user|
+            GroupMailer.event_participation_reminder(outing, user).deliver_later
+          end
         end
     end
 
