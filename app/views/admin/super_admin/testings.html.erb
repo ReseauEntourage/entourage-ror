@@ -117,6 +117,16 @@
 
   <%= link_to "Weekly planning", weekly_planning_admin_testings_emails_path, method: :post, class: "btn btn-success" %>
 
+  <div class="alert alert-success" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+    <div style="flex-grow: 1">
+      <b>Email</b><br/>
+      <b>Prérequis</b> : l'admin doit avoir un email en @entourage.social si on est sur la recette.<br/>
+      <b>Attendu</b> : recevoir un email de participation à un événement.
+    </div>
+  </div>
+
+  <%= link_to "Outing participation reminder (6174429)", event_participation_reminder_admin_testings_emails_path, method: :post, class: "btn btn-success" %>
+
   <!-- Salesforce -->
   <div class="alert alert-danger" role="alert" style="display: flex; align-items: center; margin-top: 30px">
     <div style="flex-grow: 1">

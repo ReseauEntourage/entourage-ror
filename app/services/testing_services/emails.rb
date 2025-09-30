@@ -20,5 +20,11 @@ module TestingServices
 
       MemberMailer.weekly_planning(user, action_ids, outing_ids).deliver_later
     end
+
+    def event_participation_reminder
+      outing = Outing.order(created_at: :desc).first
+
+      GroupMailer.event_participation_reminder(outing, user).deliver_later
+    end
   end
 end
