@@ -22,7 +22,11 @@ module TestingServices
     end
 
     def event_participation_reminder
-      outing = Outing.order(created_at: :desc).first
+      outing = Outing
+        .joins(:moderation)
+        .where("entourage_moderations.validated_at is not null")
+        .order(created_at: :desc)
+        .first
 
       GroupMailer.event_participation_reminder(outing, user).deliver_later
     end
