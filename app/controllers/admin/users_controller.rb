@@ -90,10 +90,11 @@ module Admin
     def outings
       @join_requests = user
         .join_requests
+        .joins("left join entourages on entourages.id = join_requests.joinable_id and join_requests.joinable_type = 'Entourage'")
         .where(joinable_type: :Entourage)
         .where("joinable_id in (select entourages.id from entourages where group_type = 'outing')")
         .includes(joinable: :chat_messages)
-        .order(created_at: :desc)
+        .order(Arel.sql("entourages.metadata->>'starts_at' desc"))
     end
 
     def history
