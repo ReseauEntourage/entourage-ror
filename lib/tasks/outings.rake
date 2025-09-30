@@ -6,6 +6,11 @@ namespace :outings do
     OutingRecurrence.generate_all
   end
 
+  desc "send email as reminder"
+  task send_email_as_reminder: :environment do
+    OutingTasks.send_email_as_reminder
+  end
+
   desc "send post to upcoming outings"
   task send_post_to_upcoming: :environment do
     OutingTasks::send_post_to_upcoming
