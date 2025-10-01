@@ -87,6 +87,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
               'involvements' => [],
               'concerns' => [],
               'travel_distance' => 40,
+              "birthdate" => nil,
               'birthday' => nil,
               'permissions' => {
                 'outing' => { 'creation' => true }
@@ -282,13 +283,13 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       after { ENV['DISABLE_CRYPT']='TRUE' }
 
       context 'params are valid' do
-        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email: 'new@e.mail', sms_code: '654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: 'non_binary' }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email: 'new@e.mail', sms_code: '654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: "secret" }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.lang).to eq('pl') }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
         it { expect(user.reload.travel_distance).to eq(12) }
-        it { expect(user.reload.gender).to eq('non_binary') }
+        it { expect(user.reload.gender).to eq("secret") }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
 
         it 'renders user' do
@@ -373,6 +374,21 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             expect { subject }.not_to change { event.created_at }
           end
         end
+      end
+
+      context 'birthdate' do
+        before { patch 'update', params: { token: user.token, user: { birthdate: '1970-12-30' } } }
+        it { expect(user.reload.birthdate).to eq('1970-12-30') }
+      end
+
+      context 'gender' do
+        before { patch 'update', params: { token: user.token, user: { gender: 'female' } } }
+        it { expect(user.reload.gender).to eq('female') }
+      end
+
+      context 'discovery_source' do
+        before { patch 'update', params: { token: user.token, user: { discovery_source: 'word_of_mouth' } } }
+        it { expect(user.reload.discovery_source).to eq('word_of_mouth') }
       end
 
       # interest_list
@@ -800,94 +816,84 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it { expect(response.status).to eq(401) }
     end
 
-    context 'user signed in' do
-      context 'get your own profile' do
-        let(:request) { get :show, params: { id: user.id, token: user.token } }
-
-        context 'when you does not have an address' do
-          before { request }
-
-          it { expect(response.status).to eq(200) }
-          it { expect(JSON.parse(response.body)).to eq({
-            'user' => {
-              'id' => user.id,
-              'uuid' => user.id.to_s,
-              'email' => user.email,
-              'lang' => user.lang,
-              'availability' => user.availability,
-              'display_name' => 'John D.',
-              'first_name' => 'John',
-              'last_name' => 'Doe',
-              'roles' => ['Association'],
-              'about' => nil,
-              'token' => user.token,
-              'user_type' => 'pro',
-              'avatar_url' => nil,
-              'has_password' => false,
-              'address' => nil,
-              'address_2' => nil,
-              'stats' => {
-                 'tour_count' => 0,
-                 'encounter_count' => 0,
-                 'entourage_count' => 0,
-                 'actions_count' => 0,
-                 'ask_for_help_creation_count' => 0,
-                 'contribution_creation_count' => 0,
-                 'events_count' => 0,
-                 'outings_count' => 0,
-                 'neighborhoods_count' => 0,
-                 'good_waves_participation' => false,
-              },
-              'partner' => {
-                'id' => partner.id,
-                'name' => 'MyString',
-                'large_logo_url' => 'MyString',
-                'small_logo_url' => 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png',
-                'description' => 'MyDescription',
-                'donations_needs' => nil,
-                'volunteers_needs' => nil,
-                'phone' => nil,
-                'address'  =>  '174 rue Championnet, Paris',
-                'website_url' => nil,
-                'email' => nil,
-                'default' => true,
-                'user_role_title' => nil},
-              'memberships' => [],
-              'conversation' => {
-                'uuid' => "1_list_#{user.id}"
-              },
-              'firebase_properties' => {
-               'ActionZoneDep' => 'not_set',
-               'ActionZoneCP' => 'not_set',
-               'Goal' => 'no_set',
-               'Interests' => 'none'
-              },
-              'anonymous' => false,
-              'feature_flags' => {
-                'organization_admin' => false
-              },
-              'engaged' => false,
-              'goal' => nil,
-              'phone' => user.phone,
-              'unread_count' => 0,
-              'interests' => [],
-              'involvements' => [],
-              'concerns' => [],
-              'travel_distance' => 40,
-              'birthday' => nil,
-              'permissions' => {
-                'outing' => { 'creation' => true }
-              },
-              'created_at' => user.created_at.iso8601(3),
-            }
-          }) }
-        end
-
-        context 'when you have an address' do
-          let(:user) { create :public_user }
-          let!(:address) { create :address, user: user }
-
-          before { request }
+    context "user signed in" do
+      context "get your own profile" do
+        before { get :show, params: { id: user.id, token: user.token } }
+        it { expect(response.status).to eq(200) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "user" => {
+            "id" => user.id,
+            "uuid" => user.id.to_s,
+            "email" => user.email,
+            "lang" => user.lang,
+            "availability" => user.availability,
+            "display_name" => "John D.",
+            "first_name" => "John",
+            "last_name" => "Doe",
+            "roles" => ["Association"],
+            "about" => nil,
+            "token" => user.token,
+            "user_type" => "pro",
+            "avatar_url" => nil,
+            "has_password" => false,
+            "address" => nil,
+            "address_2" => nil,
+            "stats" => {
+               "tour_count" => 0,
+               "encounter_count" => 0,
+               "entourage_count" => 0,
+               "actions_count" => 0,
+               "ask_for_help_creation_count" => 0,
+               "contribution_creation_count" => 0,
+               "events_count" => 0,
+               "outings_count" => 0,
+               "neighborhoods_count" => 0,
+               "good_waves_participation" => false,
+            },
+            "partner" => {
+              "id" => partner.id,
+              "name" => "MyString",
+              "large_logo_url" => "MyString",
+              "small_logo_url" => "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
+              "description" => "MyDescription",
+              "donations_needs" => nil,
+              "volunteers_needs" => nil,
+              "phone" => nil,
+              "address"  =>  "174 rue Championnet, Paris",
+              "website_url" => nil,
+              "email" => nil,
+              "default" => true,
+              "user_role_title" => nil},
+            "memberships" => [],
+            "conversation" => {
+              "uuid" => "1_list_#{user.id}"
+            },
+            "firebase_properties" => {
+             "ActionZoneDep" => "not_set",
+             "ActionZoneCP" => "not_set",
+             "Goal" => "no_set",
+             "Interests" => "none"
+            },
+            "anonymous" => false,
+            "feature_flags" => {
+              "organization_admin" => false
+            },
+            "engaged" => false,
+            "goal" => nil,
+            "phone" => user.phone,
+            "unread_count" => 0,
+            "interests" => [],
+            "involvements" => [],
+            "concerns" => [],
+            "travel_distance" => 40,
+            "birthdate" => nil,
+            "birthday" => nil,
+            "permissions" => {
+              "outing" => { "creation" => true }
+            },
+            "created_at" => user.created_at.iso8601(3),
+          }
+        }) }
 
           it {
             expect(JSON.parse(response.body)['user']['address']).to eq(
@@ -961,17 +967,18 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'feature_flags' => {
               'organization_admin' => false
             },
-            'engaged' => false,
-            'goal' => nil,
-            'phone' => user.phone,
-            'unread_count' => 0,
-            'interests' => [],
-            'involvements' => [],
-            'concerns' => [],
-            'travel_distance' => 40,
-            'birthday' => nil,
-            'permissions' => {
-              'outing' => { 'creation' => true }
+            "engaged" => false,
+            "goal" => nil,
+            "phone" => user.phone,
+            "unread_count" => 0,
+            "interests" => [],
+            "involvements" => [],
+            "concerns" => [],
+            "travel_distance" => 40,
+            "birthdate" => nil,
+            "birthday" => nil,
+            "permissions" => {
+              "outing" => { "creation" => true }
             },
             'created_at' => user.created_at.iso8601(3),
           }
