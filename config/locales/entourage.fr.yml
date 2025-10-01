@@ -525,11 +525,20 @@ fr:
 
         Merci pour votre confiance ✨
       inactive_j3: |
-        Hello la team ! On serait curieux de savoir, qu’est-ce qui vous a donné envie de rejoindre ce groupe ?
+        Hello la team ! On serait curieux de savoir ce qui vous a donné envie de rejoindre ce groupe ? 😊
       inactive_j5: |
-        Pas ultra à l’aise à l’écrit ? Aucun souci ! Vous pouvez aussi opter pour une visio tranquille ou un café en petit comité. Dites-nous ce qui vous conviendrait le mieux !
+        Vous n'êtes pas très à l’aise à l’écrit ? Aucun souci ! Vous pouvez aussi opter pour une visio tranquille ou un café en petit comité ☕
+
+        Voici un lien pour vous retrouver facilement en ligne :
+        👉 %s
+
+        N’hésitez pas à dire ce qui vous conviendrait le mieux, il y a mille façons de créer du lien 🧡
       inactive_j7: |
-        Le groupe est calme en ce moment... Si on n’a pas de nouvelles d’ici 7 jours, on laissera le groupe se refermer doucement. Merci d’avoir été là, et qui sait... à bientôt quelque part !
+        On sent que c’est un peu calme par ici…
+
+        Si aucun message n’est échangé dans les 7 prochains jours, il sera fermé automatiquement.
+
+        Merci d’avoir été là. Et si vous avez encore envie de créer du lien, les Bonnes Ondes vous accueilleront à nouveau, quand vous voulez 🧡
       happy_birthday: | # first_name
         Toute la bande Bonnes Ondes souhaite un joyeux anniversaire à %s ! 🎉 Profite bien de ta journée et n’hésite pas à nous raconter comment tu vas fêter ça !
       chart_recall: |
