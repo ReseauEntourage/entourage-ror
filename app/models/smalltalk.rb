@@ -105,7 +105,6 @@ class Smalltalk < ApplicationRecord
     update!(completed_at: Time.current)
   end
 
-<<<<<<< HEAD
   def check_members_alone_case!
     return unless completed_at.present?
     return unless number_of_people == 1
@@ -117,13 +116,13 @@ class Smalltalk < ApplicationRecord
 
   def cancel_auto_messages!
     SmalltalkAutoChatMessageJob.cancel_jobs_for_smalltalk(id)
-=======
+  end
+
   def add_event! key
     return if key.blank?
 
     update_column(:events, events.merge({
       key => Time.zone.now
     }))
->>>>>>> EN-8291-auto-chat-messages-for-inactive-smalltalks
   end
 end
