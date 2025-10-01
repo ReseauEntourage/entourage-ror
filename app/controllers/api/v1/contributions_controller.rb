@@ -57,13 +57,13 @@ module Api
 
           on.failure do |contribution|
             render json: {
-              message: "Could not delete contribution", reasons: contribution.errors.full_messages
+              message: 'Could not delete contribution', reasons: contribution.errors.full_messages
             }, status: :bad_request
           end
 
           on.not_authorized do
             render json: {
-              message: "You are not authorized to delete this contribution"
+              message: 'You are not authorized to delete this contribution'
             }, status: :unauthorized
           end
         end
@@ -92,7 +92,7 @@ module Api
 
         unless params[:content_type].in? allowed_types
           type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
         end
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension

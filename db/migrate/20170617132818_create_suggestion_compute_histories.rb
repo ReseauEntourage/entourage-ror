@@ -6,7 +6,7 @@ class CreateSuggestionComputeHistories < ActiveRecord::Migration[4.2]
       t.integer :entourage_number,        null: false
       t.integer :total_entourage_number,  null: false
       t.integer :duration,                null: false
-      t.string :filter_type,              null: false, default: "NORMAL"
+      t.string :filter_type,              null: false, default: 'NORMAL'
 
       t.timestamps null: false
     end

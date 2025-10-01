@@ -35,15 +35,15 @@ module SalesforceServices
       return unless attributes = find_by_external_id
       return unless attributes.any?
 
-      attributes["Id"]
+      attributes['Id']
     end
 
     def find_by_external_id
-      fetch_fields(["Id"])
+      fetch_fields(['Id'])
     end
 
     def fetch
-      fetch_fields(interface.sf_fields).except("attributes")
+      fetch_fields(interface.sf_fields).except('attributes')
     end
 
     def fetch_fields fields

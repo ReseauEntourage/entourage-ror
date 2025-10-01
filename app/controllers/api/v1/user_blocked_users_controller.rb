@@ -24,7 +24,7 @@ module Api
         if user_blocked_user.save
           render json: user_blocked_user, status: 201, serializer: ::V1::UserBlockedUserSerializer
         else
-          render json: { message: "Could not block user_blocked_user", reasons: user_blocked_user.errors.full_messages }, status: 400
+          render json: { message: 'Could not block user_blocked_user', reasons: user_blocked_user.errors.full_messages }, status: 400
         end
       end
 
@@ -32,7 +32,7 @@ module Api
         if current_user.update_attribute(:blocked_user_ids, blocked_user_ids)
           render json: current_user.user_blocked_users, status: 201, each_serializer: ::V1::UserBlockedUserSerializer
         else
-          render json: { message: "Could not block user_blocked_user", reasons: current_user.errors.full_messages }, status: 400
+          render json: { message: 'Could not block user_blocked_user', reasons: current_user.errors.full_messages }, status: 400
         end
       end
 
@@ -48,7 +48,7 @@ module Api
         if user_blocked_user.delete
           render json: { user_blocked_user: :deleted }, status: 200
         else
-          render json: { message: "Could not unblock user_blocked_user", reasons: user_blocked_user.errors.full_messages }, status: 400
+          render json: { message: 'Could not unblock user_blocked_user', reasons: user_blocked_user.errors.full_messages }, status: 400
         end
       end
 
@@ -58,7 +58,7 @@ module Api
         if user_blocked_users.delete_all
           render json: { user_blocked_users: :deleted }, status: 200
         else
-          render json: { message: "Could not unblock user_blocked_user", reasons: user_blocked_users.errors.full_messages }, status: 400
+          render json: { message: 'Could not unblock user_blocked_user', reasons: user_blocked_users.errors.full_messages }, status: 400
         end
       end
 

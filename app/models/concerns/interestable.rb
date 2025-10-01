@@ -18,7 +18,7 @@ module Interestable
       return unless interest_list.any?
 
       join_interests
-        .group(sanitize_sql_array ["%s.id", self.table_name])
+        .group(sanitize_sql_array ['%s.id', self.table_name])
         .order(Arel.sql %(
         sum(
           case context = 'interests' and tagger_id is null and tags.name in (%s)
@@ -26,12 +26,12 @@ module Interestable
           else 0
           end
         ) desc
-      ) % interest_list.map { |interest| "'#{interest}'" }.join(","))
+      ) % interest_list.map { |interest| "'#{interest}'" }.join(','))
     }
 
     scope :order_with_interests, -> {
       join_interests
-        .group(sanitize_sql_array ["%s.id", self.table_name])
+        .group(sanitize_sql_array ['%s.id', self.table_name])
         .order(Arel.sql %(
           sum(case when tags.id is not null then 1 else 0 end) desc
         ))
@@ -41,7 +41,7 @@ module Interestable
       return unless interest_list
       return unless interest_list.any?
 
-      join_interests.where("tags.name IN (?)", interest_list)
+      join_interests.where('tags.name IN (?)', interest_list)
     }
   end
 

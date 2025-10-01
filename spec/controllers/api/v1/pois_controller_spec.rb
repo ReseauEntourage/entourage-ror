@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::PoisController, :type => :controller do
+describe Api::V1::PoisController, type: :controller do
   render_views
 
   context 'authorized' do
@@ -12,30 +12,30 @@ describe Api::V1::PoisController, :type => :controller do
         form_response: {
           definition: {
             fields: [
-              { id: "1", title: "Nom de la structure" },
-              { id: "2", title: "Adresse exacte " },
-              { id: "3", title: "Description" },
-              { id: "4", title: "Site Internet ou page Facebook" },
-              { id: "5", title: "Téléphone de la structure" },
-              { id: "6", title: "Email de la structure" },
-              { id: "7", title: "Votre email" },
+              { id: '1', title: 'Nom de la structure' },
+              { id: '2', title: 'Adresse exacte ' },
+              { id: '3', title: 'Description' },
+              { id: '4', title: 'Site Internet ou page Facebook' },
+              { id: '5', title: 'Téléphone de la structure' },
+              { id: '6', title: 'Email de la structure' },
+              { id: '7', title: 'Votre email' },
             ]
           },
           answers: [
-            { text: poi.name, field: { id: "1" } },
-            { text: poi.adress, field: { id: "2" } },
-            { text: "mydescription", field: { id: "3" } },
-            { text: poi.website, field: { id: "4" } },
-            { text: poi.phone, field: { id: "5" } },
-            { text: poi.email, field: { id: "6" } },
-            { text: "john@foo.bar", field: { id: "7" } },
+            { text: poi.name, field: { id: '1' } },
+            { text: poi.adress, field: { id: '2' } },
+            { text: 'mydescription', field: { id: '3' } },
+            { text: poi.website, field: { id: '4' } },
+            { text: poi.phone, field: { id: '5' } },
+            { text: poi.email, field: { id: '6' } },
+            { text: 'john@foo.bar', field: { id: '7' } },
           ]
         }
       } }
 
       let(:subject) { post :create, params: { format: :json }.merge(poi_params) }
 
-      describe "stub verify" do
+      describe 'stub verify' do
         before { PoiServices::Typeform.any_instance.stub(:verify) { true } }
         before { subject }
 
@@ -51,35 +51,35 @@ describe Api::V1::PoisController, :type => :controller do
         it { expect(Poi.last.category).to eq poi.category }
         it { expect(Poi.last.validated).to be false }
 
-        it "renders POI" do
+        it 'renders POI' do
           poi = Poi.last
           res = JSON.parse(response.body)
-          expect(res).to eq("poi"=>{
-            "uuid"=>poi.id.to_s,
-            "source"=>"entourage",
-            "source_url"=>nil,
-            "name"=>"Dede",
-            "description"=>"mydescription",
-            "longitude"=>2.30681949999996,
-            "latitude"=>48.870424,
-            "address"=>"Au 50 75008 Paris",
-            "phone"=>"0000000000",
-            "website"=>"entourage.com",
-            "email"=>"entourage@entourage.com",
-            "audience"=>nil,
-            "hours"=>nil,
-            "languages"=>nil,
-            "partner_id"=>nil,
-            "category_ids"=>[poi.category_id]
+          expect(res).to eq('poi'=>{
+            'uuid'=>poi.id.to_s,
+            'source'=>'entourage',
+            'source_url'=>nil,
+            'name'=>'Dede',
+            'description'=>'mydescription',
+            'longitude'=>2.30681949999996,
+            'latitude'=>48.870424,
+            'address'=>'Au 50 75008 Paris',
+            'phone'=>'0000000000',
+            'website'=>'entourage.com',
+            'email'=>'entourage@entourage.com',
+            'audience'=>nil,
+            'hours'=>nil,
+            'languages'=>nil,
+            'partner_id'=>nil,
+            'category_ids'=>[poi.category_id]
           })
         end
       end
 
-      describe "do not stub verify" do
-        let(:secret) { "foo" }
+      describe 'do not stub verify' do
+        let(:secret) { 'foo' }
 
         before { ENV['POI_FORM_SECRET_TOKEN'] = secret }
-        before { request.headers["Typeform-Signature"] = "sha256=#{PoiServices::Typeform.base64_hash(secret, poi_params.to_query)}" }
+        before { request.headers['Typeform-Signature'] = "sha256=#{PoiServices::Typeform.base64_hash(secret, poi_params.to_query)}" }
 
         before { subject }
 
@@ -121,29 +121,29 @@ describe Api::V1::PoisController, :type => :controller do
       before { get 'show', params: { id: poi.id, token: user.token } }
       it { expect(response.status).to eq 200 }
       it { expect(JSON.parse(response.body)).to eq(
-        "poi" => {
-          "uuid" => poi.id.to_s,
-          "source" => "entourage",
-          "source_url" => nil,
-          "name" => "Dede",
-          "description" => nil,
-          "longitude" => 2.30681949999996,
-          "latitude" => 48.870424,
-          "address" => "Au 50 75008 Paris",
-          "phone" => "0000000000",
-          "website" => "entourage.com",
-          "email" => "entourage@entourage.com",
-          "audience" => "Mon audience",
-          "hours" => nil,
-          "languages" => nil,
-          "partner_id" => nil,
-          "category_ids" => [poi.category_id]
+        'poi' => {
+          'uuid' => poi.id.to_s,
+          'source' => 'entourage',
+          'source_url' => nil,
+          'name' => 'Dede',
+          'description' => nil,
+          'longitude' => 2.30681949999996,
+          'latitude' => 48.870424,
+          'address' => 'Au 50 75008 Paris',
+          'phone' => '0000000000',
+          'website' => 'entourage.com',
+          'email' => 'entourage@entourage.com',
+          'audience' => 'Mon audience',
+          'hours' => nil,
+          'languages' => nil,
+          'partner_id' => nil,
+          'category_ids' => [poi.category_id]
         }
       )}
     end
   end
 
-  context "unauthorized" do
+  context 'unauthorized' do
     describe 'index' do
       context 'serialization' do
         let!(:category1) { create :category }
@@ -155,88 +155,88 @@ describe Api::V1::PoisController, :type => :controller do
         let!(:poi4) { create :poi, category: category3, validated: true }
 
         context 'v1' do
-          before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), :format => :json } }
+          before { get 'index', params: { category_ids: [category1.id, category2.id].join(','), format: :json } }
           it { expect(assigns(:categories)).to match_array([category1, category2, category3]) }
           it { expect(assigns(:pois)).to match_array([poi1, poi3]) }
 
-          it "renders POI" do
+          it 'renders POI' do
             res = JSON.parse(response.body)
 
-            expect(res["categories"]).to match_array([{
-              "id" => category1.id,
-              "name" => category1.name
+            expect(res['categories']).to match_array([{
+              'id' => category1.id,
+              'name' => category1.name
             }, {
-              "id" => category2.id,
-              "name" => category2.name
+              'id' => category2.id,
+              'name' => category2.name
             }, {
-              "id" => category3.id,
-              "name" => category3.name
+              'id' => category3.id,
+              'name' => category3.name
             }])
 
-            expect(res["pois"]).to match_array([{
-              "id" => poi1.id,
-              "name" => "Dede",
-              "description" => nil,
-              "longitude" => 2.30681949999996,
-              "latitude" => 48.870424,
-              "adress" => "Au 50 75008 Paris",
-              "phone" => "0000000000",
-              "website" => "entourage.com",
-              "email" => "entourage@entourage.com",
-              "audience" => "Mon audience",
-              "validated" => true,
-              "category_id" => poi1.category_id,
-              "category" => {
-                "id" => poi1.category.id,
-                "name" => poi1.category.name
+            expect(res['pois']).to match_array([{
+              'id' => poi1.id,
+              'name' => 'Dede',
+              'description' => nil,
+              'longitude' => 2.30681949999996,
+              'latitude' => 48.870424,
+              'adress' => 'Au 50 75008 Paris',
+              'phone' => '0000000000',
+              'website' => 'entourage.com',
+              'email' => 'entourage@entourage.com',
+              'audience' => 'Mon audience',
+              'validated' => true,
+              'category_id' => poi1.category_id,
+              'category' => {
+                'id' => poi1.category.id,
+                'name' => poi1.category.name
               },
-              "partner_id" => nil
+              'partner_id' => nil
             }, {
-              "id" => poi3.id,
-              "name" => "Dede",
-              "description" => nil,
-              "longitude" => 2.30681949999996,
-              "latitude" => 48.870424,
-              "adress" => "Au 50 75008 Paris",
-              "phone" => "0000000000",
-              "website" => "entourage.com",
-              "email" => "entourage@entourage.com",
-              "audience" => "Mon audience",
-              "validated" => true,
-              "category_id" => poi3.category_id,
-              "category" => {
-                "id" => poi3.category.id,
-                "name" => poi3.category.name
+              'id' => poi3.id,
+              'name' => 'Dede',
+              'description' => nil,
+              'longitude' => 2.30681949999996,
+              'latitude' => 48.870424,
+              'adress' => 'Au 50 75008 Paris',
+              'phone' => '0000000000',
+              'website' => 'entourage.com',
+              'email' => 'entourage@entourage.com',
+              'audience' => 'Mon audience',
+              'validated' => true,
+              'category_id' => poi3.category_id,
+              'category' => {
+                'id' => poi3.category.id,
+                'name' => poi3.category.name
               },
-              "partner_id" => nil
+              'partner_id' => nil
             }
           ])
           end
         end
 
         context 'v2' do
-          before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), v: 2 } }
-          it "renders POI" do
+          before { get 'index', params: { category_ids: [category1.id, category2.id].join(','), v: 2 } }
+          it 'renders POI' do
             res = JSON.parse(response.body)
             expect(res['pois']).to match_array(
               [{
-                "uuid" => poi1.uuid,
-                "name" => "Dede",
-                "longitude" => 2.30681949999996,
-                "latitude" => 48.870424,
-                "address" => "Au 50 75008 Paris",
-                "phone" => "0000000000",
-                "category_id" => poi1.category_id,
-                "partner_id" => nil
+                'uuid' => poi1.uuid,
+                'name' => 'Dede',
+                'longitude' => 2.30681949999996,
+                'latitude' => 48.870424,
+                'address' => 'Au 50 75008 Paris',
+                'phone' => '0000000000',
+                'category_id' => poi1.category_id,
+                'partner_id' => nil
               }, {
-                "uuid" => poi3.uuid,
-                "name" => "Dede",
-                "longitude" => 2.30681949999996,
-                "latitude" => 48.870424,
-                "address" => "Au 50 75008 Paris",
-                "phone" => "0000000000",
-                "category_id" => poi3.category_id,
-                "partner_id" => nil
+                'uuid' => poi3.uuid,
+                'name' => 'Dede',
+                'longitude' => 2.30681949999996,
+                'latitude' => 48.870424,
+                'address' => 'Au 50 75008 Paris',
+                'phone' => '0000000000',
+                'category_id' => poi3.category_id,
+                'partner_id' => nil
               }]
             )
           end
@@ -270,7 +270,7 @@ describe Api::V1::PoisController, :type => :controller do
         params = { latitude: paris[:latitude], longitude: paris[:longitude], distance: 5, v: '2', format: :json }
 
         before {
-          stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: '{"places":[{}]}', headers: {})
+          stub_request(:post, 'https://api.soliguide.fr/new-search').to_return(status: 200, body: '{"places":[{}]}', headers: {})
         }
 
         context 'redirects to soliguide when Paris and soliguide option is defined' do
@@ -283,7 +283,7 @@ describe Api::V1::PoisController, :type => :controller do
           }
 
           it { expect(response.status).to eq 200 }
-          it { expect(JSON.parse(response.body)).to have_key("pois") }
+          it { expect(JSON.parse(response.body)).to have_key('pois') }
         end
 
         context 'does not redirect to soliguide when Paris and soliguide option is not defined' do
@@ -296,13 +296,13 @@ describe Api::V1::PoisController, :type => :controller do
           }
 
           it { expect(response.status).to eq 200 }
-          it { expect(JSON.parse(response.body)).to have_key("pois") }
+          it { expect(JSON.parse(response.body)).to have_key('pois') }
         end
       end
     end
   end
 
-  describe "clustered" do
+  describe 'clustered' do
     let(:user) { create :pro_user }
     let(:result) { JSON.parse(response.body) }
 
@@ -315,8 +315,8 @@ describe Api::V1::PoisController, :type => :controller do
     before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json } }
 
     it { expect(response.status).to eq(200) }
-    it { expect(result).to have_key("clusters") }
-    it { expect(result["clusters"].length).to eq(3) }
-    it { expect(result["clusters"].map{|cluster| cluster["id"]}).to match_array([poi3.id, poi4.id, poi2.id]) }
+    it { expect(result).to have_key('clusters') }
+    it { expect(result['clusters'].length).to eq(3) }
+    it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi3.id, poi4.id, poi2.id]) }
   end
 end

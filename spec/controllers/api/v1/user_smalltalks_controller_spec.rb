@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::UserSmalltalksController, :type => :controller do
+describe Api::V1::UserSmalltalksController, type: :controller do
   let(:user) { create :pro_user, goal: :offer_help }
   let(:smalltalk) { create :smalltalk, participants: [user] }
   let(:user_smalltalk) { create :user_smalltalk, user: user, smalltalk: smalltalk, member_status: :accepted }
@@ -58,49 +58,49 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result).to eq({
-        "user_smalltalk" => {
-          "id" => user_smalltalk.id,
-          "uuid_v2" => user_smalltalk.uuid_v2,
-          "smalltalk_id" => smalltalk.id,
-          "match_format" => "one",
-          "match_locality" => false,
-          "match_gender" => false,
-          "has_matched_format" => nil,
-          "has_matched_gender" => nil,
-          "has_matched_locality" => nil,
-          "has_matched_interest" => nil,
-          "unmatch_count" => nil,
-          "matched_at" => nil,
-          "deleted_at" => nil,
-          "created_at" => user_smalltalk.created_at.iso8601(3),
-          "user" => {
-            "id" => user.id,
-            "lang" => user.lang,
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => []
+        'user_smalltalk' => {
+          'id' => user_smalltalk.id,
+          'uuid_v2' => user_smalltalk.uuid_v2,
+          'smalltalk_id' => smalltalk.id,
+          'match_format' => 'one',
+          'match_locality' => false,
+          'match_gender' => false,
+          'has_matched_format' => nil,
+          'has_matched_gender' => nil,
+          'has_matched_locality' => nil,
+          'has_matched_interest' => nil,
+          'unmatch_count' => nil,
+          'matched_at' => nil,
+          'deleted_at' => nil,
+          'created_at' => user_smalltalk.created_at.iso8601(3),
+          'user' => {
+            'id' => user.id,
+            'lang' => user.lang,
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => []
           },
-          "smalltalk" => {
-            "id" => smalltalk.id,
-            "uuid_v2" => smalltalk.uuid_v2,
-            "type" => "smalltalk",
-            "name" => "Nouveau message",
-            "subname" => nil,
-            "image_url" => nil,
-            "members_count" => 1,
-            "last_message" => nil,
-            "number_of_unread_messages" => nil,
-            "has_personal_post" => nil,
-            "members" => [
+          'smalltalk' => {
+            'id' => smalltalk.id,
+            'uuid_v2' => smalltalk.uuid_v2,
+            'type' => 'smalltalk',
+            'name' => 'Nouveau message',
+            'subname' => nil,
+            'image_url' => nil,
+            'members_count' => 1,
+            'last_message' => nil,
+            'number_of_unread_messages' => nil,
+            'has_personal_post' => nil,
+            'members' => [
               {
-                "id" => user.id,
-                "lang" => "fr",
-                "display_name" => "John D.",
-                "avatar_url" => nil,
-                "community_roles" => []
+                'id' => user.id,
+                'lang' => 'fr',
+                'display_name' => 'John D.',
+                'avatar_url' => nil,
+                'community_roles' => []
               }
             ],
-            "meeting_url" => nil,
+            'meeting_url' => nil,
           }
         }
       })}
@@ -133,9 +133,9 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
       it { expect(subject.user_latitude).to eq user.latitude }
       it { expect(subject.user_longitude).to eq user.longitude }
 
-      it { expect(result).to have_key("user_smalltalk") }
+      it { expect(result).to have_key('user_smalltalk') }
       it { expect(result['user_smalltalk']['smalltalk_id']).to eq(nil) }
-      it { expect(result['user_smalltalk']['match_format']).to eq("many") }
+      it { expect(result['user_smalltalk']['match_format']).to eq('many') }
       it { expect(result['user_smalltalk']['user_latitude']).to eq(user.latitude) }
       it { expect(result['user_smalltalk']['user_longitude']).to eq(user.longitude) }
     end
@@ -146,26 +146,26 @@ describe Api::V1::UserSmalltalksController, :type => :controller do
     let(:result) { JSON.parse(response.body) }
     let(:subject) { UserSmalltalk.find(user_smalltalk.id) }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many } } }
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
+    context 'signed in' do
       before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many } } }
 
-      context "user is not creator" do
+      context 'user is not creator' do
         let(:user_smalltalk) { create :user_smalltalk, user: create(:pro_user), smalltalk: smalltalk, match_format: :one }
 
         before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many }, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
-      context "user is creator" do
-        before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: "many" }, token: user.token } }
+      context 'user is creator' do
+        before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: 'many' }, token: user.token } }
 
         it { expect(response.status).to eq(200) }
-        it { expect(result["user_smalltalk"]["match_format"]).to eq("many") }
+        it { expect(result['user_smalltalk']['match_format']).to eq('many') }
       end
     end
   end

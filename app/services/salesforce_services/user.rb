@@ -18,8 +18,8 @@ module SalesforceServices
 
       upsert_from_fields(
         interface.mapped_fields.merge({
-          "Prospect__c" => lead_id,
-          "Contact__c" => contact_id
+          'Prospect__c' => lead_id,
+          'Contact__c' => contact_id
         })
       )
     end
@@ -31,7 +31,7 @@ module SalesforceServices
     end
 
     def destroy
-      client.update(interface.table_name, Id: find_id, Status__c: "supprimé")
+      client.update(interface.table_name, Id: find_id, Status__c: 'supprimé')
     end
 
     def updatable_fields

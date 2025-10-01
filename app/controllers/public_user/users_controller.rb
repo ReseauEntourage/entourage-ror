@@ -7,7 +7,7 @@ module PublicUser
 
     def update
       if current_user.update(user_params)
-        flash[:notice] = "Vos informations ont bien été mises à jour"
+        flash[:notice] = 'Vos informations ont bien été mises à jour'
         render :edit
       else
         render :edit

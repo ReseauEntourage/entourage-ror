@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::SmalltalksController, :type => :controller do
+describe Api::V1::SmalltalksController, type: :controller do
   let(:user) { create :pro_user, goal: :offer_help }
   let(:smalltalk) { create :smalltalk, participants: [user] }
 
@@ -50,27 +50,27 @@ describe Api::V1::SmalltalksController, :type => :controller do
       context 'member' do
         it { expect(response.status).to eq 200 }
         it { expect(result).to eq({
-          "smalltalk" => {
-            "id" => smalltalk.id,
-            "uuid_v2" => smalltalk.uuid_v2,
-            "type" => "smalltalk",
-            "name" => "Nouveau message",
-            "subname" => nil,
-            "image_url" => nil,
-            "members_count" => 1,
-            "last_message" => nil,
-            "number_of_unread_messages" => 0,
-            "has_personal_post" => false,
-            "members" => [
+          'smalltalk' => {
+            'id' => smalltalk.id,
+            'uuid_v2' => smalltalk.uuid_v2,
+            'type' => 'smalltalk',
+            'name' => 'Nouveau message',
+            'subname' => nil,
+            'image_url' => nil,
+            'members_count' => 1,
+            'last_message' => nil,
+            'number_of_unread_messages' => 0,
+            'has_personal_post' => false,
+            'members' => [
               {
-                "id" => user.id,
-                "lang" => "fr",
-                "display_name" => "John D.",
-                "avatar_url" => nil,
-                "community_roles" => []
+                'id' => user.id,
+                'lang' => 'fr',
+                'display_name' => 'John D.',
+                'avatar_url' => nil,
+                'community_roles' => []
               }
             ],
-            "meeting_url" => nil
+            'meeting_url' => nil
           }
         })}
       end

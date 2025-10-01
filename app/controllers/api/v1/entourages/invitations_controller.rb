@@ -10,8 +10,8 @@ module Api
           phone_numbers = invite_params[:phone_numbers]
 
           return render_error(
-            code: "MISSING_PHONE_NUMBERS",
-            message: "phone_numbers must be an array of phone numbers",
+            code: 'MISSING_PHONE_NUMBERS',
+            message: 'phone_numbers must be an array of phone numbers',
             status: :bad_request
           ) if phone_numbers.blank?
 
@@ -47,7 +47,7 @@ module Api
         end
 
         def invite_params
-          params.require(:invite).permit(:mode, phone_numbers:[])
+          params.require(:invite).permit(:mode, phone_numbers: [])
         end
       end
     end

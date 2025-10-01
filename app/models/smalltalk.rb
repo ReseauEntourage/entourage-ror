@@ -20,7 +20,7 @@ class Smalltalk < ApplicationRecord
 
   scope :matchable, -> {
     where(match_format: UserSmalltalk.match_formats[:many])
-      .where("number_of_people < ?", 5)
+      .where('number_of_people < ?', 5)
   }
 
   scope :with_people, -> { where("number_of_people > 1") }

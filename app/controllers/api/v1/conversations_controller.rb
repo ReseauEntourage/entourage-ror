@@ -53,7 +53,7 @@ module Api
       def privates
         privates = Entourage.joins(:members)
           .includes(user: :partner)
-          .where("number_of_root_chat_messages > 0")
+          .where('number_of_root_chat_messages > 0')
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
@@ -164,13 +164,13 @@ module Api
 
           on.failure do |conversation|
             render json: {
-              message: "Could not delete conversation", reasons: conversation.errors.full_messages
+              message: 'Could not delete conversation', reasons: conversation.errors.full_messages
             }, status: :bad_request
           end
 
           on.not_authorized do
             render json: {
-              message: "You are not authorized to delete this conversation"
+              message: 'You are not authorized to delete this conversation'
             }, status: :unauthorized
           end
         end

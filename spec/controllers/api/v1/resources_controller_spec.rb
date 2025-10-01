@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::ResourcesController, :type => :controller do
+describe Api::V1::ResourcesController, type: :controller do
   render_views
 
   let(:user) { create :pro_user }
@@ -111,18 +111,18 @@ describe Api::V1::ResourcesController, :type => :controller do
 
         it { expect(response.status).to eq 200 }
         it { expect(result).to eq({
-          "resource" => {
-            "id" => resource.id,
-            "uuid_v2" => resource.uuid_v2,
-            "name" => "Comment aider",
-            "is_video" => false,
-            "duration" => nil,
-            "category" => "understand",
-            "description" => nil,
-            "image_url" => nil,
-            "url" => nil,
-            "watched" => false,
-            "html" => "<title>foo</title>"
+          'resource' => {
+            'id' => resource.id,
+            'uuid_v2' => resource.uuid_v2,
+            'name' => 'Comment aider',
+            'is_video' => false,
+            'duration' => nil,
+            'category' => 'understand',
+            'description' => nil,
+            'image_url' => nil,
+            'url' => nil,
+            'watched' => false,
+            'html' => '<title>foo</title>'
           }
         })}
         it { expect(user.users_resources.count).to eq(1) }
@@ -137,7 +137,7 @@ describe Api::V1::ResourcesController, :type => :controller do
         let(:identifier) { resource.id }
 
         it { expect(response.status).to eq 200 }
-        it { expect(result).to have_key("resource") }
+        it { expect(result).to have_key('resource') }
         it { expect(result['resource']['id']).to eq(resource.id) }
       end
 
@@ -145,7 +145,7 @@ describe Api::V1::ResourcesController, :type => :controller do
         let(:identifier) { resource.uuid_v2 }
 
         it { expect(response.status).to eq 200 }
-        it { expect(result).to have_key("resource") }
+        it { expect(result).to have_key('resource') }
         it { expect(result['resource']['id']).to eq(resource.id) }
       end
     end
@@ -172,7 +172,7 @@ describe Api::V1::ResourcesController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result['resource']['html']).to include(
-        "<p>foo</p>"
+        '<p>foo</p>'
       )}
     end
   end
@@ -185,7 +185,7 @@ describe Api::V1::ResourcesController, :type => :controller do
     before { get :tag, params: { token: user.token, tag: resource.tag } }
 
     it { expect(response.status).to eq 200 }
-    it { expect(result).to have_key("resource") }
+    it { expect(result).to have_key('resource') }
     it { expect(result['resource']['id']).to eq(resource.id) }
   end
 end

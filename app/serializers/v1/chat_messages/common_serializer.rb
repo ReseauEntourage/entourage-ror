@@ -11,8 +11,8 @@ module V1
        :status
 
       def content
-        return "" if object.deleted?
-        return "" if object.offensive?
+        return '' if object.deleted?
+        return '' if object.offensive?
 
         object.content
       end

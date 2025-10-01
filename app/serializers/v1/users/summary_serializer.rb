@@ -63,15 +63,15 @@ module V1
       end
 
       def unclosed_action
-        actions = Entourage.where(user: object).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
-        actions = actions.where("created_at > ?", object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
+        actions = Entourage.where(user: object).action.active.where('created_at < ?', UNCLOSED_ACTION_ALERT.ago)
+        actions = actions.where('created_at > ?', object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
         action = actions.order(:created_at).select(:entourage_type, :id).first
 
         return unless action.present?
 
         action = action.contribution? ? Contribution.find(action.id) : Solicitation.find(action.id)
 
-        object.set_last_unclosed_action_notification_at_and_save(action.created_at.utc.strftime("%Y-%m-%d %H:%M:%S.%N"))
+        object.set_last_unclosed_action_notification_at_and_save(action.created_at.utc.strftime('%Y-%m-%d %H:%M:%S.%N'))
 
         V1::ActionSerializer.new(action).as_json
       end

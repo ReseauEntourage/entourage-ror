@@ -9,7 +9,7 @@ class SchemaValidator < ActiveModel::EachValidator
       when Proc
         options[:with].call(record)
       else
-        raise ArgumentError, "SchemaValidator schema must be `true`, a String, or a Proc"
+        raise ArgumentError, 'SchemaValidator schema must be `true`, a String, or a Proc'
       end
 
     unless schema_urn_suffix.is_a? String

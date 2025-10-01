@@ -1,4 +1,4 @@
-require "securerandom"
+require 'securerandom'
 
 module UserServices
   class UserBuilder
@@ -22,7 +22,7 @@ module UserServices
       UserService.sync_roles(user)
 
       if user.save
-        UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
+        UserServices::SmsSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         MemberMailer.welcome(user).deliver_later if user.email.present?
 
         callback.on_success.try(:call, user)
@@ -50,7 +50,7 @@ module UserServices
     attr_reader :params, :callback
 
     def new_user
-      raise "should be overriden by subclasses"
+      raise 'should be overriden by subclasses'
     end
   end
 end

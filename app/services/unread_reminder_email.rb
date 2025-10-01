@@ -128,7 +128,7 @@ module UnreadReminderEmail
     end
 
     private
-    def greater_than(*args); UnreadReminderEmail.greater_than(*args); end
+    def greater_than(*); UnreadReminderEmail.greater_than(*); end
   end
 
   class Presenter
@@ -154,14 +154,14 @@ module UnreadReminderEmail
       [
         @first_author,
         ("et d'autres membres du réseau" if @many_authors),
-        (@many_authors ? "vous ont envoyé" : "vous a envoyé"),
-        (@many_items ? "des messages" : "un message")
+        (@many_authors ? 'vous ont envoyé' : 'vous a envoyé'),
+        (@many_items ? 'des messages' : 'un message')
       ].compact.join(' ')
     end
 
     def nb_1
       if summary.total_unread_messages > 10
-        "10+"
+        '10+'
       else
         summary.total_unread_messages
       end
@@ -169,15 +169,15 @@ module UnreadReminderEmail
 
     def nb_1_text
       if summary.total_unread_messages == 1
-        "message non lu"
+        'message non lu'
       else
-        "messages non lus"
+        'messages non lus'
       end
     end
 
     def nb_2
       if summary.total_pending_join_requests > 10
-        "10+"
+        '10+'
       else
         summary.total_pending_join_requests
       end
@@ -185,17 +185,17 @@ module UnreadReminderEmail
 
     def nb_2_text
       if summary.total_pending_join_requests == 1
-        "demande en attente"
+        'demande en attente'
       else
-        "demandes en attente"
+        'demandes en attente'
       end
     end
 
     def items_summary
       if @many_items
-        "de nouveaux messages"
+        'de nouveaux messages'
       else
-        "un nouveau message"
+        'un nouveau message'
       end
     end
 
@@ -214,7 +214,7 @@ module UnreadReminderEmail
         when 0
           nil
         when 1
-          "1 nouveau message"
+          '1 nouveau message'
         else
           "#{unreads[:messages]} nouveaux messages"
         end
@@ -224,13 +224,13 @@ module UnreadReminderEmail
         when 0
           nil
         when 1
-          "1 demande en attente"
+          '1 demande en attente'
         else
           "#{unreads[:requests]} demandes en attente"
         end
 
-      text = [messages_summary, requests_summary].compact.join(" et ")
-      text += " dans votre conversation privée" if type.starts_with?('conversation')
+      text = [messages_summary, requests_summary].compact.join(' et ')
+      text += ' dans votre conversation privée' if type.starts_with?('conversation')
 
       text
     end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::NeighborhoodsController, :type => :controller do
+describe Api::V1::NeighborhoodsController, type: :controller do
   render_views
 
   let(:user) { create :pro_user }
@@ -8,7 +8,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   let(:not_admin) { create(:public_user, admin: false) }
 
   context 'index' do
-    let!(:neighborhood) { create :neighborhood, name: "JO Paris", interest_list: ["sport"] }
+    let!(:neighborhood) { create :neighborhood, name: 'JO Paris', interest_list: ['sport'] }
     let(:result) { JSON.parse(response.body) }
 
     before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood]) }
@@ -69,7 +69,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { get :index, params: { token: user.token, interests: interests } }
 
       describe 'find with interest' do
-        let(:interests) { ["sport"] }
+        let(:interests) { ['sport'] }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(1) }
@@ -77,7 +77,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       end
 
       describe 'does not find with interest' do
-        let(:interests) { ["jeux"] }
+        let(:interests) { ['jeux'] }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(0) }
@@ -88,7 +88,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { get :index, params: { token: user.token, q: q } }
 
       describe 'find with q' do
-        let(:q) { "JO" }
+        let(:q) { 'JO' }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(1) }
@@ -96,7 +96,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       end
 
       describe 'find with q not case sensitive' do
-        let(:q) { "jo" }
+        let(:q) { 'jo' }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(1) }
@@ -104,7 +104,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       end
 
       describe 'does not find with q' do
-        let(:q) { "OJ" }
+        let(:q) { 'OJ' }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(0) }
@@ -179,8 +179,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.name).to eq neighborhood.name }
       it { expect(subject.latitude).to eq neighborhood.latitude }
       it { expect(subject.longitude).to eq neighborhood.longitude }
-      it { expect(result).to have_key("neighborhood") }
-      it { expect(result['neighborhood']['name']).to eq("Foot Paris 17è") }
+      it { expect(result).to have_key('neighborhood') }
+      it { expect(result['neighborhood']['name']).to eq('Foot Paris 17è') }
     end
 
     describe 'using google_place_id' do
@@ -191,8 +191,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.id).to eq(result['neighborhood']['id']) }
       it { expect(subject.latitude).to eq(48.86) }
       it { expect(subject.longitude).to eq(2.35) }
-      it { expect(subject.place_name).to eq("174, rue Championnet") }
-      it { expect(subject.google_place_id).to eq("ChIJQWDurldu5kcRmj2mNTjxtxE") }
+      it { expect(subject.place_name).to eq('174, rue Championnet') }
+      it { expect(subject.google_place_id).to eq('ChIJQWDurldu5kcRmj2mNTjxtxE') }
     end
 
     describe 'using place_name, latitude, longitude' do
@@ -202,18 +202,18 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       it { expect(subject.latitude).to eq(47.22) }
       it { expect(subject.longitude).to eq(-1.55) }
-      it { expect(subject.place_name).to eq("1, place Bouffay, Nantes") }
+      it { expect(subject.place_name).to eq('1, place Bouffay, Nantes') }
       it { expect(subject.google_place_id).to eq(nil) }
     end
 
     describe 'with "other" interest, other_interest field is optionnal' do
       let(:interests) { [:sport, :other] }
-      let(:other_interest) { "my other interest" }
+      let(:other_interest) { 'my other interest' }
 
       before { request }
 
       it { expect(response.status).to eq(201) }
-      it { expect(subject.other_interest).to eq "my other interest" }
+      it { expect(subject.other_interest).to eq 'my other interest' }
     end
 
     describe 'with "other" interest, other_interest field is not required' do
@@ -228,7 +228,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
     describe 'without "other" interest, other_interest is always nil' do
       let(:interests) { [:sport] }
-      let(:other_interest) { "my other interest" }
+      let(:other_interest) { 'my other interest' }
 
       before { request }
 
@@ -242,7 +242,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'Neighborhood and JoinRequest are not created on failure' do
-      before { JoinRequest.stub(:create!).and_raise("ValidationError") }
+      before { JoinRequest.stub(:create!).and_raise('ValidationError') }
       it { expect { request }.to change { Neighborhood.count }.by(0) }
       it { expect { request }.to change { JoinRequest.count }.by(0) }
     end
@@ -250,98 +250,98 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
   describe 'PATCH update' do
     let(:neighborhood) { create(:neighborhood) }
-    let(:neighborhood_image) { create(:neighborhood_image, image_url: "foobar_url") }
-    let!(:image_resize_action) { create(:image_resize_action, bucket: NeighborhoodImage::BUCKET_NAME, path: "foobar_url", destination_path: "medium/foobar_url", destination_size: :medium) }
+    let(:neighborhood_image) { create(:neighborhood_image, image_url: 'foobar_url') }
+    let!(:image_resize_action) { create(:image_resize_action, bucket: NeighborhoodImage::BUCKET_NAME, path: 'foobar_url', destination_path: 'medium/foobar_url', destination_size: :medium) }
     let(:result) { JSON.parse(response.body) }
     let(:subject) { Neighborhood.find(neighborhood.id) }
 
-    before { Storage::Bucket.any_instance.stub(:public_url).with(key: "medium/foobar_url") { "https://medium/foobar_url" } }
+    before { Storage::Bucket.any_instance.stub(:public_url).with(key: 'medium/foobar_url') { 'https://medium/foobar_url' } }
 
-    context "not signed in" do
-      before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
+    context 'not signed in' do
+      before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: 'new name' } } }
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
-      before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
+    context 'signed in' do
+      before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: 'new name' } } }
 
-      context "user is not creator" do
-        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token } }
+      context 'user is not creator' do
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: 'new name' }, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
-      context "user is creator" do
+      context 'user is creator' do
         let(:neighborhood) { create(:neighborhood, user: user) }
 
         before { patch :update, params: { id: neighborhood.to_param, neighborhood: {
-          name: "new name",
-          ethics: "new ethics",
-          description: "new description",
-          welcome_message: "new welcome_message",
+          name: 'new name',
+          ethics: 'new ethics',
+          description: 'new description',
+          welcome_message: 'new welcome_message',
           neighborhood_image_id: neighborhood_image.id,
-          interests: ["jeux", "nature", "other"],
-          other_interest: "foo"
+          interests: ['jeux', 'nature', 'other'],
+          other_interest: 'foo'
         }, token: user.token } }
 
         it { expect(response.status).to eq(200) }
-        it { expect(result["neighborhood"]).to eq({
-          "id" => neighborhood.id,
-          "uuid_v2" => neighborhood.uuid_v2,
-          "name" => "new name",
-          "name_translations" => {
-            "translation" => "new name",
-            "original" => "new name",
-            "from_lang" => "fr",
-            "to_lang" => "fr",
+        it { expect(result['neighborhood']).to eq({
+          'id' => neighborhood.id,
+          'uuid_v2' => neighborhood.uuid_v2,
+          'name' => 'new name',
+          'name_translations' => {
+            'translation' => 'new name',
+            'original' => 'new name',
+            'from_lang' => 'fr',
+            'to_lang' => 'fr',
           },
-          "description" => "new description",
-          "description_translations" => {
-            "translation" => "new description",
-            "original" => "new description",
-            "from_lang" => "fr",
-            "to_lang" => "fr",
+          'description' => 'new description',
+          'description_translations' => {
+            'translation' => 'new description',
+            'original' => 'new description',
+            'from_lang' => 'fr',
+            'to_lang' => 'fr',
           },
-          "welcome_message" => "new welcome_message",
-          "ethics" => "new ethics",
-          "image_url" => "https://medium/foobar_url",
-          "interests" => ["jeux", "nature", "other"],
-          "user" => {
-            "id" => neighborhood.user_id,
-            "lang" => "fr",
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+          'welcome_message' => 'new welcome_message',
+          'ethics' => 'new ethics',
+          'image_url' => 'https://medium/foobar_url',
+          'interests' => ['jeux', 'nature', 'other'],
+          'user' => {
+            'id' => neighborhood.user_id,
+            'lang' => 'fr',
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => [],
           },
-          "address" => {
-            "latitude" => 48.86,
-            "longitude" => 2.35,
-            "display_address" => ""
+          'address' => {
+            'latitude' => 48.86,
+            'longitude' => 2.35,
+            'display_address' => ''
           },
-          "members" => [{
-            "id" => 1,
-            "lang" => "fr",
-            "avatar_url" => "n/a",
-            "display_name" => "n/a",
+          'members' => [{
+            'id' => 1,
+            'lang' => 'fr',
+            'avatar_url' => 'n/a',
+            'display_name' => 'n/a',
           }],
-          "member" => true,
-          "members_count" => 1,
-          "unread_posts_count" => nil,
-          "past_outings_count" => 0,
-          "future_outings_count" => 0,
-          "has_ongoing_outing" => false,
-          "status_changed_at" => nil,
-          "public" => true,
-          "national" => false
+          'member' => true,
+          'members_count' => 1,
+          'unread_posts_count' => nil,
+          'past_outings_count' => 0,
+          'future_outings_count' => 0,
+          'has_ongoing_outing' => false,
+          'status_changed_at' => nil,
+          'public' => true,
+          'national' => false
         }) }
       end
 
-      context "user is creator, one field updated" do
+      context 'user is creator, one field updated' do
         let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
 
-        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token } }
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: 'new name' }, token: user.token } }
 
         it { expect(response.status).to eq(200) }
-        it { expect(subject.name).to eq("new name") }
+        it { expect(subject.name).to eq('new name') }
       end
 
       describe 'with "other" interest, other_interest field is always nil' do
@@ -380,58 +380,58 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result).to eq({
-        "neighborhood" => {
-          "id" => neighborhood.id,
-          "uuid_v2" => neighborhood.uuid_v2,
-          "name" => "Foot Paris 17è",
-          "name_translations" => {
-            "translation" => neighborhood.name,
-            "original" => neighborhood.name,
-            "from_lang" => "fr",
-            "to_lang" => "fr",
+        'neighborhood' => {
+          'id' => neighborhood.id,
+          'uuid_v2' => neighborhood.uuid_v2,
+          'name' => 'Foot Paris 17è',
+          'name_translations' => {
+            'translation' => neighborhood.name,
+            'original' => neighborhood.name,
+            'from_lang' => 'fr',
+            'to_lang' => 'fr',
           },
-          "description" => "Pour les passionnés de foot du 17è",
-          "description_translations" => {
-            "translation" => neighborhood.description,
-            "original" => neighborhood.description,
-            "from_lang" => "fr",
-            "to_lang" => "fr",
+          'description' => 'Pour les passionnés de foot du 17è',
+          'description_translations' => {
+            'translation' => neighborhood.description,
+            'original' => neighborhood.description,
+            'from_lang' => 'fr',
+            'to_lang' => 'fr',
           },
-          "welcome_message" => nil,
-          "member" => false,
-          "members_count" => 1,
-          "unread_posts_count" => nil,
-          "image_url" => nil,
-          "interests" => ["sport"],
-          "user" => {
-            "id" => neighborhood.user_id,
-            "lang" => "fr",
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+          'welcome_message' => nil,
+          'member' => false,
+          'members_count' => 1,
+          'unread_posts_count' => nil,
+          'image_url' => nil,
+          'interests' => ['sport'],
+          'user' => {
+            'id' => neighborhood.user_id,
+            'lang' => 'fr',
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => [],
           },
-          "address" => {
-            "latitude" => 48.86,
-            "longitude" => 2.35,
-            "display_address" => "",
-            "street_address" => nil
+          'address' => {
+            'latitude' => 48.86,
+            'longitude' => 2.35,
+            'display_address' => '',
+            'street_address' => nil
           },
-          "members" => [{
-            "id" => 1,
-            "lang" => "fr",
-            "display_name" => "n/a",
-            "avatar_url" => "n/a"
+          'members' => [{
+            'id' => 1,
+            'lang' => 'fr',
+            'display_name' => 'n/a',
+            'avatar_url' => 'n/a'
           }],
-          "ethics" => nil,
-          "future_outings_count" => 0,
-          "outings" => [],
-          "past_outings_count" => 0,
-          "future_outings" => [],
-          "ongoing_outings" => [],
-          "has_ongoing_outing" => false,
-          "posts" => [],
-          "public" => true,
-          "national" => false
+          'ethics' => nil,
+          'future_outings_count' => 0,
+          'outings' => [],
+          'past_outings_count' => 0,
+          'future_outings' => [],
+          'ongoing_outings' => [],
+          'has_ongoing_outing' => false,
+          'posts' => [],
+          'public' => true,
+          'national' => false
         }
       })}
     end
@@ -466,7 +466,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'with outing' do
-      let(:outing) { create :outing, :outing_class, interests: [:sport, :other], metadata: { place_limit: "3" } }
+      let(:outing) { create :outing, :outing_class, interests: [:sport, :other], metadata: { place_limit: '3' } }
       let(:neighborhood) { create :neighborhood, outings: [outing] }
 
       before { get :show, params: { id: neighborhood.id, token: user.token } }
@@ -479,18 +479,18 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         'uuid_v2' =>  outing.uuid_v2,
         'status' => 'open',
         'title' => outing.title,
-        "title_translations" => {
-          "translation" => outing.title,
-          "original" => outing.title,
-          "from_lang" => "fr",
-          "to_lang" => "fr",
+        'title_translations' => {
+          'translation' => outing.title,
+          'original' => outing.title,
+          'from_lang' => 'fr',
+          'to_lang' => 'fr',
         },
         'description' => outing.description,
-        "description_translations" => {
-          "translation" => outing.description,
-          "original" => outing.description,
-          "from_lang" => "fr",
-          "to_lang" => "fr",
+        'description_translations' => {
+          'translation' => outing.description,
+          'original' => outing.description,
+          'from_lang' => 'fr',
+          'to_lang' => 'fr',
         },
         'share_url' => outing.share_url,
         'image_url' => outing.image_url,
@@ -500,27 +500,27 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           'id' => outing.user_id,
           'display_name' => 'John D.',
           'avatar_url' => nil,
-          "partner" => nil,
-          "partner_role_title" => nil,
+          'partner' => nil,
+          'partner_role_title' => nil,
         },
-        "metadata" => {
-          "ends_at" => 1.day.from_now.change(hour: 22).iso8601(3),
-          "starts_at" => 1.day.from_now.change(hour: 19).iso8601(3),
-          "place_name" => "Café la Renaissance",
-          "previous_at" => nil,
-          "portrait_url" => nil,
-          "portrait_thumbnail_url" => nil,
-          "landscape_url" => nil,
-          "landscape_thumbnail_url" => nil,
-          "street_address" => "44 rue de l’Assomption, 75016 Paris, France",
-          "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
-          "google_place_id" => "foobar",
-          "place_limit" => 3
+        'metadata' => {
+          'ends_at' => 1.day.from_now.change(hour: 22).iso8601(3),
+          'starts_at' => 1.day.from_now.change(hour: 19).iso8601(3),
+          'place_name' => 'Café la Renaissance',
+          'previous_at' => nil,
+          'portrait_url' => nil,
+          'portrait_thumbnail_url' => nil,
+          'landscape_url' => nil,
+          'landscape_thumbnail_url' => nil,
+          'street_address' => '44 rue de l’Assomption, 75016 Paris, France',
+          'display_address' => 'Café la Renaissance, 44 rue de l’Assomption, 75016 Paris',
+          'google_place_id' => 'foobar',
+          'place_limit' => 3
         },
-        "interests" => ["sport", "other"],
-        "recurrency" => nil,
-        "created_at" => outing.created_at.iso8601(3),
-        "updated_at" => outing.updated_at.iso8601(3)
+        'interests' => ['sport', 'other'],
+        'recurrency' => nil,
+        'created_at' => outing.created_at.iso8601(3),
+        'updated_at' => outing.updated_at.iso8601(3)
       }]) }
     end
 
@@ -568,38 +568,38 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']).to have_key('posts') }
       it { expect(result['neighborhood']['posts']).to eq([{
-        "id" => post.id,
-        "uuid_v2" => post.uuid_v2,
-        "content" => post.content,
-        "content_html" => post.content,
-        "content_translations" => {
-          "translation" => post.content,
-          "original" => post.content,
-          "from_lang" => "fr",
-          "to_lang" => "fr",
+        'id' => post.id,
+        'uuid_v2' => post.uuid_v2,
+        'content' => post.content,
+        'content_html' => post.content,
+        'content_translations' => {
+          'translation' => post.content,
+          'original' => post.content,
+          'from_lang' => 'fr',
+          'to_lang' => 'fr',
         },
-        "content_translations_html" => {
-          "translation" => post.content,
-          "original" => post.content,
-          "from_lang" => "fr",
-          "to_lang" => "fr",
+        'content_translations_html' => {
+          'translation' => post.content,
+          'original' => post.content,
+          'from_lang' => 'fr',
+          'to_lang' => 'fr',
         },
-        "user" => {
-          "id" => post.user_id,
+        'user' => {
+          'id' => post.user_id,
           'display_name' => 'John D.',
-          "avatar_url" => nil,
-          "partner" => nil,
-          "partner_role_title" => nil,
-          "roles" => []
+          'avatar_url' => nil,
+          'partner' => nil,
+          'partner_role_title' => nil,
+          'roles' => []
         },
-        "created_at" => post.created_at.iso8601(3),
-        "status" => "active",
-        "message_type" => "text",
-        "post_id" => nil,
-        "has_comments" => true,
-        "comments_count" => 1,
-        "image_url" => nil,
-        "read" => nil,
+        'created_at' => post.created_at.iso8601(3),
+        'status' => 'active',
+        'message_type' => 'text',
+        'post_id' => nil,
+        'has_comments' => true,
+        'comments_count' => 1,
+        'image_url' => nil,
+        'read' => nil,
       }]) }
     end
 
@@ -611,7 +611,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']).to have_key('posts') }
-      it { expect(result['neighborhood']['posts'][0]["read"]).to eq(false) }
+      it { expect(result['neighborhood']['posts'][0]['read']).to eq(false) }
     end
 
     context 'no deeplink' do
@@ -621,7 +621,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         let(:identifier) { neighborhood.id }
 
         it { expect(response.status).to eq 200 }
-        it { expect(result).to have_key("neighborhood") }
+        it { expect(result).to have_key('neighborhood') }
         it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
       end
 
@@ -629,7 +629,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         let(:identifier) { neighborhood.uuid_v2 }
 
         it { expect(response.status).to eq 200 }
-        it { expect(result).to have_key("neighborhood") }
+        it { expect(result).to have_key('neighborhood') }
         it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
       end
     end
@@ -662,24 +662,24 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
     let(:request) { get :default, params: { token: user.token } }
 
-    context "user has not joined" do
+    context 'user has not joined' do
       before { request }
 
       it { expect(response.status).to eq 200 }
       it { expect(result).to eq(Hash.new) }
     end
 
-    context "user has joined" do
+    context 'user has joined' do
       let!(:join_request) { create :join_request, user: user, joinable: neighborhood_paris, status: :accepted }
 
       before { request }
 
       it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key("neighborhood") }
-      it { expect(result["neighborhood"]["id"]).to eq(neighborhood_paris.id) }
+      it { expect(result).to have_key('neighborhood') }
+      it { expect(result['neighborhood']['id']).to eq(neighborhood_paris.id) }
     end
 
-    context "user has left" do
+    context 'user has left' do
       before { request }
 
       let!(:join_request) { create :join_request, user: user, joinable: neighborhood_paris, status: :cancelled }
@@ -688,7 +688,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result).to eq(Hash.new) }
     end
 
-    context "user has joined a not-default neighborhood" do
+    context 'user has joined a not-default neighborhood' do
       before { request }
 
       let!(:join_request) { create :join_request, user: user, joinable: neighborhood_not_paris, status: :accepted }
@@ -755,7 +755,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   describe 'POST #report' do
     let(:neighborhood) { create :neighborhood }
 
-    context "valid params" do
+    context 'valid params' do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhood).to receive(:notify)
         post 'report', params: { token: user.token, id: neighborhood.id, report: { signals: ['foo'], message: 'bar' } }
@@ -763,7 +763,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(response.status).to eq 201 }
     end
 
-    context "missing signals" do
+    context 'missing signals' do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhood).not_to receive(:notify)
         post 'report', params: { token: user.token, id: neighborhood.id, report: { signals: [], message: 'bar' } }

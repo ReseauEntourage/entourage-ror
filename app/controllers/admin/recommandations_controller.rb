@@ -27,7 +27,7 @@ module Admin
       @recommandation = Recommandation.new(recommandation_params)
 
       if @recommandation.save
-        redirect_to admin_recommandations_path, notice: "La recommandation a bien été créée"
+        redirect_to admin_recommandations_path, notice: 'La recommandation a bien été créée'
       else
         render :new
       end
@@ -40,7 +40,7 @@ module Admin
       @recommandation.assign_attributes(recommandation_params)
 
       if @recommandation.save
-        redirect_to edit_admin_recommandation_path(@recommandation), notice: "Recommandation mise à jour"
+        redirect_to edit_admin_recommandation_path(@recommandation), notice: 'Recommandation mise à jour'
       else
         render :edit
       end
@@ -68,7 +68,7 @@ module Admin
       return redirect_to admin_recommandations_path unless Recommandation::FRAGMENTS.include?(params[:fragment].to_i)
       return redirect_to admin_recommandations_path unless [:offer_help, :ask_for_help].include?(params[:profile].to_sym)
 
-      ordered_ids = (params[:ordered_ids] || "").to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
+      ordered_ids = (params[:ordered_ids] || '').to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
 
       ApplicationRecord.transaction do
         Recommandation.unscoped

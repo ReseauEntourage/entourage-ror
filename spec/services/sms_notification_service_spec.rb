@@ -9,10 +9,10 @@ describe SmsNotificationService do
     # create a stubbed client instance (mock the one in our code), and stub data
     let(:stub_client) { Aws::SNS::Client.new(stub_responses: true) }
 
-    context "api key and secret are provided as env variables" do
+    context 'api key and secret are provided as env variables' do
       before do
-        ENV["SMS_PROVIDER"] = "AWS"
-        ENV["SMS_SENDER_NAME"] = "Entourage"
+        ENV['SMS_PROVIDER'] = 'AWS'
+        ENV['SMS_SENDER_NAME'] = 'Entourage'
         # intercept the AWS client’s constructor and substitute our stub client
         expect(Aws::SNS::Client).to receive(:new).and_return(stub_client)
         allow(stub_client).to receive(:publish).and_call_original
@@ -31,10 +31,10 @@ describe SmsNotificationService do
       it { expect(SmsDelivery.where(phone_number: phone_number, sms_type: sms_type, provider: 'AWS').last&.status).to eq 'Ok' }
     end
 
-    context "aws as sms provider and api key and secret are not provided as env variables" do
+    context 'aws as sms provider and api key and secret are not provided as env variables' do
       before do
-        ENV["SMS_PROVIDER"] = "AWS"
-        ENV.delete("SMS_SENDER_NAME")
+        ENV['SMS_PROVIDER'] = 'AWS'
+        ENV.delete('SMS_SENDER_NAME')
         Rails.logger.stub(:warn)
         sms_notification_service.send_notification(phone_number, message, sms_type)
       end

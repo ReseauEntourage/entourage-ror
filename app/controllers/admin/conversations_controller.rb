@@ -15,20 +15,20 @@ module Admin
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)
-        .select("entourages.*, (unread_messages_count > 0) as unread")
-        .order("feed_updated_at desc")
+        .select('entourages.*, (unread_messages_count > 0) as unread')
+        .order('feed_updated_at desc')
         .page(params[:page])
         .per(50)
 
       params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
 
       @conversations = if params[:filter] == 'archived'
-        @conversations.where("archived_at >= feed_updated_at")
+        @conversations.where('archived_at >= feed_updated_at')
       else
-        @conversations.where("archived_at < feed_updated_at or archived_at is null")
+        @conversations.where('archived_at < feed_updated_at or archived_at is null')
       end
 
-      @conversations = @conversations.where("unread_messages_count > 0") if params[:filter] == 'unread'
+      @conversations = @conversations.where('unread_messages_count > 0') if params[:filter] == 'unread'
 
       respond_to do |format|
         format.js
@@ -78,7 +78,7 @@ module Admin
       participant_ids = (conversation_params[:member_ids] + [current_admin.id]).uniq
 
       if @conversation = Conversation.active.with_exact_members(participant_ids).first
-        return redirect_to admin_conversations_path(search: @conversation.id), alert: "Une conversation identique existe déjà"
+        return redirect_to admin_conversations_path(search: @conversation.id), alert: 'Une conversation identique existe déjà'
       end
 
       # create conversation
@@ -181,7 +181,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end

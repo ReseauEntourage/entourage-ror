@@ -32,7 +32,7 @@ module EntourageServices
           # see config/initializers/geocoder.rb
           Geocoder.search(coordinates).first
         rescue => e
-          Raven.capture_exception(e, extra: { entourage_id: @entourage.id })
+          Sentry.capture_exception(e)
           nil
         end
       end

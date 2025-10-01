@@ -12,7 +12,7 @@ module Api
       def login
         user =
           if user_params.key?(:auth_token)
-            error_message = "invalid auth_token"
+            error_message = 'invalid auth_token'
 
             UserServices::UserAuthenticator.authenticate_with_token(
               auth_token: user_params[:auth_token],
@@ -21,7 +21,7 @@ module Api
           else
             unless LegacyPhoneValidator.new(phone: user_params[:phone]).valid?
               Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
-              return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
+              return render_error(code: 'INVALID_PHONE_FORMAT', message: 'invalid phone number format', status: 401)
             end
 
             secret_field =
@@ -43,12 +43,12 @@ module Api
 
         unless user
           Rails.logger.info "SIGNIN_FAILED: #{error_message} - params: #{params.inspect}"
-          return render_error(code: "UNAUTHORIZED", message: error_message, status: 401)
+          return render_error(code: 'UNAUTHORIZED', message: error_message, status: 401)
         end
 
         if user.deleted || user.blocked?
           Rails.logger.info "SIGNIN_FAILED: deleted user - params: #{params.inspect}"
-          return render_error(code: "DELETED", message: "user is deleted", status: 401)
+          return render_error(code: 'DELETED', message: 'user is deleted', status: 401)
         end
 
         if user.first_sign_in_at.nil?
@@ -73,7 +73,7 @@ module Api
           end
 
           on.failure do |user|
-            render_error(code: "CANNOT_UPDATE_USER", message: user.errors.full_messages, status: 400)
+            render_error(code: 'CANNOT_UPDATE_USER', message: user.errors.full_messages, status: 400)
           end
         end
       end
@@ -88,73 +88,73 @@ module Api
 
           on.failure do |user|
             Rails.logger.info "SIGNUP_FAILED: invalid params - params: #{params.inspect}"
-            render_error(code: "CANNOT_CREATE_USER", message: user.errors.full_messages, status: 400)
+            render_error(code: 'CANNOT_CREATE_USER', message: user.errors.full_messages, status: 400)
           end
 
           on.duplicate do
             Rails.logger.info "SIGNUP_FAILED: phone number already exists - params: #{params.inspect}"
-            render_error(code: "PHONE_ALREADY_EXIST", message: "Phone #{user_params["phone"]} n'est pas disponible", status: 400)
+            render_error(code: 'PHONE_ALREADY_EXIST', message: "Phone #{user_params["phone"]} n'est pas disponible", status: 400)
           end
 
           on.invalid_phone_format do
             Rails.logger.info "SIGNUP_FAILED: invalid phone number format - params: #{params.inspect}"
-            render_error(code: "INVALID_PHONE_FORMAT", message: "Phone devrait être au format +33... ou 06...", status: 400)
+            render_error(code: 'INVALID_PHONE_FORMAT', message: 'Phone devrait être au format +33... ou 06...', status: 400)
           end
         end
       end
 
       def code
         if user_params[:phone].blank?
-          return render json: {error: "Missing phone number"}, status: 400
+          return render json: {error: 'Missing phone number'}, status: 400
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
         user = community.users.where(phone: user_phone).first
 
         if user.nil?
-          return render_error(code: "USER_NOT_FOUND", message: "", status: 404)
+          return render_error(code: 'USER_NOT_FOUND', message: '', status: 404)
         end
 
-        if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
-          UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
+        if params[:code][:action] == 'regenerate' && !user.deleted && !user.blocked?
+          UserServices::SmsSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
           render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
-          render json: {error: "Unknown action"}, status: 400
+          render json: {error: 'Unknown action'}, status: 400
         end
       end
 
       def request_phone_change
         if user_params[:current_phone].blank? || user_params[:requested_phone].blank?
-          return render json: { error: "Veuillez vérifier vos numéros de téléphone" }, status: 400
+          return render json: { error: 'Veuillez vérifier vos numéros de téléphone' }, status: 400
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:current_phone]).format
         user = community.users.where(phone: user_phone).first
 
         if user.nil?
-          return render_error(code: "USER_NOT_FOUND", message: "L'ancien numéro est inconnu. Veuillez vérifier", status: 404)
+          return render_error(code: 'USER_NOT_FOUND', message: "L'ancien numéro est inconnu. Veuillez vérifier", status: 404)
         end
 
         if user.deleted
-          return render_error(code: "USER_DELETED", message: "L'ancien numéro a été supprimé. Veuillez vérifier", status: 404)
+          return render_error(code: 'USER_DELETED', message: "L'ancien numéro a été supprimé. Veuillez vérifier", status: 404)
         end
 
         if user.blocked?
-          return render_error(code: "USER_BLOCKED", message: "L'ancien numéro a été bloqué. Veuillez vérifier", status: 404)
+          return render_error(code: 'USER_BLOCKED', message: "L'ancien numéro a été bloqué. Veuillez vérifier", status: 404)
         end
 
         if user_phone == Phone::PhoneBuilder.new(phone: user_params[:requested_phone]).format
-          return render_error(code: "IDENTICAL_PHONES", message: "Les deux numéros sont identiques. Veuillez vérifier le nouveau numéro", status: 404)
+          return render_error(code: 'IDENTICAL_PHONES', message: 'Les deux numéros sont identiques. Veuillez vérifier le nouveau numéro', status: 404)
         end
 
         UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone], email: user_params[:email])
-        render json: { code: "SENT", message: "Votre demande de changement de numéro de téléphone a été envoyée" }, status: 200
+        render json: { code: 'SENT', message: 'Votre demande de changement de numéro de téléphone a été envoyée' }, status: 200
       end
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
       def show
         user =
-          if params[:id] == "me" ||
+          if params[:id] == 'me' ||
              params[:id] == UserService.external_uuid(current_user_or_anonymous)
             current_user_or_anonymous
           else
@@ -191,41 +191,41 @@ module Api
         return unless neighborhood = current_user.default_neighborhood
 
         PushNotificationService.new.send_notification(
-          "sender",
-          PushNotificationTrigger::I18nStruct.new(text: "object"),
-          PushNotificationTrigger::I18nStruct.new(text: "object"),
+          'sender',
+          PushNotificationTrigger::I18nStruct.new(text: 'object'),
+          PushNotificationTrigger::I18nStruct.new(text: 'object'),
           [current_user],
-          "neighborhood",
+          'neighborhood',
           neighborhood.id, {
-            instance: "neighborhood",
+            instance: 'neighborhood',
             instance_id: neighborhood.id
           }
         )
 
-        render status: 200, json: { message: "Notification sent" }
+        render status: 200, json: { message: 'Notification sent' }
       end
 
       def notify_force
         UserServices::UserApplications.new(user: current_user).app_tokens.each do |token|
-          NotificationJob.new.perform("sender", "object", "content", token.push_token, current_user.community.slug, {
-            instance: "neighborhood", instance_id: current_user.default_neighborhood.id
+          NotificationJob.new.perform('sender', 'object', 'content', token.push_token, current_user.community.slug, {
+            instance: 'neighborhood', instance_id: current_user.default_neighborhood.id
           })
         end
 
-        render status: 200, json: { message: "Notification sent" }
+        render status: 200, json: { message: 'Notification sent' }
       end
 
       def presigned_avatar_upload
-        user = params[:id] == "me" ? current_user : community.users.find(params[:id])
+        user = params[:id] == 'me' ? current_user : community.users.find(params[:id])
         if user != current_user
-          return render_error(code: "UNAUTHORIZED", message: "You can only update your own avatar.", status: 403)
+          return render_error(code: 'UNAUTHORIZED', message: 'You can only update your own avatar.', status: 403)
         end
 
         allowed_types = %w(image/jpeg image/gif)
 
         unless params[:content_type].in? allowed_types
           type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
         end
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
@@ -245,7 +245,7 @@ module Api
 
       def address
         if !params[:id].in?(['me', UserService.external_uuid(current_user_or_anonymous)])
-          return render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 403)
+          return render_error(code: 'UNAUTHORIZED', message: 'You can only update your own address.', status: 403)
         end
 
         updater = UserServices::AddressService.new(user: current_user_or_anonymous, position: 1, params: address_params)
@@ -260,7 +260,7 @@ module Api
 
           on.failure do |user, address|
             render_error(
-              code: "CANNOT_UPDATE_ADDRESS",
+              code: 'CANNOT_UPDATE_ADDRESS',
               message: address.errors.full_messages +
                        user.errors.full_messages,
               status: 400
@@ -271,12 +271,12 @@ module Api
 
       def following
         if !params[:id].in?(['me', UserService.external_uuid(current_user_or_anonymous)])
-          return render_error(code: "UNAUTHORIZED", message: "You can only update your own followings.", status: 403)
+          return render_error(code: 'UNAUTHORIZED', message: 'You can only update your own followings.', status: 403)
         end
 
         partner_id = following_params[:partner_id]
         if Partner.where(id: partner_id).exists? == false
-          return render_error(code: "PARTNER_NOT_FOUND", message: "Partner not found for partner_id: #{partner_id.inspect}.", status: 404)
+          return render_error(code: 'PARTNER_NOT_FOUND', message: "Partner not found for partner_id: #{partner_id.inspect}.", status: 404)
         end
 
         following = Following.find_or_initialize_by(user_id: current_user.id, partner_id: partner_id)
@@ -293,13 +293,13 @@ module Api
         if success
           render status: 200, json: {following: {partner_id: following.partner_id, active: following.active}}
         else
-          render_error(code: "CANNOT_UPDATE_FOLLOWING", message: following.errors.full_messages, status: 400)
+          render_error(code: 'CANNOT_UPDATE_FOLLOWING', message: following.errors.full_messages, status: 400)
         end
       end
 
       def lookup
         unless LegacyPhoneValidator.new(phone: params[:phone]).valid?
-          return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
+          return render_error(code: 'INVALID_PHONE_FORMAT', message: 'invalid phone number format', status: 401)
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: params[:phone]).format
@@ -402,7 +402,7 @@ module Api
         user.roles.push :ethics_charter_signed
         user.save!
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       ensure
         head :ok
       end

@@ -6,7 +6,7 @@ require 'uri'
 require 'json'
 require 'shellwords'
 
-string = ARGF.read.tr("\n", "")
+string = ARGF.read.tr("\n", '')
 
 template = /\Amethod=(?<method>\w+) path=(?<path>\S+)( format=(?<format>\S+))?( .+)? params=(?<params>\{.*\}) API_KEY=(?<key>\h{24}?)\Z/
 

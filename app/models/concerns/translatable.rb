@@ -1,7 +1,7 @@
 module Translatable
   extend ActiveSupport::Concern
 
-  BASE_URI = "https://translate.google.com/m?sl=%s&tl=%s&q=%s"
+  BASE_URI = 'https://translate.google.com/m?sl=%s&tl=%s&q=%s'
   TRANSLATION_KEYS = {
     chat_message: [:content],
     entourage: [:title, :description],
@@ -59,12 +59,12 @@ module Translatable
 
     uri = URI(BASE_URI % [from_lang, lang, CGI.escape(text)])
 
-    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request Net::HTTP::Get.new(uri, {})
     end
 
     return unless response.present?
-    return unless response.code == "200"
+    return unless response.code == '200'
     return unless response.body.present?
 
     Nokogiri::HTML(response.body, nil, 'UTF-8').css('.result-container').text
