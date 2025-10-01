@@ -76,9 +76,27 @@ class Smalltalk < ApplicationRecord
   def members_has_changed!
     super
 
+    check_members_complete_case!
+    check_members_alone_case!
+  end
+
+  def check_members_complete_case!
     return if completed_at.present?
     return unless complete?
 
     update!(completed_at: Time.current)
+  end
+
+  def check_members_alone_case!
+    return unless completed_at.present?
+    return unless number_of_people == 1
+
+    update!(closed_at: Time.current)
+
+    cancel_auto_messages!
+  end
+
+  def cancel_auto_messages!
+    SmalltalkAutoChatMessageJob.cancel_jobs_for_smalltalk(id)
   end
 end
