@@ -15,11 +15,11 @@ module TestingServices
     end
 
     def send_welcome
-      UserServices::SMSSender.new(user: user).send_welcome_sms('xxxxxx')
+      UserServices::SmsSender.new(user: user).send_welcome_sms('xxxxxx')
     end
 
     def regenerate
-      UserServices::SMSSender.new(user: user).regenerate_sms!
+      UserServices::SmsSender.new(user: user).regenerate_sms!
     end
   end
 end
