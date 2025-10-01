@@ -377,8 +377,10 @@ fr:
       mention: "%s vous a mentionné dans son message"
     post:
       create: "%s vient de partager : \"%s\""
+      create_image: "%s vient de partager une photo"
     comment:
       create: "%s vient de commenter la publication \"%s\""
+      create_image: "%s vient de partager une photo"
     reaction:
       create: "%s a réagi à votre publication : \"%s\""
     join_request:
