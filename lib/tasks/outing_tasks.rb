@@ -1,5 +1,10 @@
 module OutingTasks
+<<<<<<< HEAD
   REMINDER_CONTENT = 'Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message.'
+=======
+  REMINDER_CONTENT = "Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message."
+  TODAY_CONTENT = "Aujourd’hui, c’est le Jour J pour notre événement 🥳 \n Avant de se retrouver, on vous laisse prendre connaissance de la Charte des événements Entourage à respecter ensemble afin que tout le monde se sente en sécurité et à l’aise et ainsi que chacun profite de la convivialité de ce moment : %s"
+>>>>>>> EN-8259-outing-automatic-message
 
   POST_UPCOMING_DELAY = 2.days
   EMAIL_UPCOMING_DELAY = 7.days
@@ -27,8 +32,31 @@ module OutingTasks
         .with_moderation
         .where('entourage_moderations.moderated_at is not null')
         .joins(:user)
-        .where('users.admin = ? OR users.targeting_profile = ?', true, 'team')
-        .group('entourages.id')
+        .where("users.admin = true OR users.targeting_profile IN ('team', 'ambassador')")
+        .group("entourages.id")
+    end
+
+    def send_chat_message_to_today
+      content = TODAY_CONTENT % charter_url
+
+      today_outings.pluck(:id).uniq.each do |outing_id|
+        outing = Outing.find(outing_id)
+
+        outing.chat_messages.new(user: outing.user, content: content).save
+      end
+    end
+
+    def today_outings
+      Outing
+        .active
+        .unlimited
+        .where(online: false)
+        .upcoming_today
+        .with_moderation
+        .where("entourage_moderations.moderated_at is not null")
+        .joins(:user)
+        .where("users.admin = true OR users.targeting_profile IN ('team', 'ambassador')")
+        .group("entourages.id")
     end
 
     # send_email_with_upcoming
@@ -65,6 +93,10 @@ module OutingTasks
       return unless action_ids.any? || outing_ids.any?
 
       MemberMailer.weekly_planning(user, action_ids, outing_ids).deliver_later
+    end
+
+    def charter_url
+      "#{ENV['MOBILE_HOST']}/app/chartes-event"
     end
   end
 end
