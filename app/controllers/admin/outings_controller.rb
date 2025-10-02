@@ -42,6 +42,7 @@ module Admin
 
       @outings = Outing.unscope(:order)
         .like(params[:search])
+        .with_user_id(params[:user_id] || params.dig(:q, :user_id_eq))
         .with_moderation
         .with_moderation_area(@area.to_s)
         .with_moderator_reads_for(user: current_user)
