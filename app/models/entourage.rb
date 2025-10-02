@@ -106,6 +106,10 @@ class Entourage < ApplicationRecord
     return unless entourage_type.present?
     where(entourage_type: entourage_type)
   }
+  scope :with_user_id, -> (user_id) {
+    return unless user_id.present?
+    where(user_id: user_id)
+  }
   scope :moderator_search, -> (search) {
     return unless search.present?
     return if search.to_s == 'any'
