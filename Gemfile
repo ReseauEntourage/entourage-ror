@@ -111,3 +111,5 @@ group :production do
   gem 'rack-attack'
   gem 'barnes'
 end
+
+gem "apnotic", "~> 1.7"
