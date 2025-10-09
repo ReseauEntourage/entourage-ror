@@ -7,7 +7,7 @@ module Preloaders
       images = ImageResizeAction
         .select("path, destination_path")
         .with_bucket_and_path(::Outing.bucket_name, outings.map(&:landscape_url).compact.uniq)
-        .merge(scope || ChatMessage.all)
+        .merge(scope || ImageResizeAction.all)
         .index_by { |image| image.path }
 
       outings.each do |outing|
