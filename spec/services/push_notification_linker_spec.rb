@@ -69,7 +69,7 @@ describe PushNotificationLinker, type: :service do
       let(:messageable) { create(:outing) }
       let(:object) { create(:chat_message, messageable: messageable) }
 
-      it { expect(subject).to eq({ instance: "outing_post", instance_id: messageable.id, post_id: object.id }) }
+      it { expect(subject).to eq({ instance: "conversation", instance_id: messageable.id }) }
     end
 
     context "chat_message from neighborhood" do

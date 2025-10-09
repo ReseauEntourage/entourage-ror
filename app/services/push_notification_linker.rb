@@ -64,6 +64,11 @@ class PushNotificationLinker
           instance: "conversation",
           instance_id: object.messageable_id
         }
+      elsif object.is_a?(ChatMessage) && outing?(object.messageable)
+        {
+          instance: "conversation",
+          instance_id: object.messageable_id
+        }
       elsif is_a_post?(object)
         {
           instance: get_post_instance_for(object.messageable),
