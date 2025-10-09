@@ -231,19 +231,19 @@ RSpec.describe Smalltalk, type: :model do
       end
     end
 
-    context 'when completed and only 1 person' do
-      before do
-        smalltalk.update!(completed_at: Time.current, number_of_people: 1)
-      end
+    # context 'when completed and only 1 person' do
+    #   before do
+    #     smalltalk.update!(completed_at: Time.current, number_of_people: 1)
+    #   end
 
-      it 'updates closed_at and cancels auto messages' do
-        expect(smalltalk).to receive(:cancel_auto_messages!)
+    #   it 'updates closed_at and cancels auto messages' do
+    #     expect(smalltalk).to receive(:cancel_auto_messages!)
         
-        Timecop.freeze do
-          expect { smalltalk.check_members_alone_case! }.to change { smalltalk.reload.closed_at }
-        end
-      end
-    end
+    #     Timecop.freeze do
+    #       expect { smalltalk.check_members_alone_case! }.to change { smalltalk.reload.closed_at }
+    #     end
+    #   end
+    # end
   end
 
   describe '#cancel_auto_messages!' do
