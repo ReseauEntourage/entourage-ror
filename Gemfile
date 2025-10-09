@@ -56,6 +56,7 @@ gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.
 
 # communication
 gem 'rpush', git: 'https://github.com/rpush/rpush.git', ref: '840125aa568740f87e1e4a60f052748ddbe9c668'
+gem 'apnotic'
 gem 'aws-sdk-sns',  '~> 1'
 gem 'nexmo'
 gem 'safety_mailer'
