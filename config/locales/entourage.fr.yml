@@ -325,6 +325,7 @@ fr:
         ask_for_help: Personne préca
         organization: Association
         goal_not_known: Non défini
+        staff: Ambassadeurs et staff
         all: Tous profils
       icons:
         offer_help: user
