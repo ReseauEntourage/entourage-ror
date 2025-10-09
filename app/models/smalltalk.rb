@@ -111,7 +111,7 @@ class Smalltalk < ApplicationRecord
 
     update!(closed_at: Time.current)
 
-    # cancel_auto_messages!
+    cancel_auto_messages!
   end
 
   def cancel_auto_messages!
