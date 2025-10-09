@@ -2,10 +2,47 @@ module UserServices
   module Options
     extend ActiveSupport::Concern
 
-    OPTIONS = ["last_unclosed_action_notification_at", "goal_choice", "gender", "photo_acceptance"]
+    OPTIONS = ["last_unclosed_action_notification_at", "goal_choice", "gender", "discovery_source", "photo_acceptance"]
     OPTION_TYPES = {
       "photo_acceptance" => :boolean
     }
+
+    GENDERS = {
+      female: "Femme",
+      male: "Homme",
+      secret: "Autre",
+    }
+
+    DISCOVERY_SOURCES = {
+      newspaper: "Articles de presse",
+      panel: "Affichage (panneaux, métro...)",
+      social: "Réseaux sociaux",
+      word_of_mouth: "Bouche à oreille",
+      television: "Télévision",
+      entreprise: "Partenariat entreprise (avec votre emloyeur)",
+      social_event: "Événement salon",
+    }
+
+    included do
+      validate :validate_gender_format
+      validate :validate_discovery_source_format
+    end
+
+    def validate_gender_format
+      return if gender.nil?
+
+      unless GENDERS.keys.map(&:to_s).include?(gender.to_s)
+        return errors.add(:gender, "should be #{GENDERS.keys.join(', ')}")
+      end
+    end
+
+    def validate_discovery_source_format
+      return if discovery_source.nil?
+
+      unless DISCOVERY_SOURCES.keys.map(&:to_s).include?(discovery_source.to_s)
+        return errors.add(:discovery_source, "should be #{DISCOVERY_SOURCES.keys.join(', ')}")
+      end
+    end
 
     OPTIONS.each do |option|
       define_method(option) do

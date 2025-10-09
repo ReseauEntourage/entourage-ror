@@ -32,6 +32,7 @@ module V1
     attribute :phone,               if: :me?
     attribute :travel_distance,     if: :me?
     attribute :birthday,            if: :me?
+    attribute :birthdate,           if: :me?
     attribute :created_at
 
     has_one :stats
@@ -101,8 +102,12 @@ module V1
     end
 
     # @deprecated
+    def birthday
+    end
+
+    # @deprecated
     def memberships
-      return []
+      []
     end
 
     def conversation
