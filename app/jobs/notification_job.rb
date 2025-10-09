@@ -19,7 +19,7 @@ class NotificationJob
   end
 
   def perform_android sender, object, content, device_token, community, extra={}
-    app = Rpush::Fcm::App.where(name: community).first
+    app = Rpush::Fcm::App.where(name: community).order(created_at: :desc).first
 
     if app.nil?
       raise "No Android notification has been sent: no '#{community}' certificate found."
@@ -46,7 +46,7 @@ class NotificationJob
   end
 
   def perform_ios sender, object, content, device_token, community, extra={}
-    app = Rpush::Apnsp8::App.where(name: community).first
+    app = Rpush::Apnsp8::App.where(name: community).order(created_at: :desc).first
 
     if app.nil?
       raise "No Android notification has been sent: no '#{community}' certificate found."
