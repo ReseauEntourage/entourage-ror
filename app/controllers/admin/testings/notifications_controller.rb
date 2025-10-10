@@ -23,6 +23,38 @@ module Admin
         end
       end
 
+      def ios_with_rpush
+        TestingServices::Notifications.new(current_user, :ios_with_rpush).run
+
+        respond_to do |format|
+          format.js { render "admin/testings/success", locals: { message: "Notification envoyée" } }
+        end
+      end
+
+      def ios_without_rpush
+        TestingServices::Notifications.new(current_user, :ios_without_rpush).run
+
+        respond_to do |format|
+          format.js { render "admin/testings/success", locals: { message: "Notification envoyée" } }
+        end
+      end
+
+      def android_with_rpush
+        TestingServices::Notifications.new(current_user, :android_with_rpush).run
+
+        respond_to do |format|
+          format.js { render "admin/testings/success", locals: { message: "Notification envoyée" } }
+        end
+      end
+
+      def android_without_rpush
+        TestingServices::Notifications.new(current_user, :android_without_rpush).run
+
+        respond_to do |format|
+          format.js { render "admin/testings/success", locals: { message: "Notification envoyée" } }
+        end
+      end
+
       private
 
       def set_id
