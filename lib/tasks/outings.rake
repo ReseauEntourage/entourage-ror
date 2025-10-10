@@ -16,9 +16,9 @@ namespace :outings do
     OutingTasks::send_post_to_upcoming
   end
 
-  desc "send chat_message to upcoming outings"
-  task send_chat_message_to_upcoming: :environment do
-    OutingTasks::send_chat_message_to_upcoming
+  desc "send chat_message to today outings"
+  task send_chat_message_to_today: :environment do
+    OutingTasks::send_chat_message_to_today
   end
 
   desc "send email with upcoming outings"
