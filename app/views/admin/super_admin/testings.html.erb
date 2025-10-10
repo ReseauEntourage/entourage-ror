@@ -146,6 +146,82 @@
     %>
   </div>
 
+  <div id="ios-with-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur ios.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Ios with rpush",
+      ios_with_rpush_admin_testings_notifications_path(id: "ios-with-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
+  <div id="ios-without-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur ios.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Ios without rpush",
+      ios_without_rpush_admin_testings_notifications_path(id: "ios-without-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
+  <div id="android-with-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur android.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Android with rpush",
+      android_with_rpush_admin_testings_notifications_path(id: "android-with-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
+  <div id="android-without-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur android.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Android without rpush",
+      android_without_rpush_admin_testings_notifications_path(id: "android-without-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
   <!-- Sms -->
   <div id="send-welcome">
     <div class="alert alert-sms" role="alert" style="display: flex; align-items: center; margin-top: 30px">
