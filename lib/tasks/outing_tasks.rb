@@ -31,6 +31,24 @@ module OutingTasks
         .group("entourages.id")
     end
 
+    def send_email_as_reminder
+      Outing
+        .active
+        .unlimited
+        .where(online: false)
+        .tomorrow
+        .with_moderation
+        .where("entourage_moderations.moderated_at is not null")
+        .joins(:user)
+        .where("users.admin = true OR users.targeting_profile IN ('team', 'ambassador')")
+        .group("entourages.id")
+        .each do |outing|
+          outing.members.each do |user|
+            GroupMailer.event_participation_reminder(outing, user).deliver_later
+          end
+        end
+    end
+
     # send_email_with_upcoming
     def send_email_with_upcoming
       User

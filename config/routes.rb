@@ -286,6 +286,7 @@ Rails.application.routes.draw do
         resources :emails, only: [] do
           collection do
             post :weekly_planning
+            post :event_participation_reminder
           end
         end
 
