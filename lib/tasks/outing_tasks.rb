@@ -110,7 +110,7 @@ module OutingTasks
     end
 
     def charter_url
-      "#{ENV['MOBILE_HOST']}/app/chartes-event"
+      "#{ENV['MOBILE_HOST']}/app/chart-event"
     end
   end
 end
