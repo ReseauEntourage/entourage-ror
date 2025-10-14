@@ -301,6 +301,10 @@ Rails.application.routes.draw do
           collection do
             post :user_smalltalk_on_almost_match
             post :user_reaction_on_create
+            post :ios_with_rpush
+            post :ios_without_rpush
+            post :android_with_rpush
+            post :android_without_rpush
           end
         end
 

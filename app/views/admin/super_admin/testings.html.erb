@@ -1,121 +1,270 @@
 <style>
-  .alert-primary {
-    color: #004085;
-    background-color: #cce5ff;
+  /* jobs */
+  .alert-jobs {
+    color: #31708f;
+    background-color: #d9edf7;
     border-color: #b8daff;
   }
 
-  .alert-secondary {
+  .btn-jobs {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  /* notifications */
+  .alert-notifications {
     color: #383d41;
     background-color: #e2e3e5;
     border-color: #d6d8db;
   }
 
-  .btn-primary {
-    color: #004085;
-  }
-
-  .btn-secondary {
+  .btn-notifications {
     color: #ffffff;
     background-color: #929395;
-    border-color: #727375
+    border-color: #727375;
+  }
+
+  /* sms */
+  .alert-sms {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+  }
+
+  .btn-sms {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+  }
+
+  /* emails */
+  .alert-emails {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #d6e9c6;
+  }
+
+  .btn-emails {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+  }
+
+  /* salesforce */
+  .alert-salesforces {
+    color: #636464;
+    background-color: #eeeeee;
+    border-color: #ededee;
+  }
+
+  .btn-salesforces {
+    color: #000;
+    background-color: #e8e9ea;
+    border-color: #e8e9ea;
   }
 </style>
 
 <div class="container my-4">
   <h2>Outils de test</h2>
 
-  <%# bootstrap alerts: danger dark info light primary secondary success warning %>
-
   <!-- Jobs -->
-  <div class="alert alert-secondary" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Jobs</b><br/>
-      <b>Prérequis</b> : aucun.<br/>
-      <b>Attendu</b> : pas de message d'erreur => job créé.
+  <div id="push-notification-trigger-job">
+    <div class="alert alert-jobs" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Jobs</b><br/>
+        <b>Prérequis</b> : aucun.<br/>
+        <b>Attendu</b> : pas de message d'erreur => job créé.
+      </div>
     </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Push notification trigger job",
+      push_notification_trigger_job_admin_testings_jobs_path(id: "push-notification-trigger-job"),
+      method: :post,
+      class: "btn btn-jobs",
+      remote: true
+    %>
   </div>
 
-  <%= link_to "Push notification trigger job",
-    push_notification_trigger_job_admin_testings_jobs_path,
-    method: :post,
-    class: "btn btn-secondary"
-  %>
-
-  <div class="alert alert-secondary" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Jobs</b><br/>
-      <b>Prérequis</b> : aucun.<br/>
-      <b>Attendu</b> : pas de message d'erreur => job créé, recevoir une push notif.
+  <div id="notification-job">
+    <div class="alert alert-jobs" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Jobs</b><br/>
+        <b>Prérequis</b> : aucun.<br/>
+        <b>Attendu</b> : pas de message d'erreur => job créé, recevoir une push notif.
+      </div>
     </div>
-  </div>
 
-  <%= link_to "Notification job",
-    notification_job_admin_testings_jobs_path,
-    method: :post,
-    class: "btn btn-secondary"
-  %>
+    <div data-type="results"></div>
+
+    <%= link_to "Notification job",
+      notification_job_admin_testings_jobs_path(id: "notification-job"),
+      method: :post,
+      class: "btn btn-jobs",
+      remote: true
+    %>
+  </div>
 
   <!-- Notifications -->
-  <div class="alert alert-info" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Notifications</b><br/>
-      <b>Prérequis</b> : avoir créé une demande, qu'elle ait déjà été matchée ou non.<br/>
-      <b>Attendu</b> : recevoir une notification.
+  <div id="user-smalltalk-on-almost-match">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir créé une demande, qu'elle ait déjà été matchée ou non.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
     </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Almost match",
+      user_smalltalk_on_almost_match_admin_testings_notifications_path(id: "user-smalltalk-on-almost-match"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
   </div>
 
-  <%= link_to "Almost match",
-    user_smalltalk_on_almost_match_admin_testings_notifications_path,
-    method: :post,
-    class: "btn btn-info"
-  %>
-
-  <div class="alert alert-info" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Notifications</b><br/>
-      <b>Prérequis</b> : un utilisateur doit avoir réagi à l'un de nos messages.<br/>
-      <b>Attendu</b> : recevoir une notification.
+  <div id="user-reaction-on-create">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : un utilisateur doit avoir réagi à l'un de nos messages.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
     </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "User reaction",
+      user_reaction_on_create_admin_testings_notifications_path(id: "user-reaction-on-create"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
   </div>
 
-  <%= link_to "User reaction",
-    user_reaction_on_create_admin_testings_notifications_path,
-    method: :post,
-    class: "btn btn-info"
-  %>
+  <div id="ios-with-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur ios.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Ios with rpush",
+      ios_with_rpush_admin_testings_notifications_path(id: "ios-with-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
+  <div id="ios-without-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur ios.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Ios without rpush",
+      ios_without_rpush_admin_testings_notifications_path(id: "ios-without-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
+  <div id="android-with-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur android.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Android with rpush",
+      android_with_rpush_admin_testings_notifications_path(id: "android-with-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
+
+  <div id="android-without-rpush">
+    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Notifications</b><br/>
+        <b>Prérequis</b> : avoir un compte sur android.<br/>
+        <b>Attendu</b> : recevoir une notification.
+      </div>
+    </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Android without rpush",
+      android_without_rpush_admin_testings_notifications_path(id: "android-without-rpush"),
+      method: :post,
+      class: "btn btn-notifications",
+      remote: true
+    %>
+  </div>
 
   <!-- Sms -->
-  <div class="alert alert-warning" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Sms</b><br/>
-      <b>Prérequis</b> : aucun.<br/>
-      <b>Attendu</b> : recevoir une notification avec un code "xxxxxx".
+  <div id="send-welcome">
+    <div class="alert alert-sms" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Sms</b><br/>
+        <b>Prérequis</b> : aucun.<br/>
+        <b>Attendu</b> : recevoir une notification avec un code "xxxxxx".
+      </div>
     </div>
+
+    <div data-type="results"></div>
+
+    <%= link_to "Send welcome", send_welcome_admin_testings_sms_path(id: "send-welcome"), method: :post, class: "btn btn-sms", remote: true %>
   </div>
 
-  <%= link_to "Send welcome", send_welcome_admin_testings_sms_path, method: :post, class: "btn btn-warning" %>
-
-  <div class="alert alert-warning" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Sms</b><br/>
-      <b>Prérequis</b> : aucun.<br/>
-      <b>Attendu</b> : recevoir une notification avec un nouveau code.
+  <div id="regenerate">
+    <div class="alert alert-sms" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Sms</b><br/>
+        <b>Prérequis</b> : aucun.<br/>
+        <b>Attendu</b> : recevoir une notification avec un nouveau code.
+      </div>
     </div>
-  </div>
 
-  <%= link_to "Regenerate", regenerate_admin_testings_sms_path, method: :post, class: "btn btn-warning" %>
+    <div data-type="results"></div>
+
+    <%= link_to "Regenerate", regenerate_admin_testings_sms_path(id: "regenerate"), method: :post, class: "btn btn-sms", remote: true %>
+  </div>
 
   <!-- Email -->
-  <div class="alert alert-success" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Email</b><br/>
-      <b>Prérequis</b> : des actions et événements doivent exister.<br/>
-      <b>Attendu</b> : recevoir un email.
+  <div id="weekly-planning">
+    <div class="alert alert-emails" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Email</b><br/>
+        <b>Prérequis</b> : des actions et événements doivent exister.<br/>
+        <b>Attendu</b> : recevoir un email.
+      </div>
     </div>
-  </div>
 
-  <%= link_to "Weekly planning", weekly_planning_admin_testings_emails_path, method: :post, class: "btn btn-success" %>
+    <div data-type="results"></div>
+
+    <%= link_to "Weekly planning", weekly_planning_admin_testings_emails_path(id: "weekly-planning"), method: :post, class: "btn btn-emails", remote: true %>
+  </div>
 
   <div class="alert alert-success" role="alert" style="display: flex; align-items: center; margin-top: 30px">
     <div style="flex-grow: 1">
@@ -128,13 +277,17 @@
   <%= link_to "Outing participation reminder (6174429)", event_participation_reminder_admin_testings_emails_path, method: :post, class: "btn btn-success" %>
 
   <!-- Salesforce -->
-  <div class="alert alert-danger" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
-      <b>Salesforce</b><br/>
-      <b>Prérequis</b> : un événement pas encore synchronisé, en présentiel, créé par un admin ou un ambassadeur, doit exister.<br/>
-      <b>Attendu</b> : l'événement doit être créé sur Salesforce.
+  <div id="outing-sync">
+    <div class="alert alert-salesforces" role="alert" style="display: flex; align-items: center; margin-top: 30px">
+      <div style="flex-grow: 1">
+        <b>Salesforce</b><br/>
+        <b>Prérequis</b> : un événement pas encore synchronisé, en présentiel, créé par un admin ou un ambassadeur, doit exister.<br/>
+        <b>Attendu</b> : l'événement doit être créé sur Salesforce.
+      </div>
     </div>
-  </div>
 
-  <%= link_to "Synchronisation", outing_sync_admin_testings_salesforce_index_path, method: :post, class: "btn btn-danger" %>
+    <div data-type="results"></div>
+
+    <%= link_to "Synchronisation", outing_sync_admin_testings_salesforce_index_path(id: "outing-sync"), method: :post, class: "btn btn-salesforces", remote: true %>
+  </div>
 </div>
