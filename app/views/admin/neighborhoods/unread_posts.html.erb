@@ -2,7 +2,7 @@
   <%= render 'header', tab: :unread_posts %>
 
   <div style="margin: auto">
-    <h1>Groupes de voisinage : publications non lues</h1>
+    <h1>Groupes de voisinage : publications sans commentaire</h1>
 
     <%= render 'search_form', params: @params, area: @area, path: :unread_posts %>
 
@@ -26,7 +26,7 @@
       <% end %>
     </div>
 
-    <%= page_entries_info @posts, entry_name: 'publications non lues' %>
+    <%= page_entries_info @posts, entry_name: 'publications sans commentaire' %>
     <div class="container">
       <%= paginate(@posts) %>
     </div>

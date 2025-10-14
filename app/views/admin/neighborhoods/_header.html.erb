@@ -3,6 +3,6 @@
     <%= link_to "Groupes de voisins", admin_neighborhoods_path(@params) %>
   </li>
   <li role="presentation" class="<%= :active if tab == :unread_posts %>">
-    <%= link_to "Publications non lues", unread_posts_admin_neighborhoods_path(@params) %>
+    <%= link_to "Publications sans commentaire", unread_posts_admin_neighborhoods_path(@params) %>
   </li>
 </ul>
