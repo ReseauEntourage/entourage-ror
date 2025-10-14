@@ -5,8 +5,8 @@ describe V1::InappNotificationSerializer do
   include ActiveModel::Serializers::JSON
 
   describe 'fields' do
-    let(:user) { create(:public_user, avatar_key: "avatar_user") }
-    let(:sender) { create(:public_user, avatar_key: "avatar_sender") }
+    let(:user) { create(:public_user, avatar_key: 'avatar_user') }
+    let(:sender) { create(:public_user, avatar_key: 'avatar_sender') }
     let(:inapp_notification) { create(:inapp_notification, user: user, sender: sender) }
 
     let(:serialized) { V1::InappNotificationSerializer.new(inapp_notification).serializable_hash }
@@ -15,7 +15,7 @@ describe V1::InappNotificationSerializer do
     it { expect(serialized).to have_key(:instance_id) }
     it { expect(serialized).to have_key(:created_at) }
 
-    before { UserServices::Avatar.any_instance.stub(:thumbnail_url) { "https://foo.bar" }}
+    before { UserServices::Avatar.any_instance.stub(:thumbnail_url) { 'https://foo.bar' }}
 
     context 'values' do
       it { expect(serialized[:instance]).to eq('neighborhood') }
@@ -27,7 +27,7 @@ describe V1::InappNotificationSerializer do
       let(:inapp_notification) { create(:inapp_notification, :neighborhood_post, user: user, sender: sender, context: :chat_message_on_create) }
 
       it { expect(serialized[:instance]).to eq('neighborhood_post') }
-      it { expect(serialized[:image_url]).to eq("https://foo.bar") }
+      it { expect(serialized[:image_url]).to eq('https://foo.bar') }
     end
 
     # create join_request (outing, neighborhood)
@@ -35,7 +35,7 @@ describe V1::InappNotificationSerializer do
       let(:inapp_notification) { create(:inapp_notification, :user, user: user, sender: sender, context: :join_request_on_create) }
 
       it { expect(serialized[:instance]).to eq('user') }
-      it { expect(serialized[:image_url]).to eq("https://foo.bar") }
+      it { expect(serialized[:image_url]).to eq('https://foo.bar') }
     end
 
     # update join_request (outing, neighborhood)
@@ -43,7 +43,7 @@ describe V1::InappNotificationSerializer do
       let(:inapp_notification) { create(:inapp_notification, :user, user: user, sender: sender, context: :join_request_on_update) }
 
       it { expect(serialized[:instance]).to eq('user') }
-      it { expect(serialized[:image_url]).to eq("https://foo.bar") }
+      it { expect(serialized[:image_url]).to eq('https://foo.bar') }
     end
 
     # associate outing to neighborhood

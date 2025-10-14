@@ -38,7 +38,7 @@ module Admin
       @partner.assign_attributes(partner_params)
 
       if @partner.save
-        redirect_to [:admin, @partner], notice: "Association mise à jour"
+        redirect_to [:admin, @partner], notice: 'Association mise à jour'
       else
         render :edit
       end
@@ -51,7 +51,7 @@ module Admin
 
     def logo_upload_success
       partner = PartnerLogoUploader.handle_success(params)
-      redirect_to [:admin, partner], notice: "Association mise à jour"
+      redirect_to [:admin, partner], notice: 'Association mise à jour'
     end
 
     def destroy
@@ -75,9 +75,9 @@ module Admin
       end
 
       if success
-        redirect_to admin_partners_path, notice: "Association supprimée"
+        redirect_to admin_partners_path, notice: 'Association supprimée'
       else
-        redirect_to [:admin, @partner], error: "Erreur"
+        redirect_to [:admin, @partner], error: 'Erreur'
       end
     end
 

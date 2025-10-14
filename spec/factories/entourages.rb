@@ -7,11 +7,11 @@ FactoryBot.define do
     end
 
     uuid { SecureRandom.uuid }
-    status { "open" }
-    title { "foobar" }
-    group_type { "action" }
-    entourage_type { "ask_for_help" }
-    display_category { "social" }
+    status { 'open' }
+    title { 'foobar' }
+    group_type { 'action' }
+    entourage_type { 'ask_for_help' }
+    display_category { 'social' }
     user { association :public_user, community: community }
     latitude { 1.122 }
     longitude { 2.345 }
@@ -90,19 +90,19 @@ FactoryBot.define do
     end
 
     trait :blacklisted do
-      status { "blacklisted" }
+      status { 'blacklisted' }
     end
 
     factory :outing do
-      group_type { "outing" }
+      group_type { 'outing' }
       latitude { 48.854367553785 }
       longitude { 2.27034058909627 }
 
       transient do
         default_metadata { { starts_at: 1.day.from_now.change(hour: 19),
-                         place_name: "Café la Renaissance",
-                         street_address: "44 rue de l’Assomption, 75016 Paris, France",
-                         google_place_id: "foobar" } }
+                         place_name: 'Café la Renaissance',
+                         street_address: '44 rue de l’Assomption, 75016 Paris, France',
+                         google_place_id: 'foobar' } }
       end
 
       after(:build) do |outing, stuff|
@@ -126,17 +126,17 @@ FactoryBot.define do
     end
 
     factory :contribution do
-      entourage_type { "contribution" }
+      entourage_type { 'contribution' }
       initialize_with { Contribution.new(attributes) }
     end
 
     factory :solicitation do
-      entourage_type { "ask_for_help" }
+      entourage_type { 'ask_for_help' }
       initialize_with { Solicitation.new(attributes) }
     end
 
     factory :conversation do
-      group_type { "conversation" }
+      group_type { 'conversation' }
 
       after(:build) do |conversation, stuff|
         conversation.user = stuff.members.first if stuff.members.any?

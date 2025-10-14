@@ -5,7 +5,7 @@ module PreferenceServices
     end
 
     def date_range
-      $redis.get("preferences:user:#{user.id}:date_range") || ""
+      $redis.get("preferences:user:#{user.id}:date_range") || ''
     end
 
     def date_range=(another_date_range)
@@ -13,19 +13,19 @@ module PreferenceServices
     end
 
     def tour_types
-      ($redis.get("preferences:user:#{user.id}:tour_types") || "medical,barehands,alimentary").split(",")
+      ($redis.get("preferences:user:#{user.id}:tour_types") || 'medical,barehands,alimentary').split(',')
     end
 
     def tour_types=(other_tour_types)
-      $redis.set("preferences:user:#{user.id}:tour_types", other_tour_types.join(","))
+      $redis.set("preferences:user:#{user.id}:tour_types", other_tour_types.join(','))
     end
 
     def simplified_tour
-      $redis.get("preferences:user:#{user.id}:simplified_tour") == "true"
+      $redis.get("preferences:user:#{user.id}:simplified_tour") == 'true'
     end
 
     def simplified_tour=(val)
-      bool_value = (val ? "true" : "false")
+      bool_value = (val ? 'true' : 'false')
       $redis.set("preferences:user:#{user.id}:simplified_tour", bool_value)
     end
 

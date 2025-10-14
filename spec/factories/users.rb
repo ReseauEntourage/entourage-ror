@@ -12,11 +12,11 @@ FactoryBot.define do
       "device id #{n}"
     end
     sequence :phone do |n|
-      "+336%08i" % n
+      '+336%08i' % n
     end
 
     sms_code { '098765' }
-    validation_status { "validated" }
+    validation_status { 'validated' }
 
     sequence :token do |n|
       "foobar#{n}"

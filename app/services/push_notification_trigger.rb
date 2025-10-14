@@ -95,11 +95,11 @@ class PushNotificationTrigger
   end
 
   def entourage_moderation_on_create
-    return entourage_moderation_on_update_validated_at if @changes.keys.include?("validated_at")
+    return entourage_moderation_on_update_validated_at if @changes.keys.include?('validated_at')
   end
 
   def entourage_moderation_on_update
-    return entourage_moderation_on_update_validated_at if @changes.keys.include?("validated_at")
+    return entourage_moderation_on_update_validated_at if @changes.keys.include?('validated_at')
   end
 
   def entourage_moderation_on_update_validated_at
@@ -117,7 +117,7 @@ class PushNotificationTrigger
   def async_entourage_on_create entourage
     # configure entourage_on_create
     @record = entourage
-    @method = "entourage_on_create"
+    @method = 'entourage_on_create'
     @changes = {}
 
     return unless @record.outing? || @record.action?
@@ -129,7 +129,7 @@ class PushNotificationTrigger
 
   def async_neighborhoods_entourage_on_create entourage
     # configure neighborhoods_entourage_on_create
-    @method = "neighborhoods_entourage_on_create"
+    @method = 'neighborhoods_entourage_on_create'
     @changes = {}
 
     return unless entourage.outing?
@@ -167,7 +167,7 @@ class PushNotificationTrigger
           content: I18nStruct.new(i18n: 'push_notifications.action.create_for_follower', i18n_args: [partner.name, title(@record)]),
           extra: {
             tracking: tracking,
-            type: "ENTOURAGE_INVITATION",
+            type: 'ENTOURAGE_INVITATION',
             entourage_id: @record.id,
             group_type: @record.group_type,
             inviter_id: nil,
@@ -183,14 +183,15 @@ class PushNotificationTrigger
   def entourage_on_create_for_neighbors user
     return unless @record.action?
 
-    neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
-    neighbor_ids = User.where(id: neighbor_ids)
+    user_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+    users = User.where(id: user_ids)
       .where(deleted: false)
       .where.not(id: user.id)
-      .where("last_sign_in_at > ?", 1.year.ago)
+      .where('last_sign_in_at > ?', 1.year.ago)
 
-    neighbor_ids = neighbor_ids.offer_help.pluck(:id) if @record.solicitation?
-    neighbor_ids = neighbor_ids.ask_for_help.pluck(:id) if @record.contribution?
+    neighbor_ids = []
+    neighbor_ids = users.offer_help.pluck(:id) if @record.solicitation?
+    neighbor_ids = users.ask_for_help.pluck(:id) if @record.contribution?
 
     return unless neighbor_ids.any?
 
@@ -207,7 +208,7 @@ class PushNotificationTrigger
           content: I18nStruct.new(instance: @record, field: :title),
           extra: {
             tracking: tracking,
-            type: "ENTOURAGE_INVITATION",
+            type: 'ENTOURAGE_INVITATION',
             entourage_id: @record.id,
             group_type: @record.group_type
           }
@@ -225,10 +226,10 @@ class PushNotificationTrigger
 
   # initial caller: entourage_on_update
   def outing_on_update
-    return outing_on_update_status if @changes.keys.include?("status")
+    return outing_on_update_status if @changes.keys.include?('status')
     return unless @changes.any? # it happens when neighborhoods_entourage is updated
 
-    return unless (@changes.keys & ["latitude", "longitude", "postal_code", "country"]).any? || outing_metadata_changes(@changes["metadata"]).any?
+    return unless (@changes.keys & ['latitude', 'longitude', 'postal_code', 'country']).any? || outing_metadata_changes(@changes['metadata']).any?
 
     return unless (user_ids = @record.accepted_member_ids.uniq - [@record.user_id]).any?
 
@@ -317,7 +318,7 @@ class PushNotificationTrigger
 
   def chat_message_on_update
     return unless @record.visible?
-    return unless @changes.keys.include?("status")
+    return unless @changes.keys.include?('status')
 
     chat_message_on_create
   end
@@ -341,7 +342,7 @@ class PushNotificationTrigger
             group_type: group_type(@record.messageable),
             joinable_id: @record.messageable_id,
             joinable_type: @record.messageable_type,
-            type: "NEW_CHAT_MESSAGE"
+            type: 'NEW_CHAT_MESSAGE'
           }
         }
       )
@@ -366,7 +367,7 @@ class PushNotificationTrigger
             group_type: group_type(@record.messageable),
             joinable_id: @record.messageable_id,
             joinable_type: @record.messageable_type,
-            type: "NEW_CHAT_MESSAGE"
+            type: 'NEW_CHAT_MESSAGE'
           }
         }
       )
@@ -409,7 +410,7 @@ class PushNotificationTrigger
             group_type: group_type(@record.messageable),
             joinable_id: @record.messageable_id,
             joinable_type: @record.messageable_type,
-            type: "NEW_CHAT_MESSAGE"
+            type: 'NEW_CHAT_MESSAGE'
           }
         }
       )
@@ -469,7 +470,7 @@ class PushNotificationTrigger
 
     return unless user_ids.any?
 
-    @method = "chat_message_on_mention"
+    @method = 'chat_message_on_mention'
 
     redirection = @record.messageable
     redirection = @record if @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
@@ -551,7 +552,7 @@ class PushNotificationTrigger
           joinable_id: @record.joinable_id,
           joinable_type: @record.joinable_type,
           group_type: group_type(@record.joinable),
-          type: "JOIN_REQUEST_ACCEPTED",
+          type: 'JOIN_REQUEST_ACCEPTED',
           user_id: @record.user_id
         }
       }
@@ -602,8 +603,8 @@ class PushNotificationTrigger
   end
 
   def join_request_on_update
-    return unless @changes.keys.include?("status")
-    return join_request_on_create unless @changes["status"] && @changes["status"].first&.to_sym == :pending
+    return unless @changes.keys.include?('status')
+    return join_request_on_create unless @changes['status'] && @changes['status'].first&.to_sym == :pending
 
     content_key = "push_notifications.join_request.update_on_#{@record.joinable.group_type}"
 
@@ -619,7 +620,7 @@ class PushNotificationTrigger
           joinable_id: @record.joinable_id,
           joinable_type: @record.joinable_type,
           group_type: group_type(@record.joinable),
-          type: "JOIN_REQUEST_ACCEPTED",
+          type: 'JOIN_REQUEST_ACCEPTED',
           user_id: @record.user_id
         }
       }
@@ -801,17 +802,17 @@ class PushNotificationTrigger
     return [] unless metadata_changes
     return [] unless metadata_changes.size == 2
 
-    metadata_changes.first.slice("starts_at", "ends_at").to_a - metadata_changes.last.slice("starts_at", "ends_at").to_a
+    metadata_changes.first.slice('starts_at', 'ends_at').to_a - metadata_changes.last.slice('starts_at', 'ends_at').to_a
   end
 
   def update_outing_message outing, changes
-    metadata_before_last_save = changes["metadata"] ? changes["metadata"].first : {}
+    metadata_before_last_save = changes['metadata'] ? changes['metadata'].first : {}
 
-    if metadata_before_last_save.keys.include?("starts_at") && metadata_before_last_save.keys.include?("display_address")
+    if metadata_before_last_save.keys.include?('starts_at') && metadata_before_last_save.keys.include?('display_address')
       return I18nStruct.new(i18n: 'push_notifications.outing.update', i18n_args: [
-        to_date(metadata_before_last_save["starts_at"] || outing.starts_at),
+        to_date(metadata_before_last_save['starts_at'] || outing.starts_at),
         to_date(outing.starts_at),
-        outing.metadata["display_address"] || outing.metadata[:display_address]
+        outing.metadata['display_address'] || outing.metadata[:display_address]
       ])
     end
 

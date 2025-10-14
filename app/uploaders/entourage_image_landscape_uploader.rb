@@ -1,5 +1,5 @@
 class EntourageImageLandscapeUploader < S3ImageUploader
-  THUMBNAIL_RATIO = "40%"
+  THUMBNAIL_RATIO = '40%'
 
   def self.metadata_keys
     [:entourage_image_id]

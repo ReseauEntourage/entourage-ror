@@ -14,7 +14,7 @@ module Api
         if @notification_permission.save
           render json: @notification_permission, root: :notification_permissions, status: 201, serializer: ::V1::NotificationPermissionSerializer
         else
-          render json: { message: "Could not create notification_permission", reasons: @notification_permission.errors.full_messages }, status: 400
+          render json: { message: 'Could not create notification_permission', reasons: @notification_permission.errors.full_messages }, status: 400
         end
       end
 

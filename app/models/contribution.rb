@@ -1,6 +1,6 @@
 class Contribution < Action
   CONTENT_TYPES = %w(image/jpeg)
-  BUCKET_PREFIX = "contributions"
+  BUCKET_PREFIX = 'contributions'
 
   default_scope {
     where(group_type: :action, entourage_type: :contribution)

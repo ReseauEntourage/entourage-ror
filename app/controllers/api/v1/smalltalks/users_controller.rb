@@ -14,7 +14,7 @@ module Api
             .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: {
+            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: {
               user: current_user
             }
         end
@@ -25,7 +25,7 @@ module Api
           }, status: :unauthorized unless @join_request
 
           if @join_request.update(status: :cancelled)
-            render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not destroy smalltalk participation request', reasons: @join_request.errors.full_messages

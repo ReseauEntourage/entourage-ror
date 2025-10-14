@@ -1,15 +1,16 @@
 source 'https://rubygems.org'
 
-ruby '3.1.0'
+ruby '3.2.0'
 
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 7.1.0'
 
 # database
-gem 'pg', '~> 1'
-gem 'activerecord-postgis-adapter', '~> 6.0'
+gem 'pg', '~> 1.1'
+gem 'activerecord-postgis-adapter', '~> 9.0'
 
 # Templating
 gem 'terser' # config.assets.js_compressor in production
+gem 'sprockets-rails', '~> 3.2'
 gem 'sass-rails' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
@@ -22,14 +23,14 @@ gem 'active_model_serializers', '~> 0.10'
 gem 'ancestry'
 gem 'json-schema', '~> 2.8.1'
 gem 'rails-observers'
-gem 'acts-as-taggable-on', '~> 8.0'
+gem 'acts-as-taggable-on', '~> 12.0'
 gem 'store_attribute'
 gem 'ruby-stemmer' # used by sensitive_word
 gem 'mini_magick' # used by S3ImageUploader.resized_image (entourages thumbnails)
 
 # controllers
 gem 'ams_lazy_relationships' # used in serializers
-gem 'ransack', '~> 2'
+gem 'ransack', '~> 4.1'
 
 # template
 gem 'tinymce-rails'
@@ -43,19 +44,19 @@ gem 'kaminari', '~> 1'
 
 # servers
 gem 'aws-sdk-s3', '~> 1'
-gem 'sidekiq', '~> 6'
+gem 'sidekiq', '~> 8'
 gem 'redis', '~> 4'
-gem 'sentry-raven'
+gem 'sentry-ruby'
 
 # api
 gem 'ruby-openai'
 gem 'icalendar'
 gem 'google-api-client', '~> 0.53'
-gem 'restforce', '~> 7.2.0'
+gem 'restforce', '~> 7.6'
 gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
 
 # communication
-gem 'rpush', git: 'https://github.com/rpush/rpush.git', ref: '840125aa568740f87e1e4a60f052748ddbe9c668'
+gem 'rpush', '~> 9.1.0'
 gem 'aws-sdk-sns',  '~> 1'
 gem 'nexmo'
 gem 'safety_mailer'
@@ -68,11 +69,10 @@ gem 'bcrypt', '~> 3'
 gem 'httparty'
 gem 'whenever'
 gem 'rspec_api_documentation'
-gem 'ffi', '>= 1.15', '< 1.17'
+gem 'ffi', '~> 1.17'
 
 group :development, :test do
-  # gem 'annotate'
-  # gem 'byebug',                       '~> 5.0.0'
+  gem 'foreman'
   gem 'spring',                       '~> 2.1.0'
   gem 'spring-commands-rspec'#,        '~> 1.0.4'
   gem 'dotenv-rails'#,                 '~> 2.0.2'
@@ -90,8 +90,10 @@ group :development do
   # gem 'stackprof',                    '~> 0.2.8'
   # gem 'letter_opener',                '~> 1.4.1'
   # gem 'mailcatcher'
+  gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rails', require: false
+  gem 'rubocop-performance', require: false
 end
 
 group :test do

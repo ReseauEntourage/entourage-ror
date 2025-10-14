@@ -5,7 +5,7 @@ def usage
   exit 1 unless defined? Rails
   $stderr.puts "  match_type: #{SensitiveWord::MATCH_TYPES.join('|')}"
   $stderr.puts "  scope:      #{SensitiveWord::SCOPES.join('|')}"
-  $stderr.puts "  category:   (optional) name or short text describing the word group"
+  $stderr.puts '  category:   (optional) name or short text describing the word group'
   exit 1
 end
 

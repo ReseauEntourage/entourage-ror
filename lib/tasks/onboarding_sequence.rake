@@ -1,5 +1,5 @@
 namespace :onboarding_sequence do
-  desc "send_emails"
+  desc 'send_emails'
   task send_emails: :environment do
     def at_day n, options={}, &block
       DailyTaskHelper.at_day n, options, &block
@@ -40,17 +40,17 @@ namespace :onboarding_sequence do
     $redis.set(redis_key, redis_date)
   end
 
-  desc "send_incomplete_profile_email"
+  desc 'send_incomplete_profile_email'
   task send_incomplete_profile_email: :environment do
     Onboarding::EmailerService.deliver_incomplete_profile_email
   end
 
-  desc "send_welcome_messages"
+  desc 'send_welcome_messages'
   task send_welcome_messages: :environment do
     Onboarding::ChatMessagesService.deliver_welcome_message
   end
 
-  desc "send_ethical_messages"
+  desc 'send_ethical_messages'
   task send_ethical_messages: :environment do
     Onboarding::ChatMessagesService.deliver_ethical_charter
   end

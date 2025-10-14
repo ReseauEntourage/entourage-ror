@@ -15,6 +15,6 @@ class CreateEntourageInvitations < ActiveRecord::Migration[4.2]
     add_index :entourage_invitations, :inviter_id
     add_index :entourage_invitations, :invitee_id
     add_index :entourage_invitations, [:invitable_id, :invitable_type]
-    add_index :entourage_invitations, [:inviter_id, :phone_number, :invitable_id, :invitable_type], name: "unique_invitation_by_entourage", unique: true
+    add_index :entourage_invitations, [:inviter_id, :phone_number, :invitable_id, :invitable_type], name: 'unique_invitation_by_entourage', unique: true
   end
 end

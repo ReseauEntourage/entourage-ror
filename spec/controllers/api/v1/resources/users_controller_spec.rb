@@ -9,18 +9,18 @@ describe Api::V1::Resources::UsersController do
     let(:request) { post :create, params: { resource_id: resource.to_param, token: user.token } }
     let(:request_not_signed_in) { post :create, params: { resource_id: resource.to_param } }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { request_not_signed_in }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
-      context "users_resource created" do
+    context 'signed in' do
+      context 'users_resource created' do
         it { expect { request }.to change { UsersResource.count }.by(1) }
       end
 
-      context "no users_resource" do
+      context 'no users_resource' do
         let(:instance) { UsersResource.last }
 
         before { request }
@@ -31,23 +31,23 @@ describe Api::V1::Resources::UsersController do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq(
-          "users_resource" => {
-            "user_id" => user.id,
-            "resource_id" => resource.id,
-            "watched" => true,
+          'users_resource' => {
+            'user_id' => user.id,
+            'resource_id' => resource.id,
+            'watched' => true,
           }
         )}
       end
     end
 
-    context "already not watched" do
+    context 'already not watched' do
       let!(:users_resource) { UsersResource.create(user_id: user.id, resource_id: resource.id, watched: false) }
 
-      context "users_resource created" do
+      context 'users_resource created' do
         it { expect { request }.to change { UsersResource.count }.by(0) }
       end
 
-      context "no users_resource" do
+      context 'no users_resource' do
         let(:instance) { UsersResource.last }
 
         before { request }
@@ -58,34 +58,34 @@ describe Api::V1::Resources::UsersController do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq(
-          "users_resource" => {
-            "user_id" => user.id,
-            "resource_id" => resource.id,
-            "watched" => true,
+          'users_resource' => {
+            'user_id' => user.id,
+            'resource_id' => resource.id,
+            'watched' => true,
           }
         )}
       end
     end
   end
 
-  describe "DELETE destroy" do
+  describe 'DELETE destroy' do
     let!(:users_resource) { UsersResource.create(user_id: user.id, resource_id: resource.id, watched: true) }
     let(:subject) { users_resource.reload.watched }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { delete :destroy, params: { resource_id: resource.to_param, id: user.id } }
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
-      context "unwatched resource" do
+    context 'signed in' do
+      context 'unwatched resource' do
         before { delete :destroy, params: { resource_id: resource.to_param, id: user.id, token: user.token } }
 
         it { expect(response.status).to eq(201) }
         it { expect(expect(subject).to eq(false)) }
       end
 
-      context "can not unwatched another member" do
+      context 'can not unwatched another member' do
         let(:member) { FactoryBot.create(:public_user) }
         let!(:member_join_request) { UsersResource.create(user_id: member.id, resource_id: resource.id, watched: true) }
 
@@ -105,17 +105,17 @@ describe Api::V1::Resources::UsersController do
     end
   end
 
-  describe "DELETE destroy on collection" do
+  describe 'DELETE destroy on collection' do
     let!(:users_resource) { UsersResource.create(user_id: user.id, resource_id: resource.id, watched: true) }
     let(:subject) { users_resource.reload.watched }
 
-    context "not signed in" do
+    context 'not signed in' do
       before { delete :destroy, params: { resource_id: resource.to_param } }
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
-      context "quit resource" do
+    context 'signed in' do
+      context 'quit resource' do
         before { delete :destroy, params: { resource_id: resource.to_param, token: user.token } }
 
         it { expect(response.status).to eq(201) }

@@ -1,7 +1,7 @@
 class CreateEntourages < ActiveRecord::Migration[4.2]
   def change
     create_table :entourages do |t|
-      t.string :status,               null: false, default: "open"
+      t.string :status,               null: false, default: 'open'
       t.string :title,                null: false
       t.string :entourage_type,       null: false
       t.integer :user_id,             null: false

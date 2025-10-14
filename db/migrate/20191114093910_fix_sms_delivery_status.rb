@@ -12,7 +12,7 @@ class FixSmsDeliveryStatus < ActiveRecord::Migration[4.2]
   end
 
   def down
-    change_column :sms_deliveries, :status, :integer, using: "0"
+    change_column :sms_deliveries, :status, :integer, using: '0'
     execute %(drop type sms_delivery_status)
   end
 end

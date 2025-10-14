@@ -22,7 +22,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Nouveau compte avec email bloqué",
+        username: 'Nouveau compte avec email bloqué',
         channel: webhook('channel'),
       }
     end

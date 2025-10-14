@@ -1,25 +1,25 @@
 module SalesforceServices
   class OutingTableInterface < TableInterface
-    TABLE_NAME = "Campaign"
+    TABLE_NAME = 'Campaign'
 
     INSTANCE_MAPPING = {
-      id: "Id_app_de_l_event__c",
-      address: "Adresse_de_l_v_nement__c",
-      antenne: "Antenne__c",
-      title: "Name",
-      postal_code: "Code_postal__c",
-      starts_date: "StartDate",
-      starts_time: "Heure_de_d_but__c",
-      ends_date: "EndDate",
-      ends_time: "Heure_de_fin__c",
-      ongoing?: "IsActive",
-      sf_status: "Status",
-      status: "Statut_d_Entourage__c",
-      reseau: "R_seaux__c",
-      record_type_id: "RecordTypeId",
-      type: "Type",
-      type_public: "Public_sensibilis__c",
-      type_evenement: "Type_evenement__c"
+      id: 'Id_app_de_l_event__c',
+      address: 'Adresse_de_l_v_nement__c',
+      antenne: 'Antenne__c',
+      title: 'Name',
+      postal_code: 'Code_postal__c',
+      starts_date: 'StartDate',
+      starts_time: 'Heure_de_d_but__c',
+      ends_date: 'EndDate',
+      ends_time: 'Heure_de_fin__c',
+      ongoing?: 'IsActive',
+      sf_status: 'Status',
+      status: 'Statut_d_Entourage__c',
+      reseau: 'R_seaux__c',
+      record_type_id: 'RecordTypeId',
+      type: 'Type',
+      type_public: 'Public_sensibilis__c',
+      type_evenement: 'Type_evenement__c'
     }
 
     def initialize instance:
@@ -31,7 +31,7 @@ module SalesforceServices
     end
 
     def external_id_value
-      "OutingId__c"
+      'OutingId__c'
     end
 
     def mapping
@@ -100,28 +100,28 @@ module SalesforceServices
       def starts_date
         return unless outing.starts_at.present?
 
-        (outing.starts_at + 1.hour).strftime("%Y-%m-%d")
+        (outing.starts_at + 1.hour).strftime('%Y-%m-%d')
       end
 
       # hack one hour to avoid timezone issues on salesforce
       def starts_time
         return unless outing.starts_at.present?
 
-        (outing.starts_at + 1.hour).strftime("%H:%M:%S")
+        (outing.starts_at + 1.hour).strftime('%H:%M:%S')
       end
 
       # hack one hour to avoid timezone issues on salesforce
       def ends_date
         return unless outing.ends_at.present?
 
-        (outing.ends_at + 1.hour).strftime("%Y-%m-%d")
+        (outing.ends_at + 1.hour).strftime('%Y-%m-%d')
       end
 
       # hack one hour to avoid timezone issues on salesforce
       def ends_time
         return unless outing.ends_at.present?
 
-        (outing.ends_at + 1.hour).strftime("%H:%M:%S")
+        (outing.ends_at + 1.hour).strftime('%H:%M:%S')
       end
 
       def ongoing?
@@ -129,18 +129,18 @@ module SalesforceServices
       end
 
       def sf_status
-        "Aborted" unless outing.ongoing?
+        'Aborted' unless outing.ongoing?
 
-        "Planned"
+        'Planned'
       end
 
       def status
         # only outings created by staff or ambassadors are sync with salesforce
-        "Organisateur"
+        'Organisateur'
       end
 
       def reseau
-        "Entourage"
+        'Entourage'
       end
 
       def record_type_id
@@ -150,15 +150,15 @@ module SalesforceServices
       end
 
       def type
-        "Event"
+        'Event'
       end
 
       def type_public
-        "Grand public"
+        'Grand public'
       end
 
       def type_evenement
-        "Evenement de convivialité"
+        'Evenement de convivialité'
       end
 
       # private

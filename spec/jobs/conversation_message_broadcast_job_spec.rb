@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ConversationMessageBroadcastJob do
   describe 'perform' do
-    let!(:conversation_message_broadcast) { FactoryBot.create(:user_message_broadcast, content: "Contenu de la diffusion") }
+    let!(:conversation_message_broadcast) { FactoryBot.create(:user_message_broadcast, content: 'Contenu de la diffusion') }
     let!(:users) { FactoryBot.create_list(:user, 2) }
     let!(:admin) { FactoryBot.create(:user, admin: true) }
 
@@ -27,7 +27,7 @@ RSpec.describe ConversationMessageBroadcastJob do
     it { expect { job }.to change { admin.chat_messages.count }.by(2) }
     it {
       job
-      expect(ChatMessage.ordered.last.content).to eq("Contenu de la diffusion")
+      expect(ChatMessage.ordered.last.content).to eq('Contenu de la diffusion')
       expect(conversation_message_broadcast.reload.sent_recipients_count).to eq(2)
     }
   end

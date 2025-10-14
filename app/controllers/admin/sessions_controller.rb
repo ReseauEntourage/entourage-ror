@@ -3,7 +3,7 @@ module Admin
     skip_before_action :authenticate_admin!, except: [:switch_user]
 
     def new
-      render layout: "login"
+      render layout: 'login'
     end
 
     def create
@@ -15,7 +15,7 @@ module Admin
 
         redirect_to(params[:continue].presence || root_path)
       else
-        flash[:error] = user ? "Votre profil doit être admin" : "Identifiants incorrects"
+        flash[:error] = user ? 'Votre profil doit être admin' : 'Identifiants incorrects'
         redirect_path =
           if params[:continue].present?
             new_admin_session_path(continue: params[:continue])
@@ -30,7 +30,7 @@ module Admin
     def logout
       session[:user_id] = nil
       session[:admin_user_id] = nil
-      flash[:notice] = "Vous êtes déconnecté"
+      flash[:notice] = 'Vous êtes déconnecté'
       redirect_to root_url
     end
 

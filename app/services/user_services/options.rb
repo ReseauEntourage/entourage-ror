@@ -2,9 +2,9 @@ module UserServices
   module Options
     extend ActiveSupport::Concern
 
-    OPTIONS = ["last_unclosed_action_notification_at", "goal_choice", "gender", "discovery_source", "photo_acceptance"]
+    OPTIONS = ['last_unclosed_action_notification_at', 'goal_choice', 'gender', 'discovery_source', 'photo_acceptance']
     OPTION_TYPES = {
-      "photo_acceptance" => :boolean
+      'photo_acceptance' => :boolean
     }
 
     GENDERS = {

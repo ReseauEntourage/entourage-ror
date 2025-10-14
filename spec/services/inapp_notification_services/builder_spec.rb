@@ -46,8 +46,8 @@ describe InappNotificationServices::Builder do
     let(:instance) { :neighborhood }
     let(:instance_id) { neighborhood.id }
     let(:post_id) { nil }
-    let(:title) { "foobar" }
-    let(:content) { "foo" }
+    let(:title) { 'foobar' }
+    let(:content) { 'foo' }
 
     let(:subject) { InappNotificationServices::Builder.new(user).instanciate(context: context, sender_id: sender_id, instance: instance, instance_id: instance_id, post_id: post_id, referent: instance, referent_id: instance_id, title: title, content: content) }
 
@@ -79,7 +79,7 @@ describe InappNotificationServices::Builder do
       end
 
       describe 'record already exists and has not been completed' do
-        let!(:inapp_notification) { create(:inapp_notification, user: user, context: context, content: "bar") }
+        let!(:inapp_notification) { create(:inapp_notification, user: user, context: context, content: 'bar') }
         let(:instance) { inapp_notification.instance }
         let(:instance_id) { inapp_notification.instance_id }
 
@@ -91,12 +91,12 @@ describe InappNotificationServices::Builder do
           before { subject }
 
           it { expect(InappNotification.where(user: user).count).to eq(1) }
-          it { expect(InappNotification.where(user: user).first.content).to eq("bar") }
+          it { expect(InappNotification.where(user: user).first.content).to eq('bar') }
         end
       end
 
       describe 'record already exists and has been completed' do
-        let!(:inapp_notification) { create(:inapp_notification, user: user, context: context, content: "bar", completed_at: Time.now) }
+        let!(:inapp_notification) { create(:inapp_notification, user: user, context: context, content: 'bar', completed_at: Time.now) }
         let(:instance) { inapp_notification.instance }
         let(:instance_id) { inapp_notification.instance_id }
 
@@ -108,12 +108,12 @@ describe InappNotificationServices::Builder do
           before { subject }
 
           it { expect(InappNotification.where(user: user).count).to eq(2) }
-          it { expect(InappNotification.where(user: user).first.content).to eq("foo") }
+          it { expect(InappNotification.where(user: user).first.content).to eq('foo') }
         end
       end
 
       describe 'record does not exist for this user' do
-        let!(:inapp_notification) { create(:inapp_notification, context: context, content: "bar", completed_at: Time.now) }
+        let!(:inapp_notification) { create(:inapp_notification, context: context, content: 'bar', completed_at: Time.now) }
         let(:instance) { inapp_notification.instance }
         let(:instance_id) { inapp_notification.instance_id }
 
@@ -126,7 +126,7 @@ describe InappNotificationServices::Builder do
 
           it { expect(InappNotification.where(user: inapp_notification.user).count).to eq(1) }
           it { expect(InappNotification.where(user: user).count).to eq(1) }
-          it { expect(InappNotification.where(user: user).first.content).to eq("foo") }
+          it { expect(InappNotification.where(user: user).first.content).to eq('foo') }
         end
       end
     end

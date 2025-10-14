@@ -10,7 +10,7 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:address).order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:address).order('created_at DESC').page(params[:page]).per(25)
     end
 
     def search
@@ -112,7 +112,7 @@ module Admin
     def blocked_users
       @user_blocked_users = user
         .user_blocked_users
-        .order("user_blocked_users.created_at desc")
+        .order('user_blocked_users.created_at desc')
     end
 
     def edit
@@ -125,7 +125,7 @@ module Admin
     def create
       UserServices::PublicUserBuilder.new(params: user_params, community: community).create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
-          return redirect_to admin_users_path, notice: "utilisateur créé"
+          return redirect_to admin_users_path, notice: 'utilisateur créé'
         end
 
         on.invalid_phone_format do
@@ -161,7 +161,7 @@ module Admin
         ApplicationRecord.transaction do
           UserServices::RequestPhoneChange.record_phone_change!(user: user, admin: current_user) if user.phone_changed?
           user.save! if user.changed?
-          UserServices::SMSSender.new(user: user).send_welcome_sms(user_params[:sms_code_password], 'regenerate') if user.saved_change_to_sms_code?
+          UserServices::SmsSender.new(user: user).send_welcome_sms(user_params[:sms_code_password], 'regenerate') if user.saved_change_to_sms_code?
           moderation.save! if moderation.changed?
           saved = true
         end
@@ -169,15 +169,15 @@ module Admin
       end
 
       if email_prefs_success && saved
-        redirect_to [:admin, user], notice: "utilisateur mis à jour"
+        redirect_to [:admin, user], notice: 'utilisateur mis à jour'
       else
-        flash.now[:error] = "Erreur lors de la mise à jour"
+        flash.now[:error] = 'Erreur lors de la mise à jour'
         render :edit
       end
     end
 
     def moderate
-      @users = User.validated.where("avatar_key IS NOT NULL").order("updated_at DESC").page(params[:page]).per(25)
+      @users = User.validated.where('avatar_key IS NOT NULL').order('updated_at DESC').page(params[:page]).per(25)
     end
 
     def edit_block
@@ -185,35 +185,35 @@ module Admin
 
     def block
       unless block_params[:cnil_explanation].present?
-        redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
+        redirect_to edit_block_admin_user_path(@user), flash: { error: 'Merci de renseigner les raisons de cette action' } and return
       end
 
       @user.block! current_user, block_params[:cnil_explanation]
-      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué" }
+      redirect_to edit_admin_user_path(user), flash: { success: 'Utilisateur bloqué' }
     end
 
     def temporary_block
       unless block_params[:cnil_explanation].present?
-        redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
+        redirect_to edit_block_admin_user_path(@user), flash: { error: 'Merci de renseigner les raisons de cette action' } and return
       end
 
       @user.temporary_block! current_user, block_params[:cnil_explanation]
-      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué pendant 1 mois" }
+      redirect_to edit_admin_user_path(user), flash: { success: 'Utilisateur bloqué pendant 1 mois' }
     end
 
     def unblock
       unless block_params[:cnil_explanation].present?
-        redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
+        redirect_to edit_block_admin_user_path(@user), flash: { error: 'Merci de renseigner les raisons de cette action' } and return
       end
 
       @user.unblock! current_user, block_params[:cnil_explanation]
-      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur débloqué" }
+      redirect_to edit_admin_user_path(user), flash: { success: 'Utilisateur débloqué' }
     end
 
     def cancel_phone_change_request
       if @user.pending_phone_change_request.present?
         UserServices::RequestPhoneChange.cancel_phone_change!(user: @user, admin: current_user)
-        redirect_to [:admin, @user], flash: { success: "Demande de changement de téléphone annulée" }
+        redirect_to [:admin, @user], flash: { success: 'Demande de changement de téléphone annulée' }
       else
         redirect_to [:admin, @user], flash: { error: "L'utilisateur n'a pas de demande de changement de téléphone en cours" }
       end
@@ -225,7 +225,7 @@ module Admin
     end
 
     def banish
-      @user.block! current_user, "banish"
+      @user.block! current_user, 'banish'
       UserServices::Avatar.new(user: user).destroy
       redirect_to edit_admin_user_path(user)
     end
@@ -238,7 +238,7 @@ module Admin
     def download_export
       send_file UserServices::Exporter.new(user: @user).csv,
         filename: "users-personal-data-#{@user.phone.parameterize}.csv",
-        type: "application/csv"
+        type: 'application/csv'
     end
 
     def send_export
@@ -248,7 +248,7 @@ module Admin
 
     def download_list_export
       user_ids = filtered_users
-        .where("last_sign_in_at > ?", LAST_SIGN_IN_AT_EXPORT)
+        .where('last_sign_in_at > ?', LAST_SIGN_IN_AT_EXPORT)
         .order(last_sign_in_at: :desc)
         .pluck(:id).compact.uniq
 
@@ -260,22 +260,22 @@ module Admin
     def anonymize
       @user.anonymize! current_user
       UserServices::Avatar.new(user: @user).destroy
-      redirect_to [:admin, @user], flash: { success: "Utilisateur anonymisé" }
+      redirect_to [:admin, @user], flash: { success: 'Utilisateur anonymisé' }
     end
 
     def new_spam_warning
-      redirect_to [:admin, @user], flash: { success: "On ne peut prévenir du spam que sur un utilisateur bloqué" } unless @user.blocked?
+      redirect_to [:admin, @user], flash: { success: 'On ne peut prévenir du spam que sur un utilisateur bloqué' } unless @user.blocked?
 
       @chat_message = ChatMessage.new
     end
 
     def create_spam_warning
       redirect_to [:admin, @user], flash: {
-        error: "On ne peut prévenir du spam que sur un utilisateur bloqué"
+        error: 'On ne peut prévenir du spam que sur un utilisateur bloqué'
       } and return unless @user.blocked?
 
       redirect_to new_spam_warning_admin_user_path(@user), flash: {
-        error: "Merci de renseigner un message"
+        error: 'Merci de renseigner un message'
       } and return unless params[:message].present?
 
       UserServices::SpamAlert.new(spammer: @user).alert!(current_user, params[:message]) do |on|
@@ -344,7 +344,7 @@ module Admin
 
       @users = @users.with_profile(profile.to_s) if profile.present?
 
-      @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
+      @users = @users.in_area('dep_' + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')
       @users

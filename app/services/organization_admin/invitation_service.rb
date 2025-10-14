@@ -32,12 +32,12 @@ module OrganizationAdmin
     end
 
     def self.deliver invitation
-      raise "Invitation is not pending" unless invitation.pending?
+      raise 'Invitation is not pending' unless invitation.pending?
       OrganizationAdminMailer.invitation(invitation.id).deliver_later
     end
 
     def self.delete_invitation invitation
-      raise "Invitation is not pending" unless invitation.pending?
+      raise 'Invitation is not pending' unless invitation.pending?
       invitation.status = :deleted
       invitation.save
     end
@@ -56,8 +56,8 @@ module OrganizationAdmin
     end
 
     def self.accept_invitation! invitation:, user:
-      raise "Invitation is not pending" unless invitation.pending?
-      raise "Already a member" if user.partner_id == invitation.partner_id
+      raise 'Invitation is not pending' unless invitation.pending?
+      raise 'Already a member' if user.partner_id == invitation.partner_id
 
       user.assign_attributes(
         partner_id: invitation.partner_id,

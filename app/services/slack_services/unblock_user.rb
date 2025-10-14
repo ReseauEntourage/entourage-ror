@@ -16,24 +16,24 @@ module SlackServices
         attachments: [
           {
             callback_id: [:user_unblock, @user.id].join(':'),
-            fallback: "",
+            fallback: '',
             actions: [
               {
-                text:  "Débloquer",
+                text:  'Débloquer',
                 type:  :button,
                 style: :primary,
                 name:  :action,
                 value: :unblock,
                 confirm: {
-                  title:        "Débloquer cet utilisateur ?",
+                  title:        'Débloquer cet utilisateur ?',
                   text:         "Il pourra de nouveau accéder à l'application Entourage",
-                  ok_text:      "Oui",
-                  dismiss_text: "Non"
+                  ok_text:      'Oui',
+                  dismiss_text: 'Non'
                 }
               },
               {
 
-                text: "Afficher",
+                text: 'Afficher',
                 type: :button,
                 url: link_to_user(@user.id)
               }

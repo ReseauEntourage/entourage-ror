@@ -64,7 +64,7 @@ RSpec.describe Matchable, type: :module do
           before { match_struct.on_save }
 
           it { expect(OpenaiRequest.where(instance: action).count).to eq(1) }
-          it { expect(OpenaiRequest.where(instance: action, instance_class: "Contribution").count).to eq(1) }
+          it { expect(OpenaiRequest.where(instance: action, instance_class: 'Contribution').count).to eq(1) }
         end
       end
     end

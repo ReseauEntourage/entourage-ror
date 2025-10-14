@@ -25,14 +25,14 @@ class Partner < ApplicationRecord
   scope :no_staff, -> { where(staff: false).ordered }
   scope :ordered, -> { order(:name) }
 
-  PLACEHOLDER_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png".freeze
+  PLACEHOLDER_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png'.freeze
 
   def large_logo_url
     super.presence || PLACEHOLDER_URL
   end
 
-  CHECKMARK_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png".freeze
-  STAFF_BADGE_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/entourage-logo-small.png".freeze
+  CHECKMARK_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png'.freeze
+  STAFF_BADGE_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/entourage-logo-small.png'.freeze
 
   def small_logo_url
     super.presence || (staff ? STAFF_BADGE_URL : CHECKMARK_URL)

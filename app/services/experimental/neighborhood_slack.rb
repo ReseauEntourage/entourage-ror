@@ -32,7 +32,7 @@ module Experimental::NeighborhoodSlack
     {
       attachments: [
         {
-          color: "#3AA3E3",
+          color: '#3AA3E3',
           author_name: subtitle(record),
           thumb_url: UserServices::Avatar.new(user: record.user).thumbnail_url(expire: 7.days),
           title: record.title,
@@ -45,30 +45,30 @@ module Experimental::NeighborhoodSlack
         },
         {
           callback_id: [:neighborhood_validation, record.id].join(':'),
-          fallback: "",
+          fallback: '',
           actions: [
             {
-              text:  "Valider",
+              text:  'Valider',
               type:  :button,
               style: :primary,
               name:  :action,
               value: :validate
             },
             {
-              text:  "Bloquer",
+              text:  'Bloquer',
               type:  :button,
               style: :danger,
               name:  :action,
               value: :block,
               confirm: {
-                title:        "Masquer cette action ?",
+                title:        'Masquer cette action ?',
                 text:         "Elle n'apparaîtra plus dans les recherches.",
-                ok_text:      "Oui",
-                dismiss_text: "Non"
+                ok_text:      'Oui',
+                dismiss_text: 'Non'
               }
             },
             {
-              text:  "Afficher",
+              text:  'Afficher',
               type:  :button,
               url: links_url(record)
             }

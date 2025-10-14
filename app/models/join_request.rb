@@ -1,8 +1,8 @@
 class JoinRequest < ApplicationRecord
-  ACCEPTED_STATUS="accepted"
-  PENDING_STATUS="pending"
-  REJECTED_STATUS="rejected"
-  CANCELLED_STATUS="cancelled"
+  ACCEPTED_STATUS='accepted'
+  PENDING_STATUS='pending'
+  REJECTED_STATUS='rejected'
+  CANCELLED_STATUS='cancelled'
 
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
@@ -29,8 +29,8 @@ class JoinRequest < ApplicationRecord
   attr_accessor :siblings
 
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
-  validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
-  validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
+  validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: 'a déjà été ajouté'}
+  validates_inclusion_of :status, in: ['pending', 'accepted', 'rejected', 'cancelled']
   validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
     # can not remove creator
     join_request.joinable.present? &&
@@ -49,7 +49,7 @@ class JoinRequest < ApplicationRecord
   scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
   scope :ordered_by_validated_users, -> {
-    joins(:validated_user).order("join_requests.role, users.first_name")
+    joins(:validated_user).order('join_requests.role, users.first_name')
   }
 
   scope :search_by_member, ->(search) {
@@ -113,7 +113,7 @@ class JoinRequest < ApplicationRecord
   def set_chat_messages_as_read_from datetime
     update_column(:last_message_read, datetime)
     update_column(:unread_messages_count, joinable.chat_messages
-      .where("created_at > ?", datetime)
+      .where('created_at > ?', datetime)
       .where(status: [:active, :updated])
       .where(ancestry: nil)
       .count
@@ -161,7 +161,7 @@ class JoinRequest < ApplicationRecord
   end
 
   def self.with_unread_messages
-    where(status: :accepted).where("unread_messages_count > 0")
+    where(status: :accepted).where('unread_messages_count > 0')
   end
 
   STATUS.each do |check_status|
@@ -210,11 +210,11 @@ class JoinRequest < ApplicationRecord
   def simplified_status
     # Not sure it's needed anymore.
     # see commit 363a77c2df9b9e6e9a93f68796f4ac8f2c527868
-    return "not_requested" if destroyed?
+    return 'not_requested' if destroyed?
 
     # we don't return 'rejected' or 'cancelled' anymore as we don't want these states to
     # be treated differently by the clients. See EN-3073
-    return "not_requested" if status.in?(['rejected', 'cancelled'])
+    return 'not_requested' if status.in?(['rejected', 'cancelled'])
 
     status
   end

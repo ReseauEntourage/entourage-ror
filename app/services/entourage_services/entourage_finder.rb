@@ -35,10 +35,10 @@ module EntourageServices
       @distance = UserService.travel_distance(user: user, forced_distance: distance)
       @page = page
       @per = per
-      @show_past_events = show_past_events=="true"
+      @show_past_events = show_past_events=='true'
       @time_range = (time_range || 24).to_i
       @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
-      @partners_only = partners_only=="true"
+      @partners_only = partners_only=='true'
       @no_outings = no_outings
 
       # joined
@@ -56,7 +56,7 @@ module EntourageServices
       entourages = entourages.where(status: status || :open) # status
       entourages = entourages.where.not(group_type: [:conversation, :group]) # group_type
       entourages = entourages.where.not(group_type: [:outing]) if no_outings
-      entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
+      entourages = entourages.where('entourages.created_at > ?', time_range.hours.ago)
       entourages = entourages.like(search) if @search.present?
 
       if latitude && longitude
@@ -97,7 +97,7 @@ module EntourageServices
 
       # only partners
       if partners_only
-        entourages = entourages.joins(:user).where("users.partner_id is not null")
+        entourages = entourages.joins(:user).where('users.partner_id is not null')
       end
 
       # pagination
@@ -134,7 +134,7 @@ module EntourageServices
         distance_from_center = PostgisHelper.distance_from(latitude, longitude)
 
         entourages
-          .order(Arel.sql("case when online then 1 else 2 end"))
+          .order(Arel.sql('case when online then 1 else 2 end'))
           .order(Arel.sql(distance_from_center))
           .order(created_at: :desc)
       else

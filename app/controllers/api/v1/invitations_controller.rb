@@ -31,7 +31,7 @@ module Api
       end
 
       def check_invitation
-        return render json: "You tried to accept an invitation to another user", status: 403 if current_user != @invitation.invitee
+        return render json: 'You tried to accept an invitation to another user', status: 403 if current_user != @invitation.invitee
       end
     end
   end

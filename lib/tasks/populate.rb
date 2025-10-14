@@ -62,7 +62,7 @@ module Populate
 
     def find_resource_id identifiant
       return unless resource_hash = load_resources_config[identifiant]
-      return unless resource = Resource.find_by_name(resource_hash["name"])
+      return unless resource = Resource.find_by_name(resource_hash['name'])
 
       resource.id
     end

@@ -1,5 +1,5 @@
 module ModerationServices
-  DEFAULT_SLACK_MODERATOR_ID = ENV["SLACK_DEFAULT_INTERLOCUTOR"]
+  DEFAULT_SLACK_MODERATOR_ID = ENV['SLACK_DEFAULT_INTERLOCUTOR']
 
   def self.moderator_with_error(community:)
     if community != :entourage

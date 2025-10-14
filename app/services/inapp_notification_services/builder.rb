@@ -11,7 +11,7 @@ module InappNotificationServices
     def skip_obsolete_notifications
       user.inapp_notifications
         .active
-        .where("created_at < ?", OBSOLETE_PERIOD.ago)
+        .where('created_at < ?', OBSOLETE_PERIOD.ago)
         .update_all(skipped_at: Time.current)
     end
 

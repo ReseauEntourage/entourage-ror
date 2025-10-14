@@ -1,2 +1,0 @@
-require 'hirb'
-Hirb.enable

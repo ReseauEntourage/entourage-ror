@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::UserBlockedUsersController, :type => :controller do
+describe Api::V1::UserBlockedUsersController, type: :controller do
   render_views
 
   let(:user) { create :pro_user }
@@ -26,35 +26,35 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({
-        "user_blocked_users" => [{
-          "user" => {
-            "id" => user.id,
-            "lang" => "fr",
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+        'user_blocked_users' => [{
+          'user' => {
+            'id' => user.id,
+            'lang' => 'fr',
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => [],
           },
-          "blocked_user" => {
-            "id" => alice.id,
-            "lang" => "fr",
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+          'blocked_user' => {
+            'id' => alice.id,
+            'lang' => 'fr',
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => [],
           },
         }, {
-          "user" => {
-            "id" => user.id,
-            "lang" => "fr",
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+          'user' => {
+            'id' => user.id,
+            'lang' => 'fr',
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => [],
           },
-          "blocked_user" => {
-            "id" => bob.id,
-            "lang" => "fr",
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+          'blocked_user' => {
+            'id' => bob.id,
+            'lang' => 'fr',
+            'display_name' => 'John D.',
+            'avatar_url' => nil,
+            'community_roles' => [],
           },
         }]
       })}
@@ -78,20 +78,20 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq 200 }
         it { expect(result).to eq({
-          "user_blocked_user" => {
-            "user" => {
-              "id" => user.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+          'user_blocked_user' => {
+            'user' => {
+              'id' => user.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
-            "blocked_user" => {
-              "id" => alice.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+            'blocked_user' => {
+              'id' => alice.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
           }
         })}
@@ -102,7 +102,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq 200 }
         it { expect(result).to eq({
-          "user_blocked_user" => {}
+          'user_blocked_user' => {}
         }) }
       end
     end
@@ -125,20 +125,20 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq({
-          "user_blocked_user" => {
-            "user" => {
-              "id" => user.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+          'user_blocked_user' => {
+            'user' => {
+              'id' => user.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
-            "blocked_user" => {
-              "id" => alice.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+            'blocked_user' => {
+              'id' => alice.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
           }
         }) }
@@ -151,20 +151,20 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq({
-          "user_blocked_users" => [{
-            "user" => {
-              "id" => user.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+          'user_blocked_users' => [{
+            'user' => {
+              'id' => user.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
-            "blocked_user" => {
-              "id" => alice.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+            'blocked_user' => {
+              'id' => alice.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
           }]
         }) }
@@ -177,35 +177,35 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq({
-          "user_blocked_users" => [{
-            "user" => {
-              "id" => user.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+          'user_blocked_users' => [{
+            'user' => {
+              'id' => user.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
-            "blocked_user" => {
-              "id" => alice.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+            'blocked_user' => {
+              'id' => alice.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
           }, {
-            "user" => {
-              "id" => user.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+            'user' => {
+              'id' => user.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
-            "blocked_user" => {
-              "id" => bob.id,
-              "lang" => "fr",
-              "display_name" => "John D.",
-              "avatar_url" => nil,
-              "community_roles" => [],
+            'blocked_user' => {
+              'id' => bob.id,
+              'lang' => 'fr',
+              'display_name' => 'John D.',
+              'avatar_url' => nil,
+              'community_roles' => [],
             },
           }]
         }) }
@@ -218,7 +218,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq({
-          "user_blocked_users" => []
+          'user_blocked_users' => []
         }) }
       end
     end

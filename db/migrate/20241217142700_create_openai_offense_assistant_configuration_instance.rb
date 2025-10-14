@@ -6,7 +6,7 @@ class CreateOpenaiOffenseAssistantConfigurationInstance < ActiveRecord::Migratio
         version: 2,
         api_key: ENV['OPENAI_API_KEY'],
         assistant_id: ENV['OPENAI_API_OFFENSE_ASSISTANT_ID'],
-        prompt: "{{text}}",
+        prompt: '{{text}}',
         poi_from_file: false,
         resource_from_file: false
       ).save

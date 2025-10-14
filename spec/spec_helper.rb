@@ -16,18 +16,18 @@ RSpec.configure do |config|
   config.color = true
   config.formatter = :documentation
 
-  config.before(:each) do
+  config.before do
     Timecop.return
   end
 end
 
 ENV['ADMIN_HOST'] = 'https://this.is.local'
-ENV["DISABLE_CRYPT"] = "TRUE"
+ENV['DISABLE_CRYPT'] = 'TRUE'
 ENV['ENTOURAGE_IMAGES_BUCKET'] = 'entourage-images-test'
 ENV['ENTOURAGE_SECRET'] = 'test_entourage_secret'
 ENV['ENTOURAGE_USER_PHONE'] = '+33612345678'
-ENV["SLACK_DEFAULT_INTERLOCUTOR"] = "laure"
-ENV["MODERATOR_PHONE"] = "+33768037348"
-ENV['SLACK_WEBHOOK_URL'] = "https://url.to.slack.com"
-ENV["SLACK_SIGNAL"] = '{"url":"https://url.to.slack.com","channel":"channel","channel-associations":"channel-associations"}'
+ENV['SLACK_DEFAULT_INTERLOCUTOR'] = 'laure'
+ENV['MODERATOR_PHONE'] = '+33768037348'
+ENV['SLACK_WEBHOOK_URL'] = 'https://url.to.slack.com'
+ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel","channel-associations":"channel-associations"}'
 API_HOST = 'api.entourage.test'

@@ -1,7 +1,7 @@
 module Admin
   class MessagesController < Admin::BaseController
     def index
-      @messages = Message.order("created_at DESC").page(params[:page]).per(25)
+      @messages = Message.order('created_at DESC').page(params[:page]).per(25)
     end
 
     def destroy

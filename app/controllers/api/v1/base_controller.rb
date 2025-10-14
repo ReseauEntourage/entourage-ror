@@ -10,7 +10,7 @@ module Api
       before_action :validate_request!, only: [:check]
       before_action :ensure_community!, except: [:options]
       before_action :authenticate_user!, except: [:check, :options]
-      before_action :set_raven_context
+      before_action :set_sentry_context
 
       after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
@@ -29,13 +29,13 @@ module Api
 
       rescue_from ActionController::ParameterMissing do |e|
         Rails.logger.error e
-        render_error(code: "PARAMETER_MISSING", message: e.message, status: :bad_request)
+        render_error(code: 'PARAMETER_MISSING', message: e.message, status: :bad_request)
       end
 
       def allow_cors
-        headers["Access-Control-Allow-Origin"] = "*"
-        headers["Access-Control-Allow-Methods"] = %w{GET POST PUT PATCH DELETE}.join(",")
-        headers["Access-Control-Allow-Headers"] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token X-API-KEY}.join(",")
+        headers['Access-Control-Allow-Origin'] = '*'
+        headers['Access-Control-Allow-Methods'] = %w{GET POST PUT PATCH DELETE}.join(',')
+        headers['Access-Control-Allow-Headers'] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token X-API-KEY}.join(',')
       end
 
       def options
@@ -93,7 +93,7 @@ module Api
       end
 
       def render_error(code:, message:, status:)
-        render json: {"error":{"code":code, "message":message}}, status: status
+        render json: {"error": {"code": code, "message": message}}, status: status
       end
 
       #curl -H "X-API-KEY: api_debug" "http://api.entourage.social/api/v1/check.json"
@@ -118,7 +118,7 @@ module Api
       def ping_op_lapin
         from_date = ENV['OP_LAPIN_FROM_DATE'] || '2021-09-20'
 
-        render json: { status: :ok, count: User.where("created_at > ?", from_date).count }
+        render json: { status: :ok, count: User.where('created_at > ?', from_date).count }
       end
 
       def api_request
@@ -160,12 +160,12 @@ module Api
       def track_session
         SessionHistory.track user_id: current_user.id, platform: api_request_platform
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       end
 
-      def set_raven_context
-        Raven.user_context(id: current_user.try(:id))
-        Raven.extra_context(
+      def set_sentry_context
+        Sentry.set_user(id: current_user.try(:id))
+        Sentry.set_extras(
           params: params.to_unsafe_h,
           url: request.url,
           platform: api_request_platform,
@@ -200,7 +200,7 @@ module Api
           params: params
         ).run
       rescue => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
       end
     end
   end

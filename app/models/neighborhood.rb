@@ -23,7 +23,7 @@ class Neighborhood < ApplicationRecord
   alias_attribute :author, :user
 
   has_many :members, -> {
-    where("join_requests.status = 'accepted'").order("join_requests.role, users.first_name")
+    where("join_requests.status = 'accepted'").order('join_requests.role, users.first_name')
   }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
   has_many :chat_messages, as: :messageable, dependent: :destroy
@@ -83,12 +83,12 @@ class Neighborhood < ApplicationRecord
     return where(national: true) if moderation_area.to_sym == :national
 
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
-      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
+      return where('left(postal_code, 2) not in (?)', ModerationArea.only_departements).or(
         where.not(country: :FR)
       )
     end
 
-    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area)).where(country: :FR)
+    where('left(postal_code, 2) = ?', ModerationArea.departement(moderation_area)).where(country: :FR)
   }
 
   scope :join_chat_message_with_images, -> {
@@ -254,7 +254,7 @@ class Neighborhood < ApplicationRecord
 
   def unread_first_chat_message_for user
     JoinRequest
-      .select("join_requests.id, join_requests.created_at, min(chat_messages.id) as unread_first_chat_message_id")
+      .select('join_requests.id, join_requests.created_at, min(chat_messages.id) as unread_first_chat_message_id')
       .where(user: user, joinable: self)
       .with_unread_messages
       .group('join_requests.id')

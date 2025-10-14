@@ -58,13 +58,13 @@ module Api
 
           on.failure do |solicitation|
             render json: {
-              message: "Could not delete solicitation", reasons: solicitation.errors.full_messages
+              message: 'Could not delete solicitation', reasons: solicitation.errors.full_messages
             }, status: :bad_request
           end
 
           on.not_authorized do
             render json: {
-              message: "You are not authorized to delete this solicitation"
+              message: 'You are not authorized to delete this solicitation'
             }, status: :unauthorized
           end
         end

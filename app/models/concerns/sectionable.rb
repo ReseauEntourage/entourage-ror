@@ -16,11 +16,11 @@ module Sectionable
     # hack to prevent ActsAsTaggableOn::Taggable::TaggedWithQuery::AnyTagsQuery "select", "order" and "readonly"
     # this hack is required to chain with "or" statement
     scope :tagged_with_any_sections, -> (sections) {
-      tagged_with(sections, :any => true).unscope(:select, :order, :readonly)
+      tagged_with(sections, any: true).unscope(:select, :order, :readonly)
     }
 
     scope :with_sections, -> (sections) {
-      return tagged_with_any_sections(sections) unless attribute_names.include?("display_category")
+      return tagged_with_any_sections(sections) unless attribute_names.include?('display_category')
 
       tagged_with_any_sections(sections).or(
         unscope(:order).where(display_category: ActionServices::Mapper.display_categories_from_sections(sections))
@@ -31,7 +31,7 @@ module Sectionable
       return unless section_list
       return unless section_list.any?
 
-      join_sections.where("tags.name IN (?)", section_list)
+      join_sections.where('tags.name IN (?)', section_list)
     }
   end
 

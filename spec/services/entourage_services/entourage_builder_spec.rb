@@ -26,18 +26,18 @@ describe EntourageServices::EntourageBuilder do
 
   describe '#create' do
     let(:user) { create :public_user }
-    let(:params) { {title: "Foo", entourage_type: :contribution, location: {latitude: 1, longitude: 2}} }
+    let(:params) { {title: 'Foo', entourage_type: :contribution, location: {latitude: 1, longitude: 2}} }
     let(:service) { EntourageServices::EntourageBuilder.new(params: params, user: user) }
 
     it { expect(service.create).to be_persisted }
     it { expect(service.create.attributes.symbolize_keys).to include(
-      title: "Foo",
+      title: 'Foo',
       entourage_type: 'contribution',
       latitude: 1,
       longitude: 2
     ) }
 
-    it "FollowingService.on_create_entourage" do
+    it 'FollowingService.on_create_entourage' do
       expect(FollowingService).to receive(:on_create_entourage)
       entourage = service.create
     end
@@ -76,10 +76,10 @@ describe EntourageServices::EntourageBuilder do
       let(:params) { { cancellation_message: 'my message' } }
       before { described_class.cancel(entourage: outing, params: params) }
 
-      it { expect(ChatMessage.offset(1).limit(1).order('id desc').first.message_type).to eq("text") }
-      it { expect(ChatMessage.offset(1).limit(1).order('id desc').first.content).to eq("my message") }
-      it { expect(ChatMessage.offset(0).limit(1).order('id desc').first.message_type).to eq("status_update") }
-      it { expect(ChatMessage.offset(0).limit(1).order('id desc').first.content).to eq("a annulé l’évènement") }
+      it { expect(ChatMessage.offset(1).limit(1).order('id desc').first.message_type).to eq('text') }
+      it { expect(ChatMessage.offset(1).limit(1).order('id desc').first.content).to eq('my message') }
+      it { expect(ChatMessage.offset(0).limit(1).order('id desc').first.message_type).to eq('status_update') }
+      it { expect(ChatMessage.offset(0).limit(1).order('id desc').first.content).to eq('a annulé l’évènement') }
     end
 
     describe 'cancellation without cancellation_message creates text chat_messages' do
@@ -87,8 +87,8 @@ describe EntourageServices::EntourageBuilder do
       let(:params) { { cancellation_message: 'my message' } }
       before { described_class.cancel(entourage: outing, params: params) }
 
-      it { expect(ChatMessage.last.message_type).to eq("status_update") }
-      it { expect(ChatMessage.last.content).to eq("a annulé l’évènement") }
+      it { expect(ChatMessage.last.message_type).to eq('status_update') }
+      it { expect(ChatMessage.last.content).to eq('a annulé l’évènement') }
     end
   end
 end

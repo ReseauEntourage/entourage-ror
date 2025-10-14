@@ -52,7 +52,7 @@ describe PoiServices::Soliguide do
             },
             distance: PoiServices::Soliguide::DISTANCE_MIN,
             coordinates: [-1.55, 47.3],
-            geoType: "position"
+            geoType: 'position'
           },
           options: {},
         })
@@ -73,7 +73,7 @@ describe PoiServices::Soliguide do
             },
             distance: PoiServices::Soliguide::DISTANCE_MIN,
             coordinates: [2.34, 48.86],
-            geoType: "position"
+            geoType: 'position'
           },
           options: {},
         })
@@ -85,7 +85,7 @@ describe PoiServices::Soliguide do
         distance: 5.0,
         latitude: 47.3,
         longitude: -1.55,
-        category_ids: "1,2",
+        category_ids: '1,2',
         query: 'myquery'
       } }
 
@@ -97,7 +97,7 @@ describe PoiServices::Soliguide do
             },
             distance: 5.0,
             coordinates: [-1.55, 47.3],
-            geoType: "position"
+            geoType: 'position'
           },
           options: {},
           word: 'myquery',
@@ -110,7 +110,7 @@ describe PoiServices::Soliguide do
         distance: 5.0,
         latitude: 47.3,
         longitude: -1.55,
-        category_ids: "1"
+        category_ids: '1'
       } }
 
       it {
@@ -121,10 +121,10 @@ describe PoiServices::Soliguide do
             },
             distance: 5.0,
             coordinates: [-1.55, 47.3],
-            geoType: "position"
+            geoType: 'position'
           },
           options: {},
-          categories: ["food"],
+          categories: ['food'],
         })
       }
     end

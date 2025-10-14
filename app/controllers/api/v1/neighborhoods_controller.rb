@@ -29,7 +29,7 @@ module Api
         if @neighborhood.save
           render json: @neighborhood, status: 201, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
         else
-          render json: { message: "Could not create Neighborhood", reasons: @neighborhood.errors.full_messages }, status: 400
+          render json: { message: 'Could not create Neighborhood', reasons: @neighborhood.errors.full_messages }, status: 400
         end
       end
 
@@ -54,18 +54,18 @@ module Api
       def destroy
         NeighborhoodServices::Deleter.new(user: current_user, neighborhood: @neighborhood).delete do |on|
           on.success do |neighborhood|
-            render json: neighborhood, root: "user", status: 200, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
+            render json: neighborhood, root: 'user', status: 200, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
           end
 
           on.failure do |neighborhood|
             render json: {
-              message: "Could not delete neighborhood", reasons: neighborhood.errors.full_messages
+              message: 'Could not delete neighborhood', reasons: neighborhood.errors.full_messages
             }, status: :bad_request
           end
 
           on.not_authorized do
             render json: {
-              message: "You are not authorized to delete this neighborhood"
+              message: 'You are not authorized to delete this neighborhood'
             }, status: :unauthorized
           end
         end

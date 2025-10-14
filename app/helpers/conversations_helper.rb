@@ -11,7 +11,7 @@ module ConversationsHelper
     recipient_names = recipients.first(max).map { |u| [UserPresenter.full_name(u), u.id] }
 
     if count == (max + 1)
-      recipient_names.push ["1 autre personne", nil]
+      recipient_names.push ['1 autre personne', nil]
     elsif count > (max + 1)
       recipient_names.push ["#{count - max} autres personnes", nil]
     end
@@ -36,13 +36,13 @@ module ConversationsHelper
 
   def chat_message_with_status(chat_message)
     message_html = if chat_message.deleted?
-      content_tag(:p, "Ce message a été supprimé par #{chat_message.deleter&.full_name} le #{l(chat_message.deleted_at, format: :short)} :", style: "color: red;") +
+      content_tag(:p, "Ce message a été supprimé par #{chat_message.deleter&.full_name} le #{l(chat_message.deleted_at, format: :short)} :", style: 'color: red;') +
         content_tag(:em, simple_format(chat_message.content(true)).html_safe)
     elsif chat_message.offensible?
-      content_tag(:p, "Ce message a été détecté automatiquement comme offensant :", style: "color: red;") +
+      content_tag(:p, 'Ce message a été détecté automatiquement comme offensant :', style: 'color: red;') +
         content_tag(:em, simple_format(chat_message.content(true)).html_safe)
     elsif chat_message.offensive?
-      content_tag(:p, "Ce message a été modéré comme offensant :", style: "color: red;") +
+      content_tag(:p, 'Ce message a été modéré comme offensant :', style: 'color: red;') +
         content_tag(:em, simple_format(chat_message.content(true)).html_safe)
     else
       content_tag(:div, simple_format(chat_message.content).html_safe, id: "chat-message-#{chat_message.id}")

@@ -14,14 +14,14 @@ module Api
             .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: {
+            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: {
               user: current_user
             }
         end
 
         def create
           # join a neighborhood
-          return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
+          return render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
             user: current_user
           } if @join_request.present? && @join_request.accepted?
 
@@ -32,7 +32,7 @@ module Api
           end
 
           if @join_request.save
-            render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not create neighborhood participation request', reasons: @join_request.errors.full_messages
@@ -46,7 +46,7 @@ module Api
           }, status: :unauthorized unless @join_request
 
           if @join_request.update(status: :cancelled)
-            render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not destroy neighborhood participation request', reasons: @join_request.errors.full_messages

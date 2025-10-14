@@ -75,7 +75,7 @@ module Api
         if @poi.save
           render json: @poi, status: 201, serializer: ::V1::PoiSerializer, scope: { version: :v2 }
         else
-          render json: { message: "Could not create POI", reasons: @poi.errors.full_messages }, status: 400
+          render json: { message: 'Could not create POI', reasons: @poi.errors.full_messages }, status: 400
         end
       end
 
@@ -129,11 +129,11 @@ module Api
       end
 
       def category_ids
-        @category_ids ||= (params[:category_ids] || "").split(",").map(&:to_i).uniq
+        @category_ids ||= (params[:category_ids] || '').split(',').map(&:to_i).uniq
       end
 
       def partners_filters
-        @partners_filters ||= (params[:partners_filters] || "").split(",").compact.uniq.map(&:to_sym) & [:donations, :volunteers]
+        @partners_filters ||= (params[:partners_filters] || '').split(',').compact.uniq.map(&:to_sym) & [:donations, :volunteers]
       end
 
       def member_mailer

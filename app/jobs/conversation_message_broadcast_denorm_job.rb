@@ -2,7 +2,7 @@ require 'sidekiq/api'
 
 class ConversationMessageBroadcastDenormJob
   include Sidekiq::Worker
-  sidekiq_options :retry => false, queue: :denorm
+  sidekiq_options retry: false, queue: :denorm
 
   def perform conversation_message_broadcast_id
     conversation_message_broadcast = ConversationMessageBroadcast.find_with_cast(conversation_message_broadcast_id)

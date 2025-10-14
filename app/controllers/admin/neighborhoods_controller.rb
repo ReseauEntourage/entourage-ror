@@ -149,7 +149,7 @@ module Admin
 
       EntourageServices::ChangeOwner.new(@neighborhood).to(user_id, message) do |success, error_message|
         if success
-          redirect_to [:edit, :admin, @neighborhood], notice: "Mise à jour réussie"
+          redirect_to [:edit, :admin, @neighborhood], notice: 'Mise à jour réussie'
         else
           redirect_to [:edit_owner, :admin, @neighborhood], alert: error_message
         end
@@ -166,7 +166,7 @@ module Admin
       end
 
       if @join_request.save
-        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: "Vous avez bien rejoint le groupe"
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: 'Vous avez bien rejoint le groupe'
       else
         redirect_to show_members_admin_neighborhood_path(@neighborhood), error: "Vous n'avez pas pu rejoindre le groupe : #{@join_request.errors.full_messages}"
       end
@@ -182,7 +182,7 @@ module Admin
       end
 
       if @join_request.save
-        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: "Vous avez bien quitté le groupe"
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: 'Vous avez bien quitté le groupe'
       else
         redirect_to show_members_admin_neighborhood_path(@neighborhood), error: "Vous n'avez pas pu quitter le groupe : #{@join_request.errors.full_messages}"
       end
@@ -285,7 +285,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end
@@ -308,7 +308,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end

@@ -1,5 +1,5 @@
 namespace :actions do
-  desc "Clean deprecated actions"
+  desc 'Clean deprecated actions'
   task clean_deprecated: :environment do
     Action
       .joins(:user)

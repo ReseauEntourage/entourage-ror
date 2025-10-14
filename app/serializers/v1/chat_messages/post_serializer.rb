@@ -24,11 +24,11 @@ module V1
 
       def auto_post_from
         return unless object.options.present?
-        return unless object.options.key?("auto_post_type") && object.options.key?("auto_post_id")
+        return unless object.options.key?('auto_post_type') && object.options.key?('auto_post_id')
 
         {
-          instance_type: object.options["auto_post_type"],
-          instance_id: object.options["auto_post_id"]
+          instance_type: object.options['auto_post_type'],
+          instance_id: object.options['auto_post_id']
         }
       end
 

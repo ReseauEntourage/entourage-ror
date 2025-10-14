@@ -4,7 +4,7 @@
 # Rails 5 provides this class but without magic methods (such as key_changed?) we need
 # Please remove this class as soon as we migrate to Rails 6
 
-require "active_support/core_ext/hash/indifferent_access"
+require 'active_support/core_ext/hash/indifferent_access'
 
 module JsonStorable
   extend ActiveSupport::Concern
@@ -20,7 +20,7 @@ module JsonStorable
         when TrueClass
           "#{store_attribute}_"
         else
-          ""
+          ''
         end
       accessor_suffix =
         case suffix
@@ -29,7 +29,7 @@ module JsonStorable
         when TrueClass
           "_#{store_attribute}"
         else
-          ""
+          ''
         end
 
       _store_accessors_module.module_eval do

@@ -33,7 +33,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Signalement d’un utilisateur",
+        username: 'Signalement d’un utilisateur',
         channel: webhook('channel'),
       }
     end

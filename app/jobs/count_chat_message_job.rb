@@ -1,7 +1,7 @@
 class CountChatMessageJob
   include Sidekiq::Worker
 
-  sidekiq_options :retry => true, queue: :default
+  sidekiq_options retry: true, queue: :default
 
   def perform messageable_type, messageable_id
     return unless klass = messageable_type.constantize

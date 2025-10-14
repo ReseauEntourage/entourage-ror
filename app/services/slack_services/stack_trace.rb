@@ -20,7 +20,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "STACK_TRACE",
+        username: 'STACK_TRACE',
         channel: webhook('stack-trace-channel'),
       }
     end

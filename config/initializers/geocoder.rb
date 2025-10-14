@@ -36,18 +36,29 @@ class Geocoder::Lookup::Base
 
   def fetch_data(query)
     begin
-      Raven.breadcrumbs.record do |crumb|
-        crumb.data = { text: query.text, options: query.options }
-        crumb.category = 'geocoder.query'
-      end
+      Sentry.add_breadcrumb(
+        Sentry::Breadcrumb.new(
+          category: 'geocoder.query',
+          data: {
+            text: query.text,
+            options: query.options
+          },
+          level: :info
+        )
+      )
     rescue
     end
     response = _fetch_data(query)
     begin
-      Raven.breadcrumbs.record do |crumb|
-        crumb.data = { response: response }
-        crumb.category = 'geocoder.response'
-      end
+      Sentry.add_breadcrumb(
+        Sentry::Breadcrumb.new(
+          category: 'geocoder.response',
+          data: {
+            response: response
+          },
+          level: :info
+        )
+      )
     rescue
     end
     response

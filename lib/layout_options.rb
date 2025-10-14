@@ -42,7 +42,7 @@ module LayoutOptions
         when Hash
           @layout_options = @layout_options.merge(options)
         else
-          raise ArgumentError.new("layout_options takes an optional Hash")
+          raise ArgumentError.new('layout_options takes an optional Hash')
         end
       end
       helper_method :layout_options
@@ -79,7 +79,7 @@ module LayoutOptions
           @layout_options = options.merge(@layout_options)
         end
       else
-        raise ArgumentError.new("default_layout_options takes a Hash")
+        raise ArgumentError.new('default_layout_options takes a Hash')
       end
     end
   end

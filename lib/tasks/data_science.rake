@@ -10,7 +10,7 @@ namespace :data_science do
 
     users = User.where(community: :entourage, validation_status: :validated)
 
-    CSV.open("users.csv", "wb", options) do |csv|
+    CSV.open('users.csv', 'wb', options) do |csv|
       csv.puts [
         :id,
         :created_at,
@@ -44,7 +44,7 @@ namespace :data_science do
       end
     end
 
-    CSV.open("sessions.csv", "wb", options) do |csv|
+    CSV.open('sessions.csv', 'wb', options) do |csv|
       csv.puts [
         :user_id,
         :date
@@ -64,7 +64,7 @@ namespace :data_science do
 
     groups = Entourage.where(group_type: [:action, :outing, :conversation]).where.not(status: :blacklisted)
 
-    CSV.open("groups.csv", "wb", options) do |csv|
+    CSV.open('groups.csv', 'wb', options) do |csv|
       csv.puts [
         :id,
         :type,
@@ -130,7 +130,7 @@ namespace :data_science do
         end
     end
 
-    CSV.open("users_groups.csv", "wb", options) do |csv|
+    CSV.open('users_groups.csv', 'wb', options) do |csv|
       csv.puts [
         :user_id,
         :group_id,
@@ -156,7 +156,7 @@ namespace :data_science do
       end
     end
 
-    CSV.open("messages.csv", "wb", options) do |csv|
+    CSV.open('messages.csv', 'wb', options) do |csv|
       csv.puts [
         :user_id,
         :group_id,
@@ -167,7 +167,7 @@ namespace :data_science do
         .where(message_type: :text)
         .joins(:user).merge(users)
         .joins("join entourages on messageable_type = 'Entourage' and entourages.id = messageable_id").merge(groups)
-        .joins("join users users_entourages on users_entourages.id = entourages.user_id").where(users_entourages: users.where_values_hash)
+        .joins('join users users_entourages on users_entourages.id = entourages.user_id').where(users_entourages: users.where_values_hash)
         .find_each do |message|
           csv.puts [
             message.user_id,

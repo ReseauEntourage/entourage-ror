@@ -26,17 +26,17 @@ module PoiServices
         row = row.to_hash.map { |k,v| [k, v&.strip] }.to_h # remove surrounding spaces or carriage returns
 
         attributes = {
-          name: row['Nom'],
-          adress: row['Adresse'],
+          :name => row['Nom'],
+          :adress => row['Adresse'],
           # we use different notation because of poi_geocoder specifications
-          "adress" => row['Adresse'],
-          description: row['Description'],
-          audience: row['Public'] || row['Public(s) bénéficiaire(s)'],
-          email: row['Email'],
-          website: row['Website'],
-          phone: row['Téléphone'],
-          category_id: row['Catégorie1'] || row['Catégorie 1'],
-          category_ids: [
+          'adress' => row['Adresse'],
+          :description => row['Description'],
+          :audience => row['Public'] || row['Public(s) bénéficiaire(s)'],
+          :email => row['Email'],
+          :website => row['Website'],
+          :phone => row['Téléphone'],
+          :category_id => row['Catégorie1'] || row['Catégorie 1'],
+          :category_ids => [
             row['Catégorie1'] || row['Catégorie 1'],
             row['Catégorie2'] || row['Catégorie 2'],
             row['Catégorie3'] || row['Catégorie 3'],
@@ -45,7 +45,7 @@ module PoiServices
             row['Catégorie6'] || row['Catégorie 6'],
             row['Catégorie7'] || row['Catégorie 7']
           ].uniq.compact,
-          validated: true
+          :validated => true
         }
 
         poi = Poi.new(attributes)

@@ -17,10 +17,10 @@ module OrganizationAdmin
         builder.create(send_sms: true) do |on|
           on.invalid_phone_format { error = :invalid_phone_format }
 
-          on.duplicate { raise "This should never happen" }
+          on.duplicate { raise 'This should never happen' }
 
           on.failure do |user|
-            Raven.capture_exception(ActiveRecord::RecordInvalid.new(user))
+            Sentry.capture_exception(ActiveRecord::RecordInvalid.new(user))
             error = :unknown
           end
 
@@ -51,12 +51,12 @@ module OrganizationAdmin
         @context = :existing_sms_code
       end
 
-      raise "blocked|deleted" if user.deleted? || user.blocked?
+      raise 'blocked|deleted' if user.deleted? || user.blocked?
     end
 
     def authenticate
       unless params[:method].in?(['sms_code', 'password'])
-        raise "unexpected method"
+        raise 'unexpected method'
       end
 
       user = UserServices::UserAuthenticator.authenticate(
@@ -75,7 +75,7 @@ module OrganizationAdmin
         return
       end
 
-      raise "blocked|deleted" if user.deleted? || user.blocked?
+      raise 'blocked|deleted' if user.deleted? || user.blocked?
       sign_in(user)
       user.update_column(:first_sign_in_at, Time.zone.now) if user.first_sign_in_at.nil?
 
@@ -85,10 +85,10 @@ module OrganizationAdmin
     def reset_password
       phone = Phone::PhoneBuilder.new(phone: params[:phone]).format
       user = community.users.where(phone: phone).first
-      raise "This should never happen" if user.nil?
-      raise "blocked|deleted" if user.deleted? || user.blocked?
+      raise 'This should never happen' if user.nil?
+      raise 'blocked|deleted' if user.deleted? || user.blocked?
 
-      UserServices::SMSSender.new(user: user)
+      UserServices::SmsSender.new(user: user)
         .regenerate_sms!(clear_password: true)
 
       context =

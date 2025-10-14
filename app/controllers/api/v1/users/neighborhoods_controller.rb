@@ -7,7 +7,7 @@ module Api
 
         def index
           render json: NeighborhoodServices::Finder.new(@user, index_params).find_all_participations
-            .select("neighborhoods.*, join_requests.unread_messages_count")
+            .select('neighborhoods.*, join_requests.unread_messages_count')
             .includes(:translation, :image_resize_actions, :future_outings)
             .order(national: :desc, name: :asc)
             .page(page)
@@ -23,7 +23,7 @@ module Api
         private
 
         def set_user
-          @user = if params[:user_id] == "me"
+          @user = if params[:user_id] == 'me'
             current_user
           else
             User.find(params[:user_id])

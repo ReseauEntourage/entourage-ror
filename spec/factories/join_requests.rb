@@ -6,7 +6,7 @@ FactoryBot.define do
 
     association :user, factory: :pro_user
     joinable { association joinable_factory }
-    status { "pending" }
+    status { 'pending' }
     role { :auto }
 
     after(:build) do |join_request, _|

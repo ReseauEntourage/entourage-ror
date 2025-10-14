@@ -1,5 +1,3 @@
-require 'experimental/symbol_set'
-
 module Experimental
   class JsonbSet < ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Jsonb
     def deserialize(value)
@@ -17,7 +15,7 @@ module Experimental
     private
 
     def format value
-      Experimental::SymbolSet(value).sort
+      Array(value).map { |v| v.try(:to_sym) }.compact.uniq.sort
     end
   end
 end

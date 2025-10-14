@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe PoiServices::SoliguideShow do
-  describe "show" do
+  describe 'show' do
     let(:subject) { PoiServices::SoliguideShow.get(1) }
 
     let(:response_body) { File.read(Rails.root.join('spec/fixtures/soliguide_show_1.body')) }
@@ -34,7 +34,7 @@ describe PoiServices::SoliguideShow do
     # }
 
     it { expect(subject).to have_key(:uuid) }
-    it { expect(subject[:uuid]).to eq("s1") }
+    it { expect(subject[:uuid]).to eq('s1') }
 
     it { expect(subject).to have_key(:source_id) }
     it { expect(subject[:source_id]).to eq(1) }
@@ -82,10 +82,10 @@ describe PoiServices::SoliguideShow do
     it { expect(subject[:category_ids]).to include(5) }
 
     it { expect(subject).to have_key(:source_category) }
-    it { expect(subject[:source_category]).to eq("day_hosting") }
+    it { expect(subject[:source_category]).to eq('day_hosting') }
 
     it { expect(subject).to have_key(:source_categories) }
-    it { expect(subject[:source_categories]).to eq(["day_hosting", "seated_catering", "shower", "laundry", "luggage_storage", "toilets", "electrical_outlets_available"]) }
+    it { expect(subject[:source_categories]).to eq(['day_hosting', 'seated_catering', 'shower', 'laundry', 'luggage_storage', 'toilets', 'electrical_outlets_available']) }
 
     it { expect(subject).to have_key(:hours) }
     it { expect(subject[:hours]).to match(/lun/) }

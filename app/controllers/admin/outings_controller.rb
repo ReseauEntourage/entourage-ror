@@ -55,7 +55,7 @@ module Admin
         ))
         .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
         .order(Arel.sql("metadata->>'starts_at' DESC"))
-        .order(Arel.sql("entourages.created_at DESC"))
+        .order(Arel.sql('entourages.created_at DESC'))
     end
   end
 end

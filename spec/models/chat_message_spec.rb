@@ -10,10 +10,10 @@ RSpec.describe ChatMessage, type: :model do
   it { should validate_presence_of :content }
   it { should validate_presence_of :user_id }
 
-  describe "has a v2 uuid" do
+  describe 'has a v2 uuid' do
     let(:chat_message) { create :chat_message }
 
-    describe "format" do
+    describe 'format' do
       it { expect(chat_message.uuid_v2).not_to be_nil }
       it { expect(chat_message.uuid_v2[0]).to eq 'e' }
       it { expect(chat_message.uuid_v2.length).to eq 12 }
@@ -29,18 +29,17 @@ RSpec.describe ChatMessage, type: :model do
       interest_list: 'jeux, cuisine',
       involvement_list: 'outings, resources',
       availability: {
-        "1" => ["09:00-12:00", "14:00-18:00"],
-        "2" => ["10:00-12:00"]
+        '1' => ['09:00-12:00', '14:00-18:00'],
+        '2' => ['10:00-12:00']
       },
-      address: address,
-      addresses: [address]
+      address: address
     )}
 
     let(:other_user) { create(:public_user) }
     let(:author) { create(:public_user, first_name: 'Alice') }
 
-    let(:neighborhood) { create(:neighborhood, name: "Groupe de Paris") }
-    let(:address) { create :address, city: "Paris" }
+    let(:neighborhood) { create(:neighborhood, name: 'Groupe de Paris') }
+    let(:address) { create :address, city: 'Paris' }
 
     before do
       allow(user).to receive(:default_neighborhood).and_return(neighborhood)
@@ -103,8 +102,8 @@ RSpec.describe ChatMessage, type: :model do
     end
 
     it 'handles missing placeholders gracefully when author is nil' do
-      message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
-      expected_message = "Hello John, your interlocutor is ."
+      message = 'Hello {{ first_name }}, your interlocutor is {{ interlocutor }}.'
+      expected_message = 'Hello John, your interlocutor is .'
 
       allow(ModerationServices).to receive(:moderation_area_for_user_with_default)
         .with(user)
@@ -115,8 +114,8 @@ RSpec.describe ChatMessage, type: :model do
     end
 
     it 'handles missing placeholders in the message' do
-      message = "This message has no placeholders."
-      expected_message = "This message has no placeholders."
+      message = 'This message has no placeholders.'
+      expected_message = 'This message has no placeholders.'
 
       result = ChatMessage.interpolate(message: message, user: user)
       expect(result).to eq(expected_message)
@@ -128,8 +127,8 @@ RSpec.describe ChatMessage, type: :model do
           .with(user)
           .and_return(nil)
 
-        message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
-        expected_message = "Hello John, your interlocutor is ."
+        message = 'Hello {{ first_name }}, your interlocutor is {{ interlocutor }}.'
+        expected_message = 'Hello John, your interlocutor is .'
 
         result = ChatMessage.interpolate(message: message, user: user, author: nil)
         expect(result).to eq(expected_message)
@@ -140,8 +139,8 @@ RSpec.describe ChatMessage, type: :model do
           .with(user)
           .and_return(double(interlocutor_for_user: nil))
 
-        message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
-        expected_message = "Hello John, your interlocutor is ."
+        message = 'Hello {{ first_name }}, your interlocutor is {{ interlocutor }}.'
+        expected_message = 'Hello John, your interlocutor is .'
 
         result = ChatMessage.interpolate(message: message, user: user, author: nil)
         expect(result).to eq(expected_message)
@@ -152,16 +151,16 @@ RSpec.describe ChatMessage, type: :model do
           .with(user)
           .and_return(double(interlocutor_for_user: author))
 
-        message = "Your interlocutor is {{ interlocutor }}."
-        expected_message = "Your interlocutor is Alice."
+        message = 'Your interlocutor is {{ interlocutor }}.'
+        expected_message = 'Your interlocutor is Alice.'
 
         result = ChatMessage.interpolate(message: message, user: user, author: nil)
         expect(result).to eq(expected_message)
       end
 
       it 'replaces {{interlocutor}} when author is provided manually' do
-        message = "Your interlocutor is {{ interlocutor }}."
-        expected_message = "Your interlocutor is Alice."
+        message = 'Your interlocutor is {{ interlocutor }}.'
+        expected_message = 'Your interlocutor is Alice.'
 
         result = ChatMessage.interpolate(message: message, user: user, author: author)
         expect(result).to eq(expected_message)
@@ -172,8 +171,8 @@ RSpec.describe ChatMessage, type: :model do
           .with(user)
           .and_return(double(interlocutor_for_user: nil))
 
-        message = "Your interlocutor is {{ interlocutor }}."
-        expected_message = "Your interlocutor is ."
+        message = 'Your interlocutor is {{ interlocutor }}.'
+        expected_message = 'Your interlocutor is .'
 
         result = ChatMessage.interpolate(message: message, user: user, author: nil)
         expect(result).to eq(expected_message)
@@ -184,8 +183,8 @@ RSpec.describe ChatMessage, type: :model do
           .with(user)
           .and_return(double(interlocutor_for_user: author))
 
-        message = "Hello {{ first_name }}, your interlocutor is {{ interlocutor }}."
-        expected_message = "Hello John, your interlocutor is Alice."
+        message = 'Hello {{ first_name }}, your interlocutor is {{ interlocutor }}.'
+        expected_message = 'Hello John, your interlocutor is Alice.'
 
         result = ChatMessage.interpolate(message: message, user: user, author: nil)
         expect(result).to eq(expected_message)
@@ -193,9 +192,9 @@ RSpec.describe ChatMessage, type: :model do
     end
   end
 
-  describe "custom type" do
+  describe 'custom type' do
     let(:entourage) { create :entourage }
-    let!(:group) { create :entourage, uuid_v2: "uuid-123" }
+    let!(:group) { create :entourage, uuid_v2: 'uuid-123' }
 
     def message attributes={}
       build(:chat_message, attributes.merge(messageable: entourage))
@@ -206,71 +205,71 @@ RSpec.describe ChatMessage, type: :model do
     it { expect(message(message_type: 'some_invalid_type').save).to be false }
     it { expect(message(message_type: 'text').save).to be true }
     it { expect(message(message_type: 'text', metadata: { foo: 'bar' }).save).to be false }
-    it { expect(message(message_type: 'share', metadata: { type: :entourage, uuid: "uuid-123"}).save!).to be true }
+    it { expect(message(message_type: 'share', metadata: { type: :entourage, uuid: 'uuid-123'}).save!).to be true }
   end
 
-  describe "content" do
-    let(:chat_message) { create(:chat_message, status: :active, content: "foobar") }
+  describe 'content' do
+    let(:chat_message) { create(:chat_message, status: :active, content: 'foobar') }
 
     before { chat_message.update_attribute(:status, status) }
 
     let(:status) { :active }
 
-    context "on active" do
+    context 'on active' do
       let(:status) { :active }
 
-      it { expect(chat_message.content).to eq("foobar") }
+      it { expect(chat_message.content).to eq('foobar') }
     end
 
-    context "on updated" do
+    context 'on updated' do
       let(:status) { :updated }
 
-      it { expect(chat_message.content).to eq("foobar") }
+      it { expect(chat_message.content).to eq('foobar') }
     end
 
-    context "on deleted" do
+    context 'on deleted' do
       let(:status) { :deleted }
 
-      it { expect(chat_message.content).to eq("") }
+      it { expect(chat_message.content).to eq('') }
     end
 
-    context "on deleted and force" do
+    context 'on deleted and force' do
       let(:status) { :deleted }
 
-      it { expect(chat_message.content(true)).to eq("foobar") }
+      it { expect(chat_message.content(true)).to eq('foobar') }
     end
   end
 
-  describe "image_url" do
-    let(:chat_message) { create(:chat_message, status: status, image_url: "path/to/url") }
+  describe 'image_url' do
+    let(:chat_message) { create(:chat_message, status: status, image_url: 'path/to/url') }
     let(:status) { :active }
 
-    context "on active" do
+    context 'on active' do
       let(:status) { :active }
 
-      it { expect(chat_message.image_url).to eq("path/to/url") }
+      it { expect(chat_message.image_url).to eq('path/to/url') }
     end
 
-    context "on updated" do
+    context 'on updated' do
       let(:status) { :updated }
 
-      it { expect(chat_message.image_url).to eq("path/to/url") }
+      it { expect(chat_message.image_url).to eq('path/to/url') }
     end
 
-    context "on deleted" do
+    context 'on deleted' do
       let(:status) { :deleted }
 
       it { expect(chat_message.image_url).to eq(nil) }
     end
 
-    context "on deleted and force" do
+    context 'on deleted and force' do
       let(:status) { :deleted }
 
-      it { expect(chat_message.image_url(true)).to eq("path/to/url") }
+      it { expect(chat_message.image_url(true)).to eq('path/to/url') }
     end
   end
 
-  describe "survey" do
+  describe 'survey' do
     let(:survey) { create :survey }
     let(:chat_message) { create :chat_message, survey: survey }
 

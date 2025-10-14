@@ -17,13 +17,13 @@ module Api
             .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
           # join a outing
           if @membership.save
-            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not create outing participation request', reasons: @membership.errors.full_messages
@@ -36,7 +36,7 @@ module Api
           @membership.confirmed_at = Time.zone.now
 
           if @membership.save
-            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not confirm outing participation request', reasons: @membership.errors.full_messages
@@ -84,7 +84,7 @@ module Api
           }, status: :unauthorized unless @join_request
 
           if @join_request.update(status: :cancelled)
-            render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not destroy outing participation request', reasons: @join_request.errors.full_messages

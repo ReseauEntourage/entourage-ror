@@ -16,7 +16,7 @@ module Admin
       @resource = Resource.new(resource_params)
 
       if @resource.save
-        redirect_to admin_resources_path, notice: "Le contenu pédagogique a bien été créé"
+        redirect_to admin_resources_path, notice: 'Le contenu pédagogique a bien été créé'
       else
         render :new
       end
@@ -30,7 +30,7 @@ module Admin
       @resource.assign_attributes(resource_params)
 
       if @resource.save
-        redirect_to edit_admin_resource_path(@resource), notice: "Contenu pédagogique mis à jour"
+        redirect_to edit_admin_resource_path(@resource), notice: 'Contenu pédagogique mis à jour'
       else
         render :edit
       end
@@ -47,7 +47,7 @@ module Admin
       @translation.assign_attributes(translation_params)
 
       if @translation.save
-        redirect_to edit_admin_resource_path(@resource), notice: "Traduction mise à jour"
+        redirect_to edit_admin_resource_path(@resource), notice: 'Traduction mise à jour'
       else
         render :edit
       end
@@ -70,7 +70,7 @@ module Admin
 
     def destroy
       if @resource.update_attribute(:status, :deleted)
-        redirect_to admin_resources_path, notice: "Le contenu pédagogique a bien été supprimé"
+        redirect_to admin_resources_path, notice: 'Le contenu pédagogique a bien été supprimé'
       else
         redirect_to edit_admin_resource_path(@resource), error: "Le contenu pédagogique n'a pas pu être supprimé"
       end

@@ -1,12 +1,12 @@
 module PoiServices
   class Typeform
     ATTRIBUTE_CONVERSION = {
-      "nom" => :name,
-      "adresse " => :adress,
-      "description" => :description,
-      "site internet" => :website,
-      "telephone" => :phone,
-      "email de la structure" => :email,
+      'nom' => :name,
+      'adresse ' => :adress,
+      'description' => :description,
+      'site internet' => :website,
+      'telephone' => :phone,
+      'email de la structure' => :email,
     }
 
     attr_reader :request
@@ -35,18 +35,18 @@ module PoiServices
       end
 
       def convert_params params
-        return unless definition = params["definition"]
-        return unless fields = definition["fields"]
-        return unless answers = params["answers"]
+        return unless definition = params['definition']
+        return unless fields = definition['fields']
+        return unless answers = params['answers']
 
         mapping = fields.map do |field|
-          [field["id"], key_from_title(field["title"])]
+          [field['id'], key_from_title(field['title'])]
         end.to_h.compact
 
         answers.map do |answer|
-          next [nil, nil] unless field = mapping[answer["field"]["id"]]
+          next [nil, nil] unless field = mapping[answer['field']['id']]
 
-          [field, answer["text"]]
+          [field, answer['text']]
         end.to_h.compact
       end
 

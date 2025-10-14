@@ -21,8 +21,8 @@ module Onboarding
       def user_ids_to_be_welcomed
         User.where(deleted: false)
           .without_event('onboarding.push_notifications.welcome.sent')
-          .where("first_sign_in_at <= ?", MIN_DELAY.ago)
-          .where("first_sign_in_at >= ?", MAX_DELAY.ago)
+          .where('first_sign_in_at <= ?', MIN_DELAY.ago)
+          .where('first_sign_in_at >= ?', MAX_DELAY.ago)
           .pluck(:id)
       end
     end

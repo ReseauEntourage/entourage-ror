@@ -121,22 +121,22 @@ class Entourage < ApplicationRecord
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
   scope :with_moderation, -> {
-    joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
+    joins('left join entourage_moderations on entourage_moderations.entourage_id = entourages.id')
   }
   scope :with_moderation_area, -> (moderation_area) {
     return unless moderation_area
     return if moderation_area.to_sym == :all
 
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
-      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
+      return where('left(postal_code, 2) not in (?)', ModerationArea.only_departements).or(
         where.not(country: :FR)
       )
     end
 
-    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area)).where(country: :FR)
+    where('left(postal_code, 2) = ?', ModerationArea.departement(moderation_area)).where(country: :FR)
   }
 
-  scope :with_chat_messages, -> { where("number_of_root_chat_messages > 0").distinct }
+  scope :with_chat_messages, -> { where('number_of_root_chat_messages > 0').distinct }
 
   attribute :preload_performed, :boolean, default: false
   attribute :preload_landscape_url, :string, default: nil
@@ -158,7 +158,7 @@ class Entourage < ApplicationRecord
       end as preload_portrait_url
     ))
     .joins(sanitize_sql_array(["left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url') and image_resize_actions.destination_size = ? and bucket = ?", size, EntourageImage::BUCKET_NAME]))
-    .group("entourages.id")
+    .group('entourages.id')
   }
 
   scope :with_exact_members, -> (member_ids) {
@@ -180,6 +180,10 @@ class Entourage < ApplicationRecord
   after_create :check_moderation
 
   alias_attribute :name, :title
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["status", "title", "entourage_type", "group_type", "online", "postal_code", "country", "created_at"]
+  end
 
   def create_from_join_requests!
     ApplicationRecord.connection.transaction do
@@ -334,13 +338,13 @@ class Entourage < ApplicationRecord
   end
 
   def close_message= message
-    errors.add(:base, "outcome.success must be a boolean") and return unless action?
+    errors.add(:base, 'outcome.success must be a boolean') and return unless action?
 
     metadata[:close_message] = message
   end
 
   def outcome= success
-    errors.add(:base, "outcome.success must be a boolean") and return if success.nil?
+    errors.add(:base, 'outcome.success must be a boolean') and return if success.nil?
 
     moderation = (self.moderation || build_moderation)
     moderation.action_outcome = if ActiveModel::Type::Boolean::FALSE_VALUES.include?(success)
@@ -537,9 +541,9 @@ class Entourage < ApplicationRecord
   def metadata_datetimes_formatted
     formats =
       if metadata[:ends_at].midnight == metadata[:starts_at].midnight
-        ["%A %-d %B %Y de %H:%M ", "à %H:%M"]
+        ['%A %-d %B %Y de %H:%M ', 'à %H:%M']
       else
-        ["%A %-d %B %Y à %H:%M — ", "%A %-d %B %Y à %H:%M"]
+        ['%A %-d %B %Y à %H:%M — ', '%A %-d %B %Y à %H:%M']
       end
     [I18n.l(metadata[:starts_at], format: formats[0]),
      I18n.l(metadata[:ends_at],   format: formats[1])].join
@@ -716,7 +720,7 @@ class Entourage < ApplicationRecord
     return if metadata[:place_limit].is_a?(Integer)
     return if metadata[:place_limit].is_a?(String) && metadata[:place_limit].match?(/^\d+$/)
 
-    errors.add(:metadata, "Le nombre de places disponibles doit être numérique")
+    errors.add(:metadata, 'Le nombre de places disponibles doit être numérique')
   end
 
   def generate_display_address
@@ -735,7 +739,7 @@ class Entourage < ApplicationRecord
     if metadata[:city].present? && postal_code.present?
       metadata[:display_address] = "#{metadata[:city]} (#{postal_code})"
     else
-      metadata[:display_address] = ""
+      metadata[:display_address] = ''
     end
   end
 
@@ -766,7 +770,7 @@ class Entourage < ApplicationRecord
 
     metadata[:display_address] = address_fragments.compact.join(', ')
   rescue
-    metadata[:display_address] = ""
+    metadata[:display_address] = ''
   end
 
   def reformat_content(force: false)
@@ -777,10 +781,10 @@ class Entourage < ApplicationRecord
   def set_default_online_attributes
     if online?
       metadata.merge!(
-        place_name:      "Événement en ligne",
-        street_address:  "Événement en ligne",
-        display_address: "Événement en ligne",
-        google_place_id: "_online_"
+        place_name:      'Événement en ligne',
+        street_address:  'Événement en ligne',
+        display_address: 'Événement en ligne',
+        google_place_id: '_online_'
       )
       self.latitude = 0
       self.longitude = 0

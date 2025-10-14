@@ -1,6 +1,6 @@
 module PoiServices
   class SoliguideIndex
-    INDEX_URI = "https://api.soliguide.fr/new-search?%s"
+    INDEX_URI = 'https://api.soliguide.fr/new-search?%s'
     BATCH_LIMIT = 1000
 
     FIND_ONE_PARAMS = {

@@ -3,7 +3,7 @@ class HomeController < ApplicationController
   layout 'full_screen'
 
   def index
-    redirect_to edit_public_user_user_path("me")
+    redirect_to edit_public_user_user_path('me')
   end
 
   def apps
@@ -12,9 +12,9 @@ class HomeController < ApplicationController
   def store_redirection
     case $server_community
     when 'entourage'
-      url = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html"
+      url = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html'
     when 'pfp'
-      url = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection_pfp.html"
+      url = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection_pfp.html'
     else
       raise AbstractController::ActionNotFound
     end

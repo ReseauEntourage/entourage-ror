@@ -22,7 +22,7 @@ class Outing < Entourage
   after_validation :dup_taggings, if: :original_outing
 
   has_many :members, -> {
-    where("join_requests.status = 'accepted'").order("join_requests.role, users.first_name")
+    where("join_requests.status = 'accepted'").order('join_requests.role, users.first_name')
   }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
   has_many :neighborhoods, through: :neighborhoods_entourages
@@ -149,7 +149,7 @@ class Outing < Entourage
     return if neighborhood_ids.empty?
 
     if (neighborhood_ids - user.neighborhood_participation_ids).any?
-      errors.add(:neighborhood_ids, "User has to be a member of every neighborhoods")
+      errors.add(:neighborhood_ids, 'User has to be a member of every neighborhoods')
     end
   end
 
@@ -157,7 +157,7 @@ class Outing < Entourage
     return unless outing?
 
     unless accepted_member_ids.include?(user_id)
-      errors.add(:user_id, "User has to be a member of outing")
+      errors.add(:user_id, 'User has to be a member of outing')
     end
   end
 
