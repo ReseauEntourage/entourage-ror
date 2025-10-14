@@ -894,22 +894,22 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'created_at' => user.created_at.iso8601(3),
           }
         }) }
+      end
 
-        context 'when you have an address' do
-          let(:user) { create :public_user }
-          let!(:address) { create :address, user: user }
+      context 'when you have an address' do
+        let(:user) { create :public_user }
+        let!(:address) { create :address, user: user }
 
-          before { request }
+        before { get :show, params: { id: 'me', token: user.token } }
 
-          it {
-            expect(JSON.parse(response.body)['user']['address']).to eq(
-              'latitude' => 1.5,
-              'longitude' => 1.5,
-              'display_address' => 'Cassis, 75020',
-              'position'=>1,
-            )
-          }
-        end
+        it {
+          expect(JSON.parse(response.body)['user']['address']).to eq(
+            'latitude' => 1.5,
+            'longitude' => 1.5,
+            'display_address' => 'Cassis, 75020',
+            'position'=>1,
+          )
+        }
       end
 
       context "get my profile with 'me' shortcut" do
