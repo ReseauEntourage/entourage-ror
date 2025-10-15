@@ -19,7 +19,13 @@ module Admin
 
       return head :bad_request unless validation.respond_to?(record_type)
 
-      render json: validation.send(record_type, action)
+      # update message Slack
+      update_slack_message(
+        @payload['response_url'],
+        validation.send(record_type, action)
+      )
+
+      head :ok
     rescue => e
       return head :bad_request
     end
@@ -125,6 +131,18 @@ module Admin
     def current_admin
       return if session[:admin_user_id].nil?
       @current_admin ||= User.where(id: session[:admin_user_id]).first
+    end
+
+    def update_slack_message response_url, payload
+      uri = URI(response_url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+
+      req = Net::HTTP::Post.new(uri.path)
+      req['Content-Type'] = 'application/json'
+      req.body = payload.to_json
+
+      response = http.request(req)
     end
   end
 end
