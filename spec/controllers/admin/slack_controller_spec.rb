@@ -10,9 +10,11 @@ describe Admin::SlackController do
     context 'on entourage' do
       let(:entourage) { FactoryBot.create(:entourage)}
       let(:payload) { {
-        callback_id: "entourage_validation:#{entourage.id}",
+        actions: [{
+          action_id: 'validate',
+          value: "entourage_validation:#{entourage.id}",
+        }],
         user: { name: 'John Doe' },
-        actions: [ { value: 'validate' } ]
       } }
 
       before {
@@ -43,6 +45,7 @@ describe Admin::SlackController do
           post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
         }
 
+        it { expect(response.code).to eq('200') }
         it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq('*:white_check_mark: <@John Doe> a validé cette action*') }
         it { expect(entourage.reload.status).to eq('open') }
         it { expect(entourage.reload.moderation).not_to be_nil }
@@ -52,10 +55,11 @@ describe Admin::SlackController do
       context 'block message' do
         before {
           payload[:token] = 'slack-app-verification-token'
-          payload[:actions] = [ { value: 'block' } ]
+          payload[:actions] = [{ action_id: 'block', value: payload[:actions][0][:value] }]
           post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
         }
 
+        it { expect(response.code).to eq('200') }
         it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq('*:no_entry_sign: <@John Doe> a bloqué cette action*') }
         it { expect(entourage.reload.status).to eq('blacklisted') }
         it { expect(entourage.reload.moderation).not_to be_nil }
@@ -65,7 +69,7 @@ describe Admin::SlackController do
       context 'wrong message' do
         before {
           payload[:token] = 'slack-app-verification-token'
-          payload[:actions] = [ { value: 'foo' } ]
+          payload[:actions] = [{ action_id: 'foo', value: payload[:actions][0][:value] }]
           post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
         }
 
@@ -76,9 +80,11 @@ describe Admin::SlackController do
     context 'on neighborhood' do
       let(:neighborhood) { FactoryBot.create(:neighborhood)}
       let(:payload) { {
-        callback_id: "neighborhood_validation:#{neighborhood.id}",
+        actions: [{
+          action_id: 'validate',
+          value: "neighborhood_validation:#{neighborhood.id}"
+        }],
         user: { name: 'John Doe' },
-        actions: [ { value: 'validate' } ]
       } }
 
       before {
@@ -99,7 +105,7 @@ describe Admin::SlackController do
 
         it { expect(response.code).to eq('200') }
         it { expect(JSON.parse(response.body)).not_to be_nil }
-        it { expect(JSON.parse(response.body).has_key? 'attachments').to be_truthy }
+        it { expect(JSON.parse(response.body).has_key? 'blocks').to be_truthy }
       end
 
       context 'validation message' do
@@ -109,23 +115,23 @@ describe Admin::SlackController do
         }
 
         it { expect(response.code).to eq('200') }
-        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq('*:white_check_mark: <@John Doe> a validé ce groupe de voisinage*') }
+        it { expect(JSON.parse(response.body)['blocks'].first['text']['text']).to eq('*:white_check_mark: <@John Doe> a validé ce groupe de voisinage*') }
       end
 
       context 'block message' do
         before {
           payload[:token] = 'slack-app-verification-token'
-          payload[:actions] = [ { value: 'block' } ]
+          payload[:actions] = [{ action_id: 'block', value: payload[:actions][0][:value] }]
           post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
         }
 
-        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq('*:no_entry_sign: <@John Doe> a bloqué ce groupe de voisinage*') }
+        it { expect(JSON.parse(response.body)['blocks'].first['text']['text']).to eq('*:no_entry_sign: <@John Doe> a bloqué ce groupe de voisinage*') }
       end
 
       context 'wrong message' do
         before {
           payload[:token] = 'slack-app-verification-token'
-          payload[:actions] = [ { value: 'foo' } ]
+          payload[:actions] = [{ action_id: 'foo', value: payload[:actions][0][:value] }]
           post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
         }
 

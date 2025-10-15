@@ -12,8 +12,9 @@ module Admin
       action = @payload.dig('actions', 0, 'action_id')
       return head :bad_request unless ['validate', 'block'].include?(action)
 
-      record_type, record_id = @payload.dig('actions', 0, 'value').split(':')
+      record_type, record_id = @payload.dig('actions', 0, 'value')&.split(':')
       validation = Experimental::SlackValidation.new(record_id, username)
+
       return head :bad_request unless validation.respond_to?(record_type)
 
       render json: validation.send(record_type, action)

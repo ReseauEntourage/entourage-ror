@@ -71,16 +71,45 @@ module Experimental
 
     def payload_neighborhood_as_validate record
       payload = Experimental::NeighborhoodSlack.payload(record)
-      payload[:attachments].first[:color] = :good
-      payload[:attachments].last[:text] = "*:white_check_mark: <@#{username}> a validé ce groupe de voisinage*"
+
+      payload[:blocks].unshift({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "*:white_check_mark: <@#{username}> a validé ce groupe de voisinage*"
+        },
+        accessory: {
+          type: 'image',
+          image_url: 'https://emoji.slack-edge.com/T0000/white_check_mark/1.png',
+          alt_text: 'validé'
+        }
+      })
+
+      payload[:blocks].insert(1, { type: 'divider' })
+
       payload
     end
 
     def payload_neighborhood_as_block record
       payload = Experimental::NeighborhoodSlack.payload(record)
-      payload[:attachments].first[:color] = :danger
-      payload[:attachments].last[:text] = "*:no_entry_sign: <@#{username}> a bloqué ce groupe de voisinage*"
+
+      payload[:blocks].unshift({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: "*:no_entry_sign: <@#{username}> a bloqué ce groupe de voisinage*"
+        },
+        accessory: {
+          type: 'image',
+          image_url: 'https://emoji.slack-edge.com/T0000/no_entry_sign/1.png',
+          alt_text: 'bloqué'
+        }
+      })
+
+      payload[:blocks].insert(1, { type: 'divider' })
+
       payload
     end
+
   end
 end
