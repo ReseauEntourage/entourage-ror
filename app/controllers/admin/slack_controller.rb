@@ -7,20 +7,16 @@ module Admin
     before_action :authenticate_admin!, only: [:csv]
 
     def message_action
-      callback_type, *callback_params = @payload['callback_id']&.split(':')
       username = @payload['user']['name']
 
-      return head :bad_request unless callback_params.length == 1
-      return head :bad_request unless ['entourage_validation', 'neighborhood_validation'].include?(callback_type)
-      return head :bad_request unless @payload['actions']
-
-      action = @payload['actions'].first['value']
+      action = @payload.dig('actions', 0, 'action_id')
       return head :bad_request unless ['validate', 'block'].include?(action)
 
-      validation = Experimental::SlackValidation.new(callback_params[0], username)
-      return head :bad_request unless validation.respond_to?(callback_type)
+      record_type, record_id = @payload.dig('actions', 0, 'value').split(':')
+      validation = Experimental::SlackValidation.new(record_id, username)
+      return head :bad_request unless validation.respond_to?(record_type)
 
-      render json: validation.send(callback_type, action)
+      render json: validation.send(record_type, action)
     rescue => e
       return head :bad_request
     end
