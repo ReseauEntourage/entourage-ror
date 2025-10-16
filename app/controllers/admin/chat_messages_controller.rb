@@ -11,11 +11,11 @@ module Admin
     end
 
     def update
-      @chat_message.assign_attributes(chat_message_params)
-
-      if @chat_message.save
-        respond_to do |format|
-          format.js
+      ChatServices::Updater.new(user: current_user, chat_message: @chat_message, params: chat_message_params).update(true) do |on|
+        on.success do |chat_message|
+          respond_to do |format|
+            format.js
+          end
         end
       end
     end
