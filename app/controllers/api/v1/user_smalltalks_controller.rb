@@ -6,7 +6,7 @@ module Api
 
       def index
         render json: UserSmalltalk
-          .includes(:user)
+          .includes(:user, :join_request)
           .with_accessible_smalltalks_for_user(current_user)
           .or(UserSmalltalk.where(user: current_user, smalltalk_id: nil))
           .page(page)

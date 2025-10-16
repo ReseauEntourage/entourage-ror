@@ -10,6 +10,7 @@ module V1
       :has_matched_gender,
       :has_matched_locality,
       :has_matched_interest,
+      :number_of_unread_messages,
       :unmatch_count,
       :matched_at,
       :deleted_at,
@@ -17,5 +18,12 @@ module V1
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_one :smalltalk, serializer: ::V1::SmalltalkSerializer
+
+    def number_of_unread_messages
+      return unless object.smalltalk_id.present?
+      return unless object.join_request
+
+      object.join_request.unread_messages_count
+    end
   end
 end
