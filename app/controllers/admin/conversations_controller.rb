@@ -82,15 +82,9 @@ module Admin
       end
 
       # create conversation
-      @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_admin.id)
-      @conversation.create_from_join_requests!
+      chat_message = ConversationService.create_private_message!(sender_id: current_admin.id, recipient_ids: participant_ids, content: conversation_params[:message])
 
-      # create message
-      ChatMessage.new(
-        user: current_admin,
-        messageable: @conversation,
-        content: conversation_params[:message]
-      ).save!
+      @conversation = chat_message.messageable
 
       # we need this value right now to get conversation displayable in index view
       @conversation.update_attribute(:number_of_root_chat_messages, 1)

@@ -175,8 +175,9 @@ Rails.application.routes.draw do
         end
 
         collection do
-          post 'unread_message/:chat_message_id' => :unread_message, :as => :unread_message
-          delete 'destroy_message/:chat_message_id' => :destroy_message, :as => :destroy_message
+          get :unread_posts
+          post 'unread_message/:chat_message_id' => :unread_message, as: :unread_message
+          delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
         end
       end
 

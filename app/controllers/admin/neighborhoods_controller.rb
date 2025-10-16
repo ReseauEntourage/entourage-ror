@@ -14,7 +14,6 @@ module Admin
       @params = params.permit([:area, :search]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-
       @neighborhoods = Neighborhood.unscoped.includes([:user, :interests])
       @neighborhoods = @neighborhoods.search_by(params[:search]) if params[:search].present?
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
@@ -53,6 +52,27 @@ module Admin
 
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
       @message_count.default = OpenStruct.new(unread: 0, total: 0)
+    end
+
+    def unread_posts
+      @params = params.permit([:area, :search]).to_h
+      @area = params[:area].presence&.to_sym || :all
+
+      @posts = ChatMessage
+        .visible
+        .where(messageable_type: :Neighborhood)
+        .where(comments_count: 0)
+        .where("chat_messages.created_at > ?", 3.months.ago)
+        .where(ancestry: nil)
+        .joins("left join neighborhoods on neighborhoods.id = chat_messages.messageable_id and chat_messages.messageable_type = 'Neighborhood'")
+        .where(messageable_id: Neighborhood
+          .search_by(params[:search])
+          .with_moderation_area(@area.to_s)
+        )
+        .includes(:messageable, :user)
+        .order(created_at: :desc)
+        .page(page)
+        .per(per)
     end
 
     def edit
@@ -228,9 +248,14 @@ module Admin
         end
 
         on.success do |message|
+          @message = message
+
           @join_request.set_chat_messages_as_read_from(message.created_at)
 
-          redirect_to redirection
+          respond_to do |format|
+            format.js
+            format.html { redirect_to redirection }
+          end
         end
 
         on.failure do |message|
@@ -277,15 +302,18 @@ module Admin
         end
 
         on.success do |chat_message|
-          redirect_to redirection
+          respond_to do |format|
+            format.js
+            format.html { redirect_to redirection }
+          end
         end
 
         on.failure do |chat_message|
-          redirect_to redirection, alert: chat_message.errors.full_messages
+          format.html { redirect_to redirection, alert: chat_message.errors.full_messages }
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
+          format.html { redirect_to redirection, alert: "You are not authorized to delete this chat_message" }
         end
       end
     end

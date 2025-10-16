@@ -1,0 +1,3 @@
+$('#comment-<%= @message.parent_id %> form').replaceWith('<br/><i><%=
+  "#{current_admin.full_name}: #{@message.content}"
+%></i>');
