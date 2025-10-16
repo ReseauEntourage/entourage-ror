@@ -12,6 +12,9 @@ class UserSmalltalk < ApplicationRecord
 
   belongs_to :user
   belongs_to :smalltalk, optional: true
+  has_one :join_request, -> (user_smalltalk) {
+    where(user_id: user_smalltalk.user_id, joinable_type: 'Smalltalk', status: 'accepted')
+  }, primary_key: :smalltalk_id, foreign_key: :joinable_id
 
   default_scope {
     where(deleted_at: nil)
