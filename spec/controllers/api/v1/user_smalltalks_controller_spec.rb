@@ -18,6 +18,7 @@ describe Api::V1::UserSmalltalksController, type: :controller do
 
     describe 'authorized' do
       before { smalltalk.update(number_of_people: number_of_people) }
+      before { smalltalk.join_requests.update_all(unread_messages_count: 42) }
 
       before { get :index, params: { token: user.token } }
 
@@ -38,6 +39,7 @@ describe Api::V1::UserSmalltalksController, type: :controller do
         it { expect(result).to have_key('user_smalltalks') }
         it { expect(result['user_smalltalks'].count).to eq(1) }
         it { expect(result['user_smalltalks'][0]['smalltalk_id']).to eq(smalltalk.id) }
+        it { expect(result['user_smalltalks'][0]['number_of_unread_messages']).to eq(42) }
       end
     end
   end
@@ -69,6 +71,7 @@ describe Api::V1::UserSmalltalksController, type: :controller do
           'has_matched_gender' => nil,
           'has_matched_locality' => nil,
           'has_matched_interest' => nil,
+          'number_of_unread_messages' => nil,
           'unmatch_count' => nil,
           'matched_at' => nil,
           'deleted_at' => nil,
