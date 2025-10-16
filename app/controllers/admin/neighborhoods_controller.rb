@@ -61,6 +61,7 @@ module Admin
       @posts = ChatMessage
         .visible
         .where(messageable_type: :Neighborhood)
+        .where("messageable_id in (select joinable_id from join_requests where joinable_type = 'Neighborhood' and user_id = ? and status = 'accepted')", current_user.id)
         .where(comments_count: 0)
         .where("chat_messages.created_at > ?", 3.months.ago)
         .where(ancestry: nil)

@@ -124,6 +124,8 @@ class Neighborhood < ApplicationRecord
   }
 
   scope :search_by, ->(search) {
+    return unless search.present?
+
     strip = search && search.strip
     like = "%#{strip}%"
 

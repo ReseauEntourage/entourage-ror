@@ -3,6 +3,11 @@
 
   <div style="margin: auto">
     <h1>Groupes de voisinage : publications sans commentaire</h1>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        Seules les publications <b>sans commentaire</b>, <b>récentes</b> (moins de trois mois) et <b>dans les groupes auxquels le modérateur appartient</b> sont listées ci-après.
+      </div>
+    </div>
 
     <%= render 'search_form', params: @params, area: @area, path: :unread_posts %>
 
