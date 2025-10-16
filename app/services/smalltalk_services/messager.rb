@@ -13,6 +13,7 @@ module SmalltalkServices
 
       return run_after_create if create?
       return run_complete if completed_at_changed?
+      return run_close if closed_at_changed?
     end
 
     def run_after_create
@@ -36,6 +37,10 @@ module SmalltalkServices
       create_message(:complete_j21, at: (Time.zone.now + 21.days).change(hour: 18, min: 0))
     end
 
+    def run_close
+      create_message(:close, at: Time.zone.now)
+    end
+
     private
 
     def create_message i18n_key, at: Time.zone.now, i18n_arg: nil
@@ -48,6 +53,10 @@ module SmalltalkServices
 
     def completed_at_changed?
       changes.key?('completed_at') && changes['completed_at'].first.nil?
+    end
+
+    def closed_at_changed?
+      changes.key?("closed_at") && changes["closed_at"].first.nil?
     end
 
     def changes
