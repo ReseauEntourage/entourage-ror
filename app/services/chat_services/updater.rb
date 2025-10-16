@@ -27,9 +27,7 @@ module ChatServices
     end
 
     def send_feedback_to_user
-      puts "-- send_feedback_to_user: #{user.id}, #{chat_message.user_id}"
-
-      puts ConversationService.create_private_message!(sender_id: user.id, recipient_ids: [chat_message.user_id], content: UPDATE_MESSAGE)
+      ConversationService.create_private_message!(sender_id: user.id, recipient_ids: [chat_message.user_id], content: UPDATE_MESSAGE)
     end
   end
 
