@@ -1241,13 +1241,15 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "salesforce_id"
     t.jsonb "availability", default: {}
     t.boolean "willing_to_engage_locally", default: false
+    t.virtual "searchable_text", type: :text, as: "lower((((((((COALESCE(last_name, ''::character varying))::text || ' '::text) || (COALESCE(first_name, ''::character varying))::text) || ' '::text) || (COALESCE(phone, ''::character varying))::text) || ' '::text) || (COALESCE(email, ''::character varying))::text))", stored: true
     t.index ["address_id"], name: "index_users_on_address_id"
-    t.index ["email"], name: "index_users_on_email"
+    t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
+    t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"
     t.index ["partner_id"], name: "index_users_on_partner_id_not_null", where: "(partner_id IS NOT NULL)"
     t.index ["phone", "community"], name: "index_users_on_phone_and_community", unique: true
     t.index ["roles"], name: "index_users_on_roles", using: :gin
+    t.index ["searchable_text"], name: "index_users_on_searchable_text_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["token"], name: "index_users_on_token", unique: true
-    t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
   create_table "users_resources", force: :cascade do |t|
