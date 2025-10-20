@@ -2,6 +2,7 @@ module OutingTasks
   TODAY_CONTENT = "Aujourd’hui, c’est le Jour J pour notre événement 🥳 \n Avant de se retrouver, on vous laisse prendre connaissance de la Charte des événements Entourage à respecter ensemble afin que tout le monde se sente en sécurité et à l’aise et ainsi que chacun profite de la convivialité de ce moment : %s"
 
   PRIVATE_MESSAGE_ORGANISATOR_DAYS = 7
+  PRIVATE_MESSAGE_ORGANISATOR_LAST_DAY = 1
   POST_UPCOMING_DELAY = 2.days
   EMAIL_UPCOMING_DELAY = 7.days
   EMAIL_TO_USER_LOGGED_FROM = 45.days
@@ -57,7 +58,7 @@ module OutingTasks
 
     # send_private_message_7_days_before
     def send_private_message_7_days_before
-      organisator_outings.pluck(:id).uniq.each do |outing_id|
+      organisator_outings_in_days(PRIVATE_MESSAGE_ORGANISATOR_DAYS).pluck(:id).uniq.each do |outing_id|
         outing = Outing.find(outing_id)
 
         return unless moderator = ModerationServices.moderator_for_entourage(outing)
@@ -76,14 +77,29 @@ module OutingTasks
       end
     end
 
-    def organisator_outings
+    def organisator_outings_in_days in_days
       Outing
         .active
         .future
         .where(online: false)
         .joins(:user)
         .where("users.admin = false AND (users.targeting_profile NOT IN ('team', 'ambassador') OR users.targeting_profile is null)")
-        .in_days(PRIVATE_MESSAGE_ORGANISATOR_DAYS)
+        .in_days(in_days)
+    end
+
+    # send_private_message_1_day_before
+    def send_private_message_1_day_before
+      organisator_outings_in_days(PRIVATE_MESSAGE_ORGANISATOR_LAST_DAY).pluck(:id).uniq.each do |outing_id|
+        outing = Outing.find(outing_id)
+
+        return unless moderator = ModerationServices.moderator_for_entourage(outing)
+
+        ConversationService.create_private_message!(
+          sender_id: moderator.id,
+          recipient_ids: [outing.user_id],
+          content: I18n.t("outings.tasks.reminder_1_day_content")
+        )
+      end
     end
 
     # send_email_as_reminder
