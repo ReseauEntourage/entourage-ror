@@ -79,6 +79,9 @@ class Outing < Entourage
   scope :between, -> (from, to) { where("metadata->>'starts_at' BETWEEN ? AND ?", from, to) }
   scope :tomorrow, -> { where("metadata->>'starts_at' BETWEEN ? AND ?", Time.zone.tomorrow.beginning_of_day, Time.zone.tomorrow.end_of_day) }
   scope :upcoming_today, -> { where("metadata->>'starts_at' BETWEEN ? AND ?", Time.zone.now, Time.zone.now.end_of_day) }
+  scope :in_days, -> (number) {
+    where("metadata->>'starts_at' BETWEEN ? AND ?", number.days.from_now.beginning_of_day, number.days.from_now.end_of_day)
+  }
 
   scope :recommandable, -> { self.active.future }
   scope :future_or_ongoing, -> { ending_after(Time.zone.now) }

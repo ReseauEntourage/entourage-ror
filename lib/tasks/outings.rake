@@ -11,6 +11,11 @@ namespace :outings do
     OutingTasks.send_email_as_reminder
   end
 
+  desc 'send private_message 7 days before'
+  task send_private_message_7_days_before: :environment do
+    OutingTasks::send_private_message_7_days_before
+  end
+
   desc 'send post to upcoming outings'
   task send_post_to_upcoming: :environment do
     OutingTasks::send_post_to_upcoming
