@@ -35,6 +35,7 @@ class User < ApplicationRecord
   validate :validate_birthdate!
 
   before_save :slack_id_no_empty
+  before_save :update_searchable_text
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
   after_save :sync_newsletter, if: :saved_change_to_email?
   after_save :signal_association
@@ -168,6 +169,27 @@ class User < ApplicationRecord
       term: ilike,
       phone_term: Phone::PhoneBuilder.new(phone: exact).format,
     })
+  }
+
+  scope :search_by, -> (query) {
+    return unless query.present?
+
+    # Normalisation
+    terms = query.strip.downcase.split(/\s+/).map do |term|
+      Phone::PhoneBuilder.new(phone: term).format
+    end
+
+    conditions = []
+    params = {}
+
+    # one condition per keyword
+    terms.each_with_index do |term, i|
+      param = "term_#{i}"
+      params[param.to_sym] = "%#{term}%"
+      conditions << "users.searchable_text ILIKE :#{param}"
+    end
+
+    where(conditions.join(" AND "), params)
   }
 
   scope :search_by_ids_or_uuids, -> (ids_or_uuids) {
@@ -718,6 +740,17 @@ class User < ApplicationRecord
 
   def slack_id_no_empty
     self.slack_id = nil if slack_id.blank?
+  end
+
+  def update_searchable_text
+    combined = [
+      first_name,
+      last_name,
+      phone,
+      email
+    ].compact.join(' ')
+
+    self.searchable_text = I18n.transliterate(combined.downcase)
   end
 
   def clean_up_passwords
