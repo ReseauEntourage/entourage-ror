@@ -1,6 +1,6 @@
 module Phone
   class PhoneBuilder
-    PHONE_REGEX = /\A[+\d\s().-]{6,20}\z/
+    PHONE_REGEX = /\A[+\d\s().-]{8,25}\z/
 
     def initialize(phone:)
       @phone = phone
@@ -34,7 +34,8 @@ module Phone
       return false if @phone.blank?
       return false if @phone.match?(/@/)
 
-      !!@phone.match(PHONE_REGEX)
+      digits = @phone.gsub(/\D/, '')
+      @phone.strip.match?(/\A[+\d\s().-]{6,25}\z/) && digits.length.between?(8, 15)
     end
   end
 end
