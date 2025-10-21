@@ -105,6 +105,7 @@ group :test do
   gem 'webmock'
   gem 'fakeredis'#,                    '~> 0.7.0'
   gem 'super_diff'
+  gem 'rspec-parameterized'
 end
 
 group :production do
