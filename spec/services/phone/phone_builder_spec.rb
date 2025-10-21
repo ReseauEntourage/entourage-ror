@@ -8,6 +8,7 @@ RSpec.describe Phone::PhoneBuilder do
       [
         ['+33 6 12 34 56 78', true],
         ['06 12 34 56 78',    true],
+        ['+33 (0) 6 00 00 00 01 ',    true],
         ['1234',              false],
         ['foo@bar.fr',        false]
       ]
