@@ -659,6 +659,34 @@ fr:
 
       %s
 
+  outings:
+    tasks:
+      reminder_content: |
+        Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message.
+      reminder_7_days_content: |
+        Votre événement %{title} approche à grands pas, J-7 !
+
+        Actuellement, %{count} personnes sont inscrites. Pour vous assurer de leur présence et leur faire un rappel, n’hésitez pas à les relancer dans la discussion de l’événement.
+
+        Si vous souhaitez mobiliser plus de participants, nous vous recommandons également de partager le lien de votre événement dans le groupe de voisins de votre ville %{neighborhood}, c’est une excellente occasion de rencontrer encore plus de voisins ! Voici le lien de l'événement à partager : %{link}
+
+        Si vous avez la moindre question, nous sommes là pour vous aider.
+
+        À très vite ! 👌
+      reminder_1_day_content: |
+        J-1 avant votre événement 🔥
+        Quelques conseils pratiques pour l’accueil et l’animation :
+
+        J’accueille individuellement chaque participant
+
+        J’organise une activité de présentation (jeux brise-glace, tour des prénoms, etc)
+
+        Je suis vigilant à ce que personne ne soit mis sur le côté, exclu du groupe
+
+        À la fin de l’événement, n’hésitez pas à prendre une photo de groupe (en s'assurant d’avoir l’accord de chaque participant) et postez-la dans votre groupe de voisins 👌
+
+        Bon événement et à très vite !
+
   charts:
     conversations:
       memberships: "Participants"
