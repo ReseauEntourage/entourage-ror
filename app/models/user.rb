@@ -154,30 +154,12 @@ class User < ApplicationRecord
   scope :unknown, -> { goal_not_known }
   scope :ask_for_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :offer_help, :offers_help) }
-  scope :search_by, -> (search) {
-    return unless search.present?
-
-    exact = search.strip.downcase
-    ilike = "%#{exact}%"
-
-    where(%(
-      users.id = :id OR
-      searchable_text ilike :term OR
-      searchable_text ilike :phone_term
-    ), {
-      id: exact.to_i,
-      term: ilike,
-      phone_term: Phone::PhoneBuilder.new(phone: exact).format,
-    })
-  }
 
   scope :search_by, -> (query) {
     return unless query.present?
 
     # Normalisation
-    terms = query.strip.downcase.split(/\s+/).map do |term|
-      Phone::PhoneBuilder.new(phone: term).format
-    end
+    terms = Phone::PhoneBuilder.new(phone: query).format.strip.downcase.split(/\s+/)
 
     conditions = []
     params = {}
