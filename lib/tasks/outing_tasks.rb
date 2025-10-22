@@ -88,25 +88,29 @@ module OutingTasks
     def send_email_with_upcoming_to_user user_id
       user = User.find(user_id)
 
-      action_ids = ActionServices::Finder.new(user, Hash.new).find_all
-        .filtered_with_user_profile(user)
-        .with_moderation
-        .where("entourage_moderations.moderated_at is not null")
-        .group("entourages.id")
-        .pluck(:id)
-        .uniq
-
-      outing_ids = OutingsServices::Finder.new(user, Hash.new).find_all
-        .upcoming(EMAIL_UPCOMING_DELAY.from_now)
-        .with_moderation
-        .where('entourage_moderations.moderated_at is not null')
-        .group('entourages.id')
-        .pluck(:id)
-        .uniq
+      action_ids = upcoming_actions_for_user(user).pluck(:id).uniq
+      outing_ids = upcoming_outings_for_user(user).pluck(:id).uniq
 
       return unless action_ids.any? || outing_ids.any?
 
       MemberMailer.weekly_planning(user, action_ids, outing_ids).deliver_later
+    end
+
+    def upcoming_actions_for_user user
+      ActionServices::Finder.new(user, Hash.new).find_all
+        .filtered_with_user_profile(user)
+        .with_moderation
+        .where("entourage_moderations.moderated_at is not null")
+        .group("entourages.id")
+    end
+
+    def upcoming_outings_for_user user
+      OutingsServices::Finder.new(user, Hash.new).find_all
+        .upcoming(EMAIL_UPCOMING_DELAY.from_now)
+        .with_moderation
+        .where('entourage_moderations.moderated_at is not null')
+        .where("entourages.user_id in (select id from users where admin = true or targeting_profile in ('team', 'ambassador'))")
+        .group('entourages.id')
     end
 
     def charter_url
