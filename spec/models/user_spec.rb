@@ -154,6 +154,62 @@ describe User, type: :model do
     end
   end
 
+  describe 'company=' do
+    let(:user) { create(:public_user, company: company) }
+
+    context "with invalid company" do
+      let(:company) { "invalid" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with blank company" do
+      let(:company) { "" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with nil company" do
+      let(:company) { nil }
+      it { expect { user }.not_to raise_error }
+      it { expect(user.errors[:company]).to be_empty }
+      it { expect(user.company).to be_nil }
+    end
+
+    context "with valid company" do
+      let(:company) { "0123456789ABCdeFGH" }
+      it { expect { user }.not_to raise_error }
+      it { expect(user.errors[:company]).to be_empty }
+      it { expect(user.company).to eq("0123456789ABCdeFGH") }
+    end
+  end
+
+  describe 'event=' do
+    let(:user) { create(:public_user, event: event) }
+
+    context "with invalid event" do
+      let(:event) { "invalid" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with blank event" do
+      let(:event) { "" }
+      it { expect { user }.to raise_error ActiveRecord::RecordInvalid }
+    end
+
+    context "with nil event" do
+      let(:event) { nil }
+      it { expect { user }.not_to raise_error }
+      it { expect(user.errors[:event]).to be_empty }
+      it { expect(user.event).to be_nil }
+    end
+
+    context "with valid event" do
+      let(:event) { "0123456789ABCdeFGH" }
+      it { expect { user }.not_to raise_error }
+      it { expect(user.errors[:event]).to be_empty }
+      it { expect(user.event).to eq("0123456789ABCdeFGH") }
+    end
+  end
+
   describe 'goal=' do
     it { expect(build(:public_user, goal: 'offer_help').goal_choice).to eq('offer_help') }
     it { expect(build(:public_user, goal: 'offer_help').goal).to eq('offer_help') }
