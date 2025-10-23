@@ -10,6 +10,7 @@ module UserSmalltalkable
         .where.not(user_id: user_smalltalk.user_id)
         .where('user_smalltalks.deleted_at IS NULL')
         .where("user_smalltalks.member_status IS NULL or user_smalltalks.member_status = '#{JoinRequest::ACCEPTED_STATUS}'")
+        .where.not(smalltalk_id: UserSmalltalk.smalltalk_ids_matched(user_smalltalk))
         .order('unmatch_count')
         .order(Arel.sql("CASE WHEN (bool_and(#{user_smalltalk.interest_match_expression})) THEN 1 ELSE 0 END"))
     }
@@ -25,6 +26,7 @@ module UserSmalltalkable
         .where(user_smalltalk.format_match_expression)
         .where(user_smalltalk.gender_match_expression)
         .where(user_smalltalk.locality_match_expression)
+        .where.not(smalltalk_id: UserSmalltalk.smalltalk_ids_matched(user_smalltalk))
         .order(Arel.sql("CASE WHEN (bool_and(#{user_smalltalk.interest_match_expression})) THEN 1 ELSE 0 END"))
     }
 
@@ -95,6 +97,12 @@ module UserSmalltalkable
         )),
         user_smalltalk.user_longitude, user_smalltalk.user_latitude, 20_000
       )
+    }
+
+    scope :smalltalk_ids_matched, -> (user_smalltalk) {
+      select(:smalltalk_id)
+        .where(user_id: user_smalltalk.user_id)
+        .where.not(smalltalk_id: nil)
     }
   end
 
