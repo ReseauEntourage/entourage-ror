@@ -8,6 +8,14 @@ RSpec.describe UserSmalltalk, type: :model do
     let(:result) { user_smalltalk_1.find_match }
 
     describe 'format' do
+      it { expect(result).to be_truthy }
+
+      context 'match none when has already been matched' do
+        before { user_smalltalk_2.update(smalltalk: create(:smalltalk)) }
+
+        it { expect(result).to be_falsy }
+      end
+
       context 'match none when different format' do
         before {
           user_smalltalk_1.update(match_format: :one)
