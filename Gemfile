@@ -46,7 +46,6 @@ gem 'kaminari', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
 gem 'sidekiq', '~> 8'
 gem 'redis', '~> 4'
-gem 'sentry-ruby'
 
 # api
 gem 'ruby-openai'

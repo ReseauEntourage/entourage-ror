@@ -402,7 +402,7 @@ module Api
         user.roles.push :ethics_charter_signed
         user.save!
       rescue => e
-        Sentry.capture_exception(e)
+        Rails.logger.error(e)
       ensure
         head :ok
       end

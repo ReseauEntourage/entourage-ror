@@ -42,7 +42,7 @@ module Api
           uri.query = URI.encode_www_form(url_params).presence
           url = uri.to_s
         rescue => e
-          Sentry.capture_exception(e)
+          Rails.logger.error(e)
         end
 
         redirect_to url, allow_other_host: true

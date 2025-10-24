@@ -30,7 +30,8 @@ module ChatServices
 
           true
         rescue => e
-          Sentry.capture_exception(e)
+          Rails.logger.error(e)
+
           false
         end
       else

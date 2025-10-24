@@ -22,6 +22,7 @@ before_fork do
 end
 
 lowlevel_error_handler do |e, env|
-  Sentry.capture_exception(e)
+  Rails.logger.error(e)
+
   [500, {}, ["An error has occurred, and engineers have been informed. Please reload the page. If you continue to have problems, contact contact@entourage.social\n"]]
 end

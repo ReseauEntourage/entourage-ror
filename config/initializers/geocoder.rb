@@ -30,37 +30,3 @@ Geocoder.configure(
   #   Geocoder::InvalidRequest
   always_raise: :all
 )
-
-class Geocoder::Lookup::Base
-  alias_method :_fetch_data, :fetch_data
-
-  def fetch_data(query)
-    begin
-      Sentry.add_breadcrumb(
-        Sentry::Breadcrumb.new(
-          category: 'geocoder.query',
-          data: {
-            text: query.text,
-            options: query.options
-          },
-          level: :info
-        )
-      )
-    rescue
-    end
-    response = _fetch_data(query)
-    begin
-      Sentry.add_breadcrumb(
-        Sentry::Breadcrumb.new(
-          category: 'geocoder.response',
-          data: {
-            response: response
-          },
-          level: :info
-        )
-      )
-    rescue
-    end
-    response
-  end
-end

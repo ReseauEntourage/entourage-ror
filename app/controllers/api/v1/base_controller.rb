@@ -10,7 +10,6 @@ module Api
       before_action :validate_request!, only: [:check]
       before_action :ensure_community!, except: [:options]
       before_action :authenticate_user!, except: [:check, :options]
-      before_action :set_sentry_context
 
       after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
@@ -160,17 +159,7 @@ module Api
       def track_session
         SessionHistory.track user_id: current_user.id, platform: api_request_platform
       rescue => e
-        Sentry.capture_exception(e)
-      end
-
-      def set_sentry_context
-        Sentry.set_user(id: current_user.try(:id))
-        Sentry.set_extras(
-          params: params.to_unsafe_h,
-          url: request.url,
-          platform: api_request_platform,
-          app_version: api_request.key_infos.try(:[], :version),
-        )
+        Rails.logger.error(e)
       end
 
       def ensure_community!
@@ -200,7 +189,7 @@ module Api
           params: params
         ).run
       rescue => e
-        Sentry.capture_exception(e)
+        Rails.logger.error(e)
       end
     end
   end

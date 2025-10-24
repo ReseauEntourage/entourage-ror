@@ -11,8 +11,6 @@ module Onboarding
 
       User.where(id: welcome_message_user_ids).find_each do |user|
         begin
-          Sentry.set_user(id: user&.id)
-
           moderation_area = ModerationServices.moderation_area_for_user_with_default(user)
           author = moderation_area.interlocutor_for_user(user)
 
@@ -61,9 +59,8 @@ module Onboarding
               join_request.update_column(:archived_at, Time.zone.now)
             end
           end
-
         rescue => e
-          Sentry.capture_exception(e)
+          Rails.logger.error(e)
         end
       end
     end
