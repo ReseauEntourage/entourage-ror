@@ -5,7 +5,7 @@ module DailyTaskHelper
       begin
         yield record
       rescue => e
-        Sentry.capture_exception(e)
+        Rails.logger.error(e)
       end
     end
   end

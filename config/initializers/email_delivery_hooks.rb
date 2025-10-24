@@ -143,7 +143,8 @@ module EmailDeliveryHooks
   def self.handle_exception e, message
     if Rails.env.production?
       header = Hash[message.header.map { |a| [a.name, a.value] }] rescue $!
-      Sentry.capture_exception(e)
+
+      Rails.logger.error(e)
     else
       raise e
     end
