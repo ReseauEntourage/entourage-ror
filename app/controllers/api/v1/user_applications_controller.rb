@@ -43,7 +43,7 @@ module Api
         rescue ActiveRecord::RecordNotUnique
           head :no_content
         rescue => e
-          Sentry.capture_exception(e)
+          Rails.logger.error(e)
           render json: {message: 'Could not create user_application', reasons: user_application.errors.full_messages}, status: :bad_request
         end
       end

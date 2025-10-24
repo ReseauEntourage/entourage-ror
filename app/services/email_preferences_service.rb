@@ -87,7 +87,7 @@ module EmailPreferencesService
     if Rails.env.development?
       raise exception
     else
-      Sentry.capture_exception(exception)
+      Rails.logger.error(exception)
     end
 
     false

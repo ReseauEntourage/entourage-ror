@@ -542,9 +542,6 @@ GEM
       tilt
     securerandom (0.4.1)
     select2-rails (4.0.13)
-    sentry-ruby (5.28.0)
-      bigdecimal
-      concurrent-ruby (~> 1.0, >= 1.0.2)
     shoulda-matchers (6.5.0)
       activesupport (>= 5.2.0)
     sidekiq (8.0.8)
@@ -683,7 +680,6 @@ DEPENDENCIES
   safety_mailer
   sass-rails
   select2-rails
-  sentry-ruby
   shoulda-matchers
   sidekiq (~> 8)
   slack-notifier

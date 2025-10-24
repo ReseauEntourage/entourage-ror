@@ -5,7 +5,7 @@ module MailjetService
       handle_unsub payload
     else
       e = RuntimeError.new("Unhandled Mailjet event #{payload['event'].inspect}")
-      Sentry.capture_exception(e)
+      Rails.logger.error(e)
     end
   end
 

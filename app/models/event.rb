@@ -10,7 +10,7 @@ class Event < ApplicationRecord
   rescue ActiveRecord::StatementInvalid => e
     raise e
   rescue => e
-    Sentry.capture_exception(e)
+    Rails.logger.error(e)
   end
 
   def self.names

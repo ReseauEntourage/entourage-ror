@@ -32,7 +32,8 @@ module EntourageServices
           # see config/initializers/geocoder.rb
           Geocoder.search(coordinates).first
         rescue => e
-          Sentry.capture_exception(e)
+          Rails.logger.error(e)
+
           nil
         end
       end
