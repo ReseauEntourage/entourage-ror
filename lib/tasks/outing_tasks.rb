@@ -62,6 +62,7 @@ module OutingTasks
         outing = Outing.find(outing_id)
 
         return unless moderator = ModerationServices.moderator_for_entourage(outing)
+        return unless outing.number_of_people > 0
 
         ConversationService.create_private_message!(
           sender_id: moderator.id,
@@ -69,7 +70,7 @@ module OutingTasks
           content: I18n.t(
             "outings.tasks.reminder_7_days_content",
             title: outing.title,
-            count: outing.number_of_people,
+            count: outing.number_of_people - 1, # remove the organisator
             neighborhood: outing.user.default_neighborhood.try(:name),
             link: outing.share_url
           )
