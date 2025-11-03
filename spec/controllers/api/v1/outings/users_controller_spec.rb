@@ -386,6 +386,42 @@ describe Api::V1::Outings::UsersController do
     end
   end
 
+  describe 'POST cancel_photo_acceptance' do
+    let(:request) { post :cancel_photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: manager.token } }
+
+    context "requester is not organizer" do
+      before { post :cancel_photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "manager is not a manager" do
+      let(:manager) { create(:public_user) }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "not as participant" do
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["photo_acceptance"]).to eq(false) }
+    end
+
+    context "as participant" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }
+
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+      it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
+      it { expect(result["user"]["photo_acceptance"]).to eq(false) }
+    end
+  end
+
   describe 'DELETE destroy' do
     context 'not signed in' do
       before { delete :destroy, params: { outing_id: outing.to_param, id: user.id } }
