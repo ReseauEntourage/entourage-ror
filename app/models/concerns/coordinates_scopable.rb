@@ -34,6 +34,18 @@ module CoordinatesScopable
         'postal_code is not null and left(postal_code, 2) = ?', departement
       )
     }
+    scope :with_zone, -> (zone) {
+      return unless has_attribute?(:zone)
+      return unless zone.present?
+
+      zone = zone.to_sym
+
+      return unless [:ville, :departement, :no_zone].include?(zone)
+
+      return where(zone: nil) if zone == :no_zone
+
+      where(zone: zone)
+    }
     scope :order_by_paris_for_user, -> (user) {
       return unless user.paris?
 

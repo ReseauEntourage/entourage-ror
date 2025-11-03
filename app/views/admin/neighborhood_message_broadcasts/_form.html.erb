@@ -124,6 +124,7 @@
     } %>
   <% elsif @tab == :neighborhoods %>
       <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
+
       <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
         path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
         record: @neighborhood_message_broadcast,

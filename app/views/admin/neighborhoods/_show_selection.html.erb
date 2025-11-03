@@ -1,0 +1,31 @@
+<h4>Groupes de voisins actuellement associés <span class="badge"><%= @neighborhoods.count %><span></h4>
+
+<table id="neighborhoods-list" class="table table-striped">
+  <% if @neighborhoods.any? %>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>nom</th>
+        <th>code postal</th>
+        <th>type</th>
+        <th>administrateur</th>
+        <th>membres</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @neighborhoods.includes([:user]).each do |neighborhood| %>
+        <tr>
+          <td><%= link_to neighborhood.id, admin_neighborhood_path(neighborhood) %></td>
+          <td><%= link_to neighborhood.name, admin_neighborhood_path(neighborhood) %></td>
+          <td><%= neighborhood.postal_code %></td>
+          <td><%= neighborhood_zone_label(neighborhood.zone) %></td>
+          <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
+          <td><%= neighborhood.members_count %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <% else %>
+    <caption><%= "Il n'y a pas encore de groupes associés."%></caption>
+  <% end %>
+</table>
