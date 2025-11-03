@@ -22,10 +22,9 @@ describe OutingTasks do
   describe 'upcoming_outings' do
     subject { OutingTasks.upcoming_outings.pluck(:id) }
 
-    # include
-    context 'correct params and moderated' do
-      before { outing.moderation.update_attribute(:moderated_at, moderated_at) }
+    before { outing.moderation.update_attribute(:moderated_at, moderated_at) }
 
+    context 'correct params and moderated' do
       it { expect(subject).to include(outing.id) }
     end
 
@@ -35,17 +34,22 @@ describe OutingTasks do
       it { expect(subject).not_to include(outing.id) }
     end
 
-    context 'correct params but not exists' do
+    context 'correct params but no moderation' do
       before { outing.moderation.destroy }
 
       it { expect(subject).not_to include(outing.id) }
     end
 
-    # not include
-    context 'not admin creator nor team' do
-      let(:user) { create :partner_user }
+    context 'not admin creator' do
+      before { user.update(admin: false, targeting_profile: :asks_for_help) }
 
       it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'not admin creator but team' do
+      before { user.update(admin: false, targeting_profile: :team) }
+
+      it { expect(subject).to include(outing.id) }
     end
 
     context 'already notified' do
@@ -60,8 +64,14 @@ describe OutingTasks do
       it { expect(subject).not_to include(outing.id) }
     end
 
+    context 'inside of upcoming delay' do
+      let(:starts_at) { OutingTasks::POST_UPCOMING_DELAY.from_now - 1.hour }
+
+      it { expect(subject).to include(outing.id) }
+    end
+
     context 'outside of upcoming delay' do
-      let(:starts_at) { OutingTasks::POST_UPCOMING_DELAY + 1.hour }
+      let(:starts_at) { OutingTasks::POST_UPCOMING_DELAY.from_now + 1.hour }
 
       it { expect(subject).not_to include(outing.id) }
     end
@@ -112,6 +122,61 @@ describe OutingTasks do
       it { expect_any_instance_of(GroupMailer).to receive(:event_participation_reminder).with(outing_ref, member) }
 
       after { subject }
+    end
+  end
+
+  describe 'upcoming_outings_for_user' do
+    subject { OutingTasks.upcoming_outings_for_user(user).pluck(:id) }
+
+    before { OutingsServices::Finder.any_instance.stub(:find_all).and_return(Outing.all) }
+    before { outing.moderation.update_attribute(:moderated_at, moderated_at) }
+
+    # include
+    context 'correct params and moderated' do
+      it { expect(subject).to include(outing.id) }
+    end
+
+    context 'correct params but not moderated' do
+      before { outing.moderation.update_attribute(:moderated_at, nil) }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'correct params but not exists' do
+      before { outing.moderation.destroy }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'inside of upcoming delay' do
+      let(:starts_at) { OutingTasks::EMAIL_UPCOMING_DELAY.from_now - 1.hour }
+
+      it { expect(subject).to include(outing.id) }
+    end
+
+    # not include
+    context 'not admin creator nor team' do
+      before { user.update(admin: false, targeting_profile: :asks_for_help) }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'in the past' do
+      let(:starts_at) { 1.minute.ago }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'outside of upcoming delay' do
+      let(:starts_at) { OutingTasks::EMAIL_UPCOMING_DELAY.from_now + 1.hour }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'online' do
+      let(:online) { true }
+
+      it { expect(subject).to include(outing.id) }
     end
   end
 end
