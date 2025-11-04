@@ -1,6 +1,6 @@
 module Admin
   class SlackController < ActionController::Base
-    skip_before_action :verify_authenticity_token, only: [:message_action]
+    skip_before_action :verify_authenticity_token, only: [:message_action, :user_unblock, :offensive_text]
 
     before_action :parse_payload, only: [:message_action, :user_unblock, :offensive_text]
     before_action :authenticate_slack!, only: [:message_action]
