@@ -227,6 +227,13 @@ describe User, type: :model do
       it { expect(User.search_by('Bare ').pluck(:id)).to eq([user.id]) }
       it { expect(User.search_by('Fare ').pluck(:id)).to eq([]) }
     end
+
+    context 'with reversed accent' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Feo', last_name: 'Bare') }
+      it { expect(User.search_by('Féo').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Barè ').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Farè ').pluck(:id)).to eq([]) }
+    end
   end
 
   describe 'set_phone' do
