@@ -158,6 +158,8 @@ class User < ApplicationRecord
   scope :search_by, -> (query) {
     return unless query.present?
 
+    query = I18n.transliterate(query)
+
     # Normalisation
     terms = Phone::PhoneBuilder.new(phone: query).format.strip.downcase.split(/\s+/)
 
