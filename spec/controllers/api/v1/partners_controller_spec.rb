@@ -5,7 +5,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
   describe 'GET index' do
     let!(:partner_paris) { create(:partner, name: 'Entourage Paris') }
-    let!(:partner_lyon) { create(:partner, name: 'Entourage Lyon', postal_code: '75008') }
+    let!(:partner_lyon) { create(:partner, name: 'Entourage Lyon', address: '69000 Lyon') }
     let(:results) { JSON.parse(response.body) }
 
     before { get 'index', params: { token: user.token, query: query } }
@@ -17,7 +17,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
         'partners' => [{
           'id' => partner_lyon.id,
           'name' => 'Entourage Lyon',
-          'postal_code' => '75008'
+          'postal_code' => '69000'
         }, {
           'id' => partner_paris.id,
           'name' => 'Entourage Paris',
@@ -35,7 +35,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
   end
 
   describe 'GET show' do
-    let!(:partner1) { create(:partner, name: 'Partner A', postal_code: '75008') }
+    let!(:partner1) { create(:partner, name: 'Partner A', address: '75008 Paris') }
     let!(:following) { nil }
 
     before { get 'show', params: { id: partner1.id, token: user.token } }
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
         'donations_needs' => nil,
         'volunteers_needs' => nil,
         'phone' => nil,
-        'address' => '174 rue Championnet, Paris',
+        'address' => '75008 Paris',
         'website_url' => nil,
         'email' => nil,
         'default' => true,
@@ -65,6 +65,66 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
           'following' => true
         )
       )}
+    end
+  end
+
+  describe 'POST create' do
+    let(:result) { JSON.parse(response.body) }
+
+    let(:request) { post :create, params: { token: user.token }.merge(params) }
+
+    let(:params) { { partner: {
+      name: 'Entourage Nantes',
+      description: 'Entourage Nantes',
+      phone: '02 40 00 01 02',
+      address: 'place du Commerce 44000 Nantes',
+      wesite_url: 'https://entourage.social/nantes',
+      email: 'nantes@entourage.social',
+      latitude: 44,
+      longitude: 0.00,
+      donations_needs: 'many',
+      volunteers_needs: 'plenty',
+      staff: true
+    }}}
+
+    describe 'creation' do
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result['partner']['name']).to eq('Entourage Nantes') }
+    end
+
+    describe 'missing mandatory field' do
+      before { params[:partner][:name] = nil }
+      before { request }
+
+      it { expect(response.status).to eq(400) }
+    end
+
+    describe 'same address different name' do
+      let!(:partner) { create(:partner, name: 'Entourage Paris', address: 'place du Commerce 44000 Nantes') }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result['partner']['name']).to eq('Entourage Nantes') }
+    end
+
+    describe 'same name different place' do
+      let!(:partner) { create(:partner, name: 'Entourage Nantes', address: 'place du Commerce 35000 Rennes') }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result['partner']['name']).to eq('Entourage Nantes') }
+    end
+
+    describe 'same name same place' do
+      let!(:partner) { create(:partner, name: 'Entourage Nantes', address: 'place du Commerce 44000 Nantes') }
+
+      before { request }
+
+      it { expect(response.status).to eq(400) }
     end
   end
 
