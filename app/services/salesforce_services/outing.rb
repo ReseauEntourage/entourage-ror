@@ -8,7 +8,7 @@ module SalesforceServices
     end
 
     def is_synchable?
-      return false if instance.online
+      return false if instance.online && ! instance.papotage?
       return false unless user = instance.user
       return false unless instance.address.present?
 

@@ -132,4 +132,10 @@ RSpec.describe Outing, type: :model do
       it { expect(subject.pluck(:id)).to match_array([outing.id]) }
     end
   end
+
+  describe 'papotage?' do
+    it { expect(create(:outing, :outing_class, title: 'Papotage en ligne', online: true).papotage?).to eq(true) }
+    it { expect(create(:outing, :outing_class, title: 'Papotage en ligne', online: false).papotage?).to eq(false) }
+    it { expect(create(:outing, :outing_class, title: 'Discussion en ligne', online: true).papotage?).to eq(false) }
+  end
 end
