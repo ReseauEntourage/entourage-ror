@@ -1,33 +1,41 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::PartnersController, type: :controller do
-  let!(:user) { FactoryBot.create :pro_user }
+  let!(:user) { create :pro_user }
 
   describe 'GET index' do
-    let!(:partner1) { FactoryBot.create(:partner, name: 'Partner B') }
-    let!(:partner2) { FactoryBot.create(:partner, name: 'Partner A', postal_code: '75008') }
-    # before { FactoryBot.create(:user_partner, user: user, partner: partner1) }
+    let!(:partner_paris) { create(:partner, name: 'Entourage Paris') }
+    let!(:partner_lyon) { create(:partner, name: 'Entourage Lyon', postal_code: '75008') }
+    let(:results) { JSON.parse(response.body) }
 
-    before { get 'index', params: { token: user.token } }
-    # TODO(partner)
-    it { expect(JSON.parse(response.body)).to eq(
-      {'partners'=>[
-        {
-          'id'=>partner2.id,
-          'name'=>'Partner A',
-          'postal_code'=>'75008'
-        },
-        {
-          'id'=>partner1.id,
-          'name'=>'Partner B',
-          'postal_code'=>nil
-        }
-      ]}
-    )}
+    before { get 'index', params: { token: user.token, query: query } }
+
+    context 'without filter' do
+      let(:query) {}
+
+      it { expect(results).to eq({
+        'partners' => [{
+          'id' => partner_lyon.id,
+          'name' => 'Entourage Lyon',
+          'postal_code' => '75008'
+        }, {
+          'id' => partner_paris.id,
+          'name' => 'Entourage Paris',
+          'postal_code' => nil
+        }]}
+      )}
+    end
+
+    context 'with filter' do
+      let(:query) { 'Paris' }
+
+      it { expect(results['partners'].count).to eq(1) }
+      it { expect(results['partners'][0]['id']).to eq(partner_paris.id) }
+    end
   end
 
   describe 'GET show' do
-    let!(:partner1) { FactoryBot.create(:partner, name: 'Partner A', postal_code: '75008') }
+    let!(:partner1) { create(:partner, name: 'Partner A', postal_code: '75008') }
     let!(:following) { nil }
 
     before { get 'show', params: { id: partner1.id, token: user.token } }

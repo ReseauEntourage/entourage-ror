@@ -15,15 +15,27 @@ class Partner < ApplicationRecord
   before_save :reformat_url, if: :website_url_changed?
   before_save :reformat_needs, if: :needs_changed?
   before_save :geocode, if: :address_changed?
+  before_save :update_searchable_text
   after_commit :sync_poi
 
   geocoded_by :address
 
   attr_accessor :following # see api/v1/partners#show
 
+  # @warning Partner should be deactivable; currently, only erase is possible
+  scope :active, -> {}
+
   scope :staff, -> { where(staff: true).ordered }
   scope :no_staff, -> { where(staff: false).ordered }
   scope :ordered, -> { order(:name) }
+
+  scope :search_by, -> (query) {
+    return unless query.present?
+
+    where("searchable_text ILIKE ?", "%#{
+      I18n.transliterate(query).strip.downcase
+    }%")
+  }
 
   PLACEHOLDER_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png'.freeze
 
@@ -77,6 +89,12 @@ class Partner < ApplicationRecord
     poi.validated   = self.geocoded?
 
     poi.save
+  end
+
+  protected
+
+  def update_searchable_text
+    self.searchable_text = I18n.transliterate(name.downcase)
   end
 
   private
