@@ -1,4 +1,6 @@
 class Partner < ApplicationRecord
+  POSTAL_CODE_REGEX = /\b\d{5}\b/
+
   has_many :users
   has_many :groups, through: :users
 
@@ -11,6 +13,7 @@ class Partner < ApplicationRecord
   validates :name, presence: true
   validates :address, presence: true
   validates :longitude, :latitude, numericality: true, presence: true
+  validate :validate_uniqueness!
 
   before_save :reformat_url, if: :website_url_changed?
   before_save :reformat_needs, if: :needs_changed?
@@ -29,6 +32,13 @@ class Partner < ApplicationRecord
   scope :no_staff, -> { where(staff: false).ordered }
   scope :ordered, -> { order(:name) }
 
+  scope :same_as_partner, -> (partner) {
+    return unless partner.name.present?
+    return unless partner.address.present?
+
+    search_by(partner.name).where('address ILIKE ?', "%#{partner.postal_code}%")
+  }
+
   scope :search_by, -> (query) {
     return unless query.present?
 
@@ -38,6 +48,11 @@ class Partner < ApplicationRecord
   }
 
   PLACEHOLDER_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png'.freeze
+
+  def postal_code
+    match = address.match(POSTAL_CODE_REGEX)
+    match ? match[0] : nil
+  end
 
   def large_logo_url
     super.presence || PLACEHOLDER_URL
@@ -103,4 +118,10 @@ class Partner < ApplicationRecord
     donations_needs_changed? || volunteers_needs_changed?
   end
 
+  def validate_uniqueness!
+    return unless address.present?
+    return unless Partner.same_as_partner(self).any?
+
+    errors.add(:name, 'This partner already exists')
+  end
 end
