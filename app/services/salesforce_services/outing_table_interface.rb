@@ -85,11 +85,14 @@ module SalesforceServices
         slashes = ' // '
         dot = ' - '
 
-        truncate_priority(
-          [outing.city, slashes, remove_emojis(outing.title), dot, starts_date.to_s],
-          max_length: 80,
-          min_lengths: [30, slashes.length, 30, dot.length, starts_date.to_s.length]
-        )
+        # outing.city nil => "Titre - Date"
+        # outing.city present => "City // Titre - Date"
+        title_part = outing.city.blank? ? [remove_emojis(outing.title), dot, starts_date.to_s] : [outing.city, slashes, remove_emojis(outing.title), dot, starts_date.to_s]
+
+        # minimal lengths
+        min_lengths = outing.city.blank? ? [outing.title.length, dot.length, starts_date.to_s.length] : [30, slashes.length, 30, dot.length, starts_date.to_s.length]
+
+        truncate_priority(title_part, max_length: 80, min_lengths: min_lengths)
       end
 
       def postal_code
