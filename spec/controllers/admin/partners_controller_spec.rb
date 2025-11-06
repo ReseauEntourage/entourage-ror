@@ -6,11 +6,11 @@ describe Admin::PartnersController do
 
   describe 'GET #index' do
     context 'has partners' do
-      let!(:partner_list) { [create(:partner), create(:partner)] }
+      let!(:partner_list) { [create(:partner, address: '75000 Paris'), create(:partner, address: '29000 Brest')] }
 
       before { get :index }
 
-      it { expect(assigns(:partners)).to match_array(partner_list) }
+      it { expect(assigns(:partners).pluck(:id)).to match_array(partner_list.pluck(:id)) }
     end
 
     context 'has no partners' do
