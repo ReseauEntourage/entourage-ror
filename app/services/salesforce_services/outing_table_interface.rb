@@ -13,6 +13,7 @@ module SalesforceServices
       ends_date: 'EndDate',
       ends_time: 'Heure_de_fin__c',
       ongoing?: 'IsActive',
+      online?: 'En_ligne__c',
       sf_status: 'Status',
       status: 'Statut_d_Entourage__c',
       reseau: 'R_seaux__c',
@@ -129,6 +130,12 @@ module SalesforceServices
 
       def ongoing?
         outing.ongoing?
+      end
+
+      def online?
+        return 'Oui' if outing.online?
+
+        'Non'
       end
 
       def sf_status
