@@ -129,7 +129,7 @@ module SalesforceServices
       end
 
       def sf_status
-        'Aborted' unless outing.ongoing?
+        return 'Aborted' unless outing.ongoing?
 
         'Planned'
       end
