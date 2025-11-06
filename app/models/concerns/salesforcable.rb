@@ -51,6 +51,7 @@ module Salesforcable
     end
 
     def from_address_to_antenne
+      return 'National' if @instance.respond_to?(:papotage?) && @instance.papotage?
       return 'National' unless @instance.present? && @instance.respond_to?(:departement)
 
       departement = @instance.departement

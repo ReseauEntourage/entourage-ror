@@ -1,6 +1,31 @@
 require 'rails_helper'
 
 describe SalesforceServices::OutingTableInterface do
+  let(:outing) { create :outing, :outing_class, title: title, metadata: { starts_at: starts_at, display_address: address } }
+
+  let(:address) { '1, place du Louvre 75000 Paris' }
+  let(:title) { 'Concert de musique' }
+  let(:starts_at) { 1.hour.from_now }
+
+
+  describe '#title' do
+    subject { described_class.new(instance: outing).mapping }
+
+    context 'when outing.city is present' do
+      before { allow(subject).to receive(:truncate_priority).and_return('Paris // Concert de musique - 2025-11-05') }
+
+      it { expect(subject.title).to eq('Paris // Concert de musique - 2025-11-05') }
+    end
+
+    context 'when outing.city is nil or blank' do
+      let(:address) { nil }
+
+      before { allow(subject).to receive(:truncate_priority).and_return('Concert de musique - 2025-11-05') }
+
+      it { expect(subject.title).to eq('Concert de musique - 2025-11-05') }
+    end
+  end
+
   describe "truncate_priority" do
     let(:date) { "2025-08-21" }
 
