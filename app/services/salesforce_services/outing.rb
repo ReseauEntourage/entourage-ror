@@ -16,7 +16,12 @@ module SalesforceServices
     end
 
     def upsert
-      find_id || super
+      (find_id || super).tap do
+        # ensure members (organizator) are synchronized
+        instance.join_requests.each do |join_request|
+          join_request.sf.upsert unless join_request.salesforce_id.present?
+        end
+      end
     end
 
     def destroy
