@@ -27,14 +27,28 @@ module SalesforceServices
         SalesforceServices::Connect.client
       end
 
+      def record_types
+        @record_types ||= client.query("SELECT Id, DeveloperName FROM #{TABLE_NAME}")
+      end
+
+      def records
+        SalesforceConfig.where(klass: TABLE_NAME)
+      end
+
       def import
-        client.query("SELECT Id, DeveloperName FROM #{TABLE_NAME}").each do |record_type|
+        record_types.each do |record_type|
           RecordTypeStruct.new(record_type: record_type).upsert
         end
       end
 
+      def reimport
+        records.delete_all.tap do
+          import
+        end
+      end
+
       def find_by_name name
-        SalesforceConfig.find_by_klass_and_name(TABLE_NAME, name)
+        records.find_by_name(name)
       end
 
       def find_for_outing
