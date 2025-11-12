@@ -47,6 +47,10 @@ module SalesforceServices
       @fields ||= self.class.fields(table_name)
     end
 
+    def unique_fields
+      @unique_fields ||= self.class.unique_fields(table_name)
+    end
+
     def field_values field
       self.class.field_values(table_name, field)
     end
@@ -141,11 +145,31 @@ module SalesforceServices
               name: field[:name],
               type: field[:type],
               label: field[:label],
+              unique: field[:unique],
               required: field[:nillable] == false
             }
           end.sort_by { |field| [field[:required] ? 0 : 1, field[:name]] }
         end
       end
+
+      def unique_fields table_name
+        Rails.cache.fetch("salesforce_unique_fields_#{table_name}", expires_in: 12.hours) do
+          metadata = client.describe(table_name)
+          return [] unless metadata && metadata[:fields]
+
+          metadata[:fields].select { |f| f[:unique] == true }.map do |field|
+            {
+              name: field[:name],
+              label: field[:label],
+              type: field[:type],
+              external_id: field[:externalId],
+              unique: field[:unique],
+              required: field[:nillable] == false
+            }
+          end
+        end
+      end
+
 
       def field table_name, field_name
         fields(table_name).find { |f| f[:name] == field_name }

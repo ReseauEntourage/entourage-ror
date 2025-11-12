@@ -8,6 +8,7 @@
           <th>Type</th>
           <th>Label</th>
           <th>Synchronized</th>
+          <th>Unique</th>
           <th>Required</th>
         </thead>
 
@@ -21,6 +22,7 @@
             <td><%= field[:type] %></td>
             <td><%= field[:label] %></td>
             <td><%= check_box_tag '', '', interface.instance_mapping.values.include?(field[:name]), disabled: true %></td>
+            <td><%= check_box_tag '', '', field[:unique], disabled: true %></td>
             <td><%= check_box_tag '', '', field[:required], disabled: true %></td>
           </tr>
         <% end %>
