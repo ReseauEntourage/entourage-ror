@@ -14,6 +14,7 @@ module SalesforceServices
       ends_time: 'Heure_de_fin__c',
       ongoing?: 'IsActive',
       online?: 'En_ligne__c',
+      parent_id: 'ParentId',
       sf_status: 'Status',
       status: 'Statut_d_Entourage__c',
       reseau: 'R_seaux__c',
@@ -136,6 +137,12 @@ module SalesforceServices
         return 'Oui' if outing.online?
 
         'Non'
+      end
+
+      def parent_id
+        return unless parent = SalesforceServices::CampaignParent.find_for_outing(outing)
+
+        parent.salesforce_id
       end
 
       def sf_status
