@@ -5,17 +5,17 @@ class AddSearchableTextToUsers < ActiveRecord::Migration[7.1]
 
     add_column :users, :searchable_text, :text
 
-    execute <<~SQL
-      UPDATE users
-      SET searchable_text = unaccent(
-        lower(
-          coalesce(first_name, '') || ' ' ||
-          coalesce(last_name, '') || ' ' ||
-          coalesce(phone, '') || ' ' ||
-          coalesce(email, '')
-        )
-      );
-    SQL
+    # execute <<~SQL
+    #   UPDATE users
+    #   SET searchable_text = unaccent(
+    #     lower(
+    #       coalesce(first_name, '') || ' ' ||
+    #       coalesce(last_name, '') || ' ' ||
+    #       coalesce(phone, '') || ' ' ||
+    #       coalesce(email, '')
+    #     )
+    #   );
+    # SQL
 
     add_index :users,
       :searchable_text,
