@@ -24,8 +24,12 @@ module Populate
       end
     end
 
-    def set_salesforce_configs
-      SalesforceServices::RecordType.new.import
+    def set_salesforce_record_types
+      SalesforceServices::RecordType.reimport
+    end
+
+    def set_salesforce_campaign_parents
+      SalesforceServices::CampaignParent.reimport
     end
 
     def delete_resources
