@@ -202,6 +202,7 @@ describe User, type: :model do
     context 'wrong search' do
       let!(:user) { FactoryBot.create(:public_user, first_name: 'Foo', last_name: 'Bar') }
       it { expect(User.search_by('Foobar').pluck(:id)).to eq([]) }
+      it { expect(User.search_by('Fooo').pluck(:id)).to eq([]) }
     end
 
     context 'without trailing spaces' do
@@ -218,6 +219,20 @@ describe User, type: :model do
       let!(:user) { FactoryBot.create(:public_user, first_name: 'Foo', last_name: 'Bar') }
       it { expect(User.search_by('Foo').pluck(:id)).to eq([user.id]) }
       it { expect(User.search_by('Foo ').pluck(:id)).to eq([user.id]) }
+    end
+
+    context 'with accent' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Féo', last_name: 'Barè') }
+      it { expect(User.search_by('Feo').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Bare ').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Fare ').pluck(:id)).to eq([]) }
+    end
+
+    context 'with reversed accent' do
+      let!(:user) { FactoryBot.create(:public_user, first_name: 'Feo', last_name: 'Bare') }
+      it { expect(User.search_by('Féo').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Barè ').pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by('Farè ').pluck(:id)).to eq([]) }
     end
   end
 

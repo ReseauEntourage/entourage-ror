@@ -35,6 +35,7 @@ class User < ApplicationRecord
   validate :validate_birthdate!
 
   before_save :slack_id_no_empty
+  before_save :update_searchable_text
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
   after_save :sync_newsletter, if: :saved_change_to_email?
   after_save :signal_association
@@ -153,25 +154,26 @@ class User < ApplicationRecord
   scope :unknown, -> { goal_not_known }
   scope :ask_for_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :offer_help, :offers_help) }
-  scope :search_by, ->(search) {
-    strip = search && search.strip.downcase
 
-    where(%(
-      users.id = :id OR
-      lower(first_name) = :first_name OR
-      lower(last_name) = :last_name OR
-      email = :email OR
-      phone = :phone OR
-      concat(lower(first_name), ' ', lower(last_name)) = :full_name OR
-      concat(lower(last_name), ' ', lower(first_name)) = :full_name
-    ), {
-      id: strip.to_i,
-      first_name: strip,
-      last_name: strip,
-      email: strip,
-      full_name: strip,
-      phone: Phone::PhoneBuilder.new(phone: strip).format,
-    })
+  scope :search_by, -> (query) {
+    return unless query.present?
+
+    query = I18n.transliterate(query)
+
+    # Normalisation
+    terms = Phone::PhoneBuilder.new(phone: query).format.strip.downcase.split(/\s+/)
+
+    conditions = []
+    params = {}
+
+    # one condition per keyword
+    terms.each_with_index do |term, i|
+      param = "term_#{i}"
+      params[param.to_sym] = "%#{term}%"
+      conditions << "users.searchable_text ILIKE :#{param}"
+    end
+
+    where(conditions.join(" AND "), params)
   }
 
   scope :search_by_ids_or_uuids, -> (ids_or_uuids) {
@@ -722,6 +724,17 @@ class User < ApplicationRecord
 
   def slack_id_no_empty
     self.slack_id = nil if slack_id.blank?
+  end
+
+  def update_searchable_text
+    combined = [
+      first_name,
+      last_name,
+      phone,
+      email
+    ].compact.join(' ')
+
+    self.searchable_text = I18n.transliterate(combined.downcase)
   end
 
   def clean_up_passwords
