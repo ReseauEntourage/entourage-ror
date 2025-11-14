@@ -10,14 +10,7 @@ class HomeController < ApplicationController
   end
 
   def store_redirection
-    case $server_community
-    when 'entourage'
-      url = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html'
-    when 'pfp'
-      url = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection_pfp.html'
-    else
-      raise AbstractController::ActionNotFound
-    end
+    url = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html'
 
     # @fixme which params should be permitted?
     query_string = params.permit([:action, :controller]).except(:action, :controller).to_query

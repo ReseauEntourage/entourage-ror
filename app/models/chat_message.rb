@@ -156,6 +156,10 @@ class ChatMessage < ApplicationRecord
     status.to_sym == :offensive
   end
 
+  def auto?
+    message_type == 'auto'
+  end
+
   # @param force true to bypass deletion
   def content force = false
     return '' if deleted? && !force
