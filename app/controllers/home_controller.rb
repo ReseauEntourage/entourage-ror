@@ -15,7 +15,7 @@ class HomeController < ApplicationController
     # @fixme which params should be permitted?
     query_string = params.permit([:action, :controller]).except(:action, :controller).to_query
     url = "#{url}?#{query_string}" if query_string.present?
-    redirect_to url, status: 301
+    redirect_to url, status: 301, allow_other_host: true
   end
 
   def cgu
