@@ -19,7 +19,7 @@ module UserServices
       social: "Réseaux sociaux",
       word_of_mouth: "Bouche à oreille",
       television: "Télévision",
-      entreprise: "Partenariat entreprise (avec votre emloyeur)",
+      entreprise: "Partenariat entreprise (avec votre employeur)",
       social_event: "Événement salon",
     }
 
