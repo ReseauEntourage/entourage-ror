@@ -663,16 +663,32 @@ fr:
     tasks:
       reminder_content: |
         Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message.
-      reminder_7_days_content: |
-        Votre événement %{title} approche à grands pas, J-7 !
+      reminder_7_days_with_participants: |
+        Bonjour %{first_name},
 
-        Actuellement, %{count} personnes sont inscrites. Pour vous assurer de leur présence et leur faire un rappel, n’hésitez pas à les relancer dans la discussion de l’événement.
+        Merci beaucoup d'avoir lancé %{title}, c'est une super initiative pour créer du lien ! 🙌
 
-        Si vous souhaitez mobiliser plus de participants, nous vous recommandons également de partager le lien de votre événement dans le groupe de voisins de votre ville %{neighborhood}, c’est une excellente occasion de rencontrer encore plus de voisins ! Voici le lien de l'événement à partager : %{link}
+        👉 Je vois que ton événement approche et %{count} personnes se sont déjà inscrites, c'est top ! Pour les aider à ne pas oublier, tu peux leur écrire un petit message dans la discussion de l'événement.
 
-        Si vous avez la moindre question, nous sommes là pour vous aider.
+        Et si tu veux que d'autres voisins s'inscrivent, je te conseille de partager le lien de l'événement dans ton groupe de voisins %{neighborhood} : ça peut faire toute la différence ! Voici le lien à copier-coller : %{link}
 
-        À très vite ! 👌
+        Si tu as besoin d'un coup de pouce, n'hésites pas à me le dire.
+
+        Merci pour ton engagement et ton envie de créer du lien 🙏
+        À très vite
+      reminder_7_days_without_participants: |
+        Bonjour %{first_name},
+
+        Merci beaucoup d'avoir lancé %{title}, c'est une super initiative pour créer du lien ! 🙌
+
+        Je vois que ton événement approche mais personne n'est encore inscrit. Pas de panique : c'est souvent à la dernière minute que les choses bougent 😉
+
+        Je te conseille de partager le lien de l'événement dans ton groupe de voisins %{neighborhood} : ça peut faire toute la différence ! Voici le lien à copier-coller : %{link}
+
+        Si tu as besoin d'un coup de pouce, n'hésites pas à me le dire.
+
+        Merci pour ton engagement et ton envie de créer du lien 🙏
+        À très vite,
       reminder_1_day_content: |
         J-1 avant votre événement 🔥
         Quelques conseils pratiques pour l’accueil et l’animation :
