@@ -692,20 +692,41 @@ fr:
         Si tu as besoin d'un coup de pouce, n'hésites pas à me le dire.
 
         Merci pour ton engagement et ton envie de créer du lien 🙏
-        À très vite,
-      reminder_1_day_content: |
-        J-1 avant votre événement 🔥
-        Quelques conseils pratiques pour l’accueil et l’animation :
+        À très vite
+      reminder_1_day_with_participants: |
+        Bonjour %{first_name},
 
-        J’accueille individuellement chaque participant
+        Ton événement %{title} a lieu demain !
+        Un grand bravo pour cette belle initiative 💪
 
-        J’organise une activité de présentation (jeux brise-glace, tour des prénoms, etc)
+        Voici quelques conseils simples pour créer un moment convivial et inclusif :
 
-        Je suis vigilant à ce que personne ne soit mis sur le côté, exclu du groupe
+        🌟 Accueille chaque participant(e) personnellement avec un petit mot et un sourire
+        🌟 Lance une activité de présentation (jeux brise-glace, tour des prénoms, etc) pour détendre l'ambiance
+        🌟 Sois attentif(ve) à chacun(e) : aide celles et ceux qui pourraient se sentir en retrait à trouver leur place
 
-        À la fin de l’événement, n’hésitez pas à prendre une photo de groupe (en s'assurant d’avoir l’accord de chaque participant) et postez-la dans votre groupe de voisins 👌
+        À la fin de l'événement, n'hésitez pas à prendre une photo de groupe (en s'assurant d'avoir l'accord de chaque participant) et poste-la dans ton groupe de voisins %{neighborhood} 👌
 
-        Bon événement et à très vite !
+        Merci pour ton engagement et ta générosité. Tu participes à tisser un quartier plus solidaire 💛
+
+        À très vite
+      reminder_1_day_without_participants: |
+        Bonjour %{first_name},
+
+        Ton événement %{title} a lieu demain ! Bravo pour cette initiative 👏
+
+        Même si personne ne s'est encore inscrit pour le moment, rien n'est perdu : les voisins se décident parfois à la dernière minute !
+
+        Voici quelques idées pour motiver les troupes :
+        💬 Envoie un message dans la discussion de l'événement
+        📣 Partage le lien dans ton groupe de voisins %{neighborhood}
+        🤝 Invite directement des voisins que tu connais ou avec qui tu as déjà échangé
+
+        Et si finalement tu es seul(e) demain, ce n'est pas un échec ! Tu as déjà fait le plus dur : passer à l'action pour créer du lien 💛
+
+        Merci pour ton engagement. On est là si tu as besoin d’un coup de main 🙌
+
+        À très vite
 
   charts:
     conversations:

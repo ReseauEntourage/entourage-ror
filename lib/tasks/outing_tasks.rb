@@ -97,10 +97,17 @@ module OutingTasks
 
         return unless moderator = ModerationServices.moderator_for_entourage(outing)
 
+        i18n = "outings.tasks.reminder_1_day_with_participants"
+        i18n = "outings.tasks.reminder_1_day_without_participants" if outing.number_of_people <= 1 # only organisator
+
         ConversationService.create_private_message!(
           sender_id: moderator.id,
           recipient_ids: [outing.user_id],
-          content: I18n.t("outings.tasks.reminder_1_day_content")
+          content: I18n.t(i18n,
+            first_name: outing.user.first_name,
+            title: outing.title,
+            neighborhood: outing.user.default_neighborhood.try(:name)
+          )
         )
       end
     end
