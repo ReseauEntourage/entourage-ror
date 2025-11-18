@@ -57,4 +57,10 @@ class SmalltalkAutoChatMessageJob
 
     last_chat_message.auto?
   end
+
+  def self.cancel_jobs_for_smalltalk smalltalk_id
+    Sidekiq::ScheduledSet.new.select do |job|
+      job.klass == 'SmalltalkAutoChatMessageJob' && job.args.first == smalltalk_id
+    end.each(&:delete)
+  end
 end
