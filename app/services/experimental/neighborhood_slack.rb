@@ -100,12 +100,21 @@ module Experimental::NeighborhoodSlack
     extend ActiveSupport::Concern
 
     included do
+      after_create :auto_validate
       after_create :notify_slack
     end
 
     private
 
+    def auto_validate
+      return unless user.team? || user.ambassador?
+
+      update_attribute(:status, :active)
+    end
+
     def notify_slack
+      return if user.team? || user.ambassador?
+
       AsyncService.new(Experimental::NeighborhoodSlack).notify(id)
     end
   end
