@@ -153,6 +153,7 @@ module Experimental::EntourageSlack
     extend ActiveSupport::Concern
 
     included do
+      after_create :auto_validate
       after_commit :notify_slack
     end
 
@@ -163,7 +164,14 @@ module Experimental::EntourageSlack
       previous_changes['postal_code'].map { |pc| pc.to_s.first(2) }.uniq.many?
     end
 
+    def auto_validate
+      return unless user.team? || user.ambassador?
+
+      set_moderation_dates_and_save
+    end
+
     def notify_slack
+      return if moderated_at.present? # already moderated
       return unless Experimental::EntourageSlack.enable_callback
       return unless community == 'entourage' && group_type.in?(['action', 'outing'])
       return unless [country, postal_code].all?(&:present?)
