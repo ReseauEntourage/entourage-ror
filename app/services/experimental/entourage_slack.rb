@@ -168,7 +168,7 @@ module Experimental::EntourageSlack
 
     def notify_slack
       return if moderated_at.present? # already moderated
-      return unless community == 'entourage' && group_type.in?(['action', 'outing'])
+      return unless action? || outing?
       return unless [country, postal_code].all?(&:present?)
       return unless previous_changes.key?('country') || departement_changed?
 
