@@ -10,10 +10,10 @@ describe SalesforceServices::Outing do
       it { expect(result).to eq(true) }
     end
 
-    context "online but not papotage" do
-      let(:outing) { create(:outing, :outing_class, title: 'Discussion en ligne', online: true, user: user) }
+    context "online" do
+      let(:outing) { create(:outing, :outing_class, online: true, user: user) }
 
-      it { expect(result).to eq(false) }
+      it { expect(result).to eq(true) }
     end
 
     context "user is not team" do
