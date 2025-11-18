@@ -145,10 +145,6 @@ module Experimental::EntourageSlack
     h.admin_slack_entourage_links_url(entourage, host: ENV['ADMIN_HOST'])
   end
 
-  def self.enable_callback
-    !Rails.env.test?
-  end
-
   module Callback
     extend ActiveSupport::Concern
 
@@ -172,7 +168,6 @@ module Experimental::EntourageSlack
 
     def notify_slack
       return if moderated_at.present? # already moderated
-      return unless Experimental::EntourageSlack.enable_callback
       return unless community == 'entourage' && group_type.in?(['action', 'outing'])
       return unless [country, postal_code].all?(&:present?)
       return unless previous_changes.key?('country') || departement_changed?
