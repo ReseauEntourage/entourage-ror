@@ -27,7 +27,8 @@ module V1
                :created_at,
                :updated_at,
                :status_changed_at,
-               :distance
+               :distance,
+               :manageable_by_current_user
 
     has_one :location
 
@@ -107,6 +108,12 @@ module V1
       return unless object.recurrence.present?
 
       object.recurrence.recurrency
+    end
+
+    def manageable_by_current_user
+      return false unless scope && scope[:user]
+
+      object.can_be_managed_by?(scope[:user])
     end
 
     private

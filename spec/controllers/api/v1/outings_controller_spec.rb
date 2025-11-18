@@ -371,25 +371,64 @@ describe Api::V1::OutingsController do
       let(:params) { {} }
       let(:request) { patch :update, params: { id: outing.to_param, outing: params, token: user.token } }
 
-      context 'user is not creator' do
-        let(:params) { { title: 'new title' } }
+      context 'management rights' do
+        let(:outing) { create(:outing, :outing_class, user: user, status: :open, interests: ['animaux', 'other']) }
 
-        before { request }
+        context 'user is creator' do
+          let(:params) { { title: 'New title', metadata: { place_limit: 100 } } }
 
-        it { expect(response.status).to eq(401) }
-      end
+          before { request }
 
-      context 'user is creator' do
-        let(:outing) { FactoryBot.create(:outing, :outing_class, user: user, status: :open, interests: ['animaux', 'other']) }
-        let(:params) { { title: 'New title', metadata: { place_limit: 100 } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(subject).to have_key('outing') }
+          it { expect(subject['outing']['title']).to eq('New title') }
+          it { expect(subject['outing']['metadata']['place_limit']).to eq(100) }
+          it { expect(subject['outing']['interests']).to eq(['animaux', 'other']) }
+        end
 
-        before { request }
+        context 'user is not creator' do
+          let(:requester) { create(:public_user) }
+          let(:request) { patch :update, params: { id: outing.to_param, outing: params, token: requester.token } }
+          let(:params) { { title: 'new title' } }
 
-        it { expect(response.status).to eq(200) }
-        it { expect(subject).to have_key('outing') }
-        it { expect(subject['outing']['title']).to eq('New title') }
-        it { expect(subject['outing']['metadata']['place_limit']).to eq(100) }
-        it { expect(subject['outing']['interests']).to eq(['animaux', 'other']) }
+          before { request }
+
+          it { expect(response.status).to eq(401) }
+        end
+
+        context 'user is not creator' do
+          let(:requester) { create(:public_user) }
+          let(:request) { patch :update, params: { id: outing.to_param, outing: params, token: requester.token } }
+          let(:params) { { title: 'New title' } }
+
+          before { request }
+
+          it { expect(response.status).to eq(401) }
+        end
+
+        context 'creator is an ambassador, so is the requester' do
+          let(:user) { create(:public_user, targeting_profile: :ambassador) }
+          let(:requester) { create(:public_user, targeting_profile: :ambassador) }
+          let(:request) { patch :update, params: { id: outing.to_param, outing: params, token: requester.token } }
+          let(:params) { { title: 'New title' } }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(subject).to have_key('outing') }
+          it { expect(subject['outing']['title']).to eq('New title') }
+        end
+
+        context 'creator is an ambassador, but the requester is not ambassador' do
+          let(:user) { create(:public_user, targeting_profile: :ambassador) }
+          let(:requester) { create(:public_user) }
+          let(:request) { patch :update, params: { id: outing.to_param, outing: params, token: requester.token } }
+          let(:params) { { title: 'New title' } }
+
+          before { request }
+
+          it { expect(response.status).to eq(401) }
+        end
       end
 
       context 'close' do

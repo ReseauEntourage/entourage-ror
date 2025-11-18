@@ -324,6 +324,19 @@ class Outing < Entourage
   rescue
   end
 
+  def can_be_managed_by? user
+    return false unless user.present?
+
+    return true if self.user == user
+
+    # team and ambassadors can manage any outing created by a team or ambassador
+    if self.user.team? || self.user.ambassador?
+      return user.team? || user.ambassador?
+    end
+
+    false
+  end
+
   class << self
     def bucket_name
       EntourageImage.storage.bucket_name
