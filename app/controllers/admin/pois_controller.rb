@@ -74,14 +74,10 @@ module Admin
       params.permit([q: [:name_or_adress_cont, :postal_code_start, :postal_code_in_hors_zone, :source_eq, :validated_eq]]).to_h
     end
 
-    def ransack_params
-      params.permit([q: [:name_or_adress_cont, :source_eq, :validated_eq]]).to_h
-    end
-
     def filtered_pois
       @params = filter_params
 
-      @q = Poi.ransack(ransack_params[:q])
+      @q = Poi.ransack(params[:q])
 
       @pois = @q.result(distinct: true)
 

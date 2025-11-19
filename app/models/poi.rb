@@ -50,6 +50,14 @@ class Poi < ApplicationRecord
     end
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["name_or_adress_cont", "source", "validated"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["categories", "category"]
+  end
+
   class << self
     def find_by_uuid uuid
       if uuid.start_with?('s')
