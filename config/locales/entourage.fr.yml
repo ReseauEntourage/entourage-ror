@@ -670,11 +670,11 @@ fr:
       reminder_7_days_with_participants: |
         Bonjour %{first_name},
 
-        Merci beaucoup d'avoir lancé %{title}, c'est une super initiative pour créer du lien ! 🙌
+        Merci beaucoup d'avoir organisé %{title}, c'est une super initiative pour créer du lien ! 🙌
 
         👉 Je vois que ton événement approche et %{count} personnes se sont déjà inscrites, c'est top ! Pour les aider à ne pas oublier, tu peux leur écrire un petit message dans la discussion de l'événement.
 
-        Et si tu veux que d'autres voisins s'inscrivent, je te conseille de partager le lien de l'événement dans ton groupe de voisins %{neighborhood} : ça peut faire toute la différence ! Voici le lien à copier-coller : %{link}
+        Et si tu veux que d'autres voisins s'inscrivent, je te conseille de partager le lien de l'événement dans ton groupe de %{neighborhood} : ça peut faire toute la différence ! Voici le lien : %{link}
 
         Si tu as besoin d'un coup de pouce, n'hésites pas à me le dire.
 
@@ -683,11 +683,11 @@ fr:
       reminder_7_days_without_participants: |
         Bonjour %{first_name},
 
-        Merci beaucoup d'avoir lancé %{title}, c'est une super initiative pour créer du lien ! 🙌
+        Merci beaucoup d'avoir organisé %{title}, c'est une super initiative pour créer du lien ! 🙌
 
         Je vois que ton événement approche mais personne n'est encore inscrit. Pas de panique : c'est souvent à la dernière minute que les choses bougent 😉
 
-        Je te conseille de partager le lien de l'événement dans ton groupe de voisins %{neighborhood} : ça peut faire toute la différence ! Voici le lien à copier-coller : %{link}
+        Je te conseille de partager le lien de l'événement dans ton groupe de %{neighborhood} : ça peut faire toute la différence ! Voici le lien : %{link}
 
         Si tu as besoin d'un coup de pouce, n'hésites pas à me le dire.
 
