@@ -2,7 +2,7 @@ module SalesforceServices
   class CampaignParent
     TABLE_NAME = 'Campaign'
 
-    PAPOTAGE = 'papotage'
+    PAPOTAGE = 'papotages solidaires'
 
     CampaignParentStruct = Struct.new(:campaign_parent) do
       def initialize(campaign_parent: nil)
