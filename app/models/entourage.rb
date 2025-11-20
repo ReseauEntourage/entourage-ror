@@ -808,7 +808,7 @@ class Entourage < ApplicationRecord
 
   def reset_unread_messages_if_blacklisted_or_deleted
     return unless saved_change_to_status?
-    return unless %w[blacklisted closed].include?(status)
+    return unless blacklisted? || closed?
 
     join_requests.update_all(unread_messages_count: 0)
     join_requests.update_all(last_message_read: Time.zone.now)
