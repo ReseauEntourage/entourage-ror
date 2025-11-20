@@ -1,3 +1,5 @@
+require 'tasks/populate'
+
 namespace :populate do
   desc 'Generates resources based on config/populates/resources.yml'
   task set_resources: :environment do
@@ -17,5 +19,15 @@ namespace :populate do
   desc 'delete all recommandations'
   task delete_recommandations: :environment do
     Populate.delete_recommandations
+  end
+
+  desc 'Generate salesforce config for record_types'
+  task set_salesforce_record_types: :environment do
+    Populate.set_salesforce_record_types
+  end
+
+  desc 'Generate salesforce config for campaign parents'
+  task set_salesforce_campaign_parents: :environment do
+    Populate.set_salesforce_campaign_parents
   end
 end

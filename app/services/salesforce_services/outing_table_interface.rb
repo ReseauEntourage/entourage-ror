@@ -13,6 +13,8 @@ module SalesforceServices
       ends_date: 'EndDate',
       ends_time: 'Heure_de_fin__c',
       ongoing?: 'IsActive',
+      online?: 'En_ligne__c',
+      parent_id: 'ParentId',
       sf_status: 'Status',
       status: 'Statut_d_Entourage__c',
       reseau: 'R_seaux__c',
@@ -85,11 +87,14 @@ module SalesforceServices
         slashes = ' // '
         dot = ' - '
 
-        truncate_priority(
-          [outing.city, slashes, remove_emojis(outing.title), dot, starts_date.to_s],
-          max_length: 80,
-          min_lengths: [30, slashes.length, 30, dot.length, starts_date.to_s.length]
-        )
+        # outing.city nil => "Titre - Date"
+        # outing.city present => "City // Titre - Date"
+        title_part = outing.city.blank? ? [remove_emojis(outing.title), dot, starts_date.to_s] : [outing.city, slashes, remove_emojis(outing.title), dot, starts_date.to_s]
+
+        # minimal lengths
+        min_lengths = outing.city.blank? ? [outing.title.length, dot.length, starts_date.to_s.length] : [30, slashes.length, 30, dot.length, starts_date.to_s.length]
+
+        truncate_priority(title_part, max_length: 80, min_lengths: min_lengths)
       end
 
       def postal_code
@@ -126,6 +131,18 @@ module SalesforceServices
 
       def ongoing?
         outing.ongoing?
+      end
+
+      def online?
+        return 'Oui' if outing.online?
+
+        'Non'
+      end
+
+      def parent_id
+        return unless parent = SalesforceServices::CampaignParent.find_for_outing(outing)
+
+        parent.salesforce_id
       end
 
       def sf_status
