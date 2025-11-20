@@ -2,7 +2,7 @@ require 'rails_helper'
 include AuthHelper
 
 describe Admin::EntourageImagesController do
-  let!(:user) { admin_basic_login }
+  let!(:user) { super_admin_basic_login }
 
   describe 'GET #index' do
     context 'has entourage_images' do
