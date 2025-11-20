@@ -147,7 +147,7 @@ describe OutingTasks do
     let(:starts_at) { 7.days.from_now.change(hour: 12) }
 
     before { outing }
-    before { ModerationServices.stub(:moderator_for_entourage) { create :public_user } }
+    before { ModerationServices.stub(:moderator_for_user) { create :public_user } }
 
     subject { OutingTasks.send_private_message_7_days_before }
 
@@ -167,7 +167,7 @@ describe OutingTasks do
     let(:starts_at) { 1.days.from_now.change(hour: 12) }
 
     before { outing }
-    before { ModerationServices.stub(:moderator_for_entourage) { create :public_user } }
+    before { ModerationServices.stub(:moderator_for_user) { create :public_user } }
 
     subject { OutingTasks.send_private_message_1_day_before }
 
