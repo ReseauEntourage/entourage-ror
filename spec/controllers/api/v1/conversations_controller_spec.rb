@@ -156,7 +156,7 @@ describe Api::V1::ConversationsController do
       let!(:outing_chat_message_recent) { create :chat_message, messageable: outing, content: "outing_message_recent", created_at: 2.minutes.ago }
       let!(:neighborhood) { create :neighborhood, participants: [user] }
       let!(:smalltalk) { create :smalltalk, participants: [user, participant] }
-      let!(:smalltalk_chat_message_recent) { create :chat_message, messageable: smalltalk, content: "smalltalk_message_recent", created_at: 2.minutes.ago }
+      let!(:smalltalk_chat_message_recent) { create :chat_message, messageable: smalltalk, content: '<a href="entourage.social">smalltalk_message_recent</a>', created_at: 2.minutes.ago }
       let!(:smalltalk_chat_message_old) { create :chat_message, messageable: smalltalk, content: "smalltalk_message_old", created_at: 3.minutes.ago }
 
       before { request }

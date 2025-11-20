@@ -1,5 +1,7 @@
 module Admin
   class EntourageImagesController < Admin::BaseController
+    before_action :authenticate_super_admin!, only: [:create, :update, :destroy]
+
     def index
       @entourage_images = EntourageImage.includes(:landscape_url_medium, :portrait_url_medium).order(title: :asc)
     end
