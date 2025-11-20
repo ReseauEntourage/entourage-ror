@@ -37,7 +37,7 @@
           </div>
         <% end %>
         <div>
-          <%= link_to "Modifier", edit_landscape_admin_entourage_image_path, class: "btn btn-default btn-sm" %>
+          <%= link_to "Modifier", edit_landscape_admin_entourage_image_path, class: "btn btn-default btn-sm" if current_user.super_admin? %>
         </div>
       <% end %>
     </div>
@@ -56,17 +56,17 @@
           </div>
         <% end %>
         <div>
-          <%= link_to "Modifier", edit_portrait_admin_entourage_image_path, class: "btn btn-default btn-sm" %>
+          <%= link_to "Modifier", edit_portrait_admin_entourage_image_path, class: "btn btn-default btn-sm" if current_user.super_admin? %>
         </div>
       <% end %>
     </div>
   </div>
 
-  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" if current_user.super_admin? %>
 
   <% unless @entourage_image.new_record? %>
     <%= link_to "Supprimer", admin_entourage_image_path(@entourage_image), method: :DELETE, class: "btn btn-danger", style: 'float: right;', data: {
       confirm: "Êtes-vous sûr de vouloir supprimer ces photos d'événement ?"
-    } %>
+    } if current_user.super_admin? %>
   <% end %>
 <% end %>

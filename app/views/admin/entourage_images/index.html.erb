@@ -30,7 +30,7 @@
                 <%= image_tag(EntourageImage::image_url_for(entourage_image.portrait_url_medium_or_default), size: '59x96') if entourage_image.portrait_url_medium_or_default.present? %>
               </td>
               <td>
-                <%= link_to "Modifier", edit_admin_entourage_image_path(entourage_image), class: "custom-button custom-primary-inverted" %>
+                <%= link_to "Modifier", edit_admin_entourage_image_path(entourage_image), class: "custom-button custom-primary-inverted" if current_user.super_admin? %>
               </td>
             </tr>
           <% end %>
