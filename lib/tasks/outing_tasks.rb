@@ -61,7 +61,7 @@ module OutingTasks
       organisator_outings_in_days(PRIVATE_MESSAGE_ORGANISATOR_DAYS).pluck(:id).uniq.each do |outing_id|
         outing = Outing.find(outing_id)
 
-        return unless moderator = ModerationServices.moderator_for_entourage(outing)
+        return unless moderator = ModerationServices.moderator_for_user(outing.user)
 
         i18n = "outings.tasks.reminder_7_days_with_participants"
         i18n = "outings.tasks.reminder_7_days_without_participants" if outing.number_of_people <= 1 # only organisator
@@ -95,7 +95,7 @@ module OutingTasks
       organisator_outings_in_days(PRIVATE_MESSAGE_ORGANISATOR_LAST_DAY).pluck(:id).uniq.each do |outing_id|
         outing = Outing.find(outing_id)
 
-        return unless moderator = ModerationServices.moderator_for_entourage(outing)
+        return unless moderator = ModerationServices.moderator_for_user(outing.user)
 
         i18n = "outings.tasks.reminder_1_day_with_participants"
         i18n = "outings.tasks.reminder_1_day_without_participants" if outing.number_of_people <= 1 # only organisator
