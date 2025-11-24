@@ -16,13 +16,10 @@ class SalesforceJob
 
   def perform_destroy instance
     instance.sf.destroy
-    instance.update_attribute(:salesforce_id, nil)
   end
 
   def perform_upsert instance
-    return unless salesforce_id = instance.sf.upsert
-
-    instance.update_attribute(:salesforce_id, salesforce_id)
+    instance.sf.upsert
   end
 
   def perform_default instance, verb
