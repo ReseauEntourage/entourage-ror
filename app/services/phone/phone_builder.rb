@@ -17,6 +17,15 @@ module Phone
       @phone
     end
 
+    def unformat
+      return if @phone.nil?
+
+      formatted_phone = format
+      return formatted_phone unless formatted_phone.start_with?('+33')
+
+      formatted_phone.sub('+33', '0')
+    end
+
     def add_international_code_for_french_numbers
       #ignore invalid phone numbers
       return unless LegacyPhoneValidator.new(phone: @phone).valid?
@@ -27,7 +36,7 @@ module Phone
       #ignore french number that do not start with regional code
       return unless @phone.match(/\A([0][1-9])/).present?
 
-      @phone[0]='+33'
+      @phone[0] = '+33'
     end
 
     def looks_like_phone_number?
