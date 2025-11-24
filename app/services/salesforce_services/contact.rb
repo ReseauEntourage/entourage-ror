@@ -14,9 +14,7 @@ module SalesforceServices
     end
 
     def find_by_external_id
-      unformatted_phone = Phone::PhoneBuilder.new(phone: instance.phone).unformat
-
-      client.query("select Id from #{interface.table_name} where Phone = '#{instance.phone}' or Phone = '#{unformatted_phone}'").first
+      client.query("select Id from #{interface.table_name} where Phone = '#{instance.phone}' or FormattedPhone__c = '#{instance.phone}'").first
     end
 
     def upsert
