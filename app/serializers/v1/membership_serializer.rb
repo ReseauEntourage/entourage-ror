@@ -60,7 +60,10 @@ module V1
     end
 
     def last_chat_message
-      object.last_chat_message
+      return unless object.respond_to?(:last_chat_message)
+      return unless object.last_chat_message.present?
+
+      Mentionable.no_html(object.last_chat_message)
     end
 
     private
