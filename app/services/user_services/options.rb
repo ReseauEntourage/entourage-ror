@@ -21,6 +21,8 @@ module UserServices
       television: "Télévision",
       entreprise: "Partenariat entreprise (avec votre employeur)",
       social_event: "Événement salon",
+      association: "Orienté par une association",
+      permanence: "Permanence",
     }
 
     included do
