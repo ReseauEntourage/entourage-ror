@@ -84,15 +84,17 @@ module SalesforceServices
           'Metadata' => {
             'fullName' => "#{table_name}.#{field_name}__c",
             'label' => field_label,
-            'type' => field_type,
-            'nillable' => !required,
-            'defaultValue' => format_default_value(field_type, default_value)
+            'type' => field_type
           }.compact
         }
 
         if field_type.downcase == 'number'
           field_payload["Metadata"]["precision"] = 18
           field_payload["Metadata"]["scale"] = 0
+        end
+
+        if field_type == 'Text'
+          field_payload["Metadata"]["length"] = 255
         end
 
         return unless client.post(CREATE_ENDPOINT, field_payload.to_json, 'Content-Type' => 'application/json').success?
@@ -111,7 +113,7 @@ module SalesforceServices
           permission_payload = {
             'ParentId' => perm_set['Id'],
             'SObjectType' => table_name,
-            'Field' => "#{table_name}.#{field_name}",
+            'Field' => "#{table_name}.#{field_name}__c",
             'PermissionsRead' => true,
             'PermissionsEdit' => true
           }

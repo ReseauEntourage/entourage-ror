@@ -7,6 +7,7 @@ module SalesforceServices
       last_name: 'LastName',
       email: 'Email',
       phone: 'Phone',
+      phone: 'Phone_EL__c',
       record_type_id: 'RecordTypeId',
       antenne: 'Antenne__c',
       reseau: 'Reseaux__c',
