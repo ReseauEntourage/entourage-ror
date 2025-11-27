@@ -118,14 +118,7 @@ module Admin
       question = text.to_s.strip
       return head :ok if question.blank?
 
-      chunks = OpenaiServices::CodeSearchService.new.search(question: question)
-      answer = OpenaiServices::CodeQuestion.new.answer(question: question, code_chunks: chunks)
-
-      OpenaiServices::CodeQuestion.new.send_to_slack(
-        answer,
-        channel: params.dig(:event, :channel),
-        thread_ts: params.dig(:event, :ts)
-      )
+      CodeQuestionJob.perform_later(question)
 
       head :ok
     end
