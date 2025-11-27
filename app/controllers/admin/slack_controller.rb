@@ -107,12 +107,13 @@ module Admin
       # avoid infinite loop on answer
       return head :ok if params.dig(:event, :bot_id).present?
 
-      text = params.dig(:event, :text) || params[:text]
+      # ignore comments
+      return head :ok if params.dig(:event, :thread_ts).present?
 
       # ignore challenge / pings Slack
-      if params[:challenge].present?
-        return render json: { challenge: params[:challenge] }
-      end
+      return render json: { challenge: params[:challenge] } if params[:challenge].present?
+
+      text = params.dig(:event, :text) || params[:text]
 
       question = text.to_s.strip
       return head :ok if question.blank?
