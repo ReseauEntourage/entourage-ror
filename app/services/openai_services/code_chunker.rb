@@ -1,6 +1,6 @@
 module OpenaiServices
   class CodeChunker
-    CHUNK_LINES = 250
+    CHUNK_LINES = 1000
     OVERLAP = 40
 
     FILE_PATTERNS = [
