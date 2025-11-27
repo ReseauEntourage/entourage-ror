@@ -40,5 +40,27 @@ module OpenaiServices
         }
       )["choices"][0]["message"]["content"]
     end
+
+    def send_to_slack message, channel:, thread_ts:
+      Faraday.post(
+        "https://slack.com/api/chat.postMessage",
+        {
+          channel: channel,
+          text: message,
+          thread_ts: thread_ts,
+          blocks: [{
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "*Réponse :*\n#{message}"
+            }
+          }]
+        }.to_json,
+        {
+          "Authorization" => "Bearer #{ENV['SLACK_BOT_AI_QUESTION_TOKEN']}",
+          "Content-Type" => "application/json"
+        }
+      )
+    end
   end
 end

@@ -6,7 +6,7 @@ module OpenaiServices
       @client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
     end
 
-    def search(question:)
+    def search question:
       query_embedding = embedding_for(question)
       vector = "[#{query_embedding.join(",")}]"
 
