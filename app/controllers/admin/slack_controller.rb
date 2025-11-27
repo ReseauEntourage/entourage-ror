@@ -114,9 +114,9 @@ module Admin
       question = text.to_s.strip
       return head :ok if question.blank?
 
-      result = OpenaiServices::CodeAssistant.ask(question)
+      chunks = OpenaiServices::CodeSearchService.new.search(question: question)
+      answer = OpenaiServices::CodeQuestion.new.answer(question: question, code_chunks: chunks)
 
-      answer = result[:answer]
       send_to_slack(answer)
 
       head :ok
