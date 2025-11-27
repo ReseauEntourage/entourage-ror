@@ -20,8 +20,10 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
+  enable_extension "postgis_raster"
   enable_extension "unaccent"
   enable_extension "uuid-ossp"
+  enable_extension "vector"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
@@ -145,6 +147,9 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
     t.index ["uuid_v2"], name: "index_chat_messages_on_uuid_v2", unique: true
   end
+
+# Could not dump table "code_chunks" because of following StandardError
+#   Unknown type 'vector(1536)' for column 'embedding'
 
   create_table "contact_subscriptions", force: :cascade do |t|
     t.string "email"

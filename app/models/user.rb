@@ -125,6 +125,7 @@ class User < ApplicationRecord
   attribute :roles, :jsonb_set
 
   scope :type_pro, -> { where(user_type: 'pro') }
+  scope :team, -> { where(targeting_profile: 'team') }
   scope :validated, -> { where(validation_status: 'validated') }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: 'anonymized') }

@@ -18,7 +18,10 @@ module SalesforceServices
       (find_id || super).tap do
         # ensure members (organizator) are synchronized
         instance.join_requests.each do |join_request|
-          join_request.sf.upsert unless join_request.salesforce_id.present?
+          begin
+            join_request.sf.upsert unless join_request.salesforce_id.present?
+          rescue
+          end
         end
       end
     end

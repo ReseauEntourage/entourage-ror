@@ -61,6 +61,7 @@ module Admin
       @posts = ChatMessage
         .visible
         .where.not(user_id: current_user.id)
+        .where.not(user_id: User.team)
         .where(messageable_type: :Neighborhood)
         .where("messageable_id in (select joinable_id from join_requests where joinable_type = 'Neighborhood' and user_id = ? and status = 'accepted')", current_user.id)
         .where(comments_count: 0)

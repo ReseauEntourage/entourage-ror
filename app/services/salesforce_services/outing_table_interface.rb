@@ -92,7 +92,7 @@ module SalesforceServices
         title_part = outing.city.blank? ? [remove_emojis(outing.title), dot, starts_date.to_s] : [outing.city, slashes, remove_emojis(outing.title), dot, starts_date.to_s]
 
         # minimal lengths
-        min_lengths = outing.city.blank? ? [outing.title.length, dot.length, starts_date.to_s.length] : [30, slashes.length, 30, dot.length, starts_date.to_s.length]
+        min_lengths = outing.city.blank? ? [60, dot.length, starts_date.to_s.length] : [30, slashes.length, 30, dot.length, starts_date.to_s.length]
 
         truncate_priority(title_part, max_length: 80, min_lengths: min_lengths)
       end

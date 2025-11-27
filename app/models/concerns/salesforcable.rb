@@ -35,11 +35,17 @@ module Salesforcable
     end
 
     def upsert
-      @service.upsert
+      @service.upsert.tap do |salesforce_id|
+        return unless salesforce_id
+
+        @instance.update_attribute(:salesforce_id, salesforce_id)
+      end
     end
 
     def destroy
-      @service.destroy
+      @service.destroy.tap do
+        @instance.update_attribute(:salesforce_id, nil)
+      end
     end
 
     def is_synchable?
