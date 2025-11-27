@@ -104,6 +104,9 @@ module Admin
     end
 
     def code_question
+      # avoid infinite loop on answer
+      return head :ok if params.dig(:event, :bot_id).present?
+
       text = params.dig(:event, :text) || params[:text]
 
       # ignore challenge / pings Slack
@@ -117,7 +120,11 @@ module Admin
       chunks = OpenaiServices::CodeSearchService.new.search(question: question)
       answer = OpenaiServices::CodeQuestion.new.answer(question: question, code_chunks: chunks)
 
-      send_to_slack(answer)
+      OpenaiServices::CodeQuestion.new.send_to_slack(
+        answer,
+        channel: params.dig(:event, :channel),
+        thread_ts: params.dig(:event, :ts)
+      )
 
       head :ok
     end
@@ -147,15 +154,6 @@ module Admin
     def current_admin
       return if session[:admin_user_id].nil?
       @current_admin ||= User.where(id: session[:admin_user_id]).first
-    end
-
-    def send_to_slack message
-      webhook_url = ENV["SLACK_WEBHOOK_URL"]
-
-      Faraday.post(webhook_url,
-        { text: message }.to_json,
-        "Content-Type" => "application/json"
-      )
     end
   end
 end
