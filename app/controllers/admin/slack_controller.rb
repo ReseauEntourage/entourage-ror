@@ -103,6 +103,25 @@ module Admin
       render json: response
     end
 
+    def code_question
+      text = params.dig(:event, :text) || params[:text]
+
+      # ignore challenge / pings Slack
+      if params[:challenge].present?
+        return render json: { challenge: params[:challenge] }
+      end
+
+      question = text.to_s.strip
+      return head :ok if question.blank?
+
+      result = OpenaiServices::CodeAssistant.ask(question)
+
+      answer = result[:answer]
+      send_to_slack(answer)
+
+      head :ok
+    end
+
     private
 
     def parse_payload
@@ -128,6 +147,15 @@ module Admin
     def current_admin
       return if session[:admin_user_id].nil?
       @current_admin ||= User.where(id: session[:admin_user_id]).first
+    end
+
+    def send_to_slack message
+      webhook_url = ENV["SLACK_WEBHOOK_URL"]
+
+      Faraday.post(webhook_url,
+        { text: message }.to_json,
+        "Content-Type" => "application/json"
+      )
     end
   end
 end
