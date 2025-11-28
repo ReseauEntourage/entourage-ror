@@ -118,7 +118,11 @@ module Admin
       question = text.to_s.strip
       return head :ok if question.blank?
 
-      CodeQuestionJob.perform_later(question)
+      CodeQuestionJob.perform_later(
+        question,
+        params.dig(:event, :channel),
+        params.dig(:event, :ts)
+      )
 
       head :ok
     end
