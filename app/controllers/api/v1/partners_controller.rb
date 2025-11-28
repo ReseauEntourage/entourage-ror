@@ -21,7 +21,7 @@ module Api
       end
 
       def create
-        partner = Partner.new(partner_params)
+        partner = Partner.new(partner_params.merge({ user_ids: [current_user.id] }))
 
         if partner.save
           render json: partner, status: 200, serializer: ::V1::PartnerSerializer, scope: {
