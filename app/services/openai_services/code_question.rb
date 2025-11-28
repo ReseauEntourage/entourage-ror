@@ -14,7 +14,7 @@ module OpenaiServices
 
       prompt = <<~PROMPT
         Tu es un assistant spécialisé dans l'analyse d'applications Ruby on Rails.
-        Tu dois répondre à la question suivante, de manière concise, en t'appuyant UNIQUEMENT sur le code fourni.
+        Tu dois répondre à la question suivante, en t'appuyant UNIQUEMENT sur le code fourni.
 
         Si tu n'as pas assez d'information pour répondre, dis-le explicitement.
 
@@ -26,8 +26,10 @@ module OpenaiServices
 
         FORMAT ATTENDU DE LA RÉPONSE :
         - Réponse claire en français
-        - Si la réponse se trouve dans des fichiers, cite leurs chemins
+        - Ne pas citer les chemins des fichiers
         - Si l'information est incertaine, préciser "incertain"
+        - La réponse doit être intelligible pour une personne non développeur
+        - La réponse doit être concise (deux ou trois phrases maxi)
       PROMPT
 
       @client.chat(
