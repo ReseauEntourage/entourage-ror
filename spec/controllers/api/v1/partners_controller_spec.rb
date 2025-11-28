@@ -92,6 +92,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
       it { expect(response.status).to eq(200) }
       it { expect(result['partner']['name']).to eq('Entourage Nantes') }
+      it { expect(Partner.last.user_ids).to eq([user.id]) }
     end
 
     describe 'missing mandatory field' do
