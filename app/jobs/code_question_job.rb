@@ -15,6 +15,6 @@ class CodeQuestionJob
   end
 
   def self.perform_later question, channel, thread_ts
-    perform_async(question)
+    perform_async(question, channel, thread_ts)
   end
 end
