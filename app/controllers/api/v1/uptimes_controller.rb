@@ -47,7 +47,8 @@ module Api
       end
 
       def validate_response! response
-        raise ActionController::InvalidAuthenticityToken, :bad_token if ['401', '403'].include?(response.code.to_s)
+        raise ActionController::InvalidAuthenticityToken, :bad_token if ['401'].include?(response.code.to_s)
+        # raise ActionController::InvalidAuthenticityToken, :bad_token if ['403'].include?(response.code.to_s)
         raise ActionController::BadRequest, :unexcepted_status unless ['200', '201'].include?(response.code.to_s)
       end
 
