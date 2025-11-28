@@ -9,8 +9,8 @@ class CodeQuestionJob
 
     OpenaiServices::CodeQuestion.new.send_to_slack(
       answer,
-      channel: params.dig(:event, :channel),
-      thread_ts: params.dig(:event, :ts)
+      channel: channel,
+      thread_ts: thread_ts
     )
   end
 
