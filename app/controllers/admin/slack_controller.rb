@@ -118,6 +118,10 @@ module Admin
       question = text.to_s.strip
       return head :ok if question.blank?
 
+      Rails.logger.info("-- question: #{question}")
+      Rails.logger.info("-- channel: #{params.dig(:event, :channel)}")
+      Rails.logger.info("-- ts: #{params.dig(:event, :ts)}")
+
       CodeQuestionJob.perform_later(
         question,
         params.dig(:event, :channel),
