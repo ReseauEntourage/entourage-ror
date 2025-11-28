@@ -3,7 +3,7 @@ require 'sidekiq/api'
 class CodeQuestionJob
   include Sidekiq::Worker
 
-  def perform question
+  def perform question, channel, thread_ts
     chunks = OpenaiServices::CodeSearchService.new.search(question: question)
     answer = OpenaiServices::CodeQuestion.new.answer(question: question, code_chunks: chunks)
 
@@ -14,7 +14,7 @@ class CodeQuestionJob
     )
   end
 
-  def self.perform_later question
+  def self.perform_later question, channel, thread_ts
     perform_async(question)
   end
 end
