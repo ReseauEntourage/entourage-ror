@@ -1,6 +1,6 @@
 class AddEngagementToSalesforceCompteApp < ActiveRecord::Migration[6.1]
   def up
-    unless Rails.env.test?
+    unless Rails.env.test? || Rails.env.development?
       SalesforceServices::TableInterface.create_field(
         'Compte_App__c',
         'LastEngagementDate__c',
@@ -19,7 +19,7 @@ class AddEngagementToSalesforceCompteApp < ActiveRecord::Migration[6.1]
   end
 
   def down
-    unless Rails.env.test?
+    unless Rails.env.test? || Rails.env.development?
       SalesforceServices::TableInterface.delete_field('Compte_App__c', 'LastEngagementDate__c')
       SalesforceServices::TableInterface.delete_field('Compte_App__c', 'IsEngaged__c')
     end

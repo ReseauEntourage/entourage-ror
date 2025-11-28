@@ -12,7 +12,7 @@ class AddJoinRequestIdToSalesforceCampaignMember < ActiveRecord::Migration[6.1]
 
   def down
     unless Rails.env.test?
-      SalesforceServices::TableInterface.delete_field("CampaignMember", "JoinRequestId")
+      # SalesforceServices::TableInterface.delete_field("CampaignMember", "JoinRequestId")
     end
   end
 end
