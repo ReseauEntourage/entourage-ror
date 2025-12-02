@@ -80,5 +80,11 @@ module SalesforceServices
 
       client.update(interface.table_name, Id: id, Status: true)
     end
+
+    def hard_destroy
+      return unless id = find_id
+
+      client.destroy(interface.table_name, id)
+    end
   end
 end
