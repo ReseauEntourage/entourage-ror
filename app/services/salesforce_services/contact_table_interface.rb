@@ -7,7 +7,7 @@ module SalesforceServices
       last_name: 'LastName',
       email: 'Email',
       phone: 'Phone',
-      phone: 'Phone_EL__c',
+      phone_el: 'Phone_EL__c',
       record_type_id: 'RecordTypeId',
       antenne: 'Antenne__c',
       reseau: 'Reseaux__c',
@@ -82,6 +82,10 @@ module SalesforceServices
       end
 
       def phone
+        contact.phone
+      end
+
+      def phone_el
         contact.phone
       end
 
