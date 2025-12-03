@@ -78,21 +78,23 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       description: 'Entourage Nantes',
       phone: '02 40 00 01 02',
       address: 'place du Commerce 44000 Nantes',
-      wesite_url: 'https://entourage.social/nantes',
+      website_url: 'https://entourage.social/nantes',
       email: 'nantes@entourage.social',
       latitude: 44,
       longitude: 0.00,
       donations_needs: 'many',
       volunteers_needs: 'plenty',
-      staff: true
+      staff: false
     }}}
 
     describe 'creation' do
       before { request }
+      before { user.reload }
 
-      it { expect(response.status).to eq(200) }
-      it { expect(result['partner']['name']).to eq('Entourage Nantes') }
-      it { expect(Partner.last.user_ids).to eq([user.id]) }
+      it { expect(response.status).to(eq(200)) }
+      it { expect(result['partner']['name']).to(eq('Entourage Nantes')) }
+      it { expect(user.association?).to(eq(true)) }
+      it { expect(user.partner.name).to(eq('Entourage Nantes')) }
     end
 
     describe 'missing mandatory field' do
