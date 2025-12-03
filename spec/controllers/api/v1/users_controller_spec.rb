@@ -376,6 +376,34 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
 
+      context 'not partner' do
+        let!(:partner) { create :partner }
+
+        before { patch 'update', params: { token: user.token, user: { partner_id: nil } } }
+
+        it { expect(user.reload.association?).to eq(false) }
+        it { expect(user.reload.partner_id).to eq(nil) }
+      end
+
+      context 'partner' do
+        let!(:partner) { create :partner }
+
+        before { patch 'update', params: { token: user.token, user: { partner_id: partner.id } } }
+
+        it { expect(user.reload.association?).to eq(true) }
+        it { expect(user.reload.partner_id).to eq(partner.id) }
+      end
+
+      context 'partner staff' do
+        let!(:partner) { create :partner, staff: true }
+
+        before { patch 'update', params: { token: user.token, user: { partner_id: partner.id } } }
+
+        # partner staff should not be available from api
+        it { expect(user.reload.association?).to eq(false) }
+        it { expect(user.reload.partner_id).to eq(nil) }
+      end
+
       context 'birthdate' do
         before { patch 'update', params: { token: user.token, user: { birthdate: '1970-12-30' } } }
         it { expect(user.reload.birthdate).to eq('1970-12-30') }
