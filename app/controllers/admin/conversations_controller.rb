@@ -233,6 +233,19 @@ module Admin
       redirect_to admin_conversations_path(filter: Rack::Utils.parse_query(URI(request.referer).query)['filter'])
     end
 
+    def read_all
+      join_requests = JoinRequest
+        .where(user: current_admin)
+        .where(joinable_type: :Entourage)
+        .where(joinable_id: Conversation.all)
+
+      if join_requests.update_all(last_message_read: Time.now, unread_messages_count: 0)
+        redirect_to admin_conversations_path(filter: :unread), notice: "Toutes les conversations ont été marquées comme lues"
+      else
+        redirect_to admin_conversations_path(filter: :unread), alert: "Les conversations n'ont pas pu être marquées comme lues"
+      end
+    end
+
     def archive_status
       status = params[:status]&.to_sym
       raise unless status.in?([:archived, :inbox])

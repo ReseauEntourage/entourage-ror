@@ -89,6 +89,7 @@ Rails.application.routes.draw do
         end
 
         collection do
+          post :read_all
           delete :destroy_message
         end
       end
