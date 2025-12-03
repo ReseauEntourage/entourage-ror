@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'tasks/outing_tasks'
 
 describe OutingTasks do
-  let(:user) { create :admin_user, partner: create(:partner, staff: true) }
+  let(:user) { create :admin_user, partner: create(:partner, staff: false) }
   let(:status) { :open }
   let(:online) { false }
   let(:notification_sent_at) { nil }

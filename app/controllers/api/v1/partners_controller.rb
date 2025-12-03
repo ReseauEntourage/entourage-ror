@@ -5,6 +5,7 @@ module Api
         render json: Partner
           .active
           .search_by(params[:query])
+          .no_staff
           .order(:name)
           .page(page)
           .per(per), status: 200, each_serializer: ::V1::PartnerSerializer, scope: { minimal: true }

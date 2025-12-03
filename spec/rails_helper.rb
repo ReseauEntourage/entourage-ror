@@ -6,14 +6,13 @@ require 'rspec/rails'
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
+  config.filter_rails_from_backtrace!
+
   config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
-  config.backtrace_exclusion_patterns = [
-    /vendor/
-  ]
 
   config.before do
     ActionMailer::Base.deliveries.clear
