@@ -64,10 +64,13 @@ module SalesforceServices
     end
 
     def upsert_from_fields fields
+      # create when no external id is set
+      return client.create!(interface.table_name, **fields) unless instance.try(interface.external_id_key).present?
+
       client.upsert!(
         interface.table_name,
         interface.external_id_value,
-        "#{interface.external_id_value}": instance.send(interface.external_id_key),
+        interface.external_id_value => instance.try(interface.external_id_key),
         **fields
       )
     end

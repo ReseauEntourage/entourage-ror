@@ -757,7 +757,11 @@ Rails.application.routes.draw do
 
       namespace :salesforce do
         resources :sf_entreprises, path: :entreprises, only: [:index] do
-          resources :outings, module: :sf_entreprises, only: [:index]
+          resources :outings, module: :sf_entreprises, only: [:index] do
+            collection do
+              post ':sf_outing_id/join', to: 'outings#join', as: :join
+            end
+          end
         end
       end
 
