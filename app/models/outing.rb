@@ -85,6 +85,7 @@ class Outing < Entourage
 
   scope :recommandable, -> { self.active.future }
   scope :future_or_ongoing, -> { ending_after(Time.zone.now) }
+  scope :future_or_past_today, -> { ending_after(Time.zone.now.beginning_of_day) }
   scope :future_or_recently_past, -> { ending_after(RECENTLY_PAST_PERIOD.ago) }
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
   scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }

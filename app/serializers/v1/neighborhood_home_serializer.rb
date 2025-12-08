@@ -106,7 +106,7 @@ module V1
       future_outing_ids = object
         .outings_with_admin_online
         .active
-        .future_or_ongoing
+        .future_or_past_today
         .default_order
         .limit(OUTINGS_LIMIT)
         .pluck(:id)
