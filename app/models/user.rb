@@ -98,7 +98,7 @@ class User < ApplicationRecord
 
   attr_reader :admin_password
   attr_reader :cnil_explanation
-  attr_reader :sf_entreprise_id, :sf_campaign_id
+  attr_accessor :sf_entreprise_id, :sf_campaign_id
 
   validates_length_of :admin_password, within: 8..256, allow_nil: true
   validates :admin_password, confirmation: true, presence: false, if: Proc.new { |u| u.admin_password.present? }
