@@ -26,7 +26,7 @@ module OutingsServices
       outings = Outing
         .like(q)
         .active
-        .future_or_ongoing
+        .future_or_past_today
         .match_at_least_one_interest(interests)
         .for_user(user)
 

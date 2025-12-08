@@ -7,7 +7,7 @@ module Api
         def index
           render json: OutingsServices::Finder.new(@user, index_params)
             .find_all_participations
-            .future_or_ongoing
+            .future_or_past_today
             .default_order
             .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
             .page(page)
