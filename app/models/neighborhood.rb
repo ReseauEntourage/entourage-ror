@@ -20,6 +20,8 @@ class Neighborhood < ApplicationRecord
     raise ActiveRecord::Rollback
   end
 
+  after_update :reset_unread_messages_if_blacklisted_or_deleted
+
   alias_attribute :author, :user
 
   has_many :members, -> {
@@ -314,5 +316,13 @@ class Neighborhood < ApplicationRecord
 
   def track_status_change
     self[:status_changed_at] = Time.zone.now if status_changed?
+  end
+
+  def reset_unread_messages_if_blacklisted_or_deleted
+    return unless saved_change_to_status?
+    return unless blacklisted? || deleted?
+
+    join_requests.update_all(unread_messages_count: 0)
+    join_requests.update_all(last_message_read: Time.zone.now)
   end
 end

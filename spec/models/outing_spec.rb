@@ -138,4 +138,39 @@ RSpec.describe Outing, type: :model do
     it { expect(create(:outing, :outing_class, title: 'Papotage en ligne', online: false).papotage?).to eq(false) }
     it { expect(create(:outing, :outing_class, title: 'Discussion en ligne', online: true).papotage?).to eq(false) }
   end
+
+  describe '#reset_unread_messages_if_blacklisted_or_deleted' do
+    let(:outing) { create(:outing, status: 'open') }
+    let(:join_request) { create :join_request, joinable: outing }
+
+    before { outing.join_requests.update_all(unread_messages_count: 5) }
+
+    context 'when status changes to blacklisted' do
+      it 'resets unread_messages_count to 0 for all join_requests' do
+        outing.update!(status: 'blacklisted')
+        expect(outing.join_requests.pluck(:unread_messages_count)).to all(eq(0))
+      end
+    end
+
+    context 'when status changes to closed' do
+      it 'resets unread_messages_count to 0 for all join_requests' do
+        outing.update!(status: 'closed')
+        expect(outing.join_requests.pluck(:unread_messages_count)).to all(eq(0))
+      end
+    end
+
+    context 'when status changes to another non-matching value' do
+      it 'does not reset unread_messages_count' do
+        outing.update!(status: 'suspended')
+        expect(outing.join_requests.pluck(:unread_messages_count)).to all(eq(5))
+      end
+    end
+
+    context 'when status does not change' do
+      it 'does not trigger the reset' do
+        outing.touch # met à jour updated_at sans changer status
+        expect(outing.join_requests.pluck(:unread_messages_count)).to all(eq(5))
+      end
+    end
+  end
 end
