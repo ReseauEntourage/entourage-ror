@@ -68,7 +68,6 @@ module V1
     end
 
     def last_chat_message_image_url
-      return if object.respond_to?(:last_chat_message) && object.last_chat_message.present?
       return unless object.respond_to?(:last_chat_message_image_url)
       return unless object.last_chat_message_image_url.present?
 

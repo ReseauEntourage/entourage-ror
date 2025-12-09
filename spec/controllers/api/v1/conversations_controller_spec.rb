@@ -169,16 +169,7 @@ describe Api::V1::ConversationsController do
       it { expect(subject_outing["last_chat_message"]).to eq("outing_message_recent") }
       it { expect(subject_smalltalk["name"]).to eq("Jane") }
       it { expect(subject_smalltalk["last_chat_message"]).to eq("smalltalk_message_recent") }
-      it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq(nil) }
-
-      context "with image url but no content" do
-        let!(:smalltalk_chat_message_recent) { create :chat_message, messageable: smalltalk, content: '', created_at: 2.minutes.ago, image_url: "foo" }
-
-        before { request }
-
-        it { expect(subject_smalltalk["last_chat_message"]).to eq(nil) }
-        it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq('http://foo.bar') }
-      end
+      it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq("http://foo.bar") }
     end
   end
 
