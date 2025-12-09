@@ -10,7 +10,8 @@ module V1
       :number_of_people,
       :number_of_root_chat_messages,
       :number_of_unread_messages,
-      :last_chat_message
+      :last_chat_message,
+      :last_chat_message_image_url
 
     def joinable_status
       object.joinable.try(:status)
@@ -64,6 +65,13 @@ module V1
       return unless object.last_chat_message.present?
 
       Mentionable.no_html(object.last_chat_message)
+    end
+
+    def last_chat_message_image_url
+      return unless object.respond_to?(:last_chat_message_image_url)
+      return unless object.last_chat_message_image_url.present?
+
+      ChatMessage.url_for_with_size(object.last_chat_message_image_url, :small)
     end
 
     private
