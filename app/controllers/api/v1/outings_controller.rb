@@ -156,6 +156,22 @@ module Api
         end
       end
 
+      def count
+        outings = OutingsServices::Finder.new(current_user, index_params).find_all
+
+        render json: { count: outings.count }
+      end
+
+      def week_average
+        from = params[:from].present? ? Time.parse(params[:from]) : 1.year.ago
+        to = params[:to].present? ? Time.parse(params[:to]) : Time.now
+
+        average = OutingsServices::Finder.new(current_user, index_params)
+          .find_week_average_between(from, to)
+
+        render json: { average: average.round(2) }
+      end
+
       private
 
       def set_outing
@@ -165,7 +181,7 @@ module Api
       end
 
       def index_params
-        params.permit(:q, :latitude, :longitude, :travel_distance, :page, :per, :interest_list, interests: [])
+        params.permit(:q, :latitude, :longitude, :travel_distance, :within_days, :page, :per, :interest_list, interests: [])
       end
 
       def outing_params
