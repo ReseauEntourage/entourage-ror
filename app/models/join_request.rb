@@ -80,7 +80,7 @@ class JoinRequest < ApplicationRecord
   scope :order_by_joinable_last_chat_message, -> {
     joins(%(
       LEFT JOIN LATERAL (
-        SELECT created_at, content
+        SELECT created_at, content, image_url
         FROM chat_messages
         WHERE chat_messages.messageable_type = join_requests.joinable_type
           AND chat_messages.messageable_id = join_requests.joinable_id
@@ -88,7 +88,7 @@ class JoinRequest < ApplicationRecord
         LIMIT 1
       ) AS last_chat_messages ON TRUE
     ))
-    .select('join_requests.*, last_chat_messages.content as last_chat_message')
+    .select('join_requests.*, last_chat_messages.content as last_chat_message, last_chat_messages.image_url as last_chat_message_image_url')
     .order(Arel.sql('last_chat_messages.created_at DESC NULLS LAST'))
   }
 
