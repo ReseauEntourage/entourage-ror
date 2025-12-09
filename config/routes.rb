@@ -580,6 +580,8 @@ Rails.application.routes.draw do
       resources :outings do
         collection do
           get :smalltalk
+          get :count
+          get :week_average
         end
 
         member do
