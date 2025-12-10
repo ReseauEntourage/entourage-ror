@@ -51,7 +51,7 @@ class Poi < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["name_or_adress_cont", "source", "validated"]
+    %w[name adress source validated]
   end
 
   def self.ransackable_associations(auth_object = nil)
