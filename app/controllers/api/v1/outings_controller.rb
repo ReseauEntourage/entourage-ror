@@ -235,7 +235,7 @@ module Api
       end
 
       def authorised?
-        unless @outing.user == current_user
+        unless @outing.can_be_managed_by?(current_user)
           render json: { message: 'unauthorized user' }, status: :unauthorized
         end
       end
