@@ -96,13 +96,89 @@ describe OutingTasks do
       before { subject }
 
       it { expect(outing.chat_messages.count).to eq(1) }
-      it { expect(outing.chat_messages.first.content).to eq(OutingTasks::REMINDER_CONTENT) }
+      it { expect(outing.chat_messages.first.content).to eq(I18n.t("outings.tasks.reminder_content")) }
     end
 
     context 'outing properties' do
       before { subject }
 
       it { expect(outing.reload.notification_sent_at).not_to be_nil }
+    end
+  end
+
+  describe 'organisator_outings_in_days' do
+    let(:user) { create :public_user}
+    let(:starts_at) { 7.days.from_now.change(hour: 12) }
+
+    before { outing }
+    subject { OutingTasks.organisator_outings_in_days(7).pluck(:id) }
+
+    context 'admin creator' do
+      let(:user) { create :admin_user }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'public user creator' do
+      it { expect(subject).to include(outing.id) }
+    end
+
+    context 'in the past' do
+      let(:starts_at) { 1.minute.ago }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'outside of upcoming delay' do
+      let(:starts_at) { 7.days.from_now.change(hour: 12) - 1.day }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+
+    context 'online' do
+      let(:online) { true }
+
+      it { expect(subject).not_to include(outing.id) }
+    end
+  end
+
+  describe 'send_private_message_7_days_before' do
+    let(:user) { create :public_user}
+    let(:starts_at) { 7.days.from_now.change(hour: 12) }
+
+    before { outing }
+    before { ModerationServices.stub(:moderator_for_user) { create :public_user } }
+
+    subject { OutingTasks.send_private_message_7_days_before }
+
+    context 'creates a chat_message' do
+      it { expect { subject }.to change { ChatMessage.count }.by(1) }
+
+      context 'content' do
+        before { subject }
+
+        it { expect(ChatMessage.last.content).to match(/ton événement approche/) }
+      end
+    end
+  end
+
+  describe 'send_private_message_1_day_before' do
+    let(:user) { create :public_user}
+    let(:starts_at) { 1.days.from_now.change(hour: 12) }
+
+    before { outing }
+    before { ModerationServices.stub(:moderator_for_user) { create :public_user } }
+
+    subject { OutingTasks.send_private_message_1_day_before }
+
+    context 'creates a chat_message' do
+      it { expect { subject }.to change { ChatMessage.count }.by(1) }
+
+      context 'content' do
+        before { subject }
+
+        it { expect(ChatMessage.last.content).to match(/a lieu demain/) }
+      end
     end
   end
 

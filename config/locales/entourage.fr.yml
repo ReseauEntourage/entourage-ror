@@ -663,6 +663,71 @@ fr:
 
       %s
 
+  outings:
+    tasks:
+      reminder_content: |
+        Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message.
+      reminder_7_days_with_participants: |
+        Bonjour %{first_name},
+
+        Merci beaucoup d'avoir organisé %{title}, c'est une super initiative pour créer du lien ! 🙌
+
+        👉 Je vois que votre événement approche et %{count} personnes se sont déjà inscrites, c'est top ! Pour les aider à ne pas oublier, vous pouvez leur écrire un petit message dans la discussion de l'événement.
+
+        Et si vous voulez que d'autres voisins s'inscrivent, je vous conseille de partager le lien de l'événement dans votre groupe de %{neighborhood} : ça peut faire toute la différence ! Voici le lien : %{link}
+
+        Si vous avez besoin d'un coup de pouce, n'hésitez pas à me le dire.
+
+        Merci pour votre engagement et votre envie de créer du lien 🙏
+        À très vite
+      reminder_7_days_without_participants: |
+        Bonjour %{first_name},
+
+        Merci beaucoup d'avoir organisé %{title}, c'est une super initiative pour créer du lien ! 🙌
+
+        Je vois que votre événement approche mais personne n'est encore inscrit. Pas de panique : c'est souvent à la dernière minute que les choses bougent 😉
+
+        Je vous conseille de partager le lien de l'événement dans votre groupe de %{neighborhood} : ça peut faire toute la différence ! Voici le lien : %{link}
+
+        Si vous avez besoin d'un coup de pouce, n'hésitez pas à me le dire.
+
+        Merci pour votre engagement et votre envie de créer du lien 🙏
+        À très vite
+      reminder_1_day_with_participants: |
+        Bonjour %{first_name},
+
+        Votre événement %{title} a lieu demain !
+        Un grand bravo pour cette belle initiative 💪
+
+        Voici quelques conseils simples pour créer un moment convivial et inclusif :
+
+        🌟 Accueillir chaque participant(e) personnellement avec un petit mot et un sourire
+        🌟 Lancer une activité de présentation (jeux brise-glace, tour des prénoms, etc) pour détendre l'ambiance
+        🌟 Être attentif(ve) à chacun(e) : aider celles et ceux qui pourraient se sentir en retrait à trouver leur place
+
+        À la fin de l'événement, n'hésitez pas à prendre une photo de groupe (en s'assurant d'avoir l'accord de chaque participant) et postez-la dans votre groupe de voisins %{neighborhood} 👌
+
+        Merci pour votre engagement et votre générosité. Vous participez à tisser un quartier plus solidaire 💛
+
+        À très vite
+      reminder_1_day_without_participants: |
+        Bonjour %{first_name},
+
+        Votre événement %{title} a lieu demain ! Bravo pour cette initiative 👏
+
+        Même si personne ne s'est encore inscrit pour le moment, rien n'est perdu : les voisins se décident parfois à la dernière minute !
+
+        Voici quelques idées pour motiver les troupes :
+        💬 Envoyer un message dans la discussion de l'événement
+        📣 Partager le lien dans votre groupe de voisins %{neighborhood}
+        🤝 Inviter directement des voisins que vous connaissez ou avec qui vous avez déjà échangé
+
+        Et si finalement vous êtes seul(e) demain, ce n'est pas un échec ! Vous avez déjà fait le plus dur : passer à l'action pour créer du lien 💛
+
+        Merci pour votre engagement. On est là si vous avez besoin d’un coup de main 🙌
+
+        À très vite
+
   charts:
     conversations:
       memberships: "Participants"
