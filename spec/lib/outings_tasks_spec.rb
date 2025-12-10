@@ -157,7 +157,7 @@ describe OutingTasks do
       context 'content' do
         before { subject }
 
-        it { expect(ChatMessage.last.content).to match(/ton événement approche/) }
+        it { expect(ChatMessage.last.content).to match(/votre événement approche/) }
       end
     end
   end
