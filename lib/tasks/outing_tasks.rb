@@ -86,7 +86,7 @@ module OutingTasks
         .future
         .where(online: false)
         .joins(:user)
-        .where("users.admin = false AND (users.targeting_profile NOT IN ('team', 'ambassador') OR users.targeting_profile is null)")
+        .where("users.admin = false AND (users.targeting_profile NOT IN ('team', 'ambassador', 'partner') OR users.targeting_profile is null)")
         .in_days(in_days)
     end
 
