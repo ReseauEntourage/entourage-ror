@@ -4,8 +4,6 @@ class PartnerJoinRequest < ApplicationRecord
 
   validates :user_id, presence: true
   validate :validate_id_or_name
-  validates :postal_code, presence: true
-  validates :partner_role_title, presence: true
 
   def validate_id_or_name
     if partner_id.blank? && new_partner_name.blank?
