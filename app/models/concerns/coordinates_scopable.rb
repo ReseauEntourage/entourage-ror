@@ -19,7 +19,7 @@ module CoordinatesScopable
       return none unless user.departement.present?
 
       inside_perimeter(user.latitude, user.longitude, user.travel_distance).or(
-        with_departement(user.departement)
+        with_zone_departement(user.departement)
       )
     }
     scope :order_by_distance_from, -> (latitude, longitude) {
@@ -27,8 +27,8 @@ module CoordinatesScopable
         order(Arel.sql(PostgisHelper.distance_from(latitude, longitude, table_name.to_sym)))
       end
     }
-    scope :with_departement, -> (departement) {
-      return unless has_attribute?(:zone)
+    scope :with_zone_departement, -> (departement) {
+      return none unless has_attribute?(:zone)
 
       where(zone: :departement).where(
         'postal_code is not null and left(postal_code, 2) = ?', departement
