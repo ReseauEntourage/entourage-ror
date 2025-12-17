@@ -1,4 +1,6 @@
 class Partner < ApplicationRecord
+  include CoordinatesScopable
+
   POSTAL_CODE_REGEX = /\b\d{5}\b/
 
   has_many :users

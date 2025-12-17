@@ -5,6 +5,7 @@ module Api
         render json: Partner
           .active
           .search_by(params[:query])
+          .inside_user_perimeter(current_user)
           .no_staff
           .order(:name)
           .page(page)
