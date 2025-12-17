@@ -721,7 +721,7 @@ Rails.application.routes.draw do
 
       resources :partners, only: [:index, :show, :create] do
         collection do
-          post :join_request
+          post :join
         end
       end
 
