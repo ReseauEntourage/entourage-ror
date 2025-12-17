@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Api::V1::PartnersController, type: :controller do
   let!(:user) { create :pro_user, travel_distance: 1000 }
 
+  before { User.any_instance.stub(:departement).and_return(75) }
   before { User.any_instance.stub(:latitude).and_return(48.8566) }
   before { User.any_instance.stub(:longitude).and_return(2.35) }
 
