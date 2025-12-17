@@ -79,16 +79,9 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
     let(:params) { { partner: {
       name: 'Entourage Nantes',
-      description: 'Entourage Nantes',
-      phone: '02 40 00 01 02',
       address: 'place du Commerce 44000 Nantes',
-      website_url: 'https://entourage.social/nantes',
-      email: 'nantes@entourage.social',
       latitude: 44,
       longitude: 0.00,
-      donations_needs: 'many',
-      volunteers_needs: 'plenty',
-      staff: false
     }}}
 
     describe 'creation' do

@@ -23,7 +23,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :token
   validate :validate_phone!
   validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
-  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.pro? || u.association? }
+  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }
   validates :sms_code_password, length: { minimum: 6 }, if: Proc.new { |u| u.sms_code_password.present? }
   validates_length_of :about, maximum: 200, allow_nil: true
