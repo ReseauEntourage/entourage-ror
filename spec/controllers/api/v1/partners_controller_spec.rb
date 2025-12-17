@@ -131,54 +131,37 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     end
   end
 
-  describe 'POST join_request' do
-    before { post :join_request, params: {token: user.token, postal_code: '75008', partner_role_title: 'Senior VP of Meme Warfare'}.merge(params) }
-    let(:join_request) { user.partner_join_requests.last }
+  describe 'POST join' do
+    let!(:partner) { create(:partner) }
+    let(:request) { post :join, params: { token: user.token, partner_id: partner.id } }
 
-    describe 'new partner' do
-      let(:params) { {new_partner_name: 'New'} }
-      it { expect(response.status).to eq 200 }
-      it { expect(join_request.attributes).to include(
-        'user_id'=>user.id,
-        'partner_id'=>nil,
-        'new_partner_name'=>'New',
-        'postal_code'=>'75008',
-        'partner_role_title'=>'Senior VP of Meme Warfare'
-      )}
+    describe 'successful join' do
+      before { request }
+      before { user.reload }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(user.partner_id).to eq(partner.id) }
     end
 
-    describe 'existing partner' do
-      let(:params) { {partner_id: 42} }
-      it { expect(response.status).to eq 200 }
-      it { expect(join_request.attributes).to include(
-        'user_id'=>user.id,
-        'partner_id'=>42,
-        'new_partner_name'=>nil,
-        'postal_code'=>'75008',
-        'partner_role_title'=>'Senior VP of Meme Warfare'
-      )}
+    describe 'invalid partner' do
+      let(:invalid_partner_id) { Partner.last.id + 1 }
+      let(:request) { post :join, params: { token: user.token, partner_id: invalid_partner_id } }
+
+      before { request }
+      before { user.reload }
+
+      it { expect(response.status).to(eq(400)) }
+      it { expect(user.partner_id).to be_nil }
     end
 
-    describe 'both parameters' do
-      let(:params) { {partner_id: 42, new_partner_name: 'New'} }
-      it { expect(response.status).to eq 400 }
-      it { expect(JSON.parse(response.body)).to eq(
-        'error' => {
-          'code' => 'INVALID_PARTNER_JOIN_REQUEST',
-          'message' => ["Partner 'new_partner_name' must be nil when 'partner_id' is present"]
-        }
-      )}
-    end
+    describe 'missing partner_id' do
+      let(:request) { post :join, params: { token: user.token } }
 
-    describe 'neither parameters' do
-      let(:params) { {} }
-      it { expect(response.status).to eq 400 }
-      it { expect(JSON.parse(response.body)).to eq(
-        'error' => {
-          'code' => 'INVALID_PARTNER_JOIN_REQUEST',
-          'message' => ["Partner 'partner_id' or 'new_partner_name' must be present"]
-        }
-      )}
+      before { request }
+      before { user.reload }
+
+      it { expect(response.status).to(eq(400)) }
+      it { expect(user.partner).to be_nil }
     end
   end
 end

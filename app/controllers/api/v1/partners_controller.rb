@@ -35,21 +35,23 @@ module Api
         end
       end
 
-      def join_request
-        partner_join_request = current_user.partner_join_requests.new(partner_join_request_params)
+      def join
+        partner_id = params.require(:partner_id)
 
-        if partner_join_request.save
+        return render_error code: 'PARTNER_NOT_FOUND', message: 'Partner not found', status: 400 unless Partner.exists?(partner_id)
+
+        if current_user.update(partner_id: partner_id)
           render json: {}, status: 200
         else
-          render_error(code: 'INVALID_PARTNER_JOIN_REQUEST', message: partner_join_request.errors.full_messages, status: 400)
+          render_error(code: 'INVALID_PARTNER_JOIN', message: current_user.errors.full_messages, status: 400)
         end
       end
 
-      private
-
-      def partner_join_request_params
-        params.permit(:partner_id, :new_partner_name, :postal_code, :partner_role_title)
+      def join_request
+        render_error code: 'DEPRECATED', message: "This route is deprecated. Please use api/v1/partners/join_request instead", status: 400
       end
+
+      private
 
       def partner_params
         params.require(:partner).permit(
