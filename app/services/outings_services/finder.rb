@@ -1,6 +1,6 @@
 module OutingsServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :within_days
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :before_date
 
     def initialize user, params
       @user = user
@@ -21,7 +21,7 @@ module OutingsServices
       @interests += params[:interest_list].split(',') if params[:interest_list].present?
       @interests = @interests.compact.uniq if @interests.present?
 
-      @before_date = params[:within_days].present? ? params[:within_days].to_i.days.from_now : nil
+      @before_date = params[:within_days].present? ? params[:within_days].to_i.days.from_now.end_of_day : nil
     end
 
     def base_query
@@ -43,7 +43,7 @@ module OutingsServices
     def find_all
       base_query
         .future_or_ongoing
-        .ending_before(within_days)
+        .ending_before(before_date)
         .match_at_least_one_interest(interests)
     end
 
