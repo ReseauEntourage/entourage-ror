@@ -992,7 +992,7 @@ describe Api::V1::OutingsController do
 
     context 'far in the past' do
       let(:starts_at) { 2.years.ago }
-      let(:request) { get :week_average, params: { token: user.token, latitude: 0, longitude: 0 } }
+      let(:request) { get :week_average, params: { token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(subject["average"]).to eq(0.0) }
@@ -1000,7 +1000,7 @@ describe Api::V1::OutingsController do
 
     context 'in the future' do
       let(:starts_at) { 1.day.from_now }
-      let(:request) { get :week_average, params: { token: user.token, latitude: 0, longitude: 0 } }
+      let(:request) { get :week_average, params: { token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(subject["average"]).to eq(0.0) }
