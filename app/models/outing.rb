@@ -17,9 +17,10 @@ class Outing < Entourage
   before_validation :set_entourage_image_id
   before_validation :normalize_exclusive_to
 
-  after_validation :add_creator_as_member, if: :new_record?
   after_validation :dup_neighborhoods_entourages, if: :original_outing
   after_validation :dup_taggings, if: :original_outing
+
+  after_create :add_creator_as_member
 
   has_many :members, -> {
     where("join_requests.status = 'accepted'").order('join_requests.role, users.first_name')
