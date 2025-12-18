@@ -159,7 +159,7 @@ module Api
       def count
         outings = OutingsServices::Finder.new(current_user, index_params).find_all
 
-        render json: { count: outings.count }
+        render json: { count: outings.to_a.size }
       end
 
       def week_average

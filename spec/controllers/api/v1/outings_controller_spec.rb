@@ -918,4 +918,48 @@ describe Api::V1::OutingsController do
       it { expect(response.status).to eq 400 }
     end
   end
+
+  describe 'GET count' do
+    let(:request) { get :count, params: { token: user.token } }
+
+    before { User.any_instance.stub(:latitude) { 48.84 } }
+    before { User.any_instance.stub(:longitude) { 2.27 } }
+
+    let!(:outing) { create(:outing, :outing_class, latitude: user.latitude, longitude: user.longitude) }
+
+    before { request }
+
+    context 'with user coordinates' do
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(1) }
+    end
+
+    context 'far from user coordinates' do
+      let(:request) { get :count, params: { token: user.token, latitude: 0, longitude: 0 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(0) }
+    end
+
+    context 'in within days' do
+      let(:request) { get :count, params: { token: user.token, within_days: 2 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(1) }
+    end
+
+    context 'exactly in within days' do
+      let(:request) { get :count, params: { token: user.token, within_days: 1 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(1) }
+    end
+
+    context 'not in within days' do
+      let(:request) { get :count, params: { token: user.token, within_days: 0 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(0) }
+    end
+  end
 end

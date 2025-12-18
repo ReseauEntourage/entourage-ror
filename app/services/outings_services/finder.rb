@@ -21,7 +21,7 @@ module OutingsServices
       @interests += params[:interest_list].split(',') if params[:interest_list].present?
       @interests = @interests.compact.uniq if @interests.present?
 
-      @before_date = params[:within_days].present? ? params[:within_days].to_i.days.from_now : nil
+      @before_date = params[:within_days].present? ? params[:within_days].to_i.days.from_now.end_of_day : nil
     end
 
     def base_query
