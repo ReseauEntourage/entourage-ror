@@ -344,14 +344,14 @@ class User < ApplicationRecord
 
   def validate_partner!
     if targeting_profile.in?(['partner', 'team'])
-      if partner_id.blank?
+      if partner.nil?
         errors.add(:partner_id, :blank)
       else
         expected_targeting_profile = partner.staff ? 'team' : 'partner'
         errors.add(:targeting_profile) if targeting_profile != expected_targeting_profile
       end
     else
-      errors.add(:partner_id, :present) unless partner_id.nil?
+      errors.add(:partner_id, :present) unless partner.nil?
     end
   end
 
