@@ -8,6 +8,7 @@ module Salesforcable
   SalesforceStruct = Struct.new(:instance) do
     def initialize(instance: nil)
       if instance.is_a?(Entourage) && instance.outing? && instance.persisted?
+        # after_commit ensures instance has an id
         instance = Outing.find(instance.id)
       end
 

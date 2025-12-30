@@ -14,7 +14,12 @@ module SalesforceServices
     end
 
     def find_by_external_id
-      client.query("select Id from #{interface.table_name} where Phone = '#{instance.phone}'").first
+      client.query(%(
+        select Id
+        from #{interface.table_name}
+        where Phone = '#{instance.phone}'
+          or Email = '#{instance.email.downcase}'
+      )).first
     end
   end
 end
