@@ -14,11 +14,13 @@ module SalesforceServices
     end
 
     def find_by_external_id
+      clauses = ["Phone = '#{instance.phone}'"]
+      clauses << "Email = '#{instance.email.downcase}'" if instance.email.present?
+
       client.query(%(
         select Id
         from #{interface.table_name}
-        where Phone = '#{instance.phone}'
-          or Email = '#{instance.email.downcase}'
+        where #{clauses.join(' OR ')}
       )).first
     end
   end
