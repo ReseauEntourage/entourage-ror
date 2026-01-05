@@ -278,7 +278,7 @@ class User < ApplicationRecord
 
     if targeting_profile_changed? && !['partner', 'team'].include?(targeting_profile)
       self.partner_id = nil
-    elsif partner_id_changed? && partner_id.present?
+    elsif (partner_id_changed? && partner_id.present?) || (partner.present? && partner.new_record?)
       self.targeting_profile = 'partner' unless partner.staff
       self.targeting_profile = 'team' if partner.staff && targeting_profile == 'team'
     end
