@@ -23,7 +23,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :token
   validate :validate_phone!
   validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
-  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.pro? || u.association? }
+  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }
   validates :sms_code_password, length: { minimum: 6 }, if: Proc.new { |u| u.sms_code_password.present? }
   validates_length_of :about, maximum: 200, allow_nil: true
@@ -278,8 +278,9 @@ class User < ApplicationRecord
 
     if targeting_profile_changed? && !['partner', 'team'].include?(targeting_profile)
       self.partner_id = nil
-    elsif partner_id_changed? && partner_id.present?
-      self.targeting_profile = partner.staff ? 'team' : 'partner'
+    elsif (partner_id_changed? && partner_id.present?) || (partner.present? && partner.new_record?)
+      self.targeting_profile = 'partner' unless partner.staff
+      self.targeting_profile = 'team' if partner.staff && targeting_profile == 'team'
     end
   end
 
@@ -343,14 +344,14 @@ class User < ApplicationRecord
 
   def validate_partner!
     if targeting_profile.in?(['partner', 'team'])
-      if partner_id.blank?
+      if partner.nil?
         errors.add(:partner_id, :blank)
       else
         expected_targeting_profile = partner.staff ? 'team' : 'partner'
         errors.add(:targeting_profile) if targeting_profile != expected_targeting_profile
       end
     else
-      errors.add(:partner_id, :present) unless partner_id.nil?
+      errors.add(:partner_id, :present) unless partner.nil?
     end
   end
 
