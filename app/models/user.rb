@@ -39,6 +39,7 @@ class User < ApplicationRecord
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
   after_save :sync_newsletter, if: :saved_change_to_email?
   after_save :signal_association
+  after_commit :sync_sf_entreprise_participant_async
 
   has_many :followings, -> { where active: true }
   has_many :subscriptions, through: :followings, source: :partner
@@ -97,6 +98,7 @@ class User < ApplicationRecord
 
   attr_reader :admin_password
   attr_reader :cnil_explanation
+  attr_accessor :sf_entreprise_id, :sf_campaign_id
 
   validates_length_of :admin_password, within: 8..256, allow_nil: true
   validates :admin_password, confirmation: true, presence: false, if: Proc.new { |u| u.admin_password.present? }
@@ -434,6 +436,12 @@ class User < ApplicationRecord
     return unless email
 
     email_preference_newsletter.try(:sync_newsletter!)
+  end
+
+  def sync_sf_entreprise_participant_async
+    return unless sf_campaign_id
+
+    SyncSfEntrepriseParticipantJob.perform_later(sf_campaign_id, id)
   end
 
   def to_s
