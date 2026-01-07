@@ -1,6 +1,5 @@
 # This class must be subclassed.
 # See AnnouncementImageUploader for an exemple.
-# TODO: adapt PartnerLogoUploader to use this.
 class S3ImageUploader
   CONTENT_TYPES = [
     'image/png',

@@ -46,11 +46,13 @@ module Admin
 
     def edit_logo
       @partner = Partner.find(params[:id])
-      @form = PartnerLogoUploader
+      @image = @partner.image_url
+      @redirect_url = logo_upload_success_admin_partner_url
+      @form = PartnerUploader
     end
 
     def logo_upload_success
-      partner = PartnerLogoUploader.handle_success(params)
+      partner = PartnerUploader.handle_success(params)
       redirect_to [:admin, partner], notice: 'Association mise à jour'
     end
 

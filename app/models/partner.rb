@@ -1,6 +1,8 @@
 class Partner < ApplicationRecord
   include CoordinatesScopable
+  include Imageable
 
+  CONTENT_TYPES = ['image/png', 'image/jpeg'].freeze
   POSTAL_CODE_REGEX = /\b\d{5}\b/
 
   has_many :users
@@ -51,20 +53,49 @@ class Partner < ApplicationRecord
 
   PLACEHOLDER_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png'.freeze
 
+  # @caution we should have a deleted status
+  def deleted?
+    false
+  end
+
   def postal_code
     match = address.match(POSTAL_CODE_REGEX)
     match ? match[0] : nil
   end
 
-  def large_logo_url
-    super.presence || PLACEHOLDER_URL
+  class << self
+    def bucket
+      Storage::Client.avatars
+    end
+
+    def bucket_prefix
+      "#{table_name}/logo"
+    end
   end
 
-  CHECKMARK_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png'.freeze
-  STAFF_BADGE_URL = 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/entourage-logo-small.png'.freeze
+  # @param force true to bypass deletion
+  def image_url force = false
+    return if deleted? && !force
 
-  def small_logo_url
-    super.presence || (staff ? STAFF_BADGE_URL : CHECKMARK_URL)
+    self[:image_url]
+  end
+
+  def image_url_with_bucket
+    return unless image_url
+
+    Partner.path(image_url)
+  end
+
+  def image_path force = false
+    return unless image_url(force).present?
+
+    Partner.url_for(image_url(force))
+  end
+
+  def image_url_with_size size, force = false
+    return unless image_url(force).present?
+
+    Partner.url_for_with_size(image_url(force), size)
   end
 
   def reformat_url
