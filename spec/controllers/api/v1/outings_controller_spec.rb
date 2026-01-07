@@ -918,4 +918,92 @@ describe Api::V1::OutingsController do
       it { expect(response.status).to eq 400 }
     end
   end
+
+  describe 'GET count' do
+    let(:request) { get :count, params: { token: user.token } }
+
+    before { User.any_instance.stub(:latitude) { 48.84 } }
+    before { User.any_instance.stub(:longitude) { 2.27 } }
+
+    let!(:outing) { create(:outing, :outing_class, latitude: user.latitude, longitude: user.longitude) }
+
+    before { request }
+
+    context 'with user coordinates' do
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(1) }
+    end
+
+    context 'far from user coordinates' do
+      let(:request) { get :count, params: { token: user.token, latitude: 0, longitude: 0 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(0) }
+    end
+
+    context 'in within days' do
+      let(:request) { get :count, params: { token: user.token, within_days: 2 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(1) }
+    end
+
+    context 'exactly in within days' do
+      let(:request) { get :count, params: { token: user.token, within_days: 1 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(1) }
+    end
+
+    context 'not in within days' do
+      let(:request) { get :count, params: { token: user.token, within_days: 0 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["count"]).to eq(0) }
+    end
+  end
+
+  describe 'GET week_average' do
+    let(:request) { get :week_average, params: { token: user.token } }
+
+    before { User.any_instance.stub(:latitude) { 48.84 } }
+    before { User.any_instance.stub(:longitude) { 2.27 } }
+
+    let(:starts_at) { 1.day.ago }
+    let!(:outing) { create(:outing, :outing_class, latitude: user.latitude, longitude: user.longitude) }
+
+    before { outing.update_columns(
+      metadata: outing.metadata.merge("starts_at" => starts_at)
+    )}
+
+    before { request }
+
+    context 'with user coordinates' do
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["average"]).to eq((1 / 52.0).round(2)) }
+    end
+
+    context 'far from user coordinates' do
+      let(:request) { get :week_average, params: { token: user.token, latitude: 0, longitude: 0 } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["average"]).to eq(0.0) }
+    end
+
+    context 'far in the past' do
+      let(:starts_at) { 2.years.ago }
+      let(:request) { get :week_average, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["average"]).to eq(0.0) }
+    end
+
+    context 'in the future' do
+      let(:starts_at) { 1.day.from_now }
+      let(:request) { get :week_average, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject["average"]).to eq(0.0) }
+    end
+  end
 end
