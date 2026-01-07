@@ -42,6 +42,12 @@ module V1
       return true
     end
 
+    def image_url
+      return Partner::PLACEHOLDER_URL unless object.image_url.present?
+
+      object.image_url_with_size :medium
+    end
+
     def following
       Following.where(user: scope[:user], partner_id: object.id, active: true).exists?
     end
