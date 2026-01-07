@@ -7,6 +7,7 @@ module V1
         :display_name,
         :avatar_url,
         :preference,
+        :association,
         :meetings_count,
         :chat_messages_count,
         :outing_participations_count,
@@ -21,6 +22,10 @@ module V1
         return :contribution if object.ask_for_help?
 
         :solicitation
+      end
+
+      def association
+        object.association?
       end
 
       def meetings_count

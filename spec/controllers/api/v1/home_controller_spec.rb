@@ -184,6 +184,7 @@ describe Api::V1::HomeController do
             'display_name' => 'John D.',
             'avatar_url' => nil,
             'preference' => 'solicitation',
+            'association' => false,
             'community_roles' => [],
             'meetings_count' => 0,
             'chat_messages_count' => 0,
