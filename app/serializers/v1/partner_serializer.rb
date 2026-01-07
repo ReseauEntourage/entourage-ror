@@ -12,8 +12,7 @@ module V1
     attribute :website_url, if: :full?
     attribute :email, if: :full?
 
-    attribute :large_logo_url, unless: :minimal?
-    attribute :small_logo_url, unless: :minimal?
+    attribute :image_url, unless: :minimal?
     attribute :default, unless: :minimal?
 
     attribute :following, if: :following?
