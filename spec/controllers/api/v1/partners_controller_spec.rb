@@ -179,4 +179,27 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       it { expect(user.partner).to be_nil }
     end
   end
+
+  describe 'POST presigned_upload' do
+    let!(:partner) { create(:partner) }
+    let(:result) { JSON.parse(response.body) }
+
+    before { post :presigned_upload, params: { token: user.token, content_type: content_type } }
+
+    describe 'valid content_type' do
+      let(:content_type) { 'image/jpeg' }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key("upload_key") }
+      it { expect(result).to have_key("presigned_url") }
+      it { expect(result["upload_key"]).to match("jpeg") }
+      it { expect(result["presigned_url"]).to match(Partner.bucket_prefix) }
+    end
+
+    describe 'invalid content_type' do
+      let(:content_type) { 'image/wrong' }
+
+      it { expect(response.status).to(eq(400)) }
+    end
+  end
 end

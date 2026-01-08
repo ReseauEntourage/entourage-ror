@@ -63,6 +63,10 @@ module SlackServices
       Rails.application.routes.url_helpers.edit_admin_neighborhood_url(neighborhood.id, host: ENV['ADMIN_HOST'])
     end
 
+    def link_to_partner partner
+      Rails.application.routes.url_helpers.edit_admin_partner_url(partner.id, host: ENV['ADMIN_HOST'])
+    end
+
     def link_to_conversation conversation_or_action
       if conversation_or_action.conversation?
         Rails.application.routes.url_helpers.admin_conversation_url(conversation_or_action.id, host: ENV['ADMIN_HOST'])
