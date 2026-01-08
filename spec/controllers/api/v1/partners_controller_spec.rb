@@ -127,6 +127,25 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     end
   end
 
+  describe 'PUT update' do
+    let(:result) { JSON.parse(response.body) }
+    let(:partner) { create(:partner, users: users) }
+    let(:users) { [user] }
+
+    before { post :update, params: { id: partner.id, token: user.token, partner: { image_url: 'foobar.png' }} }
+
+    describe 'user is a partner member' do
+      it { expect(response.status).to eq(200) }
+      it { expect(partner.reload.image_url).to eq('foobar.png') }
+    end
+
+    describe 'user is not a partner member' do
+      let(:users) { [] }
+
+      it { expect(response.status).to eq(401) }
+    end
+  end
+
   describe 'POST join' do
     let!(:partner) { create(:partner) }
     let(:request) { post :join, params: { token: user.token, partner_id: partner.id } }
