@@ -40,7 +40,9 @@ class Partner < ApplicationRecord
     return unless partner.name.present?
     return unless partner.address.present?
 
-    search_by(partner.name).where('address ILIKE ?', "%#{partner.postal_code}%")
+    search_by(partner.name)
+      .where.not(id: partner.id)
+      .where('address ILIKE ?', "%#{partner.postal_code}%")
   }
 
   scope :search_by, -> (query) {
