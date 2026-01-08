@@ -37,7 +37,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
               'has_password' => false,
               'address' => nil,
               'address_2' => nil,
-              'avatar_url' => 'https://foobar.s3.eu-west-1.amazonaws.com/300x300/avatar.jpg',
+              'avatar_url' => 'https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg',
               'stats' => {
                 'tour_count' => 0,
                 'encounter_count' => 0,
@@ -53,7 +53,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
               'partner' => {
                 'id' => partner.id,
                 'name' => 'MyString',
-                'image_url' => 'https://foobar.s3-eu-west-1.amazonaws.com/partners/logo/MyString',
+                'image_url' => 'https://foobar.s3.eu-west-1.amazonaws.com/partners/logo/MyString',
                 'description' => 'MyDescription',
                 'donations_needs' => nil,
                 'volunteers_needs' => nil,
