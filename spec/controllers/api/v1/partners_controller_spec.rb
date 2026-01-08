@@ -48,8 +48,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       'partner' => {
         'id' => partner1.id,
         'name' => 'Partner A',
-        'large_logo_url' => 'MyString',
-        'small_logo_url' => 'https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png',
+        'image_url' => 'https://foobar.s3.eu-west-1.amazonaws.com/partners/logo/MyString',
         'description' => 'MyDescription',
         'donations_needs' => nil,
         'volunteers_needs' => nil,
