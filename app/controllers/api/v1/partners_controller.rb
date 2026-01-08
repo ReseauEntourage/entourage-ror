@@ -42,6 +42,11 @@ module Api
         @partner.assign_attributes(partner_params)
 
         if @partner.save
+          SlackServices::PartnerUpdate.new(
+            user: current_user,
+            partner: @partner
+          ).notify
+
           render json: @partner, status: 200, serializer: ::V1::PartnerSerializer, scope: { user: current_user }
         else
           render json: {
