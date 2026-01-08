@@ -191,8 +191,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               'partner' => {
                 'id' => partner_user.partner_id,
                 'name' => partner_user.partner.name,
-                'large_logo_url' => partner_user.partner.large_logo_url,
-                'small_logo_url' => partner_user.partner.small_logo_url,
+                'image_url' => "https://foobar.s3.eu-west-1.amazonaws.com/partners/logo/MyString",
                 'default' => true,
               },
               'partner_role_title' => nil,
