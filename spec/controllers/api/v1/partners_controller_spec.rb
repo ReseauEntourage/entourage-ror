@@ -127,6 +127,25 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     end
   end
 
+  describe 'PUT update' do
+    let(:result) { JSON.parse(response.body) }
+    let(:partner) { create(:partner, users: users) }
+    let(:users) { [user] }
+
+    before { post :update, params: { id: partner.id, token: user.token, partner: { image_url: 'foobar.png' }} }
+
+    describe 'user is a partner member' do
+      it { expect(response.status).to eq(200) }
+      it { expect(partner.reload.image_url).to eq('foobar.png') }
+    end
+
+    describe 'user is not a partner member' do
+      let(:users) { [] }
+
+      it { expect(response.status).to eq(401) }
+    end
+  end
+
   describe 'POST join' do
     let!(:partner) { create(:partner) }
     let(:request) { post :join, params: { token: user.token, partner_id: partner.id } }
@@ -158,6 +177,29 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
       it { expect(response.status).to(eq(400)) }
       it { expect(user.partner).to be_nil }
+    end
+  end
+
+  describe 'POST presigned_upload' do
+    let!(:partner) { create(:partner) }
+    let(:result) { JSON.parse(response.body) }
+
+    before { post :presigned_upload, params: { token: user.token, content_type: content_type } }
+
+    describe 'valid content_type' do
+      let(:content_type) { 'image/jpeg' }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key("upload_key") }
+      it { expect(result).to have_key("presigned_url") }
+      it { expect(result["upload_key"]).to match("jpeg") }
+      it { expect(result["presigned_url"]).to match(Partner.bucket_prefix) }
+    end
+
+    describe 'invalid content_type' do
+      let(:content_type) { 'image/wrong' }
+
+      it { expect(response.status).to(eq(400)) }
     end
   end
 end
