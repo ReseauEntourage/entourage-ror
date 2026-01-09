@@ -22,6 +22,7 @@ class Partner < ApplicationRecord
   before_save :reformat_url, if: :website_url_changed?
   before_save :reformat_needs, if: :needs_changed?
   before_save :geocode, if: :address_changed?
+  before_save :refresh_postal_code, if: :should_refresh_postal_code?
   before_save :update_searchable_text
   after_commit :sync_poi
 
@@ -151,6 +152,19 @@ class Partner < ApplicationRecord
 
   def needs_changed?
     donations_needs_changed? || volunteers_needs_changed?
+  end
+
+  def should_refresh_postal_code?
+    will_save_change_to_latitude? || will_save_change_to_longitude?
+  end
+
+  def refresh_postal_code
+    return if latitude.blank? || longitude.blank?
+
+    self.postal_code = EntourageServices::GeocodingService.search_postal_code(
+      latitude: latitude,
+      longitude: longitude
+    )
   end
 
   def validate_uniqueness!
