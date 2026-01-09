@@ -6,7 +6,7 @@ module SlackServices
     end
 
     def env
-      ENV['SLACK_SIGNAL']
+      ENV['SLACK_APP_WEBHOOKS']
     end
 
     def payload
@@ -28,7 +28,7 @@ module SlackServices
     def payload_adds
       {
         username: "Mise à jour d'une association",
-        channel: webhook('channel'),
+        channel: url,
       }
     end
 
@@ -36,6 +36,16 @@ module SlackServices
 
     def changes
       changes = @partner.previous_changes.except("updated_at", "searchable_text")
+    end
+
+    def url
+      config = JSON.parse(env) rescue nil
+      return unless config.present?
+
+      channel = config['default']
+      channel = config[entourage.postal_code.first(2)] if entourage.country == 'FR' && entourage.postal_code.present?
+
+      config['prefix'] + channel
     end
   end
 end
