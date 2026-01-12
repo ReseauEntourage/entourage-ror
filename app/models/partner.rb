@@ -162,8 +162,8 @@ class Partner < ApplicationRecord
     return if latitude.blank? || longitude.blank?
 
     self.postal_code = EntourageServices::GeocodingService.search_postal_code(
-      latitude: latitude,
-      longitude: longitude
+      latitude,
+      longitude
     )
   end
 
