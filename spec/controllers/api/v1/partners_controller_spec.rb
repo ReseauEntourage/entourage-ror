@@ -132,6 +132,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     let(:partner) { create(:partner, users: users) }
     let(:users) { [user] }
 
+    before { allow(SlackServices::PartnerUpdate).to receive_message_chain(:new, :notify) }
     before { post :update, params: { id: partner.id, token: user.token, partner: { image_url: 'foobar.png' }} }
 
     describe 'user is a partner member' do
