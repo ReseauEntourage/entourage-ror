@@ -429,6 +429,7 @@ class User < ApplicationRecord
     return unless address.present?
     return unless saved_change_to_address_id? || saved_change_to_goal?
     return unless goal_association?
+    return unless partner.present?
 
     SlackServices::SignalAssociationCreation.new(user: self).notify
   end
