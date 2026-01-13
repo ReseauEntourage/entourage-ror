@@ -12,7 +12,7 @@ module SlackServices
     def payload
       changes_text = changes.map { |attribute, (before, after)|
         if attribute == 'image_url'
-          { text: "Nouveau logo :", image_url: @parter.image_url_with_size(:small) }
+          { text: "Nouveau logo :", image_url: @partner.image_url_with_size(:small) }
         else
           { text: "Nouveau #{attribute} : #{after}" }
         end
