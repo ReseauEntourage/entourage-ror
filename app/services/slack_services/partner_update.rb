@@ -28,7 +28,7 @@ module SlackServices
         }, {
           text: "Référent modé : <@#{slack_moderator_id(@user)}> (département : #{departement(@user) || 'n/a'})"
         }] + changes_text + [{
-          text: ":index_vers_la_droite::couleur-de-peau-2: Merci de vérifier les informations renseignées !"
+          text: "👉 Merci de vérifier les informations renseignées !"
         }]
       }
     end
