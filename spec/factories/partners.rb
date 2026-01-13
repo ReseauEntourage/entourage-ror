@@ -5,6 +5,6 @@ FactoryBot.define do
     latitude { 49 }
     longitude { 2.3 }
     address { '174 rue Championnet, Paris' }
-    large_logo_url { 'MyString' }
+    image_url { 'MyString' }
   end
 end

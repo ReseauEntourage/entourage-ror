@@ -41,6 +41,8 @@ RSpec.configure do |config|
       klass.any_instance.stub(:translate_field!).and_return('foo')
     end
 
+    Partner.any_instance.stub(:refresh_postal_code).and_return(nil)
+
     # google calendar
     fake_event = Google::Apis::CalendarV3::Event.new(
       id: 'fake_event_id',

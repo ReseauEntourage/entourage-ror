@@ -719,8 +719,9 @@ Rails.application.routes.draw do
 
       resources :invitations, only: [:index, :update, :destroy]
 
-      resources :partners, only: [:index, :show, :create] do
+      resources :partners, only: [:index, :show, :create, :update] do
         collection do
+          post :presigned_upload
           post :join
         end
       end

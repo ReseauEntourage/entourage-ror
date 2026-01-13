@@ -4,7 +4,7 @@ module Admin
 
     def new
       uploader = {
-        'partner_logo' => PartnerLogoUploader,
+        'partner_logo' => PartnerUploader,
         'announcement_image' => AnnouncementImageUploader,
         'chat_message_uploader' => ChatMessageUploader,
         'entourage_image' => EntourageImageUploader,

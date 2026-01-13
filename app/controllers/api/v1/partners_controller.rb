@@ -1,6 +1,8 @@
 module Api
   module V1
     class PartnersController < Api::V1::BaseController
+      before_action :set_partner, only: [:show, :update]
+
       def index
         render json: Partner
           .active
@@ -13,9 +15,7 @@ module Api
       end
 
       def show
-        partner = Partner.find(params[:id])
-
-        render json: partner, status: 200, serializer: ::V1::PartnerSerializer, scope: {
+        render json: @partner, status: 200, serializer: ::V1::PartnerSerializer, scope: {
           full: true,
           following: true,
           user: current_user
@@ -36,6 +36,25 @@ module Api
         end
       end
 
+      def update
+        return render json: { message: 'unauthorized' }, status: :unauthorized unless @partner.user_ids.include?(current_user.id)
+
+        @partner.assign_attributes(partner_params)
+
+        if @partner.save
+          SlackServices::PartnerUpdate.new(
+            user: current_user,
+            partner: @partner
+          ).notify
+
+          render json: @partner, status: 200, serializer: ::V1::PartnerSerializer, scope: { user: current_user }
+        else
+          render json: {
+            message: 'Could not update partner', reasons: @partner.errors.full_messages
+          }, status: 400
+        end
+      end
+
       def join
         partner_id = params.require(:partner_id)
 
@@ -52,13 +71,35 @@ module Api
         render_error code: 'DEPRECATED', message: "This route is deprecated. Please use api/v1/partners/join_request instead", status: 400
       end
 
+      def presigned_upload
+        allowed_types = Partner::CONTENT_TYPES
+
+        unless params[:content_type].in? allowed_types
+          type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+        end
+
+        extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+        key = "#{SecureRandom.uuid}.#{extension}"
+        url = Partner.presigned_url(key, params[:content_type])
+
+        render json: { upload_key: key, presigned_url: url }
+      end
+
       private
+
+      def set_partner
+        @partner = Partner.find(params[:id])
+
+        render json: { message: 'Could not find partner' }, status: 400 unless @partner.present?
+      end
 
       def partner_params
         params.require(:partner).permit(
           :name, :description, :phone, :address, :website_url, :email,
           :latitude, :longitude,
           :donations_needs, :volunteers_needs,
+          :image_url,
           :staff
         )
       end
