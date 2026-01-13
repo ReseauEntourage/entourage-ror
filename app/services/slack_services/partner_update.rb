@@ -27,9 +27,9 @@ module SlackServices
           text: "Association concernée : #{link_to_partner(@partner)}"
         }, {
           text: "Référent modé : <@#{slack_moderator_id(@user)}> (département : #{departement(@user) || 'n/a'})"
-        }] + changes_text + {
+        }] + changes_text + [{
           text: ":index_vers_la_droite::couleur-de-peau-2: Merci de vérifier les informations renseignées !"
-        }
+        }]
       }
     end
 
@@ -51,7 +51,7 @@ module SlackServices
       return unless config.present?
 
       channel = config['default']
-      channel = config[entourage.postal_code.first(2)] if entourage.country == 'FR' && entourage.postal_code.present?
+      channel = config[@partner.postal_code.first(2)] if @partner.postal_code.present?
 
       config['prefix'] + channel
     end
