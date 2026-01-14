@@ -4,6 +4,7 @@ class User < ApplicationRecord
   include Interestable
   include Involvable
   include Concernable
+  include Orientable
 
   include Recommandable
   include Salesforcable
