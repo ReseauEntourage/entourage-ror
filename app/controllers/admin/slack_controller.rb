@@ -1,6 +1,6 @@
 module Admin
   class SlackController < ActionController::Base
-    skip_before_action :verify_authenticity_token, only: [:message_action, :user_unblock, :offensive_text]
+    skip_before_action :verify_authenticity_token, only: [:message_action, :user_unblock, :offensive_text, :code_question]
 
     before_action :parse_payload, only: [:message_action, :user_unblock, :offensive_text]
     before_action :authenticate_slack!, only: [:message_action]
@@ -101,6 +101,30 @@ module Admin
       end
 
       render json: response
+    end
+
+    def code_question
+      # avoid infinite loop on answer
+      return head :ok if params.dig(:event, :bot_id).present?
+
+      # ignore comments
+      return head :ok if params.dig(:event, :thread_ts).present?
+
+      # ignore challenge / pings Slack
+      return render json: { challenge: params[:challenge] } if params[:challenge].present?
+
+      text = params.dig(:event, :text) || params[:text]
+
+      question = text.to_s.strip
+      return head :ok if question.blank?
+
+      CodeQuestionJob.perform_later(
+        question,
+        params.dig(:event, :channel),
+        params.dig(:event, :ts)
+      )
+
+      head :ok
     end
 
     private

@@ -103,6 +103,10 @@ GEM
       batch-loader
     ancestry (4.3.3)
       activerecord (>= 5.2.6)
+    anthropic (0.3.2)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     apnotic (1.7.2)
       connection_pool (~> 2)
       net-http2 (>= 0.18.3, < 2)
@@ -657,6 +661,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 12.0)
   ams_lazy_relationships
   ancestry
+  anthropic (~> 0.3.0)
   apnotic
   aws-sdk-s3 (~> 1)
   aws-sdk-sns (~> 1)

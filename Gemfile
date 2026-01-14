@@ -50,6 +50,7 @@ gem 'sentry-ruby'
 
 # api
 gem 'ruby-openai'
+gem 'anthropic', '~> 0.3.0'
 gem 'icalendar'
 gem 'google-api-client', '~> 0.53'
 gem 'restforce', '~> 7.6'
