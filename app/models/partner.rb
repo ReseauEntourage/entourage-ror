@@ -1,6 +1,7 @@
 class Partner < ApplicationRecord
   include CoordinatesScopable
   include Imageable
+  include Orientable
 
   CONTENT_TYPES = ['image/png', 'image/jpeg'].freeze
   POSTAL_CODE_REGEX = /\b\d{5}\b/

@@ -610,6 +610,9 @@ fr:
       hygiene:
         name: Produit d'hygiène
         subname: savon, protection hygiénique...
+    orientations:
+      share: Relayer vos événements de convivialité sur l'application
+      guide: Orienter vos bénéficiaires aux événements de convivialité
     sf_categories:
       atelier_femmes: Atelier de sensib Femmes en situation de préca
       atelier_mdlr: Atelier de sensib Monde de la rue
