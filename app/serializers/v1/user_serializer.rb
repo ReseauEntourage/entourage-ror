@@ -17,6 +17,7 @@ module V1
     attribute :interests
     attribute :involvements
     attribute :concerns
+    attribute :orientation
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?

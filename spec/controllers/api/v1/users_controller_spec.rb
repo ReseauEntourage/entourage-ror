@@ -576,6 +576,14 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
 
+      # orientation
+      context 'orientation' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { orientation: 'guide' } } }
+          it { expect(result['user']).to include('orientation' => 'guide') }
+        end
+      end
+
       context 'updated email is valid' do
         before {
           expect_any_instance_of(SlackServices::SignalUserCreation).not_to receive(:notify)
