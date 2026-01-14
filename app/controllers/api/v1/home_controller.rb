@@ -50,6 +50,7 @@ module Api
           },
           tags: {
             sections: format_sections(Tag.sections),
+            orientations: format_tags(Tag.orientations),
             interests: format_tags(Tag.interests),
             involvements: format_tags(Tag.involvements),
             concerns: format_tags(Tag.concerns),

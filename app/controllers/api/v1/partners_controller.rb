@@ -100,7 +100,8 @@ module Api
           :latitude, :longitude,
           :donations_needs, :volunteers_needs,
           :image_url,
-          :staff
+          :staff,
+          :orientation
         )
       end
 

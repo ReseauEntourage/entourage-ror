@@ -81,6 +81,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       address: 'place du Commerce 44000 Nantes',
       latitude: 44,
       longitude: 0.00,
+      orientation: 'guide'
     }}}
 
     describe 'creation' do
@@ -91,6 +92,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       it { expect(result['partner']['name']).to(eq('Entourage Nantes')) }
       it { expect(user.association?).to(eq(true)) }
       it { expect(user.partner.name).to(eq('Entourage Nantes')) }
+      it { expect(user.partner.orientation_list).to(eq(['guide'])) }
     end
 
     describe 'missing mandatory field' do
