@@ -1,8 +1,16 @@
 module SlackServices
   class PartnerUpdate < Notifier
+    TRACKED_ATTRIBUTES = %w[name description image_url].freeze
+
     def initialize user:, partner:
       @user = user
       @partner = partner
+    end
+
+    def notify
+      return unless should_notify?
+
+      super
     end
 
     def env
@@ -28,7 +36,7 @@ module SlackServices
         }, {
           text: "Référent modé : <@#{slack_moderator_id(@user)}> (département : #{departement(@user) || 'n/a'})"
         }] + changes_text + [{
-          text: ":index_vers_la_droite::couleur-de-peau-2: Merci de vérifier les informations renseignées !"
+          text: "👉 Merci de vérifier les informations renseignées !"
         }]
       }
     end
@@ -42,8 +50,12 @@ module SlackServices
 
     private
 
+    def should_notify?
+      (changes.keys & TRACKED_ATTRIBUTES).any?
+    end
+
     def changes
-      changes = @partner.previous_changes.except("updated_at", "searchable_text")
+      @changes ||= @partner.previous_changes.slice(*TRACKED_ATTRIBUTES)
     end
 
     def url
