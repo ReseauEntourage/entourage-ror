@@ -62,11 +62,6 @@ class Partner < ApplicationRecord
     false
   end
 
-  def postal_code
-    match = address.match(POSTAL_CODE_REGEX)
-    match ? match[0] : nil
-  end
-
   class << self
     def bucket
       Storage::Client.avatars
@@ -162,7 +157,7 @@ class Partner < ApplicationRecord
   def refresh_postal_code
     return if latitude.blank? || longitude.blank?
 
-    self.postal_code = EntourageServices::GeocodingService.search_postal_code(
+    self.postal_code = EntourageServices::GeocodingService.get_postal_code(
       latitude,
       longitude
     )

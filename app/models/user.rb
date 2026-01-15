@@ -39,7 +39,6 @@ class User < ApplicationRecord
   before_save :update_searchable_text
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
   after_save :sync_newsletter, if: :saved_change_to_email?
-  after_save :signal_association
   after_commit :sync_sf_entreprise_participant_async
 
   has_many :followings, -> { where active: true }
@@ -424,15 +423,6 @@ class User < ApplicationRecord
 
     email_preference = EmailPreference.find_by(user: self, email_category_id: category_id) || email_preferences.build(email_category_id: category_id)
     email_preference.subscribed = ActiveModel::Type::Boolean.new.cast(newsletter_subscription)
-  end
-
-  def signal_association
-    return unless address.present?
-    return unless saved_change_to_address_id? || saved_change_to_goal?
-    return unless goal_association?
-    return unless partner.present?
-
-    SlackServices::SignalAssociationCreation.new(user: self).notify
   end
 
   def sync_newsletter
