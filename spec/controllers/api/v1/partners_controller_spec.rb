@@ -80,7 +80,8 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       name: 'Entourage Nantes',
       address: 'place du Commerce 44000 Nantes',
       latitude: 44,
-      longitude: 0.00
+      longitude: 0.00,
+      orientation: 'guide'
     }}}
 
     describe 'creation' do
