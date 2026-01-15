@@ -2,7 +2,7 @@ module UserServices
   module Options
     extend ActiveSupport::Concern
 
-    OPTIONS = ['last_unclosed_action_notification_at', 'goal_choice', 'gender', 'discovery_source', 'photo_acceptance']
+    OPTIONS = ['last_unclosed_action_notification_at', 'goal_choice', 'gender', 'discovery_source', 'photo_acceptance', 'company', 'event']
     OPTION_TYPES = {
       'photo_acceptance' => :boolean
     }
@@ -24,9 +24,13 @@ module UserServices
       association: "Orienté par une association",
     }
 
+    SALESFORCE_ID_REGEX = /\A[a-zA-Z0-9]{15,18}\z/
+
     included do
       validate :validate_gender_format
       validate :validate_discovery_source_format
+      validate :validate_company
+      validate :validate_event
     end
 
     def validate_gender_format
@@ -42,6 +46,22 @@ module UserServices
 
       unless DISCOVERY_SOURCES.keys.map(&:to_s).include?(discovery_source.to_s)
         return errors.add(:discovery_source, "should be #{DISCOVERY_SOURCES.keys.join(', ')}")
+      end
+    end
+
+    def validate_company
+      return if company.nil?
+
+      unless company.match?(SALESFORCE_ID_REGEX)
+        errors.add(:company, "should be a salesforce id")
+      end
+    end
+
+    def validate_event
+      return if event.nil?
+
+      unless event.match?(SALESFORCE_ID_REGEX)
+        errors.add(:event, "should be a salesforce id")
       end
     end
 
