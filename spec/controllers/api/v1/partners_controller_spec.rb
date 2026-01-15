@@ -9,7 +9,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
   describe 'GET index' do
     let!(:partner_paris) { create(:partner, name: 'Entourage Paris') }
-    let!(:partner_lyon) { create(:partner, name: 'Entourage Lyon', address: '69000 Lyon') }
+    let!(:partner_lyon) { create(:partner, name: 'Entourage Lyon') }
     let(:results) { JSON.parse(response.body) }
 
     before { get 'index', params: { token: user.token, query: query } }
@@ -21,7 +21,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
         'partners' => [{
           'id' => partner_lyon.id,
           'name' => 'Entourage Lyon',
-          'postal_code' => '69000'
+          'postal_code' => nil
         }, {
           'id' => partner_paris.id,
           'name' => 'Entourage Paris',
@@ -112,6 +112,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     describe 'same name different place' do
       let!(:partner) { create(:partner, name: 'Entourage Nantes', address: 'place du Commerce 35000 Rennes') }
 
+      before { Partner.any_instance.stub(:postal_code).and_return('44000') }
       before { request }
 
       it { expect(response.status).to eq(200) }

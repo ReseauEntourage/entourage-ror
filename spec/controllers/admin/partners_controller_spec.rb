@@ -6,7 +6,7 @@ describe Admin::PartnersController do
 
   describe 'GET #index' do
     context 'has partners' do
-      let!(:partner_list) { [create(:partner, address: '75000 Paris'), create(:partner, address: '29000 Brest')] }
+      let!(:partner_list) { [create(:partner, name: "new partner", address: '75000 Paris'), create(:partner, address: '29000 Brest')] }
 
       before { get :index }
 
