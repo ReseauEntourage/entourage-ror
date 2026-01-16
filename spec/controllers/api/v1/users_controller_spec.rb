@@ -84,7 +84,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
               'unread_count' => 0,
               'interests' => [],
               'involvements' => [],
-              'orientation' => nil,
+              'orientations' => [],
               'concerns' => [],
               'travel_distance' => 40,
               'birthdate' => nil,
@@ -283,7 +283,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       after { ENV['DISABLE_CRYPT']='TRUE' }
 
       context 'params are valid' do
-        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email: 'new@e.mail', sms_code: '654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: 'secret', orientation: 'guide' }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email: 'new@e.mail', sms_code: '654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12, gender: 'secret', orientations: ['guide'] }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.lang).to eq('pl') }
         it { expect(user.reload.email).to eq('new@e.mail') }
@@ -578,10 +578,10 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
 
       # orientation
-      context 'orientation' do
+      context 'orientations' do
         context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { orientation: 'guide' } } }
-          it { expect(result['user']).to include('orientation' => 'guide') }
+          before { patch 'update', params: { token: user.token, user: { orientations: ['guide'] } } }
+          it { expect(result['user']).to include('orientations' => ['guide']) }
         end
       end
 
@@ -920,7 +920,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'unread_count' => 0,
             'interests' => [],
             'involvements' => [],
-            'orientation' => nil,
+            'orientations' => [],
             'concerns' => [],
             'travel_distance' => 40,
             'birthdate' => nil,
@@ -1015,7 +1015,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'unread_count' => 0,
             'interests' => [],
             'involvements' => [],
-            'orientation' => nil,
+            'orientations' => [],
             'concerns' => [],
             'travel_distance' => 40,
             'birthdate' => nil,
@@ -1073,7 +1073,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             },
             'interests' => [],
             'involvements' => [],
-            'orientation' => nil,
+            'orientations' => [],
             'concerns' => [],
             'memberships' => [],
             'conversation' => {

@@ -420,11 +420,11 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthdate, :travel_distance, :partner_id, :gender, :partner_id, :discovery_source, :company, :event, :willing_to_engage_locally, :sf_entreprise_id, :sf_campaign_id, :orientation, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthdate, :travel_distance, :partner_id, :gender, :discovery_source, :company, :event, :willing_to_engage_locally, :sf_entreprise_id, :sf_campaign_id, :orientation, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, orientations: [], interests: [], involvements: [], concerns: [], availability: {})
       end
 
       def update_params
-        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthdate, :travel_distance, :partner_id, :gender, :discovery_source, :company, :event, :willing_to_engage_locally, :sf_entreprise_id, :sf_campaign_id, :orientation, :interest_list, :involvement_list, :concern_list, :interests, :involvements, :concerns, interests: [], involvements: [], concerns: [], availability: {})
+        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthdate, :travel_distance, :partner_id, :gender, :discovery_source, :company, :event, :willing_to_engage_locally, :sf_entreprise_id, :sf_campaign_id, :orientation, :interest_list, :involvement_list, :concern_list, :interests, :involvements, :concerns, orientations: [], interests: [], involvements: [], concerns: [], availability: {})
       end
 
       def user_report_params
