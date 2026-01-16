@@ -19,10 +19,23 @@ module Orientable
     self.orientation_names.first
   end
 
+  def orientation_names
+    # optimization to resolve n+1
+    orientations.map(&:name)
+  end
+
   def orientation= orientation
     return unless orientation.present?
 
     self.orientation_list = [orientation]
+  end
+
+  def orientations= orientations
+    if orientations.is_a? Array
+      self.orientation_list = orientations.join(', ')
+    elsif orientations.is_a? String
+      self.orientation_list = orientations
+    end
   end
 
   def orientation_names
