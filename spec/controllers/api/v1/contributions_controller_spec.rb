@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Api::V1::ContributionsController, type: :controller do
   render_views
 
-  let(:user) { create :pro_user }
+  let(:user) { create :public_user }
 
   context 'index' do
     let(:request) { get :index, params: { token: user.token } }
@@ -312,6 +312,20 @@ describe Api::V1::ContributionsController, type: :controller do
         it { expect(result.member_ids).to match_array([user.id]) }
         it { expect(result.moderation).to be_a(EntourageModeration) }
         it { expect(result.moderation.action_recipient_consent_obtained).to eq(nil) }
+      end
+
+      context 'public_user send notify_slack' do
+        it { expect(Experimental::EntourageSlack).to receive(:notify) }
+
+        after { post :create, params: { contribution: params, token: user.token } }
+      end
+
+      context 'ambassador does not send notify_slack' do
+        let(:user) { create(:public_user, targeting_profile: :ambassador)}
+
+        it { expect(Experimental::EntourageSlack).not_to receive(:notify) }
+
+        after { post :create, params: { contribution: params, token: user.token } }
       end
     end
   end

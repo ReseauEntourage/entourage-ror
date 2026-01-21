@@ -145,15 +145,12 @@ module Experimental::EntourageSlack
     h.admin_slack_entourage_links_url(entourage, host: ENV['ADMIN_HOST'])
   end
 
-  def self.enable_callback
-    !Rails.env.test?
-  end
-
   module Callback
     extend ActiveSupport::Concern
 
     included do
-      after_commit :notify_slack
+      after_create :auto_validate
+      after_create :notify_slack
     end
 
     private
@@ -163,11 +160,15 @@ module Experimental::EntourageSlack
       previous_changes['postal_code'].map { |pc| pc.to_s.first(2) }.uniq.many?
     end
 
+    def auto_validate
+      return unless user.team? || user.ambassador?
+
+      set_moderation_dates_and_save
+    end
+
     def notify_slack
-      return unless Experimental::EntourageSlack.enable_callback
-      return unless community == 'entourage' && group_type.in?(['action', 'outing'])
-      return unless [country, postal_code].all?(&:present?)
-      return unless previous_changes.key?('country') || departement_changed?
+      return if moderation_validated?
+      return unless action? || outing?
 
       AsyncService.new(Experimental::EntourageSlack).notify(id)
     end
