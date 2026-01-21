@@ -24,6 +24,7 @@ class Partner < ApplicationRecord
   before_save :geocode, if: :address_changed?
   before_save :refresh_postal_code, if: :should_refresh_postal_code?
   before_save :update_searchable_text
+  after_create :signal_creation
   after_commit :sync_poi
 
   geocoded_by :address
@@ -115,6 +116,10 @@ class Partner < ApplicationRecord
     blocks << "Dons acceptés :\n#{donations_needs}" if donations_needs
     blocks << "Bénévoles recherchés :\n#{volunteers_needs}" if volunteers_needs
     blocks.join("\n\n")
+  end
+
+  def signal_creation
+    SlackServices::PartnerCreate.new(partner: self).notify
   end
 
   def sync_poi

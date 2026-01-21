@@ -34,4 +34,22 @@ RSpec.describe Partner, type: :model do
       it { expect(Partner.search_by('Fo').pluck(:id)).to eq([]) }
     end
   end
+
+  describe "signal_create" do
+    context "on create" do
+      let(:partner) { create(:partner, users: [create(:user)]) }
+
+      after { partner }
+
+      it { expect_any_instance_of(SlackServices::PartnerCreate).to receive(:notify) }
+    end
+
+    context "on update" do
+      let!(:partner) { create(:partner, users: [create(:user)]) }
+
+      after { partner.update_attribute(:name, "foobar") }
+
+      it { expect_any_instance_of(SlackServices::PartnerCreate).not_to receive(:notify) }
+    end
+  end
 end
