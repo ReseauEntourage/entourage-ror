@@ -9,7 +9,6 @@ module SalesforceServices
 
     def is_synchable?
       return false unless user = instance.user
-      return false unless instance.address.present?
 
       user.team? || user.ambassador?
     end
