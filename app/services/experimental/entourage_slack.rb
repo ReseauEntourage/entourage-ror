@@ -150,7 +150,7 @@ module Experimental::EntourageSlack
 
     included do
       after_create :auto_validate
-      after_commit :notify_slack
+      after_create :notify_slack
     end
 
     private
@@ -169,8 +169,6 @@ module Experimental::EntourageSlack
     def notify_slack
       return if moderation_validated?
       return unless action? || outing?
-      return unless [country, postal_code].all?(&:present?)
-      return unless previous_changes.key?('country') || departement_changed?
 
       AsyncService.new(Experimental::EntourageSlack).notify(id)
     end
