@@ -85,7 +85,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Création d'une entreprise",
+        username: "Création d'une association",
         channel: webhook("channel-associations")
       }
     end
