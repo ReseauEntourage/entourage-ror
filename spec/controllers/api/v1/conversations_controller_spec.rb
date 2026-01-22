@@ -156,9 +156,10 @@ describe Api::V1::ConversationsController do
       let!(:outing_chat_message_recent) { create :chat_message, messageable: outing, content: "outing_message_recent", created_at: 2.minutes.ago }
       let!(:neighborhood) { create :neighborhood, participants: [user] }
       let!(:smalltalk) { create :smalltalk, participants: [user, participant] }
-      let!(:smalltalk_chat_message_recent) { create :chat_message, messageable: smalltalk, content: '<a href="entourage.social">smalltalk_message_recent</a>', created_at: 2.minutes.ago }
+      let!(:smalltalk_chat_message_recent) { create :chat_message, messageable: smalltalk, content: '<a href="entourage.social">smalltalk_message_recent</a>', created_at: 2.minutes.ago, image_url: "foo" }
       let!(:smalltalk_chat_message_old) { create :chat_message, messageable: smalltalk, content: "smalltalk_message_old", created_at: 3.minutes.ago }
 
+      before { ChatMessage.stub(:url_for_with_size) { 'http://foo.bar'} }
       before { request }
 
       it { expect(response.status).to eq(200) }
@@ -168,6 +169,7 @@ describe Api::V1::ConversationsController do
       it { expect(subject_outing["last_chat_message"]).to eq("outing_message_recent") }
       it { expect(subject_smalltalk["name"]).to eq("Jane") }
       it { expect(subject_smalltalk["last_chat_message"]).to eq("smalltalk_message_recent") }
+      it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq("http://foo.bar") }
     end
   end
 
