@@ -14,11 +14,10 @@ module SlackServices
         blocks: [
           # Title
           {
-            type: "header",
+            type: "section",
             text: {
-              type: "plain_text",
-              text: "🏢 Une nouvelle association a été créée",
-              emoji: true
+              type: "mrkdwn",
+              text: "*🏢 Une nouvelle association a été créée*",
             }
           },
 
@@ -28,11 +27,10 @@ module SlackServices
             elements: [
               {
                 type: "mrkdwn",
-                text: "*Utilisateur ayant créé l'association:* #{[@user.full_name, @user.email].compact.join(', ') if @user.present?}"
-              },
-              {
-                type: "mrkdwn",
-                text: "*Référent Slack:* <@#{slack_moderator_id(@user) if @user.present?}>"
+                text: [
+                  "*Utilisateur ayant créé l'association:* #{[@user.full_name, @user.email].compact.join(', ') if @user.present?}",
+                  "*Référent Slack:* <@#{slack_moderator_id(@user) if @user.present?}>"
+                ].join("\n")
               }
             ]
           },
@@ -54,16 +52,15 @@ module SlackServices
             ]
           },
 
-          # Ligne de rappel / modération (équivalent à “merci de vérifier…”)
           {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: "Cette association a été créée, merci de vérifier ses informations."
+              text: "Merci de vérifier ces informations."
             }
           },
 
-          # Bouton
+          # Button
           {
             type: "actions",
             elements: [
