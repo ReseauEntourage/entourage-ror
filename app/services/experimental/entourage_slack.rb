@@ -149,8 +149,8 @@ module Experimental::EntourageSlack
     extend ActiveSupport::Concern
 
     included do
-      after_create :auto_validate
-      after_create :notify_slack
+      after_commit :auto_validate, on: :create
+      after_commit :notify_slack, on: :create
     end
 
     private
