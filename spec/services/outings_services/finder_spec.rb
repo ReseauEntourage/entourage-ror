@@ -12,9 +12,11 @@ describe OutingsServices::Finder do
   let(:interest_list) { nil }
   let(:q) { nil }
 
-  let(:response) { OutingsServices::Finder.new(user, { q: q, interests: interests, interest_list: interest_list }).find_all.map(&:title) }
+  let(:finder) { OutingsServices::Finder.new(user, { q: q, interests: interests, interest_list: interest_list }) }
 
   describe 'find_all' do
+    let(:response) { finder.find_all.map(&:title) }
+
     let(:zone_0) { nil }
     let(:zone_1) { nil }
 
@@ -137,6 +139,29 @@ describe OutingsServices::Finder do
           expect(response).to eq(['Foot', 'Ball', 'Public'])
         end
       end
+    end
+  end
+
+  describe 'find_week_average_between' do
+    let(:from) { outing_foot.starts_at - 1.second - 4.weeks }
+    let(:to) { outing_foot.starts_at + 1.minute }
+    let(:response) { finder.find_week_average_between(from, to) }
+
+    let(:zone_0) { nil }
+    let(:zone_1) { nil }
+
+    describe 'close to user' do
+      let(:latitude) { 0.5 }
+      let(:longitude) { 0.5 }
+
+      it { expect(response.round(2)).to eq((2 / 4.0).round(2)) }
+    end
+
+    describe 'far from user' do
+      let(:latitude) { 10 }
+      let(:longitude) { 10 }
+
+      it { expect(response).to eq(0.0) }
     end
   end
 end

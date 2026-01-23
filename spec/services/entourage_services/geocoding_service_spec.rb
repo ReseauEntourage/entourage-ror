@@ -34,9 +34,12 @@ describe EntourageServices::GeocodingService do
       }
     end
 
-    it 'sets the postal code and country code from the API response' do
+    before {
       entourage.save
       entourage.reload
+    }
+
+    it 'sets the postal code and country code from the API response' do
       expect(entourage.postal_code).to eq '75012'
       expect(entourage.country).to eq 'FR'
       expect(entourage.metadata[:city]).to eq 'Paris'
