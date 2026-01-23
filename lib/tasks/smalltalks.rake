@@ -13,4 +13,11 @@ namespace :smalltalks do
   task schedule_meet_creation: :environment do
     SmalltalkServices::Meeter.schedule_meet_creation
   end
+
+  desc "Inactivity"
+  task inactivity: :environment do
+    [3, 5, 7].each do |days|
+      SmalltalkServices::Inactivity.new(days).chat_messages!
+    end
+  end
 end
