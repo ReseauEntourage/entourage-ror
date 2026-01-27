@@ -600,4 +600,56 @@ describe User, type: :model do
       it { should_not be_valid }
     end
   end
+
+  describe '#birthday_today?' do
+    subject(:birthday_today?) { user.birthday_today? }
+
+    let(:user) { build(:user, birthdate: birthdate) }
+
+    context 'when birthdate is nil' do
+      let(:birthdate) { nil }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when today is the birthday' do
+      let(:birthdate) { "1990/01/26" }
+
+      before { Timecop.freeze(Time.zone.local(2026, 1, 26)) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when today is not the birthday' do
+      let(:birthdate) { "1990/01/26" }
+
+      before { Timecop.freeze(Time.zone.local(2026, 1, 27)) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when born on february 29' do
+      let(:birthdate) { "2004/02/29" }
+
+      context 'on a non-leap year, february 28' do
+        # non bissextile
+        before { Timecop.freeze(Time.zone.local(2025, 2, 28)) }
+
+        it { is_expected.to be true }
+      end
+
+      context 'on a non-leap year, march 1' do
+        before { Timecop.freeze(Time.zone.local(2025, 3, 1)) }
+
+        it { is_expected.to be false }
+      end
+
+      context 'on a leap year, february 29' do
+        # bissextile
+        before { Timecop.freeze(Time.zone.local(2024, 2, 29)) }
+
+        it { is_expected.to be true }
+      end
+    end
+  end
 end

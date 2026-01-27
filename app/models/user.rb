@@ -564,6 +564,24 @@ class User < ApplicationRecord
     validation_status=='anonymized'
   end
 
+  def birthday_today?
+    return false if birthdate.blank?
+
+    birth_date = begin
+      Date.parse(birthdate)
+    rescue ArgumentError
+      return false
+    end
+
+    today = Time.zone.today
+
+    if birth_date.month == 2 && birth_date.day == 29 && !today.leap?
+      today.month == 2 && today.day == 28
+    else
+      birth_date.month == today.month && birth_date.day == today.day
+    end
+  end
+
   def pending_phone_change_request
     return @pending_phone_change_request if @pending_phone_change_request.present?
 

@@ -58,6 +58,7 @@ describe Api::V1::AnonymousUsersController do
         'engaged'=>false,
         'goal' => nil,
         'phone' => nil,
+        'birthday' => false,
         'unread_count' => 0,
         'interests' => [],
         'involvements' => [],
@@ -66,7 +67,6 @@ describe Api::V1::AnonymousUsersController do
         'gender' => nil,
         'travel_distance' => 10,
         'birthdate' => nil,
-        'birthday' => nil,
         'permissions' => {
           'outing' => {
             'creation' => false
