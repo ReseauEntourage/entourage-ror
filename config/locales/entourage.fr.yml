@@ -365,6 +365,9 @@ fr:
   push_notifications:
     action:
       create_for_follower: "%s vous invite à rejoindre %s"
+    birthday:
+      title: Joyeux anniversaire 🎉
+      content: On est heureux de vous compter parmi nous. Cliquez ici pour lire notre message d’anniversaire !
     outing:
       create: "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
       cancel: "Cet événement prévu le %s vient d'être annulé"
