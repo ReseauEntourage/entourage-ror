@@ -75,6 +75,7 @@ class AnonymousUser
   def email; nil; end
   def phone; nil; end
   def has_password?; false; end
+  def birthday_today?; false; end
   def deleted; false; end
   def partner_id; nil; end
   def partner; nil; end
