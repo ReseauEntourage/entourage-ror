@@ -40,7 +40,7 @@ describe Api::V1::HomeController do
         get :index, params: { token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274 }
 
         expect(subject['entourage_ask_for_helps'].count).to eq(1)
-        expect(subject['entourage_ask_for_helps']).to eq(
+        expect(subject['entourage_ask_for_helps']).to match_array(
           [{
             'id' => entourage.id,
             'uuid'=>entourage.uuid_v2,
@@ -59,6 +59,7 @@ describe Api::V1::HomeController do
               'avatar_url'=>nil,
               'partner'=>nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
             },
             'location'=>{
               'latitude'=>48.85436,
@@ -177,7 +178,7 @@ describe Api::V1::HomeController do
       context 'renders default fields' do
         before { request }
 
-        it { expect(subject).to eq({
+        it { expect(subject).to match_array({
           'user' => {
             'id' => user.id,
             'lang' => 'fr',
@@ -194,7 +195,8 @@ describe Api::V1::HomeController do
             'congratulations' => [],
             'unclosed_action' => nil,
             'moderator' => {},
-            'signable_permission' => false
+            'signable_permission' => false,
+            'birthday_today' => be_boolean
           }
         }) }
       end

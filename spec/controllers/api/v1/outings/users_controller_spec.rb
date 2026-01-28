@@ -47,6 +47,7 @@ describe Api::V1::Outings::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }, {
         'id' => user.id,
         'uuid' => user.reload.uuid,
@@ -63,6 +64,7 @@ describe Api::V1::Outings::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }]) }
     end
   end
@@ -78,7 +80,7 @@ describe Api::V1::Outings::UsersController do
         before { post :create, params: { outing_id: outing.to_param, token: user.token, distance: 123.45 } }
         it { expect(JoinRequest.last.distance).to eq(123.45) }
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -95,6 +97,7 @@ describe Api::V1::Outings::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -104,7 +107,7 @@ describe Api::V1::Outings::UsersController do
         before { post :create, params: { outing_id: outing.to_param, token: user.token } }
 
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -121,6 +124,7 @@ describe Api::V1::Outings::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -218,7 +222,7 @@ describe Api::V1::Outings::UsersController do
         before { post :confirm, params: { outing_id: outing.to_param, token: user.token } }
 
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -235,6 +239,7 @@ describe Api::V1::Outings::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -245,7 +250,7 @@ describe Api::V1::Outings::UsersController do
         before { post :confirm, params: { outing_id: outing.to_param, token: user.token } }
 
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -262,6 +267,7 @@ describe Api::V1::Outings::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -435,7 +441,7 @@ describe Api::V1::Outings::UsersController do
         before { delete :destroy, params: { outing_id: outing.to_param, id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -452,6 +458,7 @@ describe Api::V1::Outings::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end
@@ -500,7 +507,7 @@ describe Api::V1::Outings::UsersController do
         before { delete :destroy, params: { outing_id: outing.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -517,6 +524,7 @@ describe Api::V1::Outings::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end
