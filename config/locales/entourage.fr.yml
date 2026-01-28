@@ -160,7 +160,7 @@ fr:
 
         accepts_event_invitations: Apéro Entourage
         accepts_volunteering_offers: Bénévolat
-        ambassador: Ambassadeur relais
+        ambassador: Animateur Entourage
 
       partner:
         name: Nom
@@ -200,7 +200,7 @@ fr:
         user_goals: Publics
         categories:
           online: Événement en ligne
-          ambassador: Programme ambassadeur
+          ambassador: Programme animateur Entourage
           poi_map: Lieux solidaires
 
       moderation_area:
@@ -302,7 +302,7 @@ fr:
     entourage:
       roles:
         admin: Administrateur
-        ambassador: Ambassadeur
+        ambassador: Animateur Entourage
         coordinator: Coordinateur
         ethics_charter_signed: A validé la charte éthique
         moderator: Modérateur
@@ -312,7 +312,7 @@ fr:
         offers_help: Riverain
         asks_for_help: Personne préca
         partner: Association
-        ambassador: Ambassadeur
+        ambassador: Animateur Entourage
         team: Équipe Entourage
       goals:
         offer_help: Voisin solidaire
@@ -325,7 +325,7 @@ fr:
         ask_for_help: Personne préca
         organization: Association
         goal_not_known: Non défini
-        staff: Ambassadeurs et staff
+        staff: Animateurs Entourage et staff
         all: Tous profils
       icons:
         offer_help: user
@@ -630,7 +630,7 @@ fr:
       atelier_femmes: Atelier de sensib Femmes en situation de préca
       atelier_mdlr: Atelier de sensib Monde de la rue
       atelier_preca: Atelier de sensib Précarité, exclusion & emploi
-      devenir_ambassadeur: b.a BA devenir ambassadeur
+      devenir_ambassadeur: b.a BA devenir animateur Entourage
       convivialite: Evenement de convivialité
       passion_sport: Passion sport
       pratique_sport: Pratique Sport

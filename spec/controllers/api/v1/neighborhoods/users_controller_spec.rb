@@ -132,7 +132,7 @@ describe Api::V1::Neighborhoods::UsersController do
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token, distance: 123.45 } }
 
         it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }
-        it { expect(result['user']['community_roles']).to eq(['Ambassadeur'])}
+        it { expect(result['user']['community_roles']).to eq(['Animateur Entourage'])}
       end
     end
   end
