@@ -174,7 +174,7 @@ describe Api::V1::Outings::UsersController do
         before { post :create, params: { outing_id: outing.to_param, token: user.token, distance: 123.45 } }
 
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
-        it { expect(result['user']['community_roles']).to eq(['Ambassadeur']) }
+        it { expect(result['user']['community_roles']).to eq(['Animateur Entourage']) }
       end
 
       context 'push notification sent' do
