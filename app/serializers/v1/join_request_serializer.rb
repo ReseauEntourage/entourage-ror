@@ -14,7 +14,8 @@ module V1
                :requested_at,
                :avatar_url,
                :partner,
-               :partner_role_title
+               :partner_role_title,
+               :birthday_today
 
     def id
       object.user_id
@@ -67,6 +68,10 @@ module V1
       return unless object.user && object.user.partner_id
 
       object.user.partner_role_title.presence
+    end
+
+    def birthday_today
+      object.user.birthday_today?
     end
   end
 end

@@ -47,6 +47,7 @@ describe Api::V1::Neighborhoods::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }, {
         'id' => user.id,
         'uuid' => user.reload.uuid,
@@ -63,6 +64,7 @@ describe Api::V1::Neighborhoods::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }]) }
     end
   end
@@ -80,7 +82,7 @@ describe Api::V1::Neighborhoods::UsersController do
 
         it { expect(JoinRequest.last.distance).to eq(123.45) }
         it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -97,6 +99,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -106,7 +109,7 @@ describe Api::V1::Neighborhoods::UsersController do
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
         it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -123,6 +126,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -150,7 +154,7 @@ describe Api::V1::Neighborhoods::UsersController do
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -167,6 +171,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end
@@ -214,7 +219,7 @@ describe Api::V1::Neighborhoods::UsersController do
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -231,6 +236,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end

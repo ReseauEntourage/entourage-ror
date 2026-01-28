@@ -29,7 +29,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: 'accepted') }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'chat_messages'=> [{
             'id' => chat_message1.id,
             'uuid_v2' => chat_message1.uuid_v2,
@@ -54,6 +54,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               'display_name' => 'John D.',
               'partner' => nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => []
             },
             'created_at' => chat_message1.created_at.iso8601(3),
@@ -82,6 +83,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               'display_name' => 'John D.',
               'partner' => nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => []
             },
             'created_at' => chat_message2.created_at.iso8601(3),
@@ -127,7 +129,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: entourage, updated_at: DateTime.parse('09/01/2016')) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: 'accepted') }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token, before: '10/01/2016' } }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'chat_messages'=>[{
             'id' => chat_message2.id,
             'uuid_v2' => chat_message2.uuid_v2,
@@ -152,6 +154,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               'display_name' => 'John D.',
               'partner' => nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => []
             },
             'created_at' => chat_message2.created_at.iso8601(3),
@@ -165,7 +168,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage, user: partner_user) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: partner_user, status: 'accepted') }
         before { get :index, params: { entourage_id: entourage.to_param, token: partner_user.token } }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'chat_messages' => [{
             'id' => chat_message.id,
             'uuid_v2' => chat_message.uuid_v2,
@@ -195,6 +198,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 'default' => true,
               },
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => ['Association']
             },
             'created_at' => chat_message.created_at.iso8601(3),
@@ -242,7 +246,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'chat_message' => {
             'id' => ChatMessage.first.id,
             'uuid_v2' => ChatMessage.first.uuid_v2,
@@ -267,6 +271,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               'display_name' => 'John D.',
               'partner' => nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => []
             },
             'created_at' => ChatMessage.first.created_at.iso8601(3),
@@ -398,7 +403,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to eq({
+          it { expect(JSON.parse(response.body)).to match_array({
             'chat_message' => {
               'id' => ChatMessage.first.id,
               'uuid_v2' => ChatMessage.first.uuid_v2,
@@ -423,6 +428,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 'display_name' => 'John D.',
                 'partner' => nil,
                 'partner_role_title' => nil,
+                'birthday_today' => be_boolean,
                 'roles' => []
               },
               'created_at' => ChatMessage.first.created_at.iso8601(3),
@@ -473,7 +479,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to eq({
+          it { expect(JSON.parse(response.body)).to match_array({
             'chat_message' => {
               'id' => ChatMessage.last.id,
               'uuid_v2' => ChatMessage.last.uuid_v2,
@@ -497,6 +503,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 'display_name' => 'John D.',
                 'partner' => nil,
                 'partner_role_title' => nil,
+                'birthday_today' => be_boolean,
                 'roles' => []
               },
               'created_at' => ChatMessage.last.created_at.iso8601(3),
@@ -524,7 +531,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to eq({
+          it { expect(JSON.parse(response.body)).to match_array({
             'chat_message' => {
               'id' => ChatMessage.last.id,
               'uuid_v2' => ChatMessage.last.uuid_v2,
@@ -548,6 +555,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 'display_name' => 'John D.',
                 'partner' => nil,
                 'partner_role_title' => nil,
+                'birthday_today' => be_boolean,
                 'roles' => []
               },
               'created_at' => ChatMessage.last.created_at.iso8601(3),

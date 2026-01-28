@@ -54,7 +54,8 @@ module V1
         display_name: display_name,
         partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: {}, root: false).as_json,
         partner_role_title: object.user.partner_role_title.presence,
-        roles: UserPresenter.new(user: object.user).public_targeting_profiles
+        roles: UserPresenter.new(user: object.user).public_targeting_profiles,
+        birthday_today: object.user.birthday_today?
       }
     end
 

@@ -18,7 +18,7 @@ describe Api::V1::Entourages::UsersController do
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token, distance: 123.45 } }
         it { expect(JoinRequest.last.distance).to eq(123.45) }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user'=>{
             'id'=>user.id,
             'uuid'=>user.reload.uuid,
@@ -35,6 +35,7 @@ describe Api::V1::Entourages::UsersController do
             'avatar_url'=>nil,
             'partner'=>nil,
             'partner_role_title'=>nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -53,7 +54,7 @@ describe Api::V1::Entourages::UsersController do
         before { create(:join_request, user: user, joinable: entourage, status: JoinRequest::CANCELLED_STATUS) }
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user'=>{
             'id'=>user.id,
             'uuid'=>user.reload.uuid,
@@ -70,6 +71,7 @@ describe Api::V1::Entourages::UsersController do
             'avatar_url'=>nil,
             'partner'=>nil,
             'partner_role_title'=>nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -78,7 +80,7 @@ describe Api::V1::Entourages::UsersController do
         before { create(:join_request, user: user, joinable: entourage) }
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user'=>{
             'id'=>user.id,
             'uuid'=>user.reload.uuid,
@@ -95,6 +97,7 @@ describe Api::V1::Entourages::UsersController do
             'avatar_url'=>nil,
             'partner'=>nil,
             'partner_role_title'=>nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -229,7 +232,7 @@ describe Api::V1::Entourages::UsersController do
     context 'signed in' do
       let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: 'pending') }
       before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
-      it { expect(result).to eq({
+      it { expect(result).to match_array({
         'users'=>[{
           'id'=>user.id,
           'uuid'=>user.reload.uuid,
@@ -246,6 +249,7 @@ describe Api::V1::Entourages::UsersController do
           'avatar_url'=>nil,
           'partner'=>nil,
           'partner_role_title'=>nil,
+          'birthday_today' => be_boolean,
         }]
       })}
     end
@@ -364,7 +368,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(response.status).to eq(200) }
         it { expect(other_join_request.reload.status).to eq('rejected') }
         it { expect(my_join_request.reload.status).to eq('accepted') }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user'=>{
             'id'=>other_user.id,
             'uuid'=>other_user.reload.uuid,
@@ -381,6 +385,7 @@ describe Api::V1::Entourages::UsersController do
             'avatar_url'=>nil,
             'partner'=>nil,
             'partner_role_title'=>nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end
@@ -390,7 +395,7 @@ describe Api::V1::Entourages::UsersController do
         before { delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user'=>{
             'id'=>user.id,
             'uuid'=>user.reload.uuid,
@@ -407,6 +412,7 @@ describe Api::V1::Entourages::UsersController do
             'avatar_url'=>nil,
             'partner'=>nil,
             'partner_role_title'=>nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end

@@ -32,7 +32,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_messages')}
-      it { expect(result).to eq({
+      it { expect(result).to match_array({
         'chat_messages' => [{
           'id' => chat_message_1.id,
           'uuid_v2' => chat_message_1.uuid_v2,
@@ -56,6 +56,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             'display_name' => 'John D.',
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
             'roles' => []
           },
           'created_at' => chat_message_1.created_at.iso8601(3),
@@ -148,7 +149,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_message')}
-      it { expect(result).to eq({
+      it { expect(result).to match_array({
         'chat_message' => {
           'id' => chat_message.id,
           'uuid_v2' => chat_message.uuid_v2,
@@ -172,6 +173,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             'display_name' => 'John D.',
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
             'roles' => []
           },
           'created_at' => chat_message.created_at.iso8601(3),
@@ -312,6 +314,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               'display_name' => 'John D.',
               'partner' => nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => []
             },
             'created_at' => ChatMessage.last.created_at.iso8601(3),
@@ -344,7 +347,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         context 'no nested' do
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
+          it { expect(result).to match_array(json) }
           # create does not update last_message_read
           it { expect(join_request.reload.last_message_read).to eq(nil) }
         end
@@ -355,7 +358,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(2) }
-          it { expect(result).to eq(json) }
+          it { expect(result).to match_array(json) }
           # create does not update last_message_read
           it { expect(join_request.reload.last_message_read).to eq(nil) }
         end
@@ -365,7 +368,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
+          it { expect(result).to match_array(json) }
         end
 
         context 'with image_url and empty content' do
@@ -374,7 +377,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
+          it { expect(result).to match_array(json) }
         end
 
         context 'with image_url and no content' do
@@ -387,7 +390,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
+          it { expect(result).to match_array(json) }
         end
       end
 
@@ -515,7 +518,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_messages')}
-      it { expect(result).to eq({
+      it { expect(result).to match_array({
         'chat_messages' => [{
           'id' => chat_message_2.id,
           'uuid_v2' => chat_message_2.uuid_v2,
@@ -539,6 +542,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             'display_name' => 'John D.',
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
             'roles' => []
           },
           'created_at' => chat_message_2.created_at.iso8601(3),
