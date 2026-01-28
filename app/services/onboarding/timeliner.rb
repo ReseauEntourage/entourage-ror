@@ -34,6 +34,29 @@ module Onboarding
       Rails.logger.error "PushNotificationTrigger: #{e.message}"
     end
 
+    # birthday
+    def user_on_birthday
+      notify(
+        instance: nil,
+        params: {
+          object: I18nStruct.new(i18n: 'push_notifications.birthday.title'),
+          content: I18nStruct.new(i18n: 'push_notifications.birthday.content'),
+          extra: {
+            tracking: :birthday,
+            popup: :birthday
+          }
+        }
+      )
+    end
+
+    def offer_help_on_birthday
+      user_on_birthday
+    end
+
+    def ask_for_help_on_birthday
+      user_on_birthday
+    end
+
     # h1
     def offer_help_on_h1_after_registration
       notify(
