@@ -2,7 +2,7 @@ module UserServices
   class Birthday
     def self.send_notifications
       users.find_each do |user|
-        PushNotificationTrigger.new(user, :birthday, Hash.new).notify
+        PushNotificationTrigger.new(user, :birthday, Hash.new).run
       end
     end
 
