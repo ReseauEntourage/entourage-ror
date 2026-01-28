@@ -1,8 +1,8 @@
 module UserServices
   class Birthday
     def self.send_notifications
-      users.find_each do |user|
-        PushNotificationTrigger.new(user, :birthday, Hash.new).run
+      users.pluck(:id).each do |user_id|
+        Onboarding::Timeliner.new(user_id, :birthday).run
       end
     end
 

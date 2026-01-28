@@ -517,23 +517,6 @@ class PushNotificationTrigger
     )
   end
 
-  def user_on_birthday
-    notify(
-      sender_id: @record.id,
-      referent: @record,
-      instance: @record,
-      users: [@record],
-      params: {
-        object: I18nStruct.new(i18n: 'push_notifications.birthday.title'),
-        content: I18nStruct.new(i18n: 'push_notifications.birthday.content'),
-        extra: {
-          tracking: :birthday,
-          popup: :birthday
-        }
-      }
-    )
-  end
-
   def join_request_on_create
     return unless @record.accepted?
     return join_request_on_create_smalltalk if @record.joinable.is_a?(Smalltalk)
