@@ -34,6 +34,7 @@ module V1
     attribute :phone,               if: :me?
     attribute :travel_distance,     if: :me?
     attribute :birthday
+    attribute :birthday_today
     attribute :birthdate,           if: :me?
     attribute :created_at
 
@@ -103,7 +104,11 @@ module V1
       object.has_password?
     end
 
+    # @deprecated
     def birthday
+    end
+
+    def birthday_today
       object.birthday_today?
     end
 
