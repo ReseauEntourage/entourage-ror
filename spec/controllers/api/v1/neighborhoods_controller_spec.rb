@@ -567,7 +567,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']).to have_key('posts') }
-      it { expect(result['neighborhood']['posts']).to eq([{
+      it { expect(result['neighborhood']['posts']).to match_array([{
         'id' => post.id,
         'uuid_v2' => post.uuid_v2,
         'content' => post.content,
@@ -590,6 +590,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
           'avatar_url' => nil,
           'partner' => nil,
           'partner_role_title' => nil,
+          'birthday_today' => be_boolean,
           'roles' => []
         },
         'created_at' => post.created_at.iso8601(3),

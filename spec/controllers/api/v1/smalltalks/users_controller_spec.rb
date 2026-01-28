@@ -38,6 +38,7 @@ describe Api::V1::Smalltalks::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }]) }
     end
   end
@@ -56,7 +57,7 @@ describe Api::V1::Smalltalks::UsersController do
         before { delete :destroy, params: { smalltalk_id: smalltalk.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -73,6 +74,7 @@ describe Api::V1::Smalltalks::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end

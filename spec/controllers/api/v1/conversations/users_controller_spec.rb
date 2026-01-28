@@ -40,6 +40,7 @@ describe Api::V1::Conversations::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }, {
         'id' => user.id,
         'uuid' => user.reload.uuid,
@@ -56,6 +57,7 @@ describe Api::V1::Conversations::UsersController do
         'avatar_url' => nil,
         'partner' => nil,
         'partner_role_title' => nil,
+        'birthday_today' => be_boolean,
       }]) }
     end
   end
@@ -73,7 +75,7 @@ describe Api::V1::Conversations::UsersController do
 
         it { expect(response.status).to eq(201) }
         it { expect(conversation.member_ids).to match_array([conversation.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -90,6 +92,7 @@ describe Api::V1::Conversations::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -99,7 +102,7 @@ describe Api::V1::Conversations::UsersController do
 
         it { expect(response.status).to eq(201) }
         it { expect(conversation.member_ids).to match_array([conversation.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -116,6 +119,7 @@ describe Api::V1::Conversations::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -132,7 +136,7 @@ describe Api::V1::Conversations::UsersController do
         before { post :create, params: { conversation_id: conversation.uuid_v2, token: user.token } }
 
         it { expect(conversation.member_ids).to match_array([conversation.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -149,6 +153,7 @@ describe Api::V1::Conversations::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -168,7 +173,7 @@ describe Api::V1::Conversations::UsersController do
 
         it { expect(response.status).to eq(201) }
         it { expect(conversation.member_ids).to match_array([conversation.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -185,6 +190,7 @@ describe Api::V1::Conversations::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -194,7 +200,7 @@ describe Api::V1::Conversations::UsersController do
         before { post :invite, params: { conversation_id: conversation.uuid_v2, id: user.id, token: creator.token } }
 
         it { expect(conversation.member_ids).to match_array([conversation.user_id, user.id]) }
-        it { expect(result).to eq(
+        it { expect(result).to match_array(
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -211,6 +217,7 @@ describe Api::V1::Conversations::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         )}
       end
@@ -230,7 +237,7 @@ describe Api::V1::Conversations::UsersController do
         before { delete :destroy, params: { conversation_id: conversation.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({
+        it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
             'uuid' => user.reload.uuid,
@@ -247,6 +254,7 @@ describe Api::V1::Conversations::UsersController do
             'avatar_url' => nil,
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
           }
         })}
       end

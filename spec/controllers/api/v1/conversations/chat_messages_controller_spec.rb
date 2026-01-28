@@ -32,7 +32,7 @@ describe Api::V1::Conversations::ChatMessagesController do
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_messages')}
-      it { expect(result).to eq({
+      it { expect(result).to match_array({
         'chat_messages' => [{
           'id' => chat_message_1.id,
           'uuid_v2' => chat_message_1.uuid_v2,
@@ -56,6 +56,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             'display_name' => 'John D.',
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
             'roles' => []
           },
           'created_at' => chat_message_1.created_at.iso8601(3),
@@ -90,6 +91,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             'display_name' => 'John D.',
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
             'roles' => []
           },
           'created_at' => chat_message_2.created_at.iso8601(3),
@@ -222,6 +224,7 @@ describe Api::V1::Conversations::ChatMessagesController do
               'display_name' => 'John D.',
               'partner' => nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
               'roles' => []
             },
             'created_at' => ChatMessage.last.created_at.iso8601(3),
@@ -254,7 +257,7 @@ describe Api::V1::Conversations::ChatMessagesController do
         context 'no nested' do
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
+          it { expect(result).to match_array(json) }
           # create does update last_message_read in ChatServices::ChatMessageBuilder
           it { expect(join_request.reload.last_message_read).to be_a(ActiveSupport::TimeWithZone) }
         end
@@ -360,7 +363,7 @@ describe Api::V1::Conversations::ChatMessagesController do
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_messages')}
-      it { expect(result).to eq({
+      it { expect(result).to match_array({
         'chat_messages' => [{
           'id' => chat_message_2.id,
           'uuid_v2' => chat_message_2.uuid_v2,
@@ -384,6 +387,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             'display_name' => 'John D.',
             'partner' => nil,
             'partner_role_title' => nil,
+            'birthday_today' => be_boolean,
             'roles' => []
           },
           'created_at' => chat_message_2.created_at.iso8601(3),
