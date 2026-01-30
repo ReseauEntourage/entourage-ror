@@ -57,14 +57,8 @@ Rails.application.configure do
   # Print enqueue source lines
   config.active_job.verbose_enqueue_logs = true
 
-  # Suppress logs from asset pipeline
-  config.assets.quiet = true
-
   # Force SSL off in dev
   config.force_ssl = false
-
-  # Raise runtime errors for missing sprockets dependencies
-  config.assets.raise_runtime_errors = true
 
   # Dev/test env credentials
   ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'

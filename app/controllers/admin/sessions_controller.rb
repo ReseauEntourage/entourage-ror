@@ -12,6 +12,7 @@ module Admin
       if user && user.admin
         session[:user_id] = user.id
         session[:admin_user_id] = user.id
+        cookies.encrypted[:admin_user_id] = user.id
 
         redirect_to(params[:continue].presence || root_path)
       else
@@ -30,6 +31,7 @@ module Admin
     def logout
       session[:user_id] = nil
       session[:admin_user_id] = nil
+      cookies.delete(:admin_user_id)
       flash[:notice] = 'Vous êtes déconnecté'
       redirect_to root_url
     end
