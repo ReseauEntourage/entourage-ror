@@ -188,3 +188,132 @@ en:
     - thu
     - fri
     - sat
+  activerecord:
+    attributes:
+      user:
+        first_name: First name
+        last_name: Last name
+        full_name: Name
+        email: Email
+        phone: Phone
+        organization: Outreach organization
+        about: About
+        roles: Roles
+        goal: Declared profile
+        partner: Association
+        partner_id: Association
+        created_at: Creation date
+        address: Address
+        postal_codes: Postal codes
+        postal_code: Postal code
+        engaged?: Engaged?
+        deleted: Deleted
+        organization_name: Association
+        subscriptions: Subscriptions
+        action_creations_count: Number of actions created
+        action_participations_count: Number of actions joined
+        outing_participations_count: Number of events joined
+        conversation_participations_count: Number of conversations joined
+      entourage:
+        id: Id
+        title: Title
+        description: Description
+        display_address: Address
+        latitude: Latitude
+        longitude: Longitude
+        recurrency: Recurrence
+        created_at: Created on
+        starts_at: Starts on
+        ends_at: Ends on
+        image_url: Image URL
+        place_limit: Number of available places
+        members_count: Number of participants
+        outing_image_url: Event photo
+        cancellation_message: Cancellation message
+        sf_category: Event type
+        exclusive_to: Event reserved for
+        categories:
+          social: Social
+          resource: Resource
+          mat_help: Material help
+          non_mat_help: Non-material help
+          other: Other
+        entourage_types:
+          ask_for_help: Request
+          contribution: Contribution
+        group_types:
+          action: Action
+          outing: Event
+          conversation: Conversation
+        statuses:
+          open: Active
+          closed: Closed
+          blacklisted: Blacklisted
+          suspended: Suspended
+          full: Full
+          cancelled: Cancelled
+      neighborhood:
+        name: Name
+        description: Description
+        interests: Interests
+        image_url: Image
+        status: Status
+        statuses:
+          active: Active
+          deleted: Deleted
+          blacklisted: Blacklisted
+  community:
+    entourage:
+      goals:
+        offer_help: Solidary neighbor
+        ask_for_help: Person in need or isolated
+        organization: Association or public service
+        goal_not_known: Not defined
+        all: All profiles
+      goals_compact:
+        offer_help: Neighbor
+        ask_for_help: Person in need
+        organization: Association
+        goal_not_known: Not defined
+        staff: Ambassadors and staff
+        all: All profiles
+    user:
+      profiles:
+        offer_help: Solidary neighbor
+        ask_for_help: Person in need
+        organization: Association
+        goal_not_known: Not defined
+        all: All profiles
+      engagements:
+        engaged: Engaged
+        not_engaged: Not engaged
+      statuses:
+        validated: Validated
+        anonymized: Anonymized
+        blocked: Blocked
+        temporary_blocked: Temporarily blocked
+        deleted: Deleted
+        pending: Pending
+  regions:
+    ouest: West
+    sud_ouest: South-West
+    sud_est: South-East
+    aura: Auvergne-Rhône-Alpes
+    nord: North
+    idf: Ile-de-France
+    centre_est: Center-East
+  conversations:
+    participants:
+      alone: You
+  tags:
+    interests:
+      activites: Manual activities
+      animaux: Animals
+      bien-etre: Well-being
+      cuisine: Cooking
+      culture: Art & culture
+      jeux: Games
+      nature: Nature
+      sport: Sport
+      marauding: Social outreach
+      other: Other

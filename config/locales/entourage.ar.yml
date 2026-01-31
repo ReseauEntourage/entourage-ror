@@ -203,6 +203,51 @@ ar:
       أراكم قريباً!
 
       %s
+  community:
+    entourage:
+      goals:
+        offer_help: جار متضامن
+        ask_for_help: شخص معزول أو في وضع صعب
+        organization: جمعية أو خدمة عامة
+        goal_not_known: غير محدد
+        all: جميع الملفات الشخصية
+      goals_compact:
+        offer_help: جار
+        ask_for_help: شخص في وضع صعب
+        organization: جمعية
+        goal_not_known: غير محدد
+        staff: السفراء والموظفون
+        all: جميع الملفات الشخصية
+    user:
+      profiles:
+        offer_help: جار متضامن
+        ask_for_help: شخص في وضع صعب
+        organization: جمعية
+        goal_not_known: غير محدد
+        all: جميع الملفات الشخصية
+  regions:
+    ouest: الغرب
+    sud_ouest: الجنوب الغربي
+    sud_est: الجنوب الشرقي
+    aura: أوفيرني-رون-ألب
+    nord: الشمال
+    idf: إيل دو فرانس
+    centre_est: الوسط الشرقي
+  conversations:
+    participants:
+      alone: أنت
+  tags:
+    interests:
+      activites: أنشطة يدوية
+      animaux: حيوانات
+      bien-etre: رفاهية
+      cuisine: طبخ
+      culture: فنون وثقافة
+      jeux: ألعاب
+      nature: طبيعة
+      sport: رياضة
+      marauding: جولات اجتماعية
+      other: آخر
 
   date:
     abbr_day_names:

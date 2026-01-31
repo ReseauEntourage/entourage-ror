@@ -191,3 +191,58 @@ es:
       - jue
       - vie
       - sáb
+  community:
+    entourage:
+      goals:
+        offer_help: Vecino solidario
+        ask_for_help: Persona aislada o en precariedad
+        organization: Asociación o servicio público
+        goal_not_known: No definido
+        all: Todos los perfiles
+      goals_compact:
+        offer_help: Vecino
+        ask_for_help: Persona precaria
+        organization: Asociación
+        goal_not_known: No definido
+        staff: Embajadores y personal
+        all: Todos los perfiles
+    user:
+      profiles:
+        offer_help: Vecino solidario
+        ask_for_help: Persona precaria
+        organization: Asociación
+        goal_not_known: No definido
+        all: Todos los perfiles
+      engagements:
+        engaged: Comprometido
+        not_engaged: No comprometido
+      statuses:
+        validated: Validado
+        anonymized: Anonimizado
+        blocked: Bloqueado
+        temporary_blocked: Bloqueado temporalmente
+        deleted: Eliminado
+        pending: En espera
+  regions:
+    ouest: Oeste
+    sud_ouest: Suroeste
+    sud_est: Sureste
+    aura: Auvergne-Rhône-Alpes
+    nord: Norte
+    idf: Ile-de-France
+    centre_est: Centro-Este
+  conversations:
+    participants:
+      alone: Tú
+  tags:
+    interests:
+      activites: Actividades manuales
+      animaux: Animales
+      bien-etre: Bienestar
+      cuisine: Cocina
+      culture: Arte y cultura
+      jeux: Juegos
+      nature: Naturaleza
+      sport: Deporte
+      marauding: Salidas sociales
+      other: Otro
