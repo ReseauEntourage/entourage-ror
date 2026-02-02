@@ -15,7 +15,7 @@ module SalesforceServices
       gender: 'Genre__c',
       birthdate: 'Birthdate',
       birthdate_copy: 'Date_de_naissance__c',
-      sourcing: 'Comment_nous_avez_vous_connu__c',
+      discovery_source: 'Comment_nous_avez_vous_connu__c',
     }
 
     CASQUETTES_MAPPING = {
@@ -24,20 +24,20 @@ module SalesforceServices
     }
 
     GENDER_MAPPING = {
-      "female" => "Femme",
-      "male" => "Homme",
-      "secret" => "Secret",
+      female: "Femme",
+      male: "Homme",
+      secret: "Secret",
     }
 
-    SOURCING_MAPPING = {
-      "panel" => "Affichage (panneaux, métro)",
-      "newspaper" => "Un article dans la presse, une newsletter",
-      "word_of_mouth" => "Le bouche à oreille",
-      "association" => "Association / travailleur social",
-      "entreprise" => "Mon entreprise",
-      "television" => "Télévision / radio",
-      "social" => "Autres réseaux (facebook, twitter, instagram...)",
-      "social_event" => "Evénement salon",
+    DISCOVERY_SOURCE_MAPPING = {
+      panel: "Affichage (panneaux, métro)",
+      newspaper: "Un article dans la presse, une newsletter",
+      word_of_mouth: "Le bouche à oreille",
+      association: "Association / travailleur social",
+      entreprise: "Mon entreprise",
+      television: "Télévision / radio",
+      social: "Autres réseaux (facebook, twitter, instagram...)",
+      social_event: "Evénement salon",
     }
 
     def initialize instance:
@@ -128,9 +128,10 @@ module SalesforceServices
       end
 
       def gender
-        return unless GENDER_MAPPING.has_key?(contact.gender)
+        return unless contact.gender.present?
+        return unless GENDER_MAPPING.has_key?(key = contact.gender.to_sym)
 
-        GENDER_MAPPING[contact.gender]
+        GENDER_MAPPING[key]
       end
 
       def birthdate
@@ -141,11 +142,11 @@ module SalesforceServices
         contact.birthdate
       end
 
-      def sourcing
-        return unless user.sourcing.present?
-        return unless SOURCING_MAPPING.has_key?(key = user.sourcing.to_sym)
+      def discovery_source
+        return unless contact.discovery_source.present?
+        return unless DISCOVERY_SOURCE_MAPPING.has_key?(key = contact.discovery_source.to_sym)
 
-        SOURCING_MAPPING[key]
+        DISCOVERY_SOURCE_MAPPING[key]
       end
     end
   end
