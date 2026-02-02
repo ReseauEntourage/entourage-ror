@@ -133,14 +133,12 @@ module SalesforceServices
         GENDER_MAPPING[contact.gender]
       end
 
-      # hack one hour to avoid timezone issues on salesforce
       def birthdate
-        (contact.birthdate + 1.hour).strftime('%Y-%m-%d')
+        contact.birthdate
       end
 
-      # hack one hour to avoid timezone issues on salesforce
       def birthdate_copy
-        (contact.birthdate + 1.hour).strftime('%Y-%m-%d')
+        contact.birthdate
       end
 
       def sourcing
