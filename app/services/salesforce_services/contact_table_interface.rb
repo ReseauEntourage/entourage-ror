@@ -13,11 +13,32 @@ module SalesforceServices
       reseau: 'Reseaux__c',
       casquette: 'Casquettes_r_les__c',
       postal_code: 'MailingPostalCode',
+      gender: 'Genre__c',
+      birthdate: 'Birthdate',
+      birthdate_copy: 'Date_de_naissance__c',
+      discovery_source: 'Comment_nous_avez_vous_connu__c',
     }
 
     CASQUETTES_MAPPING = {
       ambassador: 'ENT Ambassadeur',
       default: "ENT User de l'app",
+    }
+
+    GENDER_MAPPING = {
+      female: "Femme",
+      male: "Homme",
+      secret: "Secret",
+    }
+
+    DISCOVERY_SOURCE_MAPPING = {
+      panel: "Affichage (panneaux, métro)",
+      newspaper: "Un article dans la presse, une newsletter",
+      word_of_mouth: "Le bouche à oreille",
+      association: "Association / travailleur social",
+      entreprise: "Mon entreprise",
+      television: "Télévision / radio",
+      social: "Autres réseaux (facebook, twitter, instagram...)",
+      social_event: "Evénement salon",
     }
 
     def initialize instance:
@@ -109,6 +130,28 @@ module SalesforceServices
 
       def postal_code
         contact.postal_code
+      end
+
+      def gender
+        return unless contact.gender.present?
+        return unless GENDER_MAPPING.has_key?(key = contact.gender.to_sym)
+
+        GENDER_MAPPING[key]
+      end
+
+      def birthdate
+        contact.birthdate
+      end
+
+      def birthdate_copy
+        contact.birthdate
+      end
+
+      def discovery_source
+        return unless contact.discovery_source.present?
+        return unless DISCOVERY_SOURCE_MAPPING.has_key?(key = contact.discovery_source.to_sym)
+
+        DISCOVERY_SOURCE_MAPPING[key]
       end
     end
   end
