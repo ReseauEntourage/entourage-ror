@@ -12,11 +12,32 @@ module SalesforceServices
       reseau: 'Reseaux__c',
       casquette: 'Casquettes_r_les__c',
       postal_code: 'MailingPostalCode',
+      gender: 'Genre__c',
+      birthdate: 'Birthdate',
+      birthdate_copy: 'Date_de_naissance__c',
+      sourcing: 'Comment_nous_avez_vous_connu__c',
     }
 
     CASQUETTES_MAPPING = {
       ambassador: 'ENT Ambassadeur',
       default: "ENT User de l'app",
+    }
+
+    GENDER_MAPPING = {
+      "female" => "Femme",
+      "male" => "Homme",
+      "secret" => "Secret",
+    }
+
+    SOURCING_MAPPING = {
+      "panel" => "Affichage (panneaux, métro)",
+      "newspaper" => "Un article dans la presse, une newsletter",
+      "word_of_mouth" => "Le bouche à oreille",
+      "association" => "Association / travailleur social",
+      "entreprise" => "Mon entreprise",
+      "television" => "Télévision / radio",
+      "social" => "Autres réseaux (facebook, twitter, instagram...)",
+      "social_event" => "Evénement salon",
     }
 
     def initialize instance:
@@ -104,6 +125,29 @@ module SalesforceServices
 
       def postal_code
         contact.postal_code
+      end
+
+      def gender
+        return unless GENDER_MAPPING.has_key?(contact.gender)
+
+        GENDER_MAPPING[contact.gender]
+      end
+
+      # hack one hour to avoid timezone issues on salesforce
+      def birthdate
+        (contact.birthdate + 1.hour).strftime('%Y-%m-%d')
+      end
+
+      # hack one hour to avoid timezone issues on salesforce
+      def birthdate_copy
+        (contact.birthdate + 1.hour).strftime('%Y-%m-%d')
+      end
+
+      def sourcing
+        return unless user.sourcing.present?
+        return unless SOURCING_MAPPING.has_key?(key = user.sourcing.to_sym)
+
+        SOURCING_MAPPING[key]
       end
     end
   end
