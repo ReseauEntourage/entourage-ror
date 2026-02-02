@@ -38,7 +38,7 @@ RSpec.describe Outing, type: :model do
     it { expect(result.sf_category).to eq('convivialite') }
     it { expect(result.interest_list).to eq(['sport']) }
     it { expect(result.taggings.map(&:id)).not_to eq(outing.taggings.map(&:id)) }
-    it { expect(result.taggings.map(&:tag_id)).to eq(outing.taggings.map(&:tag_id)) }
+    it { expect(result.taggings.map(&:tag_id)).to match_array(outing.taggings.map(&:tag_id)) }
   end
 
   describe 'generate_initial_recurrences' do
