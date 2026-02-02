@@ -35,7 +35,7 @@ module SalesforceServices
     end
 
     def updatable_fields
-      [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile, :status, :deleted, :last_sign_in_at]
+      [:validation_status, :first_name, :last_name, :email, :phone, :goal, :targeting_profile, :status, :deleted, :last_sign_in_at, :options]
     end
 
     private
