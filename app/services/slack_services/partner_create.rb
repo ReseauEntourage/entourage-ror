@@ -47,7 +47,7 @@ module SlackServices
               },
               {
                 type: "mrkdwn",
-                text: "*Téléphone :*\n#{@partner.phone || "—"}"
+                text: "*Téléphone :*\n#{@partner.phone || "Non renseigné"}"
               }
             ]
           },
