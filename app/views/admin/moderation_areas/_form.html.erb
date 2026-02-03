@@ -9,14 +9,14 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b><%= region_text_for(@area) %> - Zone active</b><br>
-        Ce département est considéré comme une zone active : il s'agit d'une antenne d'Entourage ou d'une zone activement gérée par des ambassadeurs.
+        Ce département est considéré comme une zone active : il s'agit d'une antenne d'Entourage ou d'une zone activement gérée par des animateurs Entourage.
       </div>
     </div>
   <% else %>
     <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b><%= region_text_for(@area) %> - Zone non active</b><br>
-        Ce département est considéré comme une zone non active : il n'est rattaché à aucune antenne d'Entourage ni n'est activement géré par des ambassadeurs.
+        Ce département est considéré comme une zone non active : il n'est rattaché à aucune antenne d'Entourage ni n'est activement géré par des animateurs Entourage.
       </div>
     </div>
   <% end %>
