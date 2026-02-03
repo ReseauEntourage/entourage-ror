@@ -94,6 +94,14 @@ class AnonymousUser
   def orientation; nil; end
   def orientations; []; end
   def orientation_names; []; end
+  # options
+  def last_unclosed_action_notification_at; nil; end
+  def goal_choice; nil; end
+  def gender; nil; end
+  def discovery_source; nil; end
+  def photo_acceptance; nil; end
+  def company; nil; end
+  def event; nil; end
   def birthdate; nil; end
   def errors; ActiveModel::Errors.new(nil); end
   def entourage_participations; JoinRequest.none; end
