@@ -4,212 +4,294 @@ pl:
     action:
       create_for_follower: "%s zaprasza cię do dołączenia do %s"
     outing:
-      create: "Nowe wydarzenie zostało dodane do %s: %s zostało zaplanowane na %s"
-      cancel: "To wydarzenie zaplanowane na %s zostało odwołane"
-      update: "Wydarzenie zaplanowane na %s zostało zmodyfikowane. Odbędzie się %s o %s"
-      update_short: "Wydarzenie zaplanowane na %s zostało zmodyfikowane"
+      create: 'Nowe wydarzenie zostało dodane do %s: %s zostało zaplanowane na %s'
+      cancel: To wydarzenie zaplanowane na %s zostało odwołane
+      update: Wydarzenie zaplanowane na %s zostało zmodyfikowane. Odbędzie się %s o %s
+      update_short: Wydarzenie zaplanowane na %s zostało zmodyfikowane
       day_before:
         title: "🔔 Przypomnienie: „%s” odbędzie się jutro!"
-        content: "Nie zapomnij, że to wydarzenie jest na jutro. Nadal przychodzisz?"
+        content: Nie zapomnij, że to wydarzenie jest na jutro. Nadal przychodzisz?
     post:
-      create: "%s właśnie udostępnił(a): \"%s\""
+      create: '%s właśnie udostępnił(a): "%s"'
     comment:
-      create: "%s właśnie skomentował(a) post \"%s\""
+      create: '%s właśnie skomentował(a) post "%s"'
     join_request:
-      new: "Nowy członek"
-      update: "Podanie zostało zaakceptowane"
-      update_on_action: "Dołączyłeś właśnie do akcji %s"
-      update_on_outing: "Dołączyłeś właśnie do wydarzenia %s"
-      update_on_neighborhood: "Dołączyłeś właśnie do grupy %s"
-      create: "%s właśnie dołączył(a) do twojego %s \"%s\""
-      create_outing: "%s właśnie dołączył(a) do twojego wydarzenia \"%s\" w dniu %s"
+      new: Nowy członek
+      update: Podanie zostało zaakceptowane
+      update_on_action: Dołączyłeś właśnie do akcji %s
+      update_on_outing: Dołączyłeś właśnie do wydarzenia %s
+      update_on_neighborhood: Dołączyłeś właśnie do grupy %s
+      create: '%s właśnie dołączył(a) do twojego %s "%s"'
+      create_outing: '%s właśnie dołączył(a) do twojego wydarzenia "%s" w dniu %s'
     contribution:
-      create: "Sąsiedzi proponują nową pomoc"
+      create: Sąsiedzi proponują nową pomoc
     solicitation:
-      create: "Sąsiedzi poszukują pomocy"
-      create_section: "Sąsiedzi szukają %s"
-
+      create: Sąsiedzi poszukują pomocy
+      create_section: Sąsiedzi szukają %s
   timeliner:
     h1:
       title: "Witaj w Entourage 👌"
-      offer: "Czy wiesz, że wystarczy jedno wideo, aby obalić twoje uprzedzenia?"
-      ask: "Nie możesz sobie wyobrazić, co zawiera Twoja nowa aplikacja: przyjdź i ją odkryj!"
+      offer: Czy wiesz, że wystarczy jedno wideo, aby obalić twoje uprzedzenia?
+      ask: 'Nie możesz sobie wyobrazić, co zawiera Twoja nowa aplikacja: przyjdź i ją odkryj!'
     j2:
       title: "Wpadnij powiedzieć cześć 👋"
-      offer: "Twoja grupa sąsiadów chce cię poznać!"
-      ask_title_outing: "Masz 4 minuty?"
-      ask: "Obejrzyj krótki film, aby zrozumieć wszystko o swojej nowej aplikacji"
+      offer: Twoja grupa sąsiadów chce cię poznać!
+      ask_title_outing: Masz 4 minuty?
+      ask: Obejrzyj krótki film, aby zrozumieć wszystko o swojej nowej aplikacji
     j5:
       title_outing: "Cześć, to znowu my! 🕺"
-      offer_outing: "Wirtualne jest fajne, ale przez kilka minut; przyjdź i nawiąż prawdziwe relacje!"
+      offer_outing: Wirtualne jest fajne, ale przez kilka minut; przyjdź i nawiąż prawdziwe relacje!
       title_action: "Cześć, to znowu my! 🕺"
-      offer_action: "Masz dwie minuty, aby pomóc sąsiadom?"
+      offer_action: Masz dwie minuty, aby pomóc sąsiadom?
       title_create_action: "Cześć, to znowu my! 🕺"
-      offer_create_action: "Zarezerwuj dwie minuty, aby zaoferować swoją pomoc innym wokół Ciebie"
+      offer_create_action: Zarezerwuj dwie minuty, aby zaoferować swoją pomoc innym wokół Ciebie
       ask_title: "Przyjdź i powiedz cześć 👏"
-      ask: "Twoja grupa sąsiadów chce cię poznać"
+      ask: Twoja grupa sąsiadów chce cię poznać
     j8:
       title: "Twoja kolej! 📱"
-      offer: "Krótki quiz przeciwko uprzedzeniom: założysz się, że się czegoś nauczysz?"
+      offer: 'Krótki quiz przeciwko uprzedzeniom: założysz się, że się czegoś nauczysz?'
       ask_title_outing: "Cześć, to znowu my! 🕺"
-      ask_outing: "Wirtualne jest fajne, ale przez kilka minut; przyjdź i nawiąż prawdziwe relacje!"
+      ask_outing: Wirtualne jest fajne, ale przez kilka minut; przyjdź i nawiąż prawdziwe relacje!
       ask_title_action: "Cześć, to znowu my! 🕺"
-      ask_action: "Sprawdź pomoc oferowaną w twojej okolicy"
+      ask_action: Sprawdź pomoc oferowaną w twojej okolicy
       ask_title_create_action: "Cześć, to znowu my! 🕺"
-      ask_create_action: "Partia w chińczyka, a może kawa czy po prostu spacer: zaproponuj wypad sąsiadom!"
+      ask_create_action: 'Partia w chińczyka, a może kawa czy po prostu spacer: zaproponuj wypad sąsiadom!'
     j11:
-      title: "Entourage to jak rodzina!"
+      title: Entourage to jak rodzina!
       offer: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
       ask: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
-
   smalltalks:
     messager:
-      new_member: | # first_name
-        Witamy %s 🙂 Cieszymy się, że do nas dołączyłeś! Przedstaw się w kilku słowach, aby grupa mogła Cię lepiej poznać.
-      destroy_member: | # first_name
-        %s opuścił grupę. Dziękujemy za udział i życzymy powodzenia!
-      banned_member: | # first_name
-        %s nie jest już członkiem grupy. Jego zachowanie nie odpowiadało duchowi solidarności naszej społeczności. Liczymy na Was, że nadal będziecie tworzyć to miejsce z życzliwością i dobrą energią 🙏
-      incomplete: |
-        Przygotowujemy dla Was wspaniałą grupę Dobrych Wibracji ✨ W oczekiwaniu na kolejne osoby, małe wyzwanie: spróbujcie zgadnąć imię następnego uczestnika. Szanse są niewielkie... ale kto wie? 👀
-      complete: |
-        Grupa jest kompletna! 🎉
+      new_member: "Witamy %s 🙂 Cieszymy się, że do nas dołączyłeś! Przedstaw się w kilku słowach, aby grupa mogła Cię lepiej poznać.\n"
+      destroy_member: "%s opuścił grupę. Dziękujemy za udział i życzymy powodzenia!\n"
+      banned_member: "%s nie jest już członkiem grupy. Jego zachowanie nie odpowiadało duchowi solidarności naszej społeczności. Liczymy na Was, że nadal będziecie tworzyć to miejsce z życzliwością i dobrą energią 🙏\n"
+      incomplete: "Przygotowujemy dla Was wspaniałą grupę Dobrych Wibracji ✨ W oczekiwaniu na kolejne osoby, małe wyzwanie: spróbujcie zgadnąć imię następnego uczestnika. Szanse są niewielkie... ale kto wie? 👀\n"
+      complete: "Grupa jest kompletna! 🎉\n\nWitamy w Waszej grupie Dobrych Wibracji, przestrzeni do nawiązywania relacji w prosty i życzliwy sposób ✨\n\nWasza misja: rozmawiać, dzielić się i może nawet spotkać się – online lub na żywo?\nOto link do pierwszego wspólnego spotkania wideo: [Link meet] Link meet\n\n👋 Nie wahajcie się przedstawić, jeśli jeszcze tego nie zrobiliście.\n\n🔥 A już od jutra... zaczynamy 7 dni małych wyzwań, aby lepiej się poznać i zbudować prawdziwe więzi 🫶\n\nLiczymy na Wasze pełne zaangażowanie! 😉\n"
+      complete_j1: 'Dzisiejsze wyzwanie: Trzy prawdy, jedno kłamstwo – podziel się trzema prawdziwymi faktami o sobie i jednym fałszywym. Reszta grupy musi zgadnąć, który to blef!
 
-        Witamy w Waszej grupie Dobrych Wibracji, przestrzeni do nawiązywania relacji w prosty i życzliwy sposób ✨
+        '
+      complete_j2: 'Dzisiejsze wyzwanie: Mój dzień w trzech emoji – opisz swój dzień używając tylko trzech emoji. Pozostali spróbują odgadnąć, co się wydarzyło!
 
-        Wasza misja: rozmawiać, dzielić się i może nawet spotkać się – online lub na żywo?
-        Oto link do pierwszego wspólnego spotkania wideo: [Link meet] Link meet
+        '
+      complete_j3: 'Zadaj grupie najciekawsze pytanie, na które nigdy nie znalazłeś satysfakcjonującej odpowiedzi. Zobaczmy, czy grupa może Ci pomóc w przemyśleniach!
 
-        👋 Nie wahajcie się przedstawić, jeśli jeszcze tego nie zrobiliście.
+        '
+      complete_j4: 'Dzisiejsze wyzwanie: Podziel się czymś, czego ludzie nie domyślają się na pierwszy rzut oka – pasją, nawykiem, cechą charakteru...
 
-        🔥 A już od jutra... zaczynamy 7 dni małych wyzwań, aby lepiej się poznać i zbudować prawdziwe więzi 🫶
+        '
+      complete_j5: 'Dzisiejsze wyzwanie: Przez 24 godziny jedno powszechne słowo jest zakazane w grupie (np. "tak", "ja", "jeść"). Jeśli ktoś je napisze... musi opowiedzieć zabawną anegdotę o sobie!
 
-        Liczymy na Wasze pełne zaangażowanie! 😉
-      complete_j1: |
-        Dzisiejsze wyzwanie: Trzy prawdy, jedno kłamstwo – podziel się trzema prawdziwymi faktami o sobie i jednym fałszywym. Reszta grupy musi zgadnąć, który to blef!
-      complete_j2: |
-        Dzisiejsze wyzwanie: Mój dzień w trzech emoji – opisz swój dzień używając tylko trzech emoji. Pozostali spróbują odgadnąć, co się wydarzyło!
-      complete_j3: |
-        Zadaj grupie najciekawsze pytanie, na które nigdy nie znalazłeś satysfakcjonującej odpowiedzi. Zobaczmy, czy grupa może Ci pomóc w przemyśleniach!
-      complete_j4: |
-        Dzisiejsze wyzwanie: Podziel się czymś, czego ludzie nie domyślają się na pierwszy rzut oka – pasją, nawykiem, cechą charakteru...
-      complete_j5: |
-        Dzisiejsze wyzwanie: Przez 24 godziny jedno powszechne słowo jest zakazane w grupie (np. "tak", "ja", "jeść"). Jeśli ktoś je napisze... musi opowiedzieć zabawną anegdotę o sobie!
-      complete_j6: |
-        Dzisiejsze wyzwanie: Każdy dzieli się tym, co pomaga mu nawiązać kontakt z innymi – spojrzenie, miejsce, zdanie... lub trik na przezwyciężenie nieśmiałości!
-      complete_j7: |
-        Dzisiejsze wyzwanie: Podziel się nadchodzącym wydarzeniem w Twojej okolicy lub online! Jeśli ktoś inny wspomni o tym samym lub podobnym wydarzeniu, to może idealny moment, aby wybrać się razem (lub spotkać się online)!
-      complete_congratulations: | # meeting_url
-        Gratulacje dla wszystkich za udział! Poświęciliście czas na dzielenie się, słuchanie i budowanie więzi – to już wielki sukces 🧡
+        '
+      complete_j6: 'Dzisiejsze wyzwanie: Każdy dzieli się tym, co pomaga mu nawiązać kontakt z innymi – spojrzenie, miejsce, zdanie... lub trik na przezwyciężenie nieśmiałości!
 
-        Teraz czas na wspólne spotkanie! Online lub na żywo, to moment, aby ożywić Wasze rozmowy, zobaczyć się nawzajem i utrwalić te dobre wibracje 🤝
+        '
+      complete_j7: 'Dzisiejsze wyzwanie: Podziel się nadchodzącym wydarzeniem w Twojej okolicy lub online! Jeśli ktoś inny wspomni o tym samym lub podobnym wydarzeniu, to może idealny moment, aby wybrać się razem (lub spotkać się online)!
 
-        Kilka pomysłów:
+        '
+      complete_congratulations: "Gratulacje dla wszystkich za udział! Poświęciliście czas na dzielenie się, słuchanie i budowanie więzi – to już wielki sukces 🧡\n\nTeraz czas na wspólne spotkanie! Online lub na żywo, to moment, aby ożywić Wasze rozmowy, zobaczyć się nawzajem i utrwalić te dobre wibracje 🤝\n\nKilka pomysłów:\n\nSpokojne spotkanie wideo, każdy u siebie (piżama mile widziana 😄)\n\nKawa lub aperitif, jeśli mieszkacie blisko siebie\n\nPiknik lub wspólna aktywność, jeśli macie ochotę (i pogoda dopisze)\n\nAby łatwo się zorganizować, stworzyliśmy ten link do spotkania wideo: %s\nPodzielcie się pomysłami, zaproponujcie termin i przede wszystkim... czujcie się jak u siebie ✨\n"
+      complete_j21: "Witajcie wszyscy! 👋\n\nMamy nadzieję, że Wasze rozmowy przebiegły pomyślnie, czy to pisemnie, wideo czy na żywo!\nJeśli macie uwagi lub coś poszło nie tak, nie wahajcie się nam powiedzieć. Zespół Entourage jest tutaj, aby Was wysłuchać i wspierać z życzliwością 🧡\n\nA jeśli wszystko jest w porządku, dajcie nam znać! Wasze opinie pomagają nam dalej rozwijać Dobre Wibracje jak najlepiej.\n\nDziękujemy za zaufanie ✨\n"
+      inactive_j3: 'Hej, ekipo! Jesteśmy ciekawi, co skłoniło Was do dołączenia do tej grupy?
 
-        Spokojne spotkanie wideo, każdy u siebie (piżama mile widziana 😄)
+        '
+      inactive_j5: 'Nie czujesz się komfortowo w pisaniu? Żaden problem! Możesz również wybrać spokojne spotkanie wideo lub kawę w małym gronie. Powiedz nam, co by Ci najbardziej odpowiadało!
 
-        Kawa lub aperitif, jeśli mieszkacie blisko siebie
+        '
+      inactive_j7: 'Grupa jest teraz spokojna... Jeśli nie otrzymamy wiadomości w ciągu 7 dni, pozwolimy grupie spokojnie się zamknąć. Dziękujemy, że byliście z nami, i kto wie... do zobaczenia wkrótce gdzieś!
 
-        Piknik lub wspólna aktywność, jeśli macie ochotę (i pogoda dopisze)
+        '
+      happy_birthday: "Cała ekipa Papotage życzy %s wszystkiego najlepszego z okazji urodzin! 🎉 Ciesz się swoim dniem i nie wahaj się opowiedzieć, jak będziesz go świętować!\n"
+      chart_recall: 'Małe przypomnienie z życzliwością: Papotage to miejsce do rozmów w dobrej atmosferze i z szacunkiem. Znajdziecie naszą kartę etyczną tutaj! Dziękujemy wszystkim!
 
-        Aby łatwo się zorganizować, stworzyliśmy ten link do spotkania wideo: %s
-        Podzielcie się pomysłami, zaproponujcie termin i przede wszystkim... czujcie się jak u siebie ✨
-      complete_j21: |
-        Witajcie wszyscy! 👋
-
-        Mamy nadzieję, że Wasze rozmowy przebiegły pomyślnie, czy to pisemnie, wideo czy na żywo!
-        Jeśli macie uwagi lub coś poszło nie tak, nie wahajcie się nam powiedzieć. Zespół Entourage jest tutaj, aby Was wysłuchać i wspierać z życzliwością 🧡
-
-        A jeśli wszystko jest w porządku, dajcie nam znać! Wasze opinie pomagają nam dalej rozwijać Dobre Wibracje jak najlepiej.
-
-        Dziękujemy za zaufanie ✨
-      inactive_j3: |
-        Hej, ekipo! Jesteśmy ciekawi, co skłoniło Was do dołączenia do tej grupy?
-      inactive_j5: |
-        Nie czujesz się komfortowo w pisaniu? Żaden problem! Możesz również wybrać spokojne spotkanie wideo lub kawę w małym gronie. Powiedz nam, co by Ci najbardziej odpowiadało!
-      inactive_j7: |
-        Grupa jest teraz spokojna... Jeśli nie otrzymamy wiadomości w ciągu 7 dni, pozwolimy grupie spokojnie się zamknąć. Dziękujemy, że byliście z nami, i kto wie... do zobaczenia wkrótce gdzieś!
-      happy_birthday: | # first_name
-        Cała ekipa Papotage życzy %s wszystkiego najlepszego z okazji urodzin! 🎉 Ciesz się swoim dniem i nie wahaj się opowiedzieć, jak będziesz go świętować!
-      chart_recall: |
-        Małe przypomnienie z życzliwością: Papotage to miejsce do rozmów w dobrej atmosferze i z szacunkiem. Znajdziecie naszą kartę etyczną tutaj! Dziękujemy wszystkim!
-      smalltalk_anniversary_six_months: |
-        Nasza grupa świętuje już sześć miesięcy istnienia! 🎉 Dziękujemy za Wasze rozmowy i miłe chwile spędzone razem!
-      smalltalk_anniversary_one_year: |
-        Nasza grupa świętuje już rok istnienia! 🎉 Dziękujemy za Wasze rozmowy i miłe chwile spędzone razem!
-      user_one_year_membership: | # first_name
-        Dziś %s obchodzi rocznicę roku z nami! 🎉 Dziękujemy, że jesteś z nami od tak długiego czasu, podziel się z nami pamiętnym momentem!
-      smalltalk_500_messages: |
-        Jesteście niesamowici! 🔥 Już 500 wiadomości wymienionych w grupie, rozmowy kwitną! Kontynuujemy? Następny cel: 1000 wiadomości?
-      smalltalk_1000_messages: |
-        Niesamowite, właśnie osiągnęliście 1000 wymienionych wiadomości! 🤯 Oficjalnie jesteście mistrzami paplaniny!
-
+        '
+      smalltalk_anniversary_six_months: "Nasza grupa świętuje już sześć miesięcy istnienia! 🎉 Dziękujemy za Wasze rozmowy i miłe chwile spędzone razem!\n"
+      smalltalk_anniversary_one_year: "Nasza grupa świętuje już rok istnienia! 🎉 Dziękujemy za Wasze rozmowy i miłe chwile spędzone razem!\n"
+      user_one_year_membership: "Dziś %s obchodzi rocznicę roku z nami! 🎉 Dziękujemy, że jesteś z nami od tak długiego czasu, podziel się z nami pamiętnym momentem!\n"
+      smalltalk_500_messages: "Jesteście niesamowici! 🔥 Już 500 wiadomości wymienionych w grupie, rozmowy kwitną! Kontynuujemy? Następny cel: 1000 wiadomości?\n"
+      smalltalk_1000_messages: "Niesamowite, właśnie osiągnęliście 1000 wymienionych wiadomości! 🤯 Oficjalnie jesteście mistrzami paplaniny!\n"
   pois:
     soliguide:
       public:
-        administrative: "Strona główna: %s"
-        description: "Inne ważne informacje: %s"
+        administrative: 'Strona główna: %s'
+        description: 'Inne ważne informacje: %s'
         reception: Przyjęcie
       accueil:
-        preferentiel: "preferencyjny"
-        exclusif: "ekskluzywny"
-        inconditionnel: "bezwarunkowy"
+        preferentiel: preferencyjny
+        exclusif: ekskluzywny
+        inconditionnel: bezwarunkowy
       age:
-        mineur: "nieletni (-18 lat)"
-        adulte: "tylko dla dorosłych"
-        from: "od %s lat"
-        from_to: "od %s do %s lat"
+        mineur: nieletni (-18 lat)
+        adulte: tylko dla dorosłych
+        from: od %s lat
+        from_to: od %s do %s lat
       familiale:
-        isolated: "Osoba samotna"
-        family: "Rodzina"
-        couple: "Para"
-        pregnant: "Kobieta w ciąży"
+        isolated: Osoba samotna
+        family: Rodzina
+        couple: Para
+        pregnant: Kobieta w ciąży
       administrative:
-        default: "osoby %s"
-        regular: "w sytuacji regularnej"
-        undocumented: "bez dokumentów"
-        asylum: "ubiegający się o azyl"
-        refugee: "uchodźcy"
+        default: osoby %s
+        regular: w sytuacji regularnej
+        undocumented: bez dokumentów
+        asylum: ubiegający się o azyl
+        refugee: uchodźcy
       other:
-        violence: "ofiara przemocy"
-        addiction: "w sytuacji uzależnienia"
-        handicap: "w sytuacji niepełnosprawności"
-        lgbt: "należący do społeczności LGBT+"
-        hiv: "niosący wirusa HIV"
-        prostitution: "pracownik seksualny"
-        prison: "wychodzący z więzienia"
-        student: "student"
+        violence: ofiara przemocy
+        addiction: w sytuacji uzależnienia
+        handicap: w sytuacji niepełnosprawności
+        lgbt: należący do społeczności LGBT+
+        hiv: niosący wirusa HIV
+        prostitution: pracownik seksualny
+        prison: wychodzący z więzienia
+        student: student
       modalities:
-        inconditionnel: "Przyjęcia bez wcześniejszej rejestracji"
-        appointment: "Na spotkanie (%s)"
-        inscription: "Na podstawie zapisów (%s)"
-        orientation: "Na podstawie orientacji (%s)"
+        inconditionnel: Przyjęcia bez wcześniejszej rejestracji
+        appointment: Na spotkanie (%s)
+        inscription: Na podstawie zapisów (%s)
+        orientation: Na podstawie orientacji (%s)
         other_details: Inne szczegóły
       animal:
-        unauthorized: "Zakaz wstępu zwierzętom"
-        authorized: "Zwierzęta dozwolone"
+        unauthorized: Zakaz wstępu zwierzętom
+        authorized: Zwierzęta dozwolone
       hours:
         closed: Zamknięte
         at: o
-
   onboarding:
-    ethical_charter: |
-      To znowu ja!
-
-      W Entourage naprawdę zależy nam na tym, aby każdy czuł się bezpiecznie, wysłuchany i mile widziany. Dlatego napisaliśmy tę kartę etyczną, którą musi przeczytać i zaakceptować każdy członek społeczności: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.
-
-      Odpowiadam za przestrzeganie tej karty na aplikacji i podczas wydarzeń organizowanych przez stowarzyszenie, aby sieć była bezpieczna i przyjazna dla wszystkich. Cała społeczność musi tego pilnować! Liczymy na Was 💪
-
-      Do zobaczenia wkrótce!
-
-      %s
-
+    ethical_charter: "To znowu ja!\n\nW Entourage naprawdę zależy nam na tym, aby każdy czuł się bezpiecznie, wysłuchany i mile widziany. Dlatego napisaliśmy tę kartę etyczną, którą musi przeczytać i zaakceptować każdy członek społeczności: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.\n\nOdpowiadam za przestrzeganie tej karty na aplikacji i podczas wydarzeń organizowanych przez stowarzyszenie, aby sieć była bezpieczna i przyjazna dla wszystkich. Cała społeczność musi tego pilnować! Liczymy na Was 💪\n\nDo zobaczenia wkrótce!\n\n%s\n"
   date:
     abbr_day_names:
-      - niedz.
-      - pon.
-      - wt.
-      - śr.
-      - czw.
-      - pt.
-      - sob.
+    - niedz.
+    - pon.
+    - wt.
+    - śr.
+    - czw.
+    - pt.
+    - sob.
+  community:
+    entourage:
+      goals:
+        offer_help: Solidarny sąsiad
+        ask_for_help: Osoba izolowana lub w trudnej sytuacji
+        organization: Stowarzyszenie lub służba publiczna
+        goal_not_known: Nieokreślone
+        all: Wszystkie profile
+      goals_compact:
+        offer_help: Sąsiad
+        ask_for_help: Osoba w potrzebie
+        organization: Stowarzyszenie
+        goal_not_known: Nieokreślone
+        staff: Ambasadorzy i personel
+        all: Wszystkie profile
+    user:
+      profiles:
+        offer_help: Solidarny sąsiad
+        ask_for_help: Osoba w potrzebie
+        organization: Stowarzyszenie
+        goal_not_known: Nieokreślone
+        all: Wszystkie profile
+      engagements:
+        engaged: Zaangażowany
+        not_engaged: Niezaangażowany
+      statuses:
+        validated: Zatwierdzony
+        anonymized: Zanonimizowany
+        blocked: Zablokowany
+        temporary_blocked: Tymczasowo zablokowany
+        deleted: Usunięty
+        pending: Oczekujący
+  regions:
+    ouest: Zachód
+    sud_ouest: Południowy zachód
+    sud_est: Południowy wschód
+    aura: Owernia-Rodan-Alpy
+    nord: Północ
+    idf: Île-de-France
+    centre_est: Środkowy wschód
+  conversations:
+    participants:
+      alone: Ty
+  tags:
+    interests:
+      activites: Zajęcia manualne
+      animaux: Zwierzęta
+      bien-etre: Dobrostan
+      cuisine: Kuchnia
+      culture: Sztuka i kultura
+      jeux: Gry
+      nature: Natura
+      sport: Sport
+      marauding: Działania społeczne
+      other: Inne
+  activerecord:
+    attributes:
+      user:
+        first_name: Imię
+        last_name: Nazwisko
+        full_name: Nazwa
+        email: E-mail
+        phone: Telefon
+        organization: Organizacja pomocowa
+        about: O sobie
+        roles: Role
+        goal: Zadeklarowany profil
+        partner: Stowarzyszenie
+        partner_id: Stowarzyszenie
+        created_at: Data utworzenia
+        address: Adres
+        postal_codes: Kody pocztowe
+        postal_code: Kod pocztowy
+        engaged?: Zaangażowany?
+        deleted: Usunięty
+        organization_name: Stowarzyszenie
+        subscriptions: Subskrypcje
+        action_creations_count: Liczba utworzonych akcji
+        action_participations_count: Liczba dołączonych akcji
+        outing_participations_count: Liczba dołączonych wydarzeń
+        conversation_participations_count: Liczba dołączonych rozmów
+      entourage:
+        id: Id
+        title: Tytuł
+        description: Opis
+        display_address: Adres
+        latitude: Latitude
+        longitude: Longitude
+        recurrency: Powtarzalność
+        created_at: Utworzono
+        starts_at: Zaczyna się
+        ends_at: Kończy się
+        image_url: Image URL
+        place_limit: Number of available places
+        members_count: Number of participants
+        outing_image_url: Event photo
+        cancellation_message: Cancellation message
+        sf_category: Event type
+        exclusive_to: Event reserved for
+        categories:
+          social: Social
+          resource: Resource
+          mat_help: Material help
+          non_mat_help: Non-material help
+          other: Other
+        entourage_types:
+          ask_for_help: Request
+          contribution: Contribution
+        group_types:
+          action: Działanie
+          outing: Wydarzenie
+          conversation: Rozmowa
+        statuses:
+          open: Aktywny
+          closed: Zamknięty
+          blacklisted: Blacklisted
+          suspended: Suspended
+          full: Full
+          cancelled: Cancelled
+      neighborhood:
+        name: Nazwa
+        description: Opis
+        interests: Interests
+        image_url: Image
+        status: Status
+        statuses:
+          active: Aktywny
+          deleted: Usunięty
+          blacklisted: Blacklisted

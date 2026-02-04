@@ -4,205 +4,294 @@ de:
     action:
       create_for_follower: "%s lädt Sie ein, sich %s anzuschließen"
     outing:
-      create: "Eine neue Veranstaltung wurde zu %s hinzugefügt: %s geplant am %s"
-      cancel: "Die Veranstaltung geplant am %s wurde abgesagt"
-      update: "Die am %s geplante Veranstaltung wurde geändert. Sie findet am %s um %s statt"
-      update_short: "Die am %s geplante Veranstaltung wurde geändert"
+      create: 'Eine neue Veranstaltung wurde zu %s hinzugefügt: %s geplant am %s'
+      cancel: Die Veranstaltung geplant am %s wurde abgesagt
+      update: Die am %s geplante Veranstaltung wurde geändert. Sie findet am %s um %s statt
+      update_short: Die am %s geplante Veranstaltung wurde geändert
       day_before:
         title: "🔔 Erinnerung: „%s“ findet morgen statt!"
-        content: "Vergessen Sie nicht, diese Veranstaltung ist für morgen. Kommen Sie immer noch?"
+        content: Vergessen Sie nicht, diese Veranstaltung ist für morgen. Kommen Sie immer noch?
     post:
-      create: "%s hat gerade geteilt: \"%s\""
+      create: '%s hat gerade geteilt: "%s"'
     comment:
-      create: "%s hat gerade den Beitrag \"%s\" kommentiert"
+      create: '%s hat gerade den Beitrag "%s" kommentiert'
     join_request:
-      new: "Neues Mitglied"
-      update: "Anfrage akzeptiert"
-      update_on_action: "Sie haben sich gerade an einer Aktion von %s angeschlossen"
-      update_on_outing: "Sie haben sich gerade an der Veranstaltung von %s angeschlossen"
-      update_on_neighborhood: "Sie haben sich gerade an einer Gruppe von %s angeschlossen"
-      create: "%s hat sich ihrer %s \"%s\" angeschlossen"
-      create_outing: "%s hat sich gerade ihrer Veranstaltung \"%s\" am %s angeschlossen"
+      new: Neues Mitglied
+      update: Anfrage akzeptiert
+      update_on_action: Sie haben sich gerade an einer Aktion von %s angeschlossen
+      update_on_outing: Sie haben sich gerade an der Veranstaltung von %s angeschlossen
+      update_on_neighborhood: Sie haben sich gerade an einer Gruppe von %s angeschlossen
+      create: '%s hat sich ihrer %s "%s" angeschlossen'
+      create_outing: '%s hat sich gerade ihrer Veranstaltung "%s" am %s angeschlossen'
     contribution:
-      create: "Ein Nachbar bietet neue Hilfe an"
+      create: Ein Nachbar bietet neue Hilfe an
     solicitation:
-      create: "Ein Nachbar sucht Hilfe"
-      create_section: "Ein Nachbar sucht %s"
-
+      create: Ein Nachbar sucht Hilfe
+      create_section: Ein Nachbar sucht %s
   timeliner:
     h1:
       title: "Willkommen bei Entourage 👌"
-      offer: "Wussten Sie, dass nur ein Video reicht, um Vorurteile abzubauen?"
-      ask: "Sie können sich nicht vorstellen, was ihre neue App alles enthält: Kommt und entdeckt sie!"
+      offer: Wussten Sie, dass nur ein Video reicht, um Vorurteile abzubauen?
+      ask: 'Sie können sich nicht vorstellen, was ihre neue App alles enthält: Kommt und entdeckt sie!'
     j2:
       title: "Kommen Sie Hallo sagen 👋"
-      offer: "Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen!"
-      ask_title_outing: "Haben Sie 4 Minuten?"
-      ask: "Schauen Sie sich ein kurzes Video an, um alles über ihre neue App zu verstehen"
+      offer: Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen!
+      ask_title_outing: Haben Sie 4 Minuten?
+      ask: Schauen Sie sich ein kurzes Video an, um alles über ihre neue App zu verstehen
     j5:
       title_outing: "Hallo, wir sind es wieder! 🕺"
-      offer_outing: "Virtuelle Interaktionen sind ja ganz nett, aber erleben Sie jetzt eine Begegnung im echten Leben!"
+      offer_outing: Virtuelle Interaktionen sind ja ganz nett, aber erleben Sie jetzt eine Begegnung im echten Leben!
       title_action: "Hallo, wir sind es wieder! 🕺"
-      offer_action: "Haben Sie zwei Minuten, um Ihren Nachbarn zu helfen?"
+      offer_action: Haben Sie zwei Minuten, um Ihren Nachbarn zu helfen?
       title_create_action: "Hallo, wir sind es wieder! 🕺"
-      offer_create_action: "Nehmen Sie sich zwei Minuten Zeit, um ihre Hilfe anzubieten"
+      offer_create_action: Nehmen Sie sich zwei Minuten Zeit, um ihre Hilfe anzubieten
       ask_title: "Kommen Sie hallo sagen 👏"
-      ask: "Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen"
+      ask: Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen
     j8:
       title: "Jetzt sind Sie dran! 📱"
-      offer: "Ein kleines Anti-Vorurteile-quiz: Wetten, Sie werden dabei etwas lernen?"
+      offer: 'Ein kleines Anti-Vorurteile-quiz: Wetten, Sie werden dabei etwas lernen?'
       ask_title_outing: "Hallo, wir sind es wieder! 🕺"
-      ask_outing: "Das Virtuelle ist für ein paar Minuten nett; kommen Sie und knüpfen Sie eine Verbindung im echten Leben!"
+      ask_outing: Das Virtuelle ist für ein paar Minuten nett; kommen Sie und knüpfen Sie eine Verbindung im echten Leben!
       ask_title_action: "Hallo, wir sind es wieder! 🕺"
-      ask_action: "Schauen Sie sich die angebotene Hilfe in ihrer Nähe an"
+      ask_action: Schauen Sie sich die angebotene Hilfe in ihrer Nähe an
       ask_title_create_action: "Hallo, wir sind es wieder! 🕺"
-      ask_create_action: "Ein Boulespiel, ein Kaffee oder einfach ein Spaziergang: schlagen Sie ihren Nachbarn einen Ausflug vor!"
+      ask_create_action: 'Ein Boulespiel, ein Kaffee oder einfach ein Spaziergang: schlagen Sie ihren Nachbarn einen Ausflug vor!'
     j11:
-      title: "Entourage ist wie eine Familie!"
-      offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
-      ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
-
+      title: Entourage ist wie eine Familie!
+      offer: Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!
+      ask: Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!
   smalltalks:
     messager:
-      new_member: | # first_name
-        Willkommen %s 🙂 Wir freuen uns sehr, dass du dabei bist! Stell dich doch kurz vor, damit die Gruppe dich besser kennenlernen kann.
-      destroy_member: | # first_name
-        %s hat die Gruppe verlassen. Vielen Dank für deine Teilnahme und alles Gute für deinen weiteren Weg!
-      banned_member: | # first_name
-        %s ist nicht mehr Teil der Gruppe. Sein/ihr Verhalten passte nicht ganz zum Geist unserer solidarischen Gemeinschaft. Wir zählen auf euch, diesen Raum weiterhin mit Freundlichkeit und guter Laune zu füllen 🙏
-      incomplete: |
-        Wir stellen gerade eine tolle Gute-Vibes-Gruppe für euch zusammen ✨ Während wir noch auf ein paar Leute warten, eine kleine Herausforderung: Versucht den Vornamen der nächsten Person zu erraten. Die Chancen stehen schlecht... aber wer weiß? 👀
-      complete: |
-        Die Gruppe ist komplett! 🎉
+      new_member: "Willkommen %s 🙂 Wir freuen uns sehr, dass du dabei bist! Stell dich doch kurz vor, damit die Gruppe dich besser kennenlernen kann.\n"
+      destroy_member: "%s hat die Gruppe verlassen. Vielen Dank für deine Teilnahme und alles Gute für deinen weiteren Weg!\n"
+      banned_member: "%s ist nicht mehr Teil der Gruppe. Sein/ihr Verhalten passte nicht ganz zum Geist unserer solidarischen Gemeinschaft. Wir zählen auf euch, diesen Raum weiterhin mit Freundlichkeit und guter Laune zu füllen 🙏\n"
+      incomplete: "Wir stellen gerade eine tolle Gute-Vibes-Gruppe für euch zusammen ✨ Während wir noch auf ein paar Leute warten, eine kleine Herausforderung: Versucht den Vornamen der nächsten Person zu erraten. Die Chancen stehen schlecht... aber wer weiß? 👀\n"
+      complete: "Die Gruppe ist komplett! 🎉\n\nWillkommen in eurer Gute-Vibes-Gruppe – ein Ort für einfache, freundliche Begegnungen ✨\n\nEure Mission: Austauschen, teilen und vielleicht sogar treffen – online oder im echten Leben?\nHier ist der Link für ein erstes gemeinsames Treffen: [Meet-Link] Lien meet\n\n👋 Stellt euch gerne vor, falls ihr das noch nicht getan habt.\n\n🔥 Und ab morgen... geht’s los mit 7 Tagen kleiner Challenges, um einander besser kennenzulernen 🫶\n\nWir zählen auf euch, dass ihr richtig mitmacht! 😉\n"
+      complete_j1: 'Challenge des Tages: Drei Wahrheiten, eine Lüge – erzähl drei wahre Dinge über dich und eine Lüge. Die anderen müssen raten, was nicht stimmt!
 
-        Willkommen in eurer Gute-Vibes-Gruppe – ein Ort für einfache, freundliche Begegnungen ✨
+        '
+      complete_j2: 'Challenge des Tages: Mein Tag heute... Erzähl deinen Tag nur mit drei Emojis. Die anderen raten, was passiert ist!
 
-        Eure Mission: Austauschen, teilen und vielleicht sogar treffen – online oder im echten Leben?
-        Hier ist der Link für ein erstes gemeinsames Treffen: [Meet-Link] Lien meet
+        '
+      complete_j3: 'Stellt der Gruppe die interessanteste Frage, auf die ihr nie eine zufriedenstellende Antwort bekommen habt. Vielleicht kann euch jemand weiterhelfen!
 
-        👋 Stellt euch gerne vor, falls ihr das noch nicht getan habt.
+        '
+      complete_j4: 'Challenge des Tages: Teile etwas, das man dir nicht sofort ansieht – eine Leidenschaft, eine Gewohnheit, ein Charakterzug...
 
-        🔥 Und ab morgen... geht’s los mit 7 Tagen kleiner Challenges, um einander besser kennenzulernen 🫶
+        '
+      complete_j5: 'Challenge des Tages: Für 24 Stunden ist ein gängiges Wort in der Gruppe verboten (z. B. „ja“, „ich“, „essen“). Wer es schreibt... muss eine lustige Anekdote über sich erzählen!
 
-        Wir zählen auf euch, dass ihr richtig mitmacht! 😉
-      complete_j1: |
-        Challenge des Tages: Drei Wahrheiten, eine Lüge – erzähl drei wahre Dinge über dich und eine Lüge. Die anderen müssen raten, was nicht stimmt!
-      complete_j2: |
-        Challenge des Tages: Mein Tag heute... Erzähl deinen Tag nur mit drei Emojis. Die anderen raten, was passiert ist!
-      complete_j3: |
-        Stellt der Gruppe die interessanteste Frage, auf die ihr nie eine zufriedenstellende Antwort bekommen habt. Vielleicht kann euch jemand weiterhelfen!
-      complete_j4: |
-        Challenge des Tages: Teile etwas, das man dir nicht sofort ansieht – eine Leidenschaft, eine Gewohnheit, ein Charakterzug...
-      complete_j5: |
-        Challenge des Tages: Für 24 Stunden ist ein gängiges Wort in der Gruppe verboten (z. B. „ja“, „ich“, „essen“). Wer es schreibt... muss eine lustige Anekdote über sich erzählen!
-      complete_j6: |
-        Challenge des Tages: Was hilft dir, auf jemanden zuzugehen? Ein Blick, ein Ort, ein Satz... oder ein Anti-Schüchternheits-Tipp!
-      complete_j7: |
-        Challenge des Tages: Teile ein nettes Event, das bald bei dir in der Nähe oder online stattfindet! Wenn jemand dasselbe oder ein ähnliches Event nennt, ist das vielleicht die perfekte Gelegenheit, gemeinsam hinzugehen (oder sich online zu treffen)!
-      complete_congratulations: | # meeting_url
-        Glückwunsch an euch alle für eure Teilnahme! Ihr habt euch Zeit genommen, euch auszutauschen, zuzuhören und Verbindungen zu knüpfen – das ist schon ein großer Erfolg 🧡
+        '
+      complete_j6: 'Challenge des Tages: Was hilft dir, auf jemanden zuzugehen? Ein Blick, ein Ort, ein Satz... oder ein Anti-Schüchternheits-Tipp!
 
-        Jetzt ist es Zeit für ein Gruppentreffen! Online oder live – bringt eure Gespräche zum Leben, gebt den Worten Gesichter und lasst die guten Vibes weiterleben 🤝
+        '
+      complete_j7: 'Challenge des Tages: Teile ein nettes Event, das bald bei dir in der Nähe oder online stattfindet! Wenn jemand dasselbe oder ein ähnliches Event nennt, ist das vielleicht die perfekte Gelegenheit, gemeinsam hinzugehen (oder sich online zu treffen)!
 
-        Ein paar Ideen:
+        '
+      complete_congratulations: "Glückwunsch an euch alle für eure Teilnahme! Ihr habt euch Zeit genommen, euch auszutauschen, zuzuhören und Verbindungen zu knüpfen – das ist schon ein großer Erfolg 🧡\n\nJetzt ist es Zeit für ein Gruppentreffen! Online oder live – bringt eure Gespräche zum Leben, gebt den Worten Gesichter und lasst die guten Vibes weiterleben 🤝\n\nEin paar Ideen:\n\nEin entspanntes Online-Meeting (Pyjama erlaubt 😄)\n\nEin Kaffee oder ein kleiner Apéro, wenn ihr in der Nähe wohnt\n\nEin Picknick oder eine gemeinsame Aktivität, wenn ihr Lust (und gutes Wetter) habt\n\nUm die Organisation zu erleichtern, haben wir diesen Video-Link erstellt: %s\nSchlagt etwas vor, plant zusammen – und fühlt euch wie zu Hause ✨\n"
+      complete_j21: "Hallo zusammen! 👋\n\nWir hoffen, euer Austausch lief gut – schriftlich, per Video oder live!\nWenn ihr Feedback habt oder wenn etwas nicht gut gelaufen ist, zögert nicht, uns zu schreiben. Das Entourage-Team ist für euch da, mit offenem Ohr und Herz 🧡\n\nUnd wenn alles gut war – sagt uns das auch! Euer Feedback hilft uns, die Guten Vibes weiterzuentwickeln.\n\nDanke für euer Vertrauen ✨\n"
+      inactive_j3: 'Hallo Team! Wir würden gerne wissen: Was hat euch dazu bewegt, dieser Gruppe beizutreten?
 
-        Ein entspanntes Online-Meeting (Pyjama erlaubt 😄)
+        '
+      inactive_j5: 'Schriftlich nicht so dein Ding? Kein Problem! Ihr könnt auch ein lockeres Online-Meeting machen oder euch in kleiner Runde auf einen Kaffee treffen. Sagt uns, was euch am besten passt!
 
-        Ein Kaffee oder ein kleiner Apéro, wenn ihr in der Nähe wohnt
+        '
+      inactive_j7: 'Die Gruppe ist gerade etwas ruhig... Wenn wir in den nächsten 7 Tagen nichts hören, schließen wir die Gruppe langsam. Danke, dass ihr dabei wart – und vielleicht sehen wir uns ja mal wieder!
 
-        Ein Picknick oder eine gemeinsame Aktivität, wenn ihr Lust (und gutes Wetter) habt
+        '
+      happy_birthday: "Die ganze Papotage-Gruppe wünscht %s alles Gute zum Geburtstag! 🎉 Genieß deinen Tag und erzähl uns gerne, wie du feierst!\n"
+      chart_recall: 'Eine freundliche Erinnerung: Papotage ist für Austausch in guter Stimmung und mit Respekt gedacht. Hier findet ihr die Ethik-Charta! Vielen Dank an euch alle!
 
-        Um die Organisation zu erleichtern, haben wir diesen Video-Link erstellt: %s
-        Schlagt etwas vor, plant zusammen – und fühlt euch wie zu Hause ✨
-      complete_j21: |
-        Hallo zusammen! 👋
-
-        Wir hoffen, euer Austausch lief gut – schriftlich, per Video oder live!
-        Wenn ihr Feedback habt oder wenn etwas nicht gut gelaufen ist, zögert nicht, uns zu schreiben. Das Entourage-Team ist für euch da, mit offenem Ohr und Herz 🧡
-
-        Und wenn alles gut war – sagt uns das auch! Euer Feedback hilft uns, die Guten Vibes weiterzuentwickeln.
-
-        Danke für euer Vertrauen ✨
-      inactive_j3: |
-        Hallo Team! Wir würden gerne wissen: Was hat euch dazu bewegt, dieser Gruppe beizutreten?
-      inactive_j5: |
-        Schriftlich nicht so dein Ding? Kein Problem! Ihr könnt auch ein lockeres Online-Meeting machen oder euch in kleiner Runde auf einen Kaffee treffen. Sagt uns, was euch am besten passt!
-      inactive_j7: |
-        Die Gruppe ist gerade etwas ruhig... Wenn wir in den nächsten 7 Tagen nichts hören, schließen wir die Gruppe langsam. Danke, dass ihr dabei wart – und vielleicht sehen wir uns ja mal wieder!
-      happy_birthday: | # first_name
-        Die ganze Papotage-Gruppe wünscht %s alles Gute zum Geburtstag! 🎉 Genieß deinen Tag und erzähl uns gerne, wie du feierst!
-      chart_recall: |
-        Eine freundliche Erinnerung: Papotage ist für Austausch in guter Stimmung und mit Respekt gedacht. Hier findet ihr die Ethik-Charta! Vielen Dank an euch alle!
-      smalltalk_anniversary_six_months: |
-        Unse
-
-
+        '
+      smalltalk_anniversary_six_months: "Unsere Gruppe feiert heute schon ihr sechsmonatiges Bestehen! 🎉 Vielen Dank für eure Nachrichten und die gemeinsame Zeit!"
+      smalltalk_anniversary_one_year: "Unsere Gruppe feiert heute schon ihr einjähriges Bestehen! 🎉 Vielen Dank für eure Nachrichten und die gemeinsame Zeit!"
+      user_one_year_membership: "Heute feiert %s 1 Jahr bei uns! 🎉 Danke, dass du schon so lange dabei bist, erzähl uns von einem besonderen Moment!"
+      smalltalk_500_messages: "Ihr seid spitze! 🔥 Schon 500 Nachrichten wurden in der Gruppe ausgetauscht, hier wird ja ordentlich geplaudert! Machen wir so weiter? Nächstes Ziel: 1000 Nachrichten?"
+      smalltalk_1000_messages: "Unglaublich, ihr habt gerade die 1000 Nachrichten erreicht! 🤯 Ihr seid offiziell die Chat-Champions!"
   pois:
     soliguide:
       public:
-        administrative: "Startseite: %s"
-        description: "Weitere wichtige Informationen: %s"
+        administrative: 'Startseite: %s'
+        description: 'Weitere wichtige Informationen: %s'
         reception: Empfang
       accueil:
-        preferentiel: "bevorzugt"
-        exclusif: "exklusiv"
-        inconditionnel: "bedingungslos"
+        preferentiel: bevorzugt
+        exclusif: exklusiv
+        inconditionnel: bedingungslos
       age:
-        mineur: "Minderjährige (-18 Jahre)"
-        adulte: "nur Erwachsene"
-        from: "ab %s Jahren"
-        from_to: "von %s bis %s Jahren"
+        mineur: Minderjährige (-18 Jahre)
+        adulte: nur Erwachsene
+        from: ab %s Jahren
+        from_to: von %s bis %s Jahren
       familiale:
-        isolated: "Alleinstehende Person"
-        family: "Familie"
-        couple: "Paar"
-        pregnant: "Schwangere Frau"
+        isolated: Alleinstehende Person
+        family: Familie
+        couple: Paar
+        pregnant: Schwangere Frau
       administrative:
-        default: "Personen %s"
-        regular: "in regulärer Situation"
-        undocumented: "ohne Papiere"
-        asylum: "Asylsuchende"
-        refugee: "Flüchtlinge"
+        default: Personen %s
+        regular: in regulärer Situation
+        undocumented: ohne Papiere
+        asylum: Asylsuchende
+        refugee: Flüchtlinge
       other:
-        violence: "Opfer von Gewalt"
-        addiction: "in Suchtsituation"
-        handicap: "in einer Situation mit Behinderung"
-        lgbt: "gehört zu LGBT+ Gemeinschaften"
-        hiv: "Träger von HIV"
-        prostitution: "Sexarbeiter(in)"
-        prison: "entlassen aus dem Gefängnis"
-        student: "Student(in)"
+        violence: Opfer von Gewalt
+        addiction: in Suchtsituation
+        handicap: in einer Situation mit Behinderung
+        lgbt: gehört zu LGBT+ Gemeinschaften
+        hiv: Träger von HIV
+        prostitution: Sexarbeiter(in)
+        prison: entlassen aus dem Gefängnis
+        student: Student(in)
       modalities:
-        inconditionnel: "Ohne Termin willkommen"
-        appointment: "Nach Vereinbarung (%s)"
-        inscription: "Mit Anmeldung (%s)"
-        orientation: "Mit Orientierung (%s)"
+        inconditionnel: Ohne Termin willkommen
+        appointment: Nach Vereinbarung (%s)
+        inscription: Mit Anmeldung (%s)
+        orientation: Mit Orientierung (%s)
         other_details: Andere Details
       animal:
-        unauthorized: "Haustiere nicht erlaubt"
-        authorized: "Haustiere erlaubt"
+        unauthorized: Haustiere nicht erlaubt
+        authorized: Haustiere erlaubt
       hours:
         closed: Geschlossen
         at: um
-
   onboarding:
-    ethical_charter: |
-      Ich bin's wieder!
-
-      Bei Entourage ist es uns wirklich wichtig, dass sich jeder wohl, sicher, gehört und willkommen fühlt. Deshalb haben wir diese ethische Charta verfasst, die von allen Mitgliedern der Gemeinschaft gelesen und akzeptiert werden muss: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.
-
-      Ich bin dafür verantwortlich, dass diese Charta in der App und bei den von der Organisation veranstalteten Events eingehalten wird, damit das Netzwerk für alle sicher und freundlich bleibt. Die gesamte Gemeinschaft muss dafür einstehen! Wir zählen auf euch 💪
-
-      Bis bald!
-
-      %s
-
+    ethical_charter: "Ich bin's wieder!\n\nBei Entourage ist es uns wirklich wichtig, dass sich jeder wohl, sicher, gehört und willkommen fühlt. Deshalb haben wir diese ethische Charta verfasst, die von allen Mitgliedern der Gemeinschaft gelesen und akzeptiert werden muss: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.\n\nIch bin dafür verantwortlich, dass diese Charta in der App und bei den von der Organisation veranstalteten Events eingehalten wird, damit das Netzwerk für alle sicher und freundlich bleibt. Die gesamte Gemeinschaft muss dafür einstehen! Wir zählen auf euch 💪\n\nBis bald!\n\n%s\n"
   date:
     abbr_day_names:
-      - So
-      - Mo
-      - Di
-      - Mi
-      - Do
-      - Fr
-      - Sa
+    - So
+    - Mo
+    - Di
+    - Mi
+    - Do
+    - Fr
+    - Sa
+  community:
+    entourage:
+      goals:
+        offer_help: Solidarischer Nachbar
+        ask_for_help: Isolierte oder bedürftige Person
+        organization: Verein oder öffentlicher Dienst
+        goal_not_known: Nicht definiert
+        all: Alle Profile
+      goals_compact:
+        offer_help: Nachbar
+        ask_for_help: Bedürftige Person
+        organization: Verein
+        goal_not_known: Nicht definiert
+        staff: Botschafter und Personal
+        all: Alle Profile
+    user:
+      profiles:
+        offer_help: Solidarischer Nachbar
+        ask_for_help: Bedürftige Person
+        organization: Verein
+        goal_not_known: Nicht definiert
+        all: Alle Profile
+      engagements:
+        engaged: Engagiert
+        not_engaged: Nicht engagiert
+      statuses:
+        validated: Validiert
+        anonymized: Anonymisiert
+        blocked: Blockiert
+        temporary_blocked: Vorübergehend blockiert
+        deleted: Gelöscht
+        pending: Ausstehend
+  regions:
+    ouest: Westen
+    sud_ouest: Südwesten
+    sud_est: Südosten
+    aura: Auvergne-Rhône-Alpes
+    nord: Norden
+    idf: Ile-de-France
+    centre_est: Mittelost
+  conversations:
+    participants:
+      alone: Du
+  tags:
+    interests:
+      activites: Manuelle Aktivitäten
+      animaux: Tiere
+      bien-etre: Wohlbefinden
+      cuisine: Kochen
+      culture: Kunst & Kultur
+      jeux: Spiele
+      nature: Natur
+      sport: Sport
+      marauding: Soziale Einsätze
+      other: Sonstiges
+  activerecord:
+    attributes:
+      user:
+        first_name: Vorname
+        last_name: Nachname
+        full_name: Name
+        email: E-Mail
+        phone: Telefon
+        organization: Hilfsorganisation
+        about: Über
+        roles: Rollen
+        goal: Erklärtes Profil
+        partner: Verein
+        partner_id: Verein
+        created_at: Erstellungsdatum
+        address: Adresse
+        postal_codes: Postleitzahlen
+        postal_code: Postleitzahl
+        engaged?: Engagiert?
+        deleted: Gelöscht
+        organization_name: Verein
+        subscriptions: Abonnements
+        action_creations_count: Anzahl erstellter Aktionen
+        action_participations_count: Anzahl beigetretener Aktionen
+        outing_participations_count: Anzahl beigetretener Veranstaltungen
+        conversation_participations_count: Anzahl beigetretener Konversationen
+      entourage:
+        id: Id
+        title: Titel
+        description: Beschreibung
+        display_address: Adresse
+        latitude: Latitude
+        longitude: Longitude
+        recurrency: Wiederholung
+        created_at: Erstellt am
+        starts_at: Beginnt am
+        ends_at: Endet am
+        image_url: Image URL
+        place_limit: Number of available places
+        members_count: Number of participants
+        outing_image_url: Event photo
+        cancellation_message: Cancellation message
+        sf_category: Event type
+        exclusive_to: Event reserved for
+        categories:
+          social: Social
+          resource: Resource
+          mat_help: Material help
+          non_mat_help: Non-material help
+          other: Other
+        entourage_types:
+          ask_for_help: Request
+          contribution: Contribution
+        group_types:
+          action: Aktion
+          outing: Veranstaltung
+          conversation: Konversation
+        statuses:
+          open: Aktiv
+          closed: Geschlossen
+          blacklisted: Blacklisted
+          suspended: Suspended
+          full: Full
+          cancelled: Cancelled
+      neighborhood:
+        name: Name
+        description: Beschreibung
+        interests: Interests
+        image_url: Image
+        status: Status
+        statuses:
+          active: Aktiv
+          deleted: Gelöscht
+          blacklisted: Blacklisted

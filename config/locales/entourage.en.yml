@@ -4,181 +4,137 @@ en:
     action:
       create_for_follower: "%s invites you to join %s"
     outing:
-      create: "A new event has been added to %s: %s is scheduled for %s"
-      cancel: "This event scheduled for %s has been canceled"
-      update: "The event on %s has been updated. It will now take place on %s at %s"
-      update_short: "The event scheduled for %s has been updated"
+      create: 'A new event has been added to %s: %s is scheduled for %s'
+      cancel: This event scheduled for %s has been canceled
+      update: The event on %s has been updated. It will now take place on %s at %s
+      update_short: The event scheduled for %s has been updated
       day_before:
         title: "🔔 Reminder: «%s» is happening tomorrow!"
-        content: "Don't forget, this event is tomorrow. Will you be attending?"
+        content: Don't forget, this event is tomorrow. Will you be attending?
     post:
-      create: "%s just shared: \"%s\""
+      create: '%s just shared: "%s"'
     comment:
-      create: "%s commented on the post \"%s\""
+      create: '%s commented on the post "%s"'
     join_request:
-      new: "New member request"
-      update: "Request approved"
-      update_on_action: "You've joined an action led by %s"
-      update_on_outing: "You've joined %s's event"
-      update_on_neighborhood: "You've joined a group created by %s"
-      create: "%s has joined your %s \"%s\""
-      create_outing: "%s has joined your event \"%s\" on %s"
+      new: New member request
+      update: Request approved
+      update_on_action: You've joined an action led by %s
+      update_on_outing: You've joined %s's event
+      update_on_neighborhood: You've joined a group created by %s
+      create: '%s has joined your %s "%s"'
+      create_outing: '%s has joined your event "%s" on %s'
     contribution:
-      create: "A neighbor is asking for help"
+      create: A neighbor is asking for help
     solicitation:
-      create: "A neighbor is seeking help"
-      create_section: "A neighbor is looking for a %s"
-
+      create: A neighbor is seeking help
+      create_section: A neighbor is looking for a %s
   timeliner:
     h1:
       title: "Welcome to Entourage 👌"
-      offer: "Did you know? One video is all it takes to challenge your biases!"
-      ask: "Discover all the features in your new app. Check it out!"
+      offer: Did you know? One video is all it takes to challenge your biases!
+      ask: Discover all the features in your new app. Check it out!
     j2:
       title: "Come say hello 👋"
-      offer: "Your neighbor group is eager to meet you!"
-      ask_title_outing: "Got 4 minutes?"
-      ask: "Watch a quick video to learn all about your new app"
+      offer: Your neighbor group is eager to meet you!
+      ask_title_outing: Got 4 minutes?
+      ask: Watch a quick video to learn all about your new app
     j5:
       title_outing: "Hey there, it's us again! 🕺"
-      offer_outing: "Virtual is nice, but how about a real-life connection?"
+      offer_outing: Virtual is nice, but how about a real-life connection?
       title_action: "Hey there, it's us again! 🕺"
-      offer_action: "Got 2 minutes to help your neighbors?"
+      offer_action: Got 2 minutes to help your neighbors?
       title_create_action: "Hey there, it's us again! 🕺"
-      offer_create_action: "Take two minutes to offer your assistance to those around you"
+      offer_create_action: Take two minutes to offer your assistance to those around you
       ask_title: "Come say hello 👏"
-      ask: "Your group of neighbors is eager to get to know you"
+      ask: Your group of neighbors is eager to get to know you
     j8:
       title: "It's your turn! 📱"
-      offer: "Take a quiz to challenge your biases. You might learn something new!"
+      offer: Take a quiz to challenge your biases. You might learn something new!
       ask_title_outing: "Hey there, it's us again! 🕺"
-      ask_outing: "Virtual is nice, but how about a real-life connection?"
+      ask_outing: Virtual is nice, but how about a real-life connection?
       ask_title_action: "Hey there, it's us again! 🕺"
-      ask_action: "Check out the help offered near you"
+      ask_action: Check out the help offered near you
       ask_title_create_action: "Hey there, it's us again! 🕺"
-      ask_create_action: "Suggest an outing to your neighbors—a walk, coffee, or pétanque!"
+      ask_create_action: Suggest an outing to your neighbors—a walk, coffee, or pétanque!
     j11:
-      title: "Entourage feels like family!"
-      offer: "You're now part of the Entourage community. Let's celebrate!"
-      ask: "You're officially part of the Entourage community. Time to celebrate!"
-
+      title: Entourage feels like family!
+      offer: You're now part of the Entourage community. Let's celebrate!
+      ask: You're officially part of the Entourage community. Time to celebrate!
   smalltalks:
     messager:
       new_member: "Welcome %s 🙂 We're thrilled to have you join us! Introduce yourself briefly so the group can get to know you."
       destroy_member: "%s has left the group. Thank you for your participation and best wishes!"
       banned_member: "%s is no longer part of the group. Their behavior didn't quite align with the spirit of solidarity. Let's continue to keep this space friendly and cheerful 🙏"
       incomplete: "We're preparing a lovely Good Vibes group ✨ While waiting for the next members, a little challenge: try to guess the name of the next person to join. Chances are slim... but who knows? 👀"
-      complete: |
-        The group is complete! 🎉
-
-        Welcome to your Good Vibes group, a space to connect simply and kindly ✨
-
-        Your mission: chat, share, and maybe even meet up, via video or in real life?
-        Here's the link for a first video call together: [Meet Link] Meet Link
-
-        👋 Feel free to introduce yourself if you haven't already.
-
-        🔥 And starting tomorrow... it's time for 7 days of little challenges to get to know each other and build real connections 🫶
-
-        Let's all play along! 😉
-      complete_j1: "Today's challenge: Three truths and a lie. Share three true facts about yourself and one false. Let others guess the lie!"
-      complete_j2: "Today's challenge: Today in my life... Describe your day using only three emojis. Others should try to guess what happened!"
-      complete_j3: "Ask the group the most interesting question you've never found a satisfying answer to. Let's see if the group can help you think it through!"
-      complete_j4: "Today's challenge: Share something people wouldn't guess at first glance: a passion, a habit, a character trait..."
-      complete_j5: "Today's challenge: For 24 hours, a common word is banned in the group (e.g., 'yes', 'I', 'eat'). If someone writes it... they must share a funny anecdote about themselves!"
-      complete_j6: "Today's challenge: Everyone shares what helps them approach someone: a look, a place, a phrase... or an anti-shyness tip!"
-      complete_j7: "Today's challenge: Share a fun upcoming event near you or online! If someone else mentions the same or a similar event, it might be the perfect time to go together (or meet online)!"
-      complete_congratulations: "Congratulations to everyone for your participation! You've taken the time to share, listen, and create connections: that's already a great success 🧡
-
-        Now, it's time for the group meeting! Whether online or in person, it's the moment to bring your exchanges to life, put faces to names, and keep the good vibes going 🤝
-
-        Some ideas:
-
-        - A relaxed video call, each at home (pajamas welcome 😄)
-        - A coffee or an aperitif if you live nearby
-        - A picnic or a shared activity if you feel like it (and if the weather allows)
-
-        To organize easily, we've created this video link: %s
-        Share your ideas, suggest a time, and above all... make yourselves at home ✨"
-      complete_j21: "Hello everyone! 👋
-
-        We hope your exchanges went well, whether in writing, via video, or in person!
-        If you have any feedback to share or if something didn't go well, don't hesitate to tell us. The Entourage team is here to listen and support you, with kindness 🧡
-
-        And if everything went well, let us know too! Your feedback helps us keep the Good Vibes alive and well.
-
-        Thank you for your trust ✨"
-      inactive_j3: "Hello team! We're curious to know, what made you want to join this group?"
-      inactive_j5: "Not super comfortable with writing? No problem! You can also opt for a relaxed video call or a small coffee meetup. Let us know what suits you best!"
-      inactive_j7: "The group is quiet at the moment... If we don't hear from you within 7 days, we'll let the group close gently. Thank you for being here, and who knows... see you soon somewhere!"
+      complete: "The group is complete! 🎉\n\nWelcome to your Good Vibes group, a space to connect simply and kindly ✨\n\nYour mission: chat, share, and maybe even meet up, via video or in real life?\nHere's the link for a first video call together: [Meet Link] Meet Link\n\n👋 Feel free to introduce yourself if you haven't already.\n\n🔥 And starting tomorrow... it's time for 7 days of little challenges to get to know each other and build real connections 🫶\n\nLet's all play along! 😉\n"
+      complete_j1: 'Today''s challenge: Three truths and a lie. Share three true facts about yourself and one false. Let others guess the lie!'
+      complete_j2: 'Today''s challenge: Today in my life... Describe your day using only three emojis. Others should try to guess what happened!'
+      complete_j3: Ask the group the most interesting question you've never found a satisfying answer to. Let's see if the group can help you think it through!
+      complete_j4: 'Today''s challenge: Share something people wouldn''t guess at first glance: a passion, a habit, a character trait...'
+      complete_j5: 'Today''s challenge: For 24 hours, a common word is banned in the group (e.g., ''yes'', ''I'', ''eat''). If someone writes it... they must share a funny anecdote about themselves!'
+      complete_j6: 'Today''s challenge: Everyone shares what helps them approach someone: a look, a place, a phrase... or an anti-shyness tip!'
+      complete_j7: 'Today''s challenge: Share a fun upcoming event near you or online! If someone else mentions the same or a similar event, it might be the perfect time to go together (or meet online)!'
+      complete_congratulations: "Congratulations to everyone for your participation! You've taken the time to share, listen, and create connections: that's already a great success 🧡\n\nNow, it's time for the group meeting! Whether online or in person, it's the moment to bring your exchanges to life, put faces to names, and keep the good vibes going 🤝\n\nSome ideas:\n\n- A relaxed video call, each at home (pajamas welcome 😄)\n\n- A coffee or an aperitif if you live nearby\n\n- A picnic or a shared activity if you feel like it (and if the weather allows)\n\nTo organize easily, we've created this video link: %s\nLancez vos idées, proposez un moment, and above all... make yourselves at home ✨"
+      complete_j21: "Hello everyone! 👋\nWe hope your exchanges went well, whether in writing, via video, or in person! If you have any feedback to share or if something didn't go well, don't hesitate to tell us. The Entourage team is here to listen and support you, with kindness 🧡\nAnd if everything went well, let us know too! Your feedback helps us keep the Good Vibes alive and well.\nThank you for your trust ✨"
+      inactive_j3: Hello team! We're curious to know, what made you want to join this group?
+      inactive_j5: Not super comfortable with writing? No problem! You can also opt for a relaxed video call or a small coffee meetup. Let us know what suits you best!
+      inactive_j7: The group is quiet at the moment... If we don't hear from you within 7 days, we'll let the group close gently. Thank you for being here, and who knows... see you soon somewhere!
       happy_birthday: "The entire Papotage crew wishes %s a happy birthday! 🎉 Enjoy your day and feel free to tell us how you're celebrating!"
-      chart_recall: "A gentle reminder: Papotage is meant for cheerful and respectful exchanges. You'll find the ethical charter right here! Thank you all!"
+      chart_recall: 'A gentle reminder: Papotage is meant for cheerful and respectful exchanges. You''ll find the ethical charter right here! Thank you all!'
       smalltalk_anniversary_six_months: "Our group is already celebrating its six-month anniversary today! 🎉 Thank you for your exchanges and good times together!"
       smalltalk_anniversary_one_year: "Our group is already celebrating its one-year anniversary today! 🎉 Thank you for your exchanges and good times together!"
       user_one_year_membership: "Today, %s celebrates 1 year with us! 🎉 Thank you for being with us all this time, tell us about a memorable moment!"
       smalltalk_500_messages: "You're on fire! 🔥 500 messages already exchanged in the group, lots of chatting going on here! Shall we keep it up? Next goal: 1000 messages?"
       smalltalk_1000_messages: "Incredible, you've just reached 1000 messages exchanged! 🤯 You're officially the chat champions!"
-
   pois:
     soliguide:
       public:
-        administrative: "Domicile: %s"
-        description: "Other important information: %s"
+        administrative: 'Domicile: %s'
+        description: 'Other important information: %s'
         reception: Reception
       accueil:
-        preferentiel: "preferential"
-        exclusif: "exclusive"
-        inconditionnel: "unconditional"
+        preferentiel: preferential
+        exclusif: exclusive
+        inconditionnel: unconditional
       age:
-        mineur: "minors (-18 years old)"
-        adulte: "adults only"
-        from: "from %s years old"
-        from_to: "from %s to %s years old"
+        mineur: minors (-18 years old)
+        adulte: adults only
+        from: from %s years old
+        from_to: from %s to %s years old
       familiale:
-        isolated: "Isolated person"
-        family: "Family"
-        couple: "Couple"
-        pregnant: "Pregnant woman"
+        isolated: Isolated person
+        family: Family
+        couple: Couple
+        pregnant: Pregnant woman
       administrative:
-        default: "people %s"
-        regular: "in regular situation"
-        undocumented: "undocumented"
-        asylum: "asylum seekers"
-        refugee: "refugees"
+        default: people %s
+        regular: in regular situation
+        undocumented: undocumented
+        asylum: asylum seekers
+        refugee: refugees
       other:
-        violence: "victim of violence"
-        addiction: "in addiction situation"
-        handicap: "in a situation of handicap"
-        lgbt: "belonging to LGBT+ communities"
-        hiv: "HIV-positive"
-        prostitution: "sex worker"
-        prison: "released from prison"
-        student: "student"
+        violence: victim of violence
+        addiction: in addiction situation
+        handicap: in a situation of handicap
+        lgbt: belonging to LGBT+ communities
+        hiv: HIV-positive
+        prostitution: sex worker
+        prison: released from prison
+        student: student
       modalities:
-        inconditionnel: "Walk-in welcome"
-        appointment: "By appointment (%s)"
-        inscription: "By registration (%s)"
-        orientation: "By referral (%s)"
+        inconditionnel: Walk-in welcome
+        appointment: By appointment (%s)
+        inscription: By registration (%s)
+        orientation: By referral (%s)
         other_details: Other details
       animal:
-        unauthorized: "No pets allowed"
-        authorized: "Pets allowed"
+        unauthorized: No pets allowed
+        authorized: Pets allowed
       hours:
         closed: Closed
         at: at
-
   onboarding:
-    ethical_charter: |
-      It's me again!
-
-      At Entourage, we really care about ensuring everyone feels safe, heard, and welcomed. That's why we wrote this ethical charter, which must be read and accepted by all members of the community: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.
-
-      I am responsible for ensuring that this charter is respected on the app and during events organized by the association so that the network remains safe and welcoming for everyone. The entire community must be its guardian! We're counting on you 💪
-
-      See you soon!
-
-      %s
-
+    ethical_charter: "It's me again!\n\nAt Entourage, we really care about ensuring everyone feels safe, heard, and welcomed. That's why we wrote this ethical charter, which must be read and accepted by all members of the community: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.\n\nI am responsible for ensuring that this charter is respected on the app and during events organized by the association so that the network remains safe and welcoming for everyone. The entire community must be its guardian! We're counting on you 💪\n\nSee you soon!\n\n%s\n"
   date:
     abbr_day_names:
     - sun

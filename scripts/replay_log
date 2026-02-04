@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+# permet de rejouer une ligne de log provenant de papertrail pour étudier un bug
+
+require 'uri'
+require 'json'
+require 'shellwords'
+
+string = ARGF.read.tr("\n", '')
+
+template = /\Amethod=(?<method>\w+) path=(?<path>\S+)( format=(?<format>\S+))?( .+)? params=(?<params>\{.*\}) API_KEY=(?<key>\h{24}?)\Z/
+
+data = template.match(string)
+request = Hash[data.names.map(&:to_sym).zip(data.captures)]
+
+method = request[:method]
+format = request[:format].to_sym if request[:format]
+host = 'http://localhost:8080'
+#host = 'https://entourage-back-preprod.herokuapp.com'
+path = request[:path]
+params = eval(request[:params])
+token = params.delete('token')
+
+path += ".#{request[:format]}" if format && format != :html && !(path =~ /.#{request[:format]}$/)
+url = URI(host)
+url.path = path
+url.query = "token=#{token}"
+
+command = ['curl', '-s']
+command.push '-X', method
+command.push '-H', "X-API-KEY: #{request[:key]}" if request[:key].length > 0
+command.push '-H', 'Content-Type: application/json' if format != :html
+command.push '-d', JSON.fast_generate(params) if format != :html
+command.push url.to_s
+
+exec command.shelljoin
