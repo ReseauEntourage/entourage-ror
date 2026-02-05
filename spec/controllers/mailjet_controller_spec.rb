@@ -29,4 +29,30 @@ describe MailjetController do
       it { expect(response.code).to eq("200") }
     end
   end
+
+  describe 'POST events' do
+    subject { post :events, params: params }
+
+    let(:event) { { event: :unsub, email: user.email } }
+
+    context "unsub list" do
+      let(:params) { { _json: [event] } }
+
+      it { expect { subject }.to change {
+        EmailPreferencesService.accepts_emails?(user: user, category: category.name)
+      }.to(false) }
+
+      it { expect(response.code).to eq("200") }
+    end
+
+    context "unsub" do
+      let(:params) { event }
+
+      it { expect { subject }.to change {
+        EmailPreferencesService.accepts_emails?(user: user, category: category.name)
+      }.to(false) }
+
+      it { expect(response.code).to eq("200") }
+    end
+  end
 end

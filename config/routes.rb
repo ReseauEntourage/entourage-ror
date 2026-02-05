@@ -931,6 +931,7 @@ Rails.application.routes.draw do
 
   namespace :mailjet do
     post :event
+    post :events
   end
 
   namespace :iraiser do

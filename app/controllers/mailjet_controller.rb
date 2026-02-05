@@ -16,4 +16,9 @@ class MailjetController < ActionController::Base
 
     head :ok
   end
+
+  # alias
+  def events
+    event
+  end
 end
