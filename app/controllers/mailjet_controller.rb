@@ -17,8 +17,12 @@ class MailjetController < ActionController::Base
     head :ok
   end
 
-  # alias
+  # aliases
   def events
+    event
+  end
+
+  def unsub_events
     event
   end
 end
