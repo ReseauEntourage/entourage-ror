@@ -6,14 +6,16 @@ module MailjetService
     return unless email.present? && email.include?("@")
     return unless event.present? && event == 'unsub'
 
-    handle_unsub(email)
+    category = JSON.parse(payload['Payload'])['unsubscribe_category'] rescue :default
+
+    handle_unsub(email, category)
   end
 
   private
 
-  def self.handle_unsub email
+  def self.handle_unsub email, category
     User.where(email: email).each do |user|
-      EmailPreferencesService.update_subscription(user: user, subscribed: false, category: :all)
+      EmailPreferencesService.update_subscription(user: user, subscribed: false, category: category)
     end
   end
 end
