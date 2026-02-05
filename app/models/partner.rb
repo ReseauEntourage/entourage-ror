@@ -120,6 +120,8 @@ class Partner < ApplicationRecord
   end
 
   def signal_creation
+    return unless users.any?
+
     SlackServices::PartnerCreate.new(partner: self).notify
   end
 
