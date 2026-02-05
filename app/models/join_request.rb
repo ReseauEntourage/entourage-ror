@@ -88,7 +88,7 @@ class JoinRequest < ApplicationRecord
         LIMIT 1
       ) AS last_chat_messages ON TRUE
     ))
-    .select('join_requests.*, last_chat_messages.content as last_chat_message, last_chat_messages.image_url as last_chat_message_image_url')
+    .select('join_requests.*, last_chat_messages.content as last_chat_message, last_chat_messages.image_url as last_chat_message_image_url, last_chat_messages.created_at as last_chat_message_datetime')
     .order(Arel.sql('last_chat_messages.created_at DESC NULLS LAST'))
   }
 
