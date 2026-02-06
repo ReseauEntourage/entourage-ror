@@ -1,6 +1,6 @@
 module GeminiServices
   class CodeAnalyzer
-    def initialize(question:)
+    def initialize question
       @question = question
     end
 
