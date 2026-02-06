@@ -141,6 +141,7 @@ fr:
 
       inapp_notification:
         context_types:
+          birthday: birthday
           chat_message_on_create: chat_message_created
           join_request_on_create: join_request_created
           join_request_on_update: join_request_updated
