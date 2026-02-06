@@ -842,9 +842,7 @@ Rails.application.routes.draw do
         match 'entourages/:uuid' => 'entourages#show', :via => :get
       end
 
-      namespace :slack do
-        post :events, to: 'events#create'
-      end
+      post 'jules/events' => 'jules#create'
 
       resources :tags, only: [] do
         collection do

@@ -15,7 +15,7 @@ To connect Jules to Slack, follow these steps:
 
 ## 3. Enable Event Subscriptions
 1. Go to **Event Subscriptions** and toggle **Enable Events**.
-2. Set the **Request URL** to `https://your-domain.com/api/v1/slack/events`.
+2. Set the **Request URL** to `https://your-domain.com/api/v1/jules/events`.
 3. Under **Subscribe to bot events**, add:
    - `app_mention`
 4. Save Changes.

@@ -2,7 +2,7 @@ class SlackQuestionJob < ApplicationJob
   queue_as :default
 
   def perform(channel:, ts:, text:, user:)
-    answer = SlackServices::Jules.new(text: text).answer
+    answer = JulesServices::Analyzer.new(text: text).answer
 
     send_to_slack(channel: channel, ts: ts, text: answer)
   end

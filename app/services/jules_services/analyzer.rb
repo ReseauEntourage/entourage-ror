@@ -1,5 +1,5 @@
-module SlackServices
-  class Jules
+module JulesServices
+  class Analyzer
     def initialize(text:)
       @text = text
     end
@@ -8,12 +8,8 @@ module SlackServices
       # Strip the bot mention if present
       question = @text.gsub(/<@U[A-Z0-9]+>/, '').strip
 
-      # In a real implementation, this would call OpenAI with codebase context.
-      # For now, we simulate the analysis or provide a curated response if possible.
-
       client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
 
-      # We could provide a system prompt with codebase info
       system_prompt = <<~PROMPT
         You are Jules, a technical assistant for the Entourage Rails project.
         You have knowledge of the codebase.
