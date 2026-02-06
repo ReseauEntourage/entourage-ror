@@ -9,7 +9,7 @@ module SlackServices
       question = @text.gsub(/<@U[A-Z0-9]+>/, '').strip
 
       # Use Google Gemini API (representing the Jules integration)
-      # Endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
+      # Endpoint changed to v1 stable as v1beta might not support the model in all regions/keys
 
       api_key = ENV['GOOGLE_AI_API_KEY']
       return "Jules API key is missing." if api_key.blank?
@@ -22,7 +22,7 @@ module SlackServices
       PROMPT
 
       response = HTTParty.post(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=#{api_key}",
+        "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=#{api_key}",
         headers: { "Content-Type" => "application/json" },
         body: {
           contents: [
@@ -44,7 +44,8 @@ module SlackServices
         response.dig("candidates", 0, "content", "parts", 0, "text") || "I'm sorry, I couldn't process that question."
       else
         Rails.logger.error "Jules (Gemini) Error: #{response.body}"
-        "An error occurred while Jules was thinking."
+        # Fallback error message
+        "An error occurred while Jules was thinking. (API Error: #{response.code})"
       end
     rescue => e
       Rails.logger.error "Jules Error: #{e.message}"
