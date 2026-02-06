@@ -11,7 +11,6 @@ To connect Jules to Slack, follow these steps:
 2. Under **Scopes > Bot Token Scopes**, add the following:
    - `app_mentions:read`: To allow Jules to see when it is mentioned.
    - `chat:write`: To allow Jules to send messages back to the channel.
-   - `channels:history`: (Optional) If you want Jules to see all messages in a channel without being mentioned.
 
 ## 3. Enable Event Subscriptions
 1. Go to **Event Subscriptions** and toggle **Enable Events**.
@@ -28,7 +27,7 @@ To connect Jules to Slack, follow these steps:
 Add the following variables to your `.env` or secrets:
 - `SLACK_BOT_TOKEN`: The Bot User OAuth Token.
 - `SLACK_SIGNING_SECRET`: Found in **Basic Information > App Credentials**.
-- `OPENAI_API_KEY`: Your OpenAI API key to power the AI analysis.
+- `OPENAI_API_KEY`: Required for the AI analysis (Jules' brain).
 
 ## 6. Invite Jules to Channels
 In Slack, invite the Jules bot to any channel where you want it to be active:

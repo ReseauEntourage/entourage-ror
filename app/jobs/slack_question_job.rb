@@ -2,8 +2,10 @@ class SlackQuestionJob < ApplicationJob
   queue_as :default
 
   def perform(channel:, ts:, text:, user:)
+    # Use the Jules analyzer to generate an answer
     answer = SlackServices::JulesAnalyzer.new(text: text).answer
 
+    # Post the answer back to Slack in the same thread
     send_to_slack(channel: channel, ts: ts, text: answer)
   end
 

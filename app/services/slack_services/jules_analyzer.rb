@@ -8,6 +8,8 @@ module SlackServices
       # Strip the bot mention if present
       question = @text.gsub(/<@U[A-Z0-9]+>/, '').strip
 
+      # Use OpenAI to answer the question with project-specific context
+      # This represents the "Jules" integration brain.
       client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
 
       system_prompt = <<~PROMPT
