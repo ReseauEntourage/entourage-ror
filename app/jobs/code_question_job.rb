@@ -4,10 +4,12 @@ class CodeQuestionJob
   include Sidekiq::Worker
 
   def perform question, channel, thread_ts
-    response = ClaudeServices::CodeAnalyzer.new(question).analyze
+    response = GeminiServices::CodeAnalyzer.new(question).analyze
+
+    answer = response[:success] ? response[:answer] : response[:error]
 
     OpenaiServices::CodeQuestion.new.send_to_slack(
-      response[:answer],
+      answer,
       channel: channel,
       thread_ts: thread_ts
     )
