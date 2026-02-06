@@ -842,6 +842,8 @@ Rails.application.routes.draw do
         match 'entourages/:uuid' => 'entourages#show', :via => :get
       end
 
+      post 'slack/events' => 'slack_events#create'
+
       resources :tags, only: [] do
         collection do
           get :interests
