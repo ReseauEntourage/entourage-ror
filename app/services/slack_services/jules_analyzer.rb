@@ -1,5 +1,5 @@
-module JulesServices
-  class Analyzer
+module SlackServices
+  class JulesAnalyzer
     def initialize(text:)
       @text = text
     end

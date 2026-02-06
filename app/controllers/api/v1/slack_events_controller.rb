@@ -1,6 +1,6 @@
 module Api
   module V1
-    class JulesController < Api::V1::BaseController
+    class SlackEventsController < Api::V1::BaseController
       skip_before_action :authenticate_user!
       skip_before_action :verify_authenticity_token
 
@@ -28,7 +28,7 @@ module Api
       private
 
       def verify_slack_request!
-        return if JulesServices::RequestVerification.new(request).verify!
+        return if SlackServices::JulesRequestVerification.new(request).verify!
 
         head :unauthorized
       end

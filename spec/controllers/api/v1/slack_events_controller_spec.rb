@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::JulesController do
+describe Api::V1::SlackEventsController do
   describe 'POST #create' do
     context 'url_verification' do
       let(:params) { {

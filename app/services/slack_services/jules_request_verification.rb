@@ -1,5 +1,5 @@
-module JulesServices
-  class RequestVerification
+module SlackServices
+  class JulesRequestVerification
     def initialize(request)
       @request = request
     end
