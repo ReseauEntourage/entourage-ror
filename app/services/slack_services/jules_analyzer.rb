@@ -38,9 +38,10 @@ module SlackServices
           ],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 1000
+            maxOutputTokens: 4096
           }
-        }.to_json
+        }.to_json,
+        timeout: 60
       )
 
       if response.success?
@@ -76,8 +77,13 @@ module SlackServices
                 { text: "#{system_prompt}\n\nUser Question: #{question}" }
               ]
             }
-          ]
-        }.to_json
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 4096
+          }
+        }.to_json,
+        timeout: 60
       )
 
       if response.success?
