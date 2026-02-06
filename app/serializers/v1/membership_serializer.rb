@@ -11,12 +11,8 @@ module V1
       :number_of_root_chat_messages,
       :number_of_unread_messages,
       :last_chat_message,
-<<<<<<< HEAD
-      :last_chat_message_image_url
-=======
       :last_chat_message_image_url,
       :last_chat_message_datetime
->>>>>>> EN-8533-last-chat-message-date
 
     def joinable_status
       object.joinable.try(:status)
