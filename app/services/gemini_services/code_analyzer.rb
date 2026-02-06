@@ -28,10 +28,12 @@ module GeminiServices
           ],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 1000
+            maxOutputTokens: 8192
           }
-        }.to_json
+        }.to_json,
+        timeout: 60
       )
+
 
       return {
         success: false,
