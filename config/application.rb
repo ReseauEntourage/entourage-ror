@@ -1,4 +1,5 @@
 require_relative "boot"
+
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
@@ -51,9 +52,6 @@ module EntourageBack
     # Default URL options
     Rails.application.routes.default_url_options[:host] = ENV['HOST']
     config.action_mailer.default_url_options = { host: ENV['HOST'] }
-
-    # TinyMCE
-    config.tinymce.install = :copy
 
     # Lograge setup
     config.lograge.enabled = true

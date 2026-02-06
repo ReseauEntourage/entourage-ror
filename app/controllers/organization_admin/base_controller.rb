@@ -59,11 +59,13 @@ module OrganizationAdmin
 
     def sign_out
       session[:org_admin_user_id] = nil
+      cookies.delete(:user_id)
       @current_user = nil
     end
 
     def sign_in user
       session[:org_admin_user_id] = user.id
+      cookies.encrypted[:user_id] = user.id
       @current_user = nil
     end
 
