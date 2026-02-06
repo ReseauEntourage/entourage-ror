@@ -5,8 +5,6 @@ module SlackServices
     end
 
     def verify!
-      # Always return true in dev/test for convenience,
-      # but in prod we MUST verify the signature.
       return true if Rails.env.development? || Rails.env.test?
 
       signing_secret = ENV['SLACK_SIGNING_SECRET']
@@ -15,7 +13,6 @@ module SlackServices
       timestamp = @request.headers['X-Slack-Request-Timestamp']
       signature = @request.headers['X-Slack-Signature']
 
-      # Prevent replay attacks (5 minutes window)
       return false if timestamp.nil? || (Time.now.to_i - timestamp.to_i).abs > 60 * 5
 
       sig_basestring = "v0:#{timestamp}:#{@request.raw_post}"

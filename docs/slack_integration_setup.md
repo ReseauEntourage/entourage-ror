@@ -27,7 +27,7 @@ To connect Jules to Slack, follow these steps:
 Add the following variables to your `.env` or secrets:
 - `SLACK_BOT_TOKEN`: The Bot User OAuth Token.
 - `SLACK_SIGNING_SECRET`: Found in **Basic Information > App Credentials**.
-- `OPENAI_API_KEY`: Required for the AI analysis (Jules' brain).
+- `GOOGLE_AI_API_KEY`: Required for the AI analysis (Jules integration powered by Google Gemini).
 
 ## 6. Invite Jules to Channels
 In Slack, invite the Jules bot to any channel where you want it to be active:

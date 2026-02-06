@@ -8,9 +8,11 @@ module SlackServices
       # Strip the bot mention if present
       question = @text.gsub(/<@U[A-Z0-9]+>/, '').strip
 
-      # Use OpenAI to answer the question with project-specific context
-      # This represents the "Jules" integration brain.
-      client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
+      # Use Google Gemini API (representing the Jules integration)
+      # Endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
+
+      api_key = ENV['GOOGLE_AI_API_KEY']
+      return "Jules API key is missing." if api_key.blank?
 
       system_prompt = <<~PROMPT
         You are Jules, a technical assistant for the Entourage Rails project.
@@ -19,18 +21,31 @@ module SlackServices
         It uses OutingsServices::Finder with filters: q, latitude, longitude, travel_distance, within_days, interests.
       PROMPT
 
-      response = client.chat(
-        parameters: {
-          model: "gpt-4",
-          messages: [
-            { role: "system", content: system_prompt },
-            { role: "user", content: question }
+      response = HTTParty.post(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=#{api_key}",
+        headers: { "Content-Type" => "application/json" },
+        body: {
+          contents: [
+            {
+              role: "user",
+              parts: [
+                { text: "#{system_prompt}\n\nUser Question: #{question}" }
+              ]
+            }
           ],
-          temperature: 0.7,
-        }
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1000
+          }
+        }.to_json
       )
 
-      response.dig("choices", 0, "message", "content") || "I'm sorry, I couldn't process that question."
+      if response.success?
+        response.dig("candidates", 0, "content", "parts", 0, "text") || "I'm sorry, I couldn't process that question."
+      else
+        Rails.logger.error "Jules (Gemini) Error: #{response.body}"
+        "An error occurred while Jules was thinking."
+      end
     rescue => e
       Rails.logger.error "Jules Error: #{e.message}"
       "An error occurred while Jules was thinking."
