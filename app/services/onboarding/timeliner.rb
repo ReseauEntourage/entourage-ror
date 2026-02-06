@@ -42,6 +42,7 @@ module Onboarding
           object: I18nStruct.new(i18n: 'push_notifications.birthday.title'),
           content: I18nStruct.new(i18n: 'push_notifications.birthday.content'),
           extra: {
+            stage: :birthday,
             tracking: :birthday,
             popup: :birthday
           }
