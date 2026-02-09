@@ -15,7 +15,6 @@
 //= require jquery-ui/datepicker
 //= require jquery-ui/datepicker-fr
 //= require jquery-ui/autocomplete
-//= require turbolinks
 //= require moment
 //= require daterangepicker
 //= require bootstrap-multiselect
