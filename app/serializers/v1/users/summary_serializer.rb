@@ -16,7 +16,8 @@ module V1
         :congratulations,
         :unclosed_action,
         :moderator,
-        :signable_permission
+        :signable_permission,
+        :birthday_today
 
       def preference
         return :contribution if object.ask_for_help?
@@ -93,6 +94,10 @@ module V1
 
       def signable_permission
         object.team? || object.ambassador?
+      end
+
+      def birthday_today
+        object.birthday_today?
       end
 
       private

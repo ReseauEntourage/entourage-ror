@@ -82,6 +82,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
               'goal' => nil,
               'phone' => user.phone,
               'unread_count' => 0,
+              'birthday' => nil,
+              'birthday_today' => false,
               'interests' => [],
               'involvements' => [],
               'orientations' => [],
@@ -89,7 +91,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
               'concerns' => [],
               'travel_distance' => 40,
               'birthdate' => nil,
-              'birthday' => nil,
               'permissions' => {
                 'outing' => { 'creation' => true }
               },
@@ -918,6 +919,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'engaged' => false,
             'goal' => nil,
             'phone' => user.phone,
+            'birthday' => nil,
+            'birthday_today' => false,
             'unread_count' => 0,
             'interests' => [],
             'involvements' => [],
@@ -926,7 +929,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'concerns' => [],
             'travel_distance' => 40,
             'birthdate' => nil,
-            'birthday' => nil,
             'permissions' => {
               'outing' => { 'creation' => true }
             },
@@ -1014,6 +1016,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'engaged' => false,
             'goal' => nil,
             'phone' => user.phone,
+            'birthday' => nil,
+            'birthday_today' => false,
             'unread_count' => 0,
             'interests' => [],
             'involvements' => [],
@@ -1022,7 +1026,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'concerns' => [],
             'travel_distance' => 40,
             'birthdate' => nil,
-            'birthday' => nil,
             'permissions' => {
               'outing' => { 'creation' => true }
             },
@@ -1056,6 +1059,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
             'about' => 'about',
             'avatar_url' => nil,
             'user_type' => 'pro',
+            'birthday' => nil,
+            'birthday_today' => false,
             'stats' => {
               'tour_count' => 0,
               'encounter_count' => 0,

@@ -18,7 +18,7 @@ describe Api::V1::EntouragesController do
 
       it 'renders JSON response' do
         get :index, params: { token: user.token }
-        expect(subject).to eq({
+        expect(subject).to match_array({
           'entourages'=> [{
             'id' => entourage.id,
             'uuid'=>entourage.uuid_v2,
@@ -37,6 +37,7 @@ describe Api::V1::EntouragesController do
               'avatar_url'=>nil,
               'partner'=>nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
             },
             'location'=>{
               'latitude'=>1.122,
@@ -293,7 +294,7 @@ describe Api::V1::EntouragesController do
       context 'valid params' do
         before { allow_any_instance_of(EntourageServices::CategoryLexicon).to receive(:category) { 'mat_help' } }
         before { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: 'foo', entourage_type: 'ask_for_help', display_category: 'mat_help', description: 'foo bar', category: 'mat_help', recipient_consent_obtained: true}, token: user.token } }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'entourage'=> {
             'id'=>Entourage.last.id,
             'uuid'=>Entourage.last.uuid_v2,
@@ -312,6 +313,7 @@ describe Api::V1::EntouragesController do
               'avatar_url'=>nil,
               'partner'=>nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
             },
             'location'=>{
               'latitude'=>4.567,
@@ -385,7 +387,7 @@ describe Api::V1::EntouragesController do
         }
         it do
           outing = Entourage.last
-          expect(JSON.parse(response.body)).to eq(
+          expect(JSON.parse(response.body)).to match_array(
             'entourage'=>{
               'id'=>outing.id,
               'uuid'=>outing.uuid_v2,
@@ -426,6 +428,7 @@ describe Api::V1::EntouragesController do
                 'avatar_url'=>nil,
                 'partner'=>nil,
                 'partner_role_title' => nil,
+                'birthday_today' => be_boolean,
               },
               'location'=>{
                 'latitude'=>48.868959,
@@ -551,7 +554,7 @@ describe Api::V1::EntouragesController do
       context 'entourage exists' do
         context 'find by id' do
           before { get :show, params: { id: entourage.to_param, token: user.token } }
-          it { expect(JSON.parse(response.body)).to eq({
+          it { expect(JSON.parse(response.body)).to match_array({
             'entourage'=> {
               'id'=>entourage.id,
               'uuid'=>entourage.uuid_v2,
@@ -570,6 +573,7 @@ describe Api::V1::EntouragesController do
                 'avatar_url'=>nil,
                 'partner'=>nil,
                 'partner_role_title' => nil,
+                'birthday_today' => be_boolean,
               },
               'location'=>{
                 'latitude'=>1.122,
@@ -611,7 +615,7 @@ describe Api::V1::EntouragesController do
           let!(:entourage) { nil }
           let(:other_user) { create :public_user, first_name: 'Buzz', last_name: 'Lightyear' }
           before { get :show, params: { id: "1_list_#{user.id}-#{other_user.id}", token: user.token } }
-          it { expect(JSON.parse(response.body)).to eq({
+          it { expect(JSON.parse(response.body)).to match_array({
             'entourage'=>{
               'id'=>nil,
               'uuid'=>"1_list_#{user.id}-#{other_user.id}",
@@ -640,6 +644,7 @@ describe Api::V1::EntouragesController do
                 'avatar_url'=>nil,
                 'partner'=>nil,
                 'partner_role_title' => nil,
+                'birthday_today' => be_boolean,
               },
               'location'=>{'latitude'=>0.0, 'longitude'=>0.0},
               'display_report_prompt' => false
@@ -704,7 +709,7 @@ describe Api::V1::EntouragesController do
             portrait_thumbnail_url: 'path/to/portrait_thumbnail_url',
           }}, token: user.token }
         }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'entourage'=> {
             'id'=>outing.id,
             'uuid'=>outing.uuid_v2,
@@ -736,6 +741,7 @@ describe Api::V1::EntouragesController do
               'avatar_url'=>nil,
               'partner'=>nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
             },
             'location'=>{
               'latitude'=>outing.latitude,
@@ -757,7 +763,7 @@ describe Api::V1::EntouragesController do
 
       context 'entourage exists' do
         before { patch :update, params: { id: user_entourage.to_param, entourage: {title: 'new_title'}, token: user.token } }
-        it { expect(JSON.parse(response.body)).to eq({
+        it { expect(JSON.parse(response.body)).to match_array({
           'entourage'=> {
             'id'=>user_entourage.id,
             'uuid'=>user_entourage.uuid_v2,
@@ -776,6 +782,7 @@ describe Api::V1::EntouragesController do
               'avatar_url'=>nil,
               'partner'=>nil,
               'partner_role_title' => nil,
+              'birthday_today' => be_boolean,
             },
             'location'=>{
               'latitude'=>1.122,

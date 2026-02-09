@@ -36,6 +36,7 @@ module V1
         partner_role_title: user.partner_role_title.presence,
         roles: UserPresenter.new(user: user).public_targeting_profiles,
         moderator: user.admin?,
+        birthday_today: user.birthday_today?
       }
     end
 

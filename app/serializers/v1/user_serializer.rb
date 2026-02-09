@@ -33,7 +33,8 @@ module V1
     attribute :goal,                if: :me?
     attribute :phone,               if: :me?
     attribute :travel_distance,     if: :me?
-    attribute :birthday,            if: :me?
+    attribute :birthday
+    attribute :birthday_today
     attribute :birthdate,           if: :me?
     attribute :created_at
 
@@ -105,6 +106,10 @@ module V1
 
     # @deprecated
     def birthday
+    end
+
+    def birthday_today
+      object.birthday_today?
     end
 
     # @deprecated
