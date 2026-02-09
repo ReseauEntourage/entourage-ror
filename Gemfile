@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.2.0'
+ruby '3.2.3'
 
 gem 'rails', '~> 7.1.0'
 
@@ -14,7 +14,9 @@ gem 'sprockets-rails', '~> 3.2'
 gem 'sass-rails' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
-gem 'turbolinks', '~> 5' # html
+gem 'importmap-rails'
+gem 'turbo-rails'
+gem 'stimulus-rails'
 gem 'momentjs-rails', '~> 2'
 gem 'select2-rails'
 
