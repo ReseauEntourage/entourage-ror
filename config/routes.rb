@@ -834,6 +834,7 @@ Rails.application.routes.draw do
       get 'ping_db' => 'base#ping_db'
       get 'ping_mq' => 'base#ping_mq'
       get 'ping_op_lapin' => 'base#ping_op_lapin'
+      post 'pings/dispatch_websocket' => 'pings#dispatch_websocket'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do
@@ -921,6 +922,7 @@ Rails.application.routes.draw do
   get 'cgu' => 'home#cgu'
   get 'ping' => 'application#ping'
   get 'ping_db' => 'application#ping_db'
+  get 'pings/show' => 'pings#show'
 
   #PUBLIC USER
   namespace :public_user do
