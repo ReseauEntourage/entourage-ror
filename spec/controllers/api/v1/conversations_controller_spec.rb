@@ -170,6 +170,7 @@ describe Api::V1::ConversationsController do
       it { expect(subject_smalltalk["name"]).to eq("Jane") }
       it { expect(subject_smalltalk["last_chat_message"]).to eq("smalltalk_message_recent") }
       it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq("http://foo.bar") }
+      it { expect(subject_smalltalk["last_chat_message_datetime"]).to eq(smalltalk_chat_message_recent.created_at.utc.iso8601(3)) }
     end
   end
 
