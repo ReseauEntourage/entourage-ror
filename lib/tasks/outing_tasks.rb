@@ -47,7 +47,7 @@ module OutingTasks
       Outing
         .active
         .unlimited
-        .where(online: false)
+        .where("online = false OR title ILIKE '%papotage%'")
         .upcoming_today
         .with_moderation
         .where("entourage_moderations.moderated_at is not null")
