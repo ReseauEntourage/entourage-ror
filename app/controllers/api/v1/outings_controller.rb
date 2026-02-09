@@ -156,6 +156,14 @@ module Api
         end
       end
 
+      def sensibilisation
+        if @outing = Outing.future_or_ongoing.welcome_category.first
+          render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
+        else
+          render json: { message: 'Could not find outing' }, status: 400
+        end
+      end
+
       def count
         outings = OutingsServices::Finder.new(current_user, index_params).find_all
 

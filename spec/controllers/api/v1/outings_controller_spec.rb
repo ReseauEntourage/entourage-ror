@@ -902,7 +902,8 @@ describe Api::V1::OutingsController do
 
   describe 'GET smalltalk' do
     let(:online) { true }
-    let!(:outing) { create(:outing, status: 'open', title: 'Événement Papotages', online: online) }
+    let(:title) { 'Événement Papotages' }
+    let!(:outing) { create(:outing, status: 'open', title: title, online: online) }
 
     before { get :smalltalk, params: { token: user.token } }
 
@@ -914,6 +915,38 @@ describe Api::V1::OutingsController do
 
     context 'offline' do
       let(:online) { false }
+
+      it { expect(response.status).to eq 400 }
+    end
+
+    context 'wrong title' do
+      let(:title) { 'Événement foobar' }
+
+      it { expect(response.status).to eq 400 }
+    end
+  end
+
+  describe 'GET sensibilisation' do
+    let(:online) { true }
+    let(:tag) { :atelier_femmes }
+    let!(:outing) { create(:outing, :outing_class, status: 'open', online: online, sf_category_list: [tag]) }
+
+    before { get :sensibilisation, params: { token: user.token } }
+
+    context 'online' do
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('outing') }
+      it { expect(subject['outing']['id']).to eq(outing.id) }
+    end
+
+    context 'offline' do
+      let(:online) { false }
+
+      it { expect(response.status).to eq 400 }
+    end
+
+    context 'wrong tag' do
+      let(:tag) { :passion_sport }
 
       it { expect(response.status).to eq 400 }
     end
