@@ -2,12 +2,13 @@ class AddPhoneElToSalesforceContact < ActiveRecord::Migration[7.1]
   def up
     return unless EnvironmentHelper.production? || EnvironmentHelper.staging?
 
-    SalesforceServices::TableInterface.create_field(
-      'Contact',
-      'Phone_EL',
-      'Téléphone Entourage Local',
-      'Phone'
-    )
+    # # This field has already been created on production
+    # SalesforceServices::TableInterface.create_field(
+    #   'Contact',
+    #   'Phone_EL',
+    #   'Téléphone Entourage Local',
+    #   'Phone'
+    # )
   end
 
   def down
