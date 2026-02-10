@@ -34,7 +34,7 @@ module UserServices
     end
 
     def validate_gender_format
-      return if gender.nil?
+      return unless gender.present?
 
       unless GENDERS.keys.map(&:to_s).include?(gender.to_s)
         return errors.add(:gender, "should be #{GENDERS.keys.join(', ')}")
@@ -42,7 +42,7 @@ module UserServices
     end
 
     def validate_discovery_source_format
-      return if discovery_source.nil?
+      return unless discovery_source.present?
 
       unless DISCOVERY_SOURCES.keys.map(&:to_s).include?(discovery_source.to_s)
         return errors.add(:discovery_source, "should be #{DISCOVERY_SOURCES.keys.join(', ')}")
@@ -50,7 +50,7 @@ module UserServices
     end
 
     def validate_sf_entreprise_id
-      return if sf_entreprise_id.nil?
+      return unless sf_entreprise_id.present?
 
       unless sf_entreprise_id.match?(SALESFORCE_ID_REGEX)
         errors.add(:sf_entreprise_id, "should be a salesforce id")
@@ -58,7 +58,7 @@ module UserServices
     end
 
     def validate_sf_campaign_id
-      return if sf_campaign_id.nil?
+      return unless sf_campaign_id.present?
 
       unless sf_campaign_id.match?(SALESFORCE_ID_REGEX)
         errors.add(:sf_campaign_id, "should be a salesforce id")
