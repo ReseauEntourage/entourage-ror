@@ -2,7 +2,7 @@ module UserServices
   module Options
     extend ActiveSupport::Concern
 
-    OPTIONS = ['last_unclosed_action_notification_at', 'goal_choice', 'gender', 'discovery_source', 'photo_acceptance', 'company', 'event']
+    OPTIONS = ['last_unclosed_action_notification_at', 'goal_choice', 'gender', 'discovery_source', 'photo_acceptance', 'sf_entreprise_id', 'sf_campaign_id']
     OPTION_TYPES = {
       'photo_acceptance' => :boolean
     }
@@ -29,12 +29,12 @@ module UserServices
     included do
       validate :validate_gender_format
       validate :validate_discovery_source_format
-      validate :validate_company
-      validate :validate_event
+      validate :validate_sf_entreprise_id
+      validate :validate_sf_campaign_id
     end
 
     def validate_gender_format
-      return if gender.nil?
+      return unless gender.present?
 
       unless GENDERS.keys.map(&:to_s).include?(gender.to_s)
         return errors.add(:gender, "should be #{GENDERS.keys.join(', ')}")
@@ -42,26 +42,26 @@ module UserServices
     end
 
     def validate_discovery_source_format
-      return if discovery_source.nil?
+      return unless discovery_source.present?
 
       unless DISCOVERY_SOURCES.keys.map(&:to_s).include?(discovery_source.to_s)
         return errors.add(:discovery_source, "should be #{DISCOVERY_SOURCES.keys.join(', ')}")
       end
     end
 
-    def validate_company
-      return if company.nil?
+    def validate_sf_entreprise_id
+      return unless sf_entreprise_id.present?
 
-      unless company.match?(SALESFORCE_ID_REGEX)
-        errors.add(:company, "should be a salesforce id")
+      unless sf_entreprise_id.match?(SALESFORCE_ID_REGEX)
+        errors.add(:sf_entreprise_id, "should be a salesforce id")
       end
     end
 
-    def validate_event
-      return if event.nil?
+    def validate_sf_campaign_id
+      return unless sf_campaign_id.present?
 
-      unless event.match?(SALESFORCE_ID_REGEX)
-        errors.add(:event, "should be a salesforce id")
+      unless sf_campaign_id.match?(SALESFORCE_ID_REGEX)
+        errors.add(:sf_campaign_id, "should be a salesforce id")
       end
     end
 
