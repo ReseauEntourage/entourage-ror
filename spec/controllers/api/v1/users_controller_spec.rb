@@ -733,8 +733,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       record = UserPhoneChange.last
 
-      expect(record.attributes.slice('phone_was', 'phone', 'email')).to eq(
-        'phone_was' => '+33623456789',
+      expect(record.attributes.slice('previous_phone', 'phone', 'email')).to eq(
+        'previous_phone' => '+33623456789',
         'phone'     => '+33698765432',
         'email'     => 'my@email.com'
       )

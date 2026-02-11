@@ -1115,7 +1115,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "user_id", null: false
     t.integer "admin_id"
     t.string "kind", null: false
-    t.string "phone_was", null: false
+    t.string "previous_phone", null: false
     t.string "phone", null: false
     t.string "email"
     t.datetime "created_at", precision: nil, null: false

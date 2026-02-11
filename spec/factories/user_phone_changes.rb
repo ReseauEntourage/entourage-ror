@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user_phone_change do
-    phone_was { '+33600000000' }
+    previous_phone { '+33600000000' }
     phone { '+33600000001' }
     email { 'foo@bar.email' }
 

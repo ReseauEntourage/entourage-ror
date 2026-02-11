@@ -17,7 +17,7 @@ module UserServices
         user_id: user.id,
         admin_id: admin.id,
         kind: :change,
-        phone_was: user.phone_was,
+        previous_phone: user.previous_phone,
         phone: user.phone,
         email: user.email
       )
@@ -28,7 +28,7 @@ module UserServices
         user_id: user.id,
         admin_id: admin.id,
         kind: :cancel,
-        phone_was: user.phone,
+        previous_phone: user.phone,
         phone: user.phone,
         email: user.email
       )
@@ -40,7 +40,7 @@ module UserServices
       UserPhoneChange.create(
         user_id: @user.id,
         kind: :request,
-        phone_was: @user.phone,
+        previous_phone: @user.phone,
         phone: requested_phone,
         email: email
       )

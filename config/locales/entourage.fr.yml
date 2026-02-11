@@ -56,7 +56,7 @@ fr:
         user: Utilisateur
         admin: Admin
         kind: Type
-        phone_was: Ancien téléphone
+        previous_phone: Ancien téléphone
         phone: Nouveau téléphone
         email: Email
       user_history:
