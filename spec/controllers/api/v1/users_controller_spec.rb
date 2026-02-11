@@ -719,21 +719,25 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       })
     }
 
-    before { # user_phone_change history
-      expect(UserPhoneChange).to receive(:create).with({
-        user_id: user.id,
-        kind: :request,
-        phone_was: '+33623456789',
-        phone: '+33698765432',
-        email: 'my@email.com'
-      })
-    }
+    it 'creates a UserPhoneChange record and sends Slack notification' do
+      expect {
+        post 'request_phone_change', params: {
+          user: {
+            current_phone: '+33623456789',
+            requested_phone: '+33698765432',
+            email: 'my@email.com'
+          },
+          format: :json
+        }
+      }.to change(UserPhoneChange, :count).by(1)
 
-    it 'request a phone change on Slack' do
-      post 'request_phone_change', params: {
-        user: { current_phone: '+33623456789', requested_phone: '+33698765432', email: 'my@email.com' },
-        format: :json
-      }
+      record = UserPhoneChange.last
+
+      expect(record.attributes.slice('phone_was', 'phone', 'email')).to eq(
+        'phone_was' => '+33623456789',
+        'phone'     => '+33698765432',
+        'email'     => 'my@email.com'
+      )
     end
   end
 

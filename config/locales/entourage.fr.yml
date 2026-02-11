@@ -52,6 +52,13 @@ fr:
         user: Utilisateur
         blocked_user: Utilisateur bloqué
         status: Statut
+      user_phone_change:
+        user: Utilisateur
+        admin: Admin
+        kind: Type
+        phone_was: Ancien téléphone
+        phone: Nouveau téléphone
+        email: Email
       user_history:
         kind:
           account: Compte créé

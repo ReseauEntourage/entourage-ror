@@ -129,7 +129,7 @@ module Api
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:current_phone]).format
-        user = community.users.where(phone: user_phone).first
+        user = community.users.find_by!(phone: user_phone)
 
         if user.nil?
           return render_error(code: 'USER_NOT_FOUND', message: "L'ancien numéro est inconnu. Veuillez vérifier", status: 404)
