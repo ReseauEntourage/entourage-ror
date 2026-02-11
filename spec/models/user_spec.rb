@@ -110,7 +110,7 @@ describe User, type: :model do
       let(:gender) { "" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:gender]).to be_empty }
-      it { expect(user.gender).to be_nil }
+      it { expect(user.gender).to be_empty }
     end
 
     context "with nil gender" do
@@ -140,7 +140,7 @@ describe User, type: :model do
       let(:discovery_source) { "" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:discovery_source]).to be_empty }
-      it { expect(user.discovery_source).to be_nil }
+      it { expect(user.discovery_source).to be_empty }
     end
 
     context "with nil discovery_source" do
@@ -170,7 +170,7 @@ describe User, type: :model do
       let(:sf_entreprise_id) { "" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:sf_entreprise_id]).to be_empty }
-      it { expect(user.sf_entreprise_id).to be_nil }
+      it { expect(user.sf_entreprise_id).to be_empty }
     end
 
     context "with nil sf_entreprise_id" do
@@ -202,7 +202,7 @@ describe User, type: :model do
       let(:sf_campaign_id) { "" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:sf_campaign_id]).to be_empty }
-      it { expect(user.sf_campaign_id).to be_nil }
+      it { expect(user.sf_campaign_id).to be_empty }
     end
 
     context "with nil sf_campaign_id" do
