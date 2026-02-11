@@ -12,18 +12,6 @@ module UserServices
       SlackServices::RequestPhoneChange.new(user: @user, requested_phone: requested_phone, email: email).notify
     end
 
-    private
-
-    def record_phone_request! requested_phone, email
-      UserPhoneChange.create(
-        user_id: @user.id,
-        kind: :request,
-        phone_was: @user.phone,
-        phone: requested_phone,
-        email: email
-      )
-    end
-
     def self.record_phone_change! user:, admin:
       UserPhoneChange.create(
         user_id: user.id,
@@ -43,6 +31,18 @@ module UserServices
         phone_was: user.phone,
         phone: user.phone,
         email: user.email
+      )
+    end
+
+    private
+
+    def record_phone_request! requested_phone, email
+      UserPhoneChange.create(
+        user_id: @user.id,
+        kind: :request,
+        phone_was: @user.phone,
+        phone: requested_phone,
+        email: email
       )
     end
   end
