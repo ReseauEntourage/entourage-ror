@@ -147,7 +147,7 @@ module Api
           return render_error(code: 'IDENTICAL_PHONES', message: 'Les deux numéros sont identiques. Veuillez vérifier le nouveau numéro', status: 404)
         end
 
-        UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone], email: user_params[:email])
+        UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone])
         render json: { code: 'SENT', message: 'Votre demande de changement de numéro de téléphone a été envoyée' }, status: 200
       end
 

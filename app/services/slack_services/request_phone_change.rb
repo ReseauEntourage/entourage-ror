@@ -2,15 +2,14 @@ module SlackServices
   class RequestPhoneChange < Notifier
     USERNAME = 'Changement de téléphone'
 
-    def initialize user:, requested_phone:, email:
+    def initialize user:, requested_phone:
       @user = user
-      @email = email
       @requested_phone = requested_phone
     end
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}) L'utilisateur #{@user.full_name}, #{@email || '[Email non indiqué]'} a requis un changement de numéro de téléphone",
+        text: "<@#{slack_moderator_id(@user)}> ou team modération (département : #{departement(@user) || 'n/a'}) L'utilisateur #{@user.full_name} a requis un changement de numéro de téléphone",
         attachments: [{
           text: link_to_user(@user.id),
         }, {

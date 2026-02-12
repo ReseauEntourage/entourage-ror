@@ -700,7 +700,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   end
 
   describe 'POST request_phone_change' do
-    let!(:user) { FactoryBot.create(:pro_user, phone: '+33623456789') }
+    let!(:user) { create(:pro_user, phone: '+33623456789') }
 
     before { # stubs
       SlackServices::RequestPhoneChange.any_instance.stub(:webhook).with('url') { 'https://www.google.fr' }
@@ -710,34 +710,52 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       stub_request(:post, 'https://www.google.fr/').to_return(status: 200, body: '', headers: {})
     }
 
-    before { # slack ping
-      expect_any_instance_of(Slack::Notifier).to receive(:ping).with({
-        attachments: [{ text: 'https://www.google.fr'}, { text: 'Téléphone requis : +33698765432'}, {text: 'Département : '}],
-        channel: '#channel',
-        text: "<@laure> ou team modération (département : n/a) L'utilisateur John Doe, my@email.com a requis un changement de numéro de téléphone",
-        username: SlackServices::RequestPhoneChange::USERNAME
-      })
-    }
 
-    it 'creates a UserPhoneChange record and sends Slack notification' do
-      expect {
-        post 'request_phone_change', params: {
-          user: {
-            current_phone: '+33623456789',
-            requested_phone: '+33698765432',
-            email: 'my@email.com'
-          },
-          format: :json
-        }
-      }.to change(UserPhoneChange, :count).by(1)
+    context 'no existing request' do
+      before { # slack ping
+        expect_any_instance_of(Slack::Notifier).to receive(:ping).with({
+          attachments: [{ text: 'https://www.google.fr'}, { text: 'Téléphone requis : +33698765432'}, {text: 'Département : '}],
+          channel: '#channel',
+          text: "<@laure> ou team modération (département : n/a) L'utilisateur John Doe a requis un changement de numéro de téléphone",
+          username: SlackServices::RequestPhoneChange::USERNAME
+        })
+      }
+      it 'creates a UserPhoneChange record and sends Slack notification' do
+        expect {
+          post 'request_phone_change', params: {
+            user: {
+              current_phone: '+33623456789',
+              requested_phone: '+33698765432'
+            },
+            format: :json
+          }
+        }.to change(UserPhoneChange, :count).by(1)
 
-      record = UserPhoneChange.last
+        record = UserPhoneChange.last
 
-      expect(record.attributes.slice('previous_phone', 'phone', 'email')).to eq(
-        'previous_phone' => '+33623456789',
-        'phone'     => '+33698765432',
-        'email'     => 'my@email.com'
-      )
+        expect(record.attributes.slice('previous_phone', 'phone')).to eq(
+          'previous_phone' => '+33623456789',
+          'phone'     => '+33698765432'
+        )
+      end
+    end
+
+    context 'existing request' do
+      let!(:user_phone_change) { create(:user_phone_change, user: user, kind: :request, previous_phone: '+33623456789', phone: '+33698765432') }
+
+      before { expect_any_instance_of(Slack::Notifier).not_to receive(:ping) }
+
+      it do
+        expect {
+          post 'request_phone_change', params: {
+            user: {
+              current_phone: '+33623456789',
+              requested_phone: '+33698765432'
+            },
+            format: :json
+          }
+        }.not_to change(UserPhoneChange, :count)
+      end
     end
   end
 
