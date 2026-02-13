@@ -17,6 +17,7 @@ module SalesforceServices
       birthdate: 'Birthdate',
       birthdate_copy: 'Date_de_naissance__c',
       discovery_source: 'Comment_nous_avez_vous_connu__c',
+      sf_campaign_id: 'Campagne_source__c',
     }
 
     CASQUETTES_MAPPING = {
@@ -152,6 +153,10 @@ module SalesforceServices
         return unless DISCOVERY_SOURCE_MAPPING.has_key?(key = contact.discovery_source.to_sym)
 
         DISCOVERY_SOURCE_MAPPING[key]
+      end
+
+      def sf_campaign_id
+        contact.sf_campaign_id
       end
     end
   end
