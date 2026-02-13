@@ -77,36 +77,6 @@ module Onboarding
         .pluck(:id)
     end
 
-    def self.deliver_ethical_charter
-      now = Time.zone.now
-      return unless now.strftime('%A').in?(ACTIVE_DAYS)
-      return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
-
-      User.where(id: ethical_charter_user_ids).find_each do |user|
-        next unless author = ModerationServices.moderator_for_user(user)
-
-        if conversation = conversation_with([author.id, user.id])
-          join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
-        else
-          conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id], creator_id: author.id)
-          join_request = conversation.join_requests.to_a.find { |r| r.user_id == author.id }
-        end
-
-        ChatServices::ChatMessageBuilder.new(
-          user: author,
-          joinable: conversation,
-          join_request: join_request,
-          params: {
-            content: I18n.t('onboarding.ethical_charter', locale: user.lang) % [author.first_name]
-          }
-        ).create do |on|
-          on.success do
-            Event.track('onboarding.chat_messages.ethical_charter.sent', user_id: user.id)
-          end
-        end
-      end
-    end
-
     def self.ethical_charter_user_ids
       # 2024-10-23 is the day when we sent this functionality to production
       User.where(community: :entourage, deleted: false, admin: false)
