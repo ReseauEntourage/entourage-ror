@@ -3,6 +3,8 @@ module SlackServices
     def initialize ip:, attack_type:
       @ip = ip
       @attack_type = attack_type
+
+      set_slack_notification(instance_type: nil, instance_id: nil)
     end
 
     def env

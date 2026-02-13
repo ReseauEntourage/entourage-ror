@@ -1,7 +1,13 @@
 module SlackServices
   class Notifier
+    attr_reader :slack_notification
+
     def notify
+      return unless should_notify?
+
       notifier&.ping payload.merge(payload_adds)
+
+      save_slack_notification
     end
 
     def notifier
@@ -73,6 +79,32 @@ module SlackServices
       else
         Rails.application.routes.url_helpers.admin_entourage_url(conversation_or_action.id, host: ENV['ADMIN_HOST'])
       end
+    end
+
+    # By default, we send a notification if there is no existing one for the given context and instance.
+    # This allows us to avoid sending multiple notifications for the same event (e.g., multiple comments on the same action).
+    # If a notification already exists, we assume that it has already been sent and we do not send another one.
+    def should_notify?
+      return true unless slack_notification.present?
+
+      slack_notification.new_record?
+    end
+
+    def set_slack_notification instance_type:, instance_id:, options: {}
+      @slack_notification = SlackNotification
+        .where('created_at >= ?', Time.current.beginning_of_day)
+        .find_or_initialize_by(
+          instance_type: instance_type,
+          instance_id: instance_id,
+          options: options,
+          context: self.class.name.underscore
+        )
+    end
+
+    def save_slack_notification
+      return unless slack_notification.present?
+
+      slack_notification.save!
     end
   end
 end

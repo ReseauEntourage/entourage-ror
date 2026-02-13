@@ -8,6 +8,8 @@ module SlackServices
       @signals = signals
       @message = message
       @content = chat_message.content
+
+      set_slack_notification(instance_type: @chat_message.class.name, instance_id: @chat_message.id)
     end
 
     def env

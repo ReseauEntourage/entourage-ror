@@ -3,6 +3,8 @@ module SlackServices
     def initialize spam_user:, content:
       @spam_user = spam_user
       @content = content
+
+      set_slack_notification(instance_type: @spam_user.class.name, instance_id: @spam_user.id)
     end
 
     def env

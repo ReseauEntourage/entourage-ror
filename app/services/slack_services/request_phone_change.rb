@@ -5,6 +5,10 @@ module SlackServices
     def initialize user:, requested_phone:
       @user = user
       @requested_phone = requested_phone
+
+      set_slack_notification(instance_type: @user.class.name, instance_id: @user.id, options: {
+        requested_phone: @requested_phone,
+      })
     end
 
     def payload

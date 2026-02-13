@@ -3,6 +3,8 @@ module SlackServices
     def initialize chat_message_id:, text:
       @chat_message = ChatMessage.find(chat_message_id) if chat_message_id
       @text = Mentionable.no_html(text)
+
+      set_slack_notification(instance_type: @chat_message.class.name, instance_id: @chat_message.id)
     end
 
     def env

@@ -3,6 +3,8 @@ module SlackServices
     def initialize action:, message:
       @action = action
       @message = message
+
+      set_slack_notification(instance_type: @action.class.name, instance_id: @action.id)
     end
 
     def env

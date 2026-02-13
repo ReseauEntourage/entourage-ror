@@ -2,6 +2,8 @@ module SlackServices
   class UnblockUser < Notifier
     def initialize user_id:
       @user = User.find_by_id(user_id)
+
+      set_slack_notification(instance_type: @user.class.name, instance_id: @user.id)
     end
 
     def env

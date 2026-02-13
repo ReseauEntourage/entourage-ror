@@ -7,12 +7,6 @@ module SlackServices
       @partner = partner
     end
 
-    def notify
-      return unless should_notify?
-
-      super
-    end
-
     def env
       ENV['SLACK_APP_WEBHOOKS']
     end
@@ -51,7 +45,9 @@ module SlackServices
     private
 
     def should_notify?
-      (changes.keys & TRACKED_ATTRIBUTES).any?
+      return false unless (changes.keys & TRACKED_ATTRIBUTES).any?
+
+      super
     end
 
     def changes

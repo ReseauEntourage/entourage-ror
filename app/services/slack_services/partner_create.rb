@@ -1,8 +1,10 @@
 module SlackServices
   class PartnerCreate < Notifier
-    def initialize(partner:)
+    def initialize partner:
       @partner = partner
       @user = partner.users.first
+
+      set_slack_notification(instance_type: @partner.class.name, instance_id: @partner.id)
     end
 
     def env

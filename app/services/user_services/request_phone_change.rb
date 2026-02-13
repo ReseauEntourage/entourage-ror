@@ -21,7 +21,7 @@ module UserServices
         user_id: user.id,
         admin_id: admin.id,
         kind: :change,
-        previous_phone: user.previous_phone,
+        previous_phone: user.phone_was,
         phone: user.phone
       )
     end

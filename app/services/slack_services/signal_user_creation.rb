@@ -3,6 +3,8 @@ module SlackServices
     def initialize user:, blocked_user_ids:
       @user = user
       @blocked_user_ids = blocked_user_ids
+
+      set_slack_notification(instance_type: @user.class.name, instance_id: @user.id)
     end
 
     def env

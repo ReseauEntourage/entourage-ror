@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :user_phone_change do
     previous_phone { '+33600000000' }
     phone { '+33600000001' }
-    email { 'foo@bar.email' }
 
     trait :request do
       kind { 'request' }

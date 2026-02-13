@@ -154,8 +154,7 @@ describe Admin::UsersController do
           admin_id: admin.id,
           kind: :change,
           previous_phone: '+33600112233',
-          phone: '+33611223344',
-          email: user.email
+          phone: '+33611223344'
         })
       }
 

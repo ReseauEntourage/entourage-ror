@@ -11,32 +11,26 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 202405021415000) do
-  create_schema "linkedout"
-  create_schema "stats"
-
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
   enable_extension "unaccent"
-  enable_extension "uuid-ossp"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.profile.goal.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.chat_messages.ethical_charter.sent"]
+  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.profile.goal.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent"]
   create_enum "sms_delivery_provider", ["AWS", "Nexmo", "Slack", "logs"]
   create_enum "sms_delivery_status", ["Ok", "Provider Error", "Sending Error"]
 
-  create_table "active_admin_comments", id: false, force: :cascade do |t|
-    t.serial "id", null: false
-    t.string "namespace", limit: 255
+  create_table "active_admin_comments", id: :serial, force: :cascade do |t|
+    t.string "namespace"
     t.text "body"
-    t.string "resource_id", limit: 255, null: false
-    t.string "resource_type", limit: 255, null: false
+    t.string "resource_id", null: false
+    t.string "resource_type", null: false
+    t.string "author_type"
     t.integer "author_id"
-    t.string "author_type", limit: 255
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
@@ -57,28 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "user_id", null: false
     t.integer "position", default: 1, null: false
     t.string "city"
-    t.string "street_number", default: "null"
-    t.string "route", default: "null"
-    t.string "addressable_type", default: "null"
-    t.integer "addressable_id"
     t.index ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true
-  end
-
-  create_table "admin_users", id: :serial, force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.index ["email"], name: "index_admin_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
   create_table "announcements", id: :serial, force: :cascade do |t|
@@ -107,7 +80,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   create_table "categories", id: :serial, force: :cascade do |t|
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-    t.string "name", limit: 255
+    t.string "name"
   end
 
   create_table "categories_pois", id: false, force: :cascade do |t|
@@ -131,10 +104,10 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "status", default: "active"
     t.integer "deleter_id"
     t.datetime "deleted_at", precision: nil
-    t.string "uuid_v2", limit: 15, null: false
-    t.json "options", default: {}
+    t.string "uuid_v2", limit: 12, null: false
     t.integer "survey_id"
     t.integer "comments_count", default: 0
+    t.jsonb "options"
     t.index "((metadata ->> 'conversation_message_broadcast_id'::text))", name: "index_chat_messages_on_conversation_broadcast_id"
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
@@ -143,7 +116,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["status"], name: "index_chat_messages_on_status"
     t.index ["survey_id"], name: "index_chat_messages_on_survey_id"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
-    t.index ["uuid_v2"], name: "index_chat_messages_on_uuid_v2", unique: true
   end
 
   create_table "contact_subscriptions", force: :cascade do |t|
@@ -346,6 +318,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "description"
     t.uuid "uuid"
     t.string "category"
+    t.boolean "use_suggestions", default: false, null: false
     t.string "display_category"
     t.string "uuid_v2", limit: 71, null: false
     t.string "postal_code", limit: 8
@@ -368,14 +341,11 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "number_of_root_chat_messages", default: 0
     t.string "salesforce_id"
     t.string "exclusive_to"
-    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
     t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["created_at"], name: "index_entourages_on_created_at"
-    t.index ["description"], name: "index_entourages_on_description", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["group_type"], name: "index_entourages_on_group_type"
-    t.index ["title"], name: "index_entourages_on_title", opclass: :gin_trgm_ops, where: "((group_type)::text = 'action'::text)", using: :gin
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
     t.index ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true
@@ -415,22 +385,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
   end
 
-  create_table "fp_denorm_daily_engagements", id: false, force: :cascade do |t|
-    t.date "date", null: false
-    t.integer "user_id", null: false
-    t.string "postal_code", limit: 8
-    t.index ["date", "user_id", "postal_code"], name: "fp_denorm_daily_engagements_date_idx", unique: true
-  end
-
-  create_table "fp_image_resize_actions", id: false, force: :cascade do |t|
-    t.string "bucket"
-    t.string "path"
-    t.string "destPath"
-    t.string "destSize"
-    t.datetime "created_at", precision: nil
-    t.string "status"
-  end
-
   create_table "image_resize_actions", force: :cascade do |t|
     t.string "bucket", null: false
     t.string "path", null: false
@@ -456,7 +410,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "post_id"
     t.integer "sender_id"
     t.string "title"
-    t.string "instance_class", default: "Entourage"
+    t.string "instance_baseclass", default: "Entourage"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
@@ -484,19 +438,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["participate_at"], name: "index_join_requests_on_participate_at"
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable"
     t.index ["user_id"], name: "index_join_requests_on_user_id"
-  end
-
-  create_table "lexical_transformations", force: :cascade do |t|
-    t.string "instance_type"
-    t.integer "instance_id"
-    t.jsonb "name"
-    t.jsonb "description"
-    t.boolean "performed", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["description"], name: "index_lexical_transformations_on_description", using: :gin
-    t.index ["instance_type", "instance_id"], name: "index_lexical_transformations_on_instance_type_and_instance_id", unique: true
-    t.index ["name"], name: "index_lexical_transformations_on_name", using: :gin
   end
 
   create_table "login_histories", id: :serial, force: :cascade do |t|
@@ -546,7 +487,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   create_table "moderation_areas", id: :serial, force: :cascade do |t|
     t.string "departement", limit: 2, null: false
     t.string "name", null: false
-    t.integer "moderator_id"
     t.string "slack_channel", limit: 80
     t.text "welcome_message_1_offer_help"
     t.text "welcome_message_2_offer_help"
@@ -557,9 +497,9 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
     t.string "slack_moderator_id_old"
-    t.boolean "activity", default: false, null: false
     t.integer "animator_id"
     t.integer "sourcing_id"
+    t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
@@ -626,7 +566,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "email", limit: 255
+    t.string "email"
     t.boolean "active"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
@@ -667,9 +607,9 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "days_for_outings", default: 30
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "module_type", default: "matching"
     t.integer "max_prompt_tokens", default: 1048576
     t.integer "max_completion_tokens", default: 1024
+    t.string "module_type", default: "matching"
   end
 
   create_table "openai_requests", force: :cascade do |t|
@@ -739,8 +679,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
 
   create_table "partners", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.string "large_logo_url"
-    t.string "small_logo_url"
+    t.string "large_logo_url_old"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "description"
@@ -754,19 +693,22 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.float "latitude"
     t.float "longitude"
     t.boolean "staff", default: false, null: false
+    t.text "searchable_text"
+    t.string "image_url"
+    t.index ["searchable_text"], name: "index_partners_on_searchable_text_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "pois", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.text "description"
     t.float "latitude"
     t.float "longitude"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-    t.string "adress", limit: 255
-    t.string "phone", limit: 255
+    t.string "adress"
+    t.string "phone"
     t.string "website"
-    t.string "email", limit: 512
+    t.string "email"
     t.string "audience"
     t.integer "category_id"
     t.boolean "validated", default: false, null: false
@@ -777,7 +719,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "hours"
     t.string "languages"
     t.string "postal_code"
-    t.boolean "internal", default: false
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
@@ -789,6 +730,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   create_table "reactions", force: :cascade do |t|
     t.string "name"
     t.string "key"
+    t.string "image_url"
     t.integer "position", default: 0
   end
 
@@ -848,20 +790,20 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["uuid_v2"], name: "index_resources_on_uuid_v2", unique: true
   end
 
-  create_table "rpush_apps", id: :serial, force: :cascade do |t|
+  create_table "rpush_apps", force: :cascade do |t|
     t.string "name", null: false
     t.string "environment"
     t.text "certificate"
     t.string "password"
     t.integer "connections", default: 1, null: false
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "type", null: false
     t.string "auth_key"
     t.string "client_id"
     t.string "client_secret"
     t.string "access_token"
-    t.datetime "access_token_expiration", precision: nil
+    t.datetime "access_token_expiration"
     t.text "apn_key"
     t.string "apn_key_id"
     t.string "team_id"
@@ -871,16 +813,16 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.text "json_key"
   end
 
-  create_table "rpush_feedback", id: :serial, force: :cascade do |t|
+  create_table "rpush_feedback", force: :cascade do |t|
     t.string "device_token"
     t.datetime "failed_at", precision: nil, null: false
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "app_id"
     t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
   end
 
-  create_table "rpush_notifications", id: :serial, force: :cascade do |t|
+  create_table "rpush_notifications", force: :cascade do |t|
     t.integer "badge"
     t.string "device_token"
     t.string "sound"
@@ -894,8 +836,8 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "error_code"
     t.text "error_description"
     t.datetime "deliver_after", precision: nil
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "alert_is_json", default: false, null: false
     t.string "type", null: false
     t.string "collapse_key"
@@ -921,7 +863,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
 
   create_table "salesforce_configs", force: :cascade do |t|
     t.string "klass", null: false
-    t.string "developer_name"
+    t.string "name"
     t.string "salesforce_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -939,15 +881,15 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
 
   create_table "sensitive_words_checks", id: :serial, force: :cascade do |t|
     t.string "status", null: false
-    t.integer "record_id", null: false
     t.string "record_type", null: false
+    t.integer "record_id", null: false
     t.text "matches", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true
   end
 
-  create_table "session_histories", id: :serial, force: :cascade do |t|
+  create_table "session_histories", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.date "date", null: false
     t.string "platform", limit: 7, null: false
@@ -955,16 +897,26 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true
   end
 
+  create_table "slack_notifications", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "context"
+    t.string "instance_type"
+    t.integer "instance_id"
+    t.jsonb "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_slack_notifications_on_user_id"
+  end
+
   create_table "smalltalks", force: :cascade do |t|
     t.string "uuid_v2", limit: 12
-    t.integer "number_of_people"
-    t.integer "number_of_root_chat_messages"
+    t.integer "number_of_people", default: 0
+    t.integer "number_of_root_chat_messages", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "match_format", default: 0
     t.bigint "meeting_id"
     t.datetime "completed_at", precision: nil
-    t.json "events", default: {}
     t.datetime "closed_at", precision: nil
     t.index ["meeting_id"], name: "index_smalltalks_on_meeting_id"
     t.index ["uuid_v2"], name: "index_smalltalks_on_uuid_v2", unique: true
@@ -1079,7 +1031,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   create_table "user_blocked_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "blocked_user_id", null: false
-    t.string "status", default: "blocked", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["blocked_user_id"], name: "index_user_blocked_users_on_blocked_user_id"
@@ -1117,7 +1068,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "kind", null: false
     t.string "previous_phone", null: false
     t.string "phone", null: false
-    t.string "email"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["admin_id"], name: "index_user_phone_changes_on_admin_id"
@@ -1181,8 +1131,6 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "member_status"
-    t.boolean "matchable", default: true
-    t.string "unmatch_criteria"
     t.jsonb "user_interest_ids", default: []
     t.index "st_setsrid(st_makepoint(user_longitude, user_latitude), 4326)", name: "index_user_smalltalks_on_coordinates", using: :gist
     t.index ["smalltalk_id"], name: "index_user_smalltalks_on_smalltalk_id"
@@ -1193,13 +1141,13 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-    t.string "email", limit: 255
-    t.string "first_name", limit: 255
-    t.string "last_name", limit: 255
+    t.string "email"
+    t.string "first_name"
+    t.string "last_name"
     t.string "phone", null: false
-    t.string "token", limit: 255
-    t.string "device_id"
     t.integer "device_type"
+    t.string "token"
+    t.string "device_id"
     t.string "sms_code"
     t.integer "organization_id"
     t.boolean "manager", default: false, null: false
@@ -1211,6 +1159,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "marketing_referer_id", default: 1, null: false
     t.datetime "last_sign_in_at", precision: nil
     t.boolean "old_atd_friend", default: false, null: false
+    t.boolean "use_suggestions", default: false, null: false
     t.string "about", limit: 200
     t.string "community", limit: 9, null: false
     t.string "encrypted_password"
@@ -1224,7 +1173,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "partner_id"
     t.boolean "partner_admin", default: false, null: false
     t.string "partner_role_title"
-    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "goal"
     t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"
@@ -1241,7 +1190,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "salesforce_id"
     t.jsonb "availability", default: {}
     t.boolean "willing_to_engage_locally", default: false
-    t.virtual "searchable_text", type: :text, as: "lower((((((((COALESCE(last_name, ''::character varying))::text || ' '::text) || (COALESCE(first_name, ''::character varying))::text) || ' '::text) || (COALESCE(phone, ''::character varying))::text) || ' '::text) || (COALESCE(email, ''::character varying))::text))", stored: true
+    t.text "searchable_text"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
     t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"

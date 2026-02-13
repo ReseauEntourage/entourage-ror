@@ -5,6 +5,8 @@ module SlackServices
       @reporting_user = find_user(reporting_user)
       @signals = signals
       @message = message
+
+      set_slack_notification(instance_type: @solicitation.class.name, instance_id: @solicitation.id)
     end
 
     def env
