@@ -93,10 +93,10 @@ module Api
       end
 
       def mesure_impact
-        user = User.find_by_uuid(params[:id])
+        user = current_user || User.find_by_uuid(params[:id])
 
-        url = 'https://entourage-asso.typeform.com/to/R7mfZUa7'
-        url = 'https://entourage-asso.typeform.com/to/R5QNTEos' if user && user.is_ask_for_help?
+        url = 'https://entourage-asso.typeform.com/to/sBMExrH7'
+        url = 'https://entourage-asso.typeform.com/to/wUvSy3x3' if user && user.is_ask_for_help?
 
         redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}", allow_other_host: true
       end
