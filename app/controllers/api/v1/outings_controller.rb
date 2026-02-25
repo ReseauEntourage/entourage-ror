@@ -198,7 +198,7 @@ module Api
           :other_interest, :online, :entourage_image_id,
           { metadata: [
             :starts_at, :ends_at, :place_name, :street_address,
-            :google_place_id, :place_limit
+            :google_place_id, :place_limit, :reserved_female
           ] },
           neighborhood_ids: [],
           interests: []
@@ -222,7 +222,8 @@ module Api
           :place_name,
           :street_address,
           :google_place_id,
-          :place_limit
+          :place_limit,
+          :reserved_female
         ] }, neighborhood_ids: [],
           interests: []
         )
