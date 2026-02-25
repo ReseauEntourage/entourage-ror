@@ -297,7 +297,8 @@ class Entourage < ApplicationRecord
           landscape_thumbnail_url: { type: [:string, :null] },
           portrait_url: { type: [:string, :null] },
           portrait_thumbnail_url: { type: [:string, :null] },
-          place_limit: { type: [:string, :integer, :null] }
+          place_limit: { type: [:string, :integer, :null] },
+          reserved_female: { type: [:string, :boolean, :null] }
         }
       end
     end
