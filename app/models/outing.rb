@@ -8,7 +8,7 @@ class Outing < Entourage
 
   METADATA_ACCESSOR = [:starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit]
 
-  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
+  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female
 
   after_save :generate_initial_recurrences, if: :recurrency
 
@@ -64,7 +64,8 @@ class Outing < Entourage
   validate :validate_outings_starts_at
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
-  validates_inclusion_of :exclusive_to, in: User::GOALS, allow_nil: true
+  validates :exclusive_to, inclusion: { in: User::GOALS }, allow_nil: true
+  validates :reserved_female, inclusion: { in: [true, false] }, allow_nil: true
 
   default_scope { where(group_type: :outing).order(Arel.sql("metadata->>'starts_at'")) }
 
@@ -341,6 +342,17 @@ class Outing < Entourage
     end
 
     false
+  end
+
+  # metadata fields
+  def reserved_female
+    return false unless metadata.has_key?(:reserved_female)
+
+    ActiveModel::Type::Boolean.new.cast(metadata[:reserved_female])
+  end
+
+  def reserved_female= bool
+    super(ActiveModel::Type::Boolean.new.cast(bool))
   end
 
   class << self

@@ -234,7 +234,8 @@ describe Api::V1::OutingsController do
         place_name: 'Le Dorothy',
         street_address: '85 bis rue de Ménilmontant, 75020 Paris, France',
         google_place_id: 'ChIJFzXXy-xt5kcRg5tztdINnp0',
-        place_limit: 5
+        place_limit: 5,
+        reserved_female: true
       }
     } }
 
@@ -281,6 +282,7 @@ describe Api::V1::OutingsController do
         it { expect(Outing.last.other_interest).to eq('poterie') }
         it { expect(Outing.last.metadata[:place_limit].to_i).to eq(5) }
         it { expect(Outing.last.metadata[:landscape_url]).to eq('path/to/landscape') }
+        it { expect(Outing.last.reserved_female).to eq(true) }
       end
 
       context 'interests are optional' do
