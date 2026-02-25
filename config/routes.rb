@@ -807,6 +807,10 @@ Rails.application.routes.draw do
       end
 
       resources :links, only: [] do
+        collection do
+          get 'mesure-impact' => :mesure_impact
+        end
+
         member do
           get :redirect
           get 'mesure-impact' => :mesure_impact
