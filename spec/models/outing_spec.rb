@@ -181,4 +181,43 @@ RSpec.describe Outing, type: :model do
       end
     end
   end
+
+  describe "#sibling_recurrence?" do
+    subject { outing.sibling_recurrence? }
+
+    context "when outing is not recurrent" do
+      let(:outing) { create(:outing, :outing_class, recurrency_identifier: nil) }
+
+      it { expect(subject).to eq false }
+    end
+
+    context "when outing is recurrent but has no recurrence record" do
+      let(:outing) { create(:outing, :outing_class, recurrency_identifier: "abc123") }
+
+      it { expect(subject).to eq false }
+    end
+
+    context "when recurrence exists but has no first_outing" do
+      let(:recurrence) { create(:outing_recurrence, identifier: "abc123") }
+      let(:outing) { create(:outing, :outing_class, recurrency_identifier: recurrence.identifier) }
+
+      it { expect(subject).to eq false }
+    end
+
+    context "when outing is the first_outing of the recurrence" do
+      let(:recurrence) { create(:outing_recurrence, identifier: "abc123") }
+      let!(:outing) { create(:outing, :outing_class, recurrency_identifier: recurrence.identifier, metadata: { starts_at: 1.hour.from_now }) }
+      let!(:second_outing) { create(:outing, :outing_class, recurrency_identifier: recurrence.identifier, metadata: { starts_at: 2.hours.from_now }) }
+
+      it { expect(subject).to eq false }
+    end
+
+    context "when outing is a sibling in the recurrence" do
+      let(:recurrence) { create(:outing_recurrence, identifier: "abc123") }
+      let!(:first_outing) { create(:outing, :outing_class, recurrency_identifier: recurrence.identifier, metadata: { starts_at: 1.hour.from_now }) }
+      let!(:outing) { create(:outing, :outing_class, recurrency_identifier: recurrence.identifier, metadata: { starts_at: 2.hours.from_now }) }
+
+      it { expect(subject).to eq true }
+    end
+  end
 end
