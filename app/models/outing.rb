@@ -21,6 +21,7 @@ class Outing < Entourage
   after_validation :dup_taggings, if: :original_outing
 
   after_create :add_creator_as_member
+  after_commit :send_creation_confirmation, on: :create
 
   has_many :members, -> {
     where("join_requests.status = 'accepted'").order('join_requests.role, users.first_name')
@@ -267,6 +268,10 @@ class Outing < Entourage
     return if join_requests.map(&:user_id).include?(user.id)
 
     join_requests << JoinRequest.new(user: user, joinable: self, status: :accepted, role: :organizer)
+  end
+
+  def send_creation_confirmation
+    GroupMailer.event_created_confirmation(self).deliver_later
   end
 
   def dup_neighborhoods_entourages
