@@ -157,7 +157,15 @@ module Api
       end
 
       def sensibilisation
-        if @outing = Outing.future_or_ongoing.welcome_category.first
+        if @outing = Outing.future_or_ongoing.webinar_category.first
+          render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
+        else
+          render json: { message: 'Could not find outing' }, status: 400
+        end
+      end
+
+      def first_steps
+        if @outing = Outing.future_or_ongoing.first_steps_category.first
           render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
         else
           render json: { message: 'Could not find outing' }, status: 400
