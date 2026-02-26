@@ -262,6 +262,19 @@ class Outing < Entourage
     self.recurrence.generate_initial_recurrences
   end
 
+  def recurrent?
+    recurrency_identifier.present?
+  end
+
+  def sibling_recurrence?
+    return false unless recurrent?
+    return false unless recurrence.present?
+    return false unless first_outing = recurrence.first_outing
+    return false if first_outing.id == self.id
+
+    true
+  end
+
   def add_creator_as_member
     return unless user.present?
     return if join_requests.map(&:user_id).include?(user.id)
@@ -270,6 +283,8 @@ class Outing < Entourage
   end
 
   def send_creation_confirmation
+    return if sibling_recurrence?
+
     GroupMailer.event_created_confirmation(self).deliver_later
   end
 
