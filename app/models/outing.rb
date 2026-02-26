@@ -102,6 +102,17 @@ class Outing < Entourage
     :welcome_entourage_local
   ]) }
 
+  scope :webinar_category, -> { where(online: true).tagged_with_sf_category([
+    :atelier_femmes,
+    :atelier_mdlr,
+    :atelier_preca
+  ]) }
+
+  scope :first_steps_category, -> { where(online: true).tagged_with_sf_category([
+    :welcome_entourage_local,
+    :welcome_entourage_pro
+  ]) }
+
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
   scope :for_user, -> (user) {
