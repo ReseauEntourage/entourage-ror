@@ -15,6 +15,7 @@ class GroupMailer < MailjetMailer
         ],
         :event_date_time => event.metadata_datetimes_formatted,
         :event_place_name => event.metadata[:display_address],
+        :event_online_url => event.event_url,
       ]
     )
   end
@@ -39,6 +40,7 @@ class GroupMailer < MailjetMailer
           hour: event.metadata[:starts_at].strftime('%Hh%M'),
           image_url: event.image_url_with_size(:landscape_url, :medium),
           calendar_url: event.calendar_url,
+          online_url: event.event_url,
           url: event.share_url
         }
       }
@@ -60,6 +62,7 @@ class GroupMailer < MailjetMailer
           hour: event.metadata[:starts_at].strftime("%Hh%M"),
           image_url: event.image_url_with_size(:landscape_url, :medium),
           calendar_url: event.calendar_url,
+          online_url: event.event_url,
           url: event.share_url
         }
       }
