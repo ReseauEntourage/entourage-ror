@@ -48,7 +48,7 @@ describe SalesforceServices::JoinRequest do
 
     it "calls upsert! on client" do
       expect_any_instance_of(Restforce::Client).to receive(:upsert!).with(
-        "CampaignMember", "JoinRequestId__c", hash_including(JoinRequestId__c: join_request.id)
+        "CampaignMember", "JoinRequestId__c", hash_including("JoinRequestId__c" => join_request.id)
       )
       subject.upsert
     end
@@ -60,7 +60,7 @@ describe SalesforceServices::JoinRequest do
 
       it "falls back to update after finding id" do
         expect_any_instance_of(Restforce::Client).to receive(:query).with(
-          "select Id from CampaignMember where JoinRequestId__c = '#{join_request.id}'"
+          "select Id from CampaignMember where JoinRequestId__c = #{join_request.id}"
         ).and_return([])
 
         expect_any_instance_of(Restforce::Client).to receive(:query).with(
@@ -68,7 +68,7 @@ describe SalesforceServices::JoinRequest do
         ).and_return([OpenStruct.new(Id: 'sf_campaign_member_id')])
 
         expect_any_instance_of(Restforce::Client).to receive(:update).with(
-          "CampaignMember", hash_including(Id: 'sf_campaign_member_id')
+          "CampaignMember", hash_including(Id: 'sf_campaign_member_id', "JoinRequestId__c" => join_request.id)
         )
 
         subject.upsert

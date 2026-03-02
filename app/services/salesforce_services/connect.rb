@@ -77,6 +77,10 @@ module SalesforceServices
       rescue Restforce::ErrorCode::DuplicateValue
         return unless id = find_id
 
+        if (ext_id_value = interface.try(:external_id_value)) && (ext_id_key = instance.try(interface.external_id_key))
+          fields[ext_id_value] = ext_id_key
+        end
+
         client.update(interface.table_name, Id: id, **fields)
       end
     end
