@@ -64,15 +64,21 @@ module SalesforceServices
     end
 
     def upsert_from_fields fields
-      # create when no external id is set
-      return client.create!(interface.table_name, **fields) unless instance.try(interface.external_id_key).present?
+      begin
+        # create when no external id is set
+        return client.create!(interface.table_name, **fields) unless instance.try(interface.external_id_key).present?
 
-      client.upsert!(
-        interface.table_name,
-        interface.external_id_value,
-        interface.external_id_value => instance.try(interface.external_id_key),
-        **fields
-      )
+        client.upsert!(
+          interface.table_name,
+          interface.external_id_value,
+          interface.external_id_value => instance.try(interface.external_id_key),
+          **fields
+        )
+      rescue Restforce::ErrorCode::DuplicateValue
+        return unless id = find_id
+
+        client.update(interface.table_name, Id: id, **fields)
+      end
     end
 
     def destroy
