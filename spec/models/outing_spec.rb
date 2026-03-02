@@ -139,6 +139,14 @@ RSpec.describe Outing, type: :model do
     it { expect(create(:outing, :outing_class, title: 'Discussion en ligne', online: true).papotage?).to eq(false) }
   end
 
+  describe "#reserved_female=" do
+    let(:outing) { create(:outing, :outing_class) }
+
+    before { outing.reserved_female = true }
+
+    it { expect(outing[:metadata][:reserved_female]).to eq(true) }
+  end
+
   describe '#reset_unread_messages_if_blacklisted_or_deleted' do
     let(:outing) { create(:outing, status: 'open') }
     let(:join_request) { create :join_request, joinable: outing }

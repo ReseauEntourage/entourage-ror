@@ -383,7 +383,7 @@ class Outing < Entourage
   end
 
   def reserved_female= bool
-    super(ActiveModel::Type::Boolean.new.cast(bool))
+    metadata[:reserved_female] = ActiveModel::Type::Boolean.new.cast(bool)
   end
 
   class << self
