@@ -45,14 +45,31 @@ module SalesforceServices
       [:status, :participate_at]
     end
 
+    def find_id
+      return id if id = super
+
+      return unless contact_id = find_contact_id
+      return unless campaign_id = find_campaign_id
+
+      client.query("select Id from CampaignMember where ContactId = '#{contact_id}' and CampaignId = '#{campaign_id}'").first&.Id
+    end
+
     private
+
+    def find_contact_id
+      @contact_id ||= SalesforceServices::Contact.new(user).find_id
+    end
+
+    def find_campaign_id
+      @campaign_id ||= SalesforceServices::Outing.new(outing).find_id
+    end
 
     def find_or_initialize_contact_id
       contact_id || contact_id!
     end
 
     def contact_id
-      @contact_id ||= SalesforceServices::Contact.new(user).find_id
+      find_contact_id
     end
 
     def contact_id!
@@ -60,11 +77,11 @@ module SalesforceServices
     end
 
     def find_or_initialize_campaign_id
-      campaign_id || campaign_id!
+      find_campaign_id || campaign_id!
     end
 
     def campaign_id
-      @campaign_id ||= SalesforceServices::Outing.new(outing).find_id
+      find_campaign_id
     end
 
     def campaign_id!
