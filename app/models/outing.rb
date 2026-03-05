@@ -10,6 +10,9 @@ class Outing < Entourage
 
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female
 
+  WEBINAR_TAGS = %w[atelier_femmes atelier_mdlr atelier_preca].freeze
+  WELCOME_TAGS = %w[welcome_entourage_local welcome_entourage_pro].freeze
+
   after_save :generate_initial_recurrences, if: :recurrency
 
   before_validation :update_relatives_dates, if: :force_relatives_dates
@@ -384,6 +387,20 @@ class Outing < Entourage
 
   def reserved_female= bool
     metadata[:reserved_female] = ActiveModel::Type::Boolean.new.cast(bool)
+  end
+
+  def webinar?
+    online? && (sf_category_list & WEBINAR_TAGS).any?
+  end
+
+  def first_steps?
+    online? && (sf_category_list & WELCOME_TAGS).any?
+  end
+
+  def papotages?
+    return false unless title.present?
+
+    online? && title.match?(/papotage/i)
   end
 
   class << self

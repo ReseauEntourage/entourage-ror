@@ -41,6 +41,7 @@ module EntourageBack
       :entourage_denorm_observer,
       :user_block_observer,
       :join_request_observer,
+      :onboarding_observer,
       :push_notification_trigger_observer,
       :translation_observer,
       :denorm_chat_message_observer,
