@@ -10,7 +10,7 @@ describe Onboarding::ChatMessagesService, type: :service do
     let(:address) { build :address }
 
     before do
-      Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
+      # Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
       ModerationServices.stub(:moderation_area_for_user) { moderation_area }
       Timecop.freeze(onboarding_time) do
         user.update(first_name: 'lily-rose', goal: :offer_help)
