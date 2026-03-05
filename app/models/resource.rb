@@ -54,4 +54,9 @@ class Resource < ApplicationRecord
     document.css('img, a').each { |node| node.remove }
     document.text.strip
   end
+
+  # @implement
+  def is_welcome_video?
+    false
+  end
 end

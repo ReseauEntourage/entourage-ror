@@ -346,7 +346,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         let(:request_timestamp) { 1.day.from_now.advance(seconds: rand(24.hours)) }
 
         before do
-          Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
+          # Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
           user.save
         end
 

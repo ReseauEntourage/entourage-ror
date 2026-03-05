@@ -1,14 +1,22 @@
 module Onboarding
   module UserEventsTracking
-    def self.enable_tracking?
-      !Rails.env.test?
-    end
-
     module UserConcern
       extend ActiveSupport::Concern
 
       included do
         after_commit :track_onboarding_events
+      end
+
+      def welcome_watched!
+        Event.track('onboarding.resource.welcome_watched')
+      end
+
+      def webinar_or_first_steps_joined!
+        Event.track('onboarding.outing.webinar_or_first_steps')
+      end
+
+      def papotages_joined!
+        Event.track('onboarding.outing.papotages')
       end
 
       private
@@ -20,7 +28,6 @@ module Onboarding
       end
 
       def track_onboarding_events
-        return unless Onboarding::UserEventsTracking.enable_tracking?
         if filled_blank_attribute?(previous_changes, 'first_name')
           Event.track('onboarding.profile.first_name.entered', user_id: self.id)
         end
@@ -43,7 +50,6 @@ module Onboarding
       private
 
       def track_onboarding_events
-        return unless Onboarding::UserEventsTracking.enable_tracking?
         return unless (['country', 'postal_code'] & previous_changes.keys).any?
         return unless [country, postal_code].all?(&:present?)
         user_id = User.where(address_id: id).pluck(:id).first
