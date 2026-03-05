@@ -17,7 +17,8 @@ module V1
         :unclosed_action,
         :moderator,
         :signable_permission,
-        :birthday_today
+        :birthday_today,
+        :events
 
       def preference
         return :contribution if object.ask_for_help?
@@ -98,6 +99,10 @@ module V1
 
       def birthday_today
         object.birthday_today?
+      end
+
+      def events
+        object.events.pluck(:name)
       end
 
       private

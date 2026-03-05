@@ -4,6 +4,8 @@ module Onboarding
       extend ActiveSupport::Concern
 
       included do
+        has_many :events
+
         after_commit :track_onboarding_events
       end
 
