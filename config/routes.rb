@@ -142,7 +142,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :join_requests, only: [:create]
+      resources :join_requests, only: [:create, :destroy]
 
       resources :messages, only: [:index, :destroy]
 

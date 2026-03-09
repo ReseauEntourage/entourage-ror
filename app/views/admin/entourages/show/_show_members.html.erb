@@ -21,6 +21,7 @@
       <th>Profil</th>
       <th>Email</th>
       <th>Téléphone</th>
+      <th>Actions</th>
     </tr>
   </thead>
 
@@ -60,6 +61,11 @@
 
         <td><%= member.email %></td>
         <td><%= member.phone %></td>
+        <td>
+          <% if member.id != @entourage.user_id %>
+            <%= link_to "Désinscrire", admin_join_request_path(request), method: :delete, data: { confirm: "Êtes-vous sûr de vouloir désinscrire ce membre ?" }, class: "btn btn-danger btn-xs" %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
 
