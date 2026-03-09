@@ -25,13 +25,12 @@ module Admin
         flash[:error] = "La personne n'a pas pu être désinscrite : #{@join_request.errors.full_messages.to_sentence}"
       end
 
-      redirect_to case @joinable
-      when Neighborhood
-        show_members_admin_neighborhood_path(@joinable)
-      when Entourage
-        show_members_admin_entourage_path(@joinable)
+      if @joinable.is_a?(Neighborhood)
+        redirect_to show_members_admin_neighborhood_path(@joinable)
+      elsif @joinable.is_a?(Entourage)
+        redirect_to show_members_admin_entourage_path(@joinable)
       else
-        [:admin, @joinable]
+        redirect_to [:admin, @joinable]
       end
     end
   end

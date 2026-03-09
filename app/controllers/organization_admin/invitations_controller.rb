@@ -113,7 +113,7 @@ module OrganizationAdmin
 
     def ensure_can_invite_member!
       unless OrganizationAdmin::Permissions.can_invite_member?(current_user)
-        render text: "Vous n'avez pas la permission d'inviter un membre", status: :unauthorized
+        render plain: "Vous n'avez pas la permission d'inviter un membre", status: :unauthorized
       end
     end
 

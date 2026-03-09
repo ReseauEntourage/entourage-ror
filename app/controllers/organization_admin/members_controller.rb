@@ -55,13 +55,13 @@ module OrganizationAdmin
 
     def ensure_can_edit_member!
       unless OrganizationAdmin::Permissions.can_edit_member?(current_user)
-        render text: "Vous n'avez pas la permission de modifier un membre", status: :unauthorized
+        render plain: "Vous n'avez pas la permission de modifier un membre", status: :unauthorized
       end
     end
 
     def ensure_can_remove_member!
       unless OrganizationAdmin::Permissions.can_remove_member?(current_user)
-        render text: "Vous n'avez pas la permission de retirer un membre", status: :unauthorized
+        render plain: "Vous n'avez pas la permission de retirer un membre", status: :unauthorized
       end
     end
 

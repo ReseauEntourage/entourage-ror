@@ -21,7 +21,10 @@ describe Admin::JoinRequestsController do
       before { user.update(roles: []) }
 
       it { expect { request }.not_to change { join_request.reload.status } }
-      it { expect(request.status).to eq('401') }
+      it {
+        request
+        expect(response.status).to eq(401)
+      }
     end
 
     context 'for an outing' do

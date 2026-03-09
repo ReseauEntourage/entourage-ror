@@ -42,7 +42,7 @@ module OrganizationAdmin
 
     def ensure_can_edit_description!
       unless OrganizationAdmin::Permissions.can_edit_description?(current_user)
-        render text: "Vous n'avez pas la permission de modifier la description", status: :unauthorized
+        render plain: "Vous n'avez pas la permission de modifier la description", status: :unauthorized
       end
     end
 

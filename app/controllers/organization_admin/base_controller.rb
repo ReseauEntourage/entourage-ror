@@ -86,13 +86,13 @@ module OrganizationAdmin
 
     def ensure_org_member!
       unless current_user.partner_id.present?
-        render text: "Cette action nécessite d'être membre d'une organisation", status: :unauthorized
+        render plain: "Cette action nécessite d'être membre d'une organisation", status: :unauthorized
       end
     end
 
     def ensure_org_admin!
       unless current_user.partner_admin?
-        render text: "Cette action nécessite d'être administrateur de l'organisation", status: :unauthorized
+        render plain: "Cette action nécessite d'être administrateur de l'organisation", status: :unauthorized
       end
     end
   end
