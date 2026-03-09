@@ -7,15 +7,18 @@ class GroupMailer < MailjetMailer
     mailjet_email(
       to: user,
       campaign_name: :event_created_confirmation,
-      template_id: 491291,
-      variables: [
-        event => [
-          :entourage_title,
-          :entourage_share_url,
-        ],
-        :event_date_time => event.metadata_datetimes_formatted,
-        :event_place_name => event.metadata[:display_address],
-      ]
+      template_id: 7727918,
+      variables: {
+        outing: {
+          name: event.title,
+          address: event.metadata[:display_address],
+          date: I18n.l(event.metadata[:starts_at].to_date, format: :long, locale: user.lang),
+          hour: event.metadata[:starts_at].strftime('%Hh%M'),
+          image_url: event.image_url_with_size(:landscape_url, :medium),
+          calendar_url: event.calendar_url,
+          url: event.share_url
+        }
+      }
     )
   end
 
