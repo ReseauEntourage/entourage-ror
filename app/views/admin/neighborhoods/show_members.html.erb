@@ -40,6 +40,7 @@
       <th>Téléphone</th>
       <th>Statut</th>
       <th>Profil</th>
+      <th></th>
       <% @members.each do |member| %>
         <tr>
           <td><%= member.id %></td>
@@ -59,6 +60,11 @@
               <span class="custom-badge info" title="Profil renseigné par l'utilisateur">
                 <%= t "community.entourage.goals_compact.#{member.goal}" %>
               </span>
+            <% end %>
+          </td>
+          <td>
+            <% unless member == @neighborhood.user %>
+              <%= link_to "Désinscrire", admin_neighborhood_user_path(member.id, neighborhood_id: @neighborhood.id), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de vouloir désinscrire ce membre ?" } %>
             <% end %>
           </td>
         </tr>
