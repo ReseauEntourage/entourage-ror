@@ -217,6 +217,24 @@ describe Api::V1::OutingsController do
     end
   end
 
+  describe 'GET papotages' do
+    before { get :papotages, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(category: 'papotages', q: 'test') ) }
+  end
+
+  describe 'GET first_steps' do
+    before { get :first_steps, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(category: 'first_steps', q: 'test') ) }
+  end
+
+  describe 'GET webinar' do
+    before { get :webinar, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(category: 'webinar', q: 'test') ) }
+  end
+
   describe 'POST create' do
     let(:params) { {
       title: 'Apéro Entourage',

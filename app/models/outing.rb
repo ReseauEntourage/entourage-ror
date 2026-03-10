@@ -100,6 +100,10 @@ class Outing < Entourage
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
   scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }
 
+  scope :papotages, -> {
+    where(online: true).where("title ilike '\%papotage\%'")
+  }
+
   scope :welcome_category, -> { where(online: true).tagged_with_sf_category([
     :atelier_femmes,
     :atelier_mdlr,
