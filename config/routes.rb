@@ -127,6 +127,8 @@ Rails.application.routes.draw do
           post :destroy_message
           delete :destroy_message
         end
+
+        resources :users, controller: 'entourages/users', only: [:destroy]
       end
 
       resources :entourage_areas
@@ -180,6 +182,8 @@ Rails.application.routes.draw do
           post 'unread_message/:chat_message_id' => :unread_message, as: :unread_message
           delete 'destroy_message/:chat_message_id' => :destroy_message, as: :destroy_message
         end
+
+        resources :users, controller: 'neighborhoods/users', only: [:destroy]
       end
 
       resources :neighborhood_images do
