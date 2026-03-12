@@ -52,11 +52,12 @@ class MemberMailer < MailjetMailer
                   template_id: 452754,
                   campaign_name: 'action_suivi_j_10',
                   variables: {
-                    action => [
-                      :entourage_title,
-                      :entourage_url,
-                      :entourage_share_url,
-                    ]
+                    entourage_title: action.title,
+                    entourage_share_url: action.share_url,
+                    action: {
+                      title: action.title,
+                      url: action.share_url
+                    }
                   }
   end
 
