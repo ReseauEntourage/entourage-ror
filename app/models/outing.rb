@@ -377,6 +377,13 @@ class Outing < Entourage
     metadata[:reserved_female] = ActiveModel::Type::Boolean.new.cast(bool)
   end
 
+  def papotages?
+    return true if sf_category.present? && sf_category.to_s.match?(/papotage/i)
+    return false unless title.present?
+
+    online? && title.match?(/papotage/i)
+  end
+
   class << self
     def bucket_name
       EntourageImage.storage.bucket_name
