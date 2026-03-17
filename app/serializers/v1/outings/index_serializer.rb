@@ -54,7 +54,7 @@ module V1
           street_address: object.metadata[:street_address],
           landscape_url: landscape_url,
           portrait_url: "",
-          reserved_female: object.metadata[:reserved_female]
+          reserved_female: object.reserved_female
         }
       end
 

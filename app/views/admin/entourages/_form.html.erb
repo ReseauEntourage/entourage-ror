@@ -33,16 +33,18 @@
     </div>
   </div>
 
+  <% pp @entourage %>
+
   <% if @entourage.outing? %>
     <div class="control-group">
       <label class="control-label">Événement réservé aux femmes</label>
       <div class="controls">
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-          <%= radio_button_tag 'entourage[metadata][reserved_female]', true, required: true, checked: @entourage.metadata[:reserved_female] %>
+          <%= radio_button_tag 'entourage[metadata][reserved_female]', true, required: true, checked: @entourage.reserved_female %>
           Oui
         </label>
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-          <%= radio_button_tag 'entourage[metadata][reserved_female]', false, required: true, checked: !@entourage.metadata[:reserved_female] %>
+          <%= radio_button_tag 'entourage[metadata][reserved_female]', false, required: true, checked: !@entourage.reserved_female %>
           Non
         </label>
       </div>

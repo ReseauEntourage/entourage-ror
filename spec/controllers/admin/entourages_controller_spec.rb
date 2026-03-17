@@ -61,11 +61,18 @@ describe Admin::EntouragesController do
             google_place_id: 'ChIJFzXXy-xt5kcRg5tztdINnp0',
             place_name: 'Le Dorothy',
             street_address: '85 bis rue de Ménilmontant, 75020 Paris, France',
+            reserved_female: 'false',
           },
         }}
       }
 
       it { expect { success }.to change { Entourage.where(group_type: :outing).count }.by(1) }
+
+      context 'changes reserved_female to false' do
+        before { success }
+
+        it { expect(Outing.find_by_title('Groupe de voisins').reserved_female).to be(false)}
+      end
     end
 
     context 'online' do
