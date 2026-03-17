@@ -66,6 +66,16 @@ describe User, type: :model do
     # foreign countries
     it { expect(build(:public_user, phone: '+32425551212').save).to be true } #belgian number as international (mobile)
     it { expect(build(:public_user, phone: '+32225551212').save).to be false } #belgian number as international (local)
+
+    it { expect(build(:public_user, phone: '+262692123456').save).to be true } #la reunion (mobile)
+    it { expect(build(:public_user, phone: '+262292123456').save).to be false } #la reunion (local)
+
+    it { expect(build(:public_user, phone: '+590690123456').save).to be true } #guadeloupe (mobile)
+    it { expect(build(:public_user, phone: '+590290123456').save).to be false } #guadeloupe (local)
+
+    it { expect(build(:public_user, phone: '+212612345678').save).to be true } #maroc (mobile)
+    it { expect(build(:public_user, phone: '+212212345678').save).to be false } #maroc (local)
+
     it { expect(build(:public_user, phone: '+1-999-999-9999').save).to be false } #canadian number
     it { expect(build(:public_user, phone: '+40 (724) 593 579').save).to be false } #Apple formatted
     # wrongs
