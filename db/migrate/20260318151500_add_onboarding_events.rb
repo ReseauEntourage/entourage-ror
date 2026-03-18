@@ -2,11 +2,9 @@ class AddOnboardingEvents < ActiveRecord::Migration[7.1]
   disable_ddl_transaction!
 
   def up
-    execute <<-SQL
-      alter type event_name add value 'onboarding.resource.welcome_watched';
-      alter type event_name add value 'onboarding.outing.webinar_or_first_steps';
-      alter type event_name add value 'onboarding.outing.papotages'
-    SQL
+    execute "ALTER TYPE event_name ADD VALUE IF NOT EXISTS 'onboarding.resource.welcome_watched'"
+    execute "ALTER TYPE event_name ADD VALUE IF NOT EXISTS 'onboarding.outing.webinar_or_first_steps'"
+    execute "ALTER TYPE event_name ADD VALUE IF NOT EXISTS 'onboarding.outing.papotages'"
 
     Event.reset_event_names_cache!
   end
