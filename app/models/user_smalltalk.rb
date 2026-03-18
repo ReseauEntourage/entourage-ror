@@ -18,7 +18,7 @@ class UserSmalltalk < ApplicationRecord
 
   default_scope {
     where(deleted_at: nil)
-    .where("member_status is null or member_status != 'cancelled'")
+    .where("member_status is null or member_status = 'accepted'")
   }
 
   validate :quota_must_not_be_reached, on: :create
