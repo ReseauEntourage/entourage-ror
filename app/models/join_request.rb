@@ -212,18 +212,6 @@ class JoinRequest < ApplicationRecord
     end
   end
 
-  def simplified_status
-    # Not sure it's needed anymore.
-    # see commit 363a77c2df9b9e6e9a93f68796f4ac8f2c527868
-    return 'not_requested' if destroyed?
-
-    # we don't return 'rejected' or 'cancelled' anymore as we don't want these states to
-    # be treated differently by the clients. See EN-3073
-    return 'not_requested' if status.in?(['rejected', 'cancelled'])
-
-    status
-  end
-
   private
 
   def joinable_callback(*args)

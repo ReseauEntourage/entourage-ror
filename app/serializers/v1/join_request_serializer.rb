@@ -43,10 +43,6 @@ module V1
       UserPresenter.new(user: object.user).public_targeting_profiles
     end
 
-    def status
-      object.simplified_status
-    end
-
     def photo_acceptance
       object.user.photo_acceptance
     end
