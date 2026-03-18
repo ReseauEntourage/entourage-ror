@@ -19,6 +19,7 @@ module ApplicationHelper
       'open' => 'info',
       'full' => 'info',
       'cancelled' => 'warning',
+      'hidden' => 'warning',
       'deleted' => 'warning',
       'closed' => 'warning',
       'suspended' => 'danger',

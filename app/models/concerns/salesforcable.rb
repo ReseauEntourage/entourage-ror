@@ -100,6 +100,8 @@ module Salesforcable
     end
 
     if has_attribute?(:status)
+      # status 'hidden' is not configurable for salesforcable instances
+
       return SalesforceJob.perform_later(self, 'destroy') if saved_change_to_status? && ['deleted', 'closed', 'cancelled'].include?(status.to_s)
     end
 
