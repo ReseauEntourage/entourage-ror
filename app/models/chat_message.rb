@@ -55,6 +55,7 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  after_create :update_hidden_memberships
   after_commit :update_parent_comments_count
   after_save :touch_messageable_timestamp
 
@@ -338,5 +339,15 @@ class ChatMessage < ApplicationRecord
     return unless messageable.respond_to?(:updated_at)
 
     messageable.update_column(:updated_at, Time.current)
+  end
+
+  def update_hidden_memberships
+    return unless messageable.respond_to?(:conversation?) && messageable.conversation?
+
+    JoinRequest.where(
+      joinable_type: messageable_type,
+      joinable_id: messageable_id,
+      status: 'hidden'
+    ).update_all(status: 'accepted')
   end
 end
