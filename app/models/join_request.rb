@@ -3,8 +3,9 @@ class JoinRequest < ApplicationRecord
   PENDING_STATUS='pending'
   REJECTED_STATUS='rejected'
   CANCELLED_STATUS='cancelled'
+  HIDDEN_STATUS='hidden'
 
-  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
+  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS, HIDDEN_STATUS]
 
   include JoinRequestAcceptTracking
   include Salesforcable
@@ -188,6 +189,11 @@ class JoinRequest < ApplicationRecord
   def cancelled?
     return unless status
     status.to_sym == :cancelled
+  end
+
+  def hidden?
+    return unless status
+    status.to_sym == :hidden
   end
 
   # these 3 methods manage the skip_conversation_uuid_update flag.

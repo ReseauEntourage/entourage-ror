@@ -14,6 +14,7 @@ module SmalltalkServices
 
       return create_message(:destroy_member) if join_request.cancelled?
       return create_message(:banned_member) if join_request.rejected?
+      # "hidden" status is not configurable for smalltalk join_requests
 
       create_message(:new_member)
     end
