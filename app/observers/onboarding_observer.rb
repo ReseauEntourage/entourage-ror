@@ -31,7 +31,7 @@ class OnboardingObserver < ActiveRecord::Observer
       return join_request.user.webinar_or_first_steps_joined!
     end
 
-    if outing.papotages?
+    if outing.papotage?
       return join_request.user.papotages_joined!
     end
   end

@@ -378,7 +378,7 @@ class Outing < Entourage
 
   def reserved_female= bool
     metadata[:reserved_female] = ActiveModel::Type::Boolean.new.cast(bool)
-    end
+  end
 
   def webinar?
     online? && (sf_category_list & WEBINAR_TAGS).any?
@@ -389,9 +389,7 @@ class Outing < Entourage
   end
 
   def papotages?
-    return false unless title.present?
-
-    online? && title.match?(/papotage/i)
+    papotage?
   end
 
   class << self
