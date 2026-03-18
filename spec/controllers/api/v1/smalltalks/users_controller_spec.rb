@@ -65,7 +65,7 @@ describe Api::V1::Smalltalks::UsersController do
             'role' => 'member',
             'group_role' => 'member',
             'community_roles' => [],
-            'status' => 'not_requested',
+            'status' => 'cancelled',
             'message' => nil,
             'confirmed_at' => nil,
             'participate_at'=>nil,
