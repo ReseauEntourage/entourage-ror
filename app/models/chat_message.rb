@@ -235,23 +235,10 @@ class ChatMessage < ApplicationRecord
   def self.json_schema urn
     JsonSchemaService.base do
       case urn
-      when 'outing:metadata'
-        {
-          operation: { type: :string, enum: [:created, :updated, :cancelled] },
-          title: { type: :string },
-          starts_at: { format: 'date-time-iso8601' },
-          display_address: { type: :string },
-          uuid: { type: :string }
-        }
       when 'status_update:metadata'
         {
           status: { type: :string },
           outcome_success: { type: [:boolean, :null] }
-        }
-      when 'share:metadata'
-        {
-          type: { type: :string, enum: [:entourage, :poi] },
-          uuid: { type: :string }
         }
       when 'broadcast:metadata'
         {
