@@ -10,15 +10,15 @@ module Onboarding
       end
 
       def welcome_watched!
-        Event.track('onboarding.resource.welcome_watched')
+        Event.track('onboarding.resource.welcome_watched', user_id: self.id)
       end
 
       def webinar_or_first_steps_joined!
-        Event.track('onboarding.outing.webinar_or_first_steps')
+        Event.track('onboarding.outing.webinar_or_first_steps', user_id: self.id)
       end
 
       def papotages_joined!
-        Event.track('onboarding.outing.papotages')
+        Event.track('onboarding.outing.papotages', user_id: self.id)
       end
 
       private
