@@ -577,7 +577,7 @@ describe Api::V1::EntouragesController do
                 'latitude'=>1.122,
                 'longitude'=>2.345
               },
-              'join_status'=>'not_requested',
+              'join_status'=>nil,
               'number_of_unread_messages'=>0,
               'created_at'=> entourage.created_at.iso8601(3),
               'updated_at'=> entourage.updated_at.iso8601(3),
@@ -745,7 +745,7 @@ describe Api::V1::EntouragesController do
               'latitude'=>outing.latitude,
               'longitude'=>outing.longitude
             },
-            'join_status'=>'not_requested',
+            'join_status'=>nil,
             'number_of_unread_messages'=>0,
             'created_at'=> outing.created_at.iso8601(3),
             'updated_at'=> outing.reload.updated_at.iso8601(3),

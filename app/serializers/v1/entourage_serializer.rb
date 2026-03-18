@@ -105,7 +105,9 @@ module V1
     end
 
     def join_status
-      current_join_request&.simplified_status || 'not_requested'
+      return unless current_join_request.present?
+
+      current_join_request.status
     end
 
     def number_of_unread_messages
