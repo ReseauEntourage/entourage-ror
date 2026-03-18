@@ -56,9 +56,6 @@ class ChatMessage < ApplicationRecord
     end
   end
 
-  after_create :update_sender_report_prompt_status
-  after_create :update_recipients_report_prompt_status
-
   after_commit :update_parent_comments_count
   after_save :touch_messageable_timestamp
 
@@ -342,28 +339,5 @@ class ChatMessage < ApplicationRecord
     return unless messageable.respond_to?(:updated_at)
 
     messageable.update_column(:updated_at, Time.current)
-  end
-
-  def update_sender_report_prompt_status
-    JoinRequest.where(
-      joinable_type: messageable_type,
-      joinable_id: messageable_id,
-      user_id: user_id,
-      report_prompt_status: 'display'
-    )
-    .update_all(report_prompt_status: 'dismissed')
-  end
-
-  def update_recipients_report_prompt_status
-    return if messageable.group_type != 'conversation'
-    return if ChatMessage.where(messageable: messageable).where('id < ?', id).exists?
-
-    return if user.moderator?
-    return if user.ambassador?
-    return if user.association?
-
-    messageable.join_requests
-      .where.not(user_id: user_id)
-      .update_all(report_prompt_status: 'display')
   end
 end
