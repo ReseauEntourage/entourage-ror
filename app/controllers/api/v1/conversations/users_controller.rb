@@ -63,7 +63,7 @@ module Api
         end
 
         def destroy
-          if @join_request.update(status: :cancelled)
+          if @join_request.update(status: JoinRequest::HIDDEN_STATUS)
             render json: @join_request, root: :user, status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
