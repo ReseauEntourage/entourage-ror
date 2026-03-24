@@ -23,6 +23,12 @@ class AnonymousUser
     end
   end
 
+  class << self
+    def default_user
+      new(uuid: SecureRandom.uuid, community: :entourage, latitude: CoordinatesScopable::CITIES[:paris][:latitude], longitude: CoordinatesScopable::CITIES[:paris][:longitude])
+    end
+  end
+
   def attributes
     Hash[ATTRIBUTES.map { |key| [key.to_s, send(key)] }]
   end
@@ -39,7 +45,7 @@ class AnonymousUser
     @token ||= AnonymousUserService.token_from_uuid(uuid, community: community)
   end
 
-  attr_accessor :address
+  attr_accessor :address, :latitude, :longitude
 
   def addresses
     [address].compact
@@ -110,6 +116,8 @@ class AnonymousUser
   def neighborhood_participations; JoinRequest.none; end
   def engaged?; false; end
   def ambassador?; false; end
+  def team?; false; end
+  def association?; false; end
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
   def travel_distance; 10; end

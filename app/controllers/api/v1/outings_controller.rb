@@ -5,10 +5,14 @@ module Api
       before_action :authorised?, only: [:update, :batch_update, :cancel, :destroy]
       before_action :allowed_duplicate?, only: [:duplicate]
 
+      skip_before_action :authenticate_user!, only: [:index]
+
       after_action :set_last_message_read, only: [:show]
 
       def index
-        outings = OutingsServices::Finder.new(current_user, index_params)
+        user = current_user || AnonymousUser.default_user
+
+        outings = OutingsServices::Finder.new(user, index_params)
           .find_all
           .includes(:translation, :user, :interests)
           .page(page)
@@ -24,9 +28,9 @@ module Api
         end
 
         render json: outings, root: :outings, each_serializer: ::V1::Outings::IndexSerializer, scope: {
-            user: current_user,
-            latitude: latitude,
-            longitude: longitude
+            user: user,
+            latitude: latitude || user.latitude,
+            longitude: longitude || user.longitude
           }
       end
 
@@ -252,11 +256,11 @@ module Api
       end
 
       def latitude
-        params[:latitude] || current_user.latitude
+        params[:latitude] || current_user&.latitude
       end
 
       def longitude
-        params[:longitude] || current_user.longitude
+        params[:longitude] || current_user&.longitude
       end
 
       def authorised?
