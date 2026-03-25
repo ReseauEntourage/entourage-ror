@@ -45,7 +45,6 @@ module OrganizationAdmin
         flash[:success] = 'Membre retiré !'
         redirect_to organization_admin_members_path
       else
-        pp member.errors
         flash[:error] = member.errors.full_messages.to_sentence.presence || 'Impossible de retirer le membre.'
         redirect_to edit_organization_admin_member_path(member)
       end
