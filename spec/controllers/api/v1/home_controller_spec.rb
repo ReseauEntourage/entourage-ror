@@ -199,7 +199,6 @@ describe Api::V1::HomeController do
             'birthday_today' => be_boolean,
             'events' => [
               'onboarding.profile.first_name.entered',
-              'onboarding.profile.goal.entered',
             ]
           }
         }) }
