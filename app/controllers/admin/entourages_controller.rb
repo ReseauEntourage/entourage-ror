@@ -62,7 +62,13 @@ module Admin
     end
 
     def new
-      @entourage = Entourage.new(
+      klass = if params[:group_type].to_sym == :outing
+        Outing
+      else
+        Entourage
+      end
+
+      @entourage = klass.new(
         group_type: params[:group_type].to_sym,
         public: true
       )
