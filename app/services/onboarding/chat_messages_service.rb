@@ -26,6 +26,7 @@ module Onboarding
           end
 
           if chat_message_exists
+            # @see Onboarding::ChatMessagesService.welcome_message_user_ids
             Event.track('onboarding.chat_messages.welcome.skipped', user_id: user.id)
             next
           end
@@ -57,6 +58,7 @@ module Onboarding
             end
 
             if success
+              # @see Onboarding::ChatMessagesService.welcome_message_user_ids
               Event.track('onboarding.chat_messages.welcome.sent', user_id: user.id)
               join_request.update_column(:archived_at, Time.zone.now)
             end

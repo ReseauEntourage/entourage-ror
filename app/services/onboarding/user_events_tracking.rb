@@ -31,13 +31,8 @@ module Onboarding
 
       def track_onboarding_events
         if filled_blank_attribute?(previous_changes, 'first_name')
+          # @see Onboarding::ChatMessagesService.welcome_message_user_ids
           Event.track('onboarding.profile.first_name.entered', user_id: self.id)
-        end
-
-        # This event isn't used anymore but I left it as it may be interesting
-        # for analytics or later use.
-        if filled_blank_attribute?(previous_changes, 'goal')
-          Event.track('onboarding.profile.goal.entered', user_id: self.id)
         end
       end
     end
@@ -56,6 +51,8 @@ module Onboarding
         return unless [country, postal_code].all?(&:present?)
         user_id = User.where(address_id: id).pluck(:id).first
         return if user_id.nil?
+
+        # @see Onboarding::ChatMessagesService.welcome_message_user_ids
         Event.track('onboarding.profile.postal_code.entered', user_id: user_id)
       end
     end
