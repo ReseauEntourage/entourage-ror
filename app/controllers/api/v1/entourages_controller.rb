@@ -192,11 +192,8 @@ module Api
         head :created
       end
 
+      # @deprecated
       def dismiss_report_prompt
-        @entourage.join_requests
-                  .accepted
-                  .where(user: current_user)
-                  .update_all(report_prompt_status: 'dismissed')
         head :no_content
       end
 

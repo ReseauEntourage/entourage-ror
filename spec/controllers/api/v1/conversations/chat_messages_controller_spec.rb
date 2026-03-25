@@ -189,6 +189,18 @@ describe Api::V1::Conversations::ChatMessagesController do
       it { expect(response.status).to eq(401) }
     end
 
+    context 'signed in and in conversation' do
+      let!(:user_join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted) }
+      let!(:else_join_request) { FactoryBot.create(:join_request, joinable: conversation, user: create(:public_user), status: :hidden) }
+
+      before { post :create, params: {
+        conversation_id: conversation.to_param, chat_message: { content: 'foobar', message_type: :text }, token: user.token
+      } }
+
+      it { expect(response.status).to eq(201) }
+      it { expect(conversation.join_requests.map(&:status)).to eq(['accepted', 'accepted']) }
+    end
+
     context 'signed in' do
       let!(:ios_app) { FactoryBot.create(:ios_app, name: 'conversation') }
       let!(:android_app) { FactoryBot.create(:android_app, name: 'conversation') }

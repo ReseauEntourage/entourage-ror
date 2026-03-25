@@ -236,7 +236,7 @@ describe Api::V1::Conversations::UsersController do
 
         before { delete :destroy, params: { conversation_id: conversation.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
+        it { expect(expect(my_join_request.reload.status).to eq('hidden')) }
         it { expect(result).to match_array({
           'user' => {
             'id' => user.id,
@@ -245,7 +245,7 @@ describe Api::V1::Conversations::UsersController do
             'role' => 'participant',
             'group_role' => 'participant',
             'community_roles' => [],
-            'status' => 'not_requested',
+            'status' => 'hidden',
             'message' => nil,
             'confirmed_at' => nil,
             'participate_at' => nil,

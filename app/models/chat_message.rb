@@ -56,9 +56,7 @@ class ChatMessage < ApplicationRecord
     end
   end
 
-  after_create :update_sender_report_prompt_status
-  after_create :update_recipients_report_prompt_status
-
+  after_create :update_hidden_memberships
   after_commit :update_parent_comments_count
   after_save :touch_messageable_timestamp
 
@@ -236,23 +234,10 @@ class ChatMessage < ApplicationRecord
   def self.json_schema urn
     JsonSchemaService.base do
       case urn
-      when 'outing:metadata'
-        {
-          operation: { type: :string, enum: [:created, :updated, :cancelled] },
-          title: { type: :string },
-          starts_at: { format: 'date-time-iso8601' },
-          display_address: { type: :string },
-          uuid: { type: :string }
-        }
       when 'status_update:metadata'
         {
           status: { type: :string },
           outcome_success: { type: [:boolean, :null] }
-        }
-      when 'share:metadata'
-        {
-          type: { type: :string, enum: [:entourage, :poi] },
-          uuid: { type: :string }
         }
       when 'broadcast:metadata'
         {
@@ -357,26 +342,13 @@ class ChatMessage < ApplicationRecord
     messageable.update_column(:updated_at, Time.current)
   end
 
-  def update_sender_report_prompt_status
+  def update_hidden_memberships
+    return unless messageable.respond_to?(:conversation?) && messageable.conversation?
+
     JoinRequest.where(
       joinable_type: messageable_type,
       joinable_id: messageable_id,
-      user_id: user_id,
-      report_prompt_status: 'display'
-    )
-    .update_all(report_prompt_status: 'dismissed')
-  end
-
-  def update_recipients_report_prompt_status
-    return if messageable.group_type != 'conversation'
-    return if ChatMessage.where(messageable: messageable).where('id < ?', id).exists?
-
-    return if user.moderator?
-    return if user.ambassador?
-    return if user.association?
-
-    messageable.join_requests
-      .where.not(user_id: user_id)
-      .update_all(report_prompt_status: 'display')
+      status: 'hidden'
+    ).update_all(status: 'accepted')
   end
 end

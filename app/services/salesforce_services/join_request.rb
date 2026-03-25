@@ -25,6 +25,7 @@ module SalesforceServices
       status = "Inscrit"
       status = "Participé" if instance.participate_at.present?
       status = "A annulé" if instance.cancelled?
+      # "hidden" status is not configurable for outing join_requests
 
       upsert_from_fields(
         interface.mapped_fields.merge({

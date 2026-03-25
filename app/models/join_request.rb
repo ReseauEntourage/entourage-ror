@@ -3,8 +3,9 @@ class JoinRequest < ApplicationRecord
   PENDING_STATUS='pending'
   REJECTED_STATUS='rejected'
   CANCELLED_STATUS='cancelled'
+  HIDDEN_STATUS='hidden'
 
-  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
+  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS, HIDDEN_STATUS]
 
   include JoinRequestAcceptTracking
   include Salesforcable
@@ -30,7 +31,7 @@ class JoinRequest < ApplicationRecord
 
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: 'a déjà été ajouté'}
-  validates_inclusion_of :status, in: ['pending', 'accepted', 'rejected', 'cancelled']
+  validates_inclusion_of :status, in: ['pending', 'accepted', 'rejected', 'cancelled', 'hidden']
   validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
     # can not remove creator
     join_request.joinable.present? &&
@@ -41,7 +42,6 @@ class JoinRequest < ApplicationRecord
   validates :role, presence: true,
                    inclusion: { in: -> (r) { r.joinable&.group_type_config&.dig('roles') || [] }, allow_nil: true },
                    unless: :neighborhood?
-  validates_inclusion_of :report_prompt_status, in: ['display', 'dismissed', 'reported'], allow_nil: true
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}
   scope :pending,  -> {where(status: PENDING_STATUS)}
@@ -190,6 +190,11 @@ class JoinRequest < ApplicationRecord
     status.to_sym == :cancelled
   end
 
+  def hidden?
+    return unless status
+    status.to_sym == :hidden
+  end
+
   # these 3 methods manage the skip_conversation_uuid_update flag.
   # see join_callback and ChatMessageBuilder#create
   def initialize(*)
@@ -205,18 +210,6 @@ class JoinRequest < ApplicationRecord
     super.tap do
       @skip_conversation_uuid_update = false
     end
-  end
-
-  def simplified_status
-    # Not sure it's needed anymore.
-    # see commit 363a77c2df9b9e6e9a93f68796f4ac8f2c527868
-    return 'not_requested' if destroyed?
-
-    # we don't return 'rejected' or 'cancelled' anymore as we don't want these states to
-    # be treated differently by the clients. See EN-3073
-    return 'not_requested' if status.in?(['rejected', 'cancelled'])
-
-    status
   end
 
   private
