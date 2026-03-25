@@ -38,7 +38,7 @@ module Api
         redirect_to api_v1_outings_path(category: 'papotages', **index_params.to_h)
       end
 
-      def first_steps
+      def firsts_steps
         redirect_to api_v1_outings_path(category: 'first_steps', **index_params.to_h)
       end
 
