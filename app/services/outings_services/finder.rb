@@ -22,6 +22,12 @@ module OutingsServices
       @interests = @interests.compact.uniq if @interests.present?
 
       @before_date = params[:within_days].present? ? params[:within_days].to_i.days.from_now.end_of_day : nil
+
+      @category = params[:category]
+
+      @papotages = @category.present? && @category == 'papotages'
+      @first_steps = @category.present? && @category == 'first_steps'
+      @webinar = @category.present? && @category == 'webinar'
     end
 
     def base_query
@@ -35,6 +41,10 @@ module OutingsServices
 
         outings = outings.where("(#{bounding_box_sql}) OR online = true")
       end
+
+      outings = outings.papotages if @papotages
+      outings = outings.first_steps_category if @first_steps
+      outings = outings.webinar_category if @webinar
 
       # order by starts_at is already in default_scope
       outings.group(:id)

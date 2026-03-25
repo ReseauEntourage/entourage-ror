@@ -583,6 +583,10 @@ Rails.application.routes.draw do
 
       resources :outings do
         collection do
+          get :papotages
+          get :first_steps
+          get :webinar
+
           get :smalltalk
           get :sensibilisation
           get :count
