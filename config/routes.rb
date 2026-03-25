@@ -589,6 +589,7 @@ Rails.application.routes.draw do
 
           get :smalltalk
           get :sensibilisation
+          get :first_steps
           get :count
           get :week_average
         end
