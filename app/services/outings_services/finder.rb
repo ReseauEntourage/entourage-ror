@@ -8,12 +8,15 @@ module OutingsServices
       if params[:latitude].present? && params[:longitude].present?
         @latitude = params[:latitude]
         @longitude = params[:longitude]
-      else
+      elsif user.present? && user.latitude.present? && user.longitude.present?
         @latitude = user.latitude
         @longitude = user.longitude
+      else
+        @latitude = CoordinatesScopable::CITIES[:paris][:latitude]
+        @longitude = CoordinatesScopable::CITIES[:paris][:longitude]
       end
 
-      @distance = params[:travel_distance] || user.travel_distance
+      @distance = params[:travel_distance] || user&.travel_distance || UserService::DEFAULT_DISTANCE
 
       @q = params[:q]
 

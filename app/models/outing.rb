@@ -113,6 +113,8 @@ class Outing < Entourage
   scope :for_user, -> (user) {
     return unless user
 
+    return where("exclusive_to is null") if user.is_a?(AnonymousUser)
+
     # ambassadors and team can see any outing
     return if user.ambassador?
     return if user.team?
