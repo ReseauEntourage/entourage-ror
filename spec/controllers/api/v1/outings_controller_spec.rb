@@ -10,14 +10,13 @@ describe Api::V1::OutingsController do
   subject { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let(:request) { get :index, params: { token: user.token } }
-
     let(:latitude) { 48.85 }
     let(:longitude) { 2.27 }
 
     let(:outing) { create(:outing, title: 'JO Paris', latitude: latitude, longitude: longitude) }
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
+    RSpec.shared_examples 'outings index' do
     describe 'filter by interests' do
       let!(:outing) { FactoryBot.create(:outing, :outing_class, latitude: latitude, longitude: longitude, interest_list: ['sport']) }
       let(:join_request) { nil }
@@ -196,6 +195,8 @@ describe Api::V1::OutingsController do
     context 'user coordinates do not matches' do
       before { User.any_instance.stub(:latitude) { 40 } }
       before { User.any_instance.stub(:longitude) { 2 } }
+      before { AnonymousUser.any_instance.stub(:latitude) { 40 } }
+      before { AnonymousUser.any_instance.stub(:longitude) { 2 } }
 
       before { request }
 
@@ -214,6 +215,19 @@ describe Api::V1::OutingsController do
       it { expect(subject['outings'].count).to eq(2) }
       it { expect(subject['outings'][0]['id']).to eq(outing_1.id) }
       it { expect(subject['outings'][1]['id']).to eq(outing.id) }
+    end
+    end
+
+    context 'with current_user' do
+      let(:request) { get :index, params: { token: user.token } }
+
+      include_examples 'outings index'
+    end
+
+    context 'without current_user' do
+      let(:request) { get :index }
+
+      include_examples 'outings index'
     end
   end
 
