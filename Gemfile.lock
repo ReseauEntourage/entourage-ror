@@ -329,12 +329,6 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
-    nexmo (7.2.1)
-      nexmo-jwt (~> 0.1.1)
-      sorbet-runtime (~> 0.5)
-      zeitwerk (~> 2, >= 2.2)
-    nexmo-jwt (0.1.2)
-      jwt (~> 2)
     nio4r (2.7.4)
     nokogiri (1.18.10-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -369,6 +363,7 @@ GEM
     pg (1.6.2-x86_64-darwin)
     pg (1.6.2-x86_64-linux)
     pg (1.6.2-x86_64-linux-musl)
+    phonelib (0.10.17)
     polylines (0.4.0)
     pp (0.6.3)
       prettyprint
@@ -423,7 +418,6 @@ GEM
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     rails-observers (0.1.5)
       activemodel (>= 4.0)
-    rails_stdout_logging (0.0.5)
     railties (7.1.5.2)
       actionpack (= 7.1.5.2)
       activesupport (= 7.1.5.2)
@@ -579,7 +573,7 @@ GEM
       jwt (>= 1.5, < 4.0)
       multi_json (~> 1.10)
     slack-notifier (2.4.0)
-    sorbet-runtime (0.6.12642)
+    sorbet-runtime (0.6.13066)
     spring (2.1.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -624,6 +618,16 @@ GEM
       parser (>= 3.3.0)
       prism (>= 1.4)
     uri (1.0.4)
+    vonage (7.34.0)
+      multipart-post (~> 2.0)
+      net-http-persistent (~> 4.0, >= 4.0.2)
+      phonelib
+      rexml
+      sorbet-runtime (~> 0.5)
+      vonage-jwt (~> 0.2.0)
+      zeitwerk (~> 2, >= 2.2)
+    vonage-jwt (0.2.1)
+      jwt (>= 2.0, < 4.0)
     web-push (3.0.1)
       jwt (~> 2.0)
       openssl (~> 3.0)
@@ -683,7 +687,6 @@ DEPENDENCIES
   mailjet
   mini_magick
   momentjs-rails (~> 2)
-  nexmo
   pg (~> 1.1)
   puma
   rack-attack
@@ -691,7 +694,6 @@ DEPENDENCIES
   rails (~> 7.1.0)
   rails-controller-testing
   rails-observers
-  rails_stdout_logging
   ransack (~> 4.1)
   redis (~> 4)
   restforce (~> 7.6)
@@ -721,6 +723,7 @@ DEPENDENCIES
   timecop
   tinymce-rails
   turbolinks (~> 5)
+  vonage
   webmock
   whenever
 
