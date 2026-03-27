@@ -59,6 +59,8 @@ class ChatMessage < ApplicationRecord
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
 
+  after_create_commit :broadcast_message
+
   after_commit :update_parent_comments_count
   after_save :touch_messageable_timestamp
 
@@ -378,5 +380,14 @@ class ChatMessage < ApplicationRecord
     messageable.join_requests
       .where.not(user_id: user_id)
       .update_all(report_prompt_status: 'display')
+  end
+
+  private
+
+  def broadcast_message
+    ActionCable.server.broadcast(
+      "chat_messages_#{messageable_type}_#{messageable_id}",
+      V1::ChatMessageSerializer.new(self).as_json
+    )
   end
 end

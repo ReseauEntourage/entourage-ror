@@ -17,7 +17,6 @@ class ActiveModel::Serializer
 
     def translations
       return if Translation.disable_on_read?
-      return unless object.translation
 
       {
         translation: translation,

@@ -2,6 +2,7 @@ require 'sidekiq/web'
 require 'super_admin_constraint'
 
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
   mount Sidekiq::Web => '/super_admin/sidekiq', :constraints => SuperAdminConstraint.new
 
   #ADMIN
