@@ -17,205 +17,205 @@ describe Api::V1::OutingsController do
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
     RSpec.shared_examples 'outings index' do
-    describe 'filter by interests' do
-      let!(:outing) { FactoryBot.create(:outing, :outing_class, latitude: latitude, longitude: longitude, interest_list: ['sport']) }
-      let(:join_request) { nil }
+      describe 'filter by interests' do
+        let!(:outing) { FactoryBot.create(:outing, :outing_class, latitude: latitude, longitude: longitude, interest_list: ['sport']) }
+        let(:join_request) { nil }
 
-      before { get :index, params: { token: user.token, interests: interests } }
+        before { get :index, params: { token: user.token, interests: interests } }
 
-      describe 'find with interest' do
-        let(:interests) { ['sport'] }
+        describe 'find with interest' do
+          let(:interests) { ['sport'] }
 
-        it { expect(response.status).to eq 200 }
-        it { expect(subject['outings'].count).to eq(1) }
-        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-      end
-
-      describe 'does not find with interest' do
-        let(:interests) { ['jeux'] }
-
-        it { expect(response.status).to eq 200 }
-        it { expect(subject['outings'].count).to eq(0) }
-      end
-    end
-
-    describe 'filter by q' do
-      before { get :index, params: { token: user.token, q: q } }
-
-      describe 'find with q' do
-        let(:q) { 'JO' }
-
-        it { expect(response.status).to eq 200 }
-        it { expect(subject['outings'].count).to eq(1) }
-        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-      end
-
-      describe 'find with q not case sensitive' do
-        let(:q) { 'jo' }
-
-        it { expect(response.status).to eq 200 }
-        it { expect(subject['outings'].count).to eq(1) }
-        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-      end
-
-      describe 'does not find with q' do
-        let(:q) { 'OJ' }
-
-        it { expect(response.status).to eq 200 }
-        it { expect(subject['outings'].count).to eq(0) }
-      end
-    end
-
-    describe 'do not get closed' do
-      let!(:closed) { create :outing, status: :closed, latitude: latitude, longitude: longitude }
-
-      before { get :index, params: { token: user.token } }
-
-      it { expect(response.status).to eq 200 }
-      it { expect(subject).to have_key('outings') }
-      it { expect(subject['outings'].count).to eq(1) }
-      it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-    end
-
-    describe 'period' do
-      let!(:outing) { create :outing, latitude: latitude, longitude: longitude, metadata: { starts_at: starts_at } }
-
-      before { get :index, params: { token: user.token, period: period } }
-
-      context 'default' do
-        let(:period) { nil }
-
-        context 'display future' do
-          let(:starts_at) { 1.hour.from_now }
-
+          it { expect(response.status).to eq 200 }
           it { expect(subject['outings'].count).to eq(1) }
           it { expect(subject['outings'][0]['id']).to eq(outing.id) }
         end
 
-        context 'display recently past' do
-          let(:starts_at) { 1.hour.ago }
+        describe 'does not find with interest' do
+          let(:interests) { ['jeux'] }
 
-          it { expect(subject['outings'].count).to eq(1) }
-          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-        end
-
-        context 'do not display ancient past' do
-          let(:starts_at) { 1.year.ago }
-
+          it { expect(response.status).to eq 200 }
           it { expect(subject['outings'].count).to eq(0) }
         end
       end
-    end
 
-    context 'some user is a member' do
-      before { request }
+      describe 'filter by q' do
+        before { get :index, params: { token: user.token, q: q } }
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject).to have_key('outings') }
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+        describe 'find with q' do
+          let(:q) { 'JO' }
 
-    context 'some users are members' do
-      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
-      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+          it { expect(response.status).to eq 200 }
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
 
-      before { request }
+        describe 'find with q not case sensitive' do
+          let(:q) { 'jo' }
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject).to have_key('outings') }
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+          it { expect(response.status).to eq 200 }
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
 
-    context 'user being a member' do
-      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
+        describe 'does not find with q' do
+          let(:q) { 'OJ' }
 
-      before { request }
+          it { expect(response.status).to eq 200 }
+          it { expect(subject['outings'].count).to eq(0) }
+        end
+      end
 
-      it { expect(response.status).to eq(200) }
-      # we no longer exclude outing with user membership
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+      describe 'do not get closed' do
+        let!(:closed) { create :outing, status: :closed, latitude: latitude, longitude: longitude }
 
-    context 'user being a member along with some users' do
-      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
-      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
-      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+        before { get :index, params: { token: user.token } }
 
-      before { request }
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key('outings') }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
 
-      it { expect(response.status).to eq(200) }
-      # we no longer exclude outing with user membership
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+      describe 'period' do
+        let!(:outing) { create :outing, latitude: latitude, longitude: longitude, metadata: { starts_at: starts_at } }
 
-    context 'user being a member but not accepted' do
-      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :pending, role: :organizer) }
+        before { get :index, params: { token: user.token, period: period } }
 
-      before { request }
+        context 'default' do
+          let(:period) { nil }
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+          context 'display future' do
+            let(:starts_at) { 1.hour.from_now }
 
-    context 'user not being a member' do
-      before { request }
+            it { expect(subject['outings'].count).to eq(1) }
+            it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+          end
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+          context 'display recently past' do
+            let(:starts_at) { 1.hour.ago }
 
-    context 'params coordinates matches' do
-      let(:request) { get :index, params: { token: user.token, latitude: 48.84, longitude: 2.28, travel_distance: 10 } }
+            it { expect(subject['outings'].count).to eq(1) }
+            it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+          end
 
-      before { request }
+          context 'do not display ancient past' do
+            let(:starts_at) { 1.year.ago }
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+            it { expect(subject['outings'].count).to eq(0) }
+          end
+        end
+      end
 
-    context 'params coordinates do not matches' do
-      let(:request) { get :index, params: { token: user.token, latitude: 47, longitude: 2, travel_distance: 1 } }
+      context 'some user is a member' do
+        before { request }
 
-      before { request }
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outings') }
+        it { expect(subject['outings'].count).to eq(1) }
+      end
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(0) }
-    end
+      context 'some users are members' do
+        let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+        let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
 
-    context 'user coordinates matches' do
-      before { user.stub(:latitude) { 48.84 }}
-      before { user.stub(:longitude) { 2.28 }}
+        before { request }
 
-      before { request }
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outings') }
+        it { expect(subject['outings'].count).to eq(1) }
+      end
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(1) }
-    end
+      context 'user being a member' do
+        let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
 
-    context 'user coordinates do not matches' do
-      before { User.any_instance.stub(:latitude) { 40 } }
-      before { User.any_instance.stub(:longitude) { 2 } }
-      before { AnonymousUser.any_instance.stub(:latitude) { 40 } }
-      before { AnonymousUser.any_instance.stub(:longitude) { 2 } }
+        before { request }
 
-      before { request }
+        it { expect(response.status).to eq(200) }
+        # we no longer exclude outing with user membership
+        it { expect(subject['outings'].count).to eq(1) }
+      end
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(0) }
-    end
+      context 'user being a member along with some users' do
+        let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
+        let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+        let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
 
-    context 'ordered by starts_at desc' do
-      let(:outing) { FactoryBot.create(:outing, metadata: { starts_at: 1.day.from_now }) }
-      let(:outing_1) { FactoryBot.create(:outing, metadata: { starts_at: 1.hour.from_now }) }
-      let!(:join_request_1) { create(:join_request, user: outing_1.user, joinable: outing_1, status: :accepted, role: :organizer) }
+        before { request }
 
-      before { request }
+        it { expect(response.status).to eq(200) }
+        # we no longer exclude outing with user membership
+        it { expect(subject['outings'].count).to eq(1) }
+      end
 
-      it { expect(response.status).to eq(200) }
-      it { expect(subject['outings'].count).to eq(2) }
-      it { expect(subject['outings'][0]['id']).to eq(outing_1.id) }
-      it { expect(subject['outings'][1]['id']).to eq(outing.id) }
-    end
+      context 'user being a member but not accepted' do
+        let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :pending, role: :organizer) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(1) }
+      end
+
+      context 'user not being a member' do
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(1) }
+      end
+
+      context 'params coordinates matches' do
+        let(:request) { get :index, params: { token: user.token, latitude: 48.84, longitude: 2.28, travel_distance: 10 } }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(1) }
+      end
+
+      context 'params coordinates do not matches' do
+        let(:request) { get :index, params: { token: user.token, latitude: 47, longitude: 2, travel_distance: 1 } }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(0) }
+      end
+
+      context 'user coordinates matches' do
+        before { user.stub(:latitude) { 48.84 }}
+        before { user.stub(:longitude) { 2.28 }}
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(1) }
+      end
+
+      context 'user coordinates do not matches' do
+        before { User.any_instance.stub(:latitude) { 40 } }
+        before { User.any_instance.stub(:longitude) { 2 } }
+        before { AnonymousUser.any_instance.stub(:latitude) { 40 } }
+        before { AnonymousUser.any_instance.stub(:longitude) { 2 } }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(0) }
+      end
+
+      context 'ordered by starts_at desc' do
+        let(:outing) { FactoryBot.create(:outing, metadata: { starts_at: 1.day.from_now }) }
+        let(:outing_1) { FactoryBot.create(:outing, metadata: { starts_at: 1.hour.from_now }) }
+        let!(:join_request_1) { create(:join_request, user: outing_1.user, joinable: outing_1, status: :accepted, role: :organizer) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject['outings'].count).to eq(2) }
+        it { expect(subject['outings'][0]['id']).to eq(outing_1.id) }
+        it { expect(subject['outings'][1]['id']).to eq(outing.id) }
+      end
     end
 
     context 'with current_user' do
