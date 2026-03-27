@@ -551,6 +551,7 @@ Rails.application.routes.draw do
       resources :resources, only: [:index, :show] do
         collection do
           get :home
+          get :welcome
           get 'tag/:tag' => :tag, :as => :tag
         end
 

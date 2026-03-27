@@ -4,7 +4,7 @@ class Resource < ApplicationRecord
   include Translatable
 
   CATEGORIES  = [:understand, :act, :inspire]
-  TAGS  = [:neighborhood, :outing, :action]
+  TAGS  = [:neighborhood, :outing, :action, :welcome]
 
   # STATUSES = [:active, :deleted]
   default_scope { where(status: :active) }
@@ -55,8 +55,7 @@ class Resource < ApplicationRecord
     document.text.strip
   end
 
-  # @implement
   def is_welcome_video?
-    false
+    tag.present? && tag.to_sym == :welcome
   end
 end

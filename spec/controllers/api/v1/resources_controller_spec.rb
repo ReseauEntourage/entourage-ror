@@ -188,4 +188,26 @@ describe Api::V1::ResourcesController, type: :controller do
     it { expect(result).to have_key('resource') }
     it { expect(result['resource']['id']).to eq(resource.id) }
   end
+
+  describe 'welcome' do
+    let!(:resource) { create :resource, tag: tag }
+
+    let(:result) { JSON.parse(response.body) }
+
+    before { get :welcome, params: { token: user.token } }
+
+    context 'welcome tag' do
+      let(:tag) { :welcome }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('resource') }
+      it { expect(result['resource']['id']).to eq(resource.id) }
+    end
+
+    context 'outing tag' do
+      let(:tag) { :outing }
+
+      it { expect(response.status).to eq 400 }
+    end
+  end
 end
