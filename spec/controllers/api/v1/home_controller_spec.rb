@@ -195,7 +195,10 @@ describe Api::V1::HomeController do
             'unclosed_action' => nil,
             'moderator' => {},
             'signable_permission' => false,
-            'birthday_today' => be_boolean
+            'birthday_today' => be_boolean,
+            'events' => [
+              'onboarding.profile.first_name.entered',
+            ]
           }
         }) }
       end

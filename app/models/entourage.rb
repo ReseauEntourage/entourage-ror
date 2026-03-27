@@ -498,9 +498,10 @@ class Entourage < ApplicationRecord
   end
 
   def papotage?
-    return false unless online
+    return true if sf_category.present? && sf_category.to_s.match?(/papotage/i)
+    return false unless title.present?
 
-    title.strip.match?(/papotage/i)
+    online? && title.strip.match?(/papotage/i)
   end
 
   def action_class
