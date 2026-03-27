@@ -25,6 +25,14 @@ module Api
         render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
 
+      def welcome
+        @resource = Resource.find_by_tag(:welcome)
+
+        return render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
+
+        render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
+      end
+
       private
 
       def set_resource
