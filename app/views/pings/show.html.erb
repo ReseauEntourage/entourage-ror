@@ -1,0 +1,15 @@
+<h1>WebSocket Demo</h1>
+
+<div data-controller="ping">
+  <p>Listening for messages on <code>PingChannel</code>...</p>
+
+  <div data-ping-target="messages" style="border: 1px solid #ccc; padding: 10px; min-height: 100px; margin-top: 10px;">
+    <!-- Messages will appear here -->
+  </div>
+
+  <hr>
+
+  <h3>Trigger a message</h3>
+  <p>Run the following command in your terminal to trigger a message:</p>
+  <pre>curl -X POST http://localhost:3000/api/v1/pings/dispatch_websocket -d "message=Hello from Curl!"</pre>
+</div>
