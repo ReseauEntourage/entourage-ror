@@ -28,10 +28,8 @@ module Api
         end
 
         render json: outings, root: :outings, each_serializer: ::V1::Outings::IndexSerializer, scope: {
-            user: user,
-            latitude: latitude || user.latitude,
-            longitude: longitude || user.longitude
-          }
+          user: user
+        }
       end
 
       def create
