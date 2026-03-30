@@ -5,7 +5,7 @@ module Api
       before_action :authorised?, only: [:update, :batch_update, :cancel, :destroy]
       before_action :allowed_duplicate?, only: [:duplicate]
 
-      skip_before_action :authenticate_user!, only: [:index]
+      skip_before_action :authenticate_user!, only: [:index, :show]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -93,8 +93,10 @@ module Api
       end
 
       def show
+        user = current_user || AnonymousUser.default_user
+
         render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: {
-          user: current_user,
+          user: user,
           latitude: latitude,
           longitude: longitude
         }

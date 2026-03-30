@@ -687,8 +687,9 @@ describe Api::V1::OutingsController do
   describe 'GET show' do
     let(:outing) { FactoryBot.create(:outing, status: 'open') }
 
+    RSpec.shared_examples 'outings index' do
     context 'no deeplink' do
-      before { get :show, params: { token: user.token, id: identifier } }
+      before { get :show, params: { token: token, id: identifier } }
 
       context 'from id' do
         let(:identifier) { outing.id }
@@ -710,7 +711,7 @@ describe Api::V1::OutingsController do
     end
 
     describe 'no deeplink' do
-      before { get :show, params: { token: user.token, id: outing.id } }
+      before { get :show, params: { token: token, id: outing.id } }
 
       it { expect(response.status).to eq 200 }
       it { expect(subject).to have_key('outing') }
@@ -720,7 +721,7 @@ describe Api::V1::OutingsController do
 
     describe 'deeplink' do
       context 'using uuid_v2' do
-        before { get :show, params: { token: user.token, id: outing.uuid_v2, deeplink: true } }
+        before { get :show, params: { token: token, id: outing.uuid_v2, deeplink: true } }
 
         it { expect(response.status).to eq 200 }
         it { expect(subject).to have_key('outing') }
@@ -728,10 +729,23 @@ describe Api::V1::OutingsController do
       end
 
       context 'using id fails' do
-        before { get :show, params: { token: user.token, id: outing.id, deeplink: true } }
+        before { get :show, params: { token: token, id: outing.id, deeplink: true } }
 
         it { expect(response.status).to eq 400 }
       end
+    end
+    end
+
+    context 'with current_user' do
+      let(:token) { user.token }
+
+      include_examples 'outings index'
+    end
+
+    context 'without current_user' do
+      let(:token) { nil }
+
+      include_examples 'outings index'
     end
   end
 
