@@ -688,11 +688,30 @@ describe Api::V1::OutingsController do
     let(:outing) { FactoryBot.create(:outing, status: 'open') }
 
     RSpec.shared_examples 'outings index' do
-    context 'no deeplink' do
-      before { get :show, params: { token: token, id: identifier } }
+      context 'no deeplink' do
+        before { get :show, params: { token: token, id: identifier } }
 
-      context 'from id' do
-        let(:identifier) { outing.id }
+        context 'from id' do
+          let(:identifier) { outing.id }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(subject).to have_key('outing') }
+          it { expect(subject['outing']).to have_key('posts') }
+          it { expect(subject['outing']).to have_key('signable') }
+        end
+
+        context 'from uuid_v2' do
+          let(:identifier) { outing.uuid_v2 }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(subject).to have_key('outing') }
+          it { expect(subject['outing']).to have_key('posts') }
+          it { expect(subject['outing']).to have_key('signable') }
+        end
+      end
+
+      describe 'no deeplink' do
+        before { get :show, params: { token: token, id: outing.id } }
 
         it { expect(response.status).to eq 200 }
         it { expect(subject).to have_key('outing') }
@@ -700,40 +719,21 @@ describe Api::V1::OutingsController do
         it { expect(subject['outing']).to have_key('signable') }
       end
 
-      context 'from uuid_v2' do
-        let(:identifier) { outing.uuid_v2 }
+      describe 'deeplink' do
+        context 'using uuid_v2' do
+          before { get :show, params: { token: token, id: outing.uuid_v2, deeplink: true } }
 
-        it { expect(response.status).to eq 200 }
-        it { expect(subject).to have_key('outing') }
-        it { expect(subject['outing']).to have_key('posts') }
-        it { expect(subject['outing']).to have_key('signable') }
+          it { expect(response.status).to eq 200 }
+          it { expect(subject).to have_key('outing') }
+          it { expect(subject['outing']['id']).to eq(outing.id) }
+        end
+
+        context 'using id fails' do
+          before { get :show, params: { token: token, id: outing.id, deeplink: true } }
+
+          it { expect(response.status).to eq 400 }
+        end
       end
-    end
-
-    describe 'no deeplink' do
-      before { get :show, params: { token: token, id: outing.id } }
-
-      it { expect(response.status).to eq 200 }
-      it { expect(subject).to have_key('outing') }
-      it { expect(subject['outing']).to have_key('posts') }
-      it { expect(subject['outing']).to have_key('signable') }
-    end
-
-    describe 'deeplink' do
-      context 'using uuid_v2' do
-        before { get :show, params: { token: token, id: outing.uuid_v2, deeplink: true } }
-
-        it { expect(response.status).to eq 200 }
-        it { expect(subject).to have_key('outing') }
-        it { expect(subject['outing']['id']).to eq(outing.id) }
-      end
-
-      context 'using id fails' do
-        before { get :show, params: { token: token, id: outing.id, deeplink: true } }
-
-        it { expect(response.status).to eq 400 }
-      end
-    end
     end
 
     context 'with current_user' do
