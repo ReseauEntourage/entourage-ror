@@ -175,6 +175,8 @@ module SalesforceServices
       end
 
       def type_evenement
+        return 'Papotages solidaires' if outing.papotages?
+
         'Evenement de convivialité'
       end
 
