@@ -32,6 +32,18 @@ module Api
         }
       end
 
+      def papotages
+        redirect_to api_v1_outings_path(category: 'papotages', **index_params.to_h)
+      end
+
+      def firsts_steps
+        redirect_to api_v1_outings_path(category: 'first_steps', **index_params.to_h)
+      end
+
+      def webinar
+        redirect_to api_v1_outings_path(category: 'webinar', **index_params.to_h)
+      end
+
       def create
         EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
           on.success do |outing|
@@ -201,7 +213,7 @@ module Api
       end
 
       def index_params
-        params.permit(:q, :latitude, :longitude, :travel_distance, :within_days, :page, :per, :interest_list, interests: [])
+        params.permit(:q, :latitude, :longitude, :travel_distance, :within_days, :category, :page, :per, :interest_list, interests: [])
       end
 
       def outing_params
