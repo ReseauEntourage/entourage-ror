@@ -982,6 +982,32 @@ describe Api::V1::OutingsController do
     end
   end
 
+  describe 'GET first_steps' do
+    let(:online) { true }
+    let(:tag) { :welcome_entourage_local }
+    let!(:outing) { create(:outing, :outing_class, status: 'open', online: online, sf_category_list: [tag]) }
+
+    before { get :first_steps, params: { token: user.token } }
+
+    context 'online' do
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('outing') }
+      it { expect(subject['outing']['id']).to eq(outing.id) }
+    end
+
+    context 'offline' do
+      let(:online) { false }
+
+      it { expect(response.status).to eq 400 }
+    end
+
+    context 'wrong tag' do
+      let(:tag) { :atelier_femmes }
+
+      it { expect(response.status).to eq 400 }
+    end
+  end
+
   describe 'GET count' do
     let(:request) { get :count, params: { token: user.token } }
 
