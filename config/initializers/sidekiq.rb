@@ -1,3 +1,5 @@
+require 'sidekiq/cron/job'
+
 redis_url = ENV["HEROKU_REDIS_GOLD_URL"] || ENV["REDIS_URL"]
 
 Sidekiq.configure_server do |config|
@@ -21,3 +23,9 @@ Sidekiq.configure_client do |config|
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
   }
 end
+
+Sidekiq::Cron::Job.create(
+  name: 'Refresh engagement levels - every day at 2am',
+  cron: '0 2 * * *',
+  class: 'RefreshEngagementLevelsJob'
+)
