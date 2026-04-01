@@ -149,7 +149,7 @@ module SalesforceServices
       end
 
       def is_engaged
-        user.denorm_daily_engagements.any?
+        user.engaged?
       end
 
       def status
