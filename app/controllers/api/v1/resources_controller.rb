@@ -3,7 +3,7 @@ module Api
     class ResourcesController < Api::V1::BaseController
       before_action :set_resource, only: [:show]
       before_action :set_resource_from_tag, only: [:tag]
-      after_action :set_as_watched, only: [:show, :tag]
+      after_action :set_as_watched, only: [:show, :tag, :welcome]
 
       def index
         render json: Resource.all.includes(:translation), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user, nohtml: params[:nohtml].present? }
@@ -25,6 +25,14 @@ module Api
         render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
 
+      def welcome
+        @resource = Resource.find_by_tag(:welcome)
+
+        return render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
+
+        render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
+      end
+
       private
 
       def set_resource
@@ -40,6 +48,9 @@ module Api
       end
 
       def set_as_watched
+        return unless current_user
+        return unless @resource
+
         ResourceServices::Read.new(resource: @resource, user: current_user).set_as_watched_and_save
       end
     end

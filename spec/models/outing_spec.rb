@@ -220,4 +220,86 @@ RSpec.describe Outing, type: :model do
       it { expect(subject).to eq true }
     end
   end
+
+  describe "#webinar?" do
+    subject(:webinar?) { outing.webinar? }
+
+    let(:outing) { create(:outing, :outing_class, online: online) }
+
+    context "when outing is online and has a webinar tag" do
+      let(:online) { true }
+
+      before { outing.sf_category_list.add("atelier_femmes") }
+
+      it { expect(webinar?).to be true }
+    end
+
+    context "when outing is offline" do
+      let(:online) { false }
+
+      before { outing.sf_category_list.add("atelier_femmes") }
+
+      it { expect(webinar?).to be false }
+    end
+
+    context "when outing does not have webinar tags" do
+      let(:online) { true }
+
+      before { outing.sf_category_list.add("welcome_entourage_local") }
+
+      it { expect(webinar?).to be false }
+    end
+  end
+
+  describe "#first_steps?" do
+    subject(:first_steps?) { outing.first_steps? }
+
+    let(:outing) { create(:outing, :outing_class, online: online) }
+
+    context "when outing is online and has a first_steps tag" do
+      let(:online) { true }
+
+      before { outing.sf_category_list.add("welcome_entourage_local") }
+
+      it { expect(first_steps?).to be true }
+    end
+
+    context "when outing is offline" do
+      let(:online) { false }
+
+      before { outing.sf_category_list.add("welcome_entourage_local") }
+
+      it { expect(first_steps?).to be false }
+    end
+
+    context "when outing does not have first_steps tags" do
+      let(:online) { true }
+
+      before { outing.sf_category_list.add("atelier_femmes") }
+
+      it { expect(first_steps?).to be false }
+    end
+  end
+
+  describe "#papotages?" do
+    subject(:papotages?) { outing.papotages? }
+
+    context "when title contains 'papotage'" do
+      let(:outing) { create(:outing, :outing_class, online: true, title: "Grand papotage entre voisins") }
+
+      it { expect(papotages?).to be true }
+    end
+
+    context "when title contains 'PAPOTAGE' (case insensitive)" do
+      let(:outing) { create(:outing, :outing_class, online: true, title: "PAPOTAGE du dimanche") }
+
+      it { expect(papotages?).to be true }
+    end
+
+    context "when title does not contain papotage" do
+      let(:outing) { create(:outing, :outing_class, online: true, title: "Atelier cuisine") }
+
+      it { expect(papotages?).to be false }
+    end
+  end
 end
