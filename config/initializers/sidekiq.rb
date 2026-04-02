@@ -1,3 +1,4 @@
+require 'sidekiq'
 require 'sidekiq/cron/job'
 
 redis_url = ENV["HEROKU_REDIS_GOLD_URL"] || ENV["REDIS_URL"]
@@ -24,8 +25,17 @@ Sidekiq.configure_client do |config|
   }
 end
 
-Sidekiq::Cron::Job.create(
-  name: 'Refresh engagement levels - every day at 2am',
-  cron: '0 2 * * *',
-  class: 'RefreshEngagementLevelsJob'
-)
+Sidekiq.configure_server do |config|
+  config.on(:startup) do
+    schedule_file = Rails.root.join('config/sidekiq.yml')
+
+    if File.exist?(schedule_file)
+      schedule = YAML.safe_load(
+        File.read(schedule_file),
+        permitted_classes: [Symbol]
+      )
+
+      Sidekiq::Cron::Job.load_from_hash!(schedule['schedule'])
+    end
+  end
+end
