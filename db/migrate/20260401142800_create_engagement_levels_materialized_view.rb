@@ -5,7 +5,7 @@ class CreateEngagementLevelsMaterializedView < ActiveRecord::Migration[7.1]
     execute <<~SQL
       CREATE MATERIALIZED VIEW engagement_levels AS
       SELECT
-        CURRENT_DATE AS date,
+        CURRENT_DATE AS snapshot_date,
         user_id,
 
         COUNT(*) FILTER (
@@ -22,7 +22,7 @@ class CreateEngagementLevelsMaterializedView < ActiveRecord::Migration[7.1]
 
       FROM denorm_daily_engagements_with_type
 
-      WHERE date >= CURRENT_DATE - INTERVAL '30 days'
+      WHERE denorm_daily_engagements_with_type.date >= CURRENT_DATE - INTERVAL '30 days'
 
       GROUP BY user_id;
     SQL

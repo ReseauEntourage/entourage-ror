@@ -11,7 +11,7 @@ module UserServices
     included do
       has_one :engagement_level
 
-      has_many :denorm_daily_engagements, foreign_key: :user_id
+      has_many :denorm_daily_engagements_with_types, foreign_key: :user_id
 
       scope :engaged, -> {
         joins(:engagement_level)
