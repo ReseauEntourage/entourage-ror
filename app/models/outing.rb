@@ -66,7 +66,7 @@ class Outing < Entourage
   alias_attribute :accepted_members, :members
 
   validate :validate_outings_starts_at
-  validate :validate_neighborhood_ids
+  validate :validate_neighborhood_ids, on: :create
   validate :validate_member_ids, unless: :new_record?
   validates :exclusive_to, inclusion: { in: User::GOALS }, allow_nil: true
   validates :reserved_female, inclusion: { in: [true, false] }, allow_nil: true
