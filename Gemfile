@@ -59,7 +59,7 @@ gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.
 gem 'rpush', '~> 9.1.0'
 gem 'apnotic'
 gem 'aws-sdk-sns',  '~> 1'
-gem 'nexmo'
+gem 'vonage'
 gem 'safety_mailer'
 gem 'mailjet'
 gem 'slack-notifier'
@@ -109,7 +109,6 @@ group :test do
 end
 
 group :production do
-  gem 'rails_stdout_logging'
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'
   gem 'rack-attack'
