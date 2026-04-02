@@ -54,7 +54,7 @@ module UserServices
       end
 
       def badge
-        return SILENT if level_3 >= 2
+        return SUPER_ENGAGE if level_3 >= 2
         return ENGAGE if level_2 >= 2
         return OBSERVE if level_1 >= 3
         return PASSIVE if level_1 >= 1
