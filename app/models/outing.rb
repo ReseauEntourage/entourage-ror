@@ -6,20 +6,28 @@ class Outing < Entourage
 
   RECENTLY_PAST_PERIOD = 7.days
 
-  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
+  METADATA_ACCESSOR = [:starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit]
+
+  WEBINAR_TAGS = %w[atelier_femmes atelier_mdlr atelier_preca].freeze
+  WELCOME_TAGS = %w[welcome_entourage_local welcome_entourage_pro].freeze
+
+  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female
 
   after_save :generate_initial_recurrences, if: :recurrency
 
   before_validation :update_relatives_dates, if: :force_relatives_dates
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
+  before_validation :normalize_exclusive_to
 
-  after_validation :add_creator_as_member, if: :new_record?
   after_validation :dup_neighborhoods_entourages, if: :original_outing
   after_validation :dup_taggings, if: :original_outing
 
+  after_create :add_creator_as_member
+  after_commit :send_creation_confirmation, on: :create
+
   has_many :members, -> {
-    where("join_requests.status = 'accepted'").order("join_requests.role, users.first_name")
+    where("join_requests.status = 'accepted'").order('join_requests.role, users.first_name')
   }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
   has_many :neighborhoods, through: :neighborhoods_entourages
@@ -58,8 +66,10 @@ class Outing < Entourage
   alias_attribute :accepted_members, :members
 
   validate :validate_outings_starts_at
-  validate :validate_neighborhood_ids
+  validate :validate_neighborhood_ids, on: :create
   validate :validate_member_ids, unless: :new_record?
+  validates :exclusive_to, inclusion: { in: User::GOALS }, allow_nil: true
+  validates :reserved_female, inclusion: { in: [true, false] }, allow_nil: true
 
   default_scope { where(group_type: :outing).order(Arel.sql("metadata->>'starts_at'")) }
 
@@ -71,14 +81,28 @@ class Outing < Entourage
   }
   scope :starting_after, -> (from) { where("metadata->>'starts_at' >= ?", from) }
   scope :ending_after, -> (from) { where("metadata->>'ends_at' >= ?", from) }
+  scope :ending_before, -> (before) {
+    return unless before.present?
+    where("metadata->>'ends_at' <= ?", before)
+  }
   scope :upcoming, -> (until_at) { where("metadata->>'starts_at' BETWEEN ? AND ?", Time.zone.now, until_at) }
   scope :between, -> (from, to) { where("metadata->>'starts_at' BETWEEN ? AND ?", from, to) }
+  scope :tomorrow, -> { where("metadata->>'starts_at' BETWEEN ? AND ?", Time.zone.tomorrow.beginning_of_day, Time.zone.tomorrow.end_of_day) }
+  scope :upcoming_today, -> { where("metadata->>'starts_at' BETWEEN ? AND ?", Time.zone.now, Time.zone.now.end_of_day) }
+  scope :in_days, -> (number) {
+    where("metadata->>'starts_at' BETWEEN ? AND ?", number.days.from_now.beginning_of_day, number.days.from_now.end_of_day)
+  }
 
   scope :recommandable, -> { self.active.future }
   scope :future_or_ongoing, -> { ending_after(Time.zone.now) }
+  scope :future_or_past_today, -> { ending_after(Time.zone.now.beginning_of_day) }
   scope :future_or_recently_past, -> { ending_after(RECENTLY_PAST_PERIOD.ago) }
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
   scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }
+
+  scope :papotages, -> {
+    where(online: true).where("title ilike '\%papotage\%'")
+  }
 
   scope :welcome_category, -> { where(online: true).tagged_with_sf_category([
     :atelier_femmes,
@@ -87,9 +111,43 @@ class Outing < Entourage
     :welcome_entourage_local
   ]) }
 
+  scope :webinar_category, -> { where(online: true).tagged_with_sf_category([
+    :atelier_femmes,
+    :atelier_mdlr,
+    :atelier_preca
+  ]) }
+
+  scope :first_steps_category, -> { where(online: true).tagged_with_sf_category([
+    :welcome_entourage_local,
+    :welcome_entourage_pro
+  ]) }
+
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
-  attr_accessor :recurrency, :original_outing, :force_relatives_dates
+  scope :for_user, -> (user) {
+    return unless user
+
+    return where("exclusive_to is null") if user.is_a?(AnonymousUser)
+
+    # ambassadors and team can see any outing
+    return if user.ambassador?
+    return if user.team?
+
+    return where("exclusive_to is null or exclusive_to in ('ask_for_help', 'offer_help', 'organization')") if user.association?
+    return where("exclusive_to is null or exclusive_to = 'ask_for_help'") if user.is_ask_for_help?
+    return where("exclusive_to is null or exclusive_to = 'offer_help'") if user.is_offer_help?
+
+    where(exclusive_to: nil)
+  }
+
+  attr_accessor :recurrency, :original_outing, :force_relatives_dates, :preload_image_url, :preload_member_ids
+
+  # hack that fixes not working store_accessor accessors
+  METADATA_ACCESSOR.each do |metadata_accessor|
+    define_method(metadata_accessor) do
+      metadata[metadata_accessor]
+    end
+  end
 
   def initialize_dup original_outing
     set_uuid!
@@ -103,6 +161,8 @@ class Outing < Entourage
 
     self.metadata[:starts_at] = last_outing.metadata[:starts_at] + diff
     self.metadata[:ends_at] = last_outing.metadata[:ends_at] + diff
+
+    self.salesforce_id = nil
 
     super
   end
@@ -121,7 +181,7 @@ class Outing < Entourage
     return if neighborhood_ids.empty?
 
     if (neighborhood_ids - user.neighborhood_participation_ids).any?
-      errors.add(:neighborhood_ids, "User has to be a member of every neighborhoods")
+      errors.add(:neighborhood_ids, 'User has to be a member of every neighborhoods')
     end
   end
 
@@ -129,7 +189,7 @@ class Outing < Entourage
     return unless outing?
 
     unless accepted_member_ids.include?(user_id)
-      errors.add(:user_id, "User has to be a member of outing")
+      errors.add(:user_id, 'User has to be a member of outing')
     end
   end
 
@@ -223,11 +283,30 @@ class Outing < Entourage
     self.recurrence.generate_initial_recurrences
   end
 
+  def recurrent?
+    recurrency_identifier.present?
+  end
+
+  def sibling_recurrence?
+    return false unless recurrent?
+    return false unless recurrence.present?
+    return false unless first_outing = recurrence.first_outing
+    return false if first_outing.id == self.id
+
+    true
+  end
+
   def add_creator_as_member
     return unless user.present?
     return if join_requests.map(&:user_id).include?(user.id)
 
     join_requests << JoinRequest.new(user: user, joinable: self, status: :accepted, role: :organizer)
+  end
+
+  def send_creation_confirmation
+    return if sibling_recurrence?
+
+    GroupMailer.event_created_confirmation(self).deliver_later
   end
 
   def dup_neighborhoods_entourages
@@ -260,6 +339,10 @@ class Outing < Entourage
     end
   end
 
+  def normalize_exclusive_to
+    self.exclusive_to = nil if exclusive_to.blank?
+  end
+
   def set_uuid!
     self.uuid = SecureRandom.uuid
     self.uuid_v2 = self.class.generate_uuid_v2
@@ -267,5 +350,73 @@ class Outing < Entourage
 
   def place_limit?
     metadata[:place_limit].present? && metadata[:place_limit].to_i > 0
+  end
+
+  def city
+    city_from_display_address || city_from_google_place_id
+  end
+
+  def city_from_display_address
+    return if metadata[:display_address].blank?
+    return unless matches = metadata[:display_address].match(/\b\d{5}\s+(.+)$/)
+
+    matches[1]
+  end
+
+  def city_from_google_place_id
+    return unless google_place_details = UserServices::AddressService.get_google_place_details(metadata[:google_place_id])
+    return unless google_place_details.has_key?(:city)
+
+    google_place_details[:city]
+  rescue
+  end
+
+  def can_be_managed_by? user
+    return false unless user.present?
+
+    return true if self.user == user
+
+    # team and ambassadors can manage any outing created by a team or ambassador
+    if self.user.team? || self.user.ambassador?
+      return user.team? || user.ambassador?
+    end
+
+    false
+  end
+
+  # metadata fields
+  def reserved_female
+    return false unless metadata.has_key?(:reserved_female)
+
+    ActiveModel::Type::Boolean.new.cast(metadata[:reserved_female])
+  end
+
+  def reserved_female= bool
+    metadata[:reserved_female] = ActiveModel::Type::Boolean.new.cast(bool)
+  end
+
+  def webinar?
+    online? && (sf_category_list & WEBINAR_TAGS).any?
+  end
+
+  def first_steps?
+    online? && (sf_category_list & WELCOME_TAGS).any?
+  end
+
+  def papotages?
+    papotage?
+  end
+
+  def papotages?
+    return true if sf_category.present? && sf_category.to_s.match?(/papotage/i)
+    return false unless title.present?
+
+    online? && title.match?(/papotage/i)
+  end
+
+  class << self
+    def bucket_name
+      EntourageImage.storage.bucket_name
+    end
   end
 end

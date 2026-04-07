@@ -1,5 +1,7 @@
 module Admin
   class EntourageImagesController < Admin::BaseController
+    before_action :authenticate_super_admin!, only: [:create, :update, :destroy]
+
     def index
       @entourage_images = EntourageImage.includes(:landscape_url_medium, :portrait_url_medium).order(title: :asc)
     end
@@ -26,7 +28,7 @@ module Admin
       @entourage_image.assign_attributes(entourage_image_params)
 
       if @entourage_image.save
-        redirect_to edit_admin_entourage_image_path(@entourage_image), notice: "La photo a bien été modifiée"
+        redirect_to edit_admin_entourage_image_path(@entourage_image), notice: 'La photo a bien été modifiée'
       else
         render :edit
       end

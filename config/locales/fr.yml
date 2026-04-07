@@ -206,4 +206,5 @@ fr:
       short: "%d %b %Hh%M"
       date_long: "%e %B %Y"
       date_short: "%d/%m/%Y"
+      date_and_time: "%A %d/%m/%Y %Hh%M"
     pm: pm

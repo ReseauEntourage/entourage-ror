@@ -62,6 +62,81 @@ de:
       offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
       ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
 
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Willkommen %s 🙂 Wir freuen uns sehr, dass du dabei bist! Stell dich doch kurz vor, damit die Gruppe dich besser kennenlernen kann.
+      destroy_member: | # first_name
+        %s hat die Gruppe verlassen. Vielen Dank für deine Teilnahme und alles Gute für deinen weiteren Weg!
+      banned_member: | # first_name
+        %s ist nicht mehr Teil der Gruppe. Sein/ihr Verhalten passte nicht ganz zum Geist unserer solidarischen Gemeinschaft. Wir zählen auf euch, diesen Raum weiterhin mit Freundlichkeit und guter Laune zu füllen 🙏
+      incomplete: |
+        Wir stellen gerade eine tolle Gute-Vibes-Gruppe für euch zusammen ✨ Während wir noch auf ein paar Leute warten, eine kleine Herausforderung: Versucht den Vornamen der nächsten Person zu erraten. Die Chancen stehen schlecht... aber wer weiß? 👀
+      complete: |
+        Die Gruppe ist komplett! 🎉
+
+        Willkommen in eurer Gute-Vibes-Gruppe – ein Ort für einfache, freundliche Begegnungen ✨
+
+        Eure Mission: Austauschen, teilen und vielleicht sogar treffen – online oder im echten Leben?
+        Hier ist der Link für ein erstes gemeinsames Treffen: [Meet-Link] Lien meet
+
+        👋 Stellt euch gerne vor, falls ihr das noch nicht getan habt.
+
+        🔥 Und ab morgen... geht’s los mit 7 Tagen kleiner Challenges, um einander besser kennenzulernen 🫶
+
+        Wir zählen auf euch, dass ihr richtig mitmacht! 😉
+      complete_j1: |
+        Challenge des Tages: Drei Wahrheiten, eine Lüge – erzähl drei wahre Dinge über dich und eine Lüge. Die anderen müssen raten, was nicht stimmt!
+      complete_j2: |
+        Challenge des Tages: Mein Tag heute... Erzähl deinen Tag nur mit drei Emojis. Die anderen raten, was passiert ist!
+      complete_j3: |
+        Stellt der Gruppe die interessanteste Frage, auf die ihr nie eine zufriedenstellende Antwort bekommen habt. Vielleicht kann euch jemand weiterhelfen!
+      complete_j4: |
+        Challenge des Tages: Teile etwas, das man dir nicht sofort ansieht – eine Leidenschaft, eine Gewohnheit, ein Charakterzug...
+      complete_j5: |
+        Challenge des Tages: Für 24 Stunden ist ein gängiges Wort in der Gruppe verboten (z. B. „ja“, „ich“, „essen“). Wer es schreibt... muss eine lustige Anekdote über sich erzählen!
+      complete_j6: |
+        Challenge des Tages: Was hilft dir, auf jemanden zuzugehen? Ein Blick, ein Ort, ein Satz... oder ein Anti-Schüchternheits-Tipp!
+      complete_j7: |
+        Challenge des Tages: Teile ein nettes Event, das bald bei dir in der Nähe oder online stattfindet! Wenn jemand dasselbe oder ein ähnliches Event nennt, ist das vielleicht die perfekte Gelegenheit, gemeinsam hinzugehen (oder sich online zu treffen)!
+      complete_congratulations: | # meeting_url
+        Glückwunsch an euch alle für eure Teilnahme! Ihr habt euch Zeit genommen, euch auszutauschen, zuzuhören und Verbindungen zu knüpfen – das ist schon ein großer Erfolg 🧡
+
+        Jetzt ist es Zeit für ein Gruppentreffen! Online oder live – bringt eure Gespräche zum Leben, gebt den Worten Gesichter und lasst die guten Vibes weiterleben 🤝
+
+        Ein paar Ideen:
+
+        Ein entspanntes Online-Meeting (Pyjama erlaubt 😄)
+
+        Ein Kaffee oder ein kleiner Apéro, wenn ihr in der Nähe wohnt
+
+        Ein Picknick oder eine gemeinsame Aktivität, wenn ihr Lust (und gutes Wetter) habt
+
+        Um die Organisation zu erleichtern, haben wir diesen Video-Link erstellt: %s
+        Schlagt etwas vor, plant zusammen – und fühlt euch wie zu Hause ✨
+      complete_j21: |
+        Hallo zusammen! 👋
+
+        Wir hoffen, euer Austausch lief gut – schriftlich, per Video oder live!
+        Wenn ihr Feedback habt oder wenn etwas nicht gut gelaufen ist, zögert nicht, uns zu schreiben. Das Entourage-Team ist für euch da, mit offenem Ohr und Herz 🧡
+
+        Und wenn alles gut war – sagt uns das auch! Euer Feedback hilft uns, die Guten Vibes weiterzuentwickeln.
+
+        Danke für euer Vertrauen ✨
+      inactive_j3: |
+        Hallo Team! Wir würden gerne wissen: Was hat euch dazu bewegt, dieser Gruppe beizutreten?
+      inactive_j5: |
+        Schriftlich nicht so dein Ding? Kein Problem! Ihr könnt auch ein lockeres Online-Meeting machen oder euch in kleiner Runde auf einen Kaffee treffen. Sagt uns, was euch am besten passt!
+      inactive_j7: |
+        Die Gruppe ist gerade etwas ruhig... Wenn wir in den nächsten 7 Tagen nichts hören, schließen wir die Gruppe langsam. Danke, dass ihr dabei wart – und vielleicht sehen wir uns ja mal wieder!
+      happy_birthday: | # first_name
+        Die ganze Papotage-Gruppe wünscht %s alles Gute zum Geburtstag! 🎉 Genieß deinen Tag und erzähl uns gerne, wie du feierst!
+      chart_recall: |
+        Eine freundliche Erinnerung: Papotage ist für Austausch in guter Stimmung und mit Respekt gedacht. Hier findet ihr die Ethik-Charta! Vielen Dank an euch alle!
+      smalltalk_anniversary_six_months: |
+        Unse
+
+
   pois:
     soliguide:
       public:
@@ -114,7 +189,7 @@ de:
     ethical_charter: |
       Ich bin's wieder!
 
-      Bei Entourage ist es uns wirklich wichtig, dass sich jeder wohl, sicher, gehört und willkommen fühlt. Deshalb haben wir diese ethische Charta verfasst, die von allen Mitgliedern der Gemeinschaft gelesen und akzeptiert werden muss: https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+      Bei Entourage ist es uns wirklich wichtig, dass sich jeder wohl, sicher, gehört und willkommen fühlt. Deshalb haben wir diese ethische Charta verfasst, die von allen Mitgliedern der Gemeinschaft gelesen und akzeptiert werden muss: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.
 
       Ich bin dafür verantwortlich, dass diese Charta in der App und bei den von der Organisation veranstalteten Events eingehalten wird, damit das Netzwerk für alle sicher und freundlich bleibt. Die gesamte Gemeinschaft muss dafür einstehen! Wir zählen auf euch 💪
 

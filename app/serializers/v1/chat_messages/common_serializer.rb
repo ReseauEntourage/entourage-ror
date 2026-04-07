@@ -6,12 +6,13 @@ module V1
        :content,
        :user,
        :created_at,
+       :image_url,
        :read,
        :status
 
       def content
-        return "" if object.deleted?
-        return "" if object.offensive?
+        return '' if object.deleted?
+        return '' if object.offensive?
 
         object.content
       end

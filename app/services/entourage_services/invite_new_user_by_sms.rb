@@ -1,5 +1,5 @@
 module EntourageServices
-  class InviteNewUserBySMS
+  class InviteNewUserBySms
 
     def initialize(phone_number:, entourage:, inviter:)
       @phone_number = phone_number
@@ -22,7 +22,7 @@ module EntourageServices
           invite.save!
           relationship.save!
 
-          Rails.logger.info "InviteNewUserBySMS : sending #{message} to #{phone_number}"
+          Rails.logger.info "InviteNewUserBySms : sending #{message} to #{phone_number}"
           SmsSenderJob.perform_later(phone_number, message, 'invite')
           invite
         end
@@ -45,7 +45,7 @@ module EntourageServices
 
     def message
       @message ||= begin
-        inviter_name = UserPresenter.new(user: inviter).display_name || "un ami"
+        inviter_name = UserPresenter.new(user: inviter).display_name || 'un ami'
         inviter_name = sms_transliterate(inviter_name).truncate(32, omission: '..')
         "Bonjour, #{inviter_name} vous invite sur Entourage, le réseau solidaire. Votre code : #{invitee_sms_code}. Trouvez l'application ici : #{link}"
       end
@@ -61,7 +61,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : "bit.ly/applientourage"
+      link = Rails.env.test? ? 'http://foo.bar' : 'bit.ly/applientourage'
     end
   end
 end

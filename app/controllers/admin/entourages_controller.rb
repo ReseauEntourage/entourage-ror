@@ -6,7 +6,7 @@ module Admin
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
-    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_members]
+    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_members, :show_neighborhoods]
 
     def index
       per_page = params[:per] || 50
@@ -22,7 +22,7 @@ module Admin
           moderator_reads is null and entourages.created_at >= now() - interval '1 week' and has_image_url as unread_images
         ))
         .like(params[:search])
-        .group("entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id")
+        .group('entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id')
         .joins(%(left outer join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
         .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
         .order(Arel.sql(%(
@@ -41,15 +41,15 @@ module Admin
 
       entourage_ids = @entourages.map(&:id)
 
-      @message_count = ConversationMessage
+      @message_count = ChatMessage
         .with_moderator_reads_for(user: current_user)
         .where(messageable_type: :Entourage, messageable_id: entourage_ids)
         .group(:messageable_id)
         .select(%{
           messageable_id,
-          sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
-          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread,
-          sum(case when conversation_messages.created_at >= moderator_reads.read_at and conversation_messages.image_url is not null then 1 else 0 end) as unread_images
+          sum(case when chat_messages.content <> '' then 1 else 0 end) as total,
+          sum(case when chat_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread,
+          sum(case when chat_messages.created_at >= moderator_reads.read_at and chat_messages.image_url is not null then 1 else 0 end) as unread_images
         })
 
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
@@ -62,7 +62,13 @@ module Admin
     end
 
     def new
-      @entourage = Entourage.new(
+      klass = if params[:group_type].to_sym == :outing
+        Outing
+      else
+        Entourage
+      end
+
+      @entourage = klass.new(
         group_type: params[:group_type].to_sym,
         public: true
       )
@@ -106,7 +112,7 @@ module Admin
         .includes(:user)
         .to_a
 
-      @chat_messages = @entourage.parent_conversation_messages.includes(:survey, :translation).order(created_at: :desc)
+      @chat_messages = @entourage.parent_chat_messages.includes(:survey, :translation).order(created_at: :desc)
           .includes(:user)
           .with_content
           .page(params[:page])
@@ -147,8 +153,8 @@ module Admin
     def show_matchings
       @action = Action.find(params[:id])
       @matchings = @action.matchings_with_notifications
-        .select("matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at")
-        .group("matchings.id")
+        .select('matchings.*, max(inapp_notifications.created_at) AS inapp_notification_created_at')
+        .group('matchings.id')
         .includes(:match)
 
       render :show
@@ -194,7 +200,7 @@ module Admin
       return redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être identifiée" unless @recurrence
 
       if @recurrence.update_attribute(:continue, false)
-        redirect_to show_siblings_admin_entourage_path(@outing), notice: "La récurrence a été annulée"
+        redirect_to show_siblings_admin_entourage_path(@outing), notice: 'La récurrence a été annulée'
       else
         redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être annulée : #{@outing.errors.full_messages.to_sentence}"
       end
@@ -264,9 +270,9 @@ module Admin
           end
         end if group_type_change
 
-        redirect_to edit_admin_entourage_path(@entourage), notice: "Entourage mis à jour"
+        redirect_to edit_admin_entourage_path(@entourage), notice: 'Entourage mis à jour'
       else
-        render :edit, alert: "Erreur lors de la mise à jour"
+        render :edit, alert: 'Erreur lors de la mise à jour'
       end
     end
 
@@ -282,7 +288,7 @@ module Admin
     end
 
     def cancellation
-      redirect_to [:edit, :admin, @entourage], alert: "Seuls les événements peuvent être annulés" unless @entourage.outing?
+      redirect_to [:edit, :admin, @entourage], alert: 'Seuls les événements peuvent être annulés' unless @entourage.outing?
     end
 
     def cancel
@@ -355,7 +361,7 @@ module Admin
 
       EntourageServices::ChangeOwner.new(@entourage).to(user_id, message) do |success, error_message|
         if success
-          redirect_to admin_entourage_path(@entourage), notice: "Mise à jour réussie"
+          redirect_to admin_entourage_path(@entourage), notice: 'Mise à jour réussie'
         else
           redirect_to edit_owner_admin_entourage_path(@entourage), alert: error_message
         end
@@ -392,7 +398,7 @@ module Admin
 
     def destroy_message
       unless ['JoinRequest', 'ChatMessage'].include?(params[:type])
-        return redirect_to admin_entourages_path, alert: "Wrong type param for destroy_message"
+        return redirect_to admin_entourages_path, alert: 'Wrong type param for destroy_message'
       end
 
       return destroy_join_request if params[:type] == 'JoinRequest'
@@ -415,7 +421,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end
@@ -444,14 +450,14 @@ module Admin
 
     def update_neighborhoods
       unless @entourage.outing?
-        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: 'Seuls les événements peuvent être associés à des groupes de voisins'
       end
 
       @outing = Outing.find(@entourage.id)
       @outing.assign_attributes(outing_neighborhoods_param)
 
       if @outing.save(validate: false) # we do not want validation on starts_at or neighborhood_ids memberships
-        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Votre modification a bien été prise en compte"
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: 'Votre modification a bien été prise en compte'
       else
         redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Votre modification n'a pas pu être prise en compte"
       end
@@ -518,7 +524,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, :sf_category, metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, :sf_category, :exclusive_to, metadata: metadata_keys)
 
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)

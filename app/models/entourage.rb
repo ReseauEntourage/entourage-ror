@@ -12,9 +12,11 @@ class Entourage < ApplicationRecord
   include JoinableScopable
   include ModeratorReadable
   include Deeplinkable
+  include Salesforcable # ought to be moved to Outing but backoffice creates outings using Entourage instances
   include Translatable
 
   after_validation :track_status_change
+  after_update :reset_unread_messages_if_blacklisted_or_deleted
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
@@ -30,14 +32,13 @@ class Entourage < ApplicationRecord
   has_many :neighborhoods, through: :neighborhoods_entourages
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
+  has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, dependent: :destroy, class_name: :ChatMessage
   has_one :last_chat_message, -> {
     select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at desc')
   }, as: :messageable, class_name: 'ChatMessage'
   has_one :chat_messages_count, -> {
     select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').group('messageable_id, messageable_type')
   }, as: :messageable, class_name: 'ChatMessage'
-  has_many :conversation_messages, as: :messageable, dependent: :destroy
-  has_many :parent_conversation_messages, -> { where(ancestry: nil) }, as: :messageable, dependent: :destroy, class_name: :ChatMessage
   has_many :entourage_invitations, foreign_key: :invitable_id, dependent: :destroy
 
   has_one :entourage_score, dependent: :destroy
@@ -50,6 +51,7 @@ class Entourage < ApplicationRecord
   attr_accessor :user_status
   attr_accessor :cancellation_message
   attr_accessor :entourage_image_id
+  attr_accessor :preload_image_url
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -105,6 +107,10 @@ class Entourage < ApplicationRecord
     return unless entourage_type.present?
     where(entourage_type: entourage_type)
   }
+  scope :with_user_id, -> (user_id) {
+    return unless user_id.present?
+    where(user_id: user_id)
+  }
   scope :moderator_search, -> (search) {
     return unless search.present?
     return if search.to_s == 'any'
@@ -116,22 +122,22 @@ class Entourage < ApplicationRecord
     joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
   scope :with_moderation, -> {
-    joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
+    joins('left join entourage_moderations on entourage_moderations.entourage_id = entourages.id')
   }
   scope :with_moderation_area, -> (moderation_area) {
     return unless moderation_area
     return if moderation_area.to_sym == :all
 
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
-      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
+      return where('left(postal_code, 2) not in (?)', ModerationArea.only_departements).or(
         where.not(country: :FR)
       )
     end
 
-    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area)).where(country: :FR)
+    where('left(postal_code, 2) = ?', ModerationArea.departement(moderation_area)).where(country: :FR)
   }
 
-  scope :with_chat_messages, -> { where("number_of_root_chat_messages > 0").distinct }
+  scope :with_chat_messages, -> { where('number_of_root_chat_messages > 0').distinct }
 
   attribute :preload_performed, :boolean, default: false
   attribute :preload_landscape_url, :string, default: nil
@@ -153,7 +159,7 @@ class Entourage < ApplicationRecord
       end as preload_portrait_url
     ))
     .joins(sanitize_sql_array(["left join image_resize_actions on image_resize_actions.path in (metadata->>'landscape_url', metadata->>'portrait_url') and image_resize_actions.destination_size = ? and bucket = ?", size, EntourageImage::BUCKET_NAME]))
-    .group("entourages.id")
+    .group('entourages.id')
   }
 
   scope :with_exact_members, -> (member_ids) {
@@ -168,6 +174,7 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_previous_at
   before_validation :set_outings_image_urls
   before_validation :set_outings_place_limit
+  before_validation :set_outings_reserved_female
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -175,6 +182,10 @@ class Entourage < ApplicationRecord
   after_create :check_moderation
 
   alias_attribute :name, :title
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["status", "title", "entourage_type", "group_type", "online", "postal_code", "country", "created_at"]
+  end
 
   def create_from_join_requests!
     ApplicationRecord.connection.transaction do
@@ -287,7 +298,8 @@ class Entourage < ApplicationRecord
           landscape_thumbnail_url: { type: [:string, :null] },
           portrait_url: { type: [:string, :null] },
           portrait_thumbnail_url: { type: [:string, :null] },
-          place_limit: { type: [:string, :integer, :null] }
+          place_limit: { type: [:string, :integer, :null] },
+          reserved_female: { type: [:string, :boolean, :null] }
         }
       end
     end
@@ -329,13 +341,13 @@ class Entourage < ApplicationRecord
   end
 
   def close_message= message
-    errors.add(:base, "outcome.success must be a boolean") and return unless action?
+    errors.add(:base, 'outcome.success must be a boolean') and return unless action?
 
     metadata[:close_message] = message
   end
 
   def outcome= success
-    errors.add(:base, "outcome.success must be a boolean") and return if success.nil?
+    errors.add(:base, 'outcome.success must be a boolean') and return if success.nil?
 
     moderation = (self.moderation || build_moderation)
     moderation.action_outcome = if ActiveModel::Type::Boolean::FALSE_VALUES.include?(success)
@@ -402,6 +414,16 @@ class Entourage < ApplicationRecord
         [key, value]
       end
     end.to_h
+  end
+
+  def postal_code
+    self[:postal_code] ||= EntourageServices::GeocodingService.get_postal_code(latitude, longitude)
+  end
+
+  def departement
+    return unless postal_code.present?
+
+    postal_code[0..1]
   end
 
   def starts_at
@@ -475,6 +497,13 @@ class Entourage < ApplicationRecord
     entourage_type && entourage_type.to_sym == :ask_for_help
   end
 
+  def papotage?
+    return true if sf_category.present? && sf_category.to_s.match?(/papotage/i)
+    return false unless title.present?
+
+    online? && title.strip.match?(/papotage/i)
+  end
+
   def action_class
     return Entourage unless action?
     return Contribution if contribution?
@@ -512,12 +541,19 @@ class Entourage < ApplicationRecord
     value
   end
 
+  def address
+    return unless action? || outing?
+    return unless metadata
+
+    metadata[:display_address]
+  end
+
   def metadata_datetimes_formatted
     formats =
       if metadata[:ends_at].midnight == metadata[:starts_at].midnight
-        ["%A %-d %B %Y de %H:%M ", "à %H:%M"]
+        ['%A %-d %B %Y de %H:%M ', 'à %H:%M']
       else
-        ["%A %-d %B %Y à %H:%M — ", "%A %-d %B %Y à %H:%M"]
+        ['%A %-d %B %Y à %H:%M — ', '%A %-d %B %Y à %H:%M']
       end
     [I18n.l(metadata[:starts_at], format: formats[0]),
      I18n.l(metadata[:ends_at],   format: formats[1])].join
@@ -552,6 +588,12 @@ class Entourage < ApplicationRecord
     return unless key = image_key == :image_url ? image_url : metadata[image_key]
 
     EntourageImage.storage.public_url_with_size(key: key, size: size)
+  end
+
+  def landscape_url
+    return unless outing?
+
+    metadata[:landscape_url]
   end
 
   def close_entourage_from_user_status! user_status
@@ -671,6 +713,12 @@ class Entourage < ApplicationRecord
     self.metadata[:place_limit] = nil
   end
 
+  def set_outings_reserved_female
+    return unless outing?
+    return unless metadata[:reserved_female].blank?
+    self.metadata[:reserved_female] = nil
+  end
+
   def validate_outings_ends_at
     return unless outing?
     return unless metadata[:starts_at].present?
@@ -688,7 +736,7 @@ class Entourage < ApplicationRecord
     return if metadata[:place_limit].is_a?(Integer)
     return if metadata[:place_limit].is_a?(String) && metadata[:place_limit].match?(/^\d+$/)
 
-    errors.add(:metadata, "Le nombre de places disponibles doit être numérique")
+    errors.add(:metadata, 'Le nombre de places disponibles doit être numérique')
   end
 
   def generate_display_address
@@ -707,7 +755,7 @@ class Entourage < ApplicationRecord
     if metadata[:city].present? && postal_code.present?
       metadata[:display_address] = "#{metadata[:city]} (#{postal_code})"
     else
-      metadata[:display_address] = ""
+      metadata[:display_address] = ''
     end
   end
 
@@ -738,7 +786,7 @@ class Entourage < ApplicationRecord
 
     metadata[:display_address] = address_fragments.compact.join(', ')
   rescue
-    metadata[:display_address] = ""
+    metadata[:display_address] = ''
   end
 
   def reformat_content(force: false)
@@ -749,10 +797,10 @@ class Entourage < ApplicationRecord
   def set_default_online_attributes
     if online?
       metadata.merge!(
-        place_name:      "Visioconférence en ligne",
-        street_address:  "Visioconférence en ligne",
-        display_address: "Visioconférence en ligne",
-        google_place_id: "_online_"
+        place_name:      'Événement en ligne',
+        street_address:  'Événement en ligne',
+        display_address: 'Événement en ligne',
+        google_place_id: '_online_'
       )
       self.latitude = 0
       self.longitude = 0
@@ -765,5 +813,13 @@ class Entourage < ApplicationRecord
 
   def track_status_change
     self[:status_changed_at] = Time.zone.now if status_changed?
+  end
+
+  def reset_unread_messages_if_blacklisted_or_deleted
+    return unless saved_change_to_status?
+    return unless blacklisted? || closed?
+
+    join_requests.update_all(unread_messages_count: 0)
+    join_requests.update_all(last_message_read: Time.zone.now)
   end
 end

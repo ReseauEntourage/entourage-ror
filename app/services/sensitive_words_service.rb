@@ -9,7 +9,7 @@ module SensitiveWordsService
     return result if string.blank?
 
     whitelist = [
-      [["grâce", "Grâce"]]
+      [['grâce', 'Grâce']]
     ]
 
     regex = regex_for_expressions(whitelist)
@@ -43,7 +43,9 @@ module SensitiveWordsService
     [entourage.title, entourage.description].join(' ')
   end
 
-  def self.analyze_entourage entourage
+  def self.analyze_entourage entourage_id
+    return unless entourage = Entourage.find_by_id(entourage_id)
+
     matches = entourage_matches(entourage)
     check = entourage.sensitive_words_check || entourage.build_sensitive_words_check
 
@@ -92,14 +94,14 @@ module SensitiveWordsService
     /(?<![[:alnum:]])(#{expressions.uniq.join('|')})(?![[:alnum:]])/
   end
 
-  def self.highlight string, expressions, &block
+  def self.highlight(string, expressions, &)
     return string if string.blank? || expressions.empty?
     regex = regex_for_expressions expressions
-    string.gsub(regex, &block).html_safe
+    string.gsub(regex, &).html_safe
   end
 
   def self.highlight_entourage entourage, options={}
-    options[:class] ||= "highlight"
+    options[:class] ||= 'highlight'
 
     if entourage.sensitive_words_check&.status&.to_sym == :validated
       matches = {}
@@ -147,7 +149,8 @@ module SensitiveWordsService
       return unless SensitiveWordsService.enable_callback
       return unless community == 'entourage' && group_type.in?(['action', 'outing'])
       return unless (['title', 'description'] & previous_changes.keys).any?
-      AsyncService.new(SensitiveWordsService).analyze_entourage(self)
+
+      AsyncService.new(SensitiveWordsService).analyze_entourage(id)
     end
   end
 end

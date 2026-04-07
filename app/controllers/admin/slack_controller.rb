@@ -1,5 +1,7 @@
 module Admin
   class SlackController < ActionController::Base
+    skip_before_action :verify_authenticity_token, only: [:message_action, :user_unblock, :offensive_text]
+
     before_action :parse_payload, only: [:message_action, :user_unblock, :offensive_text]
     before_action :authenticate_slack!, only: [:message_action]
     before_action :authenticate_slack_user_unblock!, only: [:user_unblock]
@@ -49,7 +51,7 @@ module Admin
         return send_data(
           open(@url).read,
           filename: "#{@filename}.csv",
-          type: "application/csv",
+          type: 'application/csv',
           disposition: 'inline',
           stream: 'true',
           buffer_size: '4096'

@@ -1,7 +1,6 @@
 class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
-  include ChatServices::PrivateConversation
   include Deeplinkable
   include Mentionable
   include Offensable
@@ -10,12 +9,14 @@ class ChatMessage < ApplicationRecord
   include Surveyable
 
   CONTENT_TYPES = %w(image/jpeg)
-  BUCKET_PREFIX = "chat_messages"
+  BUCKET_PREFIX = 'chat_messages'
 
   STATUSES = [:active, :updated, :deleted, :offensible, :offensive]
 
   store_attribute :options, :auto_post_type, :string
   store_attribute :options, :auto_post_id, :integer
+
+  attr_accessor :preload_image_url
 
   has_ancestry
 
@@ -36,8 +37,10 @@ class ChatMessage < ApplicationRecord
   validate :validate_ancestry!
   validate :validate_private_conversation_is_not_blocked!
 
-  scope :ordered, -> { order("created_at DESC") }
+  scope :ordered, -> { order('created_at DESC') }
+  scope :visible, -> { where(status: [:active, :updated]) }
   scope :with_content, -> { where("content <> ''") }
+  scope :with_image, -> { where("image_url <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
 
   attribute :metadata, :jsonb_with_schema
@@ -56,12 +59,21 @@ class ChatMessage < ApplicationRecord
   after_create :update_recipients_report_prompt_status
 
   after_commit :update_parent_comments_count
+  after_save :touch_messageable_timestamp
 
   alias_attribute :name, :content
 
   class << self
     def bucket
       Storage::Client.images
+    end
+
+    def bucket_name
+      bucket.bucket_name
+    end
+
+    def image_url_for url
+      bucket.public_url(key: url)
     end
 
     def presigned_url key, content_type
@@ -107,6 +119,20 @@ class ChatMessage < ApplicationRecord
         .gsub(/\{\{\s*availability\s*\}\}/, user.availability_formatted.to_s)
         .gsub(/\{\{\s*interlocutor\s*\}\}/, author&.first_name.to_s)
     end
+
+    def with_moderator_reads_for(user:)
+      joins(%(
+        left join moderator_reads on (
+          moderator_reads.user_id = #{user.id} and
+          moderator_reads.moderatable_id = chat_messages.messageable_id and
+          moderator_reads.moderatable_type = chat_messages.messageable_type
+        )
+      ))
+    end
+  end
+
+  def visible?
+    active? || updated?
   end
 
   def active?
@@ -129,15 +155,19 @@ class ChatMessage < ApplicationRecord
     status.to_sym == :offensive
   end
 
-  def visible?
-    active? || updated?
+  def auto?
+    message_type == 'auto'
   end
 
   # @param force true to bypass deletion
   def content force = false
-    return "" if deleted? && !force
+    return '' if deleted? && !force
 
     self[:content]
+  end
+
+  def has_image?
+    image_url.present?
   end
 
   # @param force true to bypass deletion
@@ -145,6 +175,12 @@ class ChatMessage < ApplicationRecord
     return if deleted? && !force
 
     self[:image_url]
+  end
+
+  def image_url_with_bucket
+    return unless image_url
+
+    ChatMessage.path(image_url)
   end
 
   def image_path force = false
@@ -226,7 +262,12 @@ class ChatMessage < ApplicationRecord
   end
 
   def message_types
-    @message_types ||= ['status_update', 'broadcast', *messageable&.group_type_config&.dig('message_types')]
+    @message_types ||= ['auto', 'status_update', 'broadcast', *messageable&.group_type_config&.dig('message_types')]
+  end
+
+  def content= text
+    # filter unexpected html tags from content
+    self[:content] = Mentionable.filter_html_tags(text)
   end
 
   def conversation_message_broadcast_id= id
@@ -266,19 +307,19 @@ class ChatMessage < ApplicationRecord
     [
       "#{action} un évènement :",
       metadata[:title],
-      I18n.l(starts_at, format: "le %d/%m à %Hh%M,"),
+      I18n.l(starts_at, format: 'le %d/%m à %Hh%M,'),
       metadata[:display_address]
     ].join("\n")
   end
 
   def status_update_content
     op = {
-      closed: "a clôturé",
-      open: "a rouvert",
-      user_deleted: "a clôturé",
-      user_blocked: "a clôturé",
-      user_anonymized: "a clôturé",
-      cancelled: "a annulé"
+      closed: 'a clôturé',
+      open: 'a rouvert',
+      user_deleted: 'a clôturé',
+      user_blocked: 'a clôturé',
+      user_anonymized: 'a clôturé',
+      cancelled: 'a annulé'
     }[metadata[:status].to_sym]
 
     "#{op} #{GroupService.name messageable, :l}#{[' : ', content].join if content.present?}"
@@ -308,6 +349,13 @@ class ChatMessage < ApplicationRecord
     )
   end
 
+  def touch_messageable_timestamp
+    return unless messageable.present?
+    return unless messageable.respond_to?(:updated_at)
+
+    messageable.update_column(:updated_at, Time.current)
+  end
+
   def update_sender_report_prompt_status
     JoinRequest.where(
       joinable_type: messageable_type,
@@ -320,7 +368,7 @@ class ChatMessage < ApplicationRecord
 
   def update_recipients_report_prompt_status
     return if messageable.group_type != 'conversation'
-    return if ChatMessage.where(messageable: messageable).where("id < ?", id).exists?
+    return if ChatMessage.where(messageable: messageable).where('id < ?', id).exists?
 
     return if user.moderator?
     return if user.ambassador?

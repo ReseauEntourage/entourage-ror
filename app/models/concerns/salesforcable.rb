@@ -7,31 +7,50 @@ module Salesforcable
 
   SalesforceStruct = Struct.new(:instance) do
     def initialize(instance: nil)
+      if instance.is_a?(Entourage) && instance.outing? && instance.persisted?
+        # after_commit ensures instance has an id
+        instance = Outing.find(instance.id)
+      end
+
       service_class = "SalesforceServices::#{instance.class.name}"
       raise ArgumentError.new("class #{service_class} does not exist") unless @service = service_class.safe_constantize
 
-      @service = @service.new
+      @service = @service.new(instance)
       @instance = instance
     end
 
+    def url
+      @url ||= @service.url
+    end
+
     def show
-      @service.find_by_external_id(@instance.id)
+      @service.fetch
     end
 
     def create
-      @service.create(@instance)
+      @service.create
     end
 
     def update
-      @service.update(@instance)
+      @service.update
     end
 
     def upsert
-      @service.upsert(@instance)
+      @service.upsert.tap do |salesforce_id|
+        return unless salesforce_id
+
+        @instance.update_attribute(:salesforce_id, salesforce_id)
+      end
     end
 
     def destroy
-      @service.destroy(@instance)
+      @service.destroy.tap do
+        @instance.update_attribute(:salesforce_id, nil)
+      end
+    end
+
+    def is_synchable?
+      @service.is_synchable?
     end
 
     def updatable_fields
@@ -39,26 +58,29 @@ module Salesforcable
     end
 
     def from_address_to_antenne
-      return "National" unless @instance.present? && @instance.respond_to?(:address)
+      return 'National' if @instance.respond_to?(:papotage?) && @instance.papotage?
+      return 'National' unless @instance.present? && @instance.respond_to?(:departement)
 
-      address = @instance.address
+      departement = @instance.departement
 
-      return "National" unless address.present? && address.departement.present?
+      return 'National' unless departement.present?
 
-      return "Paris" if address.departement == "75"
-      return "Lille" if address.departement == "59"
-      return "Lyon" if address.departement == "69"
-      return "Rennes" if address.departement == "35"
-      return "Seine Saint Denis" if address.departement == "93"
-      return "Hauts de Seine" if address.departement == "92"
-      return "Marseille" if address.departement == "13"
-      return "IDF" if address.departement == "77" || address.departement == "78" || address.departement == "91" || address.departement == "94" || address.departement == "95"
-      return "Lorient" if address.departement == "56"
-      return "Nantes" if address.departement == "44"
-      return "Bordeaux" if address.departement == "33"
-      return "Saint-Etienne" if address.departement == "42"
+      return 'Paris' if departement == '75'
+      return 'Lille' if departement == '59'
+      return 'Lyon' if departement == '69'
+      return 'Rennes' if departement == '35'
+      return 'Seine Saint Denis' if departement == '93'
+      return 'Hauts de Seine' if departement == '92'
+      return 'Marseille' if departement == '13'
+      return 'IDF' if departement == '77' || departement == '78' || departement == '91' || departement == '94' || departement == '95'
+      return 'Lorient' if departement == '56'
+      return 'Nantes' if departement == '44'
+      return 'Bordeaux' if departement == '33'
+      return 'Saint-Etienne' if departement == '42'
+      return 'Toulouse' if departement == '31'
+      return 'Grenoble' if departement == '38'
 
-      "Hors zone"
+      'Hors zone'
     end
   end
 
@@ -66,20 +88,30 @@ module Salesforcable
     @salesforce ||= SalesforceStruct.new(instance: self)
   end
 
-  def sync_salesforce
-    return unless address.present?
+  def sync_salesforce force=false
+    return if is_a?(Entourage) && action? # hack due to Salesforcable included in Entourage
+    return if is_a?(Entourage) && conversation? # hack due to Salesforcable included in Entourage
+    return if is_a?(JoinRequest) && !outing?
+
+    return unless sf.is_synchable?
 
     if has_attribute?(:deleted)
-      return SalesforceJob.perform_later(id, "destroy") if saved_change_to_deleted? && deleted?
+      return SalesforceJob.perform_later(self, 'destroy') if saved_change_to_deleted? && deleted?
     end
 
     if has_attribute?(:status)
-      return SalesforceJob.perform_later(id, "destroy") if saved_change_to_status? && status == "deleted"
+      return SalesforceJob.perform_later(self, 'destroy') if saved_change_to_status? && ['deleted', 'closed', 'cancelled'].include?(status.to_s)
     end
 
-    return unless salesforce_id.nil? || sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
+    unless force || new_record?
+      return unless sf.updatable_fields.any? { |field| saved_change_to_attribute?(field) }
+    end
 
-    SalesforceJob.perform_later(id, "upsert")
+    if salesforce_id.nil?
+      SalesforceJob.perform_later(self, 'upsert')
+    else
+      SalesforceJob.perform_later(self, 'update')
+    end
   end
 
   alias_method :sf, :salesforce

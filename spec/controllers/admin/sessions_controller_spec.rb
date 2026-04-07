@@ -11,12 +11,12 @@ describe Admin::SessionsController do
   end
 
   describe 'GET switch_user' do
-    context "not logged in with an admin" do
+    context 'not logged in with an admin' do
       before { get :switch_user, params: { id: 2 } }
       it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
-    context "admin logged in" do
+    context 'admin logged in' do
       let(:another_user) { FactoryBot.create(:pro_user) }
       let!(:admin) { admin_basic_login }
       before { get :switch_user, params: { user_id: another_user.id } }

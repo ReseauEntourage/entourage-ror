@@ -62,6 +62,88 @@ ro:
       offer: "Putem spune asta, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
       ask: "Putem spune asta, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
 
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Bun venit, %s 🙂 Ne bucurăm că ni te-ai alăturat! Prezintă-te în câteva cuvinte ca să te cunoască grupul.
+      destroy_member: | # first_name
+        %s tocmai a părăsit grupul. Mulțumim pentru participare și mult succes în continuare!
+      banned_member: | # first_name
+        %s nu mai face parte din grup. Comportamentul său nu s-a potrivit cu spiritul comunității solidare. Contăm pe voi să păstrați acest spațiu plin de bunăvoință și voie bună 🙏
+      incomplete: |
+        Vă pregătim un grup frumos de Energii Pozitive ✨ Până sosesc următorii membri, o mică provocare: încercați să ghiciți prenumele celui sau celei care urmează să se alăture. Șansele sunt mici... dar cine știe? 👀
+      complete: |
+        Grupul este complet! 🎉
+
+        Bun venit în grupul vostru de energii pozitive, un spațiu pentru a crea legături într-un mod simplu și binevoitor ✨
+
+        Misiunea voastră: să comunicați, să împărtășiți și, de ce nu, să vă întâlniți – online sau în viața reală?
+        Iată linkul pentru o primă întâlnire video: [Lien meet] Lien meet
+
+        👋 Nu ezitați să vă prezentați dacă nu ați făcut-o deja.
+
+        🔥 Și de mâine... începeți 7 zile de mici provocări pentru a vă descoperi și a crea legături adevărate 🫶
+
+        Contăm pe voi să intrați în joc cu toată inima! 😉
+      complete_j1: |
+        Provocarea zilei: Trei adevăruri și o minciună – împărtășește trei lucruri adevărate despre tine și unul fals. Ceilalți trebuie să ghicească care este minciuna!
+      complete_j2: |
+        Provocarea zilei: Azi în viața mea... Povestește-ți ziua folosind doar trei emojiuri. Ceilalți trebuie să ghicească ce s-a întâmplat!
+      complete_j3: |
+        Pune grupului cea mai interesantă întrebare la care nu ai găsit niciodată un răspuns satisfăcător. Poate grupul te poate ajuta să reflectezi!
+      complete_j4: |
+        Provocarea zilei: Împărtășește ceva ce oamenii nu ar ghici despre tine la prima vedere: o pasiune, un obicei, un trăsătură de caracter...
+      complete_j5: |
+        Provocarea zilei: Timp de 24 de ore, un cuvânt comun este interzis în grup (ex: „da”, „eu”, „mâncare”). Dacă cineva îl scrie... trebuie să povestească o întâmplare amuzantă despre el!
+      complete_j6: |
+        Provocarea zilei: Fiecare împărtășește ce îl ajută să se apropie de cineva: o privire, un loc, o frază... sau un truc anti-timiditate!
+      complete_j7: |
+        Provocarea zilei: Împărtășește un eveniment interesant care urmează în apropierea ta sau online! Dacă altcineva menționează același eveniment sau unul similar, poate fi momentul perfect să mergeți împreună (sau să vă întâlniți online)!
+      complete_congratulations: | # meeting_url
+        Felicitări tuturor pentru participare! Ați luat timp să împărtășiți, să ascultați și să creați legături: este deja o mare realizare 🧡
+
+        Acum e momentul pentru întâlnirea colectivă! Online sau în persoană, este timpul să dați viață schimburilor voastre, să puneți chipuri în spatele cuvintelor și să păstrați aceste energii pozitive 🤝
+
+        Câteva idei:
+
+        O întâlnire video relaxată, fiecare de acasă (pijamaua este binevenită 😄)
+
+        O cafea sau un aperitiv dacă locuiți aproape unii de alții
+
+        Un picnic sau o activitate comună, dacă aveți chef (și dacă vremea permite)
+
+        Pentru a vă organiza ușor, am creat acest link video: %s
+        Lansați idei, propuneți un moment, și mai ales... simțiți-vă ca acasă ✨
+      complete_j21: |
+        Salutare tuturor! 👋
+
+        Sperăm că schimburile voastre au decurs bine, fie în scris, în video sau față în față!
+        Dacă aveți feedback sau dacă ceva nu a mers bine, nu ezitați să ne spuneți. Echipa Entourage este aici pentru a vă asculta și susține, cu toată bunăvoința 🧡
+
+        Și dacă totul a fost bine, spuneți-ne și asta! Feedback-ul vostru ne ajută să menținem Energia Pozitivă cât mai fidel.
+
+        Vă mulțumim pentru încredere ✨
+      inactive_j3: |
+        Salut echipă! Suntem curioși să știm, ce v-a făcut să vă alăturați acestui grup?
+      inactive_j5: |
+        Nu te simți foarte confortabil să scrii? Nicio problemă! Poți opta și pentru o întâlnire video relaxată sau o cafea în cerc restrâns. Spune-ne ce ți s-ar potrivi cel mai bine!
+      inactive_j7: |
+        Grupul e mai liniștit în ultima vreme... Dacă nu mai avem noutăți în următoarele 7 zile, vom închide grupul încet. Mulțumim că ați fost aici și... cine știe, poate ne mai revedem!
+      happy_birthday: | # first_name
+        Întreaga echipă Papotage îi urează lui %s la mulți ani! 🎉 Bucură-te de ziua ta și spune-ne cum o sărbătorești!
+      chart_recall: |
+        Un mic memento plin de bunăvoință: Papotage e un spațiu pentru schimburi pozitive și respectuoase. Găsiți aici carta etică! Mulțumim tuturor!
+      smalltalk_anniversary_six_months: |
+        Grupul nostru împlinește deja șase luni azi! 🎉 Mulțumim pentru toate schimburile și momentele frumoase petrecute împreună!
+      smalltalk_anniversary_one_year: |
+        Grupul nostru împlinește deja un an azi! 🎉 Mulțumim pentru toate schimburile și momentele frumoase petrecute împreună!
+      user_one_year_membership: | # first_name
+        Azi, %s aniversează 1 an alături de noi! 🎉 Mulțumim că ești cu noi de atât timp – spune-ne un moment memorabil!
+      smalltalk_500_messages: |
+        Sunteți minunați! 🔥 Deja 500 de mesaje schimbate în grup, ce conversații aprinse! Continuăm? Următorul obiectiv: 1000 de mesaje?
+      smalltalk_1000_messages: |
+        Incredibil, tocmai ați atins 1000 de mesaje schimbate! 🤯 Sunteți oficial campionii și campioanele papotajului!
+
   pois:
     soliguide:
       public:
@@ -114,7 +196,7 @@ ro:
     ethical_charter: |
       Sunt din nou eu!
 
-      La Entourage, ne pasă foarte mult ca fiecare să se simtă în siguranță, ascultat și binevenit. De aceea, am redactat această cartă etică, care trebuie citită și acceptată de toți membrii comunității: https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+      La Entourage, ne pasă foarte mult ca fiecare să se simtă în siguranță, ascultat și binevenit. De aceea, am redactat această cartă etică, care trebuie citită și acceptată de toți membrii comunității: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.
 
       Sunt responsabilă să mă asigur că această cartă este respectată în aplicație și în timpul evenimentelor organizate de asociație, astfel încât rețeaua să rămână sigură și prietenoasă pentru toți. Întreaga comunitate trebuie să fie garantul acesteia! Contăm pe voi 💪
 

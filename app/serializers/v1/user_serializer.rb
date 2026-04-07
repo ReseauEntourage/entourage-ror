@@ -17,6 +17,8 @@ module V1
     attribute :interests
     attribute :involvements
     attribute :concerns
+    attribute :orientations
+    attribute :gender
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?
@@ -31,7 +33,9 @@ module V1
     attribute :goal,                if: :me?
     attribute :phone,               if: :me?
     attribute :travel_distance,     if: :me?
-    attribute :birthday,            if: :me?
+    attribute :birthday
+    attribute :birthday_today
+    attribute :birthdate,           if: :me?
     attribute :created_at
 
     has_one :stats
@@ -64,7 +68,7 @@ module V1
           events_count: groups['outing'],
           outings_count: groups['outing'],
           neighborhoods_count: object.neighborhood_memberships.count,
-          good_waves_participation: groups['group'] > 0
+          good_waves_participation: false
       }
     end
 
@@ -101,8 +105,16 @@ module V1
     end
 
     # @deprecated
+    def birthday
+    end
+
+    def birthday_today
+      object.birthday_today?
+    end
+
+    # @deprecated
     def memberships
-      return []
+      []
     end
 
     def conversation
@@ -136,6 +148,11 @@ module V1
     def concerns
       # we use "Tag.concern_list &" to force ordering
       Tag.concern_list & object.concern_names
+    end
+
+    def orientations
+      # we use "Tag.orientation_list &" to force ordering
+      Tag.orientation_list & object.orientation_names
     end
 
     # FIXME: the placeholders attribute is a hack. It indicates to the clients

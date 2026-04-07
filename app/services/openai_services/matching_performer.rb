@@ -4,10 +4,10 @@ module OpenaiServices
 
     def user_message
       {
-        role: "user",
+        role: 'user',
         content: [
-          { type: "text", text: get_formatted_prompt },
-          { type: "text", text: get_recommandations.to_json }
+          { type: 'text', text: get_formatted_prompt },
+          { type: 'text', text: get_recommandations.to_json }
         ]
       }
     end
@@ -44,10 +44,10 @@ module OpenaiServices
       end
 
       @configuration.prompt
-        .gsub("{{action_type}}", action_type)
-        .gsub("{{opposite_action_type}}", opposite_action_type)
-        .gsub("{{name}}", instance.name)
-        .gsub("{{description}}", instance.description)
+        .gsub('{{action_type}}', action_type)
+        .gsub('{{opposite_action_type}}', opposite_action_type)
+        .gsub('{{name}}', instance.name)
+        .gsub('{{description}}', instance.description)
     end
 
     def get_recommandations
@@ -66,7 +66,7 @@ module OpenaiServices
 
       ContributionServices::Finder.new(user, Hash.new)
         .find_all
-        .where("created_at > ?", @configuration.days_for_actions.days.ago)
+        .where('created_at > ?', @configuration.days_for_actions.days.ago)
         .limit(100)
     end
 
@@ -75,7 +75,7 @@ module OpenaiServices
 
       SolicitationServices::Finder.new(user, Hash.new)
         .find_all
-        .where("created_at > ?", @configuration.days_for_actions.days.ago)
+        .where('created_at > ?', @configuration.days_for_actions.days.ago)
         .limit(100)
     end
 

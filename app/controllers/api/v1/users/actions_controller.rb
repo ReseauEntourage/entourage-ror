@@ -19,7 +19,7 @@ module Api
         private
 
         def set_user
-          @user = if params[:user_id] == "me"
+          @user = if params[:user_id] == 'me'
             current_user
           else
             User.find(params[:user_id])

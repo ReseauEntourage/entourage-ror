@@ -2,26 +2,28 @@ module Api
   module V1
     module Outings
       class UsersController < Api::V1::BaseController
-        before_action :set_outing, only: [:index, :create, :confirm, :destroy]
-        before_action :set_membership, only: [:create, :confirm]
+        before_action :set_outing, only: [:index, :create, :confirm, :participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance, :destroy]
+        before_action :set_current_user_membership, only: [:create, :confirm]
+        before_action :set_user_membership, only: [:participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
         before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
+        before_action :check_management_permission!, only: [:participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
 
         def index
           # outing members
           render json: @outing.join_requests
             .includes(user: :partner)
             .search_by_member(params[:query])
-            .ordered_by_users
+            .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
           # join a outing
           if @membership.save
-            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not create outing participation request', reasons: @membership.errors.full_messages
@@ -34,10 +36,54 @@ module Api
           @membership.confirmed_at = Time.zone.now
 
           if @membership.save
-            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not confirm outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def participate
+          @membership.participate_at = Time.zone.now
+
+          if @membership.save
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not participate outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def cancel_participation
+          @membership.participate_at = nil
+
+          if @membership.save
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not participate outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def photo_acceptance
+          if @membership.user.update(photo_acceptance: true) && @membership.update(participate_at: Time.zone.now)
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not photo_acceptance outing participation request', reasons: @membership.errors.full_messages
+            }, status: :bad_request
+          end
+        end
+
+        def cancel_photo_acceptance
+          if @membership.user.update(photo_acceptance: false) && @membership.update(participate_at: Time.zone.now)
+            render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
+          else
+            render json: {
+              message: 'Could not photo_acceptance outing participation request', reasons: @membership.errors.full_messages
             }, status: :bad_request
           end
         end
@@ -48,7 +94,7 @@ module Api
           }, status: :unauthorized unless @join_request
 
           if @join_request.update(status: :cancelled)
-            render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
               message: 'Could not destroy outing participation request', reasons: @join_request.errors.full_messages
@@ -66,12 +112,20 @@ module Api
           @join_request = JoinRequest.where(joinable: @outing, user: current_user).first
         end
 
-        def set_membership
-          @membership = JoinRequest.where(joinable: @outing, user: current_user).first
+        def set_current_user_membership
+          set_membership_for_user(current_user)
+        end
 
-          @membership ||= JoinRequest.new(joinable: @outing, user: current_user, distance: params[:distance], role: :participant, status: :accepted)
+        def set_user_membership
+          set_membership_for_user(User.find(params[:id]))
+        end
+
+        def set_membership_for_user user
+          @membership = JoinRequest.where(joinable: @outing, user: user).first
+
+          @membership ||= JoinRequest.new(joinable: @outing, user: user, distance: params[:distance], role: :participant, status: :accepted)
           @membership.status = :accepted
-          @membership.role = if current_user.ambassador? && params[:role] == 'organizer'
+          @membership.role = if user.ambassador? && params[:role] == 'organizer'
             :organizer
           else
             :participant
@@ -86,6 +140,12 @@ module Api
           unless current_user == User.find(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
+        end
+
+        def check_management_permission!
+          return if current_user.ambassador? || current_user.team?
+
+          render json: { message: 'You must be an ambassador or team to perform this action' }, status: :unauthorized
         end
 
         def page

@@ -1,67 +1,79 @@
 source 'https://rubygems.org'
 
-ruby '3.1.0'
+ruby '3.2.0'
 
-gem 'rails',                          '~> 6.0'
+gem 'rails', '~> 7.1.0'
 
-gem 'sass-rails'
-gem 'uglifier'
-gem 'terser'
-gem 'jquery-rails',                   '~> 4'
-gem 'jquery-ui-rails',                '~> 5'
-gem 'turbolinks',                     '~> 5'
-gem 'coffee-rails',                   '~> 5'
-gem 'active_model_serializers',       '~> 0.10'
-gem 'handlebars_assets',              '~> 0'
-gem 'geocoder',                       '~> 1'
-gem 'rpush', git: 'https://github.com/rpush/rpush.git', ref: '840125aa568740f87e1e4a60f052748ddbe9c668'
-gem 'aws-sdk-sns',                    '~> 1'
-gem 'nexmo'
-gem 'googlestaticmap',                git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
-gem 'momentjs-rails',                 '~> 2'
-gem 'shorturl',                       '~> 1.0.0'
-gem 'attr_encrypted',                 '~> 3'
-gem 'pg',                             '~> 1'
-gem 'kaminari',                       '~> 1'
-gem 'redis',                          '~> 4'
-gem 'bcrypt',                         '~> 3'
-gem 'sidekiq',                        '~> 6'
-gem 'simplify_rb',                    '~> 0'
-gem 'lograge'
-gem 'logstash-event'
-gem 'aws-sdk-s3',                     '~> 1'
-gem 'ruby-openai'
-gem 'faker'
-gem 'activerecord-postgis-adapter',   '~> 6.0'
-gem 'slack-notifier'
-gem 'mailjet'
-gem 'safety_mailer'
-gem 'ransack',                        '~> 2'
-gem 'httparty'
-gem 'sentry-raven'
-gem 'ruby-stemmer'
-gem 'json-schema',                    '~> 2.8.1'
-gem 'icalendar'
-gem 'phonelib'
-gem 'whenever'
-gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
-gem 'airrecord',                      '~> 1'
+# database
+gem 'pg', '~> 1.1'
+gem 'activerecord-postgis-adapter', '~> 9.0'
+
+# Templating
+gem 'terser' # config.assets.js_compressor in production
+gem 'sprockets-rails', '~> 3.2'
+gem 'sass-rails' # css
+gem 'jquery-rails', '~> 4' # js
+gem 'jquery-ui-rails', '~> 5' # js
+gem 'turbolinks', '~> 5' # html
+gem 'momentjs-rails', '~> 2'
 gem 'select2-rails'
-gem 'rails-observers'
-gem 'mini_magick'
-gem 'rspec_api_documentation'
-gem 'ams_lazy_relationships'
-gem 'acts-as-taggable-on',            '~> 8.0'
+
+# models
+gem 'active_model_serializers', '~> 0.10'
 gem 'ancestry'
+gem 'json-schema', '~> 2.8.1'
+gem 'rails-observers'
+gem 'acts-as-taggable-on', '~> 12.0'
 gem 'store_attribute'
+gem 'ruby-stemmer' # used by sensitive_word
+gem 'mini_magick' # used by S3ImageUploader.resized_image (entourages thumbnails)
+
+# controllers
+gem 'ams_lazy_relationships' # used in serializers
+gem 'ransack', '~> 4.1'
+
+# template
 gem 'tinymce-rails'
 gem 'chartkick'
-gem 'restforce', '~> 7.2.0'
-gem 'ffi', '>= 1.15', '< 1.17'
+
+# datadog & logs
+# gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
+gem 'lograge'
+gem 'logstash-event'
+gem 'kaminari', '~> 1'
+
+# servers
+gem 'aws-sdk-s3', '~> 1'
+gem 'sidekiq', '~> 8'
+gem 'redis', '~> 4'
+gem 'sentry-ruby'
+
+# api
+gem 'ruby-openai'
+gem 'icalendar'
+gem 'google-api-client', '~> 0.53'
+gem 'restforce', '~> 7.6'
+gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
+
+# communication
+gem 'rpush', '~> 9.1.0'
+gem 'apnotic'
+gem 'aws-sdk-sns',  '~> 1'
+gem 'nexmo'
+gem 'safety_mailer'
+gem 'mailjet'
+gem 'slack-notifier'
+
+# others
+gem 'geocoder', '~> 1'
+gem 'bcrypt', '~> 3'
+gem 'httparty'
+gem 'whenever'
+gem 'rspec_api_documentation'
+gem 'ffi', '~> 1.17'
 
 group :development, :test do
-  # gem 'annotate'
-  # gem 'byebug',                       '~> 5.0.0'
+  gem 'foreman'
   gem 'spring',                       '~> 2.1.0'
   gem 'spring-commands-rspec'#,        '~> 1.0.4'
   gem 'dotenv-rails'#,                 '~> 2.0.2'
@@ -79,8 +91,10 @@ group :development do
   # gem 'stackprof',                    '~> 0.2.8'
   # gem 'letter_opener',                '~> 1.4.1'
   # gem 'mailcatcher'
+  gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rails', require: false
+  gem 'rubocop-performance', require: false
 end
 
 group :test do
@@ -91,10 +105,10 @@ group :test do
   gem 'webmock'
   gem 'fakeredis'#,                    '~> 0.7.0'
   gem 'super_diff'
+  gem 'rspec-parameterized'
 end
 
 group :production do
-  gem 'rails_12factor'
   gem 'rails_stdout_logging'
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'

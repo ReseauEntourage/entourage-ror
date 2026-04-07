@@ -2,11 +2,11 @@
   unread = @requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
 %>
 
-<h3>Membres <span class="badge"><%= @requests.count %><span></h3>
+<h3>Participants <span class="badge"><%= @requests.count %><span></h3>
 
 <% if unread.count > 0 %>
   <div class="conversation-unread-status">
-    <%= pluralize(unread.count, "nouveau membre", "nouveaux membres") %>
+    <%= pluralize(unread.count, "nouveau participant", "nouveaux participants") %>
     depuis le <%= l unread.map(&:created_at).min, format: "%-d %B à %H h %M" %>
   </div>
 <% end %>
@@ -21,6 +21,7 @@
       <th>Profil</th>
       <th>Email</th>
       <th>Téléphone</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -60,6 +61,11 @@
 
         <td><%= member.email %></td>
         <td><%= member.phone %></td>
+        <td>
+          <% unless member == @entourage.user %>
+            <%= link_to "Désinscrire", admin_entourage_user_path(member.id, entourage_id: @entourage.id), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de vouloir désinscrire ce membre ?" } %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
 

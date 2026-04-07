@@ -1,0 +1,19 @@
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Outings (Compte_App__c)", admin_salesforce_outings_path %></li>
+  </ol>
+
+  <h2>
+    <span class="text-muted">#<%= @outing.id %></span>
+    <%= @outing.title %>
+  </h2>
+
+  <% @outing.sf.show.each do |field, value| %>
+    <div class="control-group">
+      <%= label_tag field, field, class: "control-label" %> :
+      <div class="controls">
+        <%= text_field_tag field, value, class: "form-control", disabled: true %>
+      </div>
+    </div>
+  <% end %>
+</div>

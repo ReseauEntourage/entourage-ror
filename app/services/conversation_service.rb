@@ -5,11 +5,11 @@ module ConversationService
   def self.uuid_for_participants participant_ids, validated: true
     list = id_list(participant_ids)
     validate_id_list!(list) unless validated == false
-    uuid = "1_hash_" + id_list_digest(list)
+    uuid = '1_hash_' + id_list_digest(list)
     if Entourage.where(uuid_v2: uuid).exists?
       uuid
     else
-      "1_list_" + list.join('-')
+      '1_list_' + list.join('-')
     end
   end
 
@@ -17,13 +17,13 @@ module ConversationService
   def self.hash_for_participants participant_ids, validated: true
     list = id_list(participant_ids)
     validate_id_list!(list) unless validated == false
-    "1_hash_" + id_list_digest(list)
+    '1_hash_' + id_list_digest(list)
   end
 
   def self.list_for_participants participant_ids, validated: true
     list = id_list(participant_ids)
     validate_id_list!(list) unless validated == false
-    "1_list_" + list.join('-')
+    '1_list_' + list.join('-')
   end
 
   def self.participant_ids_from_list_uuid list_uuid, current_user: nil
@@ -56,6 +56,19 @@ module ConversationService
     conversation.uuid_v2 = list_for_participants(participant_ids, validated: false)
     conversation.readonly!
     conversation
+  end
+
+  def self.create_private_message! sender_id:, recipient_ids:, content:
+    participant_ids = [sender_id] + recipient_ids
+
+    unless conversation = Conversation.active.find_by_member_ids(participant_ids)
+      conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: sender_id)
+      conversation.create_from_join_requests!
+    end
+
+    chat_message = ChatMessage.new(user_id: sender_id, messageable: conversation, content: content)
+    chat_message.save!
+    chat_message
   end
 
   def self.conversations_allowed? from:, to:
@@ -104,8 +117,8 @@ module ConversationService
     .where(group_type: :conversation)
     .joins(:join_requests)
     .merge(user.join_requests.accepted)
-    .where("unread_messages_count > 0")
-    .where("entourages.feed_updated_at > archived_at or archived_at is null")
+    .where('unread_messages_count > 0')
+    .where('entourages.feed_updated_at > archived_at or archived_at is null')
     .distinct.count
   end
 end

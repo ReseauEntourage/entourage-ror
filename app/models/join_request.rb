@@ -1,25 +1,41 @@
 class JoinRequest < ApplicationRecord
-  ACCEPTED_STATUS="accepted"
-  PENDING_STATUS="pending"
-  REJECTED_STATUS="rejected"
-  CANCELLED_STATUS="cancelled"
+  ACCEPTED_STATUS='accepted'
+  PENDING_STATUS='pending'
+  REJECTED_STATUS='rejected'
+  CANCELLED_STATUS='cancelled'
 
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
   include JoinRequestAcceptTracking
+  include Salesforcable
 
   belongs_to :user
+  belongs_to :validated_user, -> {
+    where(validation_status: 'validated', deleted: false)
+  }, class_name: 'User', foreign_key: 'user_id', optional: true
   belongs_to :joinable, polymorphic: true
   belongs_to :entourage, -> {
     where("join_requests.joinable_type = 'Entourage'")
   }, foreign_key: :joinable_id, optional: true # why optional? Cause it might belongs_to Neighborhood
 
+  has_many :siblings, -> (join_request) {
+    where(joinable_type: join_request.joinable_type, joinable_id: join_request.joinable_id)
+      .where.not(id: join_request.id)
+    },
+    class_name: 'JoinRequest',
+    foreign_key: :joinable_id,
+    primary_key: :joinable_id
+
+  attr_accessor :siblings
+
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
-  validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
-  validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
+  validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: 'a déjà été ajouté'}
+  validates_inclusion_of :status, in: ['pending', 'accepted', 'rejected', 'cancelled']
   validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
     # can not remove creator
-    join_request.joinable&.user_id == join_request.user_id
+    join_request.joinable.present? &&
+      join_request.joinable.respond_to?(:user_id) &&
+      join_request.joinable.user_id == join_request.user_id
   }
   validates :role, presence: true, inclusion: { in: ['member', 'creator'] }, if: :neighborhood?
   validates :role, presence: true,
@@ -32,8 +48,8 @@ class JoinRequest < ApplicationRecord
   scope :rejected, -> {where(status: REJECTED_STATUS)}
   scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
-  scope :ordered_by_users, -> {
-    joins(:user).order("join_requests.role, users.first_name")
+  scope :ordered_by_validated_users, -> {
+    joins(:validated_user).order('join_requests.role, users.first_name')
   }
 
   scope :search_by_member, ->(search) {
@@ -42,6 +58,38 @@ class JoinRequest < ApplicationRecord
     return unless strip.present?
 
     where(user_id: User.search_by_first_name(strip))
+  }
+
+  scope :with_joinable_type, -> (joinable_type) {
+    return unless joinable_type.present?
+    return unless joinable_type.respond_to?(:to_s)
+
+    return where(joinable_type: :Entourage).where(
+      joinable_id: Entourage.where(group_type: joinable_type.to_s.downcase)
+    ) if ['action', 'outing', 'conversation'].include?(joinable_type.to_s.downcase)
+
+    where(joinable_type: joinable_type)
+  }
+
+  scope :without_joinable_type, -> (joinable_type) {
+    return unless joinable_type.present?
+
+    where.not(joinable_type: joinable_type)
+  }
+
+  scope :order_by_joinable_last_chat_message, -> {
+    joins(%(
+      LEFT JOIN LATERAL (
+        SELECT created_at, content, image_url
+        FROM chat_messages
+        WHERE chat_messages.messageable_type = join_requests.joinable_type
+          AND chat_messages.messageable_id = join_requests.joinable_id
+        ORDER BY created_at DESC
+        LIMIT 1
+      ) AS last_chat_messages ON TRUE
+    ))
+    .select('join_requests.*, last_chat_messages.content as last_chat_message, last_chat_messages.image_url as last_chat_message_image_url, last_chat_messages.created_at as last_chat_message_datetime')
+    .order(Arel.sql('last_chat_messages.created_at DESC NULLS LAST'))
   }
 
   after_save :joinable_callback
@@ -65,7 +113,7 @@ class JoinRequest < ApplicationRecord
   def set_chat_messages_as_read_from datetime
     update_column(:last_message_read, datetime)
     update_column(:unread_messages_count, joinable.chat_messages
-      .where("created_at > ?", datetime)
+      .where('created_at > ?', datetime)
       .where(status: [:active, :updated])
       .where(ancestry: nil)
       .count
@@ -80,8 +128,16 @@ class JoinRequest < ApplicationRecord
     entourage? && joinable.outing?
   end
 
+  def conversation?
+    entourage? && joinable.conversation?
+  end
+
   def neighborhood?
     joinable_type == 'Neighborhood'
+  end
+
+  def smalltalk?
+    joinable_type == 'Smalltalk'
   end
 
   def entourage_id
@@ -105,7 +161,7 @@ class JoinRequest < ApplicationRecord
   end
 
   def self.with_unread_messages
-    where(status: :accepted).where("unread_messages_count > 0")
+    where(status: :accepted).where('unread_messages_count > 0')
   end
 
   STATUS.each do |check_status|
@@ -154,11 +210,11 @@ class JoinRequest < ApplicationRecord
   def simplified_status
     # Not sure it's needed anymore.
     # see commit 363a77c2df9b9e6e9a93f68796f4ac8f2c527868
-    return "not_requested" if destroyed?
+    return 'not_requested' if destroyed?
 
     # we don't return 'rejected' or 'cancelled' anymore as we don't want these states to
     # be treated differently by the clients. See EN-3073
-    return "not_requested" if status.in?(['rejected', 'cancelled'])
+    return 'not_requested' if status.in?(['rejected', 'cancelled'])
 
     status
   end

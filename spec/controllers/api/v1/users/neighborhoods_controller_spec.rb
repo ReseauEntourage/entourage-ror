@@ -1,32 +1,32 @@
 require 'rails_helper'
 
-describe Api::V1::Users::NeighborhoodsController, :type => :controller do
+describe Api::V1::Users::NeighborhoodsController, type: :controller do
   let(:user) { create(:pro_user) }
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let!(:neighborhood) { create(:neighborhood, user: user, name: "JO Paris", interest_list: ["sport"]) }
-    let!(:neighborhood_joined) { create(:neighborhood, name: "Tour de France", participants: [user], interest_list: ["nature"]) }
+    let!(:neighborhood) { create(:neighborhood, user: user, name: 'JO Paris', interest_list: ['sport']) }
+    let!(:neighborhood_joined) { create(:neighborhood, name: 'Tour de France', participants: [user], interest_list: ['nature']) }
     let!(:neighborhood_other) { create(:neighborhood) }
 
-    context "not logged in" do
+    context 'not logged in' do
       before { get :index, params: { user_id: user.id } }
       it { expect(response.status).to eq(401) }
     end
 
-    context "logged in" do
+    context 'logged in' do
       before { get :index, params: { user_id: user.id, token: user.token } }
 
       it { expect(response.status).to eq(200) }
-      it { expect(result["neighborhoods"].count).to eq(2) }
-      it { expect(result["neighborhoods"].map {|neighborhoods| neighborhoods["id"]}).to match_array([neighborhood.id, neighborhood_joined.id]) }
+      it { expect(result['neighborhoods'].count).to eq(2) }
+      it { expect(result['neighborhoods'].map {|neighborhoods| neighborhoods['id']}).to match_array([neighborhood.id, neighborhood_joined.id]) }
     end
 
     describe 'filter by interests' do
       before { get :index, params: { user_id: user.id, token: user.token, interests: interests } }
 
       describe 'find with interest' do
-        let(:interests) { ["sport"] }
+        let(:interests) { ['sport'] }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(1) }
@@ -34,7 +34,7 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       end
 
       describe 'does not find with interest' do
-        let(:interests) { ["jeux"] }
+        let(:interests) { ['jeux'] }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(0) }
@@ -45,7 +45,7 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       before { get :index, params: { user_id: user.id, token: user.token, q: q } }
 
       describe 'find with q' do
-        let(:q) { "JO" }
+        let(:q) { 'JO' }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(1) }
@@ -53,7 +53,7 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       end
 
       describe 'find with q not case sensitive' do
-        let(:q) { "jo" }
+        let(:q) { 'jo' }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(1) }
@@ -61,7 +61,7 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       end
 
       describe 'does not find with q' do
-        let(:q) { "OJ" }
+        let(:q) { 'OJ' }
 
         it { expect(response.status).to eq 200 }
         it { expect(result['neighborhoods'].count).to eq(0) }
@@ -89,8 +89,8 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
       before { get :default, params: { user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(200) }
-      it { expect(result).to have_key("neighborhood") }
-      it { expect(result["neighborhood"]["id"]).to eq(neighborhood.id) }
+      it { expect(result).to have_key('neighborhood') }
+      it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
     end
 
     context 'joins default_neighborhood' do

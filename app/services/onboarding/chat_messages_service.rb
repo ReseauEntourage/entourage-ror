@@ -11,7 +11,7 @@ module Onboarding
 
       User.where(id: welcome_message_user_ids).find_each do |user|
         begin
-          Raven.user_context(id: user&.id)
+          Sentry.set_user(id: user&.id)
 
           moderation_area = ModerationServices.moderation_area_for_user_with_default(user)
           author = moderation_area.interlocutor_for_user(user)
@@ -26,6 +26,7 @@ module Onboarding
           end
 
           if chat_message_exists
+            # @see Onboarding::ChatMessagesService.welcome_message_user_ids
             Event.track('onboarding.chat_messages.welcome.skipped', user_id: user.id)
             next
           end
@@ -52,18 +53,19 @@ module Onboarding
             builder.create do |on|
               on.failure do |message|
                 success = false
-                raise ActiveRecord::RecordNotSaved.new("Failed to save the record", message)
+                raise ActiveRecord::RecordNotSaved.new('Failed to save the record', message)
               end
             end
 
             if success
+              # @see Onboarding::ChatMessagesService.welcome_message_user_ids
               Event.track('onboarding.chat_messages.welcome.sent', user_id: user.id)
               join_request.update_column(:archived_at, Time.zone.now)
             end
           end
 
         rescue => e
-          Raven.capture_exception(e)
+          Sentry.capture_exception(e)
         end
       end
     end
@@ -75,49 +77,6 @@ module Onboarding
         .without_event('onboarding.chat_messages.welcome.sent')
         .without_event('onboarding.chat_messages.welcome.skipped')
         .pluck(:id)
-    end
-
-    def self.deliver_ethical_charter
-      now = Time.zone.now
-      return unless now.strftime('%A').in?(ACTIVE_DAYS)
-      return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
-
-      User.where(id: ethical_charter_user_ids).find_each do |user|
-        next unless author = ModerationServices.moderator_for_user(user)
-
-        if conversation = conversation_with([author.id, user.id])
-          join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
-        else
-          conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id], creator_id: author.id)
-          join_request = conversation.join_requests.to_a.find { |r| r.user_id == author.id }
-        end
-
-        ChatServices::ChatMessageBuilder.new(
-          user: author,
-          joinable: conversation,
-          join_request: join_request,
-          params: {
-            content: I18n.t('onboarding.ethical_charter', locale: user.lang) % [author.first_name]
-          }
-        ).create do |on|
-          on.success do
-            Event.track('onboarding.chat_messages.ethical_charter.sent', user_id: user.id)
-          end
-        end
-      end
-    end
-
-    def self.ethical_charter_user_ids
-      # 2024-10-23 is the day when we sent this functionality to production
-      User.where(community: :entourage, deleted: false, admin: false)
-        .with_event('onboarding.chat_messages.welcome.sent', :welcome_sent)
-        .without_event('onboarding.chat_messages.ethical_charter.sent')
-        .where("welcome_sent.created_at between '2024-10-23' and ?", ETHICAL_CHARTER_DELAY.ago)
-        .pluck(:id)
-    end
-
-    def self.ethical_charter_message
-      I18n.t('chat_messages.ethical_charter', default: ETHICAL_CHARTER_TEMPLATE)
     end
 
     def self.conversation_with participant_ids

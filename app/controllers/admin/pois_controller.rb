@@ -17,12 +17,12 @@ module Admin
 
     def update
       return redirect_to edit_admin_poi_path(params[:id]), flash: {
-        error: "Vous ne pouvez pas mettre à jour un POI Soliguide"
+        error: 'Vous ne pouvez pas mettre à jour un POI Soliguide'
       } if @poi.source_soliguide?
 
       @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
       if @poi.errors.blank? && @poi.update(poi_params)
-        redirect_to admin_pois_path, notice: "Le POI a bien été mis à jour"
+        redirect_to admin_pois_path, notice: 'Le POI a bien été mis à jour'
       else
         render :edit
       end
@@ -38,7 +38,7 @@ module Admin
       @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
 
       if @poi.errors.blank? && @poi.save
-        redirect_to admin_pois_url, notice: "Le POI a bien été créé"
+        redirect_to admin_pois_url, notice: 'Le POI a bien été créé'
       else
         render :new
       end
@@ -46,7 +46,7 @@ module Admin
 
     def import
       MemberMailer.poi_import(
-        csv: CSV.read(params["poi"]["file"].path, headers: true).to_csv,
+        csv: CSV.read(params['poi']['file'].path, headers: true).to_csv,
         recipient: current_user.email
       ).deliver_later
 
@@ -63,7 +63,7 @@ module Admin
 
     private
     def poi_params
-      params.require(:poi).permit(:name, :adress, :description, :audience, :email, :website, :phone, :category_id, :validated, :longitude, :latitude, :category_ids => [])
+      params.require(:poi).permit(:name, :adress, :description, :audience, :email, :website, :phone, :category_id, :validated, :longitude, :latitude, category_ids: [])
     end
 
     def set_poi
@@ -74,14 +74,10 @@ module Admin
       params.permit([q: [:name_or_adress_cont, :postal_code_start, :postal_code_in_hors_zone, :source_eq, :validated_eq]]).to_h
     end
 
-    def ransack_params
-      params.permit([q: [:name_or_adress_cont, :source_eq, :validated_eq]]).to_h
-    end
-
     def filtered_pois
       @params = filter_params
 
-      @q = Poi.ransack(ransack_params[:q])
+      @q = Poi.ransack(params[:q])
 
       @pois = @q.result(distinct: true)
 

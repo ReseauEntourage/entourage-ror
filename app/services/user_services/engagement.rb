@@ -24,23 +24,23 @@ module UserServices
       def stacked_by group = :month
         fill_in_with_all_dates [
           {
-            name: I18n.t("charts.users.member_outings"),
+            name: I18n.t('charts.users.member_outings'),
             data: outings_join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: I18n.t("charts.users.member_neighborhoods"),
+            name: I18n.t('charts.users.member_neighborhoods'),
             data: neighborhoods_join_requests_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: I18n.t("charts.users.reactions"),
+            name: I18n.t('charts.users.reactions'),
             data: reactions_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: I18n.t("charts.users.public_chat_messages"),
+            name: I18n.t('charts.users.public_chat_messages'),
             data: public_chat_messages_by(group).map { |date, count| [date.to_date.to_s, count] }
           },
           {
-            name: I18n.t("charts.users.private_chat_messages"),
+            name: I18n.t('charts.users.private_chat_messages'),
             data: private_chat_messages_by(group).map { |date, count| [date.to_date.to_s, count] }
           }
         ]
@@ -145,7 +145,7 @@ module UserServices
     def open_actions_creation
       Entourage.where(user: self)
         .where(group_type: :action, status: :open)
-        .where("entourages.created_at > ?", 1.year.ago)
+        .where('entourages.created_at > ?', 1.year.ago)
     end
   end
 end

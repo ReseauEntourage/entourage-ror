@@ -5,7 +5,7 @@ module CoordinatesScopable
     lille: { field: :postal_code, in: ['59000', '59130', '59160', '59260', '59350', '59777', '59800'] },
     lyon: { field: :postal_code, in: ('69000'..'69009').to_a },
     marseille: { field: :postal_code, in: ('13000'..'13016').to_a },
-    paris: { field: :departement, in: '75' },
+    paris: { field: :departement, in: '75', coordinates: [48.867, 2.333] },
     rennes: { field: :postal_code, in: ['35000', '35200', '35700', '35740', '35760', '35760', '35510', '35132', '35650', '35590', '35520', '35135', '35830', '35235', '35770'] },
   }
 
@@ -19,7 +19,7 @@ module CoordinatesScopable
       return none unless user.departement.present?
 
       inside_perimeter(user.latitude, user.longitude, user.travel_distance).or(
-        with_departement(user.departement)
+        with_zone_departement(user.departement)
       )
     }
     scope :order_by_distance_from, -> (latitude, longitude) {
@@ -27,12 +27,24 @@ module CoordinatesScopable
         order(Arel.sql(PostgisHelper.distance_from(latitude, longitude, table_name.to_sym)))
       end
     }
-    scope :with_departement, -> (departement) {
-      return unless has_attribute?(:zone)
+    scope :with_zone_departement, -> (departement) {
+      return none unless has_attribute?(:zone)
 
       where(zone: :departement).where(
-        "postal_code is not null and left(postal_code, 2) = ?", departement
+        'postal_code is not null and left(postal_code, 2) = ?', departement
       )
+    }
+    scope :with_zone, -> (zone) {
+      return unless has_attribute?(:zone)
+      return unless zone.present?
+
+      zone = zone.to_sym
+
+      return unless [:ville, :departement, :no_zone].include?(zone)
+
+      return where(zone: nil) if zone == :no_zone
+
+      where(zone: zone)
     }
     scope :order_by_paris_for_user, -> (user) {
       return unless user.paris?

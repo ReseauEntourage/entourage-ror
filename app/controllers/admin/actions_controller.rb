@@ -8,6 +8,7 @@ module Admin
 
       @actions = Action.preload([:user])
         .like(params[:search])
+        .with_user_id(params[:user_id] || params.dig(:q, :user_id_eq))
         .with_moderation
         .with_moderation_area(@area.to_s)
         .with_moderator_reads_for(user: current_user)
@@ -20,7 +21,7 @@ module Admin
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated
         ))
         .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
-        .order(Arel.sql("entourages.created_at DESC"))
+        .order(Arel.sql('entourages.created_at DESC'))
         .page(page)
         .per(per)
     end

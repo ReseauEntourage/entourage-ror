@@ -62,6 +62,66 @@ es:
       offer: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
       ask: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
 
+  smalltalks:
+    messager:
+      new_member: "¡Bienvenido %s 🙂! ¡Estamos encantados de que te unas a nosotros! Preséntate brevemente para que el grupo pueda conocerte."
+      destroy_member: "%s ha salido del grupo. ¡Gracias por tu participación y te deseamos lo mejor!"
+      banned_member: "%s ya no forma parte del grupo. Su comportamiento no coincidía del todo con el espíritu de solidaridad. ¡Contamos con ustedes para mantener este espacio con amabilidad y buen humor 🙏!"
+      incomplete: "Estamos preparando un hermoso grupo de Buenas Vibras ✨ Mientras esperamos a las próximas personas, un pequeño desafío: intenta adivinar el nombre del próximo en unirse. Las posibilidades de acertar son escasas... ¡pero quién sabe? 👀"
+      complete: |
+        ¡El grupo está completo! 🎉
+
+        Bienvenido a tu grupo de buenas vibras, un espacio para conectar de manera sencilla y amable ✨
+
+        Tu misión: charlar, compartir y, ¿por qué no?, encontrarse, por videollamada o en la vida real.
+        Aquí está el enlace para una primera videollamada juntos: [Enlace de reunión] Enlace de reunión
+
+        👋 No dudes en presentarte si aún no lo has hecho.
+
+        🔥 Y a partir de mañana... comienza una serie de 7 días de pequeños desafíos para conocerse y construir conexiones reales 🫶
+
+        ¡Contamos con ustedes para participar plenamente! 😉
+      complete_j1: "Desafío del día: Tres verdades y una mentira. Comparte tres hechos verdaderos sobre ti y uno falso. ¡Que los demás adivinen cuál es la mentira!"
+      complete_j2: "Desafío del día: Hoy en mi vida... Describe tu día usando solo tres emojis. ¡Los demás deben intentar adivinar qué sucedió!"
+      complete_j3: "Haz al grupo la pregunta más interesante para la que nunca has encontrado una respuesta satisfactoria. ¡Veamos si el grupo puede ayudarte a reflexionar sobre ello!"
+      complete_j4: "Desafío del día: Comparte algo que la gente no adivinaría a primera vista: una pasión, un hábito, un rasgo de carácter..."
+      complete_j5: "Desafío del día: Durante 24 horas, una palabra común está prohibida en el grupo (por ejemplo: 'sí', 'yo', 'comer'). Si alguien la escribe... ¡debe contar una anécdota divertida sobre sí mismo!"
+      complete_j6: "Desafío del día: Cada uno comparte lo que le ayuda a acercarse a alguien: una mirada, un lugar, una frase... ¡o un consejo contra la timidez!"
+      complete_j7: "Desafío del día: ¡Comparte un evento divertido que se avecina cerca de ti o en línea! Si alguien más menciona el mismo o un evento similar, ¡podría ser el momento perfecto para ir juntos (o encontrarse en línea)!"
+      complete_congratulations: "¡Felicidades a todos por su participación! Se han tomado el tiempo de compartir, escuchar y crear conexiones: eso ya es un gran logro 🧡
+
+        Ahora, ¡es hora del encuentro grupal! Ya sea en línea o en persona, es el momento de dar vida a sus intercambios, poner caras a los nombres y mantener las buenas vibras 🤝
+
+        Algunas ideas:
+
+        - Una videollamada relajada, cada uno en su casa (¡pijama bienvenido 😄!)
+
+        - Un café o una bebida si viven cerca unos de otros
+
+        - Un picnic o una actividad común si lo desean (¡y el clima lo permite!)
+
+        Para organizarse fácilmente, hemos creado este enlace de videollamada: %s
+        ¡Lancen sus ideas, propongan un momento y, sobre todo... siéntanse como en casa ✨!"
+      complete_j21: |
+        ¡Hola a todos! 👋
+
+        ¡Esperamos que sus intercambios hayan sido exitosos, ya sea por escrito, en videollamada o en persona!
+        Si tienen comentarios para compartir o si algo no salió bien, no duden en decírnoslo. El equipo de Entourage está aquí para escucharlos y apoyarlos, con toda amabilidad 🧡
+
+        Y si todo va bien, ¡díganoslo también! Sus comentarios nos ayudan a seguir haciendo que las Buenas Vibras sean lo mejor posible.
+
+        ¡Gracias por su confianza ✨!
+      inactive_j3: "¡Hola equipo! Tenemos curiosidad por saber, ¿qué les motivó a unirse a este grupo?"
+      inactive_j5: "¿No te sientes muy cómodo escribiendo? ¡No hay problema! También puedes optar por una videollamada tranquila o un café en pequeño comité. ¡Dinos qué te convendría más!"
+      inactive_j7: "El grupo está tranquilo en este momento... Si no tenemos noticias en 7 días, dejaremos que el grupo se cierre suavemente. ¡Gracias por haber estado aquí y, quién sabe... hasta pronto en algún lugar!"
+      happy_birthday: "¡Todo el grupo de Papotage desea un feliz cumpleaños a %s! 🎉 ¡Disfruta tu día y no dudes en contarnos cómo lo vas a celebrar!"
+      chart_recall: "Pequeño recordatorio amable: Papotage está hecho para intercambiar con buen humor y respeto. ¡Encontrarás la carta ética justo aquí! ¡Gracias a todos!"
+      smalltalk_anniversary_six_months: "¡Nuestro grupo ya celebra sus seis meses hoy! 🎉 ¡Gracias por sus intercambios y buenos momentos juntos!"
+      smalltalk_anniversary_one_year: "¡Nuestro grupo ya celebra su primer año hoy! 🎉 ¡Gracias por sus intercambios y buenos momentos juntos!"
+      user_one_year_membership: "¡Hoy, %s celebra 1 año con nosotros! 🎉 ¡Gracias por estar con nosotros todo este tiempo, cuéntanos un momento memorable!"
+      smalltalk_500_messages: "¡Están en llamas! 🔥 ¡500 mensajes ya intercambiados en el grupo, se charla mucho por aquí! ¿Continuamos así? ¿Próximo objetivo: 1000 mensajes?"
+      smalltalk_1000_messages: "¡Increíble, acaban de alcanzar los 1000 mensajes intercambiados! 🤯 ¡Son oficialmente los campeones del chateo!"
+
   pois:
     soliguide:
       public:
@@ -114,7 +174,7 @@ es:
     ethical_charter: |
       ¡Soy yo otra vez!
 
-      En Entourage, realmente nos importa que todos se sientan seguros, escuchados y bienvenidos. Por eso redactamos esta carta ética, que debe ser leída y aceptada por todos los miembros de la comunidad: https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+      En Entourage, realmente nos importa que todos se sientan seguros, escuchados y bienvenidos. Por eso redactamos esta carta ética, que debe ser leída y aceptada por todos los miembros de la comunidad: https://www.entourage.social/app/resources/eMU_InNSSJbE 📜.
 
       Soy la encargada de asegurar el cumplimiento de esta carta en la app y durante los eventos organizados por la asociación, para que la red sea segura y acogedora para todos. ¡Toda la comunidad debe garantizarlo! Contamos con ustedes 💪
 

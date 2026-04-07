@@ -53,8 +53,7 @@
         <table class="table custom-table">
           <thead>
             <th></th>
-            <th>Nom et descriptif de l'événement</th>
-            <th>Date de création</th>
+            <th>Nom et descriptif</th>
             <th>Date de l'événement</th>
             <th>Code postal</th>
             <th>Statut</th>
@@ -73,8 +72,7 @@
                 <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
                 <p><%= truncate(outing.description, length: 500) %></p>
               </td>
-              <td><%= l outing.created_at, format: :date_short %></td>
-              <td><%= l outing.starts_at, format: :short %></td>
+              <td><%= l outing.starts_at, format: :long %></td>
               <td><%= outing.postal_code %></td>
               <td><%= entourage_state_label(outing) %></td>
               <td><span class="badge" title="Participants"><%= outing.number_of_people %></span></td>

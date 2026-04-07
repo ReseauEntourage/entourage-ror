@@ -7,6 +7,7 @@ module V1
         :display_name,
         :avatar_url,
         :preference,
+        :association,
         :meetings_count,
         :chat_messages_count,
         :outing_participations_count,
@@ -14,12 +15,19 @@ module V1
         :recommandations,
         :congratulations,
         :unclosed_action,
-        :moderator
+        :moderator,
+        :signable_permission,
+        :birthday_today,
+        :events
 
       def preference
         return :contribution if object.ask_for_help?
 
         :solicitation
+      end
+
+      def association
+        object.association?
       end
 
       def meetings_count
@@ -62,15 +70,15 @@ module V1
       end
 
       def unclosed_action
-        actions = Entourage.where(user: object).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
-        actions = actions.where("created_at > ?", object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
+        actions = Entourage.where(user: object).action.active.where('created_at < ?', UNCLOSED_ACTION_ALERT.ago)
+        actions = actions.where('created_at > ?', object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
         action = actions.order(:created_at).select(:entourage_type, :id).first
 
         return unless action.present?
 
         action = action.contribution? ? Contribution.find(action.id) : Solicitation.find(action.id)
 
-        object.set_last_unclosed_action_notification_at_and_save(action.created_at.utc.strftime("%Y-%m-%d %H:%M:%S.%N"))
+        object.set_last_unclosed_action_notification_at_and_save(action.created_at.utc.strftime('%Y-%m-%d %H:%M:%S.%N'))
 
         V1::ActionSerializer.new(action).as_json
       end
@@ -83,6 +91,18 @@ module V1
           display_name: UserPresenter.new(user: moderator).display_name,
           avatar_url: UserServices::Avatar.new(user: moderator).thumbnail_url
         }
+      end
+
+      def signable_permission
+        object.team? || object.ambassador?
+      end
+
+      def birthday_today
+        object.birthday_today?
+      end
+
+      def events
+        object.events.pluck(:name)
       end
 
       private

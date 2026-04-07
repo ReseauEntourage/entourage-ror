@@ -21,6 +21,9 @@ module Admin
       @poi = PoiServices::SoliguideShow.get(params[:id][1..], current_user.lang)
     end
 
+    def testings
+    end
+
     private
 
     def soliguide_params

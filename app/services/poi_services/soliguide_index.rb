@@ -1,6 +1,6 @@
 module PoiServices
   class SoliguideIndex
-    INDEX_URI = "https://api.soliguide.fr/new-search?%s"
+    INDEX_URI = 'https://api.soliguide.fr/new-search?%s'
     BATCH_LIMIT = 1000
 
     FIND_ONE_PARAMS = {
@@ -28,8 +28,10 @@ module PoiServices
         end
       end
 
-      def post_only_query params
-        get_results(params)
+      def post_only_query json_params
+        get_results(
+          JSON.parse(json_params)
+        )
       end
 
       def post_all_for_page page, format = :short

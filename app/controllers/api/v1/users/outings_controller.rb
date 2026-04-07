@@ -7,7 +7,7 @@ module Api
         def index
           render json: OutingsServices::Finder.new(@user, index_params)
             .find_all_participations
-            .future_or_recently_past
+            .future_or_past_today
             .default_order
             .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
             .page(page)
@@ -31,7 +31,7 @@ module Api
         private
 
         def set_user
-          @user = if params[:user_id] == "me"
+          @user = if params[:user_id] == 'me'
             current_user
           else
             User.find(params[:user_id])

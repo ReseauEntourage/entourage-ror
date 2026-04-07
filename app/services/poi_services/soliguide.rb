@@ -43,7 +43,7 @@ module PoiServices
           areas: { country: :fr },
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
-          geoType: "position"
+          geoType: 'position'
         },
         options: {}
       }
@@ -61,7 +61,7 @@ module PoiServices
           areas: { country: :fr },
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_ALL_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
-          geoType: "position"
+          geoType: 'position'
         },
         options: {}
       }
@@ -75,7 +75,7 @@ module PoiServices
     attr_reader :latitude, :longitude, :distance, :category_ids, :query, :page, :limit, :category_ids
 
     def categories
-      @categories ||= (category_ids || "").split(",").map(&:to_i).uniq
+      @categories ||= (category_ids || '').split(',').map(&:to_i).uniq
     end
 
     def soliguide_category categories

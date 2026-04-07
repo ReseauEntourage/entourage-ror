@@ -1,7 +1,7 @@
 module UserSegmentService
   def self.at_day n, options={}
     if (options.keys & [:before, :after]).count != 1
-      raise "requires a :before or a :after option"
+      raise 'requires a :before or a :after option'
     end
 
     date, event =

@@ -26,7 +26,7 @@ module Admin
       @resource_image.assign_attributes(resource_image_params)
 
       if @resource_image.save
-        redirect_to edit_admin_resource_image_path(@resource_image), notice: "La photo a bien été modifiée"
+        redirect_to edit_admin_resource_image_path(@resource_image), notice: 'La photo a bien été modifiée'
       else
         render :edit
       end

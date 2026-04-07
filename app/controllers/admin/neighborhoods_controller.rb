@@ -14,7 +14,6 @@ module Admin
       @params = params.permit([:area, :search]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-
       @neighborhoods = Neighborhood.unscoped.includes([:user, :interests])
       @neighborhoods = @neighborhoods.search_by(params[:search]) if params[:search].present?
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
@@ -40,19 +39,43 @@ module Admin
           neighborhoods.number_of_people DESC
         ))).page(page).per(per)
 
-      @message_count = ConversationMessage
+      @message_count = ChatMessage
         .with_moderator_reads_for(user: current_user)
         .where(messageable: @neighborhoods.map(&:id))
         .group(:messageable_id)
         .select(%{
           messageable_id,
-          sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
-          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread,
-          sum(case when conversation_messages.created_at >= moderator_reads.read_at and conversation_messages.image_url is not null then 1 else 0 end) as unread_images
+          sum(case when chat_messages.content <> '' then 1 else 0 end) as total,
+          sum(case when chat_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread,
+          sum(case when chat_messages.created_at >= moderator_reads.read_at and chat_messages.image_url is not null then 1 else 0 end) as unread_images
         })
 
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
       @message_count.default = OpenStruct.new(unread: 0, total: 0)
+    end
+
+    def unread_posts
+      @params = params.permit([:area, :search]).to_h
+      @area = params[:area].presence&.to_sym || :all
+
+      @posts = ChatMessage
+        .visible
+        .where.not(user_id: current_user.id)
+        .where.not(user_id: User.team)
+        .where(messageable_type: :Neighborhood)
+        .where("messageable_id in (select joinable_id from join_requests where joinable_type = 'Neighborhood' and user_id = ? and status = 'accepted')", current_user.id)
+        .where(comments_count: 0)
+        .where("chat_messages.created_at > ?", 3.months.ago)
+        .where(ancestry: nil)
+        .joins("left join neighborhoods on neighborhoods.id = chat_messages.messageable_id and chat_messages.messageable_type = 'Neighborhood'")
+        .where(messageable_id: Neighborhood
+          .search_by(params[:search])
+          .with_moderation_area(@area.to_s)
+        )
+        .includes(:messageable, :user)
+        .order(created_at: :desc)
+        .page(page)
+        .per(per)
     end
 
     def edit
@@ -149,7 +172,7 @@ module Admin
 
       EntourageServices::ChangeOwner.new(@neighborhood).to(user_id, message) do |success, error_message|
         if success
-          redirect_to [:edit, :admin, @neighborhood], notice: "Mise à jour réussie"
+          redirect_to [:edit, :admin, @neighborhood], notice: 'Mise à jour réussie'
         else
           redirect_to [:edit_owner, :admin, @neighborhood], alert: error_message
         end
@@ -166,7 +189,7 @@ module Admin
       end
 
       if @join_request.save
-        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: "Vous avez bien rejoint le groupe"
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: 'Vous avez bien rejoint le groupe'
       else
         redirect_to show_members_admin_neighborhood_path(@neighborhood), error: "Vous n'avez pas pu rejoindre le groupe : #{@join_request.errors.full_messages}"
       end
@@ -182,7 +205,7 @@ module Admin
       end
 
       if @join_request.save
-        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: "Vous avez bien quitté le groupe"
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: 'Vous avez bien quitté le groupe'
       else
         redirect_to show_members_admin_neighborhood_path(@neighborhood), error: "Vous n'avez pas pu quitter le groupe : #{@join_request.errors.full_messages}"
       end
@@ -228,9 +251,14 @@ module Admin
         end
 
         on.success do |message|
+          @message = message
+
           @join_request.set_chat_messages_as_read_from(message.created_at)
 
-          redirect_to redirection
+          respond_to do |format|
+            format.js
+            format.html { redirect_to redirection }
+          end
         end
 
         on.failure do |message|
@@ -277,15 +305,18 @@ module Admin
         end
 
         on.success do |chat_message|
-          redirect_to redirection
+          respond_to do |format|
+            format.js
+            format.html { redirect_to redirection }
+          end
         end
 
         on.failure do |chat_message|
-          redirect_to redirection, alert: chat_message.errors.full_messages
+          format.html { redirect_to redirection, alert: chat_message.errors.full_messages }
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          format.html { redirect_to redirection, alert: "You are not authorized to delete this chat_message" }
         end
       end
     end
@@ -308,7 +339,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end

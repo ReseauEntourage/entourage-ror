@@ -20,15 +20,16 @@ class Neighborhood < ApplicationRecord
     raise ActiveRecord::Rollback
   end
 
+  after_update :reset_unread_messages_if_blacklisted_or_deleted
+
   alias_attribute :author, :user
 
   has_many :members, -> {
-    where("join_requests.status = 'accepted'").order("join_requests.role, users.first_name")
+    where("join_requests.status = 'accepted'").order('join_requests.role, users.first_name')
   }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
-  has_many :conversation_messages, as: :messageable, dependent: :destroy
   has_many :recent_chat_messages, -> {
     where("chat_messages.created_at > date_trunc('day', NOW() - interval '1 month')")
   }, as: :messageable, class_name: :ChatMessage
@@ -80,15 +81,16 @@ class Neighborhood < ApplicationRecord
   scope :public_only, -> { where(public: true) }
 
   scope :with_moderation_area, -> (moderation_area) {
+    return unless moderation_area && moderation_area.to_sym != :all
     return where(national: true) if moderation_area.to_sym == :national
 
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
-      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
+      return where('left(postal_code, 2) not in (?)', ModerationArea.only_departements).or(
         where.not(country: :FR)
       )
     end
 
-    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area)).where(country: :FR)
+    where('left(postal_code, 2) = ?', ModerationArea.departement(moderation_area)).where(country: :FR)
   }
 
   scope :join_chat_message_with_images, -> {
@@ -124,6 +126,8 @@ class Neighborhood < ApplicationRecord
   }
 
   scope :search_by, ->(search) {
+    return unless search.present?
+
     strip = search && search.strip
     like = "%#{strip}%"
 
@@ -254,7 +258,7 @@ class Neighborhood < ApplicationRecord
 
   def unread_first_chat_message_for user
     JoinRequest
-      .select("join_requests.id, join_requests.created_at, min(chat_messages.id) as unread_first_chat_message_id")
+      .select('join_requests.id, join_requests.created_at, min(chat_messages.id) as unread_first_chat_message_id')
       .where(user: user, joinable: self)
       .with_unread_messages
       .group('join_requests.id')
@@ -312,5 +316,13 @@ class Neighborhood < ApplicationRecord
 
   def track_status_change
     self[:status_changed_at] = Time.zone.now if status_changed?
+  end
+
+  def reset_unread_messages_if_blacklisted_or_deleted
+    return unless saved_change_to_status?
+    return unless blacklisted? || deleted?
+
+    join_requests.update_all(unread_messages_count: 0)
+    join_requests.update_all(last_message_read: Time.zone.now)
   end
 end

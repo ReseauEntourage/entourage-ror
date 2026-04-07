@@ -64,9 +64,7 @@ module EntourageServices
           end
 
         EntourageServices::JoinRequestStatus.new(join_request: join_request).accept!
-        # AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
-        AsyncService.new(FollowingService).on_create_entourage(entourage)
-        CommunityLogic.for(entourage).group_created(entourage)
+        AsyncService.new(FollowingService).on_create_entourage(entourage.id)
 
         if recipient_consent_obtained != nil
           entourage.moderation || entourage.build_moderation
@@ -110,13 +108,6 @@ module EntourageServices
         params[:metadata] = params[:metadata].to_h.reverse_merge entourage.metadata
       end
 
-      # prevent category change for groups (good_waves)
-      if entourage.group_type == 'group'
-        params.delete(:entourage_type)
-        params.delete(:display_category)
-        params.delete(:public)
-      end
-
       entourage.assign_attributes(params)
 
       # reset ends_at if only starts_at was set
@@ -141,7 +132,7 @@ module EntourageServices
         entourage.moderation.action_outcome =
           case moderation_params[:success]
           when nil, ''
-            entourage.errors.add(:base, "outcome.success must be a boolean")
+            entourage.errors.add(:base, 'outcome.success must be a boolean')
             return false
           when *ActiveModel::Type::Boolean::FALSE_VALUES
             'Non'

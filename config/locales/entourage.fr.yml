@@ -90,10 +90,11 @@ fr:
         ends_at: Fini le
         image_url: Image URL
         place_limit: Nombre de places disponibles
-        members_count: Nombre de membres
+        members_count: Nombre de participants
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation
         sf_category: Type d'événement
+        exclusive_to: Public cible de l’événement
         categories:
           social: Social
           resource: Ressource
@@ -140,6 +141,7 @@ fr:
 
       inapp_notification:
         context_types:
+          birthday: birthday
           chat_message_on_create: chat_message_created
           join_request_on_create: join_request_created
           join_request_on_update: join_request_updated
@@ -159,7 +161,7 @@ fr:
 
         accepts_event_invitations: Apéro Entourage
         accepts_volunteering_offers: Bénévolat
-        ambassador: Ambassadeur relais
+        ambassador: Animateur Entourage
 
       partner:
         name: Nom
@@ -199,7 +201,7 @@ fr:
         user_goals: Publics
         categories:
           online: Événement en ligne
-          ambassador: Programme ambassadeur
+          ambassador: Programme animateur Entourage
           poi_map: Lieux solidaires
 
       moderation_area:
@@ -288,16 +290,21 @@ fr:
           neighborhood: "Groupes : l'importance de partager nos points communs"
           outing: "Comment créer un événement ?"
           action: "Entraide : ce que je peux proposer / demander"
+          welcome: "Vidéo de bienvenue"
         categories:
           act: Agir
           inspire: S'inspirer
           understand: Comprendre
+      smalltalk:
+        object: Bonnes ondes
+        new_message: Nouveau message
+        title_with_participants: "%s"
 
   community:
     entourage:
       roles:
         admin: Administrateur
-        ambassador: Ambassadeur
+        ambassador: Animateur Entourage
         coordinator: Coordinateur
         ethics_charter_signed: A validé la charte éthique
         moderator: Modérateur
@@ -307,7 +314,7 @@ fr:
         offers_help: Riverain
         asks_for_help: Personne préca
         partner: Association
-        ambassador: Ambassadeur
+        ambassador: Animateur Entourage
         team: Équipe Entourage
       goals:
         offer_help: Voisin solidaire
@@ -320,6 +327,7 @@ fr:
         ask_for_help: Personne préca
         organization: Association
         goal_not_known: Non défini
+        staff: Animateurs Entourage et staff
         all: Tous profils
       icons:
         offer_help: user
@@ -349,16 +357,13 @@ fr:
     chat_messages:
       status_update:
         closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
-        moderator_working_hours: |
-          Merci de nous avoir contacté %s. Nous sommes actuellement en dehors de nos heures de travail (9h-18h en semaine). Nous vous répondrons dès que possible.
-          N'hésitez pas à poster un message sur votre groupe de voisins si vous pensez qu'une personne de la communauté peut vous conseiller et/ou apporter une réponse !
-          En cas d'urgence, contactez les numéros de services d'urgence : 18 (pompiers), 15 (samu) ou 115 (urgence sociale)
-          Nous vous remercions de votre compréhension et de votre patience.
-          %s
 
   push_notifications:
     action:
       create_for_follower: "%s vous invite à rejoindre %s"
+    birthday:
+      title: Joyeux anniversaire 🎉
+      content: On est heureux de vous compter parmi nous. Cliquez ici pour lire notre message d’anniversaire !
     outing:
       create: "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
       cancel: "Cet événement prévu le %s vient d'être annulé"
@@ -371,18 +376,25 @@ fr:
       mention: "%s vous a mentionné dans son message"
     post:
       create: "%s vient de partager : \"%s\""
+      create_image: "%s vient de partager une photo"
     comment:
       create: "%s vient de commenter la publication \"%s\""
+      create_image: "%s vient de partager une photo"
     reaction:
       create: "%s a réagi à votre publication : \"%s\""
     join_request:
-      new: "Nouveau membre"
+      new: "Nouveau participant"
       update: "Demande acceptée"
       update_on_action: "Vous venez de rejoindre une action de %s"
       update_on_outing: "Vous venez de rejoindre un événement de %s"
       update_on_neighborhood: "Vous venez de rejoindre un groupe de %s"
+      update_on_smalltalk: "Vous venez de rejoindre une nouvelle bande de Bonnes Ondes"
       create: "%s vient de rejoindre votre %s \"%s\""
       create_outing: "%s vient de rejoindre votre événement \"%s\" du %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
     contribution:
       create: "Un voisin propose une nouvelle entraide"
     solicitation:
@@ -392,6 +404,13 @@ fr:
       create: "%s a répondu à votre sondage : %s"
     matching:
       create: "Ce contenu pourrait vous intéresser"
+      almost_match_title: "Suggestion de groupe"
+      almost_match_content: "Ce(s) groupe(s) de discussions bonnes ondes pourraient correspondre à ce que vous recherchez !"
+    user_smalltalk:
+      expire_object: "Toujours pas de match 😕"
+      expire_content: |
+        Ta demande de Bonnes Ondes a expiré.
+        Essaies peut-être avec des critères un peu plus souples ? ✨
 
   timeliner:
     h1:
@@ -434,6 +453,96 @@ fr:
     nord: Nord
     idf: Ile-de-France
     centre_est: Centre-Est
+
+  conversations:
+    participants:
+      alone: Vous
+
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Bienvenue %s 🙂 On est ravis que tu nous rejoignes ! Présente-toi en quelques mots pour que le groupe apprenne à te connaître.
+      destroy_member: | # first_name
+        %s vient de quitter le groupe. Merci pour ta participation et bonne continuation à toi !
+      banned_member: | # first_name
+        %s ne fait plus partie du groupe. Son comportement ne collait pas tout à fait avec l’esprit des bandes solidaires. On compte sur vous pour continuer à faire vivre cet espace avec bienveillance et bonne humeur 🙏
+      incomplete: |
+        On vous prépare un joli groupe de Bonnes Ondes ✨ En attendant les prochaines personnes, petit défi : tentez de deviner le prénom du ou de la prochaine à rejoindre. Les chances de tomber juste sont minces... mais qui sait ? 👀
+      close: |
+        Tous les membres de ce groupe de Bonnes Ondes ont décidé de quitter la conversation, vous vous retrouvez donc seul(e) ici. Le groupe est désormais fermé. Vous pouvez toujours consulter l'historique des échanges et y revenir si besoin.
+
+        Si vous souhaitez continuer à partager de Bonnes Ondes, n'hésitez pas à créer une nouvelle demande pour rejoindre un autre groupe. À bientôt 👋
+      complete: |
+        Le groupe est au complet ! 🎉
+
+        Bienvenue dans votre groupe des bonnes ondes, un espace pour créer du lien simplement, avec bienveillance ✨
+
+        Votre mission : échanger, partager et pourquoi pas vous rencontrer, en visio ou dans la vraie vie ?
+        Voici le lien pour une première visio ensemble : %s
+
+        👋 N'hésitez pas à vous présenter si ce n’est pas encore fait.
+
+        🔥 Et dès demain... c’est parti pour 7 jours de petits défis pour se découvrir et tisser de vrais liens 🫶
+
+        On compte sur vous pour jouer le jeu à fond ! 😉
+      complete_j1: |
+        Défi du jour : Trois faits, un mensonge : partage trois faits vrais sur toi et un faux. Aux autres de deviner lequel est l’intrus !
+      complete_j2: |
+        Défi du jour : Hier dans ma vie... Raconte ta journée d’hier en seulement trois emojis. Les autres doivent essayer de deviner ce qui s’est passé !
+      complete_j3: |
+        Posez au groupe la question la plus intéressante à laquelle vous n'avez jamais trouvé de réponse satisfaisante. Voyons si le groupe peut vous aider à y réfléchir !
+      complete_j4: |
+        Défi du jour : Partagez un petit quelque chose que les gens ne devinent pas au premier abord : une passion, une habitude, un trait de caractère...
+      complete_j5: |
+        Défi du jour : Pendant 24h, un mot courant est interdit dans le groupe (ex : "oui", "je", "manger"). Si quelqu’un l’écrit... il doit raconter une anecdote marrante sur lui !
+      complete_j6: |
+        Défi du jour : Chacun partage ce qui l’aide à aller vers quelqu’un : un regard, un lieu, une phrase... ou une astuce anti-timidité !
+      complete_j7: |
+        Défi du jour : Partagez un événement sympa à venir près de chez vous ou en ligne ! Si quelqu’un d’autre mentionne le même ou un événement similaire, c’est peut-être le moment parfait pour y aller ensemble (ou vous retrouver en ligne) !
+      complete_congratulations: | # meeting_url
+        Bravo à tous pour votre participation ! Vous avez pris le temps de partager, d’écouter et de créer des liens : c’est déjà une belle réussite 🧡
+
+        Maintenant, place à la rencontre collective ! En visio ou en vrai, c’est le moment de donner vie à vos échanges, de mettre des visages sur les mots et de faire durer ces bonnes ondes 🤝
+
+        Quelques idées :
+
+        Une visio tranquille, chacun chez soi (pyjama bienvenu 😄)
+
+        Un café ou un apéro si vous n’habitez pas loin les uns des autres
+
+        Un pique-nique ou une activité commune si le cœur (et la météo) vous en dit
+
+        Pour vous organiser facilement, on a créé ce lien visio : %s
+        Lancez vos idées, proposez un moment, et surtout... faites comme chez vous ✨
+      complete_j21: |
+        Bonjour à tous ! 👋
+
+        On espère que vos échanges se sont bien passés, que ce soit par écrit, en visio ou en vrai !
+        Si vous avez des retours à partager ou si quelque chose ne s’est pas bien passé, n’hésitez surtout pas à nous le dire. L’équipe Entourage est là pour vous écouter et vous accompagner, en toute bienveillance 🧡
+
+        Et si tout va bien, dites-le nous aussi ! Vos retours nous aident à continuer de faire vivre les Bonnes Ondes au plus juste.
+
+        Merci pour votre confiance ✨
+      inactive_j3: |
+        Hello la team ! On serait curieux de savoir, qu’est-ce qui vous a donné envie de rejoindre ce groupe ?
+      inactive_j5: |
+        Pas ultra à l’aise à l’écrit ? Aucun souci ! Vous pouvez aussi opter pour une visio tranquille ou un café en petit comité. Dites-nous ce qui vous conviendrait le mieux !
+      inactive_j7: |
+        Le groupe est calme en ce moment... Si on n’a pas de nouvelles d’ici 7 jours, on laissera le groupe se refermer doucement. Merci d’avoir été là, et qui sait... à bientôt quelque part !
+      happy_birthday: | # first_name
+        Toute la bande Bonnes Ondes souhaite un joyeux anniversaire à %s ! 🎉 Profite bien de ta journée et n’hésite pas à nous raconter comment tu vas fêter ça !
+      chart_recall: |
+        Petit rappel bienveillant : les Bonnes Ondes, c’est fait pour échanger dans la bonne humeur et le respect. Vous trouverez la charte éthique juste ici ! Merci à toustes !
+      smalltalk_anniversary_six_months: |
+        Notre groupe fête déjà ses six mois aujourd’hui ! 🎉 Merci pour vos échanges et bons moments passés ensemble !
+      smalltalk_anniversary_one_year: |
+        Notre groupe fête déjà ses un an aujourd’hui ! 🎉 Merci pour vos échanges et bons moments passés ensemble !
+      user_one_year_membership: | # first_name
+        Aujourd’hui, %s fête 1 an parmi nous ! 🎉 Merci d’être avec nous depuis tout ce temps, raconte-nous un moment marquant !
+      smalltalk_500_messages: |
+        Vous êtes en feu ! 🔥 500 messages déjà échangés dans le groupe, ça papote sévère par ici !  On continue comme ça ? Prochain objectif : 1000 messages ?
+      smalltalk_1000_messages: |
+        Incroyable, vous venez d’atteindre les 1000 messages échangés ! 🤯 Vous êtes officiellement les champions·nes des Bonnes Ondes !
 
   pois:
     soliguide:
@@ -500,12 +609,17 @@ fr:
       hygiene:
         name: Produit d'hygiène
         subname: savon, protection hygiénique...
+    orientations:
+      share: Relayer vos événements de convivialité sur l'application
+      guide: Orienter vos bénéficiaires aux événements de convivialité
+      help: Donner ou solliciter un coup de pouce
     sf_categories:
       atelier_femmes: Atelier de sensib Femmes en situation de préca
       atelier_mdlr: Atelier de sensib Monde de la rue
       atelier_preca: Atelier de sensib Précarité, exclusion & emploi
-      devenir_ambassadeur: b.a BA devenir ambassadeur
+      devenir_ambassadeur: b.a BA devenir animateur Entourage
       convivialite: Evenement de convivialité
+      papotages: Papotages solidaires
       passion_sport: Passion sport
       pratique_sport: Pratique Sport
       quizz_sensibilisation: Quizz de sensibilisation
@@ -545,19 +659,84 @@ fr:
     ethical_charter: |
       C'est encore moi !
 
-      Chez Entourage, on a vraiment à cœur que chacun se sente bien, en sécurité, écouté et accueilli. Alors on a rédigé cette charte éthique qui doit être lue et acceptée par tous les membres de la communauté : https://site.entourage.social/blog/charte-ethique-entourage-local 📜.
+      Chez Entourage, on tient vraiment à ce que chacun se sente bien, en sécurité, écouté et accueilli. C’est pourquoi nous avons rédigé cette charte éthique, que tous les membres de la communauté s’engagent à respecter en rejoignant l’application. Prenez-en connaissance ici :
 
-      Je suis chargé.e de veiller au respect de cette charte sur l'app et pendant les événements organisés par l'association, pour que le réseau reste sécurisé et bienveillant pour toutes et pour tous. Toute la communauté doit en être garante ! On compte sur vous 💪
+      https://www.entourage.social/app/resources/eMU_InNSSJbE
 
       A très vite !
 
       %s
 
+  outings:
+    tasks:
+      reminder_content: |
+        Cet événement arrive à grands pas ! Si vous êtes toujours intéressé.e pour participer, merci de commenter “Je participe” en commentaire de ce message.
+      reminder_7_days_with_participants: |
+        Bonjour %{first_name},
+
+        Merci beaucoup d'avoir organisé %{title}, c'est une super initiative pour créer du lien ! 🙌
+
+        👉 Je vois que votre événement approche et %{count} personnes se sont déjà inscrites, c'est top ! Pour les aider à ne pas oublier, vous pouvez leur écrire un petit message dans la discussion de l'événement.
+
+        Et si vous voulez que d'autres voisins s'inscrivent, je vous conseille de partager le lien de l'événement dans votre groupe de %{neighborhood} : ça peut faire toute la différence ! Voici le lien : %{link}
+
+        Si vous avez besoin d'un coup de pouce, n'hésitez pas à me le dire.
+
+        Merci pour votre engagement et votre envie de créer du lien 🙏
+        À très vite
+      reminder_7_days_without_participants: |
+        Bonjour %{first_name},
+
+        Merci beaucoup d'avoir organisé %{title}, c'est une super initiative pour créer du lien ! 🙌
+
+        Je vois que votre événement approche mais personne n'est encore inscrit. Pas de panique : c'est souvent à la dernière minute que les choses bougent 😉
+
+        Je vous conseille de partager le lien de l'événement dans votre groupe de %{neighborhood} : ça peut faire toute la différence ! Voici le lien : %{link}
+
+        Si vous avez besoin d'un coup de pouce, n'hésitez pas à me le dire.
+
+        Merci pour votre engagement et votre envie de créer du lien 🙏
+        À très vite
+      reminder_1_day_with_participants: |
+        Bonjour %{first_name},
+
+        Votre événement %{title} a lieu demain !
+        Un grand bravo pour cette belle initiative 💪
+
+        Voici quelques conseils simples pour créer un moment convivial et inclusif :
+
+        🌟 Accueillir chaque participant(e) personnellement avec un petit mot et un sourire
+        🌟 Lancer une activité de présentation (jeux brise-glace, tour des prénoms, etc) pour détendre l'ambiance
+        🌟 Être attentif(ve) à chacun(e) : aider celles et ceux qui pourraient se sentir en retrait à trouver leur place
+
+        À la fin de l'événement, n'hésitez pas à prendre une photo de groupe (en s'assurant d'avoir l'accord de chaque participant) et postez-la dans votre groupe de voisins %{neighborhood} 👌
+
+        Merci pour votre engagement et votre générosité. Vous participez à tisser un quartier plus solidaire 💛
+
+        À très vite
+      reminder_1_day_without_participants: |
+        Bonjour %{first_name},
+
+        Votre événement %{title} a lieu demain ! Bravo pour cette initiative 👏
+
+        Même si personne ne s'est encore inscrit pour le moment, rien n'est perdu : les voisins se décident parfois à la dernière minute !
+
+        Voici quelques idées pour motiver les troupes :
+        💬 Envoyer un message dans la discussion de l'événement
+        📣 Partager le lien dans votre groupe de voisins %{neighborhood}
+        🤝 Inviter directement des voisins que vous connaissez ou avec qui vous avez déjà échangé
+
+        Et si finalement vous êtes seul(e) demain, ce n'est pas un échec ! Vous avez déjà fait le plus dur : passer à l'action pour créer du lien 💛
+
+        Merci pour votre engagement. On est là si vous avez besoin d’un coup de main 🙌
+
+        À très vite
+
   charts:
     conversations:
-      memberships: "Membres"
+      memberships: "Participants"
     users:
-      member_outings: "Membre événement"
+      member_outings: "Participant événement"
       member_neighborhoods: "Membre groupe de voisins"
       reactions: "Réactions"
       public_chat_messages: "Publications/Commentaires"

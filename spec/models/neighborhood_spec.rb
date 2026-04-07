@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-RSpec.describe Neighborhood, :type => :model do
+RSpec.describe Neighborhood, type: :model do
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:description) }
   it { should validate_presence_of(:latitude) }
   it { should validate_presence_of(:longitude) }
 
-  describe "has a v2 uuid" do
+  describe 'has a v2 uuid' do
     let(:neighborhood) { create :neighborhood }
 
-    describe "format" do
+    describe 'format' do
       it { expect(neighborhood.uuid_v2).not_to be_nil }
       it { expect(neighborhood.uuid_v2[0]).to eq 'e' }
       it { expect(neighborhood.uuid_v2.length).to eq 12 }
@@ -63,7 +63,7 @@ RSpec.describe Neighborhood, :type => :model do
 
     let(:travel_distance) { 1 }
     let(:address) { create :address, latitude: 48.80, longitude: 2 }
-    let!(:user) { create :user, travel_distance: travel_distance, address: address, addresses: [address] }
+    let!(:user) { create :user, travel_distance: travel_distance, address: address }
 
     # distance is about 26_500 meters
     subject { Neighborhood.inside_user_perimeter(user) }
@@ -178,18 +178,18 @@ RSpec.describe Neighborhood, :type => :model do
     it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
   end
 
-  describe "status_changed_at" do
+  describe 'status_changed_at' do
     let(:neighborhood) { create(:neighborhood, status: :open) }
 
     context 'set status_changed_at' do
       before { neighborhood.update(status: :closed) }
 
-      it { expect(neighborhood.status).to eq("closed") }
+      it { expect(neighborhood.status).to eq('closed') }
       it { expect(neighborhood.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
 
-  describe "notify_slack" do
+  describe 'notify_slack' do
     let(:neighborhood) { build(:neighborhood) }
 
     before {
@@ -201,9 +201,44 @@ RSpec.describe Neighborhood, :type => :model do
     it { expect(Experimental::NeighborhoodSlack).to have_received(:notify) }
   end
 
-  describe "share_url" do
+  describe 'share_url' do
     let(:neighborhood) { create(:neighborhood) }
 
     it { expect(neighborhood.share_url).to match(/neighborhoods/) }
+  end
+
+  describe '#reset_unread_messages_if_blacklisted_or_deleted' do
+    let(:neighborhood) { create(:neighborhood, status: 'active') }
+    let(:join_request) { create :join_request, joinable: neighborhood }
+
+    before { neighborhood.join_requests.update_all(unread_messages_count: 5) }
+
+    context 'when status changes to blacklisted' do
+      it 'resets unread_messages_count to 0 for all join_requests' do
+        neighborhood.update!(status: 'blacklisted')
+        expect(neighborhood.join_requests.pluck(:unread_messages_count)).to all(eq(0))
+      end
+    end
+
+    context 'when status changes to deleted' do
+      it 'resets unread_messages_count to 0 for all join_requests' do
+        neighborhood.update!(status: 'deleted')
+        expect(neighborhood.join_requests.pluck(:unread_messages_count)).to all(eq(0))
+      end
+    end
+
+    context 'when status changes to another non-matching value' do
+      it 'does not reset unread_messages_count' do
+        neighborhood.update!(status: 'archived')
+        expect(neighborhood.join_requests.pluck(:unread_messages_count)).to all(eq(5))
+      end
+    end
+
+    context 'when status does not change' do
+      it 'does not trigger the reset' do
+        neighborhood.touch # met à jour updated_at sans changer status
+        expect(neighborhood.join_requests.pluck(:unread_messages_count)).to all(eq(5))
+      end
+    end
   end
 end

@@ -27,11 +27,33 @@ module Onboarding
       return if @user.deleted?
       return unless respond_to?(@method)
 
-      return if user_profile == :ask_for_help
-
       send(@method)
     rescue => e
       Rails.logger.error "PushNotificationTrigger: #{e.message}"
+    end
+
+    # birthday
+    def user_on_birthday
+      notify(
+        instance: nil,
+        params: {
+          object: I18nStruct.new(i18n: 'push_notifications.birthday.title'),
+          content: I18nStruct.new(i18n: 'push_notifications.birthday.content'),
+          extra: {
+            stage: :birthday,
+            tracking: :birthday,
+            popup: :birthday
+          }
+        }
+      )
+    end
+
+    def offer_help_on_birthday
+      user_on_birthday
+    end
+
+    def ask_for_help_on_birthday
+      user_on_birthday
     end
 
     # h1
@@ -41,17 +63,6 @@ module Onboarding
         params: {
           object: I18nStruct.new(i18n: 'timeliner.h1.title'),
           content: I18nStruct.new(i18n: 'timeliner.h1.offer'),
-          extra: { stage: :h1 }
-        }
-      )
-    end
-
-    def ask_for_help_on_h1_after_registration
-      notify(
-        instance: :resources,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.h1.title'),
-          content: I18nStruct.new(i18n: 'timeliner.h1.ask'),
           extra: { stage: :h1 }
         }
       )
@@ -71,19 +82,6 @@ module Onboarding
       )
     end
 
-    def ask_for_help_on_j2_after_registration
-      return unless @user.default_neighborhood
-
-      notify(
-        instance: @user.default_neighborhood,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j2.ask_title_outing'),
-          content: I18nStruct.new(i18n: 'timeliner.j2.ask'),
-          extra: { stage: :j2 }
-        }
-      )
-    end
-
     # j5
     def offer_help_on_j5_after_registration
       return offer_help_on_j5_after_registration_outings if user_has_outings?
@@ -92,18 +90,6 @@ module Onboarding
       offer_help_on_j5_after_registration_create_action
     end
 
-    def ask_for_help_on_j5_after_registration
-      return unless @user.default_neighborhood
-
-      notify(
-        instance: @user.default_neighborhood,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j5.ask_title'),
-          content: I18nStruct.new(i18n: 'timeliner.j5.ask'),
-          extra: { stage: :j5 }
-        }
-      )
-    end
 
     def offer_help_on_j5_after_registration_outings
       notify(
@@ -150,46 +136,6 @@ module Onboarding
       )
     end
 
-    def ask_for_help_on_j8_after_registration
-      return ask_for_help_on_j8_after_registration_outings if user_has_outings?
-      return ask_for_help_on_j8_after_registration_actions if user_has_actions?
-
-      ask_for_help_on_j8_after_registration_create_action
-    end
-
-    def ask_for_help_on_j8_after_registration_outings
-      notify(
-        instance: :outings,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j8.ask_title_outing'),
-          content: I18nStruct.new(i18n: 'timeliner.j8.ask_outing'),
-          extra: { stage: :j8 }
-        }
-      )
-    end
-
-    def ask_for_help_on_j8_after_registration_actions
-      notify(
-        instance: :solicitations,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j8.ask_title_action'),
-          content: I18nStruct.new(i18n: 'timeliner.j8.ask_action'),
-          extra: { stage: :j8 }
-        }
-      )
-    end
-
-    def ask_for_help_on_j8_after_registration_create_action
-      notify(
-        instance: :solicitation,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j8.ask_title_create_action'),
-          content: I18nStruct.new(i18n: 'timeliner.j8.ask_create_action'),
-          extra: { stage: :j8 }
-        }
-      )
-    end
-
     # j11
     def offer_help_on_j11_after_registration
       notify(
@@ -197,17 +143,6 @@ module Onboarding
         params: {
           object: I18nStruct.new(i18n: 'timeliner.j11.title'),
           content: I18nStruct.new(i18n: 'timeliner.j11.offer'),
-          extra: { stage: :j11 }
-        }
-      )
-    end
-
-    def ask_for_help_on_j11_after_registration
-      notify(
-        instance: nil,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j11.title'),
-          content: I18nStruct.new(i18n: 'timeliner.j11.ask'),
           extra: { stage: :j11 }
         }
       )

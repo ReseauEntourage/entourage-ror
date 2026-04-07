@@ -47,7 +47,7 @@ module V1
       # try to put other user as author if conversation
       # and user's name as title
       if object.group_type == 'conversation'
-        other_participant = object.members.find do |member|
+        other_participant = object.accepted_members.find do |member|
           member.id != scope[:user]&.id
         end
 
@@ -88,12 +88,7 @@ module V1
     end
 
     def group_type
-      # good_waves cheat
-      if object.group_type == 'group'
-        'action'
-      else
-        object.group_type
-      end
+      object.group_type
     end
 
     def author
@@ -105,12 +100,13 @@ module V1
         display_name: UserPresenter.new(user: entourage_author).display_name,
         avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
         partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { user: scope[:user], following: true }, root: false).as_json,
-        partner_role_title: entourage_author.partner_role_title.presence
+        partner_role_title: entourage_author.partner_role_title.presence,
+        birthday_today: entourage_author.birthday_today?
       }
     end
 
     def join_status
-      current_join_request&.simplified_status || "not_requested"
+      current_join_request&.simplified_status || 'not_requested'
     end
 
     def number_of_unread_messages

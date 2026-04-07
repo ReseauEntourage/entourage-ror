@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :chat_message do
     association :messageable, factory: :entourage
     association :user, factory: :pro_user
-    content { "MyText" }
+    content { 'MyText' }
 
     trait :private do
       association :messageable, factory: :conversation
@@ -19,6 +19,6 @@ FactoryBot.define do
   trait :neighborhood_post do
     messageable { association :neighborhood }
     user { association :public_user }
-    content { "MyText" }
+    content { 'MyText' }
   end
 end

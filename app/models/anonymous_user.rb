@@ -7,19 +7,25 @@ class AnonymousUser
     :community,
   ].freeze
 
-  attr_reader *ATTRIBUTES
+  attr_reader(*ATTRIBUTES)
 
   def initialize(attributes={})
     attributes.symbolize_keys!
 
     @uuid = attributes[:uuid].to_str
-    raise "uuid must be present" if @uuid.blank?
+    raise 'uuid must be present' if @uuid.blank?
 
     @community = Community.new(attributes[:community])
-    raise "community must be present" if @community.blank?
+    raise 'community must be present' if @community.blank?
 
     if attributes.key?(:token)
       @token = attributes[:token].to_str
+    end
+  end
+
+  class << self
+    def default_user
+      new(uuid: SecureRandom.uuid, community: :entourage, latitude: CoordinatesScopable::CITIES[:paris][:latitude], longitude: CoordinatesScopable::CITIES[:paris][:longitude])
     end
   end
 
@@ -39,7 +45,7 @@ class AnonymousUser
     @token ||= AnonymousUserService.token_from_uuid(uuid, community: community)
   end
 
-  attr_accessor :address
+  attr_accessor :address, :latitude, :longitude
 
   def addresses
     [address].compact
@@ -75,6 +81,7 @@ class AnonymousUser
   def email; nil; end
   def phone; nil; end
   def has_password?; false; end
+  def birthday_today?; false; end
   def deleted; false; end
   def partner_id; nil; end
   def partner; nil; end
@@ -91,13 +98,26 @@ class AnonymousUser
   def concern_list; []; end
   def concerns; []; end
   def concern_names; []; end
-  def birthday; nil; end
+  def orientation; nil; end
+  def orientations; []; end
+  def orientation_names; []; end
+  # options
+  def last_unclosed_action_notification_at; nil; end
+  def goal_choice; nil; end
+  def gender; nil; end
+  def discovery_source; nil; end
+  def photo_acceptance; nil; end
+  def company; nil; end
+  def event; nil; end
+  def birthdate; nil; end
   def errors; ActiveModel::Errors.new(nil); end
   def entourage_participations; JoinRequest.none; end
   def neighborhood_memberships; JoinRequest.none; end
   def neighborhood_participations; JoinRequest.none; end
   def engaged?; false; end
   def ambassador?; false; end
+  def team?; false; end
+  def association?; false; end
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
   def travel_distance; 10; end

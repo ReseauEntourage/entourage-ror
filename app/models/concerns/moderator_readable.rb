@@ -21,7 +21,7 @@ module ModeratorReadable
   end
 
   def unread_chat_message_after read_at:
-    conversation_messages.ordered.with_content.where('created_at > ?', read_at).any?
+    chat_messages.ordered.with_content.where('created_at > ?', read_at).any?
   end
 
   class_methods do

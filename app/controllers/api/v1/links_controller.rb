@@ -5,7 +5,7 @@ module Api
       skip_before_action :ensure_community!
 
       def redirect
-        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'good_waves', 'action_faq', 'propose-poi'])
+        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'action_faq', 'propose-poi'])
           return render json: {message: 'unauthorized'}, status: :unauthorized
         end
 
@@ -13,7 +13,7 @@ module Api
           if current_user
             UserServices::EncodedId.encode(current_user.id)
           else
-            "anonymous"
+            'anonymous'
           end
 
         redirections = {
@@ -28,10 +28,10 @@ module Api
             'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
-              url = "https://entourage.iraiser.eu/jedonne/~mon-don?utm_source=appentourage&utm_medium=formulaire&utm_campaign=dons2020"
+              url = 'https://entourage.iraiser.eu/jedonne/~mon-don?utm_source=appentourage&utm_medium=formulaire&utm_campaign=dons2020'
 
               if !user.anonymous?
-                url += "&" + {
+                url += '&' + {
                   firstname: user.first_name,
                   lastname: user.last_name,
                   email: user.email,
@@ -39,7 +39,7 @@ module Api
                   utm_term: "db#{UserServices::EncodedId.encode(user.id)}"
                 }.to_query
               else
-                url += "&utm_term=anonymous"
+                url += '&utm_term=anonymous'
               end
 
               url
@@ -75,17 +75,6 @@ module Api
             'entourage' => 'https://www.entourage.social/politique-de-confidentialite/',
             'pfp'       => 'https://docs.google.com/document/d/e/2PACX-1vS9nOfDChubzKpL5gEz-6sOjYAJ1Y2nJjjC1nI1Y-Y7ewP9pg1Z8Qvd4e0UkrE_AkZWTbsCvFzkOrlq/pub'
           }[community.slug],
-          'good_waves' =>
-            lambda do |user|
-              url = "https://entourage-asso.typeform.com/to/yewmHjSo"
-              url += "#" + {
-                user_id: user&.id,
-                postal_code: user&.address&.postal_code,
-                phone: user&.phone,
-                email: user&.email,
-                first_name: user&.first_name
-              }.to_query
-            end,
           'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#publier-une-action-solidaire',
           'hub_1' => 'https://entourage-asso.typeform.com/to/RyxV8mhG',
           'hub_2' => 'https://www.simplecommebonjour.org/',
@@ -100,16 +89,16 @@ module Api
 
         redirection = redirection.call(current_user_or_anonymous) if redirection.respond_to?(:call)
 
-        redirect_to redirection
+        redirect_to redirection, allow_other_host: true
       end
 
       def mesure_impact
-        user = User.find_by_uuid(params[:id])
+        user = current_user || User.find_by_uuid(params[:id])
 
-        url = "https://entourage-asso.typeform.com/to/w1OHXk1E"
-        url = "https://entourage-asso.typeform.com/to/i8dpyRvx" if user && user.is_ask_for_help?
+        url = 'https://entourage-asso.typeform.com/to/sBMExrH7'
+        url = 'https://entourage-asso.typeform.com/to/wUvSy3x3' if user && user.is_ask_for_help?
 
-        redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}"
+        redirect_to "#{url}#email=#{user&.email}&phone=#{user&.phone}", allow_other_host: true
       end
     end
   end

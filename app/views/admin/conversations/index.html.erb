@@ -92,6 +92,8 @@
 
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
 
+    <%= button_to "Marquer toutes les conversations comme lues", read_all_admin_conversations_path, method: :post, class: "btn btn-warning btn-sm", form: { style: "float: right; padding-left: 20px" } %>
+
     <%= button_to "Créer une conversation", new_admin_conversation_path, method: :get, class: "btn btn-success btn-sm", form: { style: "float: right;" } %>
   </div>
 

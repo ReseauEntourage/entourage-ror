@@ -15,20 +15,20 @@ module Admin
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)
-        .select("entourages.*, (unread_messages_count > 0) as unread")
-        .order("feed_updated_at desc")
+        .select('entourages.*, (unread_messages_count > 0) as unread')
+        .order('feed_updated_at desc')
         .page(params[:page])
         .per(50)
 
       params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
 
       @conversations = if params[:filter] == 'archived'
-        @conversations.where("archived_at >= feed_updated_at")
+        @conversations.where('archived_at >= feed_updated_at')
       else
-        @conversations.where("archived_at < feed_updated_at or archived_at is null")
+        @conversations.where('archived_at < feed_updated_at or archived_at is null')
       end
 
-      @conversations = @conversations.where("unread_messages_count > 0") if params[:filter] == 'unread'
+      @conversations = @conversations.where('unread_messages_count > 0') if params[:filter] == 'unread'
 
       respond_to do |format|
         format.js
@@ -78,19 +78,13 @@ module Admin
       participant_ids = (conversation_params[:member_ids] + [current_admin.id]).uniq
 
       if @conversation = Conversation.active.with_exact_members(participant_ids).first
-        return redirect_to admin_conversations_path(search: @conversation.id), alert: "Une conversation identique existe déjà"
+        return redirect_to admin_conversations_path(search: @conversation.id), alert: 'Une conversation identique existe déjà'
       end
 
       # create conversation
-      @conversation = ConversationService.build_conversation(participant_ids: participant_ids, creator_id: current_admin.id)
-      @conversation.create_from_join_requests!
+      chat_message = ConversationService.create_private_message!(sender_id: current_admin.id, recipient_ids: participant_ids, content: conversation_params[:message])
 
-      # create message
-      ChatMessage.new(
-        user: current_admin,
-        messageable: @conversation,
-        content: conversation_params[:message]
-      ).save!
+      @conversation = chat_message.messageable
 
       # we need this value right now to get conversation displayable in index view
       @conversation.update_attribute(:number_of_root_chat_messages, 1)
@@ -181,7 +175,7 @@ module Admin
         end
 
         on.not_authorized do
-          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+          redirect_to redirection, alert: 'You are not authorized to delete this chat_message'
         end
       end
     end
@@ -237,6 +231,19 @@ module Admin
       end
 
       redirect_to admin_conversations_path(filter: Rack::Utils.parse_query(URI(request.referer).query)['filter'])
+    end
+
+    def read_all
+      join_requests = JoinRequest
+        .where(user: current_admin)
+        .where(joinable_type: :Entourage)
+        .where(joinable_id: Conversation.all)
+
+      if join_requests.update_all(last_message_read: Time.now, unread_messages_count: 0)
+        redirect_to admin_conversations_path(filter: :unread), notice: "Toutes les conversations ont été marquées comme lues"
+      else
+        redirect_to admin_conversations_path(filter: :unread), alert: "Les conversations n'ont pas pu être marquées comme lues"
+      end
     end
 
     def archive_status

@@ -60,6 +60,13 @@
   </div>
 
   <%= search_form_for [:admin, @q], class: 'form-inline' do |f| %>
+    <% q = @params[:q] || {} %>
+
+    <%= hidden_field_tag 'q[postal_code_start]', q[:postal_code_start] if q[:postal_code_start].present? %>
+    <%= hidden_field_tag 'q[postal_code_in_hors_zone]', q[:postal_code_in_hors_zone] if q[:postal_code_in_hors_zone].present? %>
+    <%= hidden_field_tag 'q[source_eq]', q[:source_eq] if q[:source_eq].present? %>
+    <%= hidden_field_tag 'q[validated_eq]', q[:validated_eq] if q[:validated_eq].present? %>
+
     <div class='form-group'>
       <%= f.search_field :name_or_adress_cont, class: 'form-control' %>
     </div>

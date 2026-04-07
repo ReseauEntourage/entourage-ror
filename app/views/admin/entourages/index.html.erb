@@ -131,7 +131,7 @@
         <% end %>
         <td><%= entourage_description_excerpt(entourage.description) %></td>
         <td><%= entourage_state_label(entourage) %></td>
-        <td><span class="badge" title="Membres"><%= entourage.members_count %></span></td>
+        <td><span class="badge" title="Participants"><%= entourage.members_count %></span></td>
         <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
         <td>
           <% if !entourage.moderated %>

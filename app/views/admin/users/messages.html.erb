@@ -1,6 +1,14 @@
 <%= render 'header', tab: :messages %>
 
 <div class="row">
+  <% if @entourage_messages.none? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        L'utilisateur n'a publié aucun message.
+      </div>
+    </div>
+  <% end %>
+
   <table class="table">
     <% @entourage_messages.each do |entourage_id, messages| %>
       <tr>
@@ -34,7 +42,7 @@
 
         <tr>
           <td>
-            <% if message.is_a?(ConversationMessage) && message.deleted? %>
+            <% if message.is_a?(ChatMessage) && message.deleted? %>
               <p style="color: red;"> Ce message a été supprimé par <%= message.deleter&.full_name %> le <%= l message.deleted_at, format: :short %> : </p>
               <em><%= simple_format message.content(true) %></em>
             <% else %>

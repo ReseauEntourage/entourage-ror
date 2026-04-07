@@ -35,7 +35,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.1.0
+        ruby-version: 3.2.0
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
     - name: Setup Database
@@ -53,6 +53,7 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         REDIS_URL: redis://redis:6379
+        HOST: localhost
       run: bundle exec rake
 
   deploy-api:
@@ -70,12 +71,11 @@ jobs:
           curl https://cli-assets.heroku.com/install.sh | sh
 
       - name: Deploy API to Heroku
-        uses: akhileshns/heroku-deploy@v3.8.9
+        uses: akhileshns/heroku-deploy@v3.14.15
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: entourage-back
           heroku_email: nicolas.chafai@entourage.social
-          branch: master
           usedocker: false
         env:
           RAILS_ENV: production
@@ -95,12 +95,11 @@ jobs:
           curl https://cli-assets.heroku.com/install.sh | sh
 
       - name: Deploy API to Heroku
-        uses: akhileshns/heroku-deploy@v3.8.9
+        uses: akhileshns/heroku-deploy@v3.14.15
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: local-backoffice-prod
           heroku_email: nicolas.chafai@entourage.social
-          branch: master
           usedocker: false
         env:
           RAILS_ENV: production

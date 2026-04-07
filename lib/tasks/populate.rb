@@ -24,8 +24,12 @@ module Populate
       end
     end
 
-    def set_salesforce_configs
-      SalesforceServices::RecordType.new.import
+    def set_salesforce_record_types
+      SalesforceServices::RecordType.reimport
+    end
+
+    def set_salesforce_campaign_parents
+      SalesforceServices::CampaignParent.reimport
     end
 
     def delete_resources
@@ -62,7 +66,7 @@ module Populate
 
     def find_resource_id identifiant
       return unless resource_hash = load_resources_config[identifiant]
-      return unless resource = Resource.find_by_name(resource_hash["name"])
+      return unless resource = Resource.find_by_name(resource_hash['name'])
 
       resource.id
     end

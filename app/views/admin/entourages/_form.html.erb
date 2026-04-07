@@ -35,6 +35,20 @@
 
   <% if @entourage.outing? %>
     <div class="control-group">
+      <label class="control-label">Événement réservé aux femmes</label>
+      <div class="controls">
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= radio_button_tag 'entourage[metadata][reserved_female]', true, required: true, checked: @entourage.reserved_female %>
+          Oui
+        </label>
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= radio_button_tag 'entourage[metadata][reserved_female]', false, required: true, checked: !@entourage.reserved_female %>
+          Non
+        </label>
+      </div>
+    </div>
+
+    <div class="control-group">
       <label class="control-label">Événement à places limitées</label>
       <div class="controls">
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
@@ -59,6 +73,13 @@
       <%= f.label :sf_category, class: "control-label" %>
       <div class="controls" style="max-width: 400px">
         <%= select_tag 'entourage[sf_category]', options_for_select(Tag.sf_categories.to_a.map { |key, value| [value, key] }, @entourage.sf_category), include_blank: true, required: true, class: "form-control update-select" %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :exclusive_to, class: "control-label" %>
+      <div class="controls" style="max-width: 400px">
+        <%= f.select :exclusive_to, User::GOALS.map { |key| [t("community.entourage.goals_compact.#{key}"), key] }, { include_blank: "Pour tous", class: "form-control" } %>
       </div>
     </div>
 

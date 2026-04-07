@@ -27,7 +27,8 @@ module V1
                :created_at,
                :updated_at,
                :status_changed_at,
-               :distance
+               :distance,
+               :manageable_by_current_user
 
     has_one :location
 
@@ -76,7 +77,7 @@ module V1
       # fake data: not really used in mobile app
       # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
-      Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
+      Array.new([object.members_count, 99].min, { id: 1, lang: 'fr', avatar_url: 'n/a', display_name: 'n/a' })
     end
 
     def confirmed_member
@@ -107,6 +108,12 @@ module V1
       return unless object.recurrence.present?
 
       object.recurrence.recurrency
+    end
+
+    def manageable_by_current_user
+      return false unless scope && scope[:user]
+
+      object.can_be_managed_by?(scope[:user])
     end
 
     private

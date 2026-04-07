@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Neighborhood, :type => :model do
+RSpec.describe Neighborhood, type: :model do
   describe 'auto_post_at_create' do
     let(:user) { create(:user) }
     let(:neighborhood) { create(:neighborhood, participants: [user]) }
@@ -15,10 +15,10 @@ RSpec.describe Neighborhood, :type => :model do
 
       it { expect { entourage.set_moderation_dates_and_save }.to change { ChatMessage.count }.by 1 }
 
-      context "chat_message has auto_post on default_neighborhood" do
+      context 'chat_message has auto_post on default_neighborhood' do
         before { entourage.set_moderation_dates_and_save }
 
-        it { expect(ChatMessage.last.auto_post_type).to eq("Solicitation") }
+        it { expect(ChatMessage.last.auto_post_type).to eq('Solicitation') }
         it { expect(ChatMessage.last.auto_post_id).to eq(entourage.id) }
       end
     end
@@ -38,7 +38,7 @@ RSpec.describe Neighborhood, :type => :model do
 
     context 'when auto_post chat_message already exists' do
       let(:status) { :open }
-      let!(:chat_message) { create(:chat_message, messageable: neighborhood, auto_post_type: "Solicitation", auto_post_id: entourage.id) }
+      let!(:chat_message) { create(:chat_message, messageable: neighborhood, auto_post_type: 'Solicitation', auto_post_id: entourage.id) }
 
       it { expect { entourage.set_moderation_dates_and_save }.not_to change { ChatMessage.count } }
     end

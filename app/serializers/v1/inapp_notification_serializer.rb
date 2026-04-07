@@ -61,6 +61,8 @@ module V1
     end
 
     def context
+      return unless object.context.present?
+
       I18n.t("activerecord.attributes.inapp_notification.context_types.#{object.context}", default: object.context)
     end
 

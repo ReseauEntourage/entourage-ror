@@ -1,6 +1,8 @@
 module EntourageServices
   module GeocodingService
-    def self.geocode entourage
+    def self.geocode entourage_id
+      return unless entourage = Entourage.find_by_id(entourage_id)
+
       country, postal_code, city = search_postal_code(entourage.latitude, entourage.longitude)
 
       updates = {country: country, postal_code: postal_code}
@@ -11,6 +13,14 @@ module EntourageServices
       end
 
       entourage.update(updates)
+    end
+
+    def self.get_postal_code latitude, longitude
+      return unless latitude.present? && longitude.present?
+
+      EntourageServices::GeocodingService.search_postal_code(latitude, longitude).second
+    rescue
+      nil
     end
 
     def self.search_postal_code latitude, longitude
@@ -69,7 +79,8 @@ module EntourageServices
       def geocode_async
         return unless EntourageServices::GeocodingService.enable_callback
         return unless (['latitude', 'longitude'] & previous_changes.keys).any?
-        AsyncService.new(GeocodingService).geocode(self)
+
+        AsyncService.new(GeocodingService).geocode(id)
       end
     end
   end

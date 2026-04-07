@@ -3,7 +3,6 @@
     <div class="text-large">Bienvenue</div>
     <div class="oa-session-account-identifier overlay-container mt-1">
       <i class="material-icons oa-s-ai-icon-account">account_circle</i>
-      <span class="oa-s-ai-text"><%= Phonelib.parse(@phone).national %></span>
       <i class="material-icons oa-s-ai-icon-arrow">keyboard_arrow_down</i>
       <%= link_to "", [params[:continue], '?', {phone: params[:phone]}.to_query].join, class: "overlay" %>
     </div>

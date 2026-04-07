@@ -1,0 +1,30 @@
+#map-maraudes, #map-rencontres {
+  min-height: 700px;
+}
+.btn-entourage, .map-filter,.map-filter::-webkit-input-placeholder {
+  background-color: $buttons-color;
+  color: white;
+}
+.map-filter {
+  margin: 10px 0px;
+  font-size: 18px;
+  font-family: 'Asap', sans-serif;
+}
+.left-panel {
+  background-color: #f8f8f8;
+  padding: 8px;
+  margin: 8px 0px;
+  border-radius: 14px;
+}
+
+.daterangepicker .ranges li.active, .daterangepicker .ranges li:hover {
+  background: $buttons-color;
+  border: 1px solid $buttons-color;
+  color: #fff;
+}
+
+.multitest {
+  background: $buttons-color;
+  border: 1px solid $buttons-color;
+  color: #fff;
+}

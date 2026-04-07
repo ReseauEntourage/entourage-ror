@@ -1,13 +1,13 @@
 class NotificationJob
   include Sidekiq::Worker
 
-  sidekiq_options :timeout => 180
+  sidekiq_options timeout: 180
 
   def self.perform_later sender, object, content, device_token, community, extra={}, badge=nil
     NotificationJob.perform_async(sender, object, content, device_token, community, extra.to_json)
   end
 
-  def perform sender, object, content, device_token, community, extra="{}"
+  def perform sender, object, content, device_token, community, extra='{}'
     return if device_token.blank?
     return unless user_application = UserApplication.find_by_push_token(device_token)
 
@@ -19,7 +19,7 @@ class NotificationJob
   end
 
   def perform_android sender, object, content, device_token, community, extra={}
-    app = Rpush::Fcm::App.where(name: community).first
+    app = Rpush::Fcm::App.where(name: community).order(created_at: :desc).first
 
     if app.nil?
       raise "No Android notification has been sent: no '#{community}' certificate found."
@@ -46,7 +46,7 @@ class NotificationJob
   end
 
   def perform_ios sender, object, content, device_token, community, extra={}
-    app = Rpush::Apnsp8::App.where(name: community).first
+    app = Rpush::Apnsp8::App.where(name: community).order(created_at: :desc).first
 
     if app.nil?
       raise "No Android notification has been sent: no '#{community}' certificate found."

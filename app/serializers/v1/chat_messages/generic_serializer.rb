@@ -19,8 +19,7 @@ module V1
                  :survey
 
       def content
-        return "" if object.deleted?
-        return "" if object.offensive?
+        return '' unless object.visible?
 
         Mentionable.no_html(
           I18nSerializer.new(object, :content, lang).translation
@@ -28,13 +27,13 @@ module V1
       end
 
       def content_html
-        return if object.deleted?
+        return unless object.visible?
 
         I18nSerializer.new(object, :content, lang).translation
       end
 
       def content_translations
-        return Hash.new if object.deleted?
+        return Hash.new unless object.visible?
         return Hash.new unless translations = I18nSerializer.new(object, :content, lang).translations
         return Hash.new unless translations.present?
 
@@ -42,7 +41,7 @@ module V1
       end
 
       def content_translations_html
-        return Hash.new if object.deleted?
+        return Hash.new unless object.visible?
 
         I18nSerializer.new(object, :content, lang).translations
       end
@@ -56,7 +55,8 @@ module V1
           display_name: display_name,
           partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
           partner_role_title: object.user.partner_role_title.presence,
-          roles: UserPresenter.new(user: object.user).public_targeting_profiles
+          roles: UserPresenter.new(user: object.user).public_targeting_profiles,
+          birthday_today: object.user.birthday_today?
         }
       end
 
@@ -73,6 +73,9 @@ module V1
       end
 
       def image_url
+        return if object.deleted?
+        return if object.offensive?
+
         object.image_url_with_size(image_size)
       end
 

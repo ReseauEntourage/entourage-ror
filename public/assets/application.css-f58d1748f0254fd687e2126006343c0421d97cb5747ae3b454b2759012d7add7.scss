@@ -1,0 +1,92 @@
+$navbar-height: 82px;
+$navbar-inverse-bg: #252525;
+$text-color: #555;
+$buttons-color: #ef662f;
+
+@import "daterangepicker.css";
+
+@import "home";
+@import "organization";
+@import "sign_in";
+@import "admin";
+@import "users_autocomplete";
+@import "bootstrap-multiselect";
+@import "jquery-ui/datepicker";
+@import "settings";
+@import "utils";
+@import "bootstrap-tagsinput";
+@import "bootstrap4-toggle.min";
+@import "select2";
+@import "select2-bootstrap";
+@import "header";
+@import "components";
+@import 'layout';
+
+
+body.with-navbar { padding-top: $navbar-height; }
+.navbar-brand { padding: 5px; }
+h1, h2, h3, h4, h5, h6, body:not(.fix-legacy-layout) .navbar-nav, select, button {
+  font-family: 'Asap', sans-serif !important;
+}
+body:not(.fix-legacy-layout) .navbar-nav {
+  font-size: 15px;
+  text-transform: uppercase;
+}
+.nav-pills {
+  padding-top: 28px;
+  border-bottom: 1px solid silver;
+}
+.nav-pills > .active > a,
+.nav-pills > .active > a:hover,
+.nav-pills > li > a:hover {
+  border-bottom : 4px solid $buttons-color;
+  background-color: transparent !important;
+}
+.nav-pills > li > a {
+  font-size: 14px;
+  border-radius:0px;
+  color: $text-color !important;
+}
+
+ #flash p {
+  margin: 10px;
+}
+
+li.user-card {
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid;
+  padding-bottom: 5px;
+  border-color: lightgray;
+}
+
+.table tbody>tr>td.vert-align{
+  vertical-align: middle;
+}
+
+
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
+
+body.fix-legacy-layout {
+  margin-top: 100px;
+}
+
+.entourages.index .table {
+  font-size: 80%;
+
+  tr.not-open:not(:hover) {
+    opacity: 0.33;
+  }
+
+  td {
+    padding: 6px;
+  }
+}
+
+textarea {
+  overflow: auto; // Remove the default vertical scrollbar in IE.
+  resize: vertical;
+}

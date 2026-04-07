@@ -8,7 +8,7 @@ describe V1::ConversationSerializer do
     let(:user) { FactoryBot.create(:public_user) }
     let(:participant) { create :public_user, first_name: :Jane }
     let(:conversation) { FactoryBot.create(:conversation, participants: [user, participant]) }
-    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation, content: "foo")}
+    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation, content: 'foo')}
 
     let(:serialized) { V1::ConversationSerializer.new(conversation, scope: { user: user }).serializable_hash }
 
@@ -26,18 +26,16 @@ describe V1::ConversationSerializer do
       it { expect(serialized[:id]).to eq(conversation.id) }
       it { expect(serialized[:type]).to eq(:private) }
       it { expect(serialized[:name]).to eq('Jane D.') }
-      it { expect(serialized[:last_message][:text]).to eq("foo") }
+      it { expect(serialized[:last_message][:text]).to eq('foo') }
       it { expect(serialized[:number_of_unread_messages]).to eq(1) }
       it { expect(serialized[:has_personal_post]).to eq(false) }
     end
 
-    context 'as action' do
-      let(:conversation) { FactoryBot.create(:contribution, group_type: :action, participants: [user], section: :social) }
+    context 'as outing' do
+      let(:conversation) { FactoryBot.create(:outing, group_type: :outing, participants: [user]) }
 
-      it { expect(serialized).not_to have_key(:user) }
       it { expect(serialized).to have_key(:section) }
-      it { expect(serialized[:type]).to eq(:contribution) }
-      it { expect(serialized[:section]).to eq('social') }
+      it { expect(serialized[:type]).to eq(:outing) }
     end
 
     context 'with personal post' do

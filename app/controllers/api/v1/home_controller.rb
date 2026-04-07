@@ -2,6 +2,7 @@ module Api
   module V1
     class HomeController < Api::V1::BaseController
       skip_before_action :community_warning
+      skip_before_action :authenticate_user!, only: [:metadata]
 
       before_action :set_default_neighborhood, only: [:summary]
       before_action :set_user_recommandations, only: [:summary]
@@ -43,8 +44,13 @@ module Api
 
       def metadata
         render json: {
+          user: {
+            genders: UserServices::Options::GENDERS,
+            discovery_sources: UserServices::Options::DISCOVERY_SOURCES
+          },
           tags: {
             sections: format_sections(Tag.sections),
+            orientations: format_tags(Tag.orientations),
             interests: format_tags(Tag.interests),
             involvements: format_tags(Tag.involvements),
             concerns: format_tags(Tag.concerns),

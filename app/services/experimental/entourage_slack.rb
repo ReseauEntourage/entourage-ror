@@ -1,5 +1,7 @@
 module Experimental::EntourageSlack
-  def self.notify entourage
+  def self.notify entourage_id
+    return unless entourage = Entourage.find_by_id(entourage_id)
+
     notifier(entourage)&.ping(payload(entourage))
   end
 
@@ -53,14 +55,14 @@ module Experimental::EntourageSlack
       when 'action'
         "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_ (<@#{slack_moderator}>)"
       when 'outing'
-        "par _#{UserPresenter.new(user: e.user).display_name}_ #{e.user.ambassador? ? ' - Ambassadeur' : ''} (<@#{slack_moderator}>)"
+        "par _#{UserPresenter.new(user: e.user).display_name}_ #{e.user.ambassador? ? ' - Animateur Entourage' : ''} (<@#{slack_moderator}>)"
       end
 
-    text += " partagée dans son groupe de voisins" if e.auto_post_at_create?
+    text += ' partagée dans son groupe de voisins' if e.auto_post_at_create?
 
     event_metadata =
       if e.group_type == 'outing'
-        url = "https://www.google.com/maps/search/?api=1&" + {
+        url = 'https://www.google.com/maps/search/?api=1&' + {
           query: e.metadata[:display_address],
           query_place_id: e.metadata[:google_place_id]
         }.to_query
@@ -76,7 +78,7 @@ module Experimental::EntourageSlack
     {
       attachments: [
         {
-          color: "#3AA3E3",
+          color: '#3AA3E3',
           author_icon: UserServices::Avatar.new(user: entourage.user).thumbnail_url(expire: 7.days),
           author_name: subtitle,
           thumb_url: e.image_path,
@@ -90,35 +92,35 @@ module Experimental::EntourageSlack
         } if e.description.present?),
         ({
           color: :danger,
-          title: "Consentement non obtenu",
-          text: "Cette action est suspendue (invisible dans le feed) en attendant la confirmation du consentement.",
+          title: 'Consentement non obtenu',
+          text: 'Cette action est suspendue (invisible dans le feed) en attendant la confirmation du consentement.',
         } if e.status == 'suspended'),
         {
           callback_id: [:entourage_validation, e.id].join(':'),
-          fallback: "",
+          fallback: '',
           actions: [
             {
-              text:  "Valider",
+              text:  'Valider',
               type:  :button,
               style: :primary,
               name:  :action,
               value: :validate
             },
             {
-              text:  "Bloquer",
+              text:  'Bloquer',
               type:  :button,
               style: :danger,
               name:  :action,
               value: :block,
               confirm: {
-                title:        "Masquer cette action ?",
+                title:        'Masquer cette action ?',
                 text:         "Elle n'apparaîtra plus dans les recherches.",
-                ok_text:      "Oui",
-                dismiss_text: "Non"
+                ok_text:      'Oui',
+                dismiss_text: 'Non'
               }
             },
             {
-              text:  "Afficher",
+              text:  'Afficher',
               type:  :button,
               url: links_url(e)
             }
@@ -136,22 +138,19 @@ module Experimental::EntourageSlack
   end
 
   def self.asset_url path
-    File.join(h.root_url, "/assets/", path)
+    File.join(h.root_url, '/assets/', path)
   end
 
   def self.links_url entourage
     h.admin_slack_entourage_links_url(entourage, host: ENV['ADMIN_HOST'])
   end
 
-  def self.enable_callback
-    !Rails.env.test?
-  end
-
   module Callback
     extend ActiveSupport::Concern
 
     included do
-      after_commit :notify_slack
+      after_commit :auto_validate, on: :create
+      after_commit :notify_slack, on: :create
     end
 
     private
@@ -161,12 +160,17 @@ module Experimental::EntourageSlack
       previous_changes['postal_code'].map { |pc| pc.to_s.first(2) }.uniq.many?
     end
 
+    def auto_validate
+      return unless user.team? || user.ambassador?
+
+      set_moderation_dates_and_save
+    end
+
     def notify_slack
-      return unless Experimental::EntourageSlack.enable_callback
-      return unless community == 'entourage' && group_type.in?(['action', 'outing'])
-      return unless [country, postal_code].all?(&:present?)
-      return unless previous_changes.key?('country') || departement_changed?
-      AsyncService.new(Experimental::EntourageSlack).notify(self)
+      return if moderation_validated?
+      return unless action? || outing?
+
+      AsyncService.new(Experimental::EntourageSlack).notify(id)
     end
   end
 end

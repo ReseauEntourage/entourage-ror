@@ -56,7 +56,7 @@ module V1
       # fake data: not really used in mobile app
       # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
-      Array.new([object.members_count, 99].min, { id: 1, lang: "fr", avatar_url: "n/a", display_name: "n/a" })
+      Array.new([object.members_count, 99].min, { id: 1, lang: 'fr', avatar_url: 'n/a', display_name: 'n/a' })
     end
 
     def unread_posts_count
@@ -106,7 +106,7 @@ module V1
       future_outing_ids = object
         .outings_with_admin_online
         .active
-        .future_or_ongoing
+        .future_or_past_today
         .default_order
         .limit(OUTINGS_LIMIT)
         .pluck(:id)

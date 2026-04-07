@@ -45,7 +45,7 @@ module OrganizationAdmin
 
       OrganizationAdmin::InvitationService.deliver(@invitation)
 
-      flash[:success] = "Invitation envoyée !"
+      flash[:success] = 'Invitation envoyée !'
       redirect_to organization_admin_invitations_path
     end
 
@@ -54,7 +54,7 @@ module OrganizationAdmin
       invitation = PartnerInvitation.where(partner_id: current_user.partner_id).find(params[:id])
 
       if OrganizationAdmin::InvitationService.delete_invitation(invitation)
-        flash[:success] = "Invitation révoquée !"
+        flash[:success] = 'Invitation révoquée !'
       else
         flash[:error] = invitation.errors.full_messages.to_sentence
       end
@@ -64,10 +64,10 @@ module OrganizationAdmin
     # resend_organization_admin_invitation_path
     def resend
       invitation = PartnerInvitation.where(partner_id: current_user.partner_id).find(params[:id])
-      raise "Invitation is not pending" unless invitation.pending?
+      raise 'Invitation is not pending' unless invitation.pending?
       OrganizationAdmin::InvitationService.deliver(invitation)
 
-      flash[:success] = "Invitation envoyée à nouveau !"
+      flash[:success] = 'Invitation envoyée à nouveau !'
       redirect_to organization_admin_invitations_path
     end
 
@@ -86,7 +86,7 @@ module OrganizationAdmin
         return redirect_to organization_admin_path
       end
 
-      raise "Invitation is not pending" unless invitation.pending?
+      raise 'Invitation is not pending' unless invitation.pending?
 
       current_user.assign_attributes(
         first_name: params[:first_name],
@@ -102,7 +102,7 @@ module OrganizationAdmin
         OrganizationAdmin::InvitationService.accept_invitation!(
           invitation: invitation, user: current_user)
       rescue ActiveRecord::RecordInvalid => e
-        Raven.capture_exception(e)
+        Sentry.capture_exception(e)
         return redirect_to join_organization_admin_invitation_path(token: invitation.token, error: :unknown)
       end
 

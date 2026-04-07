@@ -1,20 +1,20 @@
 class MemberMailer < MailjetMailer
-  default from: "contact@entourage.social"
+  default from: 'contact@entourage.social'
 
   def welcome(user)
     community = user.community
     mailjet_email to: user,
                   template_id: community.mailjet_template['welcome'],
                   campaign_name: community_prefix(community, :welcome),
-                  from: email_with_name("contact@entourage.social", "Le Réseau Entourage"),
+                  from: email_with_name('contact@entourage.social', 'Le Réseau Entourage'),
                   variables: {
                     outings_url: Entourage.share_url(:outings),
-                    outings: Outing.welcome_category.limit(3).map { |outing|
+                    outings: Outing.future_or_ongoing.welcome_category.limit(3).map { |outing|
                       {
                         name: outing.title,
                         address: outing.event_url,
                         date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
-                        hour: outing.metadata[:starts_at].strftime("%Hh%M"),
+                        hour: outing.metadata[:starts_at].strftime('%Hh%M'),
                         image_url: outing.image_url_with_size(:landscape_url, :medium),
                         url: outing.share_url
                       }
@@ -52,11 +52,12 @@ class MemberMailer < MailjetMailer
                   template_id: 452754,
                   campaign_name: 'action_suivi_j_10',
                   variables: {
-                    action => [
-                      :entourage_title,
-                      :entourage_url,
-                      :entourage_share_url,
-                    ]
+                    entourage_title: action.title,
+                    entourage_share_url: action.share_url,
+                    action: {
+                      title: action.title,
+                      url: action.share_url
+                    }
                   }
   end
 
@@ -97,9 +98,10 @@ class MemberMailer < MailjetMailer
                         name: outing.title,
                         address: outing.online? ? outing.event_url : outing.metadata[:display_address],
                         date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
-                        hour: outing.metadata[:starts_at].strftime("%Hh%M"),
+                        hour: outing.metadata[:starts_at].strftime('%Hh%M'),
                         image_url: outing.image_url_with_size(:landscape_url, :medium),
-                        url: outing.share_url
+                        url: outing.share_url,
+                        reserved_female: outing.reserved_female
                       }
                     },
                     moderator: {
@@ -112,19 +114,19 @@ class MemberMailer < MailjetMailer
   end
 
   def poi_report(poi, user, message)
-    if ENV.key? "POI_REPORT_EMAIL"
+    if ENV.key? 'POI_REPORT_EMAIL'
       @poi = poi
       @user = user
       @message = message
 
-      mail(to: ENV["POI_REPORT_EMAIL"], subject: 'Correction de POI')
+      mail(to: ENV['POI_REPORT_EMAIL'], subject: 'Correction de POI')
     else
-      logger.warn "Could not deliver POI report. Please provide POI_REPORT_EMAIL as an environment variable"
+      logger.warn 'Could not deliver POI report. Please provide POI_REPORT_EMAIL as an environment variable'
     end
   end
 
   def user_export user_id:, recipient:, cci:
-    attachments["user-export.csv"] = File.read(
+    attachments['user-export.csv'] = File.read(
       UserServices::Exporter.new(user: User.find(user_id)).csv
     )
 
@@ -136,35 +138,35 @@ class MemberMailer < MailjetMailer
   end
 
   def users_csv_export user_ids, recipient
-    attachments["users-csv-export.csv"] = File.read(
+    attachments['users-csv-export.csv'] = File.read(
       UserServices::ListExporter.export(user_ids)
     )
 
     mail(
       to: recipient,
-      subject: "Export des utilisateurs"
+      subject: 'Export des utilisateurs'
     )
   end
 
   def entourages_csv_export entourage_ids, recipient
-    attachments["entourages-csv-export.csv"] = File.read(
+    attachments['entourages-csv-export.csv'] = File.read(
       EntourageServices::ListExporter.export(entourage_ids)
     )
 
     mail(
       to: recipient,
-      subject: "Export des actions et événements"
+      subject: 'Export des actions et événements'
     )
   end
 
   def pois_csv_export poi_ids, recipient
-    attachments["pois-csv-export.csv"] = File.read(
+    attachments['pois-csv-export.csv'] = File.read(
       PoiServices::ListExporter.export(poi_ids)
     )
 
     mail(
       to: recipient,
-      subject: "Export des pois"
+      subject: 'Export des pois'
     )
   end
 
@@ -173,7 +175,7 @@ class MemberMailer < MailjetMailer
       @successes = successes
       @errors = errors
 
-      mail to: recipient, subject: "Import de POI"
+      mail to: recipient, subject: 'Import de POI'
     end
   end
 end

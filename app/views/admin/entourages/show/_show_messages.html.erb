@@ -76,7 +76,7 @@
         <div>
           <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
           <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
-        </div>*
+        </div>
 
         <%= chat_message_with_status(message) %>
 

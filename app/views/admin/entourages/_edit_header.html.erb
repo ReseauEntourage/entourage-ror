@@ -8,6 +8,17 @@
         <% end %>
       </li>
       <li class="active">Modifier</li>
+
+      <% if @entourage.outing? %>
+        <li style="float: right;">
+          <% if @entourage.sf.url %>
+            <%= link_to "Lien vers SF", @entourage.sf.url %>
+          <% else %>
+            Pas synchronisé avec SF
+          <% end %>
+        </li>
+      <% end %>
+
       <li style="float: right;">
         <%= link_to nil, @entourage.share_url, target: :_blank %>
       </li>
@@ -22,7 +33,7 @@
         <%= link_to "Informations générales", admin_entourage_path(@entourage, @params) %>
       </li>
       <li role="presentation" class="<%= :active if params[:action] == 'show_members' %>">
-        <%= link_to "Membres", show_members_admin_entourage_path(@entourage, @params) %>
+        <%= link_to "Participants", show_members_admin_entourage_path(@entourage, @params) %>
       </li>
       <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
         <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>

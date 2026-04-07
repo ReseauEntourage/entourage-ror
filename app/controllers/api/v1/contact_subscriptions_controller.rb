@@ -5,7 +5,6 @@ module Api
 
       #curl -X POST -d '{"contact_subscription": {"email": "foofoo@bar.com", "name": "foo", "profile": "foo", "subject": "foo", "message": "foo"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/contact_subscriptions.json?token=azerty"
       def create
-        pp contact_subscription_params
         contact_subscription = ContactSubscription.new(contact_subscription_params)
 
         if contact_subscription.save

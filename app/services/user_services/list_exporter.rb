@@ -1,3 +1,5 @@
+require 'csv'
+
 module UserServices
   class ListExporter
     DEFAULT_PATH = "#{Rails.root}/tmp"
@@ -30,7 +32,7 @@ module UserServices
     end
 
     def csv
-      file = UserServices::ListExporter.get_file
+      file = self.class.get_file
 
       CSV.open(file, 'w+') do |writer|
         writer << FIELDS.map { |field| I18n.t("activerecord.attributes.user.#{field}") }

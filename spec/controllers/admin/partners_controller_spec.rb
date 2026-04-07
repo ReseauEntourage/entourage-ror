@@ -5,28 +5,28 @@ describe Admin::PartnersController do
   let!(:user) { admin_basic_login }
 
   describe 'GET #index' do
-    context "has partners" do
-      let!(:partner_list) { [create(:partner), create(:partner)] }
+    context 'has partners' do
+      let!(:partner_list) { [create(:partner, name: "new partner", address: '75000 Paris'), create(:partner, address: '29000 Brest')] }
 
       before { get :index }
 
-      it { expect(assigns(:partners)).to match_array(partner_list) }
+      it { expect(assigns(:partners).pluck(:id)).to match_array(partner_list.pluck(:id)) }
     end
 
-    context "has no partners" do
+    context 'has no partners' do
       before { get :index }
       it { expect(assigns(:partners)).to eq([]) }
     end
   end
 
-  describe "GET #new" do
+  describe 'GET #new' do
     before { get :new }
 
     it { expect(assigns(:partner)).to be_a_new(Partner) }
     it { expect(response.code).to eq('200') }
   end
 
-  describe "POST #create" do
+  describe 'POST #create' do
     let!(:partner) { build(:partner) }
 
     let(:request) { post :create, params: { 'partner' => {
@@ -48,7 +48,7 @@ describe Admin::PartnersController do
     end
   end
 
-  describe "GET #edit" do
+  describe 'GET #edit' do
     let!(:partner) { create(:partner) }
 
     before { get :edit, params: { id: partner.to_param } }
@@ -56,10 +56,10 @@ describe Admin::PartnersController do
     it { expect(assigns(:partner)).to eq(partner) }
   end
 
-  describe "PUT #update" do
+  describe 'PUT #update' do
     let!(:partner) { create(:partner) }
 
-    context "common field" do
+    context 'common field' do
       before {
         put :update, params: { id: partner.id, partner: { name: 'new_name' } }
         partner.reload

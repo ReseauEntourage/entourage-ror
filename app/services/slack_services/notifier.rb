@@ -23,7 +23,7 @@ module SlackServices
     end
 
     def env
-      "{}"
+      '{}'
     end
 
     def find_user user
@@ -61,6 +61,10 @@ module SlackServices
 
     def link_to_neighborhood neighborhood
       Rails.application.routes.url_helpers.edit_admin_neighborhood_url(neighborhood.id, host: ENV['ADMIN_HOST'])
+    end
+
+    def link_to_partner partner
+      Rails.application.routes.url_helpers.edit_admin_partner_url(partner.id, host: ENV['ADMIN_HOST'])
     end
 
     def link_to_conversation conversation_or_action

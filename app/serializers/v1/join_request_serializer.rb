@@ -9,10 +9,13 @@ module V1
                :status,
                :message,
                :confirmed_at,
+               :participate_at,
+               :photo_acceptance,
                :requested_at,
                :avatar_url,
                :partner,
-               :partner_role_title
+               :partner_role_title,
+               :birthday_today
 
     def id
       object.user_id
@@ -44,6 +47,10 @@ module V1
       object.simplified_status
     end
 
+    def photo_acceptance
+      object.user.photo_acceptance
+    end
+
     def avatar_url
       UserServices::Avatar.new(user: object.user).thumbnail_url
     end
@@ -61,6 +68,10 @@ module V1
       return unless object.user && object.user.partner_id
 
       object.user.partner_role_title.presence
+    end
+
+    def birthday_today
+      object.user.birthday_today?
     end
   end
 end

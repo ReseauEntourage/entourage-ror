@@ -12,17 +12,6 @@
         <%= verb %> l'Entourage
       <% end %>
     </span>
-
-    <div class="pull-right">
-      <% unless @entourage.new_record? %>
-        <% case @entourage.group_type %>
-        <% when 'action' %>
-          <%= link_to "Changer en évènement", edit_type_admin_entourage_path(@entourage, to: :outing), class: "btn btn-primary" %>
-        <% when 'outing' %>
-          <%= link_to "Changer en action", edit_type_admin_entourage_path(@entourage, to: :action), class: "btn btn-primary" %>
-        <% end %>
-      <% end %>
-    </div>
   </div>
 </div>
 

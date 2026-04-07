@@ -1,13 +1,2 @@
-<div class="row">
-  <%= link_to "<- Retourner à l'entourage", admin_entourage_path(@entourage) %>
-  <h1>
-    <% case @entourage.group_type %>
-    <% when 'outing' %>
-      Changer en évènement
-    <% when 'action' %>
-      Changer en action
-    <% end %>
-  </h1>
-</div>
 
 <%= render partial: "form" %>

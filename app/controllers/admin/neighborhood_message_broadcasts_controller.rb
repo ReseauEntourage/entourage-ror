@@ -27,8 +27,11 @@ module Admin
 
     def edit
       @tab = params[:tab].presence&.to_sym
-      @tab ||= :neighborhoods unless @neighborhood_message_broadcast.has_full_departements_selection?
-      @tab ||= :departements
+      @tab ||= :departements if @neighborhood_message_broadcast.is_departement_selection?
+      @tab ||= :neighborhoods
+
+      @zone = params[:zone].presence&.to_sym
+      @zone ||= :zone_all
     end
 
     def update
@@ -50,7 +53,7 @@ module Admin
       @neighborhood_message_broadcast.assign_attributes(neighborhood_message_broadcast_neighborhoods_param)
 
       if @neighborhood_message_broadcast.save!
-        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), notice: "Votre modification a bien été prise en compte"
+        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), notice: 'Votre modification a bien été prise en compte'
       else
         redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "Votre modification n'a pas pu être prise en compte"
       end
@@ -99,11 +102,11 @@ module Admin
     private
 
     def neighborhood_message_broadcast_params
-      params.require(:neighborhood_message_broadcast).permit(:content, :title, neighborhood_ids: [], departements: [])
+      params.require(:neighborhood_message_broadcast).permit(:content, :title, :area_type, neighborhood_ids: [], departements: [])
     end
 
     def neighborhood_message_broadcast_neighborhoods_param
-      params.require(:neighborhood_message_broadcast).permit(neighborhood_ids: [], departements: [])
+      params.require(:neighborhood_message_broadcast).permit(:area_type, neighborhood_ids: [], departements: [])
     end
 
     def page
