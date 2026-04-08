@@ -2,12 +2,12 @@ module Api
   module V1
     module Outings
       class UsersController < Api::V1::BaseController
-        before_action :set_outing, only: [:index, :create, :confirm, :participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance, :destroy]
+        before_action :set_outing, only: [:index, :create, :unsubscribed_participants, :confirm, :participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance, :destroy]
         before_action :set_current_user_membership, only: [:create, :confirm]
         before_action :set_user_membership, only: [:participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
         before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
-        before_action :check_management_permission!, only: [:participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
+        before_action :check_management_permission!, only: [:unsubscribed_participants, :participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
 
         def index
           # outing members
@@ -29,6 +29,23 @@ module Api
               message: 'Could not create outing participation request', reasons: @membership.errors.full_messages
             }, status: :bad_request
           end
+        end
+
+        # requires management permission unlike api/v1/outings#update
+        def unsubscribed_participants
+          @outing.assign_attributes({
+            unsubscribed_participants_offer_help: params[:offer_help],
+            unsubscribed_participants_ask_for_help: params[:ask_for_help]
+          })
+
+          if @outing.save
+            render json: @outing, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
+          else
+            render json: {
+              message: 'Could not update outing', reasons: @outing.errors.full_messages
+            }, status: 400
+          end
+
         end
 
         def confirm

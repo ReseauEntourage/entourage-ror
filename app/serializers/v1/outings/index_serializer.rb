@@ -54,7 +54,9 @@ module V1
           street_address: object.metadata[:street_address],
           landscape_url: landscape_url,
           portrait_url: "",
-          reserved_female: object.reserved_female
+          reserved_female: object.reserved_female,
+          unsubscribed_participants_offer_help: object.unsubscribed_participants_offer_help,
+          unsubscribed_participants_ask_for_help: object.unsubscribed_participants_ask_for_help,
         }
       end
 

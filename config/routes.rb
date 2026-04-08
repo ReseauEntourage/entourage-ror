@@ -643,6 +643,7 @@ Rails.application.routes.draw do
           end
 
           collection do
+            post :unsubscribed_participants
             post :confirm
             # we want to avoid specific id to unjoin
             delete :destroy
