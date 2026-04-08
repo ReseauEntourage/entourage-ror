@@ -1,5 +1,6 @@
 require 'sidekiq'
 require 'sidekiq/cron/job'
+require 'sidekiq-unique-jobs'
 
 redis_url = ENV["HEROKU_REDIS_GOLD_URL"] || ENV["REDIS_URL"]
 
@@ -8,6 +9,14 @@ Sidekiq.configure_server do |config|
     url: redis_url,
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
   }
+
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
+
+  config.server_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Server
+  end
 
   config.on(:startup) do
     setup_rpush
@@ -24,6 +33,10 @@ Sidekiq.configure_client do |config|
     url: redis_url,
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
   }
+
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
 end
 
 def setup_rpush
