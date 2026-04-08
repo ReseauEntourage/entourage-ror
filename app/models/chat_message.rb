@@ -159,6 +159,10 @@ class ChatMessage < ApplicationRecord
     message_type == 'auto'
   end
 
+  def text?
+    message_type == 'text'
+  end
+
   # @param force true to bypass deletion
   def content force = false
     return '' if deleted? && !force

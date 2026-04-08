@@ -21,6 +21,10 @@ module Onboarding
         Event.track('onboarding.outing.papotages', user_id: self.id)
       end
 
+      def neighborhood_post!
+        Event.track('onboarding.neighborhood.post', user_id: self.id)
+      end
+
       private
 
       def filled_blank_attribute?(changes, attribute)

@@ -1,0 +1,40 @@
+class AddOnboardingNeighborhoodPostEvent < ActiveRecord::Migration[7.1]
+  disable_ddl_transaction!
+
+  def up
+    execute "ALTER TYPE event_name ADD VALUE IF NOT EXISTS 'onboarding.neighborhood.post'"
+
+    Event.reset_event_names_cache!
+  end
+
+  def down
+    Event.where(name: 'onboarding.neighborhood.post').delete_all
+
+    # https://blog.yo1.dog/updating-enum-values-in-postgresql-the-safe-and-easy-way/
+    execute <<-SQL
+      -- rename the existing type
+      alter type event_name rename to event_name_old;
+
+      -- create a new type without the removed value
+      create type event_name as enum (
+         'onboarding.profile.first_name.entered',
+         'onboarding.chat_messages.welcome.sent',
+         'onboarding.chat_messages.welcome.skipped',
+         'onboarding.profile.postal_code.entered',
+         'onboarding.push_notifications.welcome.sent',
+         'onboarding.chat_messages.ethical_charter.sent',
+         'onboarding.chat_messages.incomplete_profile.sent',
+         'onboarding.chat_messages.incomplete_profile.sent',
+         'onboarding.resource.welcome_watched',
+         'onboarding.outing.webinar_or_first_steps',
+         'onboarding.outing.papotages'
+      );
+
+      -- update the columns to use the new type, via an intermediate conversion to text
+      alter table events alter column name type event_name using name::text::event_name;
+
+      -- remove the old type
+      drop type event_name_old;
+    SQL
+  end
+end
