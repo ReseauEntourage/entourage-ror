@@ -573,6 +573,10 @@ GEM
       logger (>= 1.6.2)
       rack (>= 3.1.0)
       redis-client (>= 0.23.2)
+    sidekiq-unique-jobs (8.1.0)
+      concurrent-ruby (~> 1.0, >= 1.0.5)
+      sidekiq (>= 7.0.0, < 9.0.0)
+      thor (>= 1.0, < 3.0)
     signet (0.21.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -711,6 +715,7 @@ DEPENDENCIES
   sentry-ruby
   shoulda-matchers
   sidekiq (~> 8)
+  sidekiq-unique-jobs
   slack-notifier
   spring (~> 2.1.0)
   spring-commands-rspec
