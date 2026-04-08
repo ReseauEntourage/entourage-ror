@@ -16,6 +16,10 @@ module SalesforceServices
       })
     end
 
+    def find_id
+      client.query("select Id from CampaignMember where ContactId = '#{@sf_contact_id}' and CampaignId = '#{@sf_campaign_id}'").first&.Id
+    end
+
     def interface
       @interface ||= OpenStruct.new(
         table_name: "CampaignMember",
