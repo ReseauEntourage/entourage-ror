@@ -516,7 +516,9 @@ describe Api::V1::NeighborhoodsController, type: :controller do
           'display_address' => 'Café la Renaissance, 44 rue de l’Assomption, 75016 Paris',
           'google_place_id' => 'foobar',
           'place_limit' => 3,
-          'reserved_female' => nil
+          'reserved_female' => nil,
+          'unsubscribed_participants_offer_help' => 0,
+          'unsubscribed_participants_ask_for_help' => 0,
         },
         'interests' => ['sport', 'other'],
         'recurrency' => nil,
