@@ -18,15 +18,6 @@ Rails.application.configure do
   # Serving static files (let NGINX/Apache handle this)
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
-  # Asset compression
-  config.assets.js_compressor = :terser
-  # config.assets.css_compressor = :sass
-
-  # Precompiled assets only
-  config.assets.compile = false
-
-  # Asset versioning (manuelle pour purge)
-  config.assets.version = '2.0'
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   # config.active_storage.service = :local

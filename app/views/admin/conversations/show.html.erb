@@ -1,4 +1,7 @@
-<div class="container">
+<div class="container"
+     data-controller="chat-messages"
+     data-chat-messages-messageable-id-value="<%= @conversation.id || @conversation.uuid_v2 %>"
+     data-chat-messages-messageable-type-value="Entourage">
   <%= render 'show_header', tab: :show %>
 
   <br>
