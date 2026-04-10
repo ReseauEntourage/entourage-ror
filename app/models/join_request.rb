@@ -32,7 +32,9 @@ class JoinRequest < ApplicationRecord
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: 'a déjà été ajouté'}
   validates_inclusion_of :status, in: ['pending', 'accepted', 'rejected', 'cancelled', 'hidden']
-  validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
+  validates :status, inclusion: { in: ['accepted'] }, if: -> (join_request) {
+    return false if join_request.conversation?
+
     # can not remove creator
     join_request.joinable.present? &&
       join_request.joinable.respond_to?(:user_id) &&
