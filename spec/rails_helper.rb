@@ -55,6 +55,10 @@ RSpec.configure do |config|
   end
 end
 
+SidekiqUniqueJobs.configure do |config|
+  config.enabled = !Rails.env.test?
+end
+
 RspecApiDocumentation.configure do |config|
   config.disable_dsl_status!
   config.docs_dir = Rails.root.join('public', 'doc', 'api')
