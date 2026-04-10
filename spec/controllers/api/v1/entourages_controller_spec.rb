@@ -406,7 +406,9 @@ describe Api::V1::EntouragesController do
                 'portrait_url'=>'path/to/portrait_url',
                 'portrait_thumbnail_url'=>'path/to/portrait_url',
                 'place_limit'=>0,
-                'reserved_female'=>nil
+                'reserved_female'=>nil,
+                'unsubscribed_participants_offer_help' => 0,
+                'unsubscribed_participants_ask_for_help' => 0,
               },
               'entourage_type'=>'contribution',
               'display_category'=>nil,
@@ -668,7 +670,9 @@ describe Api::V1::EntouragesController do
               'portrait_url'=>nil,
               'portrait_thumbnail_url'=>nil,
               'place_limit'=>0,
-              'reserved_female'=>nil
+              'reserved_female'=>nil,
+              'unsubscribed_participants_offer_help' => 0,
+              'unsubscribed_participants_ask_for_help' => 0,
             }
           )}
         end
@@ -727,7 +731,9 @@ describe Api::V1::EntouragesController do
               'portrait_url' => 'path/to/portrait_url',
               'portrait_thumbnail_url' => 'path/to/portrait_url',
               'place_limit'=>0,
-              'reserved_female'=>nil
+              'reserved_female'=>nil,
+              'unsubscribed_participants_offer_help' => 0,
+              'unsubscribed_participants_ask_for_help' => 0,
             },
             'entourage_type'=>'ask_for_help',
             'display_category'=>'social',

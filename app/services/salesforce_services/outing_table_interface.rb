@@ -15,6 +15,8 @@ module SalesforceServices
       ongoing?: 'IsActive',
       online?: 'En_ligne__c',
       parent_id: 'ParentId',
+      unsubscribed_participants_offer_help: 'B2_nb_riverains_presents_hors_SF__c',
+      unsubscribed_participants_ask_for_help: 'Nb_de_personnes_en_pr_ca_touch_es__c',
       sf_status: 'Status',
       status: 'Statut_d_Entourage__c',
       reseau: 'R_seaux__c',
@@ -143,6 +145,14 @@ module SalesforceServices
         return unless parent = SalesforceServices::CampaignParent.find_for_outing(outing)
 
         parent.salesforce_id
+      end
+
+      def unsubscribed_participants_offer_help
+        outing.unsubscribed_participants_offer_help
+      end
+
+      def unsubscribed_participants_ask_for_help
+        outing.unsubscribed_participants_ask_for_help
       end
 
       def sf_status

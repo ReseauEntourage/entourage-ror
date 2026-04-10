@@ -211,6 +211,28 @@ describe Api::V1::Outings::UsersController do
     end
   end
 
+  describe 'POST unsubscribed_participants' do
+    let(:request) { post :unsubscribed_participants, params: { outing_id: outing.to_param, offer_help: 1, ask_for_help: 2, token: manager.token } }
+
+    context "manager is not a manager" do
+      let(:manager) { create(:public_user) }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "manager is a manager" do
+      let(:manager) { create(:public_user, targeting_profile: :ambassador) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(Outing.find(outing.id).unsubscribed_participants_offer_help).to eq(1) }
+      it { expect(Outing.find(outing.id).unsubscribed_participants_ask_for_help).to eq(2) }
+    end
+  end
+
   describe 'POST confirm' do
     context 'not signed in' do
       before { post :confirm, params: { outing_id: outing.to_param } }
