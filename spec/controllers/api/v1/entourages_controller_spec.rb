@@ -51,8 +51,7 @@ describe Api::V1::EntouragesController do
             'share_url'=>"#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
             'image_url'=>nil,
             'online'=>false,
-            'event_url'=>nil,
-            'display_report_prompt' => false
+            'event_url'=>nil
           }]
         })
       end
@@ -327,8 +326,7 @@ describe Api::V1::EntouragesController do
             'share_url'=>"#{ENV['MOBILE_HOST']}/app/solicitations/#{Entourage.last.uuid_v2}",
             'image_url'=>nil,
             'online'=>false,
-            'event_url'=>nil,
-            'display_report_prompt' => false
+            'event_url'=>nil
           }
         })}
         it { expect(response.status).to eq(201) }
@@ -434,8 +432,7 @@ describe Api::V1::EntouragesController do
               'location'=>{
                 'latitude'=>48.868959,
                 'longitude'=>2.390185
-              },
-              'display_report_prompt' => false
+              }
             }
           )
         end
@@ -580,7 +577,7 @@ describe Api::V1::EntouragesController do
                 'latitude'=>1.122,
                 'longitude'=>2.345
               },
-              'join_status'=>'not_requested',
+              'join_status'=>nil,
               'number_of_unread_messages'=>0,
               'created_at'=> entourage.created_at.iso8601(3),
               'updated_at'=> entourage.updated_at.iso8601(3),
@@ -588,8 +585,7 @@ describe Api::V1::EntouragesController do
               'share_url' => "#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
               'image_url'=>nil,
               'online'=>false,
-              'event_url'=>nil,
-              'display_report_prompt' => false
+              'event_url'=>nil
             }
           })}
         end
@@ -647,8 +643,7 @@ describe Api::V1::EntouragesController do
                 'partner_role_title' => nil,
                 'birthday_today' => be_boolean,
               },
-              'location'=>{'latitude'=>0.0, 'longitude'=>0.0},
-              'display_report_prompt' => false
+              'location'=>{'latitude'=>0.0, 'longitude'=>0.0}
             }
           })}
         end
@@ -750,7 +745,7 @@ describe Api::V1::EntouragesController do
               'latitude'=>outing.latitude,
               'longitude'=>outing.longitude
             },
-            'join_status'=>'not_requested',
+            'join_status'=>nil,
             'number_of_unread_messages'=>0,
             'created_at'=> outing.created_at.iso8601(3),
             'updated_at'=> outing.reload.updated_at.iso8601(3),
@@ -758,8 +753,7 @@ describe Api::V1::EntouragesController do
             'share_url'=>"#{ENV['MOBILE_HOST']}/app/outings/#{outing.uuid_v2}",
             'image_url'=>nil,
             'online'=>false,
-            'event_url'=>nil,
-            'display_report_prompt' => false
+            'event_url'=>nil
           }
         })}
       end
@@ -799,8 +793,7 @@ describe Api::V1::EntouragesController do
             'share_url'=>"#{ENV['MOBILE_HOST']}/app/solicitations/#{user_entourage.uuid_v2}",
             'image_url'=>nil,
             'online'=>false,
-            'event_url'=>nil,
-            'display_report_prompt' => false
+            'event_url'=>nil
           }
         })}
       end
@@ -996,10 +989,9 @@ describe Api::V1::EntouragesController do
     let!(:entourage) { FactoryBot.create(:entourage) }
 
     context 'user is accepted in entourage' do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, report_prompt_status: :display, status: :accepted ) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: :accepted ) }
       before { delete :dismiss_report_prompt, params: { id: entourage.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
-      it { expect(join_request.reload.report_prompt_status).to eq 'dismissed' }
     end
   end
 

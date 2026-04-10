@@ -73,8 +73,7 @@ describe Api::V1::HomeController do
             'share_url' => "#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
             'image_url'=>nil,
             'online'=>false,
-            'event_url'=>nil,
-            'display_report_prompt' => false
+            'event_url'=>nil
           }]
         )
       end
