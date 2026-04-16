@@ -15,7 +15,8 @@
 //= require jquery-ui/datepicker
 //= require jquery-ui/datepicker-fr
 //= require jquery-ui/autocomplete
-//= require turbolinks
+//= require actioncable
+//= require turbo
 //= require moment
 //= require daterangepicker
 //= require bootstrap-multiselect
@@ -24,6 +25,7 @@
 //= require_tree ./templates
 //= require_tree .
 //= require_tree ./admin
+//= require_tree ./channels
 //= require select2
 //= require tinymce
 

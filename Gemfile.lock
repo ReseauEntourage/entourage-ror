@@ -378,7 +378,7 @@ GEM
       parser
       rouge
       unparser
-    psych (5.2.6)
+    psych (5.0.1)
       date
       stringio
     public_suffix (6.0.2)
