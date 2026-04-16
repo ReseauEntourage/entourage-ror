@@ -151,7 +151,7 @@
 
             <div class="col-md-4">
               <%= specific_filters_form.label :gender, "Genre" %>
-              <%= specific_filters_form.select :gender, options_for_select(User::GENDERS.map { |k, v| [v, k] }), {}, class: "form-control" %>
+              <%= specific_filters_form.select :gender, options_for_select(User::GENDERS.map { |k, v| [v, k] }, selected: specific_filters_form.object.gender), { include_blank: true }, class: "form-control" %>
             </div>
 
             <div class="col-md-4">
