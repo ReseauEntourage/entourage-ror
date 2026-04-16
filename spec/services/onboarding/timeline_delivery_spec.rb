@@ -43,42 +43,4 @@ describe Onboarding::TimelineDelivery do
       it { expect_any_instance_of(Onboarding::Timeliner).not_to receive(:run) }
     end
   end
-
-  describe 'deliver_on' do
-    let(:subject) { Onboarding::TimelineDelivery.deliver_on(5) }
-
-    before { Timecop.freeze(monday) }
-
-    after { subject }
-
-    context 'no user' do
-      it { expect_any_instance_of(Onboarding::Timeliner).not_to receive(:run) }
-    end
-
-    context 'user having register less than 5 days ago' do
-      let!(:user) { create(:public_user, first_sign_in_at: 4.days.ago) }
-
-      it { expect_any_instance_of(Onboarding::Timeliner).not_to receive(:run) }
-    end
-
-    context 'user having register exactly 5 days ago' do
-      let!(:user) { create(:public_user, first_sign_in_at: 5.days.ago) }
-
-      it { expect_any_instance_of(Onboarding::Timeliner).to receive(:run) }
-    end
-
-    context 'user having register more than 5 days ago' do
-      let!(:user) { create(:public_user, first_sign_in_at: 6.days.ago) }
-
-      it { expect_any_instance_of(Onboarding::Timeliner).not_to receive(:run) }
-    end
-
-    context 'user having register more than 5 days ago but it is sunday' do
-      let!(:user) { create(:public_user, first_sign_in_at: 5.days.ago) }
-
-      before { Timecop.freeze(sunday) }
-
-      it { expect_any_instance_of(Onboarding::Timeliner).not_to receive(:run) }
-    end
-  end
 end

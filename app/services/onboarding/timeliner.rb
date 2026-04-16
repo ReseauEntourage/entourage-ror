@@ -68,86 +68,6 @@ module Onboarding
       )
     end
 
-    # j2
-    def offer_help_on_j2_after_registration
-      return unless @user.default_neighborhood
-
-      notify(
-        instance: @user.default_neighborhood,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j2.title'),
-          content: I18nStruct.new(i18n: 'timeliner.j2.offer'),
-          extra: { stage: :j2 }
-        }
-      )
-    end
-
-    # j5
-    def offer_help_on_j5_after_registration
-      return offer_help_on_j5_after_registration_outings if user_has_outings?
-      return offer_help_on_j5_after_registration_actions if user_has_actions?
-
-      offer_help_on_j5_after_registration_create_action
-    end
-
-
-    def offer_help_on_j5_after_registration_outings
-      notify(
-        instance: :outings,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j5.title_outing'),
-          content: I18nStruct.new(i18n: 'timeliner.j5.offer_outing'),
-          extra: { stage: :j5 }
-        }
-      )
-    end
-
-    def offer_help_on_j5_after_registration_actions
-      notify(
-        instance: :solicitations,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j5.title_action'),
-          content: I18nStruct.new(i18n: 'timeliner.j5.offer_action'),
-          extra: { stage: :j5 }
-        }
-      )
-    end
-
-    def offer_help_on_j5_after_registration_create_action
-      notify(
-        instance: :contribution,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j5.title_create_action'),
-          content: I18nStruct.new(i18n: 'timeliner.j5.offer_create_action'),
-          extra: { stage: :j5 }
-        }
-      )
-    end
-
-    # j8
-    def offer_help_on_j8_after_registration
-      notify(
-        instance: nil,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j8.title'),
-          content: I18nStruct.new(i18n: 'timeliner.j8.offer'),
-          extra: { stage: :j8 }
-        }
-      )
-    end
-
-    # j11
-    def offer_help_on_j11_after_registration
-      notify(
-        instance: nil,
-        params: {
-          object: I18nStruct.new(i18n: 'timeliner.j11.title'),
-          content: I18nStruct.new(i18n: 'timeliner.j11.offer'),
-          extra: { stage: :j11 }
-        }
-      )
-    end
-
     def notify instance:, params: {}
       notify_push(instance: instance, params: params)
       notify_inapp(instance: instance, params: params)
@@ -184,18 +104,6 @@ module Onboarding
     end
 
     private
-
-    def user_has_outings?
-      OutingsServices::Finder.new(@user, Hash.new).find_all.where(online: false).any?
-    end
-
-    def user_has_actions?
-      user_has_solicitations? # is_ask_for_help profiles are excluded from welcome notifications
-    end
-
-    def user_has_solicitations?
-      SolicitationServices::Finder.new(@user, Hash.new).find_all.any?
-    end
 
     def user_profile
       if @user.is_ask_for_help?

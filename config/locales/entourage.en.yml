@@ -34,33 +34,6 @@ en:
       title: "Welcome to Entourage 👌"
       offer: "Did you know? One video is all it takes to challenge your biases!"
       ask: "Discover all the features in your new app. Check it out!"
-    j2:
-      title: "Come say hello 👋"
-      offer: "Your neighbor group is eager to meet you!"
-      ask_title_outing: "Got 4 minutes?"
-      ask: "Watch a quick video to learn all about your new app"
-    j5:
-      title_outing: "Hey there, it's us again! 🕺"
-      offer_outing: "Virtual is nice, but how about a real-life connection?"
-      title_action: "Hey there, it's us again! 🕺"
-      offer_action: "Got 2 minutes to help your neighbors?"
-      title_create_action: "Hey there, it's us again! 🕺"
-      offer_create_action: "Take two minutes to offer your assistance to those around you"
-      ask_title: "Come say hello 👏"
-      ask: "Your group of neighbors is eager to get to know you"
-    j8:
-      title: "It's your turn! 📱"
-      offer: "Take a quiz to challenge your biases. You might learn something new!"
-      ask_title_outing: "Hey there, it's us again! 🕺"
-      ask_outing: "Virtual is nice, but how about a real-life connection?"
-      ask_title_action: "Hey there, it's us again! 🕺"
-      ask_action: "Check out the help offered near you"
-      ask_title_create_action: "Hey there, it's us again! 🕺"
-      ask_create_action: "Suggest an outing to your neighbors—a walk, coffee, or pétanque!"
-    j11:
-      title: "Entourage feels like family!"
-      offer: "You're now part of the Entourage community. Let's celebrate!"
-      ask: "You're officially part of the Entourage community. Time to celebrate!"
 
   smalltalks:
     messager:
