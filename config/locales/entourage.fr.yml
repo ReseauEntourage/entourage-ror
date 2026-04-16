@@ -317,9 +317,9 @@ fr:
         ambassador: Animateur Entourage
         team: Équipe Entourage
       goals:
-        offer_help: Voisin solidaire
-        ask_for_help: Personne isolée ou en précarité
-        organization: Association ou service public
+        offer_help: Riverain
+        ask_for_help: Personne isolée
+        organization: Association
         goal_not_known: Non défini
         all: Tous profils
       goals_compact:
