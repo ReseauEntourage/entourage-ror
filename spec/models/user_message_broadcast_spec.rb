@@ -181,6 +181,42 @@ RSpec.describe UserMessageBroadcast, type: :model do
     end
   end
 
+  describe 'last_sign_in_after' do
+    let(:subject) { UserMessageBroadcast.last_sign_in_after(User.all, 1.day.ago).pluck(:id) }
+
+    let(:last_sign_in_at) { 1.hour.ago }
+
+    let!(:user) { create(:user, last_sign_in_at: last_sign_in_at) }
+
+    context 'last_sign_in_at is recent' do
+      it { expect(subject).to include(user.id) }
+    end
+
+    context 'last_sign_in_at is old' do
+      let(:last_sign_in_at) { 2.days.ago }
+
+      it { expect(subject).not_to include(user.id) }
+    end
+  end
+
+  describe 'with_gender' do
+    let(:subject) { UserMessageBroadcast.with_gender(User.all, :male).pluck(:id) }
+
+    let(:gender) { :male }
+
+    let!(:user) { create(:user, gender: gender) }
+
+    context 'gender does match' do
+      it { expect(subject).to include(user.id) }
+    end
+
+    context 'gender does not match' do
+      let(:gender) { :female }
+
+      it { expect(subject).not_to include(user.id) }
+    end
+  end
+
   describe 'users & user_ids' do
     let(:subjects) { user_message_broadcast.users }
     let(:subject_ids) { user_message_broadcast.user_ids.sort }
