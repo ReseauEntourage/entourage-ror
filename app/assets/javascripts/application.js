@@ -17,6 +17,7 @@
 //= require jquery-ui/autocomplete
 //= require turbo
 //= require actioncable
+//= require_tree ./channels
 //= require moment
 //= require daterangepicker
 //= require bootstrap-multiselect
