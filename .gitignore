@@ -47,3 +47,4 @@ data_export/*.csv
 
 # optional local initializer
 config/initializers/local.rb
+.gems/

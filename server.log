@@ -1,0 +1,107 @@
+=> Booting Puma
+=> Rails 7.1.5.2 application starting in development
+=> Run `bin/rails server --help` for more startup options
+[DEPRECATION] Rack::Attack.throttled_response is deprecated. Please use Rack::Attack.throttled_responder instead
+DEPRECATION WARNING: Your `secret_key_base` is configured in `Rails.application.secrets`, which is deprecated in favor of `Rails.application.credentials` and will be removed in Rails 7.2. (called from <top (required)> at /app/config/environment.rb:5)
+Use 'before_worker_boot', 'on_worker_boot' is deprecated and will be removed in v8
+[313682] Puma starting in cluster mode...
+[313682] * Puma version: 7.0.4 ("Romantic Warrior")
+[313682] * Ruby version: ruby 3.2.3 (2024-01-18 revision 52bb2ac0a6) [x86_64-linux-gnu]
+[313682] *  Min threads: 10
+[313682] *  Max threads: 10
+[313682] *  Environment: development
+[313682] *   Master PID: 313682
+[313682] *      Workers: 1
+[313682] *     Restarts: (✔) hot (✖) phased (✖) refork
+[313682] * Preloading application
+[313682] * Listening on http://127.0.0.1:3000
+[313682] * Listening on http://[::1]:3000
+[313682] Use Ctrl-C to stop
+[313682] ! WARNING: Detected running cluster mode with 1 worker.
+[313682] ! Running Puma in cluster mode with a single worker is often a misconfiguration.
+[313682] ! Consider running Puma in single-mode (workers = 0) in order to reduce memory overhead.
+[313682] ! Set the `silence_single_worker_warning` option to silence this warning message.
+[313682] - Worker 0 (PID: 313688) booted in 0.0s, phase: 0
+
+ActiveRecord::ConnectionNotEstablished (connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+connection to server on socket "/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+):
+
+activerecord (7.1.5.2) lib/active_record/connection_adapters/postgresql_adapter.rb:80:in `rescue in new_client'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/postgresql_adapter.rb:68:in `new_client'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/postgresql_adapter.rb:980:in `connect'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/postgresql_adapter.rb:992:in `reconnect'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:685:in `block in reconnect!'
+activesupport (7.1.5.2) lib/active_support/concurrency/null_lock.rb:9:in `synchronize'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:684:in `reconnect!'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:786:in `block in verify!'
+activesupport (7.1.5.2) lib/active_support/concurrency/null_lock.rb:9:in `synchronize'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:777:in `verify!'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:794:in `connect!'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:1000:in `block in with_raw_connection'
+activesupport (7.1.5.2) lib/active_support/concurrency/null_lock.rb:9:in `synchronize'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:999:in `with_raw_connection'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:1112:in `valid_raw_connection'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/postgresql_adapter.rb:616:in `get_database_version'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/schema_cache.rb:374:in `database_version'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/schema_cache.rb:70:in `database_version'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/schema_cache.rb:200:in `database_version'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract_adapter.rb:870:in `database_version'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/postgresql_adapter.rb:644:in `check_version'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract/connection_pool.rb:680:in `new_connection'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract/connection_pool.rb:730:in `checkout_new_connection'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract/connection_pool.rb:709:in `try_to_checkout_new_connection'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract/connection_pool.rb:654:in `acquire_connection'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract/connection_pool.rb:353:in `checkout'
+activerecord (7.1.5.2) lib/active_record/connection_adapters/abstract/connection_pool.rb:182:in `connection'
+activerecord (7.1.5.2) lib/active_record/migration/pending_migration_connection.rb:8:in `establish_temporary_connection'
+activerecord (7.1.5.2) lib/active_record/migration.rb:774:in `block in pending_migrations'
+activerecord (7.1.5.2) lib/active_record/migration.rb:773:in `each'
+activerecord (7.1.5.2) lib/active_record/migration.rb:773:in `pending_migrations'
+activerecord (7.1.5.2) lib/active_record/migration.rb:752:in `check_pending_migrations'
+activerecord (7.1.5.2) lib/active_record/migration.rb:644:in `block (2 levels) in call'
+activesupport (7.1.5.2) lib/active_support/file_update_checker.rb:85:in `execute'
+activerecord (7.1.5.2) lib/active_record/migration.rb:649:in `block in call'
+activerecord (7.1.5.2) lib/active_record/migration.rb:641:in `synchronize'
+activerecord (7.1.5.2) lib/active_record/migration.rb:641:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/callbacks.rb:29:in `block in call'
+activesupport (7.1.5.2) lib/active_support/callbacks.rb:101:in `run_callbacks'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/callbacks.rb:28:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/actionable_exceptions.rb:16:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/debug_exceptions.rb:29:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+lograge (0.14.0) lib/lograge/rails_ext/rack/logger.rb:18:in `call_app'
+railties (7.1.5.2) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (7.1.5.2) lib/active_support/tagged_logging.rb:139:in `block in tagged'
+activesupport (7.1.5.2) lib/active_support/tagged_logging.rb:39:in `tagged'
+activesupport (7.1.5.2) lib/active_support/tagged_logging.rb:139:in `tagged'
+activesupport (7.1.5.2) lib/active_support/broadcast_logger.rb:241:in `method_missing'
+railties (7.1.5.2) lib/rails/rack/logger.rb:24:in `call'
+sprockets-rails (3.5.2) lib/sprockets/rails/quiet_assets.rb:17:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/remote_ip.rb:92:in `call'
+request_store (1.7.0) lib/request_store/middleware.rb:19:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/request_id.rb:28:in `call'
+rack (3.2.3) lib/rack/method_override.rb:28:in `call'
+rack (3.2.3) lib/rack/runtime.rb:24:in `call'
+activesupport (7.1.5.2) lib/active_support/cache/strategy/local_cache_middleware.rb:29:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/server_timing.rb:59:in `block in call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/server_timing.rb:24:in `collect_events'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/server_timing.rb:58:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/static.rb:25:in `call'
+rack (3.2.3) lib/rack/sendfile.rb:131:in `call'
+actionpack (7.1.5.2) lib/action_dispatch/middleware/host_authorization.rb:141:in `call'
+railties (7.1.5.2) lib/rails/engine.rb:536:in `call'
+rack-attack (6.7.0) lib/rack/attack.rb:127:in `call'
+puma (7.0.4) lib/puma/configuration.rb:299:in `call'
+puma (7.0.4) lib/puma/request.rb:101:in `block in handle_request'
+puma (7.0.4) lib/puma/thread_pool.rb:346:in `with_force_shutdown'
+puma (7.0.4) lib/puma/request.rb:100:in `handle_request'
+puma (7.0.4) lib/puma/server.rb:506:in `process_client'
+puma (7.0.4) lib/puma/server.rb:265:in `block in run'
+puma (7.0.4) lib/puma/thread_pool.rb:173:in `block in spawn_thread'
