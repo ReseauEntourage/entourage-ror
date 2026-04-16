@@ -10,7 +10,7 @@ module UserServices
     GENDERS = {
       female: "Femme",
       male: "Homme",
-      secret: "Autre",
+      secret: "Non renseigné",
     }
 
     DISCOVERY_SOURCES = {
@@ -31,6 +31,13 @@ module UserServices
       validate :validate_discovery_source_format
       validate :validate_sf_entreprise_id
       validate :validate_sf_campaign_id
+
+      scope :with_gender, -> (gender) {
+        return unless gender.present?
+        return unless GENDERS.keys.include?(gender.to_sym)
+
+        where("options->>'gender' = ?", gender.to_s)
+      }
     end
 
     def validate_gender_format
