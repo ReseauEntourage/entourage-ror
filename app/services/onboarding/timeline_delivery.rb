@@ -26,24 +26,5 @@ module Onboarding
           .pluck(:id)
       end
     end
-
-    class << self
-      def deliver_on n
-        now = Time.zone.now
-
-        return unless now.strftime('%A').in?(ACTIVE_DAYS)
-        return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
-
-        User.where(id: user_ids_after_days(n)).find_each do |user|
-          Onboarding::Timeliner.new(user.id, "j#{n}_after_registration").run
-        end
-      end
-
-      def user_ids_after_days n
-        User.where(deleted: false)
-          .where(first_sign_in_at: n.days.ago.all_day)
-          .pluck(:id)
-      end
-    end
   end
 end
