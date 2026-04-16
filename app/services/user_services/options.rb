@@ -10,7 +10,7 @@ module UserServices
     GENDERS = {
       female: "Femme",
       male: "Homme",
-      secret: "Autre",
+      secret: "Non renseigné",
     }
 
     DISCOVERY_SOURCES = {
