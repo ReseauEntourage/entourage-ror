@@ -378,7 +378,7 @@ GEM
       parser
       rouge
       unparser
-    psych (5.2.6)
+    psych (5.0.1)
       date
       stringio
     public_suffix (6.0.2)
@@ -609,9 +609,6 @@ GEM
       railties (>= 3.1.1)
     trailblazer-option (0.1.2)
     tsort (0.2.0)
-    turbolinks (5.2.1)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
@@ -720,7 +717,6 @@ DEPENDENCIES
   terser
   timecop
   tinymce-rails
-  turbolinks (~> 5)
   webmock
   whenever
 
