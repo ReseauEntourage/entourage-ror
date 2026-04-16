@@ -97,7 +97,7 @@ module Admin
 
     def user_message_broadcast_params
       params.require(:user_message_broadcast).permit(
-        :area_type, :goal, :content, :title, areas: [], specific_filters: [:has_engagement, :last_engagement_date, :user_creation_date, interests: []]
+        :area_type, :goal, :content, :title, areas: [], specific_filters: [:has_engagement, :last_engagement_date, :user_creation_date, :last_sign_in_at, :gender, interests: []]
       )
     end
 

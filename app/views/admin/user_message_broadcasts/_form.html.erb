@@ -118,39 +118,48 @@
   <hr>
 
   <%= f.fields_for :specific_filters, OpenStruct.new(@user_message_broadcast.specific_filters) do |specific_filters_form| %>
-    <h4>Engagement</h4>
-    <div class="row">
-      <div class="col-md-4">
-        <%= specific_filters_form.label :has_engagement, "Engagé ?" %>
-        <%= specific_filters_form.select :has_engagement, options_for_select([['Indéfini', ''], ['Non', false], ['Oui', true]], selected: specific_filters_form.object.has_engagement), {}, class: "form-control" %>
+    <div class="panel panel-default">
+      <div class="panel-heading" data-toggle="collapse" data-target="#advanced-filters" style="cursor: pointer;">
+        <strong>Filtres avancés</strong>
       </div>
+      <div id="advanced-filters" class="panel-collapse collapse">
+        <div class="panel-body">
+          <h4>Engagement</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <%= specific_filters_form.label :has_engagement, "Engagé ?" %>
+              <%= specific_filters_form.select :has_engagement, options_for_select([['Indéfini', ''], ['Non', false], ['Oui', true]], selected: specific_filters_form.object.has_engagement), {}, class: "form-control" %>
+            </div>
 
-      <div class="col-md-4">
-        <%= specific_filters_form.label :last_engagement_date, "Dernière action" %>
-        <%= specific_filters_form.date_field :last_engagement_date, value: @user_message_broadcast.specific_filters['last_engagement_date'], class: "form-control" %>
-      </div>
+            <div class="col-md-4">
+              <%= specific_filters_form.label :last_engagement_date, "Dernière action" %>
+              <%= specific_filters_form.date_field :last_engagement_date, value: @user_message_broadcast.specific_filters['last_engagement_date'], class: "form-control" %>
+            </div>
 
-      <div class="col-md-4">
-        <%= specific_filters_form.label :last_sign_in_at, "Dernière connexion" %>
-        <%= specific_filters_form.date_field :last_sign_in_at, value: @user_message_broadcast.specific_filters['last_sign_in_at'], class: "form-control" %>
-      </div>
-    </div>
+            <div class="col-md-4">
+              <%= specific_filters_form.label :last_sign_in_at, "Dernière connexion" %>
+              <%= specific_filters_form.date_field :last_sign_in_at, value: @user_message_broadcast.specific_filters['last_sign_in_at'], class: "form-control" %>
+            </div>
+          </div>
 
-    <h4>Profil utilisateur</h4>
-    <div class="row">
-      <div class="col-md-4">
-        <%= specific_filters_form.label :user_creation_date, "Créé après" %>
-        <%= specific_filters_form.date_field :user_creation_date, value: @user_message_broadcast.specific_filters['user_creation_date'], class: "form-control" %>
-      </div>
+          <h4>Profil utilisateur</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <%= specific_filters_form.label :user_creation_date, "Créé après" %>
+              <%= specific_filters_form.date_field :user_creation_date, value: @user_message_broadcast.specific_filters['user_creation_date'], class: "form-control" %>
+            </div>
 
-      <div class="col-md-4">
-        <%= specific_filters_form.label :gender, "Genre" %>
-        <%= specific_filters_form.select :gender, options_for_select(User::GENDERS.map { |k, v| [v, k] }), {}, class: "form-control" %>
-      </div>
+            <div class="col-md-4">
+              <%= specific_filters_form.label :gender, "Genre" %>
+              <%= specific_filters_form.select :gender, options_for_select(User::GENDERS.map { |k, v| [v, k] }, selected: specific_filters_form.object.gender), { include_blank: true }, class: "form-control" %>
+            </div>
 
-      <div class="col-md-4">
-        <%= specific_filters_form.label :interests, "Centres d’intérêts" %>
-        <%= specific_filters_form.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true, id: :interests } %>
+            <div class="col-md-4">
+              <%= specific_filters_form.label :interests, "Centres d’intérêts" %>
+              <%= specific_filters_form.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true, id: :interests } %>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>
