@@ -3,6 +3,7 @@ require 'super_admin_constraint'
 
 Rails.application.routes.draw do
   mount Sidekiq::Web => '/super_admin/sidekiq', :constraints => SuperAdminConstraint.new
+  mount ActionCable.server => "/cable"
 
   #ADMIN
   constraints subdomain: /\A(admin|admin-preprod|admin-test|admin-preprod-test)\z/ do
