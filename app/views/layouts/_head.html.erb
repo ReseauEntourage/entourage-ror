@@ -4,10 +4,12 @@
   <%= csrf_meta_tags %>
   <%= action_cable_meta_tag %>
 
+  <%# Modern JS via Importmaps %>
   <%= javascript_importmap_tags %>
 
+  <%# Legacy JS & CSS via Sprockets %>
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
-  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true %>
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload' %>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GOOGLE_MAPS_API_KEY"] %>&libraries=drawing,places,visualization"></script>
