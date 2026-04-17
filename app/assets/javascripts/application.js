@@ -11,8 +11,6 @@
 //= require jquery.ui.widget
 //= require jquery.fileupload
 //= require_tree ./templates
-//= require channels/consumer
-//= require channels/ping
 //= require_tree .
 //= require_tree ./admin
 //= require select2

@@ -1,17 +1,16 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Action Cable configuration
+  # Action Cable development settings
   config.action_cable.mount_path = "/cable"
   config.action_cable.disable_request_forgery_protection = true
-  config.action_cable.allowed_request_origins = [ /.*/ ]
-  config.action_cable.logger = Logger.new(STDOUT)
+  config.action_cable.allowed_request_origins = [
+    /http:\/\/.*\.entourage\.localhost:3000/,
+    /http:\/\/localhost:3000/
+  ]
 
-  # Settings specified here will take precedence over those in config/application.rb.
   config.hosts << 'api.entourage.localhost'
   config.hosts << 'admin.entourage.localhost'
-  config.hosts << 'entourage.localhost'
-  config.hosts << '.entourage.localhost'
 
   config.enable_reloading = true
   config.eager_load = false
@@ -37,7 +36,6 @@ Rails.application.configure do
   config.assets.quiet = true
   config.force_ssl = false
 
-  # Dev/test env credentials
   ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
   ENV['ENTOURAGE_SOLIGUIDE_HOST'] = 'https://localhost:9292/api/v1/pois'
 

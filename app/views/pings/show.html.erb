@@ -1,7 +1,7 @@
-<h1>WebSocket Demo</h1>
+<h1>WebSocket Demo (Hotwire)</h1>
 
-<div id="ping-container">
-  <p>Status: <strong id="ping-status" style="color: orange;">Connecting...</strong></p>
+<div data-controller="ping">
+  <p>Status: <strong data-ping-target="status" style="color: orange;">Connecting...</strong></p>
   <p>Listening for messages on <code>PingChannel</code>...</p>
 
   <div data-ping-target="messages" style="border: 1px solid #ccc; padding: 10px; min-height: 100px; margin-top: 10px; background: #f9f9f9;">
@@ -12,5 +12,5 @@
 
   <h3>Trigger a message</h3>
   <p>Run the following command in your terminal to trigger a message:</p>
-  <pre style="background: #eee; padding: 10px; overflow-x: auto;">curl -X POST http://localhost:3000/api/v1/pings/dispatch_websocket -d "message=Hello from Jules!"</pre>
+  <pre style="background: #eee; padding: 10px; overflow-x: auto;">curl -X POST http://localhost:3000/api/v1/pings/dispatch_websocket -d "message=Hello from Stimulus!"</pre>
 </div>

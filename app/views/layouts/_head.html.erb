@@ -6,10 +6,17 @@
   <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOyNFh41PIKiNW9WYWrOH67c-wY1zVRVY&libraries=drawing,places,visualization"></script>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbo-track' => 'reload' %>
+
+  <%# Hotwire / Modern JS %>
+  <%= javascript_importmap_tags %>
+
+  <%# Legacy Sprockets JS & CSS %>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbo-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload' %>
+
   <%= csrf_meta_tags %>
   <%= action_cable_meta_tag %>
-  <%= javascript_include_tag 'application', 'data-turbo-track' => 'reload' %>
+
   <%= favicon_link_tag 'favicon.ico', type: 'image/x-icon' %>
   <%= favicon_link_tag 'favicon.ico', rel: 'apple-touch-icon', type: 'image/x-icon' %>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
