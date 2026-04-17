@@ -1,46 +1,61 @@
 (function() {
+  var updateUI = function(status, color) {
+    var statusEl = document.getElementById('ping-status');
+    if (statusEl) {
+      statusEl.innerText = status;
+      statusEl.style.color = color;
+    }
+  };
+
   var setupPingSubscription = function() {
+    if (!document.getElementById('ping-container')) return;
+
+    console.log("[PingDemo] Setup initiated");
+
     if (!window.App || !window.App.cable) {
-      console.log("ActionCable consumer not found, skipping subscription setup.");
+      console.warn("[PingDemo] App.cable not ready, retrying...");
+      setTimeout(setupPingSubscription, 500);
       return;
     }
 
     if (window.App.pingSubscription) {
-      console.log("PingSubscription already exists, skipping.");
+      console.log("[PingDemo] Subscription exists. Current state:", window.App.cable.connection.state);
+      // Update UI for current page
+      if (window.App.cable.connection.isOpen()) {
+        updateUI("Connected", "green");
+      } else {
+        updateUI("Connecting...", "orange");
+      }
       return;
     }
 
-    console.log("Creating subscription to PingChannel...");
+    console.log("[PingDemo] Creating new subscription to PingChannel");
     window.App.pingSubscription = window.App.cable.subscriptions.create("PingChannel", {
       connected: function() {
-        console.log("PingChannel: Connected!");
-        var status = document.getElementById('ping-status');
-        if (status) { status.innerText = 'Connected'; status.style.color = 'green'; }
+        console.log("[PingDemo] Callback: connected");
+        updateUI("Connected", "green");
       },
       disconnected: function() {
-        console.log("PingChannel: Disconnected");
-        var status = document.getElementById('ping-status');
-        if (status) { status.innerText = 'Disconnected'; status.style.color = 'red'; }
+        console.log("[PingDemo] Callback: disconnected");
+        updateUI("Disconnected", "red");
+      },
+      rejected: function() {
+        console.log("[PingDemo] Callback: rejected");
+        updateUI("Rejected", "red");
       },
       received: function(data) {
-        console.log("PingChannel: Received data:", data);
+        console.log("[PingDemo] Callback: received", data);
         var messagesDiv = document.querySelector('[data-ping-target="messages"]');
         if (messagesDiv) {
-          var messageElement = document.createElement('p');
-          messageElement.innerHTML = '<strong>' + new Date().toLocaleTimeString() + ':</strong> ' + data.message;
-          messagesDiv.prepend(messageElement);
+          var p = document.createElement('p');
+          p.innerHTML = '<strong>' + new Date().toLocaleTimeString() + ':</strong> ' + data.message;
+          messagesDiv.prepend(p);
         }
       }
     });
   };
 
-  // Subscribe on initial load and on Turbo page changes
   document.addEventListener('turbo:load', setupPingSubscription);
-
-  // Also try immediately if document is already loaded
-  if (document.readyState !== 'loading') {
-    setupPingSubscription();
-  } else {
-    document.addEventListener('DOMContentLoaded', setupPingSubscription);
-  }
-}).call(this);
+  if (document.readyState !== 'loading') setupPingSubscription();
+  else document.addEventListener('DOMContentLoaded', setupPingSubscription);
+})();

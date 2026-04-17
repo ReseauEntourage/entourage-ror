@@ -1,4 +1,7 @@
 (function() {
-  this.App || (this.App = {});
-  App.cable = ActionCable.createConsumer();
+  window.App = window.App || {};
+  if (!window.App.cable) {
+    console.log("[ActionCable] Initializing consumer...");
+    window.App.cable = ActionCable.createConsumer();
+  }
 }).call(this);

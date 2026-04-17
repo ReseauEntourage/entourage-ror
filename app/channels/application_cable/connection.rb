@@ -1,7 +1,7 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     def connect
-      Rails.logger.info "ActionCable Connection established"
+      puts "\n[ActionCable] New connection established"
     end
   end
 end
