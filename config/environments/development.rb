@@ -1,16 +1,17 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Action Cable development settings
+  # Action Cable configuration
   config.action_cable.mount_path = "/cable"
   config.action_cable.disable_request_forgery_protection = true
-  config.action_cable.allowed_request_origins = [
-    /http:\/\/.*\.entourage\.localhost:3000/,
-    /http:\/\/localhost:3000/
-  ]
+  config.action_cable.allowed_request_origins = [ /.*/ ]
 
+  # Settings specified here will take precedence over those in config/application.rb.
   config.hosts << 'api.entourage.localhost'
   config.hosts << 'admin.entourage.localhost'
+  config.hosts << 'entourage.localhost'
+  config.hosts << '.entourage.localhost'
+  config.hosts << 'localhost'
 
   config.enable_reloading = true
   config.eager_load = false
@@ -36,6 +37,7 @@ Rails.application.configure do
   config.assets.quiet = true
   config.force_ssl = false
 
+  # Dev/test env credentials
   ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
   ENV['ENTOURAGE_SOLIGUIDE_HOST'] = 'https://localhost:9292/api/v1/pois'
 
@@ -46,11 +48,7 @@ Rails.application.configure do
     config.action_mailer.delivery_method = :file
   end
 
-  config.lograge.custom_options = lambda do |event|
-    payload = event.payload
-    params = payload[:params].reject { |k| ['controller', 'action'].include?(k) }
-    { 'params' => params, 'API_KEY' => payload[:api_key] }
-  end
+  config.lograge.custom_options = lambda { |event| { 'params' => event.payload[:params].reject { |k| ['controller', 'action'].include?(k) }, 'API_KEY' => event.payload[:api_key] } }
   config.lograge.formatter = Lograge::Formatters::KeyValue.new
 
   config.after_initialize do
