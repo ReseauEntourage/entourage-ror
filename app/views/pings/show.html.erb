@@ -1,0 +1,14 @@
+<h1>WebSocket Demo (Rails 7 + Stimulus)</h1>
+
+<div data-controller="ping">
+  <p>Status: <strong data-ping-target="status" style="color: orange;">Connecting...</strong></p>
+  <p>Listening for messages on <code>PingChannel</code>...</p>
+
+  <div data-ping-target="messages" style="border: 1px solid #ccc; padding: 10px; min-height: 100px; margin-top: 10px; background: #f9f9f9;">
+  </div>
+
+  <hr>
+
+  <h3>Trigger a message</h3>
+  <pre>curl -X POST http://localhost:5000/api/v1/pings/dispatch_websocket -d "message=Hello from Stimulus!"</pre>
+</div>
