@@ -26,6 +26,7 @@
 //= require_tree .
 //= require_tree ./admin
 //= require_tree ./channels
+//= require_tree ./channels
 //= require select2
 //= require tinymce
 
