@@ -850,11 +850,6 @@ Rails.application.routes.draw do
           post :dispatch_websocket
         end
       end
-      resources :pings, only: [] do
-        collection do
-          post :dispatch_websocket
-        end
-      end
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'ping_db' => 'base#ping_db'
@@ -930,7 +925,6 @@ Rails.application.routes.draw do
   end
 
   #WEB
-  resource :ping, only: [:show]
   resource :ping, only: [:show]
   resources :sessions, only: [:new, :create, :destroy] do
     collection do
