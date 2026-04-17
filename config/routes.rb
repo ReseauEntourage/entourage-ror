@@ -844,6 +844,11 @@ Rails.application.routes.draw do
       delete 'applications' => 'user_applications#destroy'
 
       post 'login' => 'users#login'
+      resources :pings, only: [] do
+        collection do
+          post :dispatch_websocket
+        end
+      end
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'ping_db' => 'base#ping_db'
@@ -919,6 +924,7 @@ Rails.application.routes.draw do
   end
 
   #WEB
+  resource :ping, only: [:show]
   resources :sessions, only: [:new, :create, :destroy] do
     collection do
       get 'switch_user' => 'admin/sessions#switch_user'

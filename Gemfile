@@ -14,7 +14,7 @@ gem 'sprockets-rails', '~> 3.2'
 gem 'sass-rails' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
-gem 'turbolinks', '~> 5' # html
+gem 'turbo-rails' # html
 gem 'momentjs-rails', '~> 2'
 gem 'select2-rails'
 
