@@ -16,6 +16,7 @@
 //= require jquery-ui/datepicker-fr
 //= require jquery-ui/autocomplete
 //= require actioncable
+//= require channels/consumer
 //= require turbo
 //= require moment
 //= require daterangepicker

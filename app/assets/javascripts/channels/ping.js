@@ -1,20 +1,29 @@
 (function() {
-  var setupSubscription = function() {
+  var setupPingSubscription = function() {
     if (!window.App || !window.App.cable) {
-      console.log("App.cable not found, retrying...");
-      setTimeout(setupSubscription, 100);
+      console.log("ActionCable consumer not found, skipping subscription setup.");
       return;
     }
 
-    window.App.cable.subscriptions.create("PingChannel", {
+    if (window.App.pingSubscription) {
+      console.log("PingSubscription already exists, skipping.");
+      return;
+    }
+
+    console.log("Creating subscription to PingChannel...");
+    window.App.pingSubscription = window.App.cable.subscriptions.create("PingChannel", {
       connected: function() {
-        console.log("PingChannel: connected");
+        console.log("PingChannel: Connected!");
+        var status = document.getElementById('ping-status');
+        if (status) { status.innerText = 'Connected'; status.style.color = 'green'; }
       },
       disconnected: function() {
-        console.log("PingChannel: disconnected");
+        console.log("PingChannel: Disconnected");
+        var status = document.getElementById('ping-status');
+        if (status) { status.innerText = 'Disconnected'; status.style.color = 'red'; }
       },
       received: function(data) {
-        console.log("PingChannel: received", data);
+        console.log("PingChannel: Received data:", data);
         var messagesDiv = document.querySelector('[data-ping-target="messages"]');
         if (messagesDiv) {
           var messageElement = document.createElement('p');
@@ -25,9 +34,13 @@
     });
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupSubscription);
+  // Subscribe on initial load and on Turbo page changes
+  document.addEventListener('turbo:load', setupPingSubscription);
+
+  // Also try immediately if document is already loaded
+  if (document.readyState !== 'loading') {
+    setupPingSubscription();
   } else {
-    setupSubscription();
+    document.addEventListener('DOMContentLoaded', setupPingSubscription);
   }
 }).call(this);
