@@ -204,6 +204,21 @@ module Api
         render json: { average: average.round(2) }
       end
 
+      def presigned_upload
+        allowed_types = Outing::CONTENT_TYPES
+
+        unless params[:content_type].in? allowed_types
+          type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+        end
+
+        extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+        key = "#{SecureRandom.uuid}.#{extension}"
+        url = Outing.presigned_url(key, params[:content_type])
+
+        render json: { upload_key: key, presigned_url: url }
+      end
+
       private
 
       def set_outing
@@ -219,7 +234,7 @@ module Api
       def outing_params
         permitted_attributes = [
           :status, :title, :description, :event_url, :latitude, :longitude,
-          :other_interest, :online, :entourage_image_id,
+          :other_interest, :online, :entourage_image_id, :image_url,
           { metadata: [
             :starts_at, :ends_at, :place_name, :street_address,
             :google_place_id, :place_limit, :reserved_female
@@ -242,7 +257,7 @@ module Api
       end
 
       def outing_no_date_params
-        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
+        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, :image_url, { metadata: [
           :place_name,
           :street_address,
           :google_place_id,
