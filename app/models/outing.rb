@@ -414,9 +414,46 @@ class Outing < Entourage
     online? && title.match?(/papotage/i)
   end
 
+  CONTENT_TYPES = %w(image/jpeg image/png)
+  BUCKET_PREFIX = 'outings'
+
+  def image_url= url
+    return if url.blank?
+
+    url = Outing.path(url)
+
+    self[:image_url] = url
+
+    self.metadata ||= {}
+    self.metadata[:landscape_url] = url
+    self.metadata[:landscape_thumbnail_url] = url
+    self.metadata[:portrait_url] = url
+    self.metadata[:portrait_thumbnail_url] = url
+  end
+
   class << self
+    def bucket
+      EntourageImage.storage
+    end
+
     def bucket_name
-      EntourageImage.storage.bucket_name
+      bucket.bucket_name
+    end
+
+    def presigned_url key, content_type
+      bucket.object(path key).presigned_url(
+        :put,
+        expires_in: 1.minute.to_i,
+        acl: 'public-read',
+        content_type: content_type,
+        cache_control: "max-age=#{365.days}"
+      )
+    end
+
+    def path key
+      return key if key.to_s.start_with?(BUCKET_PREFIX)
+
+      "#{BUCKET_PREFIX}/#{key}"
     end
   end
 end
