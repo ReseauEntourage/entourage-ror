@@ -415,7 +415,7 @@ class Outing < Entourage
   end
 
   CONTENT_TYPES = %w(image/jpeg image/png)
-  BUCKET_PREFIX = 'outings'
+  BUCKET_PREFIX = 'entourage_images/images'
 
   def image_url= url
     return if url.blank?
