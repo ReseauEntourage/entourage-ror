@@ -5,6 +5,8 @@ module Api
       before_action :authorised?, only: [:update, :batch_update, :cancel, :destroy]
       before_action :allowed_duplicate?, only: [:duplicate]
 
+      before_action :authenticate_association_or_ambassador!, only: [:presigned_url]
+
       skip_before_action :authenticate_user!, only: [:index, :show]
 
       after_action :set_last_message_read, only: [:show]
@@ -204,7 +206,30 @@ module Api
         render json: { average: average.round(2) }
       end
 
+      def presigned_upload
+        allowed_types = Outing::CONTENT_TYPES
+
+        unless params[:content_type].in? allowed_types
+          type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+        end
+
+        extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+        key = "#{SecureRandom.uuid}.#{extension}"
+        url = Outing.presigned_url(key, params[:content_type])
+
+        render json: { upload_key: key, presigned_url: url }
+      end
+
       private
+
+      def authenticate_association_or_ambassador!
+        return unless current_user.team?
+        return unless current_user.association?
+        return unless current_user.ambassador?
+
+        render json: { message: :unauthorized }, status: :unauthorized
+      end
 
       def set_outing
         @outing = Outing.find_by_id_through_context(params[:id], params)
@@ -229,6 +254,7 @@ module Api
         ]
 
         permitted_attributes << :recurrency if current_user.ambassador? || current_user.association?
+        permitted_attributes << :image_url if current_user.ambassador? || current_user.association?
 
         params.require(:outing).permit(permitted_attributes)
       end
@@ -242,15 +268,21 @@ module Api
       end
 
       def outing_no_date_params
-        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
-          :place_name,
-          :street_address,
-          :google_place_id,
-          :place_limit,
-          :reserved_female
-        ] }, neighborhood_ids: [],
+        permitted_attributes = [
+          :status, :title, :description, :event_url, :latitude, :longitude,
+          :other_interest, :online, :entourage_image_id,
+          { metadata: [
+            :place_name, :street_address,
+            :google_place_id, :place_limit, :reserved_female
+        ] },
+          neighborhood_ids: [],
           interests: []
-        )
+        ]
+
+        permitted_attributes << :recurrency if current_user.ambassador? || current_user.association?
+        permitted_attributes << :image_url if current_user.ambassador? || current_user.association?
+
+        params.require(:outing).permit(permitted_attributes)
       end
 
       def outing_recurrency_params
