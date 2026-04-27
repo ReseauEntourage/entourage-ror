@@ -129,6 +129,7 @@ RSpec.describe Entourage, type: :model do
       :reserved_female => nil,
       :unsubscribed_participants_offer_help => 0,
       :unsubscribed_participants_ask_for_help => 0,
+      :unsubscribed_participants_female => 0,
       :$id=>'urn:entourage:outing:metadata'
     ) }
     it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(
