@@ -11,7 +11,7 @@ class Outing < Entourage
   WEBINAR_TAGS = %w[atelier_femmes atelier_mdlr atelier_preca].freeze
   WELCOME_TAGS = %w[welcome_entourage_local welcome_entourage_pro].freeze
 
-  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female, :unsubscribed_participants_offer_help, :unsubscribed_participants_ask_for_help
+  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female, :unsubscribed_participants_offer_help, :unsubscribed_participants_ask_for_help, :unsubscribed_participants_female
 
   after_save :generate_initial_recurrences, if: :recurrency
 
@@ -413,6 +413,16 @@ class Outing < Entourage
 
   def unsubscribed_participants_ask_for_help= integer
     metadata[:unsubscribed_participants_ask_for_help] = integer
+  end
+
+  def unsubscribed_participants_female
+    return 0 unless metadata[:unsubscribed_participants_female].present?
+
+    metadata[:unsubscribed_participants_female].to_i
+  end
+
+  def unsubscribed_participants_female= integer
+    metadata[:unsubscribed_participants_female] = integer
   end
 
   def webinar?

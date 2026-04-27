@@ -177,6 +177,7 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_reserved_female
   before_validation :set_outings_unsubscribed_participants_offer_help
   before_validation :set_outings_unsubscribed_participants_ask_for_help
+  before_validation :set_outings_unsubscribed_participants_female
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -733,6 +734,12 @@ class Entourage < ApplicationRecord
     return unless outing?
     return unless metadata[:unsubscribed_participants_ask_for_help].blank?
     self.metadata[:unsubscribed_participants_ask_for_help] = 0
+  end
+
+  def set_outings_unsubscribed_participants_female
+    return unless outing?
+    return unless metadata[:unsubscribed_participants_female].blank?
+    self.metadata[:unsubscribed_participants_female] = 0
   end
 
   def validate_outings_ends_at
