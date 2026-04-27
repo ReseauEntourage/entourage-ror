@@ -409,6 +409,7 @@ describe Api::V1::EntouragesController do
                 'reserved_female'=>nil,
                 'unsubscribed_participants_offer_help' => 0,
                 'unsubscribed_participants_ask_for_help' => 0,
+                'unsubscribed_participants_female' => 0,
               },
               'entourage_type'=>'contribution',
               'display_category'=>nil,
@@ -673,6 +674,7 @@ describe Api::V1::EntouragesController do
               'reserved_female'=>nil,
               'unsubscribed_participants_offer_help' => 0,
               'unsubscribed_participants_ask_for_help' => 0,
+              'unsubscribed_participants_female' => 0,
             }
           )}
         end
@@ -734,6 +736,7 @@ describe Api::V1::EntouragesController do
               'reserved_female'=>nil,
               'unsubscribed_participants_offer_help' => 0,
               'unsubscribed_participants_ask_for_help' => 0,
+              'unsubscribed_participants_female' => 0,
             },
             'entourage_type'=>'ask_for_help',
             'display_category'=>'social',

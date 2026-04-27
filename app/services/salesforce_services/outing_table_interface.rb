@@ -17,6 +17,7 @@ module SalesforceServices
       parent_id: 'ParentId',
       unsubscribed_participants_offer_help: 'B2_nb_riverains_presents_hors_SF__c',
       unsubscribed_participants_ask_for_help: 'Nb_de_personnes_en_pr_ca_touch_es__c',
+      unsubscribed_participants_female: 'B1_F_Nb_Femmes_EXCLUES_particip_declar__c',
       sf_status: 'Status',
       status: 'Statut_d_Entourage__c',
       reseau: 'R_seaux__c',
@@ -153,6 +154,10 @@ module SalesforceServices
 
       def unsubscribed_participants_ask_for_help
         outing.unsubscribed_participants_ask_for_help
+      end
+
+      def unsubscribed_participants_female
+        outing.unsubscribed_participants_female
       end
 
       def sf_status

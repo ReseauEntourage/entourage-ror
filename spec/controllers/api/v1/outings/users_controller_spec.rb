@@ -212,7 +212,7 @@ describe Api::V1::Outings::UsersController do
   end
 
   describe 'POST unsubscribed_participants' do
-    let(:request) { post :unsubscribed_participants, params: { outing_id: outing.to_param, offer_help: 1, ask_for_help: 2, token: manager.token } }
+    let(:request) { post :unsubscribed_participants, params: { outing_id: outing.to_param, offer_help: 1, ask_for_help: 2, female: 3, token: manager.token } }
 
     context "manager is not a manager" do
       let(:manager) { create(:public_user) }
@@ -230,6 +230,7 @@ describe Api::V1::Outings::UsersController do
       it { expect(response.status).to eq(200) }
       it { expect(Outing.find(outing.id).unsubscribed_participants_offer_help).to eq(1) }
       it { expect(Outing.find(outing.id).unsubscribed_participants_ask_for_help).to eq(2) }
+      it { expect(Outing.find(outing.id).unsubscribed_participants_female).to eq(3) }
     end
   end
 

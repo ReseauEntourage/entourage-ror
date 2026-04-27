@@ -57,6 +57,7 @@ module V1
           reserved_female: object.reserved_female,
           unsubscribed_participants_offer_help: object.unsubscribed_participants_offer_help,
           unsubscribed_participants_ask_for_help: object.unsubscribed_participants_ask_for_help,
+          unsubscribed_participants_female: object.unsubscribed_participants_female,
         }
       end
 

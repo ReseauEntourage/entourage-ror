@@ -519,6 +519,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
           'reserved_female' => nil,
           'unsubscribed_participants_offer_help' => 0,
           'unsubscribed_participants_ask_for_help' => 0,
+          'unsubscribed_participants_female' => 0,
         },
         'interests' => ['sport', 'other'],
         'recurrency' => nil,
