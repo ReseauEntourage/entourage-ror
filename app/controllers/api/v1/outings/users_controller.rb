@@ -35,7 +35,8 @@ module Api
         def unsubscribed_participants
           @outing.assign_attributes({
             unsubscribed_participants_offer_help: params[:offer_help],
-            unsubscribed_participants_ask_for_help: params[:ask_for_help]
+            unsubscribed_participants_ask_for_help: params[:ask_for_help],
+            unsubscribed_participants_female: params[:female]
           })
 
           if @outing.save
