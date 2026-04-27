@@ -305,6 +305,7 @@ class Entourage < ApplicationRecord
           reserved_female: { type: [:string, :boolean, :null] },
           unsubscribed_participants_offer_help: { type: [:string, :integer, :null] },
           unsubscribed_participants_ask_for_help: { type: [:string, :integer, :null] },
+          unsubscribed_participants_female: { type: [:string, :integer, :null] },
         }
       end
     end
