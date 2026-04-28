@@ -46,6 +46,7 @@ gem 'kaminari', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
 gem 'sidekiq', '~> 8'
 gem 'sidekiq-unique-jobs'
+gem 'sidekiq-cron'
 gem 'redis', '~> 4'
 gem 'sentry-ruby'
 

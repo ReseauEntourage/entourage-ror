@@ -18,7 +18,8 @@ module V1
         :moderator,
         :signable_permission,
         :birthday_today,
-        :events
+        :events,
+        :badge
 
       def preference
         return :contribution if object.ask_for_help?

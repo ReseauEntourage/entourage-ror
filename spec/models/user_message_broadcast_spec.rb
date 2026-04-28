@@ -61,6 +61,10 @@ RSpec.describe UserMessageBroadcast, type: :model do
   end
 
   describe 'with_engagement' do
+    def refresh_engagement_levels
+      ActiveRecord::Base.connection.execute("REFRESH MATERIALIZED VIEW engagement_levels")
+    end
+
     let(:subject) { UserMessageBroadcast.with_engagement(User.all, engagement).pluck(:id) }
 
     let!(:user) { create(:user) }
@@ -69,12 +73,17 @@ RSpec.describe UserMessageBroadcast, type: :model do
       let(:engagement) { true }
 
       context 'user has engagement' do
-        let!(:denorm_daily_engagement) { create(:denorm_daily_engagement, user: user) }
+        before {
+          create(:denorm_daily_engagements_with_type, user: user, date: Date.current, engagement_type: 'reaction')
+          refresh_engagement_levels
+        }
 
         it { expect(subject).to include(user.id) }
       end
 
       context 'user has no engagement' do
+        before { refresh_engagement_levels }
+
         it { expect(subject).not_to include(user.id) }
       end
     end
@@ -83,7 +92,10 @@ RSpec.describe UserMessageBroadcast, type: :model do
       let(:engagement) { false }
 
       context 'user has engagement' do
-        let!(:denorm_daily_engagement) { create(:denorm_daily_engagement, user: user) }
+        before {
+          create(:denorm_daily_engagements_with_type, user: user, date: Date.current, engagement_type: 'reaction')
+          refresh_engagement_levels
+        }
 
         it { expect(subject).not_to include(user.id) }
       end
@@ -97,7 +109,10 @@ RSpec.describe UserMessageBroadcast, type: :model do
       let(:engagement) { nil }
 
       context 'user has engagement' do
-        let!(:denorm_daily_engagement) { create(:denorm_daily_engagement, user: user) }
+        before {
+          create(:denorm_daily_engagements_with_type, user: user, date: Date.current, engagement_type: 'reaction')
+          refresh_engagement_levels
+        }
 
         it { expect(subject).to include(user.id) }
       end
@@ -132,7 +147,7 @@ RSpec.describe UserMessageBroadcast, type: :model do
     let(:engaged_at) { 1.hour.ago }
 
     let!(:user) { create(:user) }
-    let!(:denorm_daily_engagement) { create(:denorm_daily_engagement, user: user, date: engaged_at) }
+    let!(:denorm_daily_engagements_with_type) { create(:denorm_daily_engagements_with_type, user: user, date: engaged_at) }
 
     context 'engaged_at is recent' do
       it { expect(subject).to include(user.id) }
