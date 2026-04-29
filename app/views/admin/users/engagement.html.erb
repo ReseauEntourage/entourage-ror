@@ -6,4 +6,11 @@
   </div>
 </div>
 
-<%= column_chart @user.engagement.stacked_by(:month), stacked: true %>
+<% if @user.engaged? %>
+  <ul>
+    <li>Score : <%= @user.engagement.score %></li>
+    <% @user.engagement.levels.each do |level, count| %>
+      <li><%= "level #{level} : #{count}" %></li>
+    <% end %>
+  </ul>
+<% end %>

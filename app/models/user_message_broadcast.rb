@@ -34,7 +34,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     def engaged_after(users, last_engagement_date)
       return users unless last_engagement_date
 
-      users.engaged.where('denorm_daily_engagements.date > ?', last_engagement_date)
+      users.engaged_after(last_engagement_date)
     end
 
     def with_interests(users, interests)

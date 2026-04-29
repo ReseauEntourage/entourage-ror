@@ -105,6 +105,7 @@ class AnonymousUser
   def last_unclosed_action_notification_at; nil; end
   def goal_choice; nil; end
   def gender; nil; end
+  def badge; User::SILENT; end
   def discovery_source; nil; end
   def photo_acceptance; nil; end
   def company; nil; end

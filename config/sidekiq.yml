@@ -1,0 +1,8 @@
+:concurrency: 5
+
+:schedule:
+  refresh_engagement_levels:
+    cron: "0 2 * * *"
+    class: "RefreshEngagementLevelsJob"
+    queue: default
+    description: "Refresh engagement levels materialized view daily at 2am"
