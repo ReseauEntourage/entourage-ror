@@ -1,5 +1,14 @@
 <style>
   .field_with_errors { display: inline-block }
+
+  .chevron {
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .chevron.open {
+    transform: rotate(90deg);
+  }
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @user_message_broadcast } %>
@@ -67,10 +76,6 @@
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
         L'envoi sera effectué auprès de <%= @user_message_broadcast.recipient_ids.count %> utilisateurs correspondants aux filtres configurés.
-
-        <br> <br>
-
-        ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
       </div>
         <%= link_to("Envoyer", broadcast_admin_user_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
           confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@user_message_broadcast.recipient_ids.count} utilisateurs ?"
@@ -119,10 +124,17 @@
 
   <%= f.fields_for :specific_filters, OpenStruct.new(@user_message_broadcast.specific_filters) do |specific_filters_form| %>
     <div class="panel panel-default">
-      <div class="panel-heading" data-toggle="collapse" data-target="#advanced-filters" style="cursor: pointer;">
+      <div class="panel-heading d-flex justify-content-between align-items-center"
+           data-toggle="collapse"
+           data-target="#advanced-filters"
+           style="cursor: pointer; display: flex; justify-content: space-between;">
         <strong>Filtres avancés</strong>
+        <span id="advanced-filters-chevron" class="chevron">▶</span>
       </div>
-      <div id="advanced-filters" class="panel-collapse collapse">
+
+      <% has_active_filters = @user_message_broadcast.specific_filters.present? && @user_message_broadcast.specific_filters.values.any?(&:present?) %>
+
+      <div id="advanced-filters" class="panel-collapse collapse <%= 'in' if has_active_filters %>">
         <div class="panel-body">
           <h4>Engagement</h4>
           <div class="row">
@@ -207,5 +219,17 @@
     });
 
     $('select#interests, select#user_message_broadcast_specific_filters_has_engagement').select2({ width: '100%' });
+
+    $('#advanced-filters').on('show.bs.collapse', function () {
+      $('#advanced-filters-chevron').addClass('open')
+    })
+
+    $('#advanced-filters').on('hide.bs.collapse', function () {
+      $('#advanced-filters-chevron').removeClass('open')
+    })
+
+    if ($('#advanced-filters').hasClass('in')) {
+      $('#advanced-filters-chevron').addClass('open')
+    }
   })
 </script>
