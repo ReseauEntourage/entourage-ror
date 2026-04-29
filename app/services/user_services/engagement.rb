@@ -20,7 +20,7 @@ module UserServices
 
       scope :not_engaged, -> {
         left_joins(:engagement_level)
-          .where("user_id is NULL OR (level_1_count = 0 AND level_2_count = 0 AND level_3_count = 0)")
+          .where("engagement_levels.user_id is NULL OR (level_1_count = 0 AND level_2_count = 0 AND level_3_count = 0)")
       }
 
       scope :engaged_after, ->(date) {
