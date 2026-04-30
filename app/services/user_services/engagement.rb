@@ -2,11 +2,13 @@ module UserServices
   module Engagement
     extend ActiveSupport::Concern
 
-    SILENT = "Silencieux"
-    PASSIVE = "Passif"
-    OBSERVE = "Observateur"
-    ENGAGE = "Engagé"
-    SUPER_ENGAGE = "Super-engagé"
+    BADGE_LABELS = {
+      "SUPER_ENGAGE" => "Super-engagé",
+      "ENGAGE" => "Engagé",
+      "OBSERVE" => "Observateur",
+      "PASSIVE" => "Passif",
+      "SILENT" => "Silencieux"
+    }.freeze
 
     included do
       has_one :engagement_level
@@ -54,16 +56,13 @@ module UserServices
       end
 
       def badge
-        return SUPER_ENGAGE if level_3 >= 2
-        return ENGAGE if level_2 >= 2
-        return OBSERVE if level_1 >= 3
-        return PASSIVE if level_1 >= 1
+        return BADGE_LABELS["SILENT"] unless engagement_level
 
-        SILENT
+        BADGE_LABELS[engagement_level.badge] || BADGE_LABELS["SILENT"]
       end
 
       def engaged?
-        engagement_level.present?
+        badge != BADGE_LABELS["SILENT"]
       end
 
       def levels
