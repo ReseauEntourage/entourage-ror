@@ -1,4 +1,6 @@
 class CreateBadgesAndWeeklyActivity < ActiveRecord::Migration[7.1]
+  disable_ddl_transaction!
+
   def up
     create_table :user_badges do |t|
       t.integer :user_id, null: false
