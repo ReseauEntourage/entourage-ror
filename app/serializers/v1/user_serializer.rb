@@ -13,6 +13,7 @@ module V1
     attribute :partner
     attribute :engaged
     attribute :unread_count
+    attribute :badges
     attribute :permissions
     attribute :interests
     attribute :involvements
@@ -171,6 +172,19 @@ module V1
 
     def engaged
       object.engaged?
+    end
+
+    def badges
+      UserBadge.badges_config.map do |tag, config|
+        badge = object.user_badges.find { |b| b.badge_tag == tag.to_s }
+        {
+          tag: tag,
+          active: badge&.active || false,
+          awarded_at: badge&.awarded_at,
+          current: badge&.metadata&.dig('current') || 0,
+          target: config[:target]
+        }
+      end
     end
 
     def unread_count
