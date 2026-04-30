@@ -13,7 +13,7 @@ module V1
     attribute :partner
     attribute :engaged
     attribute :unread_count
-    attribute :badges
+    attribute :badges, if: :include_badges?
     attribute :permissions
     attribute :interests
     attribute :involvements
@@ -174,9 +174,13 @@ module V1
       object.engaged?
     end
 
+    def include_badges?
+      scope[:badges]
+    end
+
     def badges
       UserBadge.badges_config.map do |tag, config|
-        badge = object.user_badges.find { |b| b.badge_tag == tag.to_s }
+        badge = object.try(:user_badges) || [].find { |b| b.badge_tag == tag.to_s }
         {
           tag: tag,
           active: badge&.active || false,

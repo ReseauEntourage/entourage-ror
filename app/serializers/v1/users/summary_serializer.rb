@@ -19,7 +19,8 @@ module V1
         :signable_permission,
         :birthday_today,
         :events,
-        :badge
+        :badge,
+        :badges
 
       def preference
         return :contribution if object.ask_for_help?
@@ -104,6 +105,19 @@ module V1
 
       def events
         object.events.pluck(:name)
+      end
+
+      def badges
+        UserBadge.badges_config.map do |tag, config|
+          badge = object.try(:user_badges) || [].find { |b| b.badge_tag == tag.to_s }
+          {
+            tag: tag,
+            active: badge&.active || false,
+            awarded_at: badge&.awarded_at,
+            current: badge&.metadata&.dig('current') || 0,
+            target: config[:target]
+          }
+        end
       end
 
       private

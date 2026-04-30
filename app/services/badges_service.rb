@@ -10,7 +10,7 @@ class BadgesService
     end
 
     def eligible_user?(user)
-      user.present? && (user.is_ask_for_help? || user.is_offer_help?)
+      user.present? && !user.anonymous? && (user.is_ask_for_help? || user.is_offer_help?)
     end
 
     # Badge n°1 : Bienvenue
@@ -38,7 +38,6 @@ class BadgesService
       return unless participants.all? { |p| p.created_at < 24.hours.ago }
 
       # Check if both participants have sent at least one non-system message
-      # (The current message is already one)
       other_participant = participants.find { |p| p.id != user.id }
       return unless other_participant
 
@@ -60,17 +59,17 @@ class BadgesService
       return unless eligible_user?(user)
 
       count = Outing.where(user_id: user.id)
-                    .where('metadata->>\'starts_at\' >= ?', 90.days.ago)
+                    .where('metadata->>\'starts_at\' >= ?', 90.days.ago.iso8601)
                     .where.not(status: :cancelled)
                     .count
 
-      # Also count as co-host (join_request with role organizer/creator but not being the owner)
+      # Also count as co-host
       co_hosted_count = JoinRequest.where(user_id: user.id, joinable_type: 'Entourage', status: 'accepted', role: ['organizer', 'creator'])
                                    .joins("JOIN entourages ON entourages.id = join_requests.joinable_id")
                                    .where("entourages.group_type = 'outing'")
                                    .where("entourages.user_id != ?", user.id)
                                    .where("entourages.status != 'cancelled'")
-                                   .where("entourages.metadata->>'starts_at' >= ?", 90.days.ago.to_s)
+                                   .where("entourages.metadata->>'starts_at' >= ?", 90.days.ago.iso8601)
                                    .count
 
       total_count = count + co_hosted_count
@@ -81,11 +80,12 @@ class BadgesService
     def check_fidele_papotages(user)
       return unless eligible_user?(user)
 
+      # Use title as a proxy to avoid N+1 and SQL issues with tags
       count = JoinRequest.where(user_id: user.id, joinable_type: 'Entourage', status: 'accepted')
                          .joins("JOIN entourages ON entourages.id = join_requests.joinable_id")
                          .where("entourages.group_type = 'outing'")
-                         .where("entourages.online = true AND (entourages.title ilike '%papotage%' OR entourages.sf_category ilike '%papotage%')")
-                         .where("entourages.metadata->>'starts_at' >= ?", 90.days.ago.to_s)
+                         .where("entourages.online = true AND entourages.title ilike '%papotage%'")
+                         .where("entourages.metadata->>'starts_at' >= ?", 90.days.ago.iso8601)
                          .count
 
       update_badge_status(user, 'fidele_papotages', count >= 6, { current: count, target: 6 })
@@ -96,7 +96,7 @@ class BadgesService
       return unless eligible_user?(user)
 
       recent_activities = WeeklyActivity.where(user_id: user.id).recent.limit(4)
-      count = recent_activities.count { |a| a.has_group_action }
+      count = recent_activities.to_a.count { |a| a.has_group_action }
 
       should_be_active = count >= 3
 
@@ -104,14 +104,12 @@ class BadgesService
 
       if should_be_active
         if !badge || !badge.active
-          # Only emit event if it was NEVER awarded or reactivation should NOT emit event
-          # Requirement says: "Si la condition redevient vraie lors d'un batch suivant, badge_active repasse à true automatiquement sans émettre un nouvel événement badge.awarded"
           is_reactivation = badge.present? && !badge.active
           award_badge(user, 'voix_presente', skip_event: is_reactivation)
         end
       else
         # Reversible only if 2 consecutive weeks without action
-        last_two = recent_activities.limit(2)
+        last_two = recent_activities.limit(2).to_a
         if last_two.count == 2 && last_two.all? { |a| !a.has_group_action }
           deactivate_badge(user, 'voix_presente') if badge&.active
         end
@@ -123,13 +121,10 @@ class BadgesService
     end
 
     def update_weekly_activity
-      # Running every Monday morning
       last_week_iso = (Date.today - 1.week).strftime('%G-W%V')
 
-      # Users active in the last 30 days
       user_ids = SessionHistory.where('created_at > ?', 30.days.ago).pluck(:user_id).uniq
 
-      # Cache group/neighborhood IDs outside the loop
       group_ids = Entourage.where(group_type: 'group').pluck(:id)
       neighborhood_ids = Neighborhood.pluck(:id)
 

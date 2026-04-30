@@ -6,7 +6,7 @@ RSpec.describe BadgesService do
   describe '.eligible_user?' do
     it { expect(BadgesService.eligible_user?(user)).to be true }
     it { expect(BadgesService.eligible_user?(create(:public_user, targeting_profile: 'offers_help'))).to be true }
-    it { expect(BadgesService.eligible_user?(create(:public_user, targeting_profile: 'partner'))).to be false }
+    it { expect(BadgesService.eligible_user?(create(:public_user, targeting_profile: 'partner', partner: create(:partner)))).to be false }
   end
 
   describe '.check_bienvenue' do
