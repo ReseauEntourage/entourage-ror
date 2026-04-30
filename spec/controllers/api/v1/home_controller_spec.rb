@@ -200,7 +200,7 @@ describe Api::V1::HomeController do
             'events' => [
               'onboarding.profile.first_name.entered',
             ],
-            'badge' => User::SILENT
+            'badge' => UserServices::Engagement::BADGE_LABELS["SILENT"]
           }
         }) }
       end
