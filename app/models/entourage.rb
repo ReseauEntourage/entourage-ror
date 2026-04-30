@@ -180,6 +180,7 @@ class Entourage < ApplicationRecord
   before_validation :set_default_online_attributes, if: :online_changed?
 
   after_create :check_moderation
+  after_create :check_badges
 
   alias_attribute :name, :title
 
@@ -792,6 +793,11 @@ class Entourage < ApplicationRecord
   def reformat_content(force: false)
     self.title = title&.squish&.sub(/\S/, &:upcase) if force || title_changed?
     self.description = description&.strip if force || description_changed?
+  end
+
+  def check_badges
+    BadgesService.check_bienvenue(user)
+    BadgesService.check_moteur_rencontres(user) if outing?
   end
 
   def set_default_online_attributes

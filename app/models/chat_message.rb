@@ -57,6 +57,7 @@ class ChatMessage < ApplicationRecord
 
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
+  after_create :check_badges
 
   after_commit :update_parent_comments_count
   after_save :touch_messageable_timestamp
@@ -377,5 +378,10 @@ class ChatMessage < ApplicationRecord
     messageable.join_requests
       .where.not(user_id: user_id)
       .update_all(report_prompt_status: 'display')
+  end
+
+  def check_badges
+    BadgesService.check_bienvenue(user)
+    BadgesService.check_premier_contact(self)
   end
 end

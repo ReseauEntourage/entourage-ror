@@ -123,4 +123,9 @@ class AnonymousUser
   def contribution_creation_count; 0; end
   def travel_distance; 10; end
   def created_at; nil; end
+
+  def user_badges; []; end
+  def weekly_activities; []; end
+  def is_ask_for_help?; false; end
+  def is_offer_help?; false; end
 end

@@ -80,6 +80,8 @@ class User < ApplicationRecord
   has_many :histories, class_name: 'UserHistory'
   has_many :users_resources
   has_many :user_recommandations
+  has_many :user_badges, dependent: :destroy
+  has_many :weekly_activities, dependent: :destroy
   has_many :inapp_notifications, dependent: :destroy
   has_many :email_preferences, dependent: :destroy
   has_one :notification_permission, dependent: :destroy

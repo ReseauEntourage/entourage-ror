@@ -446,6 +446,7 @@ module Api
         {
           full_partner: true,
           memberships: true,
+          badges: true,
           user: current_user,
           conversation: ConversationService.conversations_allowed?(from: current_user, to: displayed_user)
         }

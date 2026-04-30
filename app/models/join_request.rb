@@ -93,6 +93,7 @@ class JoinRequest < ApplicationRecord
   }
 
   after_save :joinable_callback
+  after_save :check_badges
   after_destroy :joinable_callback
   before_save :reset_confirmed_at_unless_accepted
 
@@ -220,6 +221,13 @@ class JoinRequest < ApplicationRecord
   end
 
   private
+
+  def check_badges
+    return unless accepted?
+
+    BadgesService.check_bienvenue(user)
+    BadgesService.check_fidele_papotages(user) if outing?
+  end
 
   def joinable_callback(*args)
     return if joinable.nil?
