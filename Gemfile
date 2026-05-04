@@ -14,7 +14,7 @@ gem 'sprockets-rails', '~> 3.2'
 gem 'sass-rails' # css
 gem 'jquery-rails', '~> 4' # js
 gem 'jquery-ui-rails', '~> 5' # js
-gem 'turbolinks', '~> 5' # html
+gem 'turbo-rails' # html
 gem 'momentjs-rails', '~> 2'
 gem 'select2-rails'
 
@@ -99,6 +99,8 @@ group :development do
 end
 
 group :test do
+  gem 'capybara'
+  gem 'selenium-webdriver'
   gem 'rspec-rails'#,                  '~> 3.8'
   gem 'shoulda-matchers'#,             '~> 3.0.1'
   gem 'timecop'#,                      '~> 0.8.0'
@@ -116,3 +118,5 @@ group :production do
   gem 'rack-attack'
   gem 'barnes'
 end
+gem 'stimulus-rails'
+gem 'importmap-rails'
