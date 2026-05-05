@@ -34,33 +34,6 @@ de:
       title: "Willkommen bei Entourage 👌"
       offer: "Wussten Sie, dass nur ein Video reicht, um Vorurteile abzubauen?"
       ask: "Sie können sich nicht vorstellen, was ihre neue App alles enthält: Kommt und entdeckt sie!"
-    j2:
-      title: "Kommen Sie Hallo sagen 👋"
-      offer: "Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen!"
-      ask_title_outing: "Haben Sie 4 Minuten?"
-      ask: "Schauen Sie sich ein kurzes Video an, um alles über ihre neue App zu verstehen"
-    j5:
-      title_outing: "Hallo, wir sind es wieder! 🕺"
-      offer_outing: "Virtuelle Interaktionen sind ja ganz nett, aber erleben Sie jetzt eine Begegnung im echten Leben!"
-      title_action: "Hallo, wir sind es wieder! 🕺"
-      offer_action: "Haben Sie zwei Minuten, um Ihren Nachbarn zu helfen?"
-      title_create_action: "Hallo, wir sind es wieder! 🕺"
-      offer_create_action: "Nehmen Sie sich zwei Minuten Zeit, um ihre Hilfe anzubieten"
-      ask_title: "Kommen Sie hallo sagen 👏"
-      ask: "Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen"
-    j8:
-      title: "Jetzt sind Sie dran! 📱"
-      offer: "Ein kleines Anti-Vorurteile-quiz: Wetten, Sie werden dabei etwas lernen?"
-      ask_title_outing: "Hallo, wir sind es wieder! 🕺"
-      ask_outing: "Das Virtuelle ist für ein paar Minuten nett; kommen Sie und knüpfen Sie eine Verbindung im echten Leben!"
-      ask_title_action: "Hallo, wir sind es wieder! 🕺"
-      ask_action: "Schauen Sie sich die angebotene Hilfe in ihrer Nähe an"
-      ask_title_create_action: "Hallo, wir sind es wieder! 🕺"
-      ask_create_action: "Ein Boulespiel, ein Kaffee oder einfach ein Spaziergang: schlagen Sie ihren Nachbarn einen Ausflug vor!"
-    j11:
-      title: "Entourage ist wie eine Familie!"
-      offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
-      ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
 
   smalltalks:
     messager:

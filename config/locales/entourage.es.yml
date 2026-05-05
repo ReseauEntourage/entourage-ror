@@ -34,33 +34,6 @@ es:
       title: "¡Bienvenido a Entourage 👌"
       offer: "¿Sabías que solo se necesita un video para romper tus prejuicios?"
       ask: "No puedes imaginar todo lo que contiene tu nueva aplicación: ¡ven a descubrirla!"
-    j2:
-      title: "Ven a saludar 👋"
-      offer: "¡Tu grupo de vecinos está deseando conocerte!"
-      ask_title_outing: "¿Tienes 4 minutos?"
-      ask: "Mira un video corto para entender todo sobre tu nueva aplicación"
-    j5:
-      title_outing: "¡Hola, es nosotros de nuevo! 🕺"
-      offer_outing: "Lo virtual es agradable durante un par de minutos; ¡ven y haz una conexión en la vida real!"
-      title_action: "¡Hola, es nosotros de nuevo! 🕺"
-      offer_action: "¿Tienes dos minutos para ayudar a tus vecinos?"
-      title_create_action: "¡Hola, es nosotros de nuevo! 🕺"
-      offer_create_action: "Tómate dos minutos para ofrecer tu ayuda a quienes te rodean"
-      ask_title: "Ven a saludar 👏"
-      ask: "Tu grupo de vecinos está deseando conocerte"
-    j8:
-      title: "¡Es tu turno! 📱"
-      offer: "¡Un pequeño cuestionario contra los prejuicios: ¿apostamos que aprenderás algo?"
-      ask_title_outing: "¡Hola, es nosotros de nuevo! 🕺"
-      ask_outing: "Lo virtual es agradable durante un par de minutos; ¡ven y haz una conexión en la vida real!"
-      ask_title_action: "¡Hola, es nosotros de nuevo! 🕺"
-      ask_action: "Echa un vistazo a la ayuda ofrecida cerca de ti"
-      ask_title_create_action: "¡Hola, es nosotros de nuevo! 🕺"
-      ask_create_action: "Una partida de petanca, un café o simplemente un paseo: ¡sugiere una salida a tus vecinos!"
-    j11:
-      title: "¡Entourage es familia!"
-      offer: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
-      ask: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
 
   smalltalks:
     messager:
