@@ -30,7 +30,7 @@ Full-stack web application framework providing MVC structure, ORM, routing, and 
 | | |
 |---|---|
 | **Version** | `7.0.4` |
-| **Release date** | January 2025 (approximate) |
+| **Release date** | January 16, 2025 |
 | **Changelog / Rubygems** | [rubygems.org/gems/puma](https://rubygems.org/gems/puma) |
 
 Multi-threaded HTTP server for Ruby/Rack applications.
