@@ -3,7 +3,12 @@ require 'sidekiq/api'
 class SalesforceJob
   include Sidekiq::Worker
 
-  sidekiq_options retry: false, queue: :salesforce
+  sidekiq_options(
+    retry: false,
+    queue: :salesforce,
+    lock: :until_executed,
+    lock_args: ->(args) { args }
+  )
 
   def perform(class_name, id, verb)
     instance = class_name.constantize.find(id)
