@@ -4,7 +4,7 @@
 Ruby 3.2.0
 Rails 7.1.0
 
-rbenv or rvm recommanded
+rbenv or rvm recommended
 
 
 # Environment variables
@@ -175,6 +175,35 @@ You need to have access to the `entourage-back` Heroku application.
 bin/d db-pull entourage-back
 bin/d rake db:strip
 bin/d db-dump path/to/snapshot.dump
+```
+
+# Database partitioning
+
+The `join_requests` table is partitioned by `joinable_type` (LIST) and year of `created_at` (RANGE subpartition). The partition layout is:
+
+```
+join_requests                       ← partitioned parent (LIST on joinable_type)
+├── join_requests_entourage         ← RANGE on created_at
+│   ├── join_requests_entourage_2015 … join_requests_entourage_2035
+│   └── join_requests_entourage_default  ← years outside range
+├── join_requests_neighborhood      ← same structure
+├── join_requests_smalltalk         ← same structure
+└── join_requests_other             ← catch-all for unknown types, same year structure
+```
+
+The primary key is `(id, joinable_type, created_at)` as required by PostgreSQL partitioned tables. Global `id` uniqueness is guaranteed by the shared sequence `join_requests_id_seq`.
+
+When a new year is about to start, add a leaf partition for each type:
+
+```sql
+CREATE TABLE join_requests_entourage_2036 PARTITION OF join_requests_entourage
+  FOR VALUES FROM ('2036-01-01') TO ('2037-01-01');
+CREATE TABLE join_requests_neighborhood_2036 PARTITION OF join_requests_neighborhood
+  FOR VALUES FROM ('2036-01-01') TO ('2037-01-01');
+CREATE TABLE join_requests_smalltalk_2036 PARTITION OF join_requests_smalltalk
+  FOR VALUES FROM ('2036-01-01') TO ('2037-01-01');
+CREATE TABLE join_requests_other_2036 PARTITION OF join_requests_other
+  FOR VALUES FROM ('2036-01-01') TO ('2037-01-01');
 ```
 
 # Postgis
