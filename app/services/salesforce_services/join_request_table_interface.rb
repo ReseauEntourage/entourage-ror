@@ -57,6 +57,7 @@ module SalesforceServices
       def status
         return "A annulé" if join_request.cancelled?
         return "Participé" if join_request.participate_at.present?
+        # "hidden" status is not configurable for outing join_requests
 
         "Inscrit"
       end

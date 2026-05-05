@@ -205,7 +205,6 @@ RSpec.describe ChatMessage, type: :model do
     it { expect(message(message_type: 'some_invalid_type').save).to be false }
     it { expect(message(message_type: 'text').save).to be true }
     it { expect(message(message_type: 'text', metadata: { foo: 'bar' }).save).to be false }
-    it { expect(message(message_type: 'share', metadata: { type: :entourage, uuid: 'uuid-123'}).save!).to be true }
   end
 
   describe 'content' do

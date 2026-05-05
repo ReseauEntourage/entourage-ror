@@ -27,7 +27,6 @@ module V1
     attribute :image_url, unless: :sharing_selection?
     attribute :online, unless: :sharing_selection?
     attribute :event_url, unless: :sharing_selection?
-    attribute :display_report_prompt, unless: :sharing_selection?
 
     attribute :outcome, if: :outcome?
     attribute :blockers, if: :private_conversation?
@@ -106,7 +105,9 @@ module V1
     end
 
     def join_status
-      current_join_request&.simplified_status || 'not_requested'
+      return unless current_join_request.present?
+
+      current_join_request.status
     end
 
     def number_of_unread_messages
@@ -140,11 +141,6 @@ module V1
 
     def metadata
       object.metadata_with_image_paths.except(:$id)
-    end
-
-    def display_report_prompt
-      return false if current_join_request.nil?
-      current_join_request.report_prompt_status == 'display'
     end
   end
 end

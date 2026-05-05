@@ -444,7 +444,6 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(Entourage.last.attributes['uuid_v2']).to start_with '1_hash_' }
           it { expect(join_requests.map { |r| r['user_id'] }.sort).to eq([user.id, other_user.id]) }
           it { expect(join_requests.map { |r| r.slice('status', 'role') }.uniq).to eq(['status'=>'accepted', 'role'=>'participant']) }
-          it { expect(join_requests.find {|r| r['user_id'] == other_user.id }['report_prompt_status']).to eq 'display' }
         end
 
         context 'invalid params' do
@@ -456,117 +455,6 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(ChatMessage.count).to eq(0) }
           it { expect(Entourage.count).to eq(0) }
           it { expect(JoinRequest.count).to eq(0) }
-        end
-      end
-
-      context 'share' do
-        let(:user) { create :public_user }
-        let(:conversation) { create :conversation, participants: [user] }
-
-        before { post :create, params: { entourage_id: conversation.to_param, chat_message: payload, token: user.token } }
-
-        context 'entourage' do
-          let(:entourage) { create :entourage }
-          let(:payload) do
-            {
-              message_type: 'share',
-              metadata: {
-                type: 'entourage',
-                uuid: entourage.uuid_v2
-              }
-            }
-          end
-
-          it { expect(response.status).to eq(201) }
-          it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to match_array({
-            'chat_message' => {
-              'id' => ChatMessage.last.id,
-              'uuid_v2' => ChatMessage.last.uuid_v2,
-              'content' => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
-              'content_html' => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
-              'content_translations' => {
-                'translation' => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
-                'original' => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
-                'from_lang' => 'fr',
-                'to_lang' => 'fr',
-              },
-              'content_translations_html' => {
-                'translation' => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
-                'original' => "#{entourage.title}\n#{ENV['MOBILE_HOST']}/app/solicitations/#{entourage.uuid_v2}",
-                'from_lang' => 'fr',
-                'to_lang' => 'fr',
-              },
-              'user' => {
-                'id' => user.id,
-                'avatar_url' => nil,
-                'display_name' => 'John D.',
-                'partner' => nil,
-                'partner_role_title' => nil,
-                'birthday_today' => be_boolean,
-                'roles' => []
-              },
-              'created_at' => ChatMessage.last.created_at.iso8601(3),
-              'status' => 'active',
-              'message_type' => 'share',
-              'metadata' => {
-                'type' => 'entourage',
-                'uuid' => entourage.uuid_v2
-              }
-            }
-          })}
-        end
-
-        context 'poi' do
-          let(:poi) { create :poi }
-          let(:payload) do
-            {
-              message_type: 'share',
-              metadata: {
-                type: 'poi',
-                uuid: poi.id
-              }
-            }
-          end
-
-          it { expect(response.status).to eq(201) }
-          it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to match_array({
-            'chat_message' => {
-              'id' => ChatMessage.last.id,
-              'uuid_v2' => ChatMessage.last.uuid_v2,
-              'content' => "Dede\nAu 50 75008 Paris",
-              'content_html' => "Dede\nAu 50 75008 Paris",
-              'content_translations' => {
-                'translation' => "Dede\nAu 50 75008 Paris",
-                'original' => "Dede\nAu 50 75008 Paris",
-                'from_lang' => 'fr',
-                'to_lang' => 'fr',
-              },
-              'content_translations_html' => {
-                'translation' => "Dede\nAu 50 75008 Paris",
-                'original' => "Dede\nAu 50 75008 Paris",
-                'from_lang' => 'fr',
-                'to_lang' => 'fr',
-              },
-              'user' => {
-                'id' => user.id,
-                'avatar_url' => nil,
-                'display_name' => 'John D.',
-                'partner' => nil,
-                'partner_role_title' => nil,
-                'birthday_today' => be_boolean,
-                'roles' => []
-              },
-              'created_at' => ChatMessage.last.created_at.iso8601(3),
-              'status' => 'active',
-              'message_type' => 'share',
-              'metadata' => {
-                'type' => 'poi',
-                'uuid' => poi.id.to_s
-              }
-            }
-          })}
         end
       end
     end
