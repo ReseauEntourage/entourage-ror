@@ -20,4 +20,19 @@ namespace :smalltalks do
       SmalltalkServices::Inactivity.new(days).chat_messages!
     end
   end
+
+  desc "Inactivity 3 days"
+  task inactivity_3: :environment do
+    SmalltalkServices::Inactivity.new(3).chat_messages!
+  end
+
+  desc "Inactivity 5 days"
+  task inactivity_5: :environment do
+    SmalltalkServices::Inactivity.new(5).chat_messages!
+  end
+
+  desc "Inactivity 7 days"
+  task inactivity_7: :environment do
+    SmalltalkServices::Inactivity.new(7).chat_messages!
+  end
 end
