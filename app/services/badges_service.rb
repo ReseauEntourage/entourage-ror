@@ -80,13 +80,14 @@ class BadgesService
     def check_fidele_papotages(user)
       return unless eligible_user?(user)
 
-      # Use title as a proxy to avoid N+1 and SQL issues with tags
-      count = JoinRequest.where(user_id: user.id, joinable_type: 'Entourage', status: 'accepted')
+      # We load and filter in Ruby to use Outing#papotages? logic and avoid SQL errors with tags
+      jrs = JoinRequest.where(user_id: user.id, joinable_type: 'Entourage', status: 'accepted')
                          .joins("JOIN entourages ON entourages.id = join_requests.joinable_id")
                          .where("entourages.group_type = 'outing'")
-                         .where("entourages.online = true AND entourages.title ilike '%papotage%'")
                          .where("entourages.metadata->>'starts_at' >= ?", 90.days.ago.iso8601)
-                         .count
+                         .select("entourages.*")
+
+      count = jrs.to_a.count { |e| Outing.find(e.id).papotages? }
 
       update_badge_status(user, 'fidele_papotages', count >= 6, { current: count, target: 6 })
     end
@@ -121,18 +122,116 @@ class BadgesService
     end
 
     def update_weekly_activity
-      last_week_iso = (Date.today - 1.week).strftime('%G-W%V')
+      last_week_start = (Date.today - 1.week).beginning_of_week
+      last_week_end = (Date.today - 1.week).end_of_week
+      last_week_iso = last_week_start.strftime('%G-W%V')
 
-      user_ids = SessionHistory.where('created_at > ?', 30.days.ago).pluck(:user_id).uniq
+      # Users active in the last 30 days
+      active_user_ids = SessionHistory.where('created_at > ?', 30.days.ago).pluck(:user_id).uniq
+      return if active_user_ids.empty?
 
+      # Cache group/neighborhood IDs for bulk filtering
       group_ids = Entourage.where(group_type: 'group').pluck(:id)
       neighborhood_ids = Neighborhood.pluck(:id)
 
-      User.where(id: user_ids).find_each do |user|
-        has_action = has_group_action_in_week?(user, Date.today - 1.week, group_ids: group_ids, neighborhood_ids: neighborhood_ids)
-        WeeklyActivity.create_with(has_group_action: has_action).find_or_create_by(user_id: user.id, week_iso: last_week_iso)
+      # Identify all users with group actions last week in two bulk queries
+      users_with_messages = ChatMessage.where(user_id: active_user_ids, created_at: last_week_start..last_week_end)
+                                       .where("(messageable_type = 'Entourage' AND messageable_id IN (?)) OR (messageable_type = 'Neighborhood' AND messageable_id IN (?))", group_ids, neighborhood_ids)
+                                       .distinct.pluck(:user_id)
 
-        check_voix_presente(user) if eligible_user?(user)
+      users_with_reactions = UserReaction.where(user_id: active_user_ids, created_at: last_week_start..last_week_end)
+                                         .where("instance_type = 'ChatMessage'")
+                                         .joins("JOIN chat_messages ON chat_messages.id = user_reactions.instance_id")
+                                         .where("(chat_messages.messageable_type = 'Entourage' AND chat_messages.messageable_id IN (?)) OR (chat_messages.messageable_type = 'Neighborhood' AND chat_messages.messageable_id IN (?))", group_ids, neighborhood_ids)
+                                         .distinct.pluck(:user_id)
+
+      users_with_actions_last_week = (users_with_messages + users_with_reactions).to_set
+
+      # Bulk upsert WeeklyActivity for all active users
+      now = Time.current
+      active_user_ids.each_slice(1000) do |slice|
+        data = slice.map do |uid|
+          {
+            user_id: uid,
+            week_iso: last_week_iso,
+            has_group_action: users_with_actions_last_week.include?(uid),
+            created_at: now,
+            updated_at: now
+          }
+        end
+        WeeklyActivity.upsert_all(data, unique_by: [:user_id, :week_iso])
+      end
+
+      # Batch update "Vie de groupe" badge for all eligible active users
+      eligible_user_ids = User.where(id: active_user_ids)
+                              .where("(targeting_profile IS NULL AND goal IN ('ask_for_help', 'offer_help')) OR targeting_profile IN ('asks_for_help', 'offers_help')")
+                              .pluck(:id)
+
+      update_all_voix_presente(eligible_user_ids)
+    end
+
+    def update_all_voix_presente(user_ids)
+      now = Time.current
+      # We need at least the last 4 ISO weeks to calculate the badge
+      min_week_iso = 5.weeks.ago.strftime('%G-W%V')
+
+      user_ids.each_slice(1000) do |slice|
+        # Fetch all weekly activities for this batch in one query
+        activities_by_user = WeeklyActivity.where(user_id: slice)
+                                           .where("week_iso >= ?", min_week_iso)
+                                           .order(week_iso: :desc)
+                                           .group_by(&:user_id)
+
+        # Fetch existing badges for this batch
+        existing_badges = UserBadge.where(user_id: slice, badge_tag: 'voix_presente').index_by(&:user_id)
+
+        badges_to_upsert = []
+        events_to_track = []
+
+        slice.each do |uid|
+          user_activities = (activities_by_user[uid] || []).first(4)
+          count = user_activities.count(&:has_group_action)
+          should_be_active = count >= 3
+
+          badge = existing_badges[uid]
+          was_active = badge&.active || false
+          is_new = badge.nil?
+
+          target_active = was_active
+
+          if should_be_active
+            unless was_active
+              target_active = true
+              events_to_track << { name: 'badge.voix_presente.awarded', user_id: uid } if is_new
+            end
+          else
+            # Deactivate if 2 consecutive weeks without action
+            last_two = user_activities.first(2)
+            if last_two.count == 2 && last_two.all? { |a| !a.has_group_action }
+              if was_active
+                target_active = false
+                events_to_track << { name: 'badge.voix_presente.deactivated', user_id: uid }
+              end
+            end
+          end
+
+          badges_to_upsert << {
+            user_id: uid,
+            badge_tag: 'voix_presente',
+            active: target_active,
+            awarded_at: badge&.awarded_at || (target_active ? now : nil),
+            metadata: { current: count, target: 3 },
+            created_at: badge&.created_at || now,
+            updated_at: now
+          }.compact
+        end
+
+        UserBadge.upsert_all(badges_to_upsert, unique_by: [:user_id, :badge_tag]) if badges_to_upsert.any?
+
+        # Emit events (done per transition, not per user)
+        events_to_track.each do |evt|
+          Event.track(evt[:name], user_id: evt[:user_id])
+        end
       end
     end
 

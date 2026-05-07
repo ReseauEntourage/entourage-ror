@@ -20,7 +20,7 @@ module V1
         :birthday_today,
         :events,
         :badge,
-        :badges
+        :badges, if: :include_badges?
 
       def preference
         return :contribution if object.ask_for_help?
@@ -105,6 +105,10 @@ module V1
 
       def events
         object.events.pluck(:name)
+      end
+
+      def include_badges?
+        scope[:badges]
       end
 
       def badges
