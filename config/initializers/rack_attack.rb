@@ -1,5 +1,7 @@
 require 'rack/attack'
 
+Rails.application.config.middleware.use Rack::Attack
+
 Rack::Attack.cache.store = Rails.cache
 
 class Rack::Attack
