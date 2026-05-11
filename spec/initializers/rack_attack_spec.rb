@@ -21,12 +21,13 @@ RSpec.describe Rack::Attack, type: :request do
   describe 'Throttling API user creation' do
     context 'by IP' do
       it 'throttles after 5 requests in 1 minute' do
-        5.times do
-          post '/api/v1/users', { user: { phone: '+33600000001' } }
+        5.times do |i|
+          # Use different phone numbers to avoid triggering the phone throttle
+          post '/api/v1/users', { user: { phone: "+3360000000#{i}" } }
           expect(last_response.status).to eq(201).or eq(400) # 201 created or 400 if validation fails, but not 429
         end
 
-        post '/api/v1/users', { user: { phone: '+33600000001' } }
+        post '/api/v1/users', { user: { phone: '+33600000010' } }
         expect(last_response.status).to eq(429)
       end
     end
