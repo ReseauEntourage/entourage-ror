@@ -76,6 +76,32 @@ class Rack::Attack
     end
   end
 
+  ### Prevent mass account creation ###
+
+  throttle('api/v1/users/create/ip', limit: 5, period: 1.minute) do |req|
+    if req.path == '/api/v1/users' && req.post?
+      req.ip
+    end
+  end
+
+  throttle('api/v1/users/create/phone', limit: 2, period: 5.minutes) do |req|
+    if req.path == '/api/v1/users' && req.post?
+      req.params.dig('user', 'phone').to_s.presence
+    end
+  end
+
+  throttle('organization_admin/session/identify/ip', limit: 5, period: 1.minute) do |req|
+    if req.path == '/organization_admin/session/identify' && req.post?
+      req.ip
+    end
+  end
+
+  throttle('api/v1/entourages/invitations/ip', limit: 10, period: 1.minute) do |req|
+    if req.path.match?(/\/api\/v1\/entourages\/.*\/invitations/) && req.post?
+      req.ip
+    end
+  end
+
   throttle('forget/sms_code', limit: 5, period: 20.seconds) do |req|
     if req.path.match?(/api\/v1\/users\/(.)*\/code/) && req.patch?
       if req.params.dig('code', 'action').presence == 'regenerate'
