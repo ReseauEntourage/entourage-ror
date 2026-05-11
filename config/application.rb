@@ -84,5 +84,7 @@ module EntourageBack
 
     # Enable GC profiling
     GC::Profiler.enable
+
+    config.middleware.use Rack::Attack
   end
 end

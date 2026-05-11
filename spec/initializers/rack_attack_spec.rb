@@ -8,9 +8,14 @@ RSpec.describe Rack::Attack, type: :request do
   end
 
   before(:each) do
+    Rack::Attack.enabled = true
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     # Mock Slack notification to avoid network calls
     allow_any_instance_of(SlackServices::SignalRackAttack).to receive(:notify).and_return(true)
+  end
+
+  after(:each) do
+    Rack::Attack.enabled = false
   end
 
   describe 'Throttling API user creation' do
