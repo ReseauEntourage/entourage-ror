@@ -73,6 +73,7 @@ gem 'httparty'
 gem 'whenever'
 gem 'rspec_api_documentation'
 gem 'ffi', '~> 1.17'
+gem 'rack-attack'
 
 group :development, :test do
   gem 'foreman'
@@ -114,6 +115,5 @@ group :production do
   gem 'rails_stdout_logging'
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'
-  gem 'rack-attack'
   gem 'barnes'
 end

@@ -1,5 +1,7 @@
 require 'rack/attack'
 
+Rails.application.config.middleware.use Rack::Attack
+
 Rack::Attack.cache.store = Rails.cache
 
 class Rack::Attack
@@ -45,19 +47,19 @@ class Rack::Attack
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.ip}"
   throttle('app_mobile/logins/ip', limit: 5, period: 20.seconds) do |req|
-    if req.path == '/api/v1/login' && req.post?
+    if req.path.start_with?('/api/v1/login') && req.post?
       req.ip
     end
   end
 
   throttle('backoffice/logins/ip', limit: 5, period: 20.seconds) do |req|
-    if req.path == '/admin/sessions' && req.post?
+    if req.path.start_with?('/admin/sessions') && req.post?
       req.ip
     end
   end
 
   throttle('association/logins/ip', limit: 5, period: 20.seconds) do |req|
-    if req.path == '/session/authenticate' && req.post?
+    if req.path.start_with?('/session/authenticate') && req.post?
       req.ip
     end
   end
@@ -71,8 +73,34 @@ class Rack::Attack
   # denied, but that's not very common and shouldn't happen to you. (Knock
   # on wood!)
   throttle('logins/phone', limit: 5, period: 20.seconds) do |req|
-    if req.path == '/api/v1/login' && req.post?
+    if req.path.start_with?('/api/v1/login') && req.post?
       req.params.dig('user', 'phone').to_s.presence
+    end
+  end
+
+  ### Prevent mass account creation ###
+
+  throttle('api/v1/users/create/ip', limit: 5, period: 1.minute) do |req|
+    if req.path.start_with?('/api/v1/users') && req.post?
+      req.ip
+    end
+  end
+
+  throttle('api/v1/users/create/phone', limit: 2, period: 5.minutes) do |req|
+    if req.path.start_with?('/api/v1/users') && req.post?
+      req.params.dig('user', 'phone').to_s.presence
+    end
+  end
+
+  throttle('organization_admin/session/identify/ip', limit: 5, period: 1.minute) do |req|
+    if req.path.start_with?('/organization_admin/session/identify') && req.post?
+      req.ip
+    end
+  end
+
+  throttle('api/v1/entourages/invitations/ip', limit: 10, period: 1.minute) do |req|
+    if req.path.match?(/\/api\/v1\/entourages\/.*\/invitations/) && req.post?
+      req.ip
     end
   end
 
