@@ -8,7 +8,7 @@ module V1
       end
 
       def url
-        object.preload_image_url || object.image_url_with_size(:high)
+        object.preload_image_url
       end
     end
   end
