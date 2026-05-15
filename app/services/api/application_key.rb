@@ -150,8 +150,8 @@ module Api
         '5071ce2e119e8a43747cd89c' => {version: '8.0.0', device: 'iOS',     device_family: UserApplication::IOS,     community: 'entourage'},
         '50968038037d1df181e8372d' => {version: '8.0.0', device: 'Android', device_family: UserApplication::ANDROID, community: 'entourage'},
 
-        '44b2f3f3e7fd9b9c391a2f06' => {version: '9.0.0', device: 'iOS',     device_family: UserApplication::IOS,     community: 'entourage'},
-        '4a7373f3e7dd45fc391a2f19' => {version: '9.0.0', device: 'Android', device_family: UserApplication::ANDROID, community: 'entourage'},
+        '44b2f3f3e7fd9b9c391a2f06' => {version: '9.0.0', device: 'iOS',     device_family: UserApplication::IOS,     community: 'entourage', hmac_secret: ENV['HMAC_SECRET_IOS']},
+        '4a7373f3e7dd45fc391a2f19' => {version: '9.0.0', device: 'Android', device_family: UserApplication::ANDROID, community: 'entourage', hmac_secret: ENV['HMAC_SECRET_ANDROID']},
       }
     end
 
