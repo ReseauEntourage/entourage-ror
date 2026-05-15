@@ -7,6 +7,7 @@ module Api
       skip_before_action :community_warning
       skip_before_action :ensure_community!, only: :ethics_charter_signed
       allow_anonymous_access only: [:show, :report, :address]
+      before_action :verify_request_signature!, only: [:create]
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
@@ -419,6 +420,32 @@ module Api
       end
 
       private
+
+      def verify_request_signature!
+        secret = api_request.key_infos&.dig(:hmac_secret)
+        # Mode transition : si la clé n'a pas encore de secret configuré, on laisse passer.
+        # Cela permet de déployer le backend avant les nouvelles versions des apps.
+        return if secret.blank?
+
+        timestamp = request.headers['X-Request-Timestamp'].to_i
+        signature = request.headers['X-Request-Signature'].to_s
+
+        if signature.blank? || timestamp.zero?
+          return render_error(code: 'MISSING_SIGNATURE', message: 'Missing request signature', status: 401)
+        end
+
+        if (Time.now.to_i - timestamp).abs > 300
+          return render_error(code: 'EXPIRED_SIGNATURE', message: 'Request signature has expired', status: 401)
+        end
+
+        phone = params.dig(:user, :phone).to_s
+        expected = OpenSSL::HMAC.base64digest('SHA256', secret, "POST\n/api/v1/users\n#{timestamp}\n#{phone}")
+
+        unless ActiveSupport::SecurityUtils.secure_compare(expected, signature)
+          render_error(code: 'INVALID_SIGNATURE', message: 'Invalid request signature', status: 401)
+        end
+      end
+
       def user_params
         @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :newsletter_subscription, :about, :goal, :birthdate, :travel_distance, :gender, :partner_id, :discovery_source, :company, :event, :willing_to_engage_locally, :sf_entreprise_id, :sf_campaign_id, :orientation, :other_interest, :interest_list, :involvement_list, :concerns_list, :interests, :involvements, :concerns, orientations: [], interests: [], involvements: [], concerns: [], availability: {})
       end

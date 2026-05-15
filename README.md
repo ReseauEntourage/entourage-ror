@@ -1,8 +1,8 @@
 
 # Prerequisites
 
-Ruby 2.7.1
-Rails 5.2.6
+Ruby 3.2.0
+Rails 7.1.0
 
 rbenv or rvm recommanded
 
@@ -19,6 +19,30 @@ HOST=entourage.localhost # The Host that is used in Nginx routing if multiple ap
 You can source these environment variables from a `.env` file.
 
 To get started : `cp .env.dist .env` and fill in the missing informations!
+
+## HMAC request signing (anti-bot)
+
+Two variables protect the account creation endpoint (`POST /api/v1/users`) against bots.
+Each mobile app signs its requests with a shared secret; the backend verifies the signature.
+
+| Variable | Used by |
+|---|---|
+| `HMAC_SECRET_ANDROID` | Android app (`BuildConfig.HMAC_SECRET`) |
+| `HMAC_SECRET_IOS` | iOS app (`ApiKeys.plist → HmacSecret`) |
+
+Generate a secret with:
+
+```bash
+ruby -e "require 'securerandom'; puts SecureRandom.hex(32)"
+```
+
+**Deployment order:**
+
+1. Deploy the backend **without** setting these variables → the check is skipped (backwards-compatible).
+2. Release the updated Android and iOS apps (they include the signing code).
+3. Set `HMAC_SECRET_ANDROID` and `HMAC_SECRET_IOS` in the environment and restart the backend → the check activates for v9.0.0+ keys.
+
+> In development, leave both variables empty: requests are passed through without signature verification.
 
 Note that the `.env` file is used for all Rails environments. If you want to target only one (e.g. the `development` environment but not the `test` environment), use a file named `.env.{environment_name}` (e.g `.env.development`).
 
