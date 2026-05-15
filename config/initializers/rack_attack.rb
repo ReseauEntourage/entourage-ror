@@ -57,6 +57,25 @@ class Rack::Attack
     end
   end
 
+  # Limite par numéro de téléphone : 3 tentatives par heure, quelle que soit l'IP.
+  # Bloque les bots qui tournent sur de nombreuses IPs mais réutilisent les mêmes numéros.
+  throttle('api/v1/users/create/phone', limit: 3, period: 1.hour) do |req|
+    if req.path == '/api/v1/users' && req.post?
+      body = JSON.parse(req.body.read) rescue {}
+      req.body.rewind
+      phone = body.dig('user', 'phone').to_s.gsub(/\s+/, '')
+      phone.first(15) if phone.present?
+    end
+  end
+
+  # Limite par sous-réseau /24 : 10 créations par 5 minutes pour un même bloc d'IPs.
+  # Détecte les botnets qui font tourner des IPs dans le même hébergeur.
+  throttle('api/v1/users/create/subnet', limit: 10, period: 5.minutes) do |req|
+    if req.path == '/api/v1/users' && req.post?
+      req.ip.split('.').first(3).join('.')
+    end
+  end
+
   throttle('app_mobile/logins/ip', limit: 5, period: 20.seconds) do |req|
     if req.path == '/api/v1/login' && req.post?
       req.ip
