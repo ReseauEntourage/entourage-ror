@@ -4,6 +4,7 @@ class ChatMessage < ApplicationRecord
   include Deeplinkable
   include Mentionable
   include Offensable
+  include PublishesEvents
   include Translatable
   include Reactionnable
   include Surveyable
@@ -210,12 +211,28 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  def entourage?
+    messageable_type == 'Entourage'
+  end
+
+  def outing?
+    entourage? && messageable.outing?
+  end
+
+  def papotage?
+    entourage? && messageable.papotage?
+  end
+
+  def conversation?
+    entourage? && messageable.conversation?
+  end
+
   def neighborhood?
     messageable_type == 'Neighborhood'
   end
 
-  def entourage?
-    messageable_type == 'Entourage'
+  def smalltalk?
+    messageable_type == 'Smalltalk'
   end
 
   def entourage_id
