@@ -361,6 +361,22 @@ fr:
   push_notifications:
     action:
       create_for_follower: "%s vous invite à rejoindre %s"
+    badge:
+      bienvenue:
+        title: "badge bienvenue title"
+        content: "badge bienvenue content"
+      premier_contact:
+        title: "badge premier_contact title"
+        content: "badge premier_contact content"
+      moteur_rencontres:
+        title: "badge moteur_rencontres title"
+        content: "badge moteur_rencontres content"
+      fidele_papotages:
+        title: "badge fidele_papotages title"
+        content: "badge fidele_papotages content"
+      voix_presente:
+        title: "badge voix_presente title"
+        content: "badge voix_presente content"
     birthday:
       title: Joyeux anniversaire 🎉
       content: On est heureux de vous compter parmi nous. Cliquez ici pour lire notre message d’anniversaire !
