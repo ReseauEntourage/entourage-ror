@@ -8,6 +8,6 @@ describe Onboarding::UserEventsTracking do
 
     it { subject }
 
-    after { expect(Event.find_by(user: user, tag: "onboarding.resource.welcome_watched").present?).to be(true) }
+    after { expect(Event.find_by(user: user, name: "onboarding.resource.welcome_watched").present?).to be(true) }
   end
 end
