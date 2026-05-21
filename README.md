@@ -20,10 +20,12 @@ You can source these environment variables from a `.env` file.
 
 To get started : `cp .env.dist .env` and fill in the missing informations!
 
-## HMAC request signing (anti-bot)
+## HMAC request signing (client verification / friction layer)
 
-Two variables protect the account creation endpoint (`POST /api/v1/users`) against bots.
-Each mobile app signs its requests with a shared secret; the backend verifies the signature.
+Two variables enable request signing for the account creation endpoint (`POST /api/v1/users`) for mobile clients.
+Each mobile app signs its requests with a shared secret; the backend verifies the signature as a lightweight compatibility/friction check.
+Because this secret is bundled in the mobile apps, it must not be treated as a reliable secret or as the primary protection against bots on its own.
+Combine this check with server-side anti-abuse controls such as device/app attestation, rate limiting, and risk scoring.
 
 | Variable | Used by |
 |---|---|
