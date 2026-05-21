@@ -711,6 +711,35 @@ class PushNotificationTrigger
     )
   end
 
+  def user_badge_on_create
+    return unless @record.active?
+
+    i18n_key = "push_notifications.badge.#{@user_badge.name}"
+
+    return unless I18n.exists?("#{i18n_key}.title") && I18n.exists?("#{i18n_key}.content")
+
+    notify(
+      sender_id: nil,
+      referent: @record,
+      instance: nil,
+      users: [@record.user],
+      params: {
+        object: I18nStruct.new(i18n: "push_notifications.badge.#{@user_badge.name}.title"),
+        content: I18nStruct.new(i18n: "push_notifications.badge.#{@user_badge.name}.content"),
+        extra: {
+          tracking: :user_badge
+        }
+      }
+    )
+  end
+
+  def user_badge_on_update
+    return unless @record.saved_changes.keys.include?('active')
+    return unless @record.active?
+
+    user_badge_on_create
+  end
+
   # use params[:extra] to be compliant with v7
   def notify sender_id:, referent:, instance:, users:, params: {}
     notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
