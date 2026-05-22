@@ -7,6 +7,7 @@ module UserServices
     def delete
       email = user.email
       user['phone'] = add_timestamp(:phone) # we want after_update callback but do not want PhoneBuilder
+      user.validation_status = 'deleted'
       user.deleted = true
       user.email = add_timestamp(:email)
       user.save(validate: false)
