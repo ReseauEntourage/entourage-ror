@@ -5,8 +5,8 @@ class BadgeSubscriber
 
     EventBus.subscribe("chat_message.created", method(:on_chat_message))
 
-    EventBus.subscribe("user_resource.created", method(:on_user_resource))
-    EventBus.subscribe("user_resource.updated", method(:on_user_resource))
+    EventBus.subscribe("users_resource.created", method(:on_users_resource))
+    EventBus.subscribe("users_resource.updated", method(:on_users_resource))
 
     EventBus.subscribe("user_reaction.created", method(:on_user_reaction))
 
@@ -30,12 +30,12 @@ class BadgeSubscriber
     BadgeService.check_fidele_papotages(chat_message.user) if chat_message.papotage?
   end
 
-  def self.on_user_resource(payload)
-    user_resource = payload[:record]
+  def self.on_users_resource(payload)
+    users_resource = payload[:record]
 
-    return unless user_resource.watched?
+    return unless users_resource.watched?
 
-    BadgeService.check_bienvenue(user_resource.user)
+    BadgeService.check_bienvenue(users_resource.user)
   end
 
   def self.on_user_reaction(payload)
