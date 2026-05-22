@@ -19,6 +19,7 @@ class Outing < Entourage
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
   before_validation :normalize_exclusive_to
+  before_validation :populate_image_metadata
 
   after_validation :dup_neighborhoods_entourages, if: :original_outing
   after_validation :dup_taggings, if: :original_outing
@@ -447,18 +448,16 @@ class Outing < Entourage
   CONTENT_TYPES = %w(image/jpeg image/png)
   BUCKET_PREFIX = 'entourage_images/images'
 
-  def image_url= url
-    return if url.blank?
+  def populate_image_metadata
+    return unless image_url.present?
 
-    url = Outing.path(url)
-
-    self[:image_url] = url
+    url = Outing.path(image_url)
 
     self.metadata ||= {}
-    self.metadata[:landscape_url] = url
-    self.metadata[:landscape_thumbnail_url] = url
-    self.metadata[:portrait_url] = url
-    self.metadata[:portrait_thumbnail_url] = url
+    self.metadata["landscape_url"] = url
+    self.metadata["landscape_thumbnail_url"] = url
+    self.metadata["portrait_url"] = url
+    self.metadata["portrait_thumbnail_url"] = url
   end
 
   class << self
