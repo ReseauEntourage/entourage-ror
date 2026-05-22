@@ -30,13 +30,6 @@ class UserSmalltalk < ApplicationRecord
     not_matched
   }
 
-  scope :with_accessible_smalltalks_for_user, -> (user) {
-    joins(:smalltalk)
-      .merge(Smalltalk.with_people)
-      .where(user: user)
-      .where(member_status: JoinRequest::ACCEPTED_STATUS)
-  }
-
   VIRTUAL_ATTRIBUTES.each do |virtual_attribute|
     define_method(virtual_attribute) do
       self[virtual_attribute]

@@ -7,8 +7,8 @@ module Api
       def index
         render json: UserSmalltalk
           .includes(:user, :join_request)
-          .with_accessible_smalltalks_for_user(current_user)
-          .or(UserSmalltalk.where(user: current_user, smalltalk_id: nil))
+          .where(user: current_user)
+          .where("member_status = ? or member_status is null", JoinRequest::ACCEPTED_STATUS)
           .page(page)
           .per(per), root: :user_smalltalks, each_serializer: ::V1::UserSmalltalkSerializer
       end

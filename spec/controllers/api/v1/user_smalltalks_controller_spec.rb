@@ -3,7 +3,8 @@ require 'rails_helper'
 describe Api::V1::UserSmalltalksController, type: :controller do
   let(:user) { create :pro_user, goal: :offer_help }
   let(:smalltalk) { create :smalltalk, participants: [user] }
-  let(:user_smalltalk) { create :user_smalltalk, user: user, smalltalk: smalltalk, member_status: :accepted }
+  let(:user_smalltalk) { create :user_smalltalk, user: user, smalltalk: smalltalk, member_status: user_smalltalk_status }
+  let(:user_smalltalk_status) { :accepted }
 
   context 'index' do
     before { user_smalltalk }
@@ -22,12 +23,21 @@ describe Api::V1::UserSmalltalksController, type: :controller do
 
       before { get :index, params: { token: user.token } }
 
+      describe 'without cancelled join_requests' do
+        let(:number_of_people) { 1 }
+        let(:user_smalltalk_status) { :cancelled }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('user_smalltalks') }
+        it { expect(result['user_smalltalks'].count).to eq(0) }
+      end
+
       describe 'without people in smalltalks' do
         let(:number_of_people) { 1 }
 
         it { expect(response.status).to eq 200 }
         it { expect(result).to have_key('user_smalltalks') }
-        it { expect(result['user_smalltalks'].count).to eq(0) }
+        it { expect(result['user_smalltalks'].count).to eq(1) }
       end
 
       describe 'with people in smalltalks' do
