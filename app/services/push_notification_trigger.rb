@@ -714,7 +714,7 @@ class PushNotificationTrigger
   def user_badge_on_create
     return unless @record.active?
 
-    i18n_key = "push_notifications.badge.#{@user_badge.name}"
+    i18n_key = "push_notifications.badge.#{@record.badge_tag}"
 
     return unless I18n.exists?("#{i18n_key}.title") && I18n.exists?("#{i18n_key}.content")
 
@@ -724,8 +724,8 @@ class PushNotificationTrigger
       instance: nil,
       users: [@record.user],
       params: {
-        object: I18nStruct.new(i18n: "push_notifications.badge.#{@user_badge.name}.title"),
-        content: I18nStruct.new(i18n: "push_notifications.badge.#{@user_badge.name}.content"),
+        object: I18nStruct.new(i18n: "push_notifications.badge.#{@record.badge_tag}.title"),
+        content: I18nStruct.new(i18n: "push_notifications.badge.#{@record.badge_tag}.content"),
         extra: {
           tracking: :user_badge
         }
