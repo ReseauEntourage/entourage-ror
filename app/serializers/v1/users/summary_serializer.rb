@@ -19,7 +19,8 @@ module V1
         :signable_permission,
         :birthday_today,
         :events,
-        :badge
+        :badge,
+        :badges
 
       def preference
         return :contribution if object.ask_for_help?
@@ -104,6 +105,10 @@ module V1
 
       def events
         object.events.pluck(:name)
+      end
+
+      def badges
+        object.user_badges.map(&:badge_tag)
       end
 
       private
