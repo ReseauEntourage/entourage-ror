@@ -106,7 +106,10 @@ class BadgeService
     def update_weekly_activity
       last_week_iso = (Date.today - 1.week).strftime('%G-W%V')
 
-      user_ids = SessionHistory.where('created_at > ?', 30.days.ago).pluck(:user_id).uniq
+      user_ids = SessionHistory
+        .where('date > ?', 30.days.ago.to_date)
+        .group(:user_id)
+        .pluck(:user_id)
 
       User.where(id: user_ids).find_each do |user|
         WeeklyActivity.create_with(
