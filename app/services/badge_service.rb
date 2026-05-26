@@ -61,13 +61,13 @@ class BadgeService
     end
 
     # Badge n°4 : Fidèle aux papotages
-    # This count should be computed when an outing ends, not on join_request creation
-    # This should count join_requests on papotage messageables with starts_at between 90.days.ago and Time.now
+    # Compute the count of papotages the user has participated in (join requests accepted with participate_at not null) in the last 90 days
     def check_fidele_papotages(user)
       return unless eligible_user?(user)
 
       # Use title as a proxy to avoid N+1 and SQL issues with tags
       count = JoinRequest.accepted
+        .where.not(participate_at: nil)
         .where(user_id: user.id, joinable_type: 'Entourage')
         .where(joinable_id: Outing.papotages.between(90.days.ago, Time.now))
         .count
