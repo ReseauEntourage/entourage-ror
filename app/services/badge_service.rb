@@ -19,7 +19,6 @@ class BadgeService
       return unless chat_message.conversation?
 
       user = chat_message.user
-      return unless eligible_user?(user)
       return if UserBadge.exists?(user_id: user.id, badge_tag: 'premier_contact')
 
       conversation = chat_message.messageable
@@ -50,8 +49,6 @@ class BadgeService
     # This count should be computed when an outing ends, not on outing creation
     # This should count outings with starts_at between 90.days.ago and Time.now
     def check_moteur_rencontres(user)
-      return unless eligible_user?(user)
-
       total_count = Outing.accepted
         .where(user_id: user.id)
         .between(90.days.ago, Time.now)
@@ -63,8 +60,6 @@ class BadgeService
     # Badge n°4 : Fidèle aux papotages
     # Compute the count of papotages the user has participated in (join requests accepted with participate_at not null) in the last 90 days
     def check_fidele_papotages(user)
-      return unless eligible_user?(user)
-
       # Use title as a proxy to avoid N+1 and SQL issues with tags
       count = JoinRequest.accepted
         .where.not(participate_at: nil)
@@ -77,8 +72,6 @@ class BadgeService
 
     # Badge n°5 : Vie de groupe
     def check_voix_presente(user)
-      return unless eligible_user?(user)
-
       recent_activities = WeeklyActivity.where(user_id: user.id).recent.limit(4)
       count = recent_activities.to_a.count { |a| a.has_group_action }
 
