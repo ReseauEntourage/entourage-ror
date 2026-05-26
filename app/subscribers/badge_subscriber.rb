@@ -19,7 +19,7 @@ class BadgeSubscriber
     return unless join_request.accepted?
 
     BadgeService.check_bienvenue(join_request.user) if join_request.outing?
-    BadgeService.check_fidele_papotages(join_request.user) if join_request.papotage?
+    BadgeService.check_fidele_papotages(join_request.user) if join_request.papotage? && join_request.participate_at.present?
   end
 
   def self.on_chat_message(payload)
@@ -27,7 +27,6 @@ class BadgeSubscriber
 
     BadgeService.check_bienvenue(chat_message.user) unless chat_message.conversation?
     BadgeService.check_premier_contact(chat_message) if chat_message.conversation?
-    BadgeService.check_fidele_papotages(chat_message.user) if chat_message.papotage?
   end
 
   def self.on_users_resource(payload)

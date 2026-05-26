@@ -70,6 +70,7 @@ class Entourage < ApplicationRecord
   validate :validate_place_limit, if: :outing?
 
   scope :active, -> { where(status: ['open', 'full']) }
+  scope :accepted, -> { where(status: ['open', 'full', 'closed']) }
   scope :closed, -> { where(status: :closed) }
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
