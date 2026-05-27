@@ -81,17 +81,19 @@ class BadgeService
       update_badge_status(user, 'voix_presente', count >= 3, { current: count, target: 3 })
     end
 
-    def update_weekly_activity
-      last_week_iso = (Date.today - 1.week).strftime('%G-W%V')
-
+    def update_weekly_activity_from date
       user_ids = SessionHistory
-        .where('date > ?', 30.days.ago.to_date)
+        .where('date between ? and ?', date - 1.month, date)
         .group(:user_id)
         .pluck(:user_id)
 
+      previous_week_iso = (date - 1.week).strftime('%G-W%V')
+
+      weekly_activity_user_ids = weekly_activity_user_ids_for_time_range(date.prev_week.all_week)
+
       User.where(id: user_ids).find_each do |user|
         if weekly_activity_user_ids.include?(user.id)
-          WeeklyActivity.find_or_create_by(user_id: user.id, week_iso: last_week_iso)
+          WeeklyActivity.find_or_create_by(user_id: user.id, week_iso: previous_week_iso)
         end
 
         check_voix_presente(user)
@@ -143,10 +145,8 @@ class BadgeService
     end
 
     # @caution memoization implies that this method should be called from a job only
-    def weekly_activity_user_ids
+    def weekly_activity_user_ids_for_time_range(time_range)
       @weekly_activity_user_ids ||= begin
-        time_range = Time.zone.today.prev_week.all_week
-
         message_users = ChatMessage
           .where(messageable_type: 'Neighborhood', created_at: time_range)
           .select(:user_id)
