@@ -81,6 +81,10 @@ class BadgeService
       update_badge_status(user, 'voix_presente', count >= 3, { current: count, target: 3 })
     end
 
+    def update_weekly_activity
+      update_weekly_activity_from(Date.today)
+    end
+
     def update_weekly_activity_from date
       user_ids = SessionHistory
         .where('date between ? and ?', date - 1.month, date)
