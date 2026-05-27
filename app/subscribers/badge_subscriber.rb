@@ -41,7 +41,6 @@ class BadgeSubscriber
     user_reaction = payload[:record]
 
     BadgeService.check_bienvenue(user_reaction.user)
-    BadgeService.check_voix_presente(user_reaction.user) if user_reaction.neighborhood?
   end
 
   def self.on_entourage(payload)
