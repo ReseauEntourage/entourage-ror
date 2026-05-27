@@ -46,8 +46,6 @@ class BadgeService
     end
 
     # Badge n°3 : Moteur de rencontres
-    # This count should be computed when an outing ends, not on outing creation
-    # This should count outings with starts_at between 90.days.ago and Time.now
     def check_moteur_rencontres(user)
       total_count = Outing.accepted
         .where(user_id: user.id)
