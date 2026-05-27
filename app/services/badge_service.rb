@@ -51,7 +51,7 @@ class BadgeService
     def check_moteur_rencontres(user)
       total_count = Outing.accepted
         .where(user_id: user.id)
-        .between(90.days.ago, Time.now)
+        .where(created_at: 90.days.ago..Time.now)
         .count
 
       update_badge_status(user, 'moteur_rencontres', total_count >= 3, { current: total_count, target: 3 })
