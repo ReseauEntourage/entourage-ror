@@ -3,4 +3,19 @@ namespace :badges do
   task update_weekly_activity: :environment do
     BadgeService.update_weekly_activity_from(Date.today)
   end
+
+  desc "Recalculate 'Moteur de rencontres' badge for users whose badge status may have changed"
+  task recalculate_moteur_rencontres: :environment do
+    # Users with active badge (may need deactivation if outings slid out of the 90-day window)
+    user_ids = UserBadge.where(badge_tag: 'moteur_rencontres', active: true).pluck(:user_id)
+
+    # Users whose outings are currently crossing the 90-day boundary (±5 days)
+    user_ids |= Outing.accepted
+      .where(created_at: 95.days.ago..85.days.ago)
+      .pluck(:user_id)
+
+    User.where(id: user_ids).find_each do |user|
+      BadgeService.check_moteur_rencontres(user)
+    end
+  end
 end
