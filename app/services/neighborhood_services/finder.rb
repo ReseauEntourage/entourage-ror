@@ -35,6 +35,7 @@ module NeighborhoodServices
         .includes([:user, :interests, :future_outings])
         .not_joined_by(user)
         .public_only
+        .not_reserved_female_for(user)
         .match_at_least_one_interest(interests)
         .order(national: :desc)
         .order(Arel.sql(%(zone IS NULL DESC)))
