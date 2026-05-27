@@ -72,28 +72,13 @@ class BadgeService
 
     # Badge n°5 : Vie de groupe
     def check_voix_presente(user)
-      recent_activities = WeeklyActivity.where(user_id: user.id).recent.limit(4)
-      count = recent_activities.to_a.count { |a| a.has_group_action }
+      count = WeeklyActivity
+        .where(user_id: user.id)
+        .recent
+        .limit(4)
+        .count
 
-      should_be_active = count >= 3
-
-      badge = UserBadge.find_by(user_id: user.id, badge_tag: 'voix_presente')
-
-      if should_be_active
-        if !badge || !badge.active
-          award_badge(user, 'voix_presente')
-        end
-      else
-        # Reversible only if 2 consecutive weeks without action
-        last_two = recent_activities.limit(2).to_a
-        if last_two.count == 2 && last_two.all? { |a| !a.has_group_action }
-          deactivate_badge(user, 'voix_presente') if badge&.active
-        end
-      end
-
-      # Update metadata for progress
-      badge = UserBadge.find_by(user_id: user.id, badge_tag: 'voix_presente')
-      badge&.update(metadata: { current: count, target: 3 })
+      update_badge_status(user, 'voix_presente', count >= 3, { current: count, target: 3 })
     end
 
     def update_weekly_activity
@@ -105,11 +90,11 @@ class BadgeService
         .pluck(:user_id)
 
       User.where(id: user_ids).find_each do |user|
-        WeeklyActivity.create_with(
-          has_group_action: has_group_action_in_week?(user, Date.today - 1.week)
-        ).find_or_create_by(user_id: user.id, week_iso: last_week_iso)
+        if weekly_activity_user_ids.include?(user.id)
+          WeeklyActivity.find_or_create_by(user_id: user.id, week_iso: last_week_iso)
+        end
 
-        check_voix_presente(user) if eligible_user?(user)
+        check_voix_presente(user)
       end
     end
 
@@ -131,16 +116,18 @@ class BadgeService
 
     def award_badge(user, tag)
       badge = UserBadge.find_or_initialize_by(user_id: user.id, badge_tag: tag)
+
+      return if badge.persisted? && badge.active
+
       badge.active = true
       badge.awarded_at ||= Time.now
       badge.save!
     end
 
     def deactivate_badge(user, tag)
-      badge = UserBadge.find_by(user_id: user.id, badge_tag: tag)
-      if badge&.active
-        badge.update(active: false)
-      end
+      return unless badge = UserBadge.find_by(user_id: user.id, badge_tag: tag)
+
+      badge.update(active: false)
     end
 
     def update_badge_status(user, tag, should_be_active, metadata)
@@ -150,22 +137,28 @@ class BadgeService
         deactivate_badge(user, tag)
       end
 
-      badge = UserBadge.find_by(user_id: user.id, badge_tag: tag)
-      badge&.update(metadata: metadata)
+      return unless badge = UserBadge.find_by(user_id: user.id, badge_tag: tag)
+
+      badge.update(metadata: metadata)
     end
 
-    def has_group_action_in_week?(user, date)
-      start_date = date.beginning_of_week
-      end_date = date.end_of_week
+    # @caution memoization implies that this method should be called from a job only
+    def weekly_activity_user_ids
+      @weekly_activity_user_ids ||= begin
+        time_range = Time.zone.today.prev_week.all_week
 
-      ChatMessage.where(user_id: user.id, created_at: start_date..end_date)
-                 .where("messageable_type = 'Neighborhood'")
-                 .exists? ||
-      UserReaction.where(user_id: user.id, created_at: start_date..end_date)
-                  .where("instance_type = 'ChatMessage'")
-                  .joins("JOIN chat_messages ON chat_messages.id = user_reactions.instance_id")
-                  .where("chat_messages.messageable_type = 'Neighborhood'")
-                  .exists?
+        message_users = ChatMessage
+          .where(messageable_type: 'Neighborhood', created_at: time_range)
+          .select(:user_id)
+
+        reaction_users = UserReaction
+          .where(instance_type: 'Neighborhood', created_at: time_range)
+          .select(:user_id)
+
+        ActiveRecord::Base.connection.select_values(
+          "(#{message_users.to_sql}) UNION (#{reaction_users.to_sql})"
+        )
+      end
     end
   end
 end

@@ -4,7 +4,6 @@ class CreateWeeklyActivities < ActiveRecord::Migration[7.1]
       create_table :weekly_activities do |t|
         t.integer :user_id, null: false
         t.string :week_iso, null: false
-        t.boolean :has_group_action, default: false, null: false
         t.timestamps
       end
 
