@@ -1,0 +1,19 @@
+pin "application", preload: true
+
+# jQuery, Turbolinks → globals via <script> dans _head.html.erb
+# Plugins UMD (moment, daterangepicker, multiselect…) → Sprockets plugins.js (defer)
+
+pin "@rails/ujs",  to: "https://ga.jspm.io/npm:@rails/ujs@7.1.3/app/assets/javascripts/rails-ujs.esm.js"
+
+# ActionCable (servi par le gem Rails)
+pin "actioncable", to: "actioncable.esm.js"
+
+# Chartkick + Chart.js (chart.umd utilise window, pas this — compatible ES module)
+pin "chartkick", to: "https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.esm.js"
+pin "chart.js",  to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+
+# TinyMCE (CDN - remplacer "no-api-key" par la vraie clé en prod)
+pin "tinymce", to: "https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js"
+
+# ActionCable channels
+pin_all_from "app/javascript/channels", under: "channels"
