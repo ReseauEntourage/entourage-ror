@@ -1,6 +1,7 @@
 // Bundle Sprockets de tous les plugins jQuery UMD.
 // Chargé en defer avant les modules ES (importmap).
 // Ici, this === window — les UMD fonctionnent correctement.
+//= require jquery_ujs
 //= require moment
 //= require daterangepicker
 //= require bootstrap-multiselect
