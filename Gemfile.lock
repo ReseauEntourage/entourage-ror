@@ -257,6 +257,10 @@ GEM
       logger
       ostruct
     ice_cube (0.17.0)
+    importmap-rails (2.2.3)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     io-console (0.8.1)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -693,6 +697,7 @@ DEPENDENCIES
   googlestaticmap!
   httparty
   icalendar
+  importmap-rails
   jquery-rails (~> 4)
   jquery-ui-rails (~> 5)
   json-schema (~> 2.8.1)
