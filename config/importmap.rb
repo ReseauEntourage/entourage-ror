@@ -3,7 +3,7 @@ pin "application", preload: true
 # jQuery, Turbolinks → globals via <script> dans _head.html.erb
 # Plugins UMD (moment, daterangepicker, multiselect…) → Sprockets plugins.js (defer)
 
-pin "@rails/ujs",  to: "https://ga.jspm.io/npm:@rails/ujs@7.1.3/app/assets/javascripts/rails-ujs.esm.js"
+# @rails/ujs est inclus dans plugins.js (Sprockets, jquery_ujs) — compatible jQuery global
 
 # ActionCable (servi par le gem Rails)
 pin "actioncable", to: "actioncable.esm.js"

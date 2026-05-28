@@ -7,3 +7,4 @@
 
 // Bundle des plugins UMD (chargé en defer via _head.html.erb)
 //= link plugins.js
+

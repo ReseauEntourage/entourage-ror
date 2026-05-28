@@ -1,8 +1,6 @@
-// Plugins jQuery UMD (moment, daterangepicker, multiselect…) :
+// Plugins jQuery UMD (moment, daterangepicker, multiselect, jquery_ujs…) :
 //   chargés via Sprockets plugins.js (defer) AVANT ce module.
-//   window.$, window.moment, $.fn.multiselect, etc. sont déjà disponibles ici.
-
-import "@rails/ujs"
+//   window.$, window.jQuery.rails (UJS), $.fn.multiselect, etc. sont déjà disponibles ici.
 
 // App JS (code jQuery plain — utilisent window.$ global)
 import "./common"
