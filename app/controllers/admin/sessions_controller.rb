@@ -12,6 +12,8 @@ module Admin
       if user && user.admin
         session[:user_id] = user.id
         session[:admin_user_id] = user.id
+        # Cookie signé requis par ActionCable pour l'authentification WebSocket
+        cookies.signed[:user_id] = { value: user.id, httponly: true }
 
         redirect_to(params[:continue].presence || root_path)
       else
@@ -30,6 +32,7 @@ module Admin
     def logout
       session[:user_id] = nil
       session[:admin_user_id] = nil
+      cookies.delete :user_id
       flash[:notice] = 'Vous êtes déconnecté'
       redirect_to root_url
     end

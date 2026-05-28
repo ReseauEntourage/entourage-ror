@@ -18,6 +18,9 @@
   <script src="https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.js" defer></script>
   <%= javascript_importmap_tags %>
   <%= csrf_meta_tags %>
+  <% if (token = cable_auth_token) %>
+    <meta name="cable-token" content="<%= token %>">
+  <% end %>
   <%= favicon_link_tag 'favicon.ico', type: 'image/x-icon' %>
   <%= favicon_link_tag 'favicon.ico', rel: 'apple-touch-icon', type: 'image/x-icon' %>
 </head>
