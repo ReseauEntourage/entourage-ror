@@ -39,4 +39,17 @@ RSpec.describe ApplicationCable::Connection, type: :channel do
       expect { connect "/cable" }.to have_rejected_connection
     end
   end
+
+  describe "authentification mobile (token REST users.token)" do
+    it "établit la connexion avec le token API de l'user" do
+      connect "/cable", params: { token: user.token }
+      expect(connection.current_user).to eq(user)
+    end
+
+    it "rejette avec un token API inconnu" do
+      expect {
+        connect "/cable", params: { token: "token_inexistant" }
+      }.to have_rejected_connection
+    end
+  end
 end
