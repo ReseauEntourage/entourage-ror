@@ -19,6 +19,7 @@ class Outing < Entourage
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
   before_validation :normalize_exclusive_to
+  before_validation :populate_image_metadata
 
   after_validation :dup_neighborhoods_entourages, if: :original_outing
   after_validation :dup_taggings, if: :original_outing
@@ -444,9 +445,44 @@ class Outing < Entourage
     online? && title.match?(/papotage/i)
   end
 
+  CONTENT_TYPES = %w(image/jpeg image/png)
+  BUCKET_PREFIX = 'entourage_images/images'
+
+  def populate_image_metadata
+    return unless image_url.present?
+
+    url = Outing.path(image_url)
+
+    self.metadata ||= {}
+    self.metadata["landscape_url"] = url
+    self.metadata["landscape_thumbnail_url"] = url
+    self.metadata["portrait_url"] = url
+    self.metadata["portrait_thumbnail_url"] = url
+  end
+
   class << self
+    def bucket
+      EntourageImage.storage
+    end
+
     def bucket_name
-      EntourageImage.storage.bucket_name
+      bucket.bucket_name
+    end
+
+    def presigned_url key, content_type
+      bucket.object(path key).presigned_url(
+        :put,
+        expires_in: 1.minute.to_i,
+        acl: 'public-read',
+        content_type: content_type,
+        cache_control: "max-age=#{365.days}"
+      )
+    end
+
+    def path key
+      return key if key.to_s.start_with?(BUCKET_PREFIX)
+
+      "#{BUCKET_PREFIX}/#{key}"
     end
   end
 end

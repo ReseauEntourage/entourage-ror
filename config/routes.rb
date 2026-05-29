@@ -584,6 +584,7 @@ Rails.application.routes.draw do
 
       resources :outings do
         collection do
+          post :presigned_upload
           get :papotages
           get :firsts_steps
           get :webinar
