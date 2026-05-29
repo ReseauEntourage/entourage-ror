@@ -151,6 +151,8 @@ module Experimental::EntourageSlack
     included do
       after_commit :auto_validate, on: :create
       after_commit :notify_slack, on: :create
+      after_commit :notify_backoffice_action, on: :create
+      after_commit :notify_backoffice_outing, on: :create
     end
 
     private
@@ -171,6 +173,24 @@ module Experimental::EntourageSlack
       return unless action? || outing?
 
       AsyncService.new(Experimental::EntourageSlack).notify(id)
+    end
+
+    def notify_backoffice_action
+      return if moderation_validated?
+      return unless action?
+
+      moderator = ModerationServices.moderator_for_entourage(self)
+
+      NotificationChannel.broadcast_to_user(moderator, { message: "Une action vient d'être créée : #{title}", type: "success" })
+    end
+
+    def notify_backoffice_outing
+      return if moderation_validated?
+      return unless outing?
+
+      moderator = ModerationServices.moderator_for_entourage(self)
+
+      NotificationChannel.broadcast_to_user(moderator, { message: "Un événement vient d'être créé : #{title}", type: "success" })
     end
   end
 end
