@@ -1,6 +1,6 @@
 module NeighborhoodServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :q, :interests
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :national
 
     def initialize user, params
       @user = user
@@ -16,6 +16,7 @@ module NeighborhoodServices
       @distance = params[:travel_distance] || user.travel_distance
 
       @q = params[:q]
+      @national = ActiveRecord::Type::Boolean.new.cast(params[:national])
 
       @interests = params[:interests] || []
       @interests += params[:interest_list].split(',') if params[:interest_list].present?
@@ -23,14 +24,15 @@ module NeighborhoodServices
     end
 
     def find_all
-      neighborhoods = if latitude == user.latitude && longitude == user.longitude
-        Neighborhood.where(id: Neighborhood.inside_user_perimeter(user))
+      neighborhoods = if national
+        Neighborhood.where(national: true)
+      elsif latitude == user.latitude && longitude == user.longitude
+        Neighborhood.where(id: Neighborhood.inside_user_perimeter(user)).or(Neighborhood.where(national: true))
       else
-        Neighborhood.where(id: Neighborhood.inside_perimeter(latitude, longitude, distance))
+        Neighborhood.where(id: Neighborhood.inside_perimeter(latitude, longitude, distance)).or(Neighborhood.where(national: true))
       end
 
       neighborhoods
-        .or(Neighborhood.where(national: true))
         .like(q)
         .includes([:user, :interests, :future_outings])
         .not_joined_by(user)
