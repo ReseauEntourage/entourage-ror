@@ -80,6 +80,7 @@ module Salesforcable
       return 'Toulouse' if departement == '31'
       return 'Grenoble' if departement == '38'
       return 'Montpellier' if departement == '34'
+      return 'Strasbourg' if departement == '67'
 
       'Hors zone'
     end
