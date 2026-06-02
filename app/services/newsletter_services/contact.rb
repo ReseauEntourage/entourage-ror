@@ -127,7 +127,6 @@ module NewsletterServices
 
       properties = {
         newsletter_entourage: true,
-        antenne_entourage: zone,
         profil_entourage: status
       }
 
@@ -140,13 +139,13 @@ module NewsletterServices
         "prénom" => user.first_name,
         "nom" => user.last_name,
         "code_postal" => user.departement,
-        "antenne" => user.sf.from_address_to_antenne,
+        "antenne_entourage" => user.sf.from_address_to_antenne,
         "candidat" => false,
         "coach" => false,
-        "preca" => user.is_ask_for_help?,
+        "préca" => user.is_ask_for_help?,
         "bénévole" => user.ambassador?,
-        "Entreprise" => false,
-        "Association" => user.association?
+        "entreprise" => false,
+        "association" => user.association?
       })
     end
   end
