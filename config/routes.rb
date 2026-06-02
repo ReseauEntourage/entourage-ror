@@ -497,6 +497,7 @@ Rails.application.routes.draw do
 
       resources :neighborhoods do
         collection do
+          get :national
           get :joined # see my neighborhoods
           get :default # show default user neighborhood
         end
