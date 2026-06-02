@@ -131,7 +131,6 @@ module NewsletterServices
       }
 
       return properties unless user.present?
-      return properties
 
       properties.merge({
         "email" => email,
