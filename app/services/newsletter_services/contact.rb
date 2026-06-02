@@ -1,6 +1,6 @@
 module NewsletterServices
   class Contact
-    MAILJET_LIST_ID = '2822632'
+    MAILJET_LIST_ID = '2830798'
     STATUS = {
       particulier: 'PARTICULIER',
       association: 'ASSOCIATION',
