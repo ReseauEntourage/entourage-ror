@@ -145,7 +145,8 @@ module NewsletterServices
         "préca" => user.is_ask_for_help?,
         "bénévole" => user.ambassador?,
         "entreprise" => false,
-        "association" => user.association?
+        "association" => user.association?,
+        "source" => "Backoffice EP"
       })
     end
   end
