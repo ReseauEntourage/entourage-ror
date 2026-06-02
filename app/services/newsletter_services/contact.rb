@@ -106,13 +106,11 @@ module NewsletterServices
     end
 
     def create_or_update_in_mailjet
+      user = User.order(last_sign_in_at: :desc).find_by_email(email)
+
       Mailjet::Contactslist_managecontact.create(
         id: MAILJET_LIST_ID,
-        properties: {
-          newsletter_entourage: true,
-          antenne_entourage: zone,
-          profil_entourage: status
-        },
+        properties: find_user_properties,
         action: 'addnoforce',
         email: email
       )
@@ -122,6 +120,34 @@ module NewsletterServices
       return unless list_recipient = get_list_recipient
 
       Mailjet::Listrecipient.find(list_recipient['id']).delete
+    end
+
+    def find_user_properties
+      user = User.order(last_sign_in_at: :desc).find_by_email(email)
+
+      properties = {
+        newsletter_entourage: true,
+        antenne_entourage: zone,
+        profil_entourage: status
+      }
+
+      return properties unless user.present?
+      return properties
+
+      properties.merge({
+        "email" => email,
+        "civilité" => user.gender,
+        "prénom" => user.first_name,
+        "nom" => user.last_name,
+        "code_postal" => user.departement,
+        "antenne" => user.sf.from_address_to_antenne,
+        "candidat" => false,
+        "coach" => false,
+        "preca" => user.is_ask_for_help?,
+        "bénévole" => user.ambassador?,
+        "Entreprise" => false,
+        "Association" => user.association?
+      })
     end
   end
 end
