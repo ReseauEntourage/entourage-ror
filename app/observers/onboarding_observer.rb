@@ -12,13 +12,17 @@ class OnboardingObserver < ActiveRecord::Observer
   private
 
   def action verb, record
-    return action_join_request(record) if record.is_a?(JoinRequest)
+    if record.is_a?(JoinRequest)
+      return action_join_request_outing(record) if record.outing?
+      return action_join_request_neighborhood(record) if record.neighborhood?
+    end
+
     return action_users_resource(record) if record.is_a?(UsersResource)
   rescue
     # we want this hook to never fail the main process
   end
 
-  def action_join_request join_request
+  def action_join_request_outing join_request
     return unless join_request.accepted?
     return unless join_request.outing?
 
@@ -33,6 +37,15 @@ class OnboardingObserver < ActiveRecord::Observer
 
     if outing.papotage?
       return join_request.user.papotages_joined!
+    end
+  end
+
+  def action_join_request_neighborhood join_request
+    return unless join_request.accepted?
+    return unless join_request.neighborhood?
+
+    if join_request.joinable.national?
+      return join_request.user.neighborhood_national_joined!
     end
   end
 
