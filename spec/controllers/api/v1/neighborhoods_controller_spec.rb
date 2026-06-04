@@ -131,6 +131,18 @@ describe Api::V1::NeighborhoodsController, type: :controller do
       it { expect(result['neighborhoods'].count).to eq(2) }
       it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood_national.id) }
     end
+
+    describe 'filter by national' do
+      let!(:neighborhood_national) { create :neighborhood, national: true }
+      let!(:neighborhood_local)    { create :neighborhood, national: false }
+
+      before { Neighborhood.stub(:inside_user_perimeter).and_return([neighborhood, neighborhood_local]) }
+      before { get :index, params: { token: user.token, national: true } }
+
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].map { |n| n['id'] }).to include(neighborhood_national.id) }
+      it { expect(result['neighborhoods'].map { |n| n['id'] }).not_to include(neighborhood_local.id) }
+    end
   end
 
   context 'create' do
