@@ -113,6 +113,27 @@ describe MemberMailer, type: :mailer do
     end
   end
 
+  describe '#unseen_video_day_5' do
+    let!(:welcome_video) { create :resource, tag: :welcome, uuid_v2: 'evideo12345' }
+    let(:mail) { MemberMailer.unseen_video_day_5(user) }
+
+    expect_mailjet_email do
+      {
+        from: %("Le Réseau Entourage" <communaute@entourage.social>),
+        template_id: 7995949,
+        campaign_name: 'relance_video_j_5',
+        variables: {
+          video_url: "https://www.entourage.social/deeplink/resources/evideo12345?auth=#{UserServices::UserAuthenticator.auth_token(user)}"
+        }
+      }
+    end
+
+    context 'when welcome video does not exist' do
+      before { welcome_video.destroy }
+      it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
+    end
+  end
+
   describe 'select default variables' do
     it do
       Timecop.freeze

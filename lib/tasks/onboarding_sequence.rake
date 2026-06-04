@@ -25,6 +25,16 @@ namespace :onboarding_sequence do
     #   MemberMailer.onboarding_day_8(user).deliver_later
     # end
 
+    welcome_video = Resource.find_by(tag: :welcome)
+
+    at_day 5, after: :registration do |user|
+      next unless welcome_video.present?
+      next unless user.is_offer_help? || user.is_ask_for_help?
+      next if user.has_watched_resource?(welcome_video.id)
+
+      MemberMailer.unseen_video_day_5(user).deliver_later
+    end
+
     at_day 14, after: :registration do |user|
       MemberMailer.onboarding_day_14(user).deliver_later
     end
