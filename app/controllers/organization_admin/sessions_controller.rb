@@ -77,7 +77,7 @@ module OrganizationAdmin
 
       raise 'blocked|deleted' if user.deleted? || user.blocked?
       sign_in(user)
-      user.update_column(:first_sign_in_at, Time.zone.now) if user.first_sign_in_at.nil?
+      user.record_first_sign_in!
 
       redirect_to params[:continue].presence || organization_admin_path
     end
