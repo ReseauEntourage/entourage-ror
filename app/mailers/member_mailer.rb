@@ -47,6 +47,19 @@ class MemberMailer < MailjetMailer
                   deliver_only_once: true
   end
 
+  def unseen_video_day_5(user)
+    welcome_video = Resource.find_by(tag: :welcome)
+    return unless welcome_video
+
+    mailjet_email to: user,
+                  template_id: 7995949,
+                  campaign_name: 'relance_video_j_5',
+                  deliver_only_once: true,
+                  variables: {
+                    video_url: welcome_video.share_url
+                  }
+  end
+
   def action_follow_up_day_15(action)
     mailjet_email to: action.user,
                   template_id: 452754,
