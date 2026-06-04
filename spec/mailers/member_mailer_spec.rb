@@ -123,7 +123,7 @@ describe MemberMailer, type: :mailer do
         template_id: 7995949,
         campaign_name: 'relance_video_j_5',
         variables: {
-          video_url: "https://www.entourage.social/deeplink/resources/evideo12345?auth=#{UserServices::UserAuthenticator.auth_token(user)}"
+          video_url: welcome_video.share_url
         }
       }
     end
