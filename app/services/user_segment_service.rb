@@ -22,7 +22,7 @@ module UserSegmentService
 
     case event
     when :registration
-      user_scope.where(onboarding_sequence_start_at: date)
+      user_scope.where(first_sign_in_at: date)
     when :last_session
       user_scope.where(last_sign_in_at: date)
     when :action_creation
