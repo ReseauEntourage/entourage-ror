@@ -133,19 +133,18 @@ module NewsletterServices
       return properties unless user.present?
 
       properties.merge({
-        "email" => email,
-        "civilité" => user.gender,
-        "prénom" => user.first_name,
-        "nom" => user.last_name,
-        "code_postal" => user.departement,
-        "antenne_entourage" => user.sf.from_address_to_antenne,
-        "candidat" => false,
-        "coach" => false,
-        "préca" => user.is_ask_for_help?,
-        "bénévole" => user.ambassador?,
-        "entreprise" => false,
-        "association" => user.association?,
-        "source" => "Backoffice EP"
+        "civility" => user.gender,
+        "first_name" => user.first_name,
+        "last_name" => user.last_name,
+        "postal_code" => user.departement,
+        "antenne_entourage" => zone || user.sf.from_address_to_antenne,
+        "is_candidate" => "Non",
+        "is_coach" => "Non",
+        "is_precarious" => user.is_ask_for_help? ? "Oui" : "Non",
+        "is_volunteer" => user.ambassador? ? "Oui" : "Non",
+        "is_company" => "Non",
+        "is_organization" => user.association? ? "Oui" : "Non",
+        "source" => "Backoffice EL"
       })
     end
   end
