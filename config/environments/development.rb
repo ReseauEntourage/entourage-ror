@@ -7,6 +7,9 @@ Rails.application.configure do
   config.hosts << 'api.entourage.localhost'
   config.hosts << 'admin.entourage.localhost'
 
+  # ActionCable : autoriser les connexions WebSocket depuis tous les sous-domaines en dev
+  config.action_cable.disable_request_forgery_protection = true
+
   # Reload code on change
   config.enable_reloading = true
 
