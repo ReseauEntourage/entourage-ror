@@ -35,12 +35,12 @@ describe UserSegmentService do
       let(:segment) { UserSegmentService.at_day(n, after: :registration) }
 
       context 'the user registered at the target date' do
-        let(:user_attributes) { {onboarding_sequence_start_at: n.days.ago} }
+        let(:user_attributes) { {first_sign_in_at: n.days.ago} }
         it { expect(segment.pluck(:id)).to include user.id }
       end
 
       context "the user didn't register at the target date" do
-        let(:user_attributes) { {onboarding_sequence_start_at: (n + 1).days.ago} }
+        let(:user_attributes) { {first_sign_in_at: (n + 1).days.ago} }
         it { expect(segment.pluck(:id)).not_to include user.id }
       end
     end
