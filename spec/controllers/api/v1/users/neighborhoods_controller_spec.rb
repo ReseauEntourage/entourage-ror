@@ -22,6 +22,11 @@ describe Api::V1::Users::NeighborhoodsController, type: :controller do
       it { expect(result['neighborhoods'].map {|neighborhoods| neighborhoods['id']}).to match_array([neighborhood.id, neighborhood_joined.id]) }
     end
 
+    context 'accessible by user uuid' do
+      before { get :index, params: { user_id: user.uuid, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     describe 'filter by interests' do
       before { get :index, params: { user_id: user.id, token: user.token, interests: interests } }
 

@@ -17,6 +17,11 @@ describe Api::V1::Neighborhoods::UsersController do
       it { expect(response.status).to eq(200) }
     end
 
+    context 'accessible by neighborhood uuid' do
+      before { get :index, params: { neighborhood_id: neighborhood.uuid_v2, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context 'signed in' do
       let(:user_cancelled) { create(:public_user, first_name: 'cancelled') }
       let(:user_blocked) { create(:public_user, first_name: 'blocked') }

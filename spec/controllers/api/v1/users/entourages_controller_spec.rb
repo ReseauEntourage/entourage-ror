@@ -24,6 +24,11 @@ describe Api::V1::Users::EntouragesController, type: :controller do
       it { expect(result['entourages'].map {|entourages| entourages['id']}).to eq([entourage_created.id, entourage_joined.id]) }
     end
 
+    context 'accessible by user uuid' do
+      before { get :index, params: { user_id: user.uuid, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context 'filter entourage status' do
       let!(:entourage_joined_opened) { FactoryBot.create(:entourage, created_at: 2.day.ago, status: 'open') }
       let!(:join_request1) { FactoryBot.create(:join_request, joinable: entourage_joined_opened, user: user, status: JoinRequest::ACCEPTED_STATUS) }
