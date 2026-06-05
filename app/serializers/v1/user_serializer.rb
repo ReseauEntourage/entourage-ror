@@ -22,9 +22,8 @@ module V1
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?
-    # uuid and anonymous are not confidential but right now we only need them for current_user in the clients so we don't return it in other contexts
+    attribute :uuid
     attribute :anonymous,           if: :me?
-    attribute :uuid,                if: :me?
     attribute :feature_flags,       if: :me?
     attribute :token,               if: :me?
     attribute :email,               if: :me?
@@ -128,7 +127,7 @@ module V1
     end
 
     def uuid
-      UserService.external_uuid(object)
+      object.anonymous? ? UserService.external_uuid(object) : object.uuid
     end
 
     def firebase_properties

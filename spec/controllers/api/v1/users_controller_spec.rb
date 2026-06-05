@@ -23,7 +23,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           expect(result).to eq({
             'user' => {
               'id' => user.id,
-              'uuid' => user.id.to_s,
+              'uuid' => user.uuid,
               'email' => user.email,
               'lang' => user.lang,
               'availability' => user.availability,
@@ -862,7 +862,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         it { expect(JSON.parse(response.body)).to eq({
           'user' => {
             'id' => user.id,
-            'uuid' => user.id.to_s,
+            'uuid' => user.uuid,
             'email' => user.email,
             'lang' => user.lang,
             'availability' => user.availability,
@@ -959,7 +959,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         it { expect(JSON.parse(response.body)).to eq({
           'user' => {
             'id' => user.id,
-            'uuid' => user.id.to_s,
+            'uuid' => user.uuid,
             'email' => user.email,
             'lang' => user.lang,
             'availability' => user.availability,
@@ -1050,6 +1050,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         it { expect(JSON.parse(response.body)).to eq({
           'user' => {
             'id' => other_user.id,
+            'uuid' => other_user.uuid,
             'lang' => user.lang,
             'availability' => user.availability,
             'display_name' => 'John D.',
