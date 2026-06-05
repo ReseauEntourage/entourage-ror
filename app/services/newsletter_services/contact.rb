@@ -144,7 +144,8 @@ module NewsletterServices
         "is_volunteer" => user.ambassador? ? "Oui" : "Non",
         "is_company" => "Non",
         "is_organization" => user.association? ? "Oui" : "Non",
-        "source" => "Backoffice EL"
+        "source" => "Backoffice EL",
+        "program" => "Entourage Local"
       })
     end
   end
