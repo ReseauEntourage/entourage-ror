@@ -60,5 +60,11 @@ describe Api::V1::ChatMessagesController do
       it { expect(result.deleter_id).to eq(chat_message.user_id) }
       it { expect(result.deleted_at).to be_a(ActiveSupport::TimeWithZone) }
     end
+
+    describe 'accessible by chat_message uuid' do
+      before { delete :destroy, params: { id: chat_message.uuid_v2, token: chat_message.user.token } }
+
+      it { expect(response.status).to eq 200 }
+    end
   end
 end

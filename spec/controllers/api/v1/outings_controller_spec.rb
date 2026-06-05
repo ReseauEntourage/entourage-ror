@@ -908,6 +908,11 @@ describe Api::V1::OutingsController do
       it { expect { request }.to change { Outing.count }.by(1) }
     end
 
+    context 'accessible by outing uuid' do
+      before { post :duplicate, params: { token: user.token, id: outing.uuid_v2 } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context 'as creator' do
       let(:result) { subject['outing'] }
       let(:result_db) { Outing.find(subject['outing']['id']) }

@@ -390,6 +390,14 @@ describe Api::V1::Entourages::UsersController do
         })}
       end
 
+      context 'accessible by user uuid' do
+        let!(:other_user) { FactoryBot.create(:pro_user) }
+        let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: 'accepted') }
+        let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: 'accepted') }
+        before { delete :destroy, params: { entourage_id: entourage.to_param, id: other_user.uuid, token: user.token } }
+        it { expect(response.status).to eq(200) }
+      end
+
       context 'quit entourage' do
         let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: 'accepted') }
         before { delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token } }
