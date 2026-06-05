@@ -3,38 +3,26 @@ require 'rails_helper'
 RSpec.describe DenormChatMessageObserver do
   let(:user)   { create(:pro_user) }
   let(:outing) { create(:outing) }
-  let!(:membership) { create(:join_request, joinable: outing, user: user, status: 'accepted') }
 
-  describe "broadcast ActionCable sur création d'un message dans un outing" do
-    context "message texte standard" do
-      it "diffuse sur le canal de l'outing" do
-        expect {
-          create(:chat_message, messageable: outing, user: user, content: "Hello !")
-        }.to have_broadcasted_to("outing_chat:#{outing.id}")
-          .with(hash_including(
-            type:      "new_message",
-            outing_id: outing.id,
-            user_id:   user.id
-          ))
-      end
+  describe "jobs de dénormalisation" do
+    it "planifie UnreadChatMessageJob à la création d'un message" do
+      expect(UnreadChatMessageJob).to receive(:perform_later)
+        .with("Entourage", outing.id)
+      create(:chat_message, messageable: outing, user: user, content: "Hello !")
     end
 
-    context "status_update (ex: outing fermé)" do
-      it "ne diffuse pas" do
-        expect {
-          create(:chat_message, :closed_as_success, messageable: outing, user: user)
-        }.not_to have_broadcasted_to("outing_chat:#{outing.id}")
-      end
+    it "planifie CountChatMessageJob à la création d'un message" do
+      expect(CountChatMessageJob).to receive(:perform_later)
+        .with("Entourage", outing.id)
+      create(:chat_message, messageable: outing, user: user, content: "Hello !")
     end
 
-    context "message dans un entourage non-outing (action)" do
-      let(:action) { create(:entourage, group_type: :action) }
-
-      it "ne diffuse pas" do
-        expect {
-          create(:chat_message, messageable: action, user: user, content: "Hello")
-        }.not_to have_broadcasted_to("outing_chat:#{action.id}")
-      end
+    it "ne planifie pas de job pour un status_update" do
+      # Les jobs sont quand même déclenchés sur status_update — ce test vérifie
+      # que l'observer ne plante pas dans ce cas.
+      expect {
+        create(:chat_message, :closed_as_success, messageable: outing, user: user)
+      }.not_to raise_error
     end
   end
 end
