@@ -322,11 +322,13 @@ module Api
       end
 
       def allowed_duplicate?
-        unless current_user == Outing.find(params[:id]).user
+        outing = Outing.find_by_id_or_uuid!(params[:id])
+
+        unless current_user == outing.user
           render json: { message: 'unauthorized user' }, status: :unauthorized
         end
 
-        unless Outing.find(params[:id]).recurrence.present?
+        unless outing.recurrence.present?
           render json: { message: 'no recurrency settings' }, status: :unauthorized
         end
       end

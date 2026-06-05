@@ -34,7 +34,7 @@ module Api
           @user = if params[:user_id] == 'me'
             current_user
           else
-            User.find(params[:user_id])
+            User.find_by_id_or_uuid!(params[:user_id])
           end
         end
 
