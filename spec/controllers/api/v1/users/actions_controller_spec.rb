@@ -24,5 +24,10 @@ describe Api::V1::Users::ActionsController, type: :controller do
       it { expect(result['actions'].count).to eq(2) }
       it { expect(result['actions'].map {|actions| actions['id']}).to eq([action_created.id, action_joined.id]) }
     end
+
+    context 'accessible by user uuid' do
+      before { get :index, params: { user_id: user.uuid, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
   end
 end

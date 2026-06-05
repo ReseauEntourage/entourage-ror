@@ -9,6 +9,11 @@ describe Api::V1::Resources::UsersController do
     let(:request) { post :create, params: { resource_id: resource.to_param, token: user.token } }
     let(:request_not_signed_in) { post :create, params: { resource_id: resource.to_param } }
 
+    context 'accessible by resource uuid' do
+      before { post :create, params: { resource_id: resource.uuid_v2, token: user.token } }
+      it { expect(response.status).to eq(201) }
+    end
+
     context 'not signed in' do
       before { request_not_signed_in }
 

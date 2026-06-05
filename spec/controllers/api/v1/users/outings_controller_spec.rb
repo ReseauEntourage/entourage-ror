@@ -39,6 +39,11 @@ describe Api::V1::Users::OutingsController, type: :controller do
       it { expect(result['outings'].map {|outings| outings['id']}).to match_array([outing_tdf.id, outing_jo.id]) }
     end
 
+    context 'accessible by user uuid' do
+      before { get :index, params: { user_id: user.uuid, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     describe 'filter by interests' do
       before { Outing.find(outing_tdf.id).update_attribute(:interest_list, ['sport']) }
 

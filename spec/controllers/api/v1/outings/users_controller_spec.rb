@@ -19,6 +19,11 @@ describe Api::V1::Outings::UsersController do
       it { expect(response.status).to eq(200) }
     end
 
+    context 'accessible by outing uuid' do
+      before { get :index, params: { outing_id: outing.uuid_v2, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context 'signed in' do
       let(:user_cancelled) { create(:public_user, first_name: 'cancelled') }
       let(:user_blocked) { create(:public_user, first_name: 'blocked') }

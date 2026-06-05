@@ -1110,6 +1110,15 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
 
+      context 'get someone else profile by uuid' do
+        let(:other_user) { FactoryBot.create(:pro_user) }
+
+        before { get :show, params: { id: other_user.uuid, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(result['user']['id']).to eq(other_user.id) }
+      end
+
       context 'roles' do
         let(:other_user) { FactoryBot.create(:public_user, targeting_profile: :ambassador) }
         let!(:join_request)  { create :join_request, user: other_user, status: :accepted }

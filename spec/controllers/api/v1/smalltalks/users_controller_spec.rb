@@ -17,6 +17,11 @@ describe Api::V1::Smalltalks::UsersController do
       it { expect(response.status).to eq(200) }
     end
 
+    context 'accessible by smalltalk uuid' do
+      before { get :index, params: { smalltalk_id: smalltalk.uuid_v2, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context 'signed in' do
       let!(:join_request) { create(:join_request, user: user, joinable: smalltalk, status: :accepted) }
 
