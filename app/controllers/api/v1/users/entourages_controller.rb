@@ -24,7 +24,7 @@ module Api
         private
 
         def set_user
-          @user = User.find(params[:user_id])
+          @user = User.find_by_id_or_uuid!(params[:user_id])
         end
 
         def position_params?
