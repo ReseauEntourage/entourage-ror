@@ -47,7 +47,7 @@ module Api
         end
 
         def set_neighborhood
-          @neighborhood = Neighborhood.find(params[:neighborhood_id])
+          @neighborhood = Neighborhood.find_by_id_or_uuid!(params[:neighborhood_id])
         end
 
         def join_request

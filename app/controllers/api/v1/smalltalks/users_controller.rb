@@ -36,7 +36,7 @@ module Api
         private
 
         def set_smalltalk
-          @smalltalk = Smalltalk.find(params[:smalltalk_id])
+          @smalltalk = Smalltalk.find_by_id_or_uuid!(params[:smalltalk_id])
         end
 
         def set_join_request
@@ -46,7 +46,7 @@ module Api
         def authorised_user?
           return unless params[:id].present?
 
-          unless current_user == User.find(params[:id])
+          unless current_user == User.find_by_id_or_uuid!(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
         end

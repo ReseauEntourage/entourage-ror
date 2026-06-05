@@ -41,7 +41,7 @@ module Api
         def invite
           return render json: { message: 'inviter should be conversation creator' }, status: :bad_request unless current_user.id == @conversation.user_id
 
-          user = User.find(params[:id])
+          user = User.find_by_id_or_uuid!(params[:id])
 
           return render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
             user: user
