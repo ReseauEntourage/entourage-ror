@@ -21,7 +21,7 @@ module Api
         render json: NeighborhoodServices::Finder.new(current_user, national_params).find_all
           .includes(:translation, :image_resize_actions, :user)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: current_user }
+          .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NationalListSerializer, scope: { user: current_user }
       end
 
       def default
