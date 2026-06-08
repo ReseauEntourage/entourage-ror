@@ -12,6 +12,18 @@ module Api
           .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NotMemberListSerializer, scope: { user: current_user }
       end
 
+      def national
+        national_params = index_params.merge({
+          national: true,
+          unrelevant_membership: true
+        })
+
+        render json: NeighborhoodServices::Finder.new(current_user, national_params).find_all
+          .includes(:translation, :image_resize_actions, :user)
+          .page(page)
+          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: current_user }
+      end
+
       def default
         return render json: {} unless @neighborhood = default_neighborhood_as_member
 
@@ -98,7 +110,7 @@ module Api
       end
 
       def index_params
-        params.permit(:q, :latitude, :longitude, :travel_distance, :interest_list, interests: [])
+        params.permit(:q, :latitude, :longitude, :travel_distance, :interest_list, :national, interests: [])
       end
 
       def neighborhood_params
