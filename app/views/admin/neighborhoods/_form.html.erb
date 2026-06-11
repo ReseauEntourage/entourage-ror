@@ -45,16 +45,22 @@
   <% end %>
 
   <div class="form-group row">
-    <div class="col-md-8">
+    <div class="col-md-6">
       <%= f.label :status %>
       <% statuses = Neighborhood::STATUSES.map { |status| [t("activerecord.attributes.neighborhood.statuses.#{status}"), status] } %>
       <%= f.select :status, options_for_select(statuses, @neighborhood.status), { include_blank: false }, class: "form-control" %>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
       <%= f.label :public %>
       <div class="controls">
         <%= f.check_box :public, { checked: @neighborhood.public?, 'data-toggle': :toggle }, 'true', 'false' %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <%= f.label :reserved_female %>
+      <div class="controls">
+        <%= f.check_box :reserved_female, { checked: @neighborhood.reserved_female?, 'data-toggle': :toggle }, 'true', 'false' %>
       </div>
     </div>
   </div>
