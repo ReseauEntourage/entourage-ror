@@ -549,7 +549,7 @@ class User < ApplicationRecord
     return if first_sign_in_at.present?
 
     update_column(:first_sign_in_at, Time.zone.now)
-    UnseenResourceWelcomeJob.perform_at(first_sign_in_at + 24.hours, id)
+    UnseenResourceWelcomeJob.perform_at(first_sign_in_at + 5.minutes, id)
   end
 
   def public?
