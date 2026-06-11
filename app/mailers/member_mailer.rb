@@ -22,6 +22,26 @@ class MemberMailer < MailjetMailer
                   }
   end
 
+  def papotages_invitation(user)
+    outings = Outing.papotages.future_or_ongoing.default_order.limit(3)
+
+    mailjet_email to: user,
+                  template_id: 8016225,
+                  campaign_name: 'papotages_invitation',
+                  deliver_only_once: true,
+                  variables: {
+                    outings: outings.map { |outing|
+                      {
+                        name: outing.title,
+                        date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
+                        hour: outing.metadata[:starts_at].strftime('%Hh%M'),
+                        url: outing.share_url,
+                        women_only: outing.reserved_female == true
+                      }
+                    }
+                  }
+  end
+
   def incomplete_profile(user)
     mailjet_email to: user,
                   template_id: 6174246,

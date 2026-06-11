@@ -76,6 +76,37 @@ describe MemberMailer, type: :mailer do
     it { expect(subject.body.encoded).to match message }
   end
 
+  describe '#papotages_invitation' do
+    let(:mail) { MemberMailer.papotages_invitation(user) }
+    let!(:outing) { create(:outing, :outing_class, online: true, title: 'Papotage solidaire') }
+
+    expect_mailjet_email do
+      {
+        from: %("Le Réseau Entourage" <communaute@entourage.social>),
+        template_id: 8016225,
+        campaign_name: :papotages_invitation,
+        variables: {
+          outings: [{
+            name: 'Papotage solidaire',
+            date: I18n.l(outing.metadata[:starts_at].to_date, format: :short),
+            hour: outing.metadata[:starts_at].strftime('%Hh%M'),
+            url: outing.share_url,
+            women_only: false
+          }]
+        }
+      }
+    end
+
+    context 'when outing is reserved for women' do
+      before { outing.update!(reserved_female: true) }
+
+      it 'includes women_only: true in variables' do
+        vars = JSON.parse(mail['X-MJ-Vars'].value)
+        expect(vars['outings'].first['women_only']).to eq true
+      end
+    end
+  end
+
   describe '#welcome' do
     let(:mail) { MemberMailer.welcome(user) }
     let!(:outing) { create(:outing, :outing_class, online: true, title: 'JO 2024', event_url: 'Paris', sf_category: :welcome_entourage_local) }
