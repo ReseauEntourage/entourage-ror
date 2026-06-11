@@ -46,12 +46,6 @@ if EnvironmentHelper.production?
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.ip}"
 
-    throttle('api/v1/users/create/ip/2-by-minute', limit: 2, period: 1.minute) do |req|
-      if req.path == '/api/v1/users' && req.post?
-        req.ip
-      end
-    end
-
     throttle('api/v1/users/create/ip/5-by-hour', limit: 5, period: 1.hour) do |req|
       if req.path == '/api/v1/users' && req.post?
         req.ip
