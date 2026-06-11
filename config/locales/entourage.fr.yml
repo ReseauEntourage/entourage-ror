@@ -246,6 +246,7 @@ fr:
         description: Description
         interests: Centres d'intérêts
         image_url: Image
+        reserved_female: Réserve aux femmes
         status: Statut
         statuses:
           active: Actif
