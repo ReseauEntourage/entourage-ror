@@ -39,7 +39,7 @@ module Api
             unsubscribed_participants_female: params[:female]
           })
 
-          if @outing.save
+          if @outing.save(context: :unsubscribed_participants)
             render json: @outing, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
           else
             render json: {
