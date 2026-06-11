@@ -76,6 +76,27 @@ describe MemberMailer, type: :mailer do
     it { expect(subject.body.encoded).to match message }
   end
 
+  describe '#first_steps_invitation' do
+    let(:mail) { MemberMailer.first_steps_invitation(user) }
+    let!(:outing) { create(:outing, :outing_class, online: true, title: 'Session premiers pas', sf_category: :welcome_entourage_local) }
+
+    expect_mailjet_email do
+      {
+        from: %("Le Réseau Entourage" <communaute@entourage.social>),
+        template_id: 7996265,
+        campaign_name: :first_steps_invitation,
+        variables: {
+          outings: [{
+            name: 'Session premiers pas',
+            date: I18n.l(outing.metadata[:starts_at].to_date, format: :short),
+            hour: outing.metadata[:starts_at].strftime('%Hh%M'),
+            url: outing.share_url
+          }]
+        }
+      }
+    end
+  end
+
   describe '#welcome' do
     let(:mail) { MemberMailer.welcome(user) }
     let!(:outing) { create(:outing, :outing_class, online: true, title: 'JO 2024', event_url: 'Paris', sf_category: :welcome_entourage_local) }

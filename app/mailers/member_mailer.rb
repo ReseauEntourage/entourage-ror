@@ -22,6 +22,25 @@ class MemberMailer < MailjetMailer
                   }
   end
 
+  def first_steps_invitation(user)
+    outings = Outing.first_steps_category.future_or_ongoing.default_order.limit(3)
+
+    mailjet_email to: user,
+                  template_id: 7996265,
+                  campaign_name: 'first_steps_invitation',
+                  deliver_only_once: true,
+                  variables: {
+                    outings: outings.map { |outing|
+                      {
+                        name: outing.title,
+                        date: I18n.l(outing.metadata[:starts_at].to_date, format: :short, locale: user.lang),
+                        hour: outing.metadata[:starts_at].strftime('%Hh%M'),
+                        url: outing.share_url
+                      }
+                    }
+                  }
+  end
+
   def incomplete_profile(user)
     mailjet_email to: user,
                   template_id: 6174246,
