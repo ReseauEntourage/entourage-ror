@@ -28,7 +28,7 @@ module Api
 
         render json: {
           lifecycle_segment: scorer.lifecycle_segment,
-          suggestions:       paginated.map { |s| V1::SuggestionSerializer.new(s).as_json },
+          suggestions:       paginated.map { |s| ::V1::SuggestionSerializer.new(s).as_json },
           meta:              {
             current_page: paginated.current_page,
             total_pages:  paginated.total_pages,

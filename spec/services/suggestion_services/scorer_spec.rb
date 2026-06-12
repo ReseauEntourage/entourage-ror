@@ -23,8 +23,6 @@ describe SuggestionServices::Scorer do
     end
 
     context 'with badge SUPER_ENGAGE' do
-      before { create(:engagement_level, user: user) }
-
       it 'returns :active' do
         allow(EngagementLevel).to receive(:find_by).with(user_id: user.id)
           .and_return(instance_double(EngagementLevel, badge: 'SUPER_ENGAGE'))
@@ -84,7 +82,8 @@ describe SuggestionServices::Scorer do
 
     context 'when candidate has no coordinates' do
       it 'returns 0 for distance component without raising' do
-        outing.update!(latitude: nil, longitude: nil)
+        allow(outing).to receive(:latitude).and_return(nil)
+        allow(outing).to receive(:longitude).and_return(nil)
         expect { described_class.new(user).score(outing) }.not_to raise_error
       end
     end
