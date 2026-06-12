@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e5e5e5;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 32px;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── Labels variante ── */
+    .screen-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .screen-label {
+      font: 700 11px 'Poppins'; color: #6D6C6C;
+      text-transform: uppercase; letter-spacing: 1px;
+      text-align: center;
+    }
+
+    /* ── Téléphone ── */
+    .phone {
+      font-family: 'Poppins', sans-serif;
+      background: #FFF8F6;
+      width: 340px;
+      min-height: 680px;
+      border-radius: 36px;
+      box-shadow: 0 20px 56px rgba(0,0,0,0.16);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── Header onboarding ── */
+    .ob-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 10px;
+    }
+    .back-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: #363636;
+    }
+    .skip-link {
+      font: 400 13px 'Poppins'; color: #A0A0A0; cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* ── Barre de progression ── */
+    .progress-bar-wrap {
+      padding: 0 20px 0;
+      display: flex;
+      gap: 6px;
+    }
+    .progress-segment {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: #F5F5F5;
+      overflow: hidden;
+    }
+    .progress-segment .fill {
+      height: 100%;
+      background: #FF9739;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* ── Contenu principal ── */
+    .ob-content {
+      flex: 1;
+      padding: 24px 20px 100px;
+      overflow-y: auto;
+    }
+
+    .ob-step-label {
+      font: 700 11px 'Poppins'; color: #A0A0A0;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .ob-title {
+      font: 700 22px/1.35 'Poppins'; color: #363636;
+      margin-bottom: 6px;
+    }
+    .ob-subtitle {
+      font: 400 14px/1.5 'Poppins'; color: #6D6C6C;
+      margin-bottom: 28px;
+    }
+
+    /* ── Chips ── */
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid #D9D9D9;
+      border-radius: 32px;
+      padding: 11px 16px;
+      font: 500 14px 'Poppins';
+      color: #363636;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .chip.selected {
+      border-color: #FF9739;
+      background: #FEEAE3;
+      color: #FF9739;
+    }
+    .chip .chip-icon { font-size: 18px; line-height: 1; }
+    .chip.full-width { width: 100%; justify-content: flex-start; border-radius: 14px; padding: 14px 16px; }
+    .chip.full-width .chip-check {
+      width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #D9D9D9;
+      display: flex; align-items: center; justify-content: center;
+      margin-left: auto; font-size: 12px; flex-shrink: 0;
+    }
+    .chip.full-width.selected .chip-check {
+      background: #FF9739; border-color: #FF9739; color: #fff;
+    }
+
+    /* ── Cards larges (Q3) ── */
+    .cards-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .ob-card {
+      background: #fff; border-radius: 16px; padding: 16px;
+      border: 1.5px solid #D9D9D9;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ob-card.selected { border-color: #FF9739; background: #FEEAE3; }
+    .ob-card-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: #FFF8F6; display: flex; align-items: center;
+      justify-content: center; font-size: 24px; flex-shrink: 0;
+    }
+    .ob-card.selected .ob-card-icon { background: #fff; }
+    .ob-card-body { flex: 1; min-width: 0; }
+    .ob-card-title { font: 600 14px 'Poppins'; color: #363636; margin-bottom: 2px; }
+    .ob-card-sub   { font: 400 12px 'Poppins'; color: #6D6C6C; line-height: 1.4; }
+    .ob-card-radio {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 1.5px solid #D9D9D9; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ob-card.selected .ob-card-radio {
+      background: #FF9739; border-color: #FF9739;
+    }
+    .ob-card.selected .ob-card-radio::after {
+      content: ''; width: 8px; height: 8px;
+      border-radius: 50%; background: #fff;
+    }
+
+    /* ── Zone search (Q1) ── */
+    .zone-search {
+      width: 100%; border: 1.5px solid #D9D9D9; border-radius: 12px;
+      padding: 13px 16px; font: 400 14px 'Poppins'; color: #363636;
+      background: #fff; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .zone-search-icon { color: #A0A0A0; font-size: 16px; }
+    .zone-search-text { color: #A0A0A0; }
+    .zone-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .zone-label {
+      font: 700 11px 'Poppins'; color: #A0A0A0;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 10px; margin-top: 4px;
+    }
+
+    /* ── Bouton principal ── */
+    .ob-footer {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 16px 20px 24px;
+      background: linear-gradient(to top, #FFF8F6 80%, transparent);
+    }
+    .btn-primary {
+      background: #FF9739; color: #fff; border: none; border-radius: 32px;
+      padding: 15px 28px; font: 600 15px 'Poppins'; width: 100%;
+      cursor: pointer; display: block; text-align: center;
+    }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary.green { background: #1E7F51; }
+
+    /* ── Écran bienvenue ── */
+    .welcome-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 28px 100px;
+      text-align: center;
+    }
+    .welcome-illus {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: #FEEAE3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px; margin-bottom: 28px;
+    }
+    .welcome-title {
+      font: 700 24px/1.3 'Poppins'; color: #363636; margin-bottom: 12px;
+    }
+    .welcome-title span { color: #FF9739; }
+    .welcome-sub {
+      font: 400 15px/1.6 'Poppins'; color: #6D6C6C; margin-bottom: 12px;
+    }
+    .welcome-time {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #F5F5F5; border-radius: 20px;
+      padding: 6px 14px;
+      font: 500 13px 'Poppins'; color: #A0A0A0;
+      margin-bottom: 0;
+    }
+
+    /* ── Écran confirmation ── */
+    .confirm-screen {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 28px 100px; text-align: center;
+    }
+    .confirm-illus {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: #DEF1E8;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 24px;
+    }
+    .confirm-title { font: 700 22px/1.3 'Poppins'; color: #363636; margin-bottom: 10px; }
+    .confirm-sub   { font: 400 14px/1.6 'Poppins'; color: #6D6C6C; margin-bottom: 28px; }
+    .recap-list { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .recap-item {
+      background: #fff; border-radius: 12px; padding: 12px 14px;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .recap-icon { font-size: 18px; flex-shrink: 0; }
+    .recap-text { font: 500 13px 'Poppins'; color: #363636; }
+    .recap-val  { font: 400 12px 'Poppins'; color: #6D6C6C; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     ÉCRAN 0 — Bienvenue
+     ══════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Écran 0 — Bienvenue</div>
+  <div class="phone">
+    <div class="welcome-screen">
+      <div class="welcome-illus">👋</div>
+      <div class="welcome-title">Bienvenue,<br><span>Sophie !</span></div>
+      <div class="welcome-sub">
+        Quelques questions rapides pour vous proposer des suggestions vraiment adaptées à vous.
+      </div>
+      <div class="welcome-time">⏱ Moins de 60 secondes</div>
+    </div>
+    <div class="ob-footer">
+      <button class="btn-primary">Commencer</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     QUESTION 1 — Zone géographique
+     ══════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Question 1 — Votre quartier</div>
+  <div class="phone">
+    <div class="ob-header">
+      <button class="back-btn">‹</button>
+      <a class="skip-link">Passer</a>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:0%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:0%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="ob-content">
+      <div style="margin-top:20px;"></div>
+      <div class="ob-step-label">Question 1 sur 4</div>
+      <div class="ob-title">Vous êtes dans quel quartier ?</div>
+      <div class="ob-subtitle">Pour vous suggérer des événements et des gens près de chez vous.</div>
+
+      <!-- Champ de recherche -->
+      <div class="zone-search">
+        <span class="zone-search-icon">🔍</span>
+        <span class="zone-search-text">Ville ou arrondissement…</span>
+      </div>
+
+      <!-- Quartiers fréquents -->
+      <div class="zone-label">À proximité</div>
+      <div class="zone-chips">
+        <div class="chip">Paris 13e</div>
+        <div class="chip selected">Paris 14e</div>
+        <div class="chip">Paris 15e</div>
+        <div class="chip">Ivry-sur-Seine</div>
+        <div class="chip">Gentilly</div>
+        <div class="chip">Montrouge</div>
+      </div>
+    </div>
+
+    <div class="ob-footer">
+      <button class="btn-primary">Suivant</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     QUESTION 2 — Motivation principale
+     ══════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Question 2 — Motivation</div>
+  <div class="phone">
+    <div class="ob-header">
+      <button class="back-btn">‹</button>
+      <a class="skip-link">Passer</a>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:0%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="ob-content">
+      <div style="margin-top:20px;"></div>
+      <div class="ob-step-label">Question 2 sur 4</div>
+      <div class="ob-title">Qu'est-ce qui vous amène ici ?</div>
+      <div class="ob-subtitle">Choisissez ce qui vous correspond le mieux — plusieurs choix possibles.</div>
+
+      <div class="cards-grid">
+        <div class="ob-card selected">
+          <div class="ob-card-icon">🤝</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Rencontrer des voisins</div>
+            <div class="ob-card-sub">Créer du lien dans mon quartier</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+
+        <div class="ob-card">
+          <div class="ob-card-icon">👐</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Donner un coup de main</div>
+            <div class="ob-card-sub">Aider concrètement quelqu'un près de chez moi</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+
+        <div class="ob-card">
+          <div class="ob-card-icon">🎉</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Participer à des activités</div>
+            <div class="ob-card-sub">Événements, Papotages, sorties locales</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+
+        <div class="ob-card">
+          <div class="ob-card-icon">✨</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Tout ça à la fois !</div>
+            <div class="ob-card-sub">Je veux voir ce qui se passe</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-footer">
+      <button class="btn-primary">Suivant</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     QUESTION 3 — Format préféré
+     ══════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Question 3 — Format préféré</div>
+  <div class="phone">
+    <div class="ob-header">
+      <button class="back-btn">‹</button>
+      <a class="skip-link">Passer</a>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="ob-content">
+      <div style="margin-top:20px;"></div>
+      <div class="ob-step-label">Question 3 sur 4</div>
+      <div class="ob-title">Vous préférez plutôt…</div>
+      <div class="ob-subtitle">Votre réponse nous aide à choisir ce qu'on vous suggère en premier.</div>
+
+      <div class="cards-grid">
+        <div class="ob-card">
+          <div class="ob-card-icon">👥</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Des activités en groupe</div>
+            <div class="ob-card-sub">Événements, Papotages, sorties collectives</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+
+        <div class="ob-card selected">
+          <div class="ob-card-icon">☕</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Des rencontres en petit comité</div>
+            <div class="ob-card-sub">Échanges directs, 1 à 1 ou très petits groupes</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+
+        <div class="ob-card">
+          <div class="ob-card-icon">🌟</div>
+          <div class="ob-card-body">
+            <div class="ob-card-title">Les deux selon les moments</div>
+            <div class="ob-card-sub">Pas de préférence fixe</div>
+          </div>
+          <div class="ob-card-radio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-footer">
+      <button class="btn-primary">Suivant</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     QUESTION 4 — Disponibilités
+     ══════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Question 4 — Disponibilités</div>
+  <div class="phone">
+    <div class="ob-header">
+      <button class="back-btn">‹</button>
+      <a class="skip-link">Passer</a>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+      <div class="progress-segment"><div class="fill" style="width:100%"></div></div>
+    </div>
+
+    <div class="ob-content">
+      <div style="margin-top:20px;"></div>
+      <div class="ob-step-label">Question 4 sur 4</div>
+      <div class="ob-title">Vous êtes disponible…</div>
+      <div class="ob-subtitle">Pour vous suggérer des événements aux bons moments. Plusieurs choix possibles.</div>
+
+      <div class="chips-grid" style="margin-bottom: 12px;">
+        <div class="chip full-width selected">
+          <span class="chip-icon">🌞</span>
+          <span>Le week-end</span>
+          <div class="chip-check">✓</div>
+        </div>
+        <div class="chip full-width">
+          <span class="chip-icon">💼</span>
+          <span>En semaine, dans la journée</span>
+          <div class="chip-check"></div>
+        </div>
+        <div class="chip full-width selected">
+          <span class="chip-icon">🌙</span>
+          <span>En soirée (après 18h)</span>
+          <div class="chip-check">✓</div>
+        </div>
+        <div class="chip full-width">
+          <span class="chip-icon">🗓</span>
+          <span>Ça dépend — je regarde au cas par cas</span>
+          <div class="chip-check"></div>
+        </div>
+      </div>
+
+      <div style="background:#F5F5F5; border-radius:12px; padding:12px 14px; display:flex; align-items:flex-start; gap:10px;">
+        <span style="font-size:16px; flex-shrink:0; margin-top:1px;">💡</span>
+        <span style="font:400 12px 'Poppins'; color:#6D6C6C; line-height:1.5;">
+          Vous pourrez modifier vos disponibilités à tout moment depuis votre profil.
+        </span>
+      </div>
+    </div>
+
+    <div class="ob-footer">
+      <button class="btn-primary green">Voir mes suggestions →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     ÉCRAN 5 — Récapitulatif & validation
+     ══════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Écran 5 — C'est parti !</div>
+  <div class="phone">
+    <div class="ob-header" style="justify-content:flex-end;">
+      <a class="skip-link">Modifier</a>
+    </div>
+
+    <div class="confirm-screen">
+      <div class="confirm-illus">🎉</div>
+      <div class="confirm-title">C'est parti, Sophie !</div>
+      <div class="confirm-sub">
+        Voici ce qu'on va vous proposer en priorité — vous pourrez ajuster à tout moment.
+      </div>
+
+      <div class="recap-list">
+        <div class="recap-item">
+          <span class="recap-icon">📍</span>
+          <div>
+            <div class="recap-text">Paris 14e</div>
+            <div class="recap-val">Événements et voisins dans votre zone</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <span class="recap-icon">🤝</span>
+          <div>
+            <div class="recap-text">Rencontrer des voisins</div>
+            <div class="recap-val">Votre priorité principale</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <span class="recap-icon">☕</span>
+          <div>
+            <div class="recap-text">Petits comités</div>
+            <div class="recap-val">Format de rencontre préféré</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <span class="recap-icon">🌞</span>
+          <div>
+            <div class="recap-text">Week-end & soirées</div>
+            <div class="recap-val">Créneaux privilégiés</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-footer">
+      <button class="btn-primary">Découvrir mon premier pas →</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

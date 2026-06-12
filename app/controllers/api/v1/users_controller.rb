@@ -405,6 +405,78 @@ module Api
         head :ok
       end
 
+      def onboarding_questions
+        render json: {
+          questions: [
+            {
+              key: 'goal',
+              title: "Qu'est-ce qui vous amène ici ?",
+              subtitle: 'Choisissez ce qui vous correspond le mieux.',
+              type: 'cards',
+              multiple: true,
+              current_value: current_user.goal,
+              options: [
+                { value: 'ask_and_offer_help', label: 'Rencontrer des voisins', icon: '🤝', description: 'Créer du lien dans mon quartier' },
+                { value: 'offer_help', label: 'Donner un coup de main', icon: '👐', description: "Aider concrètement quelqu'un près de chez moi" },
+                { value: 'ask_for_help', label: 'Participer à des activités', icon: '🎉', description: 'Événements, Papotages, sorties locales' }
+              ]
+            },
+            {
+              key: 'preferred_format',
+              title: 'Vous préférez plutôt…',
+              type: 'cards',
+              multiple: false,
+              current_value: current_user.options&.dig('preferred_format'),
+              options: [
+                { value: 'group', label: 'Des activités en groupe', icon: '👥' },
+                { value: 'individual', label: 'Des rencontres en petit comité', icon: '☕' },
+                { value: 'both', label: 'Les deux selon les moments', icon: '🌟' }
+              ]
+            },
+            {
+              key: 'availability',
+              title: 'Vous êtes disponible…',
+              type: 'chips',
+              multiple: true,
+              current_value: current_user.availability || {},
+              options: [
+                { value: 'weekend', label: 'Le week-end', icon: '🌞' },
+                { value: 'weekday', label: 'Dans la journée en semaine', icon: '💼' },
+                { value: 'evening', label: 'En soirée (après 18h)', icon: '🌙' },
+                { value: 'flexible', label: 'Ça dépend', icon: '🗓' }
+              ]
+            }
+          ]
+        }, status: 200
+      end
+
+      def onboarding_preferences
+        ActiveRecord::Base.transaction do
+          attrs = {}
+          attrs[:goal] = onboarding_params[:goal] if onboarding_params[:goal].present?
+          attrs[:availability] = onboarding_params[:availability] if onboarding_params[:availability].present?
+
+          current_options = current_user.options || {}
+
+          if onboarding_params[:preferred_format].present?
+            current_options = current_options.merge('preferred_format' => onboarding_params[:preferred_format])
+          end
+
+          unless params.dig(:user, :push_enabled).nil?
+            push_enabled = ActiveModel::Type::Boolean.new.cast(onboarding_params[:push_enabled])
+            current_options = current_options.merge('push_enabled' => push_enabled)
+          end
+
+          attrs[:options] = current_options if current_options != (current_user.options || {})
+
+          current_user.update!(attrs) if attrs.any?
+        end
+
+        render json: { message: 'Preferences updated' }, status: 200
+      rescue ActiveRecord::RecordInvalid => e
+        render_error(code: 'CANNOT_UPDATE_PREFERENCES', message: e.message, status: 400)
+      end
+
       def organization_admin_redirect
         if current_user.partner.nil?
           return head :ok
@@ -461,6 +533,10 @@ module Api
 
       def following_params
         params.require(:following).permit(:partner_id, :active)
+      end
+
+      def onboarding_params
+        params.permit(:goal, :preferred_format, :push_enabled, availability: {})
       end
 
       # The apps cache the response to /login and /update for the currentUser

@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages"]
+  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages", "onboarding.push_notifications.unseen_video.sent", "onboarding.resource.welcome", "onboarding.neighborhood.national"]
   create_enum "sms_delivery_provider", ["AWS", "Nexmo", "Slack", "logs"]
   create_enum "sms_delivery_status", ["Ok", "Provider Error", "Sending Error"]
 
@@ -583,6 +583,22 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["email"], name: "index_newsletter_subscriptions_on_email"
   end
 
+  create_table "next_step_suggestions", force: :cascade do |t|
+    t.string "suggestion_type", null: false
+    t.string "target_profile", default: "all"
+    t.integer "min_engagement_level", default: 0
+    t.integer "max_engagement_level", default: 4
+    t.string "title_template", null: false
+    t.string "reason_template"
+    t.string "cta_label", null: false
+    t.string "cta_action"
+    t.integer "priority", default: 0
+    t.integer "valid_for_days", default: 7
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "notification_permissions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.jsonb "permissions", default: {}, null: false
@@ -1060,6 +1076,21 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id"], name: "index_user_moderations_on_user_id", unique: true
   end
 
+  create_table "user_next_steps", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "next_step_suggestion_id", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "shown_at"
+    t.datetime "acted_at"
+    t.datetime "dismissed_at"
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["next_step_suggestion_id"], name: "index_user_next_steps_on_next_step_suggestion_id"
+    t.index ["user_id", "status"], name: "index_user_next_steps_on_user_id_and_status"
+    t.index ["user_id"], name: "index_user_next_steps_on_user_id"
+  end
+
   create_table "user_phone_changes", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "admin_id"
@@ -1214,6 +1245,8 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
   add_foreign_key "experimental_pending_request_reminders", "users"
   add_foreign_key "smalltalks", "meetings"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "user_next_steps", "next_step_suggestions"
+  add_foreign_key "user_next_steps", "users"
   add_foreign_key "user_smalltalks", "smalltalks"
   add_foreign_key "user_smalltalks", "users"
   add_foreign_key "users", "addresses"

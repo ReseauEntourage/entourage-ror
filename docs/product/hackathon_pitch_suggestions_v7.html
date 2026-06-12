@@ -1,0 +1,222 @@
+
+<style>
+  .pitch-wrap { padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .hero { text-align: center; margin-bottom: 2.5rem; }
+  .hero-tag { display: inline-block; background: var(--color-background-info); color: var(--color-text-info); font-size: 12px; padding: 4px 14px; border-radius: var(--border-radius-md); margin-bottom: 1rem; }
+  .hero h1 { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 0.5rem; line-height: 1.3; }
+  .hero p { font-size: 15px; color: var(--color-text-secondary); margin: 0; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-tertiary); margin-bottom: 1rem; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+  .stat-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-num.warn { color: var(--color-text-warning); }
+  .stat-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.4; }
+  .stat-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 3px; }
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-row { margin-bottom: 14px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+  .progress-label { font-size: 13px; color: var(--color-text-primary); }
+  .progress-val { font-size: 12px; color: var(--color-text-secondary); }
+  .progress-bar { height: 8px; background: var(--color-background-secondary); border-radius: 99px; overflow: hidden; position: relative; }
+  .progress-fill { height: 100%; border-radius: 99px; }
+  .fill-green { background: #639922; }
+  .fill-purple { background: #7F77DD; }
+  .fill-warn { background: #BA7517; }
+  .mid-line { position: absolute; left: 50%; top: 0; width: 1.5px; height: 100%; background: var(--color-border-primary); }
+  .problem-box { background: var(--color-background-warning); border-left: 3px solid var(--color-border-warning); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 1rem 1.25rem; margin-bottom: 10px; }
+  .problem-box p { margin: 0; font-size: 14px; color: var(--color-text-warning); line-height: 1.6; }
+  .problem-box .quote { font-style: italic; opacity: 0.85; font-size: 13px; margin-top: 6px; }
+  .okr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+  .okr-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .okr-card .okr-id { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+  .okr-card .okr-text { font-size: 13px; color: var(--color-text-primary); font-weight: 500; line-height: 1.5; }
+  .okr-card .okr-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; line-height: 1.5; }
+  .benchmark-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+  .bm-icon { width: 36px; height: 36px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+  .bm-icon.meetup { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .bm-icon.duolingo { background: var(--color-background-success); color: var(--color-text-success); }
+  .bm-icon.science { background: var(--color-background-info); color: var(--color-text-info); }
+  .bm-body { flex: 1; min-width: 0; }
+  .bm-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .bm-source { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 6px; }
+  .bm-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .bm-stat { display: inline-block; background: var(--color-background-info); color: var(--color-text-info); font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); margin: 4px 4px 0 0; }
+  .bm-stat.green { background: var(--color-background-success); color: var(--color-text-success); }
+  .bm-stat.warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .bm-entourage { font-size: 12px; color: var(--color-text-primary); margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--color-border-tertiary); font-style: italic; }
+  .challenge-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 2rem; }
+  .challenge-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .challenge-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .ch-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+  .ch-icon.type { background: var(--color-background-info); color: var(--color-text-info); }
+  .ch-icon.algo { background: var(--color-background-success); color: var(--color-text-success); }
+  .ch-icon.ux { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .ch-text { font-size: 13px; color: var(--color-text-primary); line-height: 1.6; }
+  .ch-text strong { font-weight: 500; }
+  .ch-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .deliverable-box { background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-lg); padding: 1.25rem; }
+  .deliverable-box .title { font-size: 14px; font-weight: 500; color: var(--color-text-success); margin-bottom: 10px; }
+  .deliverable-item { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; font-size: 13px; color: var(--color-text-success); line-height: 1.5; }
+  .deliverable-item i { margin-top: 2px; flex-shrink: 0; }
+  .warn-pill { display: inline-block; background: var(--color-background-warning); color: var(--color-text-warning); font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin-left: 6px; vertical-align: middle; }
+</style>
+
+<div class="pitch-wrap">
+  <div class="hero">
+    <div class="hero-tag">Hackathon T4 2026 — Entourage Local</div>
+    <h1>Suggestions & recommandations :<br>le compagnon d'engagement</h1>
+    <p>Transformer l'intention de s'engager en passage à l'action</p>
+  </div>
+
+  <div class="section-label">Où on en est — cumul jan.–mai 2026</div>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num warn">3 485</div>
+      <div class="stat-label">Riverains engagés</div>
+      <div class="stat-sub">obj. annuel : 5 606 · à 62% à mi-année</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num warn">2 947</div>
+      <div class="stat-label">Personnes isolées engagées</div>
+      <div class="stat-sub">obj. annuel : 6 782 · à 43% à mi-année</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num warn">32,85%</div>
+      <div class="stat-label">Taux d'engagement — mai 2026</div>
+      <div class="stat-sub">obj. 40% · stagne depuis janv.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Avancement vers les objectifs annuels — mi-parcours</div>
+  <div class="progress-wrap">
+    <div class="progress-row">
+      <div class="progress-header">
+        <span class="progress-label">Riverains engagés <span class="warn-pill">sous le rythme</span></span>
+        <span class="progress-val">3 485 / 5 606 · 62%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-green" style="width:62%"></div><div class="mid-line"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-header">
+        <span class="progress-label">Personnes isolées engagées <span class="warn-pill">sous le rythme</span></span>
+        <span class="progress-val">2 947 / 6 782 · 43%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-purple" style="width:43%"></div><div class="mid-line"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-header">
+        <span class="progress-label">Taux d'engagement mensuel <span class="warn-pill">gap de 7 pts</span></span>
+        <span class="progress-val">32,85% / 40%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill fill-warn" style="width:82%"></div><div class="mid-line"></div></div>
+    </div>
+  </div>
+
+  <div class="section-label">Le problème qu'on attaque aujourd'hui</div>
+  <div class="problem-box" style="margin-bottom:10px;">
+    <p>Les deux profils sont sous le rythme nécessaire — les PI en particulier à seulement 43% à mi-parcours. On inscrit des gens, mais on n'arrive pas à les faire revenir et agir régulièrement.</p>
+  </div>
+  <div class="problem-box" style="margin-bottom:10px;">
+    <p>Le taux d'engagement stagne à ~33% depuis janvier malgré la croissance en volume. Sans guidage proactif, les membres ne savent pas quoi faire et disparaissent.</p>
+  </div>
+  <div class="problem-box" style="margin-bottom:2rem;">
+    <p class="quote">« Difficulté à saisir l'objectif de l'app. » / « Ce réseau n'a hélas pas assez de vie. »</p>
+  </div>
+
+  <hr class="divider">
+  <div class="section-label">Ce que font les autres — benchmarks & études</div>
+
+  <div class="benchmark-card">
+    <div class="bm-icon meetup"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
+    <div class="bm-body">
+      <div class="bm-title">Meetup — recommandations d'événements par IA</div>
+      <div class="bm-source">Meetup Progress Report · 2025</div>
+      <div class="bm-text">En passant d'un algorithme basé sur la distance et la popularité à un modèle IA tenant compte des intérêts et de l'historique de chaque membre, Meetup a observé des gains mesurables dès les premières semaines.</div>
+      <div><span class="bm-stat green">+10% de clics sur les recommandations</span><span class="bm-stat green">+9% de rejoins de groupes depuis la recherche</span></div>
+      <div class="bm-entourage">→ Pour Entourage : suggérer un événement selon la zone, le profil et le niveau d'engagement plutôt qu'une simple liste chronologique.</div>
+    </div>
+  </div>
+
+  <div class="benchmark-card">
+    <div class="bm-icon duolingo"><i class="ti ti-bulb" aria-hidden="true"></i></div>
+    <div class="bm-body">
+      <div class="bm-title">Duolingo — nudges personnalisés et prochain pas</div>
+      <div class="bm-source">StriveCloud / analyses publiques · 2025-2026</div>
+      <div class="bm-text">En faisant vivre une première action avant de demander de créer un compte, Duolingo a fortement amélioré la rétention dès J+1. Les nudges contextuels — fêter une étape, rappeler doucement une absence — ont un effet mesurable même à petite dose. La clé : guider sans culpabiliser.</div>
+      <div><span class="bm-stat green">+20% de rétention J+1</span><span class="bm-stat green">+36% de DAU en 2025</span></div>
+      <div class="bm-entourage">→ Pour Entourage : déclencher une première action dès l'onboarding avant de proposer un parcours plus structuré. Le "prochain pas" doit être évident et accessible.</div>
+    </div>
+  </div>
+
+  <div class="benchmark-card" style="margin-bottom:2rem;">
+    <div class="bm-icon science"><i class="ti ti-flask" aria-hidden="true"></i></div>
+    <div class="bm-body">
+      <div class="bm-title">Recherche — transparence et confiance dans les recommandations</div>
+      <div class="bm-source">ScienceDirect · août 2025</div>
+      <div class="bm-text">La conscience de l'algorithme augmente la perception d'utilité, mais aussi la méfiance si le système est opaque. Le levier : rendre les suggestions explicables et laissez l'utilisateur les ajuster. Un système perçu comme "qui me comprend" génère plus d'engagement qu'un système boîte noire.</div>
+      <div><span class="bm-stat warn">opacité = méfiance</span><span class="bm-stat green">transparence = confiance + engagement</span></div>
+      <div class="bm-entourage">→ Pour Entourage : expliquer pourquoi on suggère ("parce que tu es dans ce quartier", "parce que tu as participé à cet événement"). Capital pour notre public.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="section-label">Pourquoi c'est la priorité T4 — les OKR qui nous guident</div>
+  <div class="okr-grid">
+    <div class="okr-card">
+      <div class="okr-id">KR 2.2 — le plus critique</div>
+      <div class="okr-text">40% taux d'engagement mensuel</div>
+      <div class="okr-sub">On est à 32,85% en mai — 7 points à combler en 6 mois. Les suggestions sont le levier le plus direct.</div>
+    </div>
+    <div class="okr-card">
+      <div class="okr-id">KR 5.1</div>
+      <div class="okr-text">40% des membres actifs interagissent avec une recommandation personnalisée</div>
+      <div class="okr-sub">C'est le KR le plus direct pour notre hackathon</div>
+    </div>
+    <div class="okr-card">
+      <div class="okr-id">KR 1.1</div>
+      <div class="okr-text">65% des nouveaux inscrits réalisent une première action dans les 14 jours</div>
+      <div class="okr-sub">→ Les suggestions doivent déclencher ce premier pas, surtout pour les PI</div>
+    </div>
+    <div class="okr-card">
+      <div class="okr-id">KR 4.3</div>
+      <div class="okr-text">+20% taux de participation aux événements locaux</div>
+      <div class="okr-sub">→ Sans push proactif, les membres n'anticipent pas et ne s'inscrivent pas</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="section-label">Ce qu'on veut prototyper — les 3 axes de suggestion</div>
+  <div class="challenge-box">
+    <div class="challenge-row">
+      <div class="ch-icon type"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
+      <div class="ch-text">
+        <strong>Événements pertinents localement</strong>
+        <div class="ch-sub">Suggérer le bon événement au bon moment, selon le profil, la zone et le niveau d'engagement — comme Meetup l'a fait avec +10% de clics</div>
+      </div>
+    </div>
+    <div class="challenge-row">
+      <div class="ch-icon algo"><i class="ti ti-users" aria-hidden="true"></i></div>
+      <div class="ch-text">
+        <strong>Connexions avec d'autres membres</strong>
+        <div class="ch-sub">Mettre en relation des profils complémentaires (nouveaux/anciens, riverains/personnes isolées)</div>
+      </div>
+    </div>
+    <div class="challenge-row">
+      <div class="ch-icon ux"><i class="ti ti-arrows-right" aria-hidden="true"></i></div>
+      <div class="ch-text">
+        <strong>Prochain pas personnalisé</strong>
+        <div class="ch-sub">Proposer une action accessible selon le segment — levier direct sur le taux d'engagement · s'inspirer du "action d'abord" de Duolingo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Ce qu'on vise à la fin de la journée</div>
+  <div class="deliverable-box">
+    <div class="title"><i class="ti ti-check" aria-hidden="true"></i> Livrables attendus</div>
+    <div class="deliverable-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Un prototype fonctionnel (même minimal) d'au moins un axe de suggestion</div>
+    <div class="deliverable-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Un modèle de donnée clair : quels signaux on exploite, dans quel ordre</div>
+    <div class="deliverable-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Une position partagée sur la faisabilité et les choix d'architecture</div>
+    <div class="deliverable-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Une liste priorisée de tickets pour embarquer ça en roadmap T4</div>
+  </div>
+</div>

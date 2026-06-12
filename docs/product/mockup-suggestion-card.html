@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+      gap: 48px;
+    }
+
+    .label-variant {
+      font: 700 11px 'Poppins';
+      color: #6D6C6C;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .phone {
+      font-family: 'Poppins', sans-serif;
+      background: #FFF8F6;
+      max-width: 390px;
+      width: 390px;
+      min-height: 780px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 40px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: #FF9739;
+      padding: 14px 16px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .app-header .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font: 700 14px 'Poppins'; color: #fff; flex-shrink: 0;
+    }
+    .app-header .brand { flex: 1; text-align: center; }
+    .app-header .brand-name { font: 700 18px 'Poppins'; color: #fff; letter-spacing: -0.5px; }
+    .app-header .brand-sub { font: 400 10px 'Poppins'; color: rgba(255,255,255,0.85); }
+    .app-header .bell-btn {
+      background: rgba(255,255,255,0.2); border: none; border-radius: 50%;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; flex-shrink: 0;
+    }
+
+    /* ── Scrollable content ── */
+    .scroll-content {
+      padding: 20px 16px 80px;
+      overflow-y: auto;
+    }
+
+    /* ── Suggestion Card ── */
+    .suggestion-card {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .suggestion-card.type-default { background: #FEEAE3; }
+    .suggestion-card.type-completed { background: #DEF1E8; }
+    .suggestion-card.type-reengagement { background: #FFF8F6; border: 1.5px solid #FDDCD0; }
+
+    .suggestion-tag {
+      font: 700 11px 'Poppins';
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+    .suggestion-tag.orange { color: #FF9739; }
+    .suggestion-tag.green  { color: #1E7F51; }
+    .suggestion-tag.grey   { color: #A0A0A0; }
+
+    .suggestion-title {
+      font: 600 16px/1.4 'Poppins';
+      color: #363636;
+      margin-bottom: 6px;
+    }
+    .suggestion-reason {
+      font: 400 13px/1.5 'Poppins';
+      color: #6D6C6C;
+      margin-bottom: 18px;
+    }
+    .suggestion-reason span { color: #FF9739; font-weight: 500; }
+
+    .btn-primary {
+      background: #FF9739; color: #fff; border: none; border-radius: 32px;
+      padding: 13px 24px; font: 600 15px 'Poppins'; width: 100%; cursor: pointer;
+      display: block; text-align: center;
+    }
+    .btn-primary.green-cta { background: #1E7F51; }
+
+    .dismiss-link {
+      text-align: center;
+      font: 400 12px 'Poppins';
+      color: #A0A0A0;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    /* Completed checkmark */
+    .check-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .check-circle {
+      width: 32px; height: 32px; border-radius: 50%; background: #79CC6B;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .check-text { font: 600 15px 'Poppins'; color: #1E7F51; }
+    .check-sub  { font: 400 13px 'Poppins'; color: #6D6C6C; margin-top: 2px; }
+    .next-tag   { font: 500 12px 'Poppins'; color: #A0A0A0; margin-top: 10px; }
+
+    /* ── Feed section ── */
+    .section-label {
+      font: 700 11px 'Poppins'; color: #A0A0A0;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 12px; margin-top: 4px;
+    }
+
+    .event-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 24px; }
+    .event-scroll::-webkit-scrollbar { display: none; }
+
+    .event-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: inline-block; width: 164px; flex-shrink: 0; vertical-align: top;
+    }
+    .event-img {
+      width: 100%; height: 96px; object-fit: cover; display: block;
+      background: linear-gradient(135deg, #FDDCD0, #FF9C5D);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .event-body { padding: 10px 10px 12px; }
+    .event-title { font: 600 13px 'Poppins'; color: #363636; margin-bottom: 4px; line-height: 1.3; }
+    .event-meta  { font: 400 11px 'Poppins'; color: #A0A0A0; }
+
+    /* ── Activity row ── */
+    .activity-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0; border-bottom: 1px solid #F5F5F5;
+    }
+    .activity-icon {
+      width: 40px; height: 40px; border-radius: 50%; background: #FEEAE3;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 20px;
+    }
+    .activity-text { flex: 1; font: 400 14px 'Poppins'; color: #6D6C6C; }
+    .activity-count { font: 700 16px 'Poppins'; color: #363636; }
+
+    /* ── Bottom nav ── */
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 64px; background: #fff;
+      display: flex; align-items: center;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.06); z-index: 100;
+      border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 2px; text-decoration: none; cursor: pointer;
+    }
+    .nav-item.active { color: #FF9739; }
+    .nav-item.inactive { color: #A0A0A0; }
+    .nav-icon { font-size: 20px; }
+    .nav-label { font-size: 10px; font-weight: 400; }
+    .nav-item.active .nav-label { font-weight: 600; }
+
+    /* ── Home indicator ── */
+    .home-indicator {
+      display: flex; justify-content: center; padding: 8px 0 0;
+      position: absolute; bottom: 64px; left: 0; right: 0;
+    }
+
+    /* ── Profil badge (preuve sociale) ── */
+    .social-proof {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    }
+    .avatars-stack { display: flex; }
+    .avatars-stack .av {
+      width: 24px; height: 24px; border-radius: 50%; border: 2px solid #FEEAE3;
+      background: #FF9C5D; margin-right: -6px;
+      display: flex; align-items: center; justify-content: center;
+      font: 700 9px 'Poppins'; color: #fff; flex-shrink: 0;
+    }
+    .avatars-stack .av:last-child { margin-right: 0; }
+    .social-text { font: 400 12px 'Poppins'; color: #6D6C6C; margin-left: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     VARIANTE A — Niveau 0 · Riverain · Premier pas
+     ═══════════════════════════════════════════════ -->
+<div>
+  <div class="label-variant">Variante A — Curieux · Riverain · Niveau 0</div>
+  <div class="phone">
+    <!-- Header -->
+    <div class="app-header">
+      <div class="avatar">JS</div>
+      <div class="brand">
+        <div class="brand-name">entourage</div>
+        <div class="brand-sub">L'app qui recrée le lien entre voisins</div>
+      </div>
+      <button class="bell-btn">🔔</button>
+    </div>
+
+    <!-- Contenu scrollable -->
+    <div class="scroll-content">
+
+      <!-- ★ Suggestion card — Premier pas -->
+      <div class="suggestion-card type-default">
+        <div class="suggestion-tag orange">Premier pas</div>
+        <div class="suggestion-title">
+          Un Papotage solidaire a lieu à 600 m de chez vous samedi
+        </div>
+        <div class="suggestion-reason">
+          Parce que vous êtes <span>dans le 13e</span> et que 6 voisins y vont déjà
+        </div>
+        <div class="social-proof">
+          <div class="avatars-stack">
+            <div class="av">M</div>
+            <div class="av">A</div>
+            <div class="av">L</div>
+          </div>
+          <span class="social-text">6 voisins de votre quartier participent</span>
+        </div>
+        <button class="btn-primary">Voir les détails</button>
+        <div class="dismiss-link">Ne plus me proposer ça</div>
+      </div>
+
+      <!-- Feed -->
+      <div class="section-label">Près de chez vous</div>
+      <div class="event-scroll">
+        <div class="event-card">
+          <div class="event-img">🎭</div>
+          <div class="event-body">
+            <div class="event-title">Atelier théâtre solidaire</div>
+            <div class="event-meta">Sam. 14 juin · Maison de quartier</div>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-img">☕</div>
+          <div class="event-body">
+            <div class="event-title">Café de quartier — Bienvenue</div>
+            <div class="event-meta">Mar. 17 juin · Place Nationale</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Vos voisins ont besoin de vous</div>
+      <div class="activity-row">
+        <div class="activity-icon">🤝</div>
+        <span class="activity-text">Quelqu'un cherche de l'aide pour des démarches admin</span>
+      </div>
+      <div class="activity-row">
+        <div class="activity-icon">💬</div>
+        <span class="activity-text">Un voisin cherche à discuter autour d'un café</span>
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Accueil</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">🤝</div>
+        <div class="nav-label">Entraide</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">💬</div>
+        <div class="nav-label">Discussions</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">👥</div>
+        <div class="nav-label">Groupes</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">📅</div>
+        <div class="nav-label">Événements</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VARIANTE B — Niveau 2 · PI · Action complétée
+     ═══════════════════════════════════════════════ -->
+<div>
+  <div class="label-variant">Variante B — Régulière · Personne isolée · Action complétée</div>
+  <div class="phone">
+    <div class="app-header">
+      <div class="avatar">F</div>
+      <div class="brand">
+        <div class="brand-name">entourage</div>
+        <div class="brand-sub">L'app qui recrée le lien entre voisins</div>
+      </div>
+      <button class="bell-btn">🔔</button>
+    </div>
+
+    <div class="scroll-content">
+
+      <!-- ★ Suggestion card — Complétée + transition -->
+      <div class="suggestion-card type-completed">
+        <div class="check-row">
+          <div class="check-circle">✓</div>
+          <div>
+            <div class="check-text">Inscription confirmée !</div>
+            <div class="check-sub">Vous retrouverez des voisins samedi.</div>
+          </div>
+        </div>
+        <div class="next-tag">Votre prochain pas arrive dans quelques secondes…</div>
+      </div>
+
+      <!-- Suggestion suivante — déjà visible sous la complétée -->
+      <div class="suggestion-card type-default">
+        <div class="suggestion-tag orange">Connexion</div>
+        <div class="suggestion-title">
+          Marie habite votre rue et participe aux mêmes événements
+        </div>
+        <div class="suggestion-reason">
+          Parce que vous avez tous les deux <span>participé au Papotage de mai</span>
+        </div>
+        <button class="btn-primary">Dire bonjour</button>
+        <div class="dismiss-link">Ne plus me proposer ça</div>
+      </div>
+
+      <div class="section-label">Vos prochains rendez-vous</div>
+      <div class="activity-row">
+        <div class="activity-icon">☕</div>
+        <span class="activity-text">Papotage du 14 juin · Salle Corvisart</span>
+        <span class="activity-count">Sam</span>
+      </div>
+      <div class="activity-row">
+        <div class="activity-icon">🎭</div>
+        <span class="activity-text">Atelier théâtre solidaire · Maison de quartier</span>
+        <span class="activity-count">21/6</span>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Accueil</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">🤝</div>
+        <div class="nav-label">Entraide</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">💬</div>
+        <div class="nav-label">Discussions</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">👥</div>
+        <div class="nav-label">Groupes</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">📅</div>
+        <div class="nav-label">Événements</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VARIANTE C — Dormant · Réengagement bienveillant
+     ═══════════════════════════════════════════════ -->
+<div>
+  <div class="label-variant">Variante C — Dormant · Riverain · Réengagement</div>
+  <div class="phone">
+    <div class="app-header">
+      <div class="avatar">T</div>
+      <div class="brand">
+        <div class="brand-name">entourage</div>
+        <div class="brand-sub">L'app qui recrée le lien entre voisins</div>
+      </div>
+      <button class="bell-btn">🔔</button>
+    </div>
+
+    <div class="scroll-content">
+
+      <!-- ★ Suggestion card — Réengagement -->
+      <div class="suggestion-card type-reengagement">
+        <div class="suggestion-tag grey">Retour</div>
+        <div class="suggestion-title">
+          Des choses se passent près de chez vous cette semaine
+        </div>
+        <div class="suggestion-reason">
+          Des voisins du <span>groupe Belleville Solidaire</span> que vous connaissez y seront
+        </div>
+        <div class="social-proof">
+          <div class="avatars-stack">
+            <div class="av" style="background:#6D6C6C;">P</div>
+            <div class="av" style="background:#A0A0A0;">N</div>
+          </div>
+          <span class="social-text" style="margin-left:14px;">Pierre et Nadia y seront</span>
+        </div>
+        <button class="btn-primary" style="background:#363636;">Voir l'événement</button>
+        <div class="dismiss-link">Me rappeler plus tard</div>
+      </div>
+
+      <div class="section-label">Ce qui se passe dans votre quartier</div>
+      <div class="event-scroll">
+        <div class="event-card">
+          <div class="event-img">🌱</div>
+          <div class="event-body">
+            <div class="event-title">Jardinage partagé — Belleville</div>
+            <div class="event-meta">Dim. 15 juin · Jardin Solidaire</div>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-img">🍳</div>
+          <div class="event-body">
+            <div class="event-title">Repas de quartier partagé</div>
+            <div class="event-meta">Jeu. 19 juin · Centre social</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Accueil</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">🤝</div>
+        <div class="nav-label">Entraide</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">💬</div>
+        <div class="nav-label">Discussions</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">👥</div>
+        <div class="nav-label">Groupes</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">📅</div>
+        <div class="nav-label">Événements</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
