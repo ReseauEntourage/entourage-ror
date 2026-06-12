@@ -4,21 +4,31 @@ module SuggestionServices
 
     class << self
       def for_user(user)
+        raise ArgumentError, "user is required" unless user.present?
+
         connection = active_suggestion(user, 'connection') || generate_connection(user)
         next_step  = active_suggestion(user, 'next_step')  || generate_next_step(user)
 
         { connection: connection, next_step: next_step }
+      rescue ArgumentError
+        raise
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#for_user] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
+        { connection: nil, next_step: nil }
       end
 
       def generate_connection(user)
         postal_code = user_postal_code(user)
-        return nil unless postal_code.present?
+
+        unless postal_code.present?
+          Rails.logger.info "[SuggestionServices::Generate#generate_connection] user=#{user.id} skipped: no primary address"
+          return nil
+        end
 
         excluded_ids = [user.id] +
                        existing_conversation_user_ids_for(user) +
                        dismissed_suggested_user_ids_for(user)
 
-        # Pool: active members in same postal_code, not excluded
         pool = User
           .joins("INNER JOIN addresses ON addresses.user_id = users.id AND addresses.position = 1")
           .where("addresses.postal_code = ?", postal_code)
@@ -28,38 +38,34 @@ module SuggestionServices
           .select("users.id, users.goal, users.targeting_profile")
           .limit(100)
 
-        return nil if pool.empty?
+        if pool.empty?
+          Rails.logger.info "[SuggestionServices::Generate#generate_connection] user=#{user.id} skipped: empty pool for postal_code=#{postal_code}"
+          return nil
+        end
 
-        # Pre-compute context signals for scoring
-        user_segment       = user_segment(user)
+        user_seg           = user_segment(user)
         user_interests     = user.interest_list
         user_profile       = user_targeting_profile(user)
         event_attendee_ids = event_attendee_ids_for(user)
         engagement_counts  = engagement_counts_for(pool.map(&:id))
 
-        # Score each candidate
         scored = pool.map do |candidate|
-          score = 0
+          score     = 0
           breakdown = []
 
-          # Signal 1 — same event (+3, strongest signal)
           if event_attendee_ids.include?(candidate.id)
             score += 3
             breakdown << :event
           end
 
-          # Signal 2 — profile complementarity (+2)
-          # PI (ask_for_help) ↔ Riverain (offer_help) — cross-profile is the goal
           candidate_profile = user_targeting_profile(candidate)
           if profile_complement?(user_profile, candidate_profile)
             score += 2
             breakdown << :profile
           end
 
-          # Signal 3 — shared interests (+1 per match, capped at 3)
           if user_interests.any?
-            candidate_interests = candidate.interest_list
-            shared = (user_interests & candidate_interests).size
+            shared = (user_interests & candidate.interest_list).size
             interest_score = [shared, 3].min
             if interest_score > 0
               score += interest_score
@@ -67,10 +73,8 @@ module SuggestionServices
             end
           end
 
-          # Signal 4 — engagement complementarity (+2)
-          # Low-engagement user → prefer high-engagement candidate (informal mentoring)
-          candidate_segment = segment_from_count(engagement_counts[candidate.id] || 0)
-          if engagement_complement?(user_segment, candidate_segment)
+          candidate_seg = segment_from_count(engagement_counts[candidate.id] || 0)
+          if engagement_complement?(user_seg, candidate_seg)
             score += 2
             breakdown << :engagement
           end
@@ -83,54 +87,62 @@ module SuggestionServices
 
         reason, reason_type = connection_reason(best[:breakdown], user_profile)
 
+        Rails.logger.info "[SuggestionServices::Generate#generate_connection] user=#{user.id} candidate=#{best[:id]} score=#{best[:score]} signals=#{best[:breakdown]}"
+
         UserSuggestion.create!(
-          user: user,
-          suggestion_type: 'connection',
+          user:              user,
+          suggestion_type:   'connection',
           suggested_user_id: best[:id],
-          reason: reason,
-          reason_type: reason_type,
-          expires_at: 7.days.from_now
+          reason:            reason,
+          reason_type:       reason_type,
+          expires_at:        7.days.from_now
         )
       rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[SuggestionServices::Generate] generate_connection error: #{e.message}"
+        Rails.logger.error "[SuggestionServices::Generate#generate_connection] user=#{user&.id} RecordInvalid: #{e.message}"
+        nil
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#generate_connection] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
         nil
       end
 
       def generate_next_step(user)
-        segment = user_segment(user)
+        segment     = user_segment(user)
         postal_code = user_postal_code(user)
 
         suggestion_attrs = case segment
-        when :silencieux
-          next_step_for_silencieux(user, postal_code)
-        when :curieux
-          next_step_for_curieux(user)
-        when :observateur
-          next_step_for_observateur(user)
-        when :contributeur
-          next_step_for_contributeur(user)
-        when :pilier
-          { suggested_action: 'create_event', reason: "Vous êtes un pilier de votre communauté", reason_type: 'zone' }
+        when :silencieux  then next_step_for_silencieux(user, postal_code)
+        when :curieux     then next_step_for_curieux(user)
+        when :observateur then next_step_for_observateur(user)
+        when :contributeur then next_step_for_contributeur(user)
+        when :pilier      then { suggested_action: 'create_event', reason: "Vous êtes un pilier de votre communauté", reason_type: 'zone' }
         end
 
-        return nil unless suggestion_attrs.present?
+        unless suggestion_attrs.present?
+          Rails.logger.info "[SuggestionServices::Generate#generate_next_step] user=#{user.id} segment=#{segment} no content available"
+          return nil
+        end
 
-        attrs = suggestion_attrs.merge(
-          user: user,
-          suggestion_type: 'next_step',
-          expires_at: 5.days.from_now
-        )
-
-        entourage_id = attrs.delete(:suggested_entourage_id)
-        suggested_user_id = attrs.delete(:suggested_user_id_val)
+        attrs          = suggestion_attrs.merge(user: user, suggestion_type: 'next_step', expires_at: 5.days.from_now)
+        entourage_id   = attrs.delete(:suggested_entourage_id)
+        suggested_uid  = attrs.delete(:suggested_user_id_val)
 
         record = UserSuggestion.new(attrs)
         record.suggested_entourage_id = entourage_id if entourage_id
-        record.suggested_user_id = suggested_user_id if suggested_user_id
+        record.suggested_user_id      = suggested_uid if suggested_uid
+
+        unless record.valid?
+          Rails.logger.error "[SuggestionServices::Generate#generate_next_step] user=#{user.id} invalid: #{record.errors.full_messages.join(', ')}"
+          return nil
+        end
+
         record.save!
+        Rails.logger.info "[SuggestionServices::Generate#generate_next_step] user=#{user.id} segment=#{segment} action=#{record.suggested_action}"
         record
       rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[SuggestionServices::Generate] generate_next_step error: #{e.message}"
+        Rails.logger.error "[SuggestionServices::Generate#generate_next_step] user=#{user&.id} RecordInvalid: #{e.message}"
+        nil
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#generate_next_step] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
         nil
       end
 
@@ -138,21 +150,29 @@ module SuggestionServices
 
       def active_suggestion(user, type)
         user.user_suggestions.active.for_type(type).order(created_at: :desc).first
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#active_suggestion] user=#{user&.id} type=#{type} #{e.class}: #{e.message}"
+        nil
       end
 
       def user_postal_code(user)
         Address.where(user_id: user.id, position: 1).pick(:postal_code)
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#user_postal_code] user=#{user&.id} #{e.class}: #{e.message}"
+        nil
       end
 
       def active_users_condition
         <<-SQL
           (
             users.id IN (
-              SELECT DISTINCT user_id FROM login_histories WHERE connected_at > NOW() - INTERVAL '#{ACTIVE_DAYS} days'
+              SELECT DISTINCT user_id FROM login_histories
+              WHERE connected_at > NOW() - INTERVAL '#{ACTIVE_DAYS} days'
             )
             OR
             users.id IN (
-              SELECT DISTINCT user_id FROM denorm_daily_engagements_with_type WHERE date > NOW() - INTERVAL '#{ACTIVE_DAYS} days'
+              SELECT DISTINCT user_id FROM denorm_daily_engagements_with_type
+              WHERE date > NOW() - INTERVAL '#{ACTIVE_DAYS} days'
             )
           )
         SQL
@@ -165,7 +185,8 @@ module SuggestionServices
           .where("entourages.group_type = 'conversation'")
           .where(
             "join_requests.joinable_id IN (?)",
-            JoinRequest.where(joinable_type: 'Entourage', user_id: user.id, status: 'accepted')
+            JoinRequest
+              .where(joinable_type: 'Entourage', user_id: user.id, status: 'accepted')
               .joins("INNER JOIN entourages ON entourages.id = join_requests.joinable_id")
               .where("entourages.group_type = 'conversation'")
               .select(:joinable_id)
@@ -173,7 +194,8 @@ module SuggestionServices
           .where.not(user_id: user.id)
           .pluck(:user_id)
           .uniq
-      rescue
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#existing_conversation_user_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
         []
       end
 
@@ -183,37 +205,34 @@ module SuggestionServices
           .where.not(suggested_user_id: nil)
           .where.not(dismissed_at: nil)
           .pluck(:suggested_user_id)
-      rescue
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#dismissed_suggested_user_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
         []
       end
 
-      # Returns the targeting profile as a normalised symbol (:ask_for_help, :offer_help, nil)
       def user_targeting_profile(user)
-        tp = user.targeting_profile.to_s
+        tp   = user.targeting_profile.to_s
         goal = user.goal.to_s
         return :ask_for_help if tp == 'asks_for_help' || goal == 'ask_for_help'
         return :offer_help   if tp == 'offers_help'   || goal == 'offer_help'
         nil
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#user_targeting_profile] user=#{user&.id} #{e.class}: #{e.message}"
+        nil
       end
 
-      # Complementary profiles: PI ↔ Riverain
       def profile_complement?(a, b)
         (a == :ask_for_help && b == :offer_help) ||
         (a == :offer_help   && b == :ask_for_help)
       end
 
-      # True when the current user is low-engagement and the candidate is high-engagement
-      # Silencieux and Observateur benefit from being paired with high-engagement members.
-      # Curieux is intentionally excluded — they're already exploring, pairing with a Pilier
-      # can feel overwhelming. They get connection suggestions based on other signals instead.
       LOW_SEGMENTS  = %i[silencieux observateur].freeze
       HIGH_SEGMENTS = %i[contributeur pilier].freeze
 
-      def engagement_complement?(user_segment, candidate_segment)
-        LOW_SEGMENTS.include?(user_segment) && HIGH_SEGMENTS.include?(candidate_segment)
+      def engagement_complement?(user_seg, candidate_seg)
+        LOW_SEGMENTS.include?(user_seg) && HIGH_SEGMENTS.include?(candidate_seg)
       end
 
-      # Batch-fetch engagement counts for a list of user ids (avoids N+1)
       def engagement_counts_for(user_ids)
         return {} if user_ids.empty?
 
@@ -224,6 +243,9 @@ module SuggestionServices
           .select("user_id, COUNT(DISTINCT engagement_type) AS eng_count")
 
         rows.each_with_object({}) { |r, h| h[r.user_id] = r.eng_count.to_i }
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#engagement_counts_for] #{e.class}: #{e.message}"
+        {}
       end
 
       def segment_from_count(count)
@@ -236,7 +258,6 @@ module SuggestionServices
         end
       end
 
-      # Ids of users who attended the same outing as the current user in last 30 days
       def event_attendee_ids_for(user)
         common_entourage_ids = JoinRequest
           .where(joinable_type: 'Entourage', user_id: user.id, status: 'accepted')
@@ -252,11 +273,11 @@ module SuggestionServices
           .where.not(user_id: user.id)
           .pluck(:user_id)
           .uniq
-      rescue
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#event_attendee_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
         []
       end
 
-      # Pick the most meaningful reason to show to the user (priority: event > profile > interests > engagement > zone)
       def connection_reason(breakdown, user_profile)
         if breakdown.include?(:event)
           return ["parce que vous avez participé au même événement", 'event']
@@ -284,46 +305,37 @@ module SuggestionServices
           .count(:engagement_type)
 
         segment_from_count(count)
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#user_segment] user=#{user&.id} #{e.class}: #{e.message}"
+        :silencieux
       end
 
       def next_step_for_silencieux(user, postal_code)
-        # Try nearby outing in next 7 days
-        if postal_code.present?
-          outing = Entourage
-            .where(group_type: 'outing', status: 'open')
-            .where(postal_code: postal_code)
-            .where("(metadata->>'starts_at')::timestamp > ?", Time.current)
-            .where("(metadata->>'starts_at')::timestamp < ?", 7.days.from_now)
-            .order("(metadata->>'starts_at')::timestamp ASC")
-            .first
-
-          if outing
-            return {
-              suggested_entourage_id: outing.id,
-              suggested_action: 'join_event',
-              reason: "Il y a un événement proche de chez vous",
-              reason_type: 'zone'
-            }
-          end
-
-          # Fallback: active group in zone
-          group = Entourage
-            .where(group_type: 'neighborhood', status: 'open')
-            .where(postal_code: postal_code)
-            .order(created_at: :desc)
-            .first
-
-          if group
-            return {
-              suggested_entourage_id: group.id,
-              suggested_action: 'join_group',
-              reason: "Il y a un groupe actif dans votre quartier",
-              reason_type: 'zone'
-            }
-          end
+        unless postal_code.present?
+          Rails.logger.info "[SuggestionServices::Generate#next_step_for_silencieux] user=#{user.id} skipped: no postal_code"
+          return nil
         end
 
-        # Fallback: nearby active user
+        outing = Entourage
+          .where(group_type: 'outing', status: 'open')
+          .where(postal_code: postal_code)
+          .where("(metadata->>'starts_at')::timestamp > ?", Time.current)
+          .where("(metadata->>'starts_at')::timestamp < ?", 7.days.from_now)
+          .order(Arel.sql("(metadata->>'starts_at')::timestamp ASC"))
+          .first
+
+        return { suggested_entourage_id: outing.id, suggested_action: 'join_event',
+                 reason: "Il y a un événement proche de chez vous", reason_type: 'zone' } if outing
+
+        group = Entourage
+          .where(group_type: 'neighborhood', status: 'open')
+          .where(postal_code: postal_code)
+          .order(created_at: :desc)
+          .first
+
+        return { suggested_entourage_id: group.id, suggested_action: 'join_group',
+                 reason: "Il y a un groupe actif dans votre quartier", reason_type: 'zone' } if group
+
         candidate = User
           .joins("INNER JOIN addresses ON addresses.user_id = users.id AND addresses.position = 1")
           .where("addresses.postal_code = ?", postal_code)
@@ -336,44 +348,33 @@ module SuggestionServices
 
         return nil unless candidate
 
-        {
-          suggested_user_id_val: candidate.id,
-          suggested_action: 'say_hello',
-          reason: "Il y a des membres actifs près de chez vous",
-          reason_type: 'zone'
-        }
+        { suggested_user_id_val: candidate.id, suggested_action: 'say_hello',
+          reason: "Il y a des membres actifs près de chez vous", reason_type: 'zone' }
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#next_step_for_silencieux] user=#{user&.id} #{e.class}: #{e.message}"
+        nil
       end
 
       def next_step_for_curieux(user)
-        # Group user joined but hasn't posted in
+        posted_ids = ChatMessage
+          .where(user_id: user.id, messageable_type: 'Entourage')
+          .where("created_at > ?", ACTIVE_DAYS.days.ago)
+          .pluck(:messageable_id)
+          .presence || [0]
+
         silent_group = JoinRequest
           .joins("INNER JOIN entourages ON entourages.id = join_requests.joinable_id")
           .where(user_id: user.id, joinable_type: 'Entourage', status: 'accepted')
           .where("entourages.group_type IN ('neighborhood', 'action')")
-          .where(
-            "join_requests.joinable_id NOT IN (?)",
-            ChatMessage
-              .where(user_id: user.id, messageable_type: 'Entourage')
-              .where("created_at > ?", ACTIVE_DAYS.days.ago)
-              .select(:messageable_id)
-              .map(&:messageable_id)
-              .presence || [0]
-          )
+          .where("join_requests.joinable_id NOT IN (?)", posted_ids)
           .order("RANDOM()")
           .limit(1)
           .pluck("join_requests.joinable_id")
           .first
 
-        if silent_group
-          return {
-            suggested_entourage_id: silent_group,
-            suggested_action: 'write_group',
-            reason: "Vous n'avez pas encore participé à ce groupe",
-            reason_type: 'group'
-          }
-        end
+        return { suggested_entourage_id: silent_group, suggested_action: 'write_group',
+                 reason: "Vous n'avez pas encore participé à ce groupe", reason_type: 'group' } if silent_group
 
-        # Fallback: event
         postal_code = user_postal_code(user)
         return nil unless postal_code.present?
 
@@ -381,25 +382,22 @@ module SuggestionServices
           .where(group_type: 'outing', status: 'open')
           .where(postal_code: postal_code)
           .where("(metadata->>'starts_at')::timestamp > ?", Time.current)
-          .order("(metadata->>'starts_at')::timestamp ASC")
+          .order(Arel.sql("(metadata->>'starts_at')::timestamp ASC"))
           .first
 
         return nil unless outing
 
-        {
-          suggested_entourage_id: outing.id,
-          suggested_action: 'join_event',
-          reason: "Il y a un événement proche de chez vous",
-          reason_type: 'zone'
-        }
+        { suggested_entourage_id: outing.id, suggested_action: 'join_event',
+          reason: "Il y a un événement proche de chez vous", reason_type: 'zone' }
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#next_step_for_curieux] user=#{user&.id} #{e.class}: #{e.message}"
+        nil
       end
 
       def next_step_for_observateur(user)
-        {
-          suggested_action: 'create_action',
+        { suggested_action: 'create_action',
           reason: "Vous participez régulièrement aux événements",
-          reason_type: 'zone'
-        }
+          reason_type: 'zone' }
       end
 
       def next_step_for_contributeur(user)
@@ -417,12 +415,11 @@ module SuggestionServices
 
         return nil unless new_member
 
-        {
-          suggested_user_id_val: new_member,
-          suggested_action: 'welcome_member',
-          reason: "Un nouveau membre a rejoint votre groupe",
-          reason_type: 'group'
-        }
+        { suggested_user_id_val: new_member, suggested_action: 'welcome_member',
+          reason: "Un nouveau membre a rejoint votre groupe", reason_type: 'group' }
+      rescue => e
+        Rails.logger.error "[SuggestionServices::Generate#next_step_for_contributeur] user=#{user&.id} #{e.class}: #{e.message}"
+        nil
       end
     end
   end
