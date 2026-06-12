@@ -27,6 +27,16 @@ RSpec.describe Api::V1::NextStepController, type: :controller do
       )
     end
 
+    let!(:fallback_suggestion) do
+      FactoryBot.create(:next_step_suggestion,
+        suggestion_type: 'fallback',
+        target_profile: 'all',
+        min_engagement_level: 0,
+        max_engagement_level: 4,
+        priority: 1
+      )
+    end
+
     it 'GET next_step creates and returns a first_step suggestion' do
       get :show, params: { token: user.token }
 
