@@ -559,6 +559,8 @@ Rails.application.routes.draw do
         resources :outings, controller: 'neighborhoods/outings', only: [:index, :create]
       end
 
+      resources :suggestions, only: [:index]
+
       resources :resources, only: [:index, :show] do
         collection do
           get :home
