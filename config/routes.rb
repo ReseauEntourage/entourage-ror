@@ -846,6 +846,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :zuggestions, only: [:index, :update]
+
       namespace :uptimes, only: [] do
         get :soliguides
         get :soliguide
