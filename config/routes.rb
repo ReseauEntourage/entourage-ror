@@ -445,6 +445,14 @@ Rails.application.routes.draw do
         end
       end
 
+      get 'users/me/onboarding_questions', to: 'users#onboarding_questions'
+      patch 'users/me/onboarding_preferences', to: 'users#onboarding_preferences'
+
+      get 'next_step', to: 'next_step#show'
+      patch 'next_step/:id/complete', to: 'next_step#complete', as: 'next_step_complete'
+      patch 'next_step/:id/dismiss', to: 'next_step#dismiss', as: 'next_step_dismiss'
+      post 'next_step/tap_push', to: 'next_step#tap_push'
+
       resources :users, only: [:show, :create, :destroy, :update] do
         collection do
           get :unread

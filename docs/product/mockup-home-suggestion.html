@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #e8e4e0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      padding: 40px 24px 64px;
+    }
+
+    /* ── Wrapper ── */
+    .screen-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .screen-label {
+      font: 700 11px 'Poppins'; color: #6D6C6C;
+      text-transform: uppercase; letter-spacing: 1px; text-align: center;
+    }
+
+    /* ── Téléphone ── */
+    .phone {
+      font-family: 'Poppins', sans-serif;
+      background: #FFF8F6;
+      width: 375px;
+      height: 812px;
+      border-radius: 44px;
+      box-shadow: 0 28px 72px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      background: #FF9739;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px 4px;
+      flex-shrink: 0;
+    }
+    .status-time { font: 600 13px 'Poppins'; color: #fff; }
+    .status-icons { display: flex; gap: 5px; align-items: center; }
+    .status-icons span { font-size: 12px; color: rgba(255,255,255,0.9); }
+
+    /* ── Header ── */
+    .app-header {
+      background: #FF9739;
+      padding: 6px 16px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font: 700 13px 'Poppins'; color: #fff; flex-shrink: 0;
+    }
+    .brand { flex: 1; text-align: center; }
+    .brand-name { font: 700 18px 'Poppins'; color: #fff; letter-spacing: -0.5px; }
+    .brand-sub { font: 400 10px 'Poppins'; color: rgba(255,255,255,0.85); }
+    .bell-btn {
+      background: rgba(255,255,255,0.2); border: none; border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .bell-btn svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+
+    /* ── Scroll ── */
+    .scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 0 80px;
+      scrollbar-width: none;
+    }
+    .scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Section label ── */
+    .section-label {
+      font: 700 11px 'Poppins'; color: #A0A0A0;
+      text-transform: uppercase; letter-spacing: 1px;
+      padding: 0 16px;
+      margin-bottom: 10px;
+    }
+    .section-head {
+      padding: 20px 16px 0;
+      margin-bottom: 14px;
+    }
+    .section-head-title { font: 700 15px 'Poppins'; color: #363636; margin-bottom: 3px; }
+    .section-head-sub   { font: 400 12px 'Poppins'; color: #A0A0A0; }
+    .see-all {
+      text-align: right; padding: 8px 16px 0;
+      font: 600 12px 'Poppins'; color: #FF9739; cursor: pointer;
+    }
+
+    /* ═══════════════════════════════
+       SUGGESTION CARD
+    ═══════════════════════════════ */
+    .suggestion-wrap { padding: 16px 16px 0; }
+
+    .suggestion-card {
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      position: relative;
+    }
+    .sc-default     { background: #FEEAE3; }
+    .sc-completed   { background: #DEF1E8; }
+    .sc-reengagement {
+      background: #FFF8F6;
+      border: 1.5px solid #FDDCD0;
+    }
+
+    .sc-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      font: 700 10px 'Poppins';
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+    .sc-tag.orange { color: #FF9739; }
+    .sc-tag.green  { color: #1E7F51; }
+    .sc-tag.grey   { color: #A0A0A0; }
+    .sc-tag-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .sc-tag-dot.orange { background: #FF9739; }
+    .sc-tag-dot.green  { background: #79CC6B; }
+    .sc-tag-dot.grey   { background: #A0A0A0; }
+
+    .sc-title {
+      font: 600 16px/1.4 'Poppins'; color: #363636;
+      margin-bottom: 6px;
+    }
+    .sc-reason {
+      font: 400 13px/1.5 'Poppins'; color: #6D6C6C;
+      margin-bottom: 14px;
+    }
+    .sc-reason strong { color: #FF9739; font-weight: 500; }
+
+    /* Preuve sociale */
+    .sc-social {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .sc-avatars { display: flex; }
+    .sc-av {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid #FEEAE3;
+      display: flex; align-items: center; justify-content: center;
+      font: 700 8px 'Poppins'; color: #fff;
+      margin-right: -5px; flex-shrink: 0;
+    }
+    .sc-av:last-child { margin-right: 0; }
+    .sc-social-text { font: 400 12px 'Poppins'; color: #6D6C6C; margin-left: 10px; }
+
+    /* CTAs */
+    .btn-primary {
+      width: 100%; border: none; border-radius: 32px;
+      padding: 13px; font: 600 14px 'Poppins'; color: #fff;
+      cursor: pointer; text-align: center; display: block;
+    }
+    .btn-orange { background: #FF9739; }
+    .btn-dark   { background: #363636; }
+    .btn-green  { background: #1E7F51; }
+
+    .dismiss-link {
+      text-align: center; font: 400 12px 'Poppins'; color: #A0A0A0;
+      margin-top: 10px; cursor: pointer;
+    }
+
+    /* État complété */
+    .sc-check-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+    }
+    .sc-check-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #79CC6B;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sc-check-circle svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; }
+    .sc-check-text { font: 600 15px 'Poppins'; color: #1E7F51; }
+    .sc-check-sub  { font: 400 13px 'Poppins'; color: #6D6C6C; margin-top: 2px; }
+    .sc-next-label { font: 500 12px 'Poppins'; color: #A0A0A0; margin-top: 12px; }
+
+    /* Nouvelle suggestion (transition) */
+    .sc-next-preview {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      display: flex; align-items: center; gap: 12px;
+      border: 1px solid #F5F5F5;
+    }
+    .sc-next-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #FEEAE3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .sc-next-text { font: 500 13px 'Poppins'; color: #363636; }
+    .sc-next-sub  { font: 400 12px 'Poppins'; color: #A0A0A0; }
+
+    /* ═══════════════════════════════
+       FEED — articles, entraide, events
+    ═══════════════════════════════ */
+
+    /* Articles (horizontal scroll) */
+    .h-scroll {
+      display: flex; gap: 10px;
+      overflow-x: auto; padding: 0 16px 4px;
+      scrollbar-width: none;
+    }
+    .h-scroll::-webkit-scrollbar { display: none; }
+
+    .article-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      flex-shrink: 0; width: 200px;
+    }
+    .article-img {
+      height: 80px; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; position: relative;
+    }
+    .article-img-bg1 { background: linear-gradient(135deg, #FDDCD0 0%, #FF9C5D 100%); }
+    .article-img-bg2 { background: linear-gradient(135deg, #DEF1E8 0%, #79CC6B 100%); }
+    .article-img-bg3 { background: linear-gradient(135deg, #ECF8FB 0%, #47A8B9 100%); }
+    .article-badge {
+      position: absolute; bottom: 6px; left: 8px;
+      background: #FF9739; color: #fff;
+      border-radius: 10px; padding: 2px 8px;
+      font: 600 10px 'Poppins';
+    }
+    .article-body { padding: 10px 10px 12px; }
+    .article-title { font: 600 12px/1.35 'Poppins'; color: #363636; margin-bottom: 3px; }
+    .article-meta  { font: 400 11px 'Poppins'; color: #A0A0A0; }
+
+    /* Entraide (liste verticale) */
+    .entraide-list { padding: 0 16px; }
+    .entraide-item {
+      background: #fff; border-radius: 12px; padding: 12px 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex; gap: 12px; align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .entraide-avatar {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font: 700 14px 'Poppins'; color: #fff;
+    }
+    .entraide-body { flex: 1; min-width: 0; }
+    .entraide-name { font: 600 13px 'Poppins'; color: #363636; margin-bottom: 2px; }
+    .entraide-text { font: 400 12px/1.4 'Poppins'; color: #6D6C6C; }
+    .entraide-meta { font: 400 11px 'Poppins'; color: #A0A0A0; margin-top: 4px; }
+    .entraide-cta  {
+      background: #FEEAE3; border: none; border-radius: 20px;
+      padding: 6px 12px; font: 600 11px 'Poppins'; color: #FF9739;
+      cursor: pointer; flex-shrink: 0; align-self: center;
+    }
+
+    /* Événements (horizontal scroll) */
+    .event-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      flex-shrink: 0; width: 158px;
+    }
+    .event-img {
+      height: 90px; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; position: relative;
+    }
+    .event-bg1 { background: linear-gradient(135deg, #FDDCD0, #FF9C5D); }
+    .event-bg2 { background: linear-gradient(135deg, #DEF1E8, #79CC6B); }
+    .event-bg3 { background: linear-gradient(135deg, #ECF8FB, #8FC4E2); }
+    .event-badge {
+      position: absolute; bottom: 6px; left: 8px;
+      background: #FF9739; color: #fff; border-radius: 10px;
+      padding: 2px 8px; font: 600 10px 'Poppins';
+    }
+    .event-body  { padding: 10px 10px 12px; }
+    .event-title { font: 600 12px/1.3 'Poppins'; color: #363636; margin-bottom: 3px; }
+    .event-meta  { font: 400 11px 'Poppins'; color: #A0A0A0; }
+
+    /* Separator */
+    .sep { height: 1px; background: #F5F5F5; margin: 20px 16px; }
+
+    /* Ambassadrice */
+    .ambassador-band {
+      background: #FF9739; border-radius: 14px; margin: 0 16px;
+      padding: 13px 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .amb-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .amb-title { font: 600 13px 'Poppins'; color: #fff; }
+    .amb-sub   { font: 400 12px 'Poppins'; color: rgba(255,255,255,0.85); }
+
+    /* ── Bottom nav ── */
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 68px; background: #fff;
+      display: flex; align-items: center;
+      box-shadow: 0 -1px 0 rgba(0,0,0,0.06), 0 -4px 16px rgba(0,0,0,0.04);
+      border-bottom-left-radius: 44px; border-bottom-right-radius: 44px;
+      z-index: 10;
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .nav-icon { font-size: 22px; }
+    .nav-label { font-size: 10px; font-family: 'Poppins'; }
+    .nav-item.active .nav-label { font-weight: 700; color: #FF9739; }
+    .nav-item.inactive .nav-label { font-weight: 400; color: #A0A0A0; }
+
+    /* ── Spacers ── */
+    .mt4  { margin-top: 4px; }
+    .mt8  { margin-top: 8px; }
+    .mt12 { margin-top: 12px; }
+    .mt16 { margin-top: 16px; }
+    .mt20 { margin-top: 20px; }
+    .mt24 { margin-top: 24px; }
+    .mb8  { margin-bottom: 8px; }
+    .mb12 { margin-bottom: 12px; }
+    .mb16 { margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     ÉCRAN 1 — Riverain Initié · Card active (état normal)
+     ══════════════════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Riverain · Initié · Suggestion active</div>
+  <div class="phone">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <span>●●●</span>
+        <span>WiFi</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="app-header">
+      <div class="avatar">S</div>
+      <div class="brand">
+        <div class="brand-name">entourage</div>
+        <div class="brand-sub">L'app qui recrée le lien entre voisins</div>
+      </div>
+      <button class="bell-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+    </div>
+
+    <div class="scroll">
+
+      <!-- ★ Suggestion card -->
+      <div class="suggestion-wrap mt16">
+        <div class="section-label mb8">Votre prochain pas</div>
+        <div class="suggestion-card sc-default">
+          <div class="sc-tag orange">
+            <span class="sc-tag-dot orange"></span>
+            Événement · Samedi 14 juin
+          </div>
+          <div class="sc-title">
+            Un Papotage solidaire a lieu à 600 m de chez vous ce week-end
+          </div>
+          <div class="sc-reason">
+            Parce que vous êtes dans le <strong>13e arrondissement</strong> et que des voisins y vont déjà
+          </div>
+          <div class="sc-social">
+            <div class="sc-avatars">
+              <div class="sc-av" style="background:#FF9739;">M</div>
+              <div class="sc-av" style="background:#FF9C5D;">A</div>
+              <div class="sc-av" style="background:#FDDCD0; color:#FF9739;">L</div>
+            </div>
+            <span class="sc-social-text">Marie, Amir et 4 autres voisins y vont</span>
+          </div>
+          <button class="btn-primary btn-orange">Voir les détails</button>
+          <div class="dismiss-link">Ne plus me proposer ça</div>
+        </div>
+      </div>
+
+      <!-- Articles -->
+      <div class="mt24">
+        <div class="section-head">
+          <div class="section-head-title">Se sensibiliser</div>
+          <div class="section-head-sub">Comprendre pour mieux agir</div>
+        </div>
+        <div class="h-scroll">
+          <div class="article-card">
+            <div class="article-img article-img-bg1">
+              <span>📖</span>
+              <span class="article-badge">Comprendre</span>
+            </div>
+            <div class="article-body">
+              <div class="article-title">Déconstruire les idées reçues sur la rue</div>
+              <div class="article-meta">3 mn de lecture</div>
+            </div>
+          </div>
+          <div class="article-card">
+            <div class="article-img article-img-bg2">
+              <span>💬</span>
+              <span class="article-badge">Témoignage</span>
+            </div>
+            <div class="article-body">
+              <div class="article-title">Comment j'ai dit bonjour pour la première fois</div>
+              <div class="article-meta">5 mn de lecture</div>
+            </div>
+          </div>
+          <div class="article-card">
+            <div class="article-img article-img-bg3">
+              <span>🌱</span>
+              <span class="article-badge">Agir</span>
+            </div>
+            <div class="article-body">
+              <div class="article-title">10 gestes solidaires du quotidien</div>
+              <div class="article-meta">4 mn de lecture</div>
+            </div>
+          </div>
+        </div>
+        <div class="see-all mt8">Voir tous les articles ›</div>
+      </div>
+
+      <!-- Entraide -->
+      <div class="mt24">
+        <div class="section-head">
+          <div class="section-head-title">Donner un coup de main</div>
+          <div class="section-head-sub">Vos voisins ont besoin de vous</div>
+        </div>
+        <div class="entraide-list">
+          <div class="entraide-item">
+            <div class="entraide-avatar" style="background:#FF9C5D;">T</div>
+            <div class="entraide-body">
+              <div class="entraide-name">Thomas</div>
+              <div class="entraide-text">Cherche quelqu'un pour m'aider avec des démarches administratives</div>
+              <div class="entraide-meta">📍 Paris 13e · Il y a 2h</div>
+            </div>
+            <button class="entraide-cta">Aider</button>
+          </div>
+          <div class="entraide-item">
+            <div class="entraide-avatar" style="background:#79CC6B;">F</div>
+            <div class="entraide-body">
+              <div class="entraide-name">Fatou</div>
+              <div class="entraide-text">Besoin d'un accompagnement pour aller au médecin vendredi matin</div>
+              <div class="entraide-meta">📍 Paris 13e · Il y a 5h</div>
+            </div>
+            <button class="entraide-cta">Aider</button>
+          </div>
+        </div>
+        <div class="see-all">Voir toutes les demandes ›</div>
+      </div>
+
+      <!-- Événements -->
+      <div class="mt24">
+        <div class="section-head">
+          <div class="section-head-title">Participer à un événement</div>
+          <div class="section-head-sub">Près de chez vous cette semaine</div>
+        </div>
+        <div class="h-scroll">
+          <div class="event-card">
+            <div class="event-img event-bg1">
+              <span>☕</span>
+              <span class="event-badge">Papotage</span>
+            </div>
+            <div class="event-body">
+              <div class="event-title">Papotage solidaire</div>
+              <div class="event-meta">Sam. 14 juin · 10h</div>
+              <div class="event-meta">Salle Corvisart</div>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-img event-bg2">
+              <span>🌱</span>
+              <span class="event-badge">Nature</span>
+            </div>
+            <div class="event-body">
+              <div class="event-title">Jardinage partagé</div>
+              <div class="event-meta">Dim. 15 juin · 9h30</div>
+              <div class="event-meta">Jardin Solidaire</div>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-img event-bg3">
+              <span>🍳</span>
+              <span class="event-badge">Cuisine</span>
+            </div>
+            <div class="event-body">
+              <div class="event-title">Repas partagé</div>
+              <div class="event-meta">Mer. 18 juin · 19h</div>
+              <div class="event-meta">Centre social</div>
+            </div>
+          </div>
+        </div>
+        <div class="see-all mt8">Voir tous les événements ›</div>
+      </div>
+
+      <!-- Ambassadrice -->
+      <div class="mt24 mb16" style="padding: 0;">
+        <div class="ambassador-band">
+          <div class="amb-av">👩</div>
+          <div>
+            <div class="amb-title">Une question ? Contactez Violette</div>
+            <div class="amb-sub">Ambassadrice Entourage · Paris</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Accueil</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">🤝</div>
+        <div class="nav-label">Entraide</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">💬</div>
+        <div class="nav-label">Discussions</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">👥</div>
+        <div class="nav-label">Groupes</div>
+      </div>
+      <div class="nav-item inactive">
+        <div class="nav-icon">📅</div>
+        <div class="nav-label">Événements</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ÉCRAN 2 — Card complétée + suggestion suivante
+     ══════════════════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Transition · Action complétée → suggestion suivante</div>
+  <div class="phone">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="app-header">
+      <div class="avatar">S</div>
+      <div class="brand">
+        <div class="brand-name">entourage</div>
+        <div class="brand-sub">L'app qui recrée le lien entre voisins</div>
+      </div>
+      <button class="bell-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+    </div>
+
+    <div class="scroll">
+
+      <!-- Card complétée — état final, pas de suggestion suivante -->
+      <div class="suggestion-wrap mt16">
+        <div class="section-label mb8">Votre prochain pas</div>
+        <div class="suggestion-card sc-completed">
+          <div class="sc-check-row">
+            <div class="sc-check-circle">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <div class="sc-check-text">Inscription confirmée !</div>
+              <div class="sc-check-sub">Vous retrouverez des voisins samedi.</div>
+            </div>
+          </div>
+          <div style="height:1px; background:rgba(30,127,81,0.12); margin: 12px 0;"></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:16px;">✨</span>
+            <span style="font:400 13px 'Poppins'; color:#1E7F51; line-height:1.5;">
+              Votre prochain pas vous attendra à votre retour.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reste du feed -->
+      <div class="mt24">
+        <div class="section-head">
+          <div class="section-head-title">Participer à un événement</div>
+          <div class="section-head-sub">Près de chez vous cette semaine</div>
+        </div>
+        <div class="h-scroll">
+          <div class="event-card">
+            <div class="event-img event-bg1"><span>☕</span><span class="event-badge">Papotage</span></div>
+            <div class="event-body">
+              <div class="event-title">Papotage solidaire</div>
+              <div class="event-meta">Sam. 14 juin · 10h</div>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-img event-bg2"><span>🌱</span><span class="event-badge">Nature</span></div>
+            <div class="event-body">
+              <div class="event-title">Jardinage partagé</div>
+              <div class="event-meta">Dim. 15 juin · 9h30</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active"><div class="nav-icon">🏠</div><div class="nav-label">Accueil</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">🤝</div><div class="nav-label">Entraide</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">💬</div><div class="nav-label">Discussions</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">👥</div><div class="nav-label">Groupes</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">📅</div><div class="nav-label">Événements</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ÉCRAN 3 — Utilisateur dormant · Réengagement
+     ══════════════════════════════════════════════ -->
+<div class="screen-wrap">
+  <div class="screen-label">Dormant · Réengagement bienveillant</div>
+  <div class="phone">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="app-header">
+      <div class="avatar">T</div>
+      <div class="brand">
+        <div class="brand-name">entourage</div>
+        <div class="brand-sub">L'app qui recrée le lien entre voisins</div>
+      </div>
+      <button class="bell-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+    </div>
+
+    <div class="scroll">
+
+      <!-- Card réengagement — ton neutre, jamais de culpabilisation -->
+      <div class="suggestion-wrap mt16">
+        <div class="section-label mb8">Dans votre quartier</div>
+        <div class="suggestion-card sc-reengagement">
+          <div class="sc-tag grey">
+            <span class="sc-tag-dot grey"></span>
+            Cette semaine près de chez vous
+          </div>
+          <div class="sc-title">
+            Des choses se passent dans votre quartier cette semaine
+          </div>
+          <div class="sc-reason">
+            Des voisins que vous connaissez du <strong>groupe Belleville Solidaire</strong> y seront
+          </div>
+          <div class="sc-social">
+            <div class="sc-avatars">
+              <div class="sc-av" style="background:#6D6C6C;">P</div>
+              <div class="sc-av" style="background:#A0A0A0;">N</div>
+            </div>
+            <span class="sc-social-text">Pierre et Nadia y seront</span>
+          </div>
+          <button class="btn-primary btn-dark">Voir ce qui se passe</button>
+          <div class="dismiss-link">Me rappeler plus tard</div>
+        </div>
+      </div>
+
+      <!-- Feed adapté dormant : plus léger, invitation à reprendre -->
+      <div class="mt24">
+        <div class="section-head">
+          <div class="section-head-title">Événements à venir</div>
+          <div class="section-head-sub">Belleville · Cette semaine</div>
+        </div>
+        <div class="h-scroll">
+          <div class="event-card">
+            <div class="event-img event-bg2"><span>🌱</span><span class="event-badge">Nature</span></div>
+            <div class="event-body">
+              <div class="event-title">Jardinage partagé</div>
+              <div class="event-meta">Dim. 15 juin · 9h30</div>
+              <div class="event-meta">Jardin Solidaire</div>
+            </div>
+          </div>
+          <div class="event-card">
+            <div class="event-img event-bg3"><span>🍳</span><span class="event-badge">Cuisine</span></div>
+            <div class="event-body">
+              <div class="event-title">Repas partagé</div>
+              <div class="event-meta">Jeu. 19 juin · 19h</div>
+              <div class="event-meta">Centre social</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt24">
+        <div class="section-head">
+          <div class="section-head-title">Vos groupes</div>
+          <div class="section-head-sub">Ils sont toujours actifs</div>
+        </div>
+        <div class="entraide-list">
+          <div class="entraide-item">
+            <div class="entraide-avatar" style="background:#FF9C5D; font-size:18px;">👥</div>
+            <div class="entraide-body">
+              <div class="entraide-name">Belleville Solidaire</div>
+              <div class="entraide-text">Pierre a posté il y a 2 jours</div>
+              <div class="entraide-meta">28 membres · Paris 20e</div>
+            </div>
+            <button class="entraide-cta">Voir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt24 mb16">
+        <div class="ambassador-band">
+          <div class="amb-av">👩</div>
+          <div>
+            <div class="amb-title">Une question ? Contactez Violette</div>
+            <div class="amb-sub">Ambassadrice Entourage · Paris</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active"><div class="nav-icon">🏠</div><div class="nav-label">Accueil</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">🤝</div><div class="nav-label">Entraide</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">💬</div><div class="nav-label">Discussions</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">👥</div><div class="nav-label">Groupes</div></div>
+      <div class="nav-item inactive"><div class="nav-icon">📅</div><div class="nav-label">Événements</div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
