@@ -7,7 +7,6 @@ module NextStepServices
     def call
       existing = existing_active_step
       return existing if existing
-      return nil if recently_completed?
 
       suggestion = select_suggestion
       return nil if suggestion.nil?
@@ -64,13 +63,6 @@ module NextStepServices
         .first
 
       suggestion
-    end
-
-    def recently_completed?
-      UserNextStep
-        .where(user: @user, status: 'completed')
-        .where('acted_at > ?', 2.hours.ago)
-        .exists?
     end
 
     def recently_dismissed_types

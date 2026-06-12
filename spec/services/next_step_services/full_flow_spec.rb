@@ -131,9 +131,9 @@ describe 'NextStep full suggestion lifecycle' do
   end
 
   # ---------------------------------------------------------------------------
-  # Cooling-off after completion: no new suggestion within 2 hours
+  # New suggestion immediately after completion
   # ---------------------------------------------------------------------------
-  describe 'cooling-off: no new suggestion immediately after completion' do
+  describe 'new suggestion available immediately after completion' do
     let!(:suggestion) do
       FactoryBot.create(:next_step_suggestion,
         suggestion_type: 'first_step',
@@ -144,24 +144,12 @@ describe 'NextStep full suggestion lifecycle' do
       )
     end
 
-    it 'returns nil when the user just completed a step' do
+    it 'creates a new suggestion even when the last completion was recent' do
       FactoryBot.create(:user_next_step,
         user: user,
         next_step_suggestion: suggestion,
         status: 'completed',
-        acted_at: 30.minutes.ago
-      )
-
-      result = NextStepServices::SuggestionSelector.new(user: user).call
-      expect(result).to be_nil
-    end
-
-    it 'creates a new suggestion when the last completion was more than 2 hours ago' do
-      FactoryBot.create(:user_next_step,
-        user: user,
-        next_step_suggestion: suggestion,
-        status: 'completed',
-        acted_at: 3.hours.ago
+        acted_at: 5.minutes.ago
       )
 
       result = NextStepServices::SuggestionSelector.new(user: user).call

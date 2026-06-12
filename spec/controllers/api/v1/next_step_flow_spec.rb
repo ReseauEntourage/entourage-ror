@@ -83,15 +83,17 @@ RSpec.describe Api::V1::NextStepController, type: :controller do
     # immediately after completion. The desired product behaviour (no immediate re-suggestion)
     # would require a "cooling-off" mechanism in SuggestionSelector — not yet implemented.
     # When that logic is added, the test below can be un-skipped.
-    it 'GET next_step after completion returns nil next_step (no immediate replacement)' do
+    it 'GET next_step after completion returns a new suggestion immediately' do
       get :show, params: { token: user.token }
-      user_next_step_id = JSON.parse(response.body)['next_step']['id']
+      first_id = JSON.parse(response.body)['next_step']['id']
 
-      patch :complete, params: { id: user_next_step_id, token: user.token }
+      patch :complete, params: { id: first_id, token: user.token }
 
       get :show, params: { token: user.token }
       expect(response.status).to eq(200)
-      expect(JSON.parse(response.body)['next_step']).to be_nil
+      ns = JSON.parse(response.body)['next_step']
+      expect(ns).not_to be_nil
+      expect(ns['id']).not_to eq(first_id)
     end
   end
 
