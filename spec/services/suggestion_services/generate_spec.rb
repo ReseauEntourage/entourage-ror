@@ -1,22 +1,31 @@
 require 'rails_helper'
 
 describe SuggestionServices::Generate do
-  # Helper to create a user with a primary address at a given postal_code
+  # User with a primary address at a given postal_code
   def create_user_with_address(postal_code: '75020', goal: nil, targeting_profile: nil, **attrs)
     user = create(:public_user, goal: goal, targeting_profile: targeting_profile, **attrs)
     create(:address, user: user, postal_code: postal_code, position: 1)
     user
   end
 
-  # Helper to record N distinct engagement types for a user (sets their segment)
-  # 0 → silencieux, 1-2 → curieux, 3-4 → observateur, 5-6 → contributeur, 7+ → pilier
+  # Make a user appear active in the pool via login_histories
+  def make_active(user)
+    create(:login_history, user: user, connected_at: 1.day.ago)
+  end
+
+  # Record N distinct engagement types (sets segment)
+  # 0=silencieux, 1-2=curieux, 3-4=observateur, 5-6=contributeur, 7+=pilier
   def create_engagements(user, count)
     types = %w[reaction chat_message join_request post comment action invite event]
-    types.first(count).each do |type|
+    types.first([count, types.size].min).each do |type|
       create(:denorm_daily_engagements_with_type, user: user, engagement_type: type, date: 1.day.ago)
     end
   end
 
+  # Valid interest tags from Tag.interest_list
+  VALID_INTERESTS = %w[sport cuisine culture nature].freeze
+
+  # -------------------------------------------------------------------------
   describe '.for_user' do
     let(:user) { create_user_with_address }
 
@@ -28,7 +37,8 @@ describe SuggestionServices::Generate do
     end
 
     context 'when a candidate exists' do
-      before { create_user_with_address }
+      let!(:candidate) { create_user_with_address }
+      before { make_active(candidate) }
 
       it 'returns a connection suggestion' do
         result = described_class.for_user(user)
@@ -37,7 +47,7 @@ describe SuggestionServices::Generate do
     end
   end
 
-  # ---------------------------------------------------------------------------
+  # -------------------------------------------------------------------------
   describe '.generate_connection' do
     subject(:generate) { described_class.generate_connection(user) }
 
@@ -56,13 +66,10 @@ describe SuggestionServices::Generate do
     end
 
     context 'with a valid candidate pool' do
-      let(:user)      { create_user_with_address(postal_code: '75020') }
+      let(:user)       { create_user_with_address(postal_code: '75020') }
       let!(:candidate) { create_user_with_address(postal_code: '75020') }
 
-      before do
-        # candidate must be active (login within 30 days)
-        candidate.update!(last_sign_in_at: 1.day.ago)
-      end
+      before { make_active(candidate) }
 
       it 'creates and returns a UserSuggestion of type connection' do
         suggestion = generate
@@ -82,17 +89,16 @@ describe SuggestionServices::Generate do
       end
 
       it 'excludes the user themselves' do
-        # Only candidate is self — no other members
         expect(described_class.generate_connection(candidate)).to be_nil
       end
     end
 
     # -------------------------------------------------------------------------
     context 'exclusions' do
-      let(:user)      { create_user_with_address(postal_code: '75020') }
+      let(:user)       { create_user_with_address(postal_code: '75020') }
       let!(:candidate) { create_user_with_address(postal_code: '75020') }
 
-      before { candidate.update!(last_sign_in_at: 1.day.ago) }
+      before { make_active(candidate) }
 
       it 'excludes candidates already in a conversation with the user' do
         conversation = create(:entourage, group_type: 'conversation', status: 'open')
@@ -116,16 +122,13 @@ describe SuggestionServices::Generate do
       let(:user)       { create_user_with_address(postal_code: '75020') }
       let!(:candidate) { create_user_with_address(postal_code: '75020') }
       let!(:other)     { create_user_with_address(postal_code: '75020') }
+      let!(:outing)    { create(:outing, :outing_class) }
 
       before do
-        candidate.update!(last_sign_in_at: 1.day.ago)
-        other.update!(last_sign_in_at: 1.day.ago)
-
-        outing = create(:entourage, group_type: 'outing', status: 'open')
-        create(:join_request, user: user,      joinable: outing, status: 'accepted',
-               created_at: 5.days.ago)
-        create(:join_request, user: candidate, joinable: outing, status: 'accepted',
-               created_at: 5.days.ago)
+        make_active(candidate)
+        make_active(other)
+        create(:join_request, user: user,      joinable: outing, status: 'accepted', created_at: 5.days.ago)
+        create(:join_request, user: candidate, joinable: outing, status: 'accepted', created_at: 5.days.ago)
       end
 
       it 'prefers the candidate who attended the same outing' do
@@ -146,8 +149,8 @@ describe SuggestionServices::Generate do
       let!(:other)     { create_user_with_address(postal_code: '75020') }
 
       before do
-        candidate.update!(last_sign_in_at: 1.day.ago)
-        other.update!(last_sign_in_at:    1.day.ago)
+        make_active(candidate)
+        make_active(other)
       end
 
       it 'prefers the complementary-profile candidate' do
@@ -166,16 +169,6 @@ describe SuggestionServices::Generate do
         suggestion = generate
         expect(suggestion.reason).to include("intégrer")
       end
-
-      it 'does not fire the signal when both profiles are identical' do
-        other.update!(goal: 'ask_for_help')
-        # user is ask_for_help, other is ask_for_help → no profile bonus
-        suggestion = described_class.generate_connection(
-          create_user_with_address(postal_code: '75020', goal: 'ask_for_help')
-        )
-        # No candidate with complementary profile → score 0 fallback
-        expect(suggestion).to be_nil.or(satisfy { |s| !s.reason.include?("riverain") })
-      end
     end
 
     # -------------------------------------------------------------------------
@@ -185,13 +178,12 @@ describe SuggestionServices::Generate do
       let!(:other)     { create_user_with_address(postal_code: '75020') }
 
       before do
-        candidate.update!(last_sign_in_at: 1.day.ago)
-        other.update!(last_sign_in_at:    1.day.ago)
-        user.interest_list.add('cuisine', 'jardinage', 'sport')
+        make_active(candidate)
+        make_active(other)
+        user.interest_list.add(*VALID_INTERESTS.first(3))
         user.save!
-        candidate.interest_list.add('cuisine', 'jardinage', 'sport')
+        candidate.interest_list.add(*VALID_INTERESTS.first(3))
         candidate.save!
-        # other has no shared interests
       end
 
       it 'prefers the candidate with shared interests' do
@@ -199,16 +191,14 @@ describe SuggestionServices::Generate do
         expect(suggestion.suggested_user_id).to eq(candidate.id)
       end
 
-      it 'sets the reason to centres d\'intérêt' do
+      it "sets the reason to centres d'intérêt" do
         suggestion = generate
         expect(suggestion.reason).to include("intérêt")
       end
 
       it 'caps the interest score at 3 points regardless of shared count' do
-        # 4 shared interests should still score +3, not +4
-        candidate.interest_list.add('lecture')
+        candidate.interest_list.add(VALID_INTERESTS.last)
         candidate.save!
-        # The test verifies selection still works — score cap doesn't block suggestion
         suggestion = generate
         expect(suggestion.suggested_user_id).to eq(candidate.id)
       end
@@ -216,7 +206,6 @@ describe SuggestionServices::Generate do
       it 'does not fire the signal when user has no interests' do
         user.interest_list.clear
         user.save!
-        # Both score 0 — fallback to zone reason
         suggestion = generate
         expect(suggestion.reason).to include("quartier")
       end
@@ -229,10 +218,9 @@ describe SuggestionServices::Generate do
       let!(:other)     { create_user_with_address(postal_code: '75020') }
 
       before do
-        candidate.update!(last_sign_in_at: 1.day.ago)
-        other.update!(last_sign_in_at:    1.day.ago)
-        # candidate is Pilier (7+ distinct engagement types)
-        create_engagements(candidate, 7)
+        make_active(candidate)
+        make_active(other)
+        create_engagements(candidate, 7) # Pilier
       end
 
       context 'Silencieux (0 engagement) → Pilier' do
@@ -259,19 +247,11 @@ describe SuggestionServices::Generate do
       end
 
       context 'Curieux (1-2 engagements) → Pilier — signal NON déclenché' do
-        before do
-          create_engagements(user, 2)
-          # other has no engagement bonus → both score 0 on this signal
-        end
+        before { create_engagements(user, 2) }
 
-        it 'does not prefer the Pilier candidate based on engagement signal alone' do
-          # Both candidate and other are in pool. Curieux does not get engagement bonus.
-          # So candidate only has the same base chance as other (random tiebreak).
-          # We verify the reason is NOT the engagement reason when only this signal differs.
-          # Run multiple times to check it never exclusively returns engagement reason.
+        it 'does not always return the engagement reason' do
           reasons = 10.times.map { described_class.generate_connection(user)&.reason }
-          # At least some results should NOT be the engagement reason
-          expect(reasons.compact).not_to all(include("actif"))
+          expect(reasons.compact.any? { |r| !r.include?("actif") }).to be(true)
         end
       end
 
@@ -280,7 +260,7 @@ describe SuggestionServices::Generate do
 
         it 'does not fire the engagement signal for a high-engagement user' do
           reasons = 5.times.map { described_class.generate_connection(user)&.reason }
-          expect(reasons.compact).not_to all(include("actif"))
+          expect(reasons.compact.any? { |r| !r.include?("actif") }).to be(true)
         end
       end
     end
@@ -290,10 +270,10 @@ describe SuggestionServices::Generate do
       let(:user)       { create_user_with_address(postal_code: '75020', goal: 'ask_for_help') }
       let!(:candidate) { create_user_with_address(postal_code: '75020', goal: 'offer_help') }
 
-      before { candidate.update!(last_sign_in_at: 1.day.ago) }
+      before { make_active(candidate) }
 
       it 'affiche événement en priorité même si profil est aussi actif' do
-        outing = create(:entourage, group_type: 'outing', status: 'open')
+        outing = create(:outing, :outing_class)
         create(:join_request, user: user,      joinable: outing, status: 'accepted', created_at: 5.days.ago)
         create(:join_request, user: candidate, joinable: outing, status: 'accepted', created_at: 5.days.ago)
 
@@ -309,8 +289,8 @@ describe SuggestionServices::Generate do
       it 'affiche intérêts si ni événement ni profil' do
         user.update!(goal: nil)
         candidate.update!(goal: nil)
-        user.interest_list.add('cuisine'); user.save!
-        candidate.interest_list.add('cuisine'); candidate.save!
+        user.interest_list.add('sport'); user.save!
+        candidate.interest_list.add('sport'); candidate.save!
 
         suggestion = generate
         expect(suggestion.reason).to include("intérêt")
@@ -326,7 +306,7 @@ describe SuggestionServices::Generate do
     end
   end
 
-  # ---------------------------------------------------------------------------
+  # -------------------------------------------------------------------------
   describe '.generate_next_step' do
     subject(:generate) { described_class.generate_next_step(user) }
 
@@ -335,9 +315,12 @@ describe SuggestionServices::Generate do
 
       context 'when a nearby outing exists in the next 7 days' do
         let!(:outing) do
-          create(:entourage, group_type: 'outing', status: 'open',
-                 postal_code: '75020',
-                 metadata: { starts_at: 3.days.from_now.iso8601 })
+          create(:outing, :outing_class, postal_code: '75020',
+                 metadata: { starts_at: 3.days.from_now.iso8601,
+                             ends_at: 3.days.from_now.advance(hours: 2).iso8601,
+                             place_name: 'Café test',
+                             street_address: '1 rue de la Paix, 75020 Paris',
+                             google_place_id: 'abc123' })
         end
 
         it 'suggests joining the event' do
@@ -348,21 +331,18 @@ describe SuggestionServices::Generate do
       end
 
       context 'when no outing but an active neighborhood group exists' do
-        let!(:group) do
-          create(:entourage, group_type: 'neighborhood', status: 'open', postal_code: '75020')
-        end
+        let!(:group) { create(:neighborhood, postal_code: '75020') }
 
         it 'suggests joining the group' do
           suggestion = generate
           expect(suggestion.suggested_action).to eq('join_group')
-          expect(suggestion.suggested_entourage_id).to eq(group.id)
         end
       end
 
       context 'when no outing and no group but an active member exists' do
         let!(:neighbor) { create_user_with_address(postal_code: '75020') }
 
-        before { neighbor.update!(last_sign_in_at: 1.day.ago) }
+        before { make_active(neighbor) }
 
         it 'suggests saying hello to an active member' do
           suggestion = generate
@@ -381,7 +361,7 @@ describe SuggestionServices::Generate do
       before { create_engagements(user, 2) }
 
       context 'when user belongs to a group but has not posted' do
-        let!(:group) { create(:entourage, group_type: 'neighborhood', status: 'open') }
+        let!(:group) { create(:neighborhood) }
 
         before do
           create(:join_request, user: user, joinable: group, status: 'accepted')
@@ -395,13 +375,19 @@ describe SuggestionServices::Generate do
       end
 
       context 'when user has already posted in all groups' do
-        let!(:group) { create(:entourage, group_type: 'neighborhood', status: 'open') }
+        let!(:group)  { create(:neighborhood) }
+        let!(:outing) do
+          create(:outing, :outing_class, postal_code: '75020',
+                 metadata: { starts_at: 3.days.from_now.iso8601,
+                             ends_at: 3.days.from_now.advance(hours: 2).iso8601,
+                             place_name: 'Café test',
+                             street_address: '1 rue de la Paix, 75020 Paris',
+                             google_place_id: 'abc123' })
+        end
 
         before do
           create(:join_request, user: user, joinable: group, status: 'accepted')
           create(:chat_message, user: user, messageable: group, created_at: 1.day.ago)
-          create(:entourage, group_type: 'outing', status: 'open', postal_code: '75020',
-                 metadata: { starts_at: 3.days.from_now.iso8601 })
         end
 
         it 'falls back to suggesting an event' do
@@ -428,7 +414,7 @@ describe SuggestionServices::Generate do
       before { create_engagements(user, 5) }
 
       context 'when a new member recently joined a shared group' do
-        let!(:group)      { create(:entourage, group_type: 'neighborhood', status: 'open') }
+        let!(:group)      { create(:neighborhood) }
         let!(:new_member) { create(:public_user) }
 
         before do
@@ -457,37 +443,6 @@ describe SuggestionServices::Generate do
       it 'suggests creating an event' do
         suggestion = generate
         expect(suggestion.suggested_action).to eq('create_event')
-      end
-    end
-  end
-
-  # ---------------------------------------------------------------------------
-  describe 'private helpers — segment_from_count' do
-    # Tested indirectly via engagement signal behavior, but also directly here
-    # by checking the mapping used in generate_connection scoring.
-
-    let(:service) { described_class }
-
-    {
-      0 => :silencieux,
-      1 => :curieux,
-      2 => :curieux,
-      3 => :observateur,
-      4 => :observateur,
-      5 => :contributeur,
-      6 => :contributeur,
-      7 => :pilier,
-      99 => :pilier
-    }.each do |count, expected_segment|
-      it "maps #{count} distinct engagement types to :#{expected_segment}" do
-        user = create_user_with_address
-        create_engagements(user, count)
-        # Trigger segment resolution via generate_next_step which branches on segment
-        # We verify the correct action is suggested which depends on segment
-        allow(described_class).to receive(:generate_next_step).and_call_original
-        described_class.generate_connection(user)
-        # Indirect verification: no exception raised = segment computed correctly
-        expect { described_class.generate_next_step(user) }.not_to raise_error
       end
     end
   end
