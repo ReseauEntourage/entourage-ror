@@ -31,12 +31,12 @@ module NextStepServices
 
     def select_suggestion
       level = NextStepServices::EngagementLevel.new(user: @user).call
-      dismissed_types = recently_dismissed_types
+      excluded_types = recently_dismissed_types + recently_completed_types
 
       if level == :dormant
         suggestion = NextStepSuggestion.active
           .where(suggestion_type: 'reengagement')
-          .where.not(suggestion_type: dismissed_types)
+          .where.not(suggestion_type: excluded_types)
           .order(priority: :desc)
           .first
 
@@ -53,7 +53,7 @@ module NextStepServices
       suggestion = NextStepSuggestion.active
         .for_profile(profile)
         .for_level(level)
-        .where.not(suggestion_type: dismissed_types)
+        .where.not(suggestion_type: excluded_types)
         .order(priority: :desc)
         .first
 
@@ -63,6 +63,15 @@ module NextStepServices
         .first
 
       suggestion
+    end
+
+    def recently_completed_types
+      UserNextStep
+        .where(user: @user, status: 'completed')
+        .where('acted_at > ?', 7.days.ago)
+        .joins(:next_step_suggestion)
+        .pluck('next_step_suggestions.suggestion_type')
+        .uniq
     end
 
     def recently_dismissed_types

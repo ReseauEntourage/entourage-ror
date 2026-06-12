@@ -131,30 +131,87 @@ describe 'NextStep full suggestion lifecycle' do
   end
 
   # ---------------------------------------------------------------------------
-  # New suggestion immediately after completion
+  # Completed type excluded for 7 days — no repeat suggestion
   # ---------------------------------------------------------------------------
-  describe 'new suggestion available immediately after completion' do
-    let!(:suggestion) do
+  describe 'completed suggestion type excluded for 7 days' do
+    let!(:first_step) do
       FactoryBot.create(:next_step_suggestion,
         suggestion_type: 'first_step',
         target_profile: 'all',
         min_engagement_level: 0,
         max_engagement_level: 4,
-        priority: 50
+        priority: 80
       )
     end
 
-    it 'creates a new suggestion even when the last completion was recent' do
+    let!(:event) do
+      FactoryBot.create(:next_step_suggestion,
+        suggestion_type: 'event',
+        target_profile: 'all',
+        min_engagement_level: 0,
+        max_engagement_level: 4,
+        priority: 60
+      )
+    end
+
+    let!(:fallback) do
+      FactoryBot.create(:next_step_suggestion,
+        suggestion_type: 'fallback',
+        target_profile: 'all',
+        min_engagement_level: 0,
+        max_engagement_level: 4,
+        priority: 1
+      )
+    end
+
+    it 'does not re-propose the same type immediately after completion' do
       FactoryBot.create(:user_next_step,
         user: user,
-        next_step_suggestion: suggestion,
+        next_step_suggestion: first_step,
         status: 'completed',
         acted_at: 5.minutes.ago
       )
 
       result = NextStepServices::SuggestionSelector.new(user: user).call
-      expect(result).not_to be_nil
-      expect(result.next_step_suggestion).to eq(suggestion)
+      expect(result.next_step_suggestion.suggestion_type).not_to eq('first_step')
+    end
+
+    it 'proposes the next type in priority order after completion' do
+      FactoryBot.create(:user_next_step,
+        user: user,
+        next_step_suggestion: first_step,
+        status: 'completed',
+        acted_at: 5.minutes.ago
+      )
+
+      result = NextStepServices::SuggestionSelector.new(user: user).call
+      expect(result.next_step_suggestion).to eq(event)
+    end
+
+    it 'falls back to fallback when all types are recently completed' do
+      [first_step, event].each do |s|
+        FactoryBot.create(:user_next_step,
+          user: user,
+          next_step_suggestion: s,
+          status: 'completed',
+          acted_at: 1.hour.ago
+        )
+      end
+
+      result = NextStepServices::SuggestionSelector.new(user: user).call
+      expect(result.next_step_suggestion).to eq(fallback)
+    end
+
+    it 're-proposes a completed type after 7 days' do
+      FactoryBot.create(:user_next_step,
+        user: user,
+        next_step_suggestion: first_step,
+        status: 'completed',
+        acted_at: 8.days.ago
+      )
+
+      result = NextStepServices::SuggestionSelector.new(user: user).call
+      expect(result.next_step_suggestion).to eq(first_step)
     end
   end
 
