@@ -1,5 +1,5 @@
 module V1
-  class UserSuggestionSerializer < ActiveModel::Serializer
+  class UserZuggestionSerializer < ActiveModel::Serializer
     attributes :id,
                :suggestion_type,
                :suggested_action,

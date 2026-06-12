@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SuggestionServices::Generate do
+describe ZuggestionServices::Generate do
   # User with a primary address at a given postal_code
   def create_user_with_address(postal_code: '75020', goal: nil, targeting_profile: nil, **attrs)
     user = create(:public_user, goal: goal, targeting_profile: targeting_profile, **attrs)
@@ -42,7 +42,7 @@ describe SuggestionServices::Generate do
 
       it 'returns a connection suggestion' do
         result = described_class.for_user(user)
-        expect(result[:connection]).to be_a(UserSuggestion)
+        expect(result[:connection]).to be_a(UserZuggestion)
       end
     end
   end
@@ -71,9 +71,9 @@ describe SuggestionServices::Generate do
 
       before { make_active(candidate) }
 
-      it 'creates and returns a UserSuggestion of type connection' do
+      it 'creates and returns a UserZuggestion of type connection' do
         suggestion = generate
-        expect(suggestion).to be_a(UserSuggestion)
+        expect(suggestion).to be_a(UserZuggestion)
         expect(suggestion.suggestion_type).to eq('connection')
         expect(suggestion.suggested_user_id).to eq(candidate.id)
       end
@@ -109,7 +109,7 @@ describe SuggestionServices::Generate do
       end
 
       it 'excludes candidates already dismissed by the user' do
-        create(:user_suggestion, user: user, suggestion_type: 'connection',
+        create(:user_zuggestion, user: user, suggestion_type: 'connection',
                suggested_user: candidate, dismissed_at: 1.day.ago,
                reason: 'zone', reason_type: 'zone', expires_at: 7.days.from_now)
 

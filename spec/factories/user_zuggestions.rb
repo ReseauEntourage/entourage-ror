@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :user_suggestion do
+  factory :user_zuggestion do
     association :user, factory: :public_user
     suggestion_type { 'connection' }
     reason { "parce que vous êtes dans le même quartier" }

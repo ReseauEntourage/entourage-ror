@@ -1,15 +1,15 @@
 module Api
   module V1
-    class SuggestionsController < Api::V1::BaseController
+    class ZuggestionsController < Api::V1::BaseController
 
       VALID_ACTIONS = %w[actioned dismissed].freeze
 
       def index
-        suggestions = SuggestionServices::Generate.for_user(current_user)
+        suggestions = ZuggestionServices::Generate.for_user(current_user)
 
         render json: {
-          connection: serialize_suggestion(suggestions[:connection]),
-          next_step:  serialize_suggestion(suggestions[:next_step])
+          connection: serialize_zuggestion(suggestions[:connection]),
+          next_step:  serialize_zuggestion(suggestions[:next_step])
         }
       rescue => e
         Rails.logger.error "[SuggestionsController#index] user=#{current_user&.id} #{e.class}: #{e.message}"
@@ -21,7 +21,7 @@ module Api
       end
 
       def update
-        suggestion = current_user.user_suggestions.find_by(id: params[:id])
+        suggestion = current_user.user_zuggestions.find_by(id: params[:id])
 
         unless suggestion
           return render_error(
@@ -47,7 +47,7 @@ module Api
           suggestion.update!(dismissed_at: Time.current, dismissed_until: 7.days.from_now)
         end
 
-        render json: { suggestion: serialize_suggestion(suggestion) }
+        render json: { suggestion: serialize_zuggestion(suggestion) }
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error "[SuggestionsController#update] user=#{current_user&.id} suggestion=#{params[:id]} #{e.message}"
         render_error(
@@ -66,7 +66,7 @@ module Api
 
       private
 
-      def serialize_suggestion(suggestion)
+      def serialize_zuggestion(suggestion)
         return nil unless suggestion
 
         user_info = if suggestion.suggested_user.present?

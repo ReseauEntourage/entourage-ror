@@ -1,4 +1,4 @@
-module SuggestionServices
+module ZuggestionServices
   class Generate
     ACTIVE_DAYS = 30
 
@@ -13,7 +13,7 @@ module SuggestionServices
       rescue ArgumentError
         raise
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#for_user] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
+        Rails.logger.error "[ZuggestionServices::Generate#for_user] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
         { connection: nil, next_step: nil }
       end
 
@@ -21,7 +21,7 @@ module SuggestionServices
         postal_code = user_postal_code(user)
 
         unless postal_code.present?
-          Rails.logger.info "[SuggestionServices::Generate#generate_connection] user=#{user.id} skipped: no primary address"
+          Rails.logger.info "[ZuggestionServices::Generate#generate_connection] user=#{user.id} skipped: no primary address"
           return nil
         end
 
@@ -39,7 +39,7 @@ module SuggestionServices
           .limit(100)
 
         if pool.empty?
-          Rails.logger.info "[SuggestionServices::Generate#generate_connection] user=#{user.id} skipped: empty pool for postal_code=#{postal_code}"
+          Rails.logger.info "[ZuggestionServices::Generate#generate_connection] user=#{user.id} skipped: empty pool for postal_code=#{postal_code}"
           return nil
         end
 
@@ -87,9 +87,9 @@ module SuggestionServices
 
         reason, reason_type = connection_reason(best[:breakdown], user_profile)
 
-        Rails.logger.info "[SuggestionServices::Generate#generate_connection] user=#{user.id} candidate=#{best[:id]} score=#{best[:score]} signals=#{best[:breakdown]}"
+        Rails.logger.info "[ZuggestionServices::Generate#generate_connection] user=#{user.id} candidate=#{best[:id]} score=#{best[:score]} signals=#{best[:breakdown]}"
 
-        UserSuggestion.create!(
+        UserZuggestion.create!(
           user:              user,
           suggestion_type:   'connection',
           suggested_user_id: best[:id],
@@ -98,10 +98,10 @@ module SuggestionServices
           expires_at:        7.days.from_now
         )
       rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[SuggestionServices::Generate#generate_connection] user=#{user&.id} RecordInvalid: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#generate_connection] user=#{user&.id} RecordInvalid: #{e.message}"
         nil
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#generate_connection] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
+        Rails.logger.error "[ZuggestionServices::Generate#generate_connection] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
         nil
       end
 
@@ -118,7 +118,7 @@ module SuggestionServices
         end
 
         unless suggestion_attrs.present?
-          Rails.logger.info "[SuggestionServices::Generate#generate_next_step] user=#{user.id} segment=#{segment} no content available"
+          Rails.logger.info "[ZuggestionServices::Generate#generate_next_step] user=#{user.id} segment=#{segment} no content available"
           return nil
         end
 
@@ -126,23 +126,23 @@ module SuggestionServices
         entourage_id   = attrs.delete(:suggested_entourage_id)
         suggested_uid  = attrs.delete(:suggested_user_id_val)
 
-        record = UserSuggestion.new(attrs)
+        record = UserZuggestion.new(attrs)
         record.suggested_entourage_id = entourage_id if entourage_id
         record.suggested_user_id      = suggested_uid if suggested_uid
 
         unless record.valid?
-          Rails.logger.error "[SuggestionServices::Generate#generate_next_step] user=#{user.id} invalid: #{record.errors.full_messages.join(', ')}"
+          Rails.logger.error "[ZuggestionServices::Generate#generate_next_step] user=#{user.id} invalid: #{record.errors.full_messages.join(', ')}"
           return nil
         end
 
         record.save!
-        Rails.logger.info "[SuggestionServices::Generate#generate_next_step] user=#{user.id} segment=#{segment} action=#{record.suggested_action}"
+        Rails.logger.info "[ZuggestionServices::Generate#generate_next_step] user=#{user.id} segment=#{segment} action=#{record.suggested_action}"
         record
       rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[SuggestionServices::Generate#generate_next_step] user=#{user&.id} RecordInvalid: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#generate_next_step] user=#{user&.id} RecordInvalid: #{e.message}"
         nil
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#generate_next_step] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
+        Rails.logger.error "[ZuggestionServices::Generate#generate_next_step] user=#{user&.id} #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
         nil
       end
 
@@ -151,14 +151,14 @@ module SuggestionServices
       def active_suggestion(user, type)
         user.user_suggestions.active.for_type(type).order(created_at: :desc).first
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#active_suggestion] user=#{user&.id} type=#{type} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#active_suggestion] user=#{user&.id} type=#{type} #{e.class}: #{e.message}"
         nil
       end
 
       def user_postal_code(user)
         Address.where(user_id: user.id, position: 1).pick(:postal_code)
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#user_postal_code] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#user_postal_code] user=#{user&.id} #{e.class}: #{e.message}"
         nil
       end
 
@@ -195,18 +195,18 @@ module SuggestionServices
           .pluck(:user_id)
           .uniq
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#existing_conversation_user_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#existing_conversation_user_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
         []
       end
 
       def dismissed_suggested_user_ids_for(user)
-        UserSuggestion
+        UserZuggestion
           .where(user_id: user.id, suggestion_type: 'connection')
           .where.not(suggested_user_id: nil)
           .where.not(dismissed_at: nil)
           .pluck(:suggested_user_id)
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#dismissed_suggested_user_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#dismissed_suggested_user_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
         []
       end
 
@@ -217,7 +217,7 @@ module SuggestionServices
         return :offer_help   if tp == 'offers_help'   || goal == 'offer_help'
         nil
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#user_targeting_profile] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#user_targeting_profile] user=#{user&.id} #{e.class}: #{e.message}"
         nil
       end
 
@@ -244,7 +244,7 @@ module SuggestionServices
 
         rows.each_with_object({}) { |r, h| h[r.user_id] = r.eng_count.to_i }
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#engagement_counts_for] #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#engagement_counts_for] #{e.class}: #{e.message}"
         {}
       end
 
@@ -274,7 +274,7 @@ module SuggestionServices
           .pluck(:user_id)
           .uniq
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#event_attendee_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#event_attendee_ids_for] user=#{user&.id} #{e.class}: #{e.message}"
         []
       end
 
@@ -306,13 +306,13 @@ module SuggestionServices
 
         segment_from_count(count)
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#user_segment] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#user_segment] user=#{user&.id} #{e.class}: #{e.message}"
         :silencieux
       end
 
       def next_step_for_silencieux(user, postal_code)
         unless postal_code.present?
-          Rails.logger.info "[SuggestionServices::Generate#next_step_for_silencieux] user=#{user.id} skipped: no postal_code"
+          Rails.logger.info "[ZuggestionServices::Generate#next_step_for_silencieux] user=#{user.id} skipped: no postal_code"
           return nil
         end
 
@@ -351,7 +351,7 @@ module SuggestionServices
         { suggested_user_id_val: candidate.id, suggested_action: 'say_hello',
           reason: "Il y a des membres actifs près de chez vous", reason_type: 'zone' }
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#next_step_for_silencieux] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#next_step_for_silencieux] user=#{user&.id} #{e.class}: #{e.message}"
         nil
       end
 
@@ -390,7 +390,7 @@ module SuggestionServices
         { suggested_entourage_id: outing.id, suggested_action: 'join_event',
           reason: "Il y a un événement proche de chez vous", reason_type: 'zone' }
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#next_step_for_curieux] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#next_step_for_curieux] user=#{user&.id} #{e.class}: #{e.message}"
         nil
       end
 
@@ -418,7 +418,7 @@ module SuggestionServices
         { suggested_user_id_val: new_member, suggested_action: 'welcome_member',
           reason: "Un nouveau membre a rejoint votre groupe", reason_type: 'group' }
       rescue => e
-        Rails.logger.error "[SuggestionServices::Generate#next_step_for_contributeur] user=#{user&.id} #{e.class}: #{e.message}"
+        Rails.logger.error "[ZuggestionServices::Generate#next_step_for_contributeur] user=#{user&.id} #{e.class}: #{e.message}"
         nil
       end
     end
