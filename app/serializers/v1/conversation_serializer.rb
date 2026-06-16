@@ -124,7 +124,11 @@ module V1
     end
 
     def members
-      object.accepted_members.limit(5)
+      if object.association(:accepted_members).loaded?
+        object.accepted_members.first(5)
+      else
+        object.accepted_members.limit(5)
+      end
     end
 
     private

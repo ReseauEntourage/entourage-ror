@@ -612,9 +612,8 @@ class Entourage < ApplicationRecord
   def interlocutor_of user
     return unless conversation?
 
-    members.find do |member|
-      member.id != user.id
-    end
+    pool = association(:accepted_members).loaded? ? accepted_members : members
+    pool.find { |member| member.id != user.id }
   end
 
   def set_moderation_dates_and_save
