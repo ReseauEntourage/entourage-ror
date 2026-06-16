@@ -39,7 +39,6 @@ module NeighborhoodServices
 
       neighborhoods
         .like(q)
-        .includes([:user, :interests, :future_outings])
         .public_only
         .match_at_least_one_interest(interests)
         .order(national: :desc)
