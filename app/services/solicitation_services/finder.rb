@@ -36,7 +36,7 @@ module SolicitationServices
       end
 
       # order by created_at is already in default_scope
-      solicitations.group(:id)
+      solicitations.group(:id).includes(:user, :translation, :join_requests).preload(section_taggings: :tag)
     end
 
     private

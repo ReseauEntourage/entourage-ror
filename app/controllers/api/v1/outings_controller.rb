@@ -16,7 +16,7 @@ module Api
 
         outings = OutingsServices::Finder.new(user, index_params)
           .find_all
-          .includes(:translation, :user, :interests)
+          .includes(:translation, :user)
           .page(page)
           .per(per)
 
@@ -28,6 +28,8 @@ module Api
         outings.tap do |outing|
           ::Preloaders::Outing.preload_member_ids(outing, scope: JoinRequest.accepted)
         end
+
+        ::Preloaders::Interests.preload(outings.to_a)
 
         render json: outings, root: :outings, each_serializer: ::V1::Outings::IndexSerializer, scope: {
           user: user

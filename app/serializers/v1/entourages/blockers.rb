@@ -20,8 +20,9 @@ module V1
       private
 
       def other_participant_id
-        @other_participant_id ||= object.member_ids.find do |member_id|
-          member_id != scope[:user].id
+        @other_participant_id ||= begin
+          ids = object.association(:accepted_members).loaded? ? object.accepted_members.map(&:id) : object.member_ids
+          ids.find { |id| id != scope[:user].id }
         end
       end
     end
