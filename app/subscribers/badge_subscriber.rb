@@ -11,6 +11,7 @@ class BadgeSubscriber
     EventBus.subscribe("user_reaction.created", method(:on_user_reaction))
 
     EventBus.subscribe("entourage.created", method(:on_entourage))
+    EventBus.subscribe("outing.created", method(:on_entourage))
   end
 
   def self.on_join_request(payload)
