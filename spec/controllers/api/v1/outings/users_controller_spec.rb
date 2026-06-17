@@ -53,6 +53,7 @@ describe Api::V1::Outings::UsersController do
         'partner' => nil,
         'partner_role_title' => nil,
         'birthday_today' => be_boolean,
+        'badges' => [],
       }, {
         'id' => user.id,
         'uuid' => user.reload.uuid,
@@ -70,6 +71,7 @@ describe Api::V1::Outings::UsersController do
         'partner' => nil,
         'partner_role_title' => nil,
         'birthday_today' => be_boolean,
+        'badges' => [],
       }]) }
     end
   end
@@ -103,6 +105,7 @@ describe Api::V1::Outings::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => [],
           }
         )}
       end
@@ -130,6 +133,7 @@ describe Api::V1::Outings::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => [],
           }
         )}
       end
@@ -268,6 +272,7 @@ describe Api::V1::Outings::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => [],
           }
         )}
       end
@@ -296,6 +301,7 @@ describe Api::V1::Outings::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => [],
           }
         )}
       end
@@ -487,6 +493,7 @@ describe Api::V1::Outings::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => [],
           }
         })}
       end
@@ -553,6 +560,7 @@ describe Api::V1::Outings::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => [],
           }
         })}
       end

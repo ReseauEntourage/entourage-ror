@@ -15,7 +15,8 @@ module V1
                :avatar_url,
                :partner,
                :partner_role_title,
-               :birthday_today
+               :birthday_today,
+               :badges
 
     def id
       object.user_id
@@ -68,6 +69,10 @@ module V1
 
     def birthday_today
       object.user.birthday_today?
+    end
+
+    def badges
+      object.user.user_badges.map(&:badge_tag)
     end
   end
 end
