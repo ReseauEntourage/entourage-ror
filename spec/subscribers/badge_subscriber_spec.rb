@@ -121,6 +121,21 @@ RSpec.describe BadgeSubscriber do
     end
   end
 
+  describe '.on_user_profile_updated' do
+    it 'calls check_bienvenue with the user' do
+      BadgeSubscriber.on_user_profile_updated(record: user)
+      expect(BadgeService).to have_received(:check_bienvenue)
+        .with(satisfy { |u| u.id == user.id })
+    end
+
+    it 'is triggered by the user.profile_updated event' do
+      allow(EventBus).to receive(:publish).and_call_original
+      EventBus.publish("user.profile_updated", record: user)
+      expect(BadgeService).to have_received(:check_bienvenue)
+        .with(satisfy { |u| u.id == user.id })
+    end
+  end
+
   describe '.on_entourage' do
     context 'when entourage is an outing' do
       let(:outing) { create(:outing, user: user) }

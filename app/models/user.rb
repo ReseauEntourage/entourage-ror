@@ -38,9 +38,11 @@ class User < ApplicationRecord
 
   before_save :slack_id_no_empty
   before_save :update_searchable_text
+  before_save :capture_profile_fields_changed
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
   after_save :sync_newsletter, if: :saved_change_to_email?
   after_commit :sync_sf_entreprise_participant_async
+  after_commit :publish_profile_update_event, if: :profile_fields_changed?
 
   has_many :followings, -> { where active: true }
   has_many :subscriptions, through: :followings, source: :partner
@@ -760,5 +762,20 @@ class User < ApplicationRecord
 
   def clean_up_passwords
     self.password = nil
+  end
+
+  def capture_profile_fields_changed
+    @profile_fields_changed = will_save_change_to_availability? ||
+                              interest_list_changed? ||
+                              involvement_list_changed? ||
+                              concern_list_changed?
+  end
+
+  def profile_fields_changed?
+    @profile_fields_changed
+  end
+
+  def publish_profile_update_event
+    EventBus.publish("user.profile_updated", record: self)
   end
 end

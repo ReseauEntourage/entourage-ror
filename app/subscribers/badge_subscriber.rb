@@ -12,6 +12,8 @@ class BadgeSubscriber
 
     EventBus.subscribe("entourage.created", method(:on_entourage))
     EventBus.subscribe("outing.created", method(:on_entourage))
+
+    EventBus.subscribe("user.profile_updated", method(:on_user_profile_updated))
   end
 
   def self.on_join_request(payload)
@@ -48,5 +50,11 @@ class BadgeSubscriber
     entourage = payload[:record]
 
     BadgeService.check_moteur_rencontres(entourage.user) if entourage.outing?
+  end
+
+  def self.on_user_profile_updated(payload)
+    user = payload[:record]
+
+    BadgeService.check_bienvenue(user)
   end
 end
