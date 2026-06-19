@@ -101,6 +101,7 @@ class AnonymousUser
   def orientation; nil; end
   def orientations; []; end
   def orientation_names; []; end
+  def user_badges; UserBadge.none; end
   # options
   def last_unclosed_action_notification_at; nil; end
   def goal_choice; nil; end
