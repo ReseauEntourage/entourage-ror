@@ -19,6 +19,7 @@ module V1
     attribute :concerns
     attribute :orientations
     attribute :gender
+    attribute :badges
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?
@@ -152,6 +153,12 @@ module V1
     def orientations
       # we use "Tag.orientation_list &" to force ordering
       Tag.orientation_list & object.orientation_names
+    end
+
+    def badges
+      object.user_badges.active.map do |user_badge|
+        V1::UserBadgeSerializer.new(user_badge).as_json
+      end
     end
 
     # FIXME: the placeholders attribute is a hack. It indicates to the clients

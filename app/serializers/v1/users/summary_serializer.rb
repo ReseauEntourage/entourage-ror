@@ -108,7 +108,9 @@ module V1
       end
 
       def badges
-        object.user_badges.map(&:badge_tag)
+        object.user_badges.active.map do |user_badge|
+          V1::UserBadgeSerializer.new(user_badge).as_json
+        end
       end
 
       private
