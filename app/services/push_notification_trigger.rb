@@ -721,7 +721,7 @@ class PushNotificationTrigger
     notify(
       sender_id: nil,
       referent: @record,
-      instance: nil,
+      instance: @record,
       users: [@record.user],
       params: {
         object: I18nStruct.new(i18n: "push_notifications.badge.#{@record.badge_tag}.title"),
