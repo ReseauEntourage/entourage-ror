@@ -298,6 +298,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
         it { expect(response.status).to eq(200) }
         it { expect(result['neighborhood']).to eq({
           'id' => neighborhood.id,
+          'zone' => nil,
           'uuid_v2' => neighborhood.uuid_v2,
           'name' => 'new name',
           'name_translations' => {
@@ -395,6 +396,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
         'neighborhood' => {
           'id' => neighborhood.id,
           'uuid_v2' => neighborhood.uuid_v2,
+          'zone' => nil,
           'name' => 'Foot Paris 17è',
           'name_translations' => {
             'translation' => neighborhood.name,

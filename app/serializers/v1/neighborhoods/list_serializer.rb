@@ -3,6 +3,7 @@ module V1
     class ListSerializer < ActiveModel::Serializer
       attributes :id,
         :uuid_v2,
+        :zone,
         :user,
         :name,
         :name_translations,
