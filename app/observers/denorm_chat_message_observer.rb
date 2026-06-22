@@ -8,6 +8,7 @@ class DenormChatMessageObserver < ActiveRecord::Observer
 
     UnreadChatMessageJob.perform_later(record.messageable_type, record.messageable_id)
     CountChatMessageJob.perform_later(record.messageable_type, record.messageable_id)
+
   end
 
   private

@@ -45,6 +45,7 @@ module EntourageBack
       :push_notification_trigger_observer,
       :translation_observer,
       :denorm_chat_message_observer,
+      :conversation_broadcast_observer,
       :smalltalk_observer,
       :smalltalk_membership_observer
     ]

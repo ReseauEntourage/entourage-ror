@@ -6,11 +6,21 @@
   <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOyNFh41PIKiNW9WYWrOH67c-wY1zVRVY&libraries=drawing,places,visualization"></script>
+  <%# jQuery doit être global AVANT Bootstrap (synchrone, bloquant) %>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%# Bootstrap 3.4.1 — dernière version Bootstrap 3, compatible jQuery 3.x %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <%# Plugins jQuery UMD en defer — s'exécutent après DOM parsé, avant les modules ES %>
+  <%= javascript_include_tag 'plugins', defer: true %>
+  <%# Turbolinks chargé en différé — s'auto-démarre après le parsing HTML %>
+  <script src="https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.js" defer></script>
+  <%= javascript_importmap_tags %>
   <%= csrf_meta_tags %>
+  <% if (token = cable_auth_token) %>
+    <meta name="cable-token" content="<%= token %>">
+  <% end %>
   <%= favicon_link_tag 'favicon.ico', type: 'image/x-icon' %>
   <%= favicon_link_tag 'favicon.ico', rel: 'apple-touch-icon', type: 'image/x-icon' %>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
 </head>

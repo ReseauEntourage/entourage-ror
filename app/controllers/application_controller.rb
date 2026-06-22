@@ -1,7 +1,15 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
-  helper_method :current_user, :current_admin, :current_manager, :current_super_admin
+  helper_method :current_user, :current_admin, :current_manager, :current_super_admin, :cable_auth_token
+
+  # Token signé passé en meta tag pour authentifier les connexions ActionCable.
+  # session n'est pas accessible dans ActionCable::Connection, donc on utilise un token.
+  def cable_auth_token
+    user_id = session[:admin_user_id] || session[:user_id]
+    return nil unless user_id
+    Rails.application.message_verifier(:cable).generate(user_id, expires_in: 24.hours)
+  end
 
   def authenticate_admin!
     login_error 'Vous devez vous authentifier avec un compte admin pour accéder à cette page' unless current_admin

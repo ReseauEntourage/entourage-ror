@@ -8,6 +8,7 @@ describe Admin::SessionsController do
     before { get :logout }
     it { expect(session[:user_id]).to be nil }
     it { expect(session[:admin_user_id]).to be nil }
+    it { expect(cookies[:user_id]).to be nil }
   end
 
   describe 'GET switch_user' do

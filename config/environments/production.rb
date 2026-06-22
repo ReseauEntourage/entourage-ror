@@ -88,4 +88,10 @@ Rails.application.configure do
   #   /.*\.entourage\.social/
   # ]
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # ActionCable — origines autorisées pour les connexions WebSocket.
+  # Accepte tous les sous-domaines entourage.social (admin, api, mobile…).
+  config.action_cable.allowed_request_origins = [
+    /https?:\/\/.*\.entourage\.social/
+  ]
 end
