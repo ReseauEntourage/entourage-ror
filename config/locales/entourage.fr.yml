@@ -364,20 +364,20 @@ fr:
       create_for_follower: "%s vous invite à rejoindre %s"
     badge:
       bienvenue:
-        title: "badge bienvenue title"
-        content: "badge bienvenue content"
+        title: "🎉 Un premier pas parmi nous !"
+        content: "Vous venez d’obtenir votre premier badge sur Entourage : Premier pas 👣"
       premier_contact:
-        title: "badge premier_contact title"
-        content: "badge premier_contact content"
+        title: "✨ Un premier lien tissé !"
+        content: "Un message envoyé, un message reçu : découvrez votre badge Premier lien 👋"
       moteur_rencontres:
-        title: "badge moteur_rencontres title"
-        content: "badge moteur_rencontres content"
+        title: "💫 Vous faites bouger les choses !"
+        content: "3 événements en 90 jours : vous animez votre quartier. Découvrez le badge Créateur de rencontres 💫"
       fidele_papotages:
-        title: "badge fidele_papotages title"
-        content: "badge fidele_papotages content"
+        title: "💬 Bravo pour votre fidélité !"
+        content: "3 Papotages en 90 jours, vous faites du bien autour de vous. Découvrez votre badge As du papotage"
       voix_presente:
-        title: "badge voix_presente title"
-        content: "badge voix_presente content"
+        title: "🌱 Vous faites vivre les groupes !"
+        content: "Vous êtes là, semaine après semaine. Découvrez le badge Tisseur de liens 🌱"
     birthday:
       title: Joyeux anniversaire 🎉
       content: On est heureux de vous compter parmi nous. Cliquez ici pour lire notre message d’anniversaire !
