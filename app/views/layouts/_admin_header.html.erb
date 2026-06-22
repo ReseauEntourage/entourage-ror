@@ -90,18 +90,11 @@
         <li class="<%= :active if controller_name == 'users' %> custom-nav-item">
           <%= link_to "Utilisateurs", admin_users_path %>
         </li>
-        <li class="custom-nav-item" id="cable-notif-item" title="Notifications temps réel (ActionCable)">
-          <a href="#" onclick="document.getElementById('cable-notifications').innerHTML=''; document.getElementById('cable-notif-count').style.display='none'; return false;">
-            <i class="fa fa-bell"></i>
-            <span id="cable-notif-count" data-count="0" class="badge" style="background:#d9534f; display:none"></span>
-          </a>
-        </li>
         <li class="custom-nav-item custom-nav-item-reversed"><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
       </ul>
     </div>
   </div>
 </nav>
-<div id="cable-notifications" style="position:fixed; top:60px; right:15px; z-index:9999; min-width:300px; max-width:400px;"></div>
 <div id="flash">
   <%= display_flash_messages %>
 </div>
