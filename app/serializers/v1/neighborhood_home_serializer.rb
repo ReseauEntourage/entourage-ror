@@ -5,6 +5,7 @@ module V1
 
     attributes :id,
       :uuid_v2,
+      :zone,
       :name,
       :name_translations,
       :description,
