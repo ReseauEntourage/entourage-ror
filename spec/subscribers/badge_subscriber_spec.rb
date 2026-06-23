@@ -129,6 +129,7 @@ RSpec.describe BadgeSubscriber do
     end
 
     it 'is triggered by the user.profile_updated event' do
+      EventBus.instance_variable_set(:@subscribers, Hash.new { |h, k| h[k] = [] })
       BadgeSubscriber.register!
       allow(EventBus).to receive(:publish).and_call_original
       EventBus.publish("user.profile_updated", record: user)
