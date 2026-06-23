@@ -165,6 +165,12 @@ class Neighborhood < ApplicationRecord
     })
   }
 
+  scope :not_reserved_female_for, -> (user) {
+    return unless user.male?
+
+    where(reserved_female: false)
+  }
+
   scope :recommandable, -> { self.active.public_only }
 
   def active?

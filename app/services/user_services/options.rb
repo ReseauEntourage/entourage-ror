@@ -33,6 +33,10 @@ module UserServices
       validate :validate_sf_campaign_id
     end
 
+    def male?
+      gender.to_s == 'male'
+    end
+
     def validate_gender_format
       return unless gender.present?
 

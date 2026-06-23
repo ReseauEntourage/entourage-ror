@@ -137,6 +137,31 @@ describe NeighborhoodServices::Finder do
     end
   end
 
+  describe 'reserved_female filtering' do
+    let(:latitude) { 0 }
+    let(:longitude) { 0 }
+
+    let!(:reserved_female_neighborhood) { create(:neighborhood, latitude: 0, longitude: 0, name: 'femmes', description: 'groupe femmes', reserved_female: true) }
+
+    describe 'male user does not see reserved_female neighborhoods' do
+      let(:user) { create(:public_user, address: address, travel_distance: 200, options: { 'gender' => 'male' }) }
+
+      it { expect(response).not_to include('femmes') }
+      it { expect(response).to include('foot') }
+    end
+
+    describe 'female user sees reserved_female neighborhoods' do
+      let(:user) { create(:public_user, address: address, travel_distance: 200, options: { 'gender' => 'female' }) }
+
+      it { expect(response).to include('femmes') }
+      it { expect(response).to include('foot') }
+    end
+
+    describe 'user without gender sees reserved_female neighborhoods' do
+      it { expect(response).to include('femmes') }
+    end
+  end
+
   describe 'find_all_participations' do
     let(:latitude) { 0 }
     let(:longitude) { 0 }
