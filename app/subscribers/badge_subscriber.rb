@@ -12,7 +12,7 @@ class BadgeSubscriber
 
     EventBus.subscribe("entourage.created", method(:on_entourage))
     EventBus.subscribe("outing.created", method(:on_entourage))
-    EventBus.subscribe("outing.updated", method(:on_entourage))
+    EventBus.subscribe("outing.updated", method(:on_outing_updated))
 
     EventBus.subscribe("user.profile_updated", method(:on_user_profile_updated))
   end
@@ -51,6 +51,12 @@ class BadgeSubscriber
     entourage = payload[:record]
 
     BadgeService.check_moteur_rencontres(entourage.user) if entourage.outing?
+  end
+
+  def self.on_outing_updated(payload)
+    outing = payload[:record]
+
+    BadgeService.check_moteur_rencontres(outing.user) if outing.saved_change_to_status?
   end
 
   def self.on_user_profile_updated(payload)

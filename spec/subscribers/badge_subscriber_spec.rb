@@ -147,13 +147,6 @@ RSpec.describe BadgeSubscriber do
           .with(satisfy { |u| u.id == user.id })
       end
 
-      it 'is triggered by the outing.updated event' do
-        BadgeSubscriber.register!
-        allow(EventBus).to receive(:publish).and_call_original
-        EventBus.publish("outing.updated", record: outing)
-        expect(BadgeService).to have_received(:check_moteur_rencontres)
-          .with(satisfy { |u| u.id == user.id })
-      end
     end
 
     context 'when entourage is not an outing' do
@@ -161,6 +154,29 @@ RSpec.describe BadgeSubscriber do
 
       it 'does not call check_moteur_rencontres' do
         BadgeSubscriber.on_entourage(record: entourage)
+        expect(BadgeService).not_to have_received(:check_moteur_rencontres)
+      end
+    end
+  end
+
+  describe '.on_outing_updated' do
+    let(:outing) { create(:outing, user: user) }
+
+    context 'when status has changed' do
+      before { allow(outing).to receive(:saved_change_to_status?).and_return(true) }
+
+      it 'calls check_moteur_rencontres' do
+        BadgeSubscriber.on_outing_updated(record: outing)
+        expect(BadgeService).to have_received(:check_moteur_rencontres)
+          .with(satisfy { |u| u.id == user.id })
+      end
+    end
+
+    context 'when status has not changed' do
+      before { allow(outing).to receive(:saved_change_to_status?).and_return(false) }
+
+      it 'does not call check_moteur_rencontres' do
+        BadgeSubscriber.on_outing_updated(record: outing)
         expect(BadgeService).not_to have_received(:check_moteur_rencontres)
       end
     end
