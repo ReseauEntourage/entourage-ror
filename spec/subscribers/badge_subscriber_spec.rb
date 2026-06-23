@@ -146,6 +146,14 @@ RSpec.describe BadgeSubscriber do
         expect(BadgeService).to have_received(:check_moteur_rencontres)
           .with(satisfy { |u| u.id == user.id })
       end
+
+      it 'is triggered by the outing.updated event' do
+        BadgeSubscriber.register!
+        allow(EventBus).to receive(:publish).and_call_original
+        EventBus.publish("outing.updated", record: outing)
+        expect(BadgeService).to have_received(:check_moteur_rencontres)
+          .with(satisfy { |u| u.id == user.id })
+      end
     end
 
     context 'when entourage is not an outing' do

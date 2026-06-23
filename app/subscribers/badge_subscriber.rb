@@ -12,6 +12,7 @@ class BadgeSubscriber
 
     EventBus.subscribe("entourage.created", method(:on_entourage))
     EventBus.subscribe("outing.created", method(:on_entourage))
+    EventBus.subscribe("outing.updated", method(:on_entourage))
 
     EventBus.subscribe("user.profile_updated", method(:on_user_profile_updated))
   end
