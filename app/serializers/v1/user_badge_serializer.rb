@@ -1,6 +1,7 @@
 module V1
   class UserBadgeSerializer < ActiveModel::Serializer
     attributes :name,
+               :active,
                :awarded_at,
                :metadata
 
