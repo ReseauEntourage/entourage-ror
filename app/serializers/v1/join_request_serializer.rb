@@ -72,7 +72,7 @@ module V1
     end
 
     def badges
-      object.user.user_badges.map do |user_badge|
+      UserBadge.all_for_user(object.user).map do |user_badge|
         V1::UserBadgeSerializer.new(user_badge).as_json
       end
     end

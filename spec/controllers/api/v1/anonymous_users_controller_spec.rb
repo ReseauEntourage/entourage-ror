@@ -64,7 +64,7 @@ describe Api::V1::AnonymousUsersController do
         'interests' => [],
         'involvements' => [],
         'orientations' => [],
-        'badges' => [],
+        'badges' => default_badges_json,
         'concerns' => [],
         'gender' => nil,
         'travel_distance' => 10,
