@@ -17,6 +17,11 @@ describe Api::V1::Neighborhoods::OutingsController do
       it { expect(response.status).to eq(200) }
     end
 
+    context 'accessible by neighborhood uuid' do
+      before { get :index, params: { token: user.token, neighborhood_id: neighborhood.uuid_v2 } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context 'joined' do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
       subject { JSON.parse(response.body) }

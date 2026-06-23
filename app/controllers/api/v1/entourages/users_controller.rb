@@ -167,7 +167,7 @@ module Api
         end
 
         def set_join_request
-          @join_request = JoinRequest.where(joinable: @entourage, user: User.find(params[:id])).first!
+          @join_request = JoinRequest.where(joinable: @entourage, user: User.find_by_id_or_uuid!(params[:id])).first!
         end
       end
     end

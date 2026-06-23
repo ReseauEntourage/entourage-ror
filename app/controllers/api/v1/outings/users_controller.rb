@@ -123,7 +123,7 @@ module Api
         private
 
         def set_outing
-          @outing = Outing.find(params[:outing_id])
+          @outing = Outing.find_by_id_or_uuid!(params[:outing_id])
         end
 
         def set_join_request
@@ -135,7 +135,7 @@ module Api
         end
 
         def set_user_membership
-          set_membership_for_user(User.find(params[:id]))
+          set_membership_for_user(User.find_by_id_or_uuid!(params[:id]))
         end
 
         def set_membership_for_user user
@@ -155,7 +155,7 @@ module Api
         def authorised_user?
           return unless params[:id].present?
 
-          unless current_user == User.find(params[:id])
+          unless current_user == User.find_by_id_or_uuid!(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
         end

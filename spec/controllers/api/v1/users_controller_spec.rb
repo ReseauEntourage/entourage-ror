@@ -23,7 +23,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           expect(result).to eq({
             'user' => {
               'id' => user.id,
-              'uuid' => user.id.to_s,
+              'uuid' => user.uuid,
               'email' => user.email,
               'lang' => user.lang,
               'availability' => user.availability,
@@ -862,7 +862,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         it { expect(JSON.parse(response.body)).to eq({
           'user' => {
             'id' => user.id,
-            'uuid' => user.id.to_s,
+            'uuid' => user.uuid,
             'email' => user.email,
             'lang' => user.lang,
             'availability' => user.availability,
@@ -959,7 +959,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         it { expect(JSON.parse(response.body)).to eq({
           'user' => {
             'id' => user.id,
-            'uuid' => user.id.to_s,
+            'uuid' => user.uuid,
             'email' => user.email,
             'lang' => user.lang,
             'availability' => user.availability,
@@ -1050,6 +1050,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         it { expect(JSON.parse(response.body)).to eq({
           'user' => {
             'id' => other_user.id,
+            'uuid' => other_user.uuid,
             'lang' => user.lang,
             'availability' => user.availability,
             'display_name' => 'John D.',
@@ -1107,6 +1108,15 @@ RSpec.describe Api::V1::UsersController, type: :controller do
           }
           it { expect(result['user']).not_to have_key 'conversation' }
         end
+      end
+
+      context 'get someone else profile by uuid' do
+        let(:other_user) { FactoryBot.create(:pro_user) }
+
+        before { get :show, params: { id: other_user.uuid, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(result['user']['id']).to eq(other_user.id) }
       end
 
       context 'roles' do

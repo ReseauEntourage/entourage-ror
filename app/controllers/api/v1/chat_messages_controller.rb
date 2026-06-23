@@ -41,7 +41,7 @@ module Api
       private
 
       def set_chat_message
-        @chat_message = ChatMessage.find(params[:id])
+        @chat_message = ChatMessage.find_by_id_or_uuid!(params[:id])
       end
 
       def chat_message_update_params

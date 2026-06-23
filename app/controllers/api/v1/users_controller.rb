@@ -156,10 +156,11 @@ module Api
       def show
         user =
           if params[:id] == 'me' ||
-             params[:id] == UserService.external_uuid(current_user_or_anonymous)
+             params[:id] == UserService.external_uuid(current_user_or_anonymous) ||
+             params[:id] == current_user_or_anonymous.uuid
             current_user_or_anonymous
           else
-            community.users.find(params[:id])
+            community.users.find_by_id_or_uuid!(params[:id])
           end
 
         render json: user, root: :user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: current_user_or_anonymous, displayed_user: user)
@@ -175,7 +176,7 @@ module Api
       end
 
       def report
-        user = community.users.find(params[:id])
+        user = community.users.find_by_id_or_uuid!(params[:id])
         reporter = UserServices::ReportUserService.new(reported_user: user, params: user_report_params)
         reporter.report(reporting_user: current_user_or_anonymous) do |on|
           on.success do
@@ -217,7 +218,7 @@ module Api
       end
 
       def presigned_avatar_upload
-        user = params[:id] == 'me' ? current_user : community.users.find(params[:id])
+        user = params[:id] == 'me' ? current_user : community.users.find_by_id_or_uuid!(params[:id])
         if user != current_user
           return render_error(code: 'UNAUTHORIZED', message: 'You can only update your own avatar.', status: 403)
         end
@@ -319,7 +320,7 @@ module Api
       end
 
       def update_email_preferences
-        @user = User.find(params[:id])
+        @user = User.find_by_id_or_uuid!(params[:id])
 
         @category = params.key?(:category) ? params[:category]&.to_sym : :all
 
@@ -343,7 +344,7 @@ module Api
       end
 
       def confirm_address_suggestion
-        @user = User.find(params[:id])
+        @user = User.find_by_id_or_uuid!(params[:id])
         @postal_code = params[:postal_code]
 
         # temporary workaround for a borked email

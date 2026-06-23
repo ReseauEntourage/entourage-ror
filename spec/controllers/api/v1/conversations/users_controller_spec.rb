@@ -195,6 +195,11 @@ describe Api::V1::Conversations::UsersController do
         )}
       end
 
+      context 'accessible by user uuid' do
+        before { post :invite, params: { conversation_id: conversation.uuid_v2, id: user.uuid, token: creator.token } }
+        it { expect(response.status).to eq(201) }
+      end
+
       context 'duplicate request to join conversation' do
         let!(:join_request) { create(:join_request, user: user, joinable: conversation, status: :cancelled) }
         before { post :invite, params: { conversation_id: conversation.uuid_v2, id: user.id, token: creator.token } }
