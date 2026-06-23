@@ -744,6 +744,7 @@ class PushNotificationTrigger
   def notify sender_id:, referent:, instance:, users:, params: {}
     notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
     notify_inapp(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
+    notify_cable(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
   end
 
   def notify_push sender_id:, referent:, instance:, users:, params: {}
@@ -780,6 +781,25 @@ class PushNotificationTrigger
         content: params[:content].to(user.lang),
         options: params[:options] || Hash.new
       )
+    end
+  end
+
+  def notify_cable sender_id:, referent:, instance:, users:, params: {}
+    return unless instance.is_a?(UserBadge)
+
+    users.each do |user|
+      next unless user&.id
+
+      NotificationChannel.broadcast_to_user(user, {
+        type: "user_badge",
+        id: instance.id,
+        user_id: user.id,
+        data: {
+          name: instance.badge_tag,
+          awarded_at: instance.awarded_at,
+          metadata: instance.metadata
+        }
+      })
     end
   end
 
