@@ -200,6 +200,12 @@ RSpec.describe BadgeService do
         expect { BadgeService.check_premier_contact(message) }
           .not_to change { UserBadge.where(user: user1, badge_tag: 'premier_contact').count }
       end
+
+      it 'still awards premier_contact to the other eligible participant' do
+        message = create(:chat_message, messageable: conversation, user: user1, message_type: 'text')
+        BadgeService.check_premier_contact(message)
+        expect(UserBadge.where(user: user2, badge_tag: 'premier_contact')).to exist
+      end
     end
   end
 

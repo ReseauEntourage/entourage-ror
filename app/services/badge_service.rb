@@ -19,8 +19,6 @@ class BadgeService
       return unless chat_message.conversation?
 
       user = chat_message.user
-      return if UserBadge.exists?(user_id: user.id, badge_tag: 'premier_contact')
-
       conversation = chat_message.messageable
       return unless conversation.respond_to?(:members)
 
@@ -28,7 +26,6 @@ class BadgeService
       return unless participants.count == 2
       return unless participants.all? { |p| p.created_at < 24.hours.ago }
 
-      # Check if both participants have sent at least one non-system message
       other_participant = participants.find { |p| p.id != user.id }
       return unless other_participant
 
@@ -36,13 +33,10 @@ class BadgeService
                                     .where(message_type: ['text', 'share'])
                                     .exists?
 
-      if has_other_message
-        award_badge(user, 'premier_contact')
-        # Also check for the other participant
-        if eligible_user?(other_participant) && !UserBadge.exists?(user_id: other_participant.id, badge_tag: 'premier_contact')
-          award_badge(other_participant, 'premier_contact')
-        end
-      end
+      return unless has_other_message
+
+      award_badge(user, 'premier_contact')
+      award_badge(other_participant, 'premier_contact') if eligible_user?(other_participant)
     end
 
     # Badge n°3 : Moteur de rencontres
