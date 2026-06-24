@@ -129,7 +129,7 @@ class BadgeService
     end
 
     def deactivate_badge(user, tag)
-      return unless badge = UserBadge.find_by(user_id: user.id, badge_tag: tag)
+      badge = UserBadge.find_or_initialize_by(user_id: user.id, badge_tag: tag)
 
       badge.update(active: false)
     end

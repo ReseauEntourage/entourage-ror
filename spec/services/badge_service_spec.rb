@@ -383,10 +383,12 @@ RSpec.describe BadgeService do
         expect(badge.metadata).to eq({ 'current' => 1, 'target' => 3 })
       end
 
-      it 'does nothing when no badge exists for inactive state' do
-        expect {
-          BadgeService.send(:update_badge_status, user, 'nonexistent', false, {})
-        }.not_to raise_error
+      it 'creates the badge with inactive state and metadata when it does not exist yet' do
+        BadgeService.send(:update_badge_status, user, 'fidele_papotages', false, { current: 1, target: 3 })
+        badge = UserBadge.find_by(user: user, badge_tag: 'fidele_papotages')
+        expect(badge).to be_present
+        expect(badge.active).to be false
+        expect(badge.metadata).to eq({ 'current' => 1, 'target' => 3 })
       end
     end
   end
@@ -421,16 +423,20 @@ RSpec.describe BadgeService do
   describe '.deactivate_badge (private)' do
     let(:user) { eligible_user }
 
-    it 'sets active to false' do
+    it 'sets active to false on an existing badge' do
       create(:user_badge, user: user, badge_tag: 'bienvenue', active: true)
       BadgeService.send(:deactivate_badge, user, 'bienvenue')
       expect(UserBadge.find_by(user: user, badge_tag: 'bienvenue').active).to be false
     end
 
-    it 'does nothing when badge does not exist' do
+    it 'creates the badge with active: false when it does not exist yet' do
       expect {
-        BadgeService.send(:deactivate_badge, user, 'bienvenue')
-      }.not_to raise_error
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres')
+      }.to change { UserBadge.where(user: user, badge_tag: 'moteur_rencontres').count }.by(1)
+
+      badge = UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres')
+      expect(badge.active).to be false
+      expect(badge.awarded_at).to be_nil
     end
   end
 end
