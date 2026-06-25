@@ -1,7 +1,7 @@
 class UserMessageBroadcast < ConversationMessageBroadcast
   DEFAULT_FILTER_PERIOD = 1.year
 
-  store_accessor :specific_filters, :has_engagement, :user_creation_date, :last_engagement_date, :interests
+  store_accessor :specific_filters, :has_engagement, :user_creation_date, :last_engagement_date, :interests, :last_sign_in_at, :gender
 
   class << self
     def messageable_type
@@ -43,6 +43,18 @@ class UserMessageBroadcast < ConversationMessageBroadcast
 
       users.match_at_least_one_interest(interests)
     end
+
+    def last_sign_in_after(users, last_sign_in_at)
+      return users unless last_sign_in_at
+
+      users.where('users.last_sign_in_at > ?', last_sign_in_at)
+    end
+
+    def with_gender(users, gender)
+      return users unless gender
+
+      users.with_gender(gender)
+    end
   end
 
   def recipients
@@ -55,6 +67,8 @@ class UserMessageBroadcast < ConversationMessageBroadcast
     users = self.class.created_after(users, user_creation_date)
     users = self.class.engaged_after(users, last_engagement_date)
     users = self.class.with_interests(users, interests)
+    users = self.class.last_sign_in_after(users, last_sign_in_at)
+    users = self.class.with_gender(users, gender)
 
     users
   end
@@ -152,6 +166,12 @@ class UserMessageBroadcast < ConversationMessageBroadcast
 
   def last_engagement_date
     Date.parse(self['specific_filters']['last_engagement_date']) unless self['specific_filters']['last_engagement_date'].nil?
+  rescue ArgumentError
+    nil
+  end
+
+  def last_sign_in_at
+    Date.parse(self['specific_filters']['last_sign_in_at']) unless self['specific_filters']['last_sign_in_at'].nil?
   rescue ArgumentError
     nil
   end

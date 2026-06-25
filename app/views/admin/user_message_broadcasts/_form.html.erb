@@ -1,5 +1,14 @@
 <style>
   .field_with_errors { display: inline-block }
+
+  .chevron {
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .chevron.open {
+    transform: rotate(90deg);
+  }
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @user_message_broadcast } %>
@@ -67,10 +76,6 @@
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
         L'envoi sera effectué auprès de <%= @user_message_broadcast.recipient_ids.count %> utilisateurs correspondants aux filtres configurés.
-
-        <br> <br>
-
-        ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
       </div>
         <%= link_to("Envoyer", broadcast_admin_user_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
           confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@user_message_broadcast.recipient_ids.count} utilisateurs ?"
@@ -87,6 +92,8 @@
 
   <div class="row">
     <div class="col-xs-6 form-group">
+      <h4>Ciblage géographique</h4>
+
       <% area_types = UserMessageBroadcast::AREA_TYPES.map {|area_type| [t("activerecord.attributes.user_message_broadcast.area_types.#{area_type}"), area_type]} %>
       <%= f.label :area_type %>
       <%= f.select :area_type, options_for_select(area_types, @user_message_broadcast.area_type), { include_blank: false }, class: "form-control" %>
@@ -102,36 +109,71 @@
       </div>
     </div>
 
-    <div class="col-xs-6 form-group">
-      <% goals = UserGoalPresenter.all_with_any(current_user.community).map {|goal| [goal.name, goal.slug]} %>
-      <%= f.label :goal %>
-      <%= f.select :goal, options_for_select(goals, @user_message_broadcast.goal), { include_blank: false }, class: "form-control" %>
+    <div class="col-md-6">
+      <h4>Objectif</h4>
+
+      <div class="form-group">
+        <% goals = UserGoalPresenter.all_with_any(current_user.community).map {|goal| [goal.name, goal.slug]} %>
+        <%= f.label :goal %>
+        <%= f.select :goal, options_for_select(goals, @user_message_broadcast.goal), { include_blank: false }, class: "form-control" %>
+      </div>
     </div>
   </div>
 
+  <hr>
+
   <%= f.fields_for :specific_filters, OpenStruct.new(@user_message_broadcast.specific_filters) do |specific_filters_form| %>
-    <div>
-      <%= specific_filters_form.label :has_engagement, "Engagé ?" %>
-      <%= specific_filters_form.select :has_engagement, options_for_select([['Indéfini', ''], ['Non', false], ['Oui', true]], selected: specific_filters_form.object.has_engagement), {} %>
-    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading d-flex justify-content-between align-items-center"
+           data-toggle="collapse"
+           data-target="#advanced-filters"
+           style="cursor: pointer; display: flex; justify-content: space-between;">
+        <strong>Filtres avancés</strong>
+        <span id="advanced-filters-chevron" class="chevron">▶</span>
+      </div>
 
-    <div>
-      <% last_engagement_date = @user_message_broadcast.specific_filters['last_engagement_date'] %>
+      <% has_active_filters = @user_message_broadcast.specific_filters.present? && @user_message_broadcast.specific_filters.values.any?(&:present?) %>
 
-      <%= specific_filters_form.label :last_engagement_date, "Date de la dernière action d’engagement" %>
-      <%= specific_filters_form.date_field :last_engagement_date, value: last_engagement_date, class: 'form-control' %>
-    </div>
+      <div id="advanced-filters" class="panel-collapse collapse <%= 'in' if has_active_filters %>">
+        <div class="panel-body">
+          <h4>Engagement</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <%= specific_filters_form.label :has_engagement, "Engagé ?" %>
+              <%= specific_filters_form.select :has_engagement, options_for_select([['Indéfini', ''], ['Non', false], ['Oui', true]], selected: specific_filters_form.object.has_engagement), {}, class: "form-control" %>
+            </div>
 
-    <div>
-      <% user_creation_date = @user_message_broadcast.specific_filters['user_creation_date'] %>
+            <div class="col-md-4">
+              <%= specific_filters_form.label :last_engagement_date, "Dernière action réalisée le" %>
+              <span title="Date de la dernière action d'engagement de l'utilisateur (post, réaction, événement, message privé...). En renseignant une date, vous ciblez uniquement les utilisateurs ayant été actifs après cette date.">&#9432;</span>
+              <%= specific_filters_form.date_field :last_engagement_date, value: @user_message_broadcast.specific_filters['last_engagement_date'], class: "form-control" %>
+            </div>
 
-      <%= specific_filters_form.label :user_creation_date, "Date minimale de création du compte" %>
-      <%= specific_filters_form.date_field :user_creation_date, value: user_creation_date, class: 'form-control' %>
-    </div>
+            <div class="col-md-4">
+              <%= specific_filters_form.label :last_sign_in_at, "Dernière connexion" %>
+              <%= specific_filters_form.date_field :last_sign_in_at, value: @user_message_broadcast.specific_filters['last_sign_in_at'], class: "form-control" %>
+            </div>
+          </div>
 
-    <div>
-      <%= specific_filters_form.label :interests, "Centres d’intérêts (multi-select)" %>
-      <%= specific_filters_form.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true, id: :interests } %>
+          <h4>Profil utilisateur</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <%= specific_filters_form.label :user_creation_date, "Créé après le" %>
+              <%= specific_filters_form.date_field :user_creation_date, value: @user_message_broadcast.specific_filters['user_creation_date'], class: "form-control" %>
+            </div>
+
+            <div class="col-md-4">
+              <%= specific_filters_form.label :gender, "Genre" %>
+              <%= specific_filters_form.select :gender, options_for_select(User::GENDERS.map { |k, v| [v, k] }, selected: specific_filters_form.object.gender), { include_blank: true }, class: "form-control" %>
+            </div>
+
+            <div class="col-md-4">
+              <%= specific_filters_form.label :interests, "Centres d’intérêts" %>
+              <%= specific_filters_form.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true, id: :interests } %>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   <% end %>
 
@@ -178,5 +220,17 @@
     });
 
     $('select#interests, select#user_message_broadcast_specific_filters_has_engagement').select2({ width: '100%' });
+
+    $('#advanced-filters').on('show.bs.collapse', function () {
+      $('#advanced-filters-chevron').addClass('open')
+    })
+
+    $('#advanced-filters').on('hide.bs.collapse', function () {
+      $('#advanced-filters-chevron').removeClass('open')
+    })
+
+    if ($('#advanced-filters').hasClass('in')) {
+      $('#advanced-filters-chevron').addClass('open')
+    }
   })
 </script>
