@@ -72,7 +72,7 @@ class PushNotificationLinker
       elsif object.is_a?(UserBadge)
         {
           instance: "user_badge",
-          instance_id: object.badge_tag
+          instance_id: object.id
         }
       elsif is_a_post?(object)
         {

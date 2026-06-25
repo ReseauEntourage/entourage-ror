@@ -727,7 +727,8 @@ class PushNotificationTrigger
         object: I18nStruct.new(i18n: "push_notifications.badge.#{@record.badge_tag}.title"),
         content: I18nStruct.new(i18n: "push_notifications.badge.#{@record.badge_tag}.content"),
         extra: {
-          tracking: :user_badge
+          tracking: :user_badge,
+          badge: @record.badge_tag,
         }
       }
     )
