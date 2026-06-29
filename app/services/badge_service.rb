@@ -1,7 +1,7 @@
 class BadgeService
   class << self
     def eligible_user?(user)
-      user.present? && !user.anonymous? && (user.is_ask_for_help? || user.is_offer_help?)
+      user.present? && !user.anonymous? && (user.is_ask_for_help? || user.is_offer_help? || user.ambassador?)
     end
 
     # Badge n°1 : Bienvenue
@@ -35,7 +35,7 @@ class BadgeService
 
       return unless has_other_message
 
-      award_badge(user, 'premier_contact')
+      award_badge(user, 'premier_contact') if eligible_user?(user)
       award_badge(other_participant, 'premier_contact') if eligible_user?(other_participant)
     end
 
