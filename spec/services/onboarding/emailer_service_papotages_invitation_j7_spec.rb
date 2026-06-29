@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe Onboarding::EmailerService, '.deliver_papotages_invitation_email' do
-  subject { described_class.deliver_papotages_invitation_email }
+describe Onboarding::EmailerService, '.deliver_papotages_invitation_j7_email' do
+  subject { described_class.deliver_papotages_invitation_j7_email }
 
   let!(:papotage_outing) {
     create(:outing, :outing_class, title: 'Papotage solidaire', online: true)

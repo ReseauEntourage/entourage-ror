@@ -59,12 +59,12 @@ class MemberMailer < MailjetMailer
                   }
   end
 
-  def papotages_invitation(user)
+  def papotages_invitation_j7(user)
     outings = Outing.papotages.future_or_ongoing.default_order.limit(3)
 
     mailjet_email to: user,
                   template_id: 8016225,
-                  campaign_name: 'papotages_invitation',
+                  campaign_name: 'papotages_invitation_j7',
                   deliver_only_once: true,
                   variables: {
                     outings: outings.map { |outing|

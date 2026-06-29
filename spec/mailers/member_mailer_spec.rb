@@ -98,15 +98,15 @@ describe MemberMailer, type: :mailer do
     end
   end
 
-  describe '#papotages_invitation' do
-    let(:mail) { MemberMailer.papotages_invitation(user) }
+  describe '#papotages_invitation_j7' do
+    let(:mail) { MemberMailer.papotages_invitation_j7(user) }
     let!(:outing) { create(:outing, :outing_class, online: true, title: 'Papotage solidaire') }
 
     expect_mailjet_email do
       {
         from: %("Le Réseau Entourage" <communaute@entourage.social>),
         template_id: 8016225,
-        campaign_name: :papotages_invitation,
+        campaign_name: :papotages_invitation_j7,
         variables: {
           outings: [{
             name: 'Papotage solidaire',

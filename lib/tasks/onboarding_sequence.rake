@@ -62,6 +62,6 @@ namespace :onboarding_sequence do
 
   desc 'papotages_invitation'
   task papotages_invitation: :environment do
-    Onboarding::EmailerService.deliver_papotages_invitation_email
+    Onboarding::EmailerService.deliver_papotages_invitation_j7_email
   end
 end

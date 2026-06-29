@@ -2,9 +2,9 @@ module Onboarding
   module EmailerService
     MIN_DELAY = 1.hour
 
-    def self.deliver_papotages_invitation_email
-      User.where(id: papotages_invitation_user_ids).find_each do |user|
-        MemberMailer.papotages_invitation(user).deliver_now
+    def self.deliver_papotages_invitation_j7_email
+      User.where(id: papotages_invitation_user_ids_j7).find_each do |user|
+        MemberMailer.papotages_invitation_j7(user).deliver_now
       end
     end
 
@@ -18,7 +18,7 @@ module Onboarding
 
     private
 
-    def self.papotages_invitation_user_ids
+    def self.papotages_invitation_user_ids_j7
       registered_to_papotages = Outing.papotages
         .future_or_ongoing
         .joins(:join_requests)
