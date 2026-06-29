@@ -85,6 +85,25 @@ class MemberMailer < MailjetMailer
                   campaign_name: 'onboarding_incomplete_profile'
   end
 
+  def first_steps_papotages_invitation(user, papotages)
+    mailjet_email to: user,
+                  template_id: 8019081,
+                  campaign_name: 'first_steps_papotages_invitation',
+                  deliver_only_once: true,
+                  variables: {
+                    outings_url: Entourage.share_url(:outings),
+                    outings: papotages.map { |papotage|
+                      {
+                        name: papotage.title,
+                        date: I18n.l(papotage.metadata[:starts_at].to_date, format: :short, locale: user.lang),
+                        hour: papotage.metadata[:starts_at].strftime('%Hh%M'),
+                        image_url: papotage.image_url_with_size(:landscape_url, :medium),
+                        url: papotage.share_url
+                      }
+                    }
+                  }
+  end
+
   def onboarding_day_8(user)
     mailjet_email to: user,
                   template_id: 452755,
