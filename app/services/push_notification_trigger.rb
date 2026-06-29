@@ -729,6 +729,7 @@ class PushNotificationTrigger
         extra: {
           tracking: :user_badge,
           badge: @record.badge_tag,
+          popup: @record.badge_tag,
         }
       }
     )
