@@ -718,6 +718,9 @@ class PushNotificationTrigger
 
     return unless I18n.exists?("#{i18n_key}.title") && I18n.exists?("#{i18n_key}.content")
 
+    former_method = @method
+    @method = badge_tag
+
     notify(
       sender_id: nil,
       referent: @record,
@@ -733,6 +736,8 @@ class PushNotificationTrigger
         }
       }
     )
+
+    @method = former_method
   end
 
   def user_badge_on_update
