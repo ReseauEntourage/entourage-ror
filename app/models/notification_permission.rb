@@ -62,6 +62,10 @@ class NotificationPermission < ApplicationRecord
     permissions['chat_message']
   end
 
+  def user_badge instance_id = nil
+    true
+  end
+
   def user_smalltalk instance_id = nil
     true
   end
