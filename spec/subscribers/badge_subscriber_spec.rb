@@ -52,6 +52,19 @@ RSpec.describe BadgeSubscriber do
         expect(BadgeService).not_to have_received(:check_fidele_papotages)
       end
     end
+
+    # 4.10 - Bonne onde ne déclenche pas le recalcul fidele_papotages
+    context '4.10 - with an accepted bonne_onde join request' do
+      let(:bonne_onde) { create(:outing, title: 'Bonne onde du quartier', online: true) }
+      let(:join_request) do
+        create(:join_request, user: user, joinable: bonne_onde, status: 'accepted', participate_at: Time.now)
+      end
+
+      it 'does not call check_fidele_papotages (bonne_onde is not a papotage)' do
+        BadgeSubscriber.on_join_request(record: join_request)
+        expect(BadgeService).not_to have_received(:check_fidele_papotages)
+      end
+    end
   end
 
   describe '.on_chat_message' do

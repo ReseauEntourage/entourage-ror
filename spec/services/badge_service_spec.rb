@@ -128,6 +128,16 @@ RSpec.describe BadgeService do
           .not_to change { UserBadge.count }
       end
     end
+
+    # 1.7 - Irréversibilité
+    context 'when badge was already awarded and user has been inactive for 6+ months' do
+      before { create(:user_badge, user: user, badge_tag: 'bienvenue', active: true, awarded_at: 180.days.ago) }
+
+      it 'badge_active remains true (badge is irreversible)' do
+        BadgeService.check_bienvenue(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'bienvenue').active).to be true
+      end
+    end
   end
 
   describe '.check_premier_contact' do
@@ -207,6 +217,54 @@ RSpec.describe BadgeService do
         expect(UserBadge.where(user: user2, badge_tag: 'premier_contact')).to exist
       end
     end
+
+    # 2.6 - Compte A (expéditeur) trop récent
+    context 'when the sender (user A) was created less than 24h ago' do
+      before do
+        user1.update_column(:created_at, 1.hour.ago)
+        create(:chat_message, messageable: conversation, user: user2, message_type: 'text')
+      end
+
+      it 'does not award the badge to either participant' do
+        message = create(:chat_message, messageable: conversation, user: user1, message_type: 'text')
+        BadgeService.check_premier_contact(message)
+        expect(UserBadge.where(badge_tag: 'premier_contact')).not_to exist
+      end
+    end
+
+    # 2.7 - Message bot/système exclu du comptage
+    context 'when other participant only sent an auto/bot message' do
+      before { create(:chat_message, messageable: conversation, user: user2, message_type: 'auto') }
+
+      it 'does not count non-text/share messages as qualifying responses' do
+        message = create(:chat_message, messageable: conversation, user: user1, message_type: 'text')
+        BadgeService.check_premier_contact(message)
+        expect(UserBadge.where(badge_tag: 'premier_contact')).not_to exist
+      end
+    end
+
+    # 2.8 - Message animateur Entourage éligible
+    context 'when sender is a pro/entourage team user' do
+      let(:animateur) { create(:public_user, goal: 'ask_for_help') }
+      let(:conv_with_animateur) { create(:conversation, participants: [animateur, user1]) }
+
+      before do
+        animateur.update_column(:created_at, 2.days.ago)
+        create(:chat_message, messageable: conv_with_animateur, user: user1, message_type: 'text')
+      end
+
+      it 'awards the badge to the entourage team sender' do
+        message = create(:chat_message, messageable: conv_with_animateur, user: animateur, message_type: 'text')
+        BadgeService.check_premier_contact(message)
+        expect(UserBadge.where(user: animateur, badge_tag: 'premier_contact')).to exist
+      end
+
+      it 'awards the badge to the eligible participant' do
+        message = create(:chat_message, messageable: conv_with_animateur, user: animateur, message_type: 'text')
+        BadgeService.check_premier_contact(message)
+        expect(UserBadge.where(user: user1, badge_tag: 'premier_contact')).to exist
+      end
+    end
   end
 
   describe '.check_moteur_rencontres' do
@@ -267,6 +325,108 @@ RSpec.describe BadgeService do
         expect(badge.active).to be false
       end
     end
+
+    # 3.2 - 3 événements dont 1 annulé → seulement 2 valides
+    context 'when 3 outings were created but 1 is cancelled' do
+      before do
+        2.times { create(:outing, user: user, status: 'closed', created_at: 30.days.ago) }
+        create(:outing, user: user, status: 'cancelled', created_at: 30.days.ago)
+      end
+
+      it 'does not count the cancelled outing and does not award the badge' do
+        BadgeService.check_moteur_rencontres(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres')
+        expect(badge&.active).not_to be true
+      end
+
+      it 'sets metadata current count to 2' do
+        BadgeService.check_moteur_rencontres(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres')
+        expect(badge.metadata['current']).to eq(2)
+      end
+    end
+
+    # 3.3 - 3 événements co-animés
+    context 'when user co-hosted 3 outings (organizer role in join_requests)' do
+      it 'awards the badge (feature not yet implemented)' do
+        pending 'Co-animated events (organizer role in join_requests but user_id != user) are not counted by check_moteur_rencontres'
+
+        organizer = eligible_user
+        3.times do
+          outing = create(:outing, user: organizer, status: 'closed', created_at: 30.days.ago)
+          create(:join_request, user: user, joinable: outing, status: 'accepted', role: 'organizer')
+        end
+        BadgeService.check_moteur_rencontres(user)
+        expect(UserBadge.where(user: user, badge_tag: 'moteur_rencontres', active: true)).to exist
+      end
+    end
+
+    # 3.4 - Mix 1 créé + 2 co-animés
+    context 'when user created 1 outing and co-hosted 2 others (total = 3)' do
+      it 'awards the badge (feature not yet implemented)' do
+        pending 'Co-animated events (organizer role in join_requests but user_id != user) are not counted by check_moteur_rencontres'
+
+        create(:outing, user: user, status: 'closed', created_at: 30.days.ago)
+        organizer = eligible_user
+        2.times do
+          outing = create(:outing, user: organizer, status: 'closed', created_at: 30.days.ago)
+          create(:join_request, user: user, joinable: outing, status: 'accepted', role: 'organizer')
+        end
+        BadgeService.check_moteur_rencontres(user)
+        expect(UserBadge.where(user: user, badge_tag: 'moteur_rencontres', active: true)).to exist
+      end
+    end
+
+    # 3.6 - Événement à la limite J-90 (inclusif)
+    context 'when one outing was created exactly 90 days ago (boundary is inclusive)' do
+      it 'counts the boundary event and awards the badge' do
+        # Freeze time so 90.days.ago is identical at outing creation and at service check
+        Timecop.freeze do
+          2.times { create(:outing, user: user, status: 'closed', created_at: 30.days.ago) }
+          create(:outing, user: user, status: 'closed', created_at: 90.days.ago)
+          BadgeService.check_moteur_rencontres(user)
+        end
+        expect(UserBadge.where(user: user, badge_tag: 'moteur_rencontres', active: true)).to exist
+      end
+    end
+
+    # 3.9 - Badge perdu puis reconquis
+    context 'when badge was lost and then reconquered with new outings' do
+      before do
+        3.times { create(:outing, user: user, status: 'closed', created_at: 30.days.ago) }
+        BadgeService.check_moteur_rencontres(user)
+        Outing.where(user: user).update_all(created_at: 100.days.ago)
+        BadgeService.check_moteur_rencontres(user)
+        3.times { create(:outing, user: user, status: 'closed', created_at: 10.days.ago) }
+      end
+
+      it 'reactivates the badge' do
+        BadgeService.check_moteur_rencontres(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres').active).to be true
+      end
+
+      it 'preserves the original awarded_at date' do
+        initial_awarded_at = UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres').awarded_at
+        BadgeService.check_moteur_rencontres(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres').awarded_at)
+          .to be_within(1.second).of(initial_awarded_at)
+      end
+    end
+
+    # 3.11 - Annulation post-attribution → désactivation
+    context 'when an outing is cancelled after the badge was awarded' do
+      let!(:outings) { 3.times.map { create(:outing, user: user, status: 'closed', created_at: 30.days.ago) } }
+
+      before do
+        BadgeService.check_moteur_rencontres(user)
+        outings.first.update_column(:status, 'cancelled')
+      end
+
+      it 'deactivates the badge after recalculation' do
+        BadgeService.check_moteur_rencontres(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres').active).to be false
+      end
+    end
   end
 
   describe '.check_fidele_papotages' do
@@ -318,6 +478,142 @@ RSpec.describe BadgeService do
         expect(badge&.active).not_to be true
       end
     end
+
+    # 4.2 - Participation Bonne onde non comptabilisée
+    context '4.2 - when user participated in bonne_onde events (not papotages)' do
+      before do
+        3.times do
+          outing = create(:outing, title: 'Bonne onde du quartier', online: true, status: 'closed',
+                          metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+          create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+        end
+      end
+
+      it 'does not award the badge (bonne_onde is not a papotage)' do
+        BadgeService.check_fidele_papotages(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'fidele_papotages')
+        expect(badge&.active).not_to be true
+      end
+    end
+
+    # 4.3 - Autre type d'événement non comptabilisé
+    context '4.3 - when user participated in other offline events' do
+      before do
+        3.times do
+          outing = create(:outing, title: 'Café du quartier', online: false, status: 'closed',
+                          metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+          create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+        end
+      end
+
+      it 'does not award the badge (non-papotage events are not counted)' do
+        BadgeService.check_fidele_papotages(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'fidele_papotages')
+        expect(badge&.active).not_to be true
+      end
+    end
+
+    # 4.5 - Papotage hors fenêtre des 90 jours
+    context '4.5 - when one papotage is outside the 90-day window' do
+      before do
+        2.times do
+          outing = create(:outing, title: 'Papotage du quartier', online: true, status: 'closed',
+                          metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+          create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+        end
+        old_outing = create(:outing, title: 'Papotage du quartier', online: true, status: 'closed',
+                            metadata: { starts_at: 91.days.ago, ends_at: 90.days.ago })
+        create(:join_request, user: user, joinable: old_outing, status: 'accepted', participate_at: 91.days.ago)
+      end
+
+      it 'does not count the papotage outside the window' do
+        BadgeService.check_fidele_papotages(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'fidele_papotages')
+        expect(badge&.active).not_to be true
+      end
+
+      it 'reflects count of 2 in metadata' do
+        BadgeService.check_fidele_papotages(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'fidele_papotages')
+        expect(badge.metadata['current']).to eq(2)
+      end
+    end
+
+    # 4.6 - Jauges : progression partielle exposée au front
+    context '4.6 - when user has participated in 1 papotage (partial progress)' do
+      before do
+        outing = create(:outing, title: 'Papotage du quartier', online: true, status: 'closed',
+                        metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+        create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+      end
+
+      it 'exposes current=1 and target=3 in metadata' do
+        BadgeService.check_fidele_papotages(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'fidele_papotages')
+        expect(badge.metadata).to eq({ 'current' => 1, 'target' => 3 })
+      end
+    end
+
+    # 4.7 - Réversibilité : fenêtre tombe à 2
+    context '4.7 - when one papotage falls outside the window (badge deactivated)' do
+      let!(:outings) do
+        3.times.map do
+          create(:outing, title: 'Papotage du quartier', online: true, status: 'closed',
+                 metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+        end
+      end
+
+      before do
+        outings.each do |outing|
+          create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+        end
+        BadgeService.check_fidele_papotages(user)
+        outings.first.update_column(:metadata, { 'starts_at' => 91.days.ago.to_s, 'ends_at' => 90.days.ago.to_s })
+      end
+
+      it 'deactivates the badge after recalculation' do
+        BadgeService.check_fidele_papotages(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'fidele_papotages').active).to be false
+      end
+    end
+
+    # 4.8 - Inactif 3 mois : badge désactivé
+    context '4.8 - when user has 0 participations with participate_at' do
+      before do
+        3.times do
+          outing = create(:outing, title: 'Papotage du quartier', online: true, status: 'closed',
+                          metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+          create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+        end
+        BadgeService.check_fidele_papotages(user)
+        JoinRequest.where(user: user).update_all(participate_at: nil)
+      end
+
+      it 'sets badge to inactive' do
+        BadgeService.check_fidele_papotages(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'fidele_papotages').active).to be false
+      end
+    end
+
+    # 4.9 - Idempotence : badge déjà inactif, pas de badge.deactivated réémis
+    context '4.9 - when badge is already inactive and count is still below threshold' do
+      before do
+        create(:user_badge, user: user, badge_tag: 'fidele_papotages', active: false, awarded_at: nil)
+        outing = create(:outing, title: 'Papotage du quartier', online: true, status: 'closed',
+                        metadata: { starts_at: 30.days.ago, ends_at: 29.days.ago })
+        create(:join_request, user: user, joinable: outing, status: 'accepted', participate_at: 30.days.ago)
+      end
+
+      it 'does not create a duplicate badge record' do
+        expect { BadgeService.check_fidele_papotages(user) }
+          .not_to change { UserBadge.where(user: user, badge_tag: 'fidele_papotages').count }
+      end
+
+      it 'badge remains inactive' do
+        BadgeService.check_fidele_papotages(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'fidele_papotages').active).to be false
+      end
+    end
   end
 
   describe '.check_voix_presente' do
@@ -360,6 +656,252 @@ RSpec.describe BadgeService do
       it 'awards the badge because top 4 contains 3+' do
         BadgeService.check_voix_presente(user)
         expect(UserBadge.where(user: user, badge_tag: 'voix_presente', active: true)).to exist
+      end
+    end
+
+    # 5.9 - Réversibilité : semaine inactive fait tomber à 2/4
+    context '5.9 - when user only has 2 weekly activities (badge deactivated)' do
+      before do
+        ['2026-W20', '2026-W21'].each { |w| create(:weekly_activity, user: user, week_iso: w) }
+      end
+
+      it 'does not award the badge' do
+        BadgeService.check_voix_presente(user)
+        badge = UserBadge.find_by(user: user, badge_tag: 'voix_presente')
+        expect(badge&.active).not_to be true
+      end
+
+      context 'when badge was previously active' do
+        before { create(:user_badge, user: user, badge_tag: 'voix_presente', active: true, awarded_at: 1.month.ago) }
+
+        it 'deactivates the badge' do
+          BadgeService.check_voix_presente(user)
+          expect(UserBadge.find_by(user: user, badge_tag: 'voix_presente').active).to be false
+        end
+      end
+    end
+
+    # 5.10 - Badge perdu puis reconquis
+    context '5.10 - badge lost then reconquered' do
+      let!(:original_awarded_at) { 2.months.ago }
+
+      before do
+        create(:user_badge, user: user, badge_tag: 'voix_presente', active: false, awarded_at: original_awarded_at)
+        ['2026-W20', '2026-W21', '2026-W22'].each { |w| create(:weekly_activity, user: user, week_iso: w) }
+      end
+
+      it 'reactivates the badge' do
+        BadgeService.check_voix_presente(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'voix_presente').active).to be true
+      end
+
+      it 'preserves the original awarded_at date' do
+        BadgeService.check_voix_presente(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'voix_presente').awarded_at)
+          .to be_within(1.second).of(original_awarded_at)
+      end
+    end
+
+    # 5.11 - Idempotence : badge déjà actif, pas de nouvel badge.awarded
+    context '5.11 - when badge is already active and still qualifies' do
+      before do
+        ['2026-W20', '2026-W21', '2026-W22'].each { |w| create(:weekly_activity, user: user, week_iso: w) }
+        BadgeService.check_voix_presente(user)
+      end
+
+      it 'does not create a duplicate badge record' do
+        expect { BadgeService.check_voix_presente(user) }
+          .not_to change { UserBadge.where(user: user, badge_tag: 'voix_presente').count }
+      end
+
+      it 'preserves the existing awarded_at' do
+        existing_awarded_at = UserBadge.find_by(user: user, badge_tag: 'voix_presente').awarded_at
+        BadgeService.check_voix_presente(user)
+        expect(UserBadge.find_by(user: user, badge_tag: 'voix_presente').awarded_at)
+          .to be_within(1.second).of(existing_awarded_at)
+      end
+    end
+  end
+
+  describe '.update_weekly_activity_from' do
+    let(:user) { eligible_user }
+    let(:neighborhood) { create(:neighborhood) }
+
+    # Reset class-level memoization between tests
+    after { BadgeService.instance_variable_set(:@weekly_activity_user_ids, nil) }
+
+    def session_for(u, date: Date.today - 1.week)
+      SessionHistory.create!(user_id: u.id, date: date, platform: 'ios')
+    end
+
+    def prev_week_range(reference_date)
+      reference_date.prev_week.all_week
+    end
+
+    # 5.3 - Action = post groupe → WeeklyActivity créée
+    context '5.3 - when user posted in a neighborhood during the previous week' do
+      let(:reference_date) { Date.today }
+
+      before do
+        session_for(user)
+        create(:chat_message,
+               user: user,
+               messageable: neighborhood,
+               created_at: prev_week_range(reference_date).first + 1.day)
+      end
+
+      it 'creates a WeeklyActivity for the previous week' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .to change { WeeklyActivity.where(user: user).count }.by(1)
+      end
+    end
+
+    # 5.4 - Action = réaction groupe → WeeklyActivity créée
+    # The service checks UserReaction.where(instance_type: 'Neighborhood')
+    context '5.4 - when user reacted on a neighborhood during the previous week' do
+      let(:reference_date) { Date.today }
+
+      before do
+        session_for(user)
+        create(:user_reaction,
+               user: user,
+               instance: neighborhood,
+               created_at: prev_week_range(reference_date).first + 1.day)
+      end
+
+      it 'creates a WeeklyActivity for the previous week' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .to change { WeeklyActivity.where(user: user).count }.by(1)
+      end
+    end
+
+    # 5.6 - Action hors groupe → pas de WeeklyActivity
+    context '5.6 - when user only posted outside a neighborhood context' do
+      let(:reference_date) { Date.today }
+
+      before do
+        session_for(user)
+        create(:chat_message,
+               user: user,
+               created_at: prev_week_range(reference_date).first + 1.day)
+      end
+
+      it 'does not create a WeeklyActivity for the user' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .not_to change { WeeklyActivity.where(user: user).count }
+      end
+    end
+
+    # 5.7 - Plusieurs actions dans la même semaine comptent comme 1 seule semaine active
+    context '5.7 - when user posted multiple times in a neighborhood the same week' do
+      let(:reference_date) { Date.today }
+
+      before do
+        session_for(user)
+        5.times do
+          create(:chat_message,
+                 user: user,
+                 messageable: neighborhood,
+                 created_at: prev_week_range(reference_date).first + 1.day)
+        end
+      end
+
+      it 'creates only 1 WeeklyActivity (not 5)' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .to change { WeeklyActivity.where(user: user).count }.by(1)
+      end
+    end
+
+    # 5.8 - Utilisateur inactif (pas de session dans les 30 jours) exclu du batch
+    context '5.8 - when user has no session in the last month' do
+      let(:reference_date) { Date.today }
+      let(:inactive_user) { eligible_user }
+
+      before do
+        ['2026-W20', '2026-W21', '2026-W22'].each do |w|
+          create(:weekly_activity, user: inactive_user, week_iso: w)
+        end
+        create(:chat_message,
+               user: inactive_user,
+               messageable: neighborhood,
+               created_at: prev_week_range(reference_date).first + 1.day)
+      end
+
+      it 'does not create a new WeeklyActivity for the inactive user' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .not_to change { WeeklyActivity.where(user: inactive_user).count }
+      end
+
+      it 'does not change the badge status of the inactive user' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .not_to change { UserBadge.where(user: inactive_user).count }
+      end
+    end
+
+    # 5.12 - Action le dimanche 23h59 rattachée à la semaine ISO courante
+    context '5.12 - when user posted on Sunday 23:59 of the previous ISO week' do
+      let(:reference_monday) { Date.today.next_week(:monday) }
+      let(:sunday_action_time) { (reference_monday - 1.day).end_of_day - 1.minute }
+      let(:expected_week_iso) { (reference_monday - 1.week).strftime('%G-W%V') }
+
+      before do
+        session_for(user, date: reference_monday - 2.weeks)
+        create(:chat_message,
+               user: user,
+               messageable: neighborhood,
+               created_at: sunday_action_time)
+      end
+
+      it 'creates a WeeklyActivity for the correct ISO week' do
+        BadgeService.update_weekly_activity_from(reference_monday)
+        expect(WeeklyActivity.find_by(user: user, week_iso: expected_week_iso)).to be_present
+      end
+    end
+  end
+
+  describe 'Transversal' do
+    let(:user) { eligible_user }
+
+    # T.1 - Compte association : non éligible aux badges
+    context 'T.1 - when user has an organization goal (association account)' do
+      let(:org_user) { create(:public_user, goal: 'organization') }
+
+      it 'is not eligible for badges' do
+        expect(BadgeService.eligible_user?(org_user)).to be false
+      end
+
+      it 'does not award bienvenue badge' do
+        org_user.update!(
+          interest_list: ['activites'],
+          involvement_list: ['resources'],
+          concern_list: ['sharing_time'],
+          availability: { "1" => ["09:00-10:00"] }
+        )
+        create(:user_reaction, user: org_user)
+        expect { BadgeService.check_bienvenue(org_user) }
+          .not_to change { UserBadge.count }
+      end
+    end
+
+    # T.5 - badge_active=false conserve la ligne en base
+    context 'T.5 - when badge is deactivated, the row is preserved with awarded_at intact' do
+      before do
+        create(:user_badge, user: user, badge_tag: 'moteur_rencontres', active: true, awarded_at: 10.days.ago)
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres')
+      end
+
+      it 'does not delete the badge row' do
+        expect(UserBadge.where(user: user, badge_tag: 'moteur_rencontres')).to exist
+      end
+
+      it 'preserves the awarded_at date' do
+        badge = UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres')
+        expect(badge.awarded_at).to be_present
+      end
+
+      it 'sets active to false' do
+        badge = UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres')
+        expect(badge.active).to be false
       end
     end
   end

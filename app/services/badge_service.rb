@@ -85,7 +85,10 @@ class BadgeService
 
       previous_week_iso = (date - 1.week).strftime('%G-W%V')
 
-      weekly_activity_user_ids = weekly_activity_user_ids_for_time_range(date.prev_week.all_week)
+      # Use Time range (not Date range) to include actions up to Sunday 23:59:59
+      prev_week_start = date.prev_week.beginning_of_week.beginning_of_day
+      prev_week_end   = date.prev_week.end_of_week.end_of_day
+      weekly_activity_user_ids = weekly_activity_user_ids_for_time_range(prev_week_start..prev_week_end)
 
       User.where(id: user_ids).find_each do |user|
         if weekly_activity_user_ids.include?(user.id)
