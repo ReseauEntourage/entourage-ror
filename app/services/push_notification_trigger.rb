@@ -741,7 +741,7 @@ class PushNotificationTrigger
   end
 
   def user_badge_on_update
-    return unless @record.saved_changes.keys.include?('active')
+    return unless @changes.keys.include?('active')
     return unless @record.active?
 
     user_badge_on_create
