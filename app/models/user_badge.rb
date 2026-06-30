@@ -11,8 +11,7 @@ class UserBadge < ApplicationRecord
   end
 
   def self.badge_image_url(tag)
-    base = ENV.fetch('BADGE_CDN_BASE_URL', "#{ENV['WEBSITE_APP_URL']}/badges")
-    "#{base}/#{tag}.png"
+    "#{ENV['WEBSITE_URL']}/badges/#{tag}.svg"
   end
 
   DEFAULT_METADATA = {
