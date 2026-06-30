@@ -137,6 +137,32 @@ describe MemberMailer, type: :mailer do
     end
   end
 
+  describe '#congratulations_new_badge' do
+    let(:awarded_at) { Time.now }
+    let(:mail) { MemberMailer.congratulations_new_badge(user, 'bienvenue', awarded_at) }
+
+    expect_mailjet_email do
+      auth_token = UserServices::UserAuthenticator.auth_token(user)
+      {
+        from: %("Le Réseau Entourage" <communaute@entourage.social>),
+        template_id: 8099538,
+        campaign_name: 'badge_congratulations',
+        variables: {
+          badge_image_url: UserBadge.badge_image_url('bienvenue'),
+          badge_nom: I18n.t('email.badge.bienvenue.nom'),
+          badge_description: I18n.t('email.badge.bienvenue.description'),
+          badge_date: I18n.l(awarded_at.to_date, format: :long, locale: user.lang),
+          deeplink_badges: "https://www.entourage.social/deeplink/badges?auth=#{auth_token}"
+        }
+      }
+    end
+
+    context 'when badge_tag is unknown' do
+      let(:mail) { MemberMailer.congratulations_new_badge(user, 'unknown_tag', Time.now) }
+      it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
+    end
+  end
+
   describe 'group variables' do
     let(:event) { build :outing, title: 'lol', uuid_v2: 'e12345' }
 

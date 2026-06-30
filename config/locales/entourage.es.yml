@@ -164,3 +164,21 @@ es:
       - jue
       - vie
       - sáb
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Primer paso"
+        description: "Acabas de dar tu primer paso en la comunidad Entourage. Tu presencia ya cuenta — bienvenido entre nosotros."
+      premier_contact:
+        nom: "Primer vínculo"
+        description: "Acabas de intercambiar tu primer mensaje con otro miembro. Cada vínculo tejido da vida a la comunidad."
+      fidele_papotages:
+        nom: "As de la conversación"
+        description: "Has participado en 3 conversaciones solidarias en un mes y medio. Tu presencia regular crea lazos y hace el bien a tu alrededor."
+      voix_presente:
+        nom: "Tejedor cotidiano"
+        description: "Has estado activo 3 de 4 semanas en los grupos publicando, comentando, reaccionando — haces latir el corazón de la comunidad."
+      moteur_rencontres:
+        nom: "Creador de encuentros"
+        description: "Has organizado 3 eventos en los últimos 90 días. Pones en movimiento a la comunidad Entourage — ¡enhorabuena!"

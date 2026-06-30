@@ -1,6 +1,20 @@
 class UserBadge < ApplicationRecord
   ALL_TAGS = %w[bienvenue premier_contact moteur_rencontres fidele_papotages voix_presente].freeze
 
+  def self.display_data_for(tag, locale: I18n.locale)
+    return nil unless ALL_TAGS.include?(tag)
+
+    {
+      nom: I18n.t("email.badge.#{tag}.nom", locale: locale),
+      description: I18n.t("email.badge.#{tag}.description", locale: locale)
+    }
+  end
+
+  def self.badge_image_url(tag)
+    base = ENV.fetch('BADGE_CDN_BASE_URL', "#{ENV['WEBSITE_APP_URL']}/badges")
+    "#{base}/#{tag}.png"
+  end
+
   DEFAULT_METADATA = {
     'bienvenue'          => {},
     'premier_contact'    => {},

@@ -120,9 +120,12 @@ class BadgeService
 
       return if badge.persisted? && badge.active
 
+      is_new_award = badge.awarded_at.nil?
       badge.active = true
       badge.awarded_at ||= Time.now
       badge.save!
+
+      MemberMailer.congratulations_new_badge(user, tag, badge.awarded_at).deliver_later if is_new_award
     end
 
     def deactivate_badge(user, tag)

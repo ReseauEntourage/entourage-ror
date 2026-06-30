@@ -22,6 +22,22 @@ class MemberMailer < MailjetMailer
                   }
   end
 
+  def congratulations_new_badge(user, badge_tag, awarded_at)
+    data = UserBadge.display_data_for(badge_tag, locale: user.lang)
+    return unless data
+
+    mailjet_email to: user,
+                  template_id: 8099538,
+                  campaign_name: 'badge_congratulations',
+                  variables: {
+                    badge_image_url: UserBadge.badge_image_url(badge_tag),
+                    badge_nom: data[:nom],
+                    badge_description: data[:description],
+                    badge_date: I18n.l(awarded_at.to_date, format: :long, locale: user.lang),
+                    deeplink_badges: ENV['WEBSITE_URL'] + '/deeplink/badges'
+                  }
+  end
+
   def incomplete_profile(user)
     mailjet_email to: user,
                   template_id: 6174246,

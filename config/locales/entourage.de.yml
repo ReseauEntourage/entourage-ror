@@ -179,3 +179,21 @@ de:
       - Do
       - Fr
       - Sa
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Erster Schritt"
+        description: "Du hast gerade deinen ersten Schritt in der Entourage-Community gemacht. Deine Anwesenheit zählt bereits — willkommen unter uns."
+      premier_contact:
+        nom: "Erste Verbindung"
+        description: "Du hast gerade deine erste Nachricht mit einem anderen Mitglied ausgetauscht. Jede geknüpfte Verbindung belebt die Community."
+      fidele_papotages:
+        nom: "Chat-Champion"
+        description: "Du hast in eineinhalb Monaten an 3 Solidaritätsgesprächen teilgenommen. Deine regelmäßige Anwesenheit schafft Verbindungen und tut dir und anderen gut."
+      voix_presente:
+        nom: "Alltags-Weber"
+        description: "Du warst 3 von 4 Wochen in den Gruppen aktiv — du postest, kommentierst, reagierst. Du lässt das Herz der Community schlagen."
+      moteur_rencontres:
+        nom: "Veranstaltungsorganisator"
+        description: "Du hast in den letzten 90 Tagen 3 Veranstaltungen organisiert. Du bringst die Entourage-Community in Bewegung — herzlichen Glückwunsch!"
