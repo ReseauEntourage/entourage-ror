@@ -731,6 +731,33 @@ fr:
 
         À très vite
 
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "As du papotage"
+        description: "Tu participes régulièrement aux papotages solidaires."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Encore 2 papotages solidaires auxquels participer ce trimestre"
+          "2": "Encore 1 papotage solidaire auquel participer ce trimestre"
+      voix_presente:
+        name: "Tisseur du quotidien"
+        description: "Tu fais vivre les groupes semaine après semaine."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Plus que 2 semaines pour faire vivre vos groupes"
+          "2": "Plus qu'1 semaine pour faire vivre vos groupes"
+      moteur_rencontres:
+        name: "Créateur de rencontres"
+        description: "Tu organises régulièrement des événements dans ta communauté."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Encore 2 événements à organiser ce trimestre"
+          "2": "Encore 1 événement à organiser ce trimestre"
+
   charts:
     conversations:
       memberships: "Participants"

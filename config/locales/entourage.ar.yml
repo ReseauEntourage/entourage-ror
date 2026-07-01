@@ -204,3 +204,30 @@ ar:
       moteur_rencontres:
         nom: "منظم اللقاءات"
         description: "لقد نظمت 3 فعاليات خلال الـ 90 يوماً الماضية. أنت تُحرّك مجتمع Entourage — أحسنت!"
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "بطل المحادثات"
+        description: "تشارك بانتظام في المحادثات التضامنية."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "محادثتان تضامنيتان إضافيتان للمشاركة هذا الربع"
+          "2": "محادثة تضامنية إضافية واحدة للمشاركة هذا الربع"
+      voix_presente:
+        name: "نساج اليومي"
+        description: "تُبقي المجموعات حية أسبوعًا بعد أسبوع."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "أسبوعان إضافيان لإبقاء مجموعاتك نشطة"
+          "2": "أسبوع إضافي واحد لإبقاء مجموعاتك نشطة"
+      moteur_rencontres:
+        name: "منظم اللقاءات"
+        description: "تنظم بانتظام فعاليات في مجتمعك."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "حدثان إضافيان لتنظيمهما هذا الربع"
+          "2": "حدث إضافي واحد لتنظيمه هذا الربع"

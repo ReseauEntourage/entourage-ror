@@ -182,3 +182,30 @@ es:
       moteur_rencontres:
         nom: "Creador de encuentros"
         description: "Has organizado 3 eventos en los últimos 90 días. Pones en movimiento a la comunidad Entourage — ¡enhorabuena!"
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "As del chat"
+        description: "Participas regularmente en los chats solidarios."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "2 chats solidarios más para participar este trimestre"
+          "2": "1 chat solidario más para participar este trimestre"
+      voix_presente:
+        name: "Tejedor del cotidiano"
+        description: "Haces vivir los grupos semana tras semana."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Quedan 2 semanas para mantener activos tus grupos"
+          "2": "Queda 1 semana para mantener activos tus grupos"
+      moteur_rencontres:
+        name: "Creador de encuentros"
+        description: "Organizas regularmente eventos en tu comunidad."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "2 eventos más por organizar este trimestre"
+          "2": "1 evento más por organizar este trimestre"

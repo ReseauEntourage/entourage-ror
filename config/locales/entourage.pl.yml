@@ -204,3 +204,30 @@ pl:
       moteur_rencontres:
         nom: "Twórca spotkań"
         description: "Zorganizowałeś 3 wydarzenia w ciągu ostatnich 90 dni. Napędzasz społeczność Entourage — brawo!"
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "Mistrz rozmów"
+        description: "Regularnie uczestniczysz w solidarnych rozmowach."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Jeszcze 2 solidarne rozmowy do odbycia w tym kwartale"
+          "2": "Jeszcze 1 solidarna rozmowa do odbycia w tym kwartale"
+      voix_presente:
+        name: "Tkacz codzienności"
+        description: "Ożywiasz grupy tydzień po tygodniu."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Jeszcze 2 tygodnie, aby utrzymać aktywność swoich grup"
+          "2": "Jeszcze 1 tydzień, aby utrzymać aktywność swoich grup"
+      moteur_rencontres:
+        name: "Twórca spotkań"
+        description: "Regularnie organizujesz wydarzenia w swojej społeczności."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Jeszcze 2 wydarzenia do zorganizowania w tym kwartale"
+          "2": "Jeszcze 1 wydarzenie do zorganizowania w tym kwartale"
