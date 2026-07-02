@@ -753,7 +753,7 @@ fr:
         nom: "As du papotage"
         description: "Vous avez lancé 3 papotages solidaires en un mois et demi. Votre présence régulière crée du lien et fait du bien autour de vous."
       voix_presente:
-        nom: "Tisseur du quotidien"
+        nom: "Tisseur de liens"
         description: "Vous avez été actif 3 semaines sur 4 dans les groupes en posant, commentant, réagissant — vous faites battre le cœur de la communauté."
       moteur_rencontres:
         nom: "Créateur de rencontres"
