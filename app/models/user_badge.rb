@@ -69,5 +69,17 @@ class UserBadge < ApplicationRecord
 
       "#{ENV['MOBILE_HOST']}/app/badges/#{badge_tag}"
     end
+
+    def bucket
+      Storage::Client.images
+    end
+
+    def image_url_for badge_tag
+      bucket.public_url(key: path(badge_tag))
+    end
+
+    def path badge_tag
+      "#{BUCKET_PREFIX}/#{badge_tag}.png"
+    end
   end
 end

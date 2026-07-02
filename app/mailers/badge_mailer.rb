@@ -15,7 +15,7 @@ class BadgeMailer < MailjetMailer
     return unless progression_label
 
     progression_pct = ((current.to_f / target) * 100).round
-    image_url  = I18n.t("badge_mailer.badges.#{badge_tag}.image_url", locale: locale, default: '')
+    image_url  = UserBadge.image_url_for(badge_tag)
     deeplink   = UserBadge.share_url_for_badge_tag(badge_tag)
 
     mailjet_email(
