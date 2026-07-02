@@ -318,6 +318,12 @@ class Neighborhood < ApplicationRecord
     "#{ENV['MOBILE_HOST']}/app/neighborhoods/#{uuid_v2}"
   end
 
+  class << self
+    def share_url
+    "#{ENV['MOBILE_HOST']}/app/neighborhoods"
+    end
+  end
+
   private
 
   def track_status_change

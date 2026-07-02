@@ -63,6 +63,10 @@ class UserBadge < ApplicationRecord
 
   class << self
     def share_url_for_badge_tag badge_tag
+      return Entourage.share_url(:outings) if badge_tag == 'moteur_rencontres'
+      return Entourage.share_url(:papotages) if badge_tag == 'fidele_papotages'
+      return Neighborhood.share_url if badge_tag == 'voix_presente'
+
       "#{ENV['MOBILE_HOST']}/app/badges/#{badge_tag}"
     end
   end
