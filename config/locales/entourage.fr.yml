@@ -742,7 +742,7 @@ fr:
           "1": "Encore 2 papotages solidaires auxquels participer ce trimestre"
           "2": "Encore 1 papotage solidaire auquel participer ce trimestre"
       voix_presente:
-        name: "Tisseur du quotidien"
+        name: "Tisseur de liens"
         description: "Tu fais vivre les groupes semaine après semaine."
         image_url: ""
         deeplink: ""
