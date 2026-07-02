@@ -39,6 +39,10 @@ class UserBadge < ApplicationRecord
     end
   end
 
+  def share_url
+    self.share_url_for_badge_tag(badge_tag)
+  end
+
   class << self
     def share_url
       "#{ENV['MOBILE_HOST']}/app/badges"
@@ -54,6 +58,12 @@ class UserBadge < ApplicationRecord
 
     def path badge_tag
       "#{BUCKET_PREFIX}/#{badge_tag}.png"
+    end
+  end
+
+  class << self
+    def share_url_for_badge_tag badge_tag
+      "#{ENV['MOBILE_HOST']}/app/badges/#{badge_tag}"
     end
   end
 end
