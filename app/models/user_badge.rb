@@ -41,4 +41,10 @@ class UserBadge < ApplicationRecord
       )
     end
   end
+
+  class << self
+    def share_url
+      "#{ENV['MOBILE_HOST']}/app/badges"
+    end
+  end
 end

@@ -34,7 +34,8 @@ class MemberMailer < MailjetMailer
                     badge_nom: data[:nom],
                     badge_description: data[:description],
                     badge_date: I18n.l(awarded_at.to_date, format: :long, locale: user.lang),
-                    deeplink_badges: ENV['WEBSITE_URL'] + '/deeplink/badges'
+                    badges: UserBadge.share_url,
+                    deeplink_badges: UserBadge.share_url,
                   }
   end
 

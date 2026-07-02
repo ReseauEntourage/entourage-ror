@@ -152,7 +152,8 @@ describe MemberMailer, type: :mailer do
           badge_nom: I18n.t('email.badge.bienvenue.nom'),
           badge_description: I18n.t('email.badge.bienvenue.description'),
           badge_date: I18n.l(awarded_at.to_date, format: :long, locale: user.lang),
-          deeplink_badges: "https://www.entourage.social/deeplink/badges?auth=#{auth_token}"
+          badges: "#{ENV['MOBILE_HOST']}/app/badges",
+          deeplink_badges: "#{ENV['MOBILE_HOST']}/app/badges",
         }
       }
     end
