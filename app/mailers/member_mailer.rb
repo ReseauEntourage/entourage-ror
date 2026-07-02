@@ -30,7 +30,7 @@ class MemberMailer < MailjetMailer
                   template_id: 8099538,
                   campaign_name: 'badge_congratulations',
                   variables: {
-                    badge_image_url: UserBadge.badge_image_url(badge_tag),
+                    badge_image_url: UserBadge.image_url_for(badge_tag),
                     badge_nom: data[:nom],
                     badge_description: data[:description],
                     badge_date: I18n.l(awarded_at.to_date, format: :long, locale: user.lang),
