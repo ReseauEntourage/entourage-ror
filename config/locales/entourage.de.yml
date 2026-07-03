@@ -180,6 +180,40 @@ de:
       - Fr
       - Sa
 
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "Chat-Meister"
+        description: "Du nimmst regelmäßig an solidarischen Gesprächen teil."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Noch 2 solidarische Chats, an denen du dieses Quartal teilnehmen kannst"
+          "2": "Noch 1 solidarischer Chat, an dem du dieses Quartal teilnehmen kannst"
+        bilan: "Du hast dieses Abzeichen am %{date} erhalten und mehrere Wochen lang an solidarischen Gesprächen teilgenommen. Bravo für dieses Engagement, deine Austausche haben echte Verbindungen in der Community geschaffen."
+      voix_presente:
+        name: "Gemeinschaftsweber"
+        description: "Du belebst die Gruppen Woche für Woche."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Noch 2 Wochen, um deine Gruppen aktiv zu halten"
+          "2": "Noch 1 Woche, um deine Gruppen aktiv zu halten"
+        bilan: "Du hast dieses Abzeichen am %{date} erhalten und mehrere Monate lang getragen. Bravo für dieses Engagement, deine Präsenz hat den Gruppen in der App wirklich viel bedeutet."
+      moteur_rencontres:
+        name: "Veranstaltungsgestalter"
+        description: "Du organisierst regelmäßig Veranstaltungen in deiner Gemeinschaft."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Noch 2 Veranstaltungen dieses Quartal zu organisieren"
+          "2": "Noch 1 Veranstaltung dieses Quartal zu organisieren"
+        bilan: "Du hast dieses Abzeichen am %{date} erhalten und Veranstaltungen organisiert, die die Community bewegt haben. Bravo für dieses Engagement, deine Energie hat vielen Menschen zugutekommen."
+    duration:
+      zero: "weniger als ein Monat"
+      one: "1 Monat"
+      other: "%{count} Monate"
+
   email:
     badge:
       bienvenue:
@@ -197,30 +231,3 @@ de:
       moteur_rencontres:
         nom: "Veranstaltungsorganisator"
         description: "Du hast in den letzten 90 Tagen 3 Veranstaltungen organisiert. Du bringst die Entourage-Community in Bewegung — herzlichen Glückwunsch!"
-
-  badge_mailer:
-    badges:
-      fidele_papotages:
-        name: "Chat-Meister"
-        description: "Du nimmst regelmäßig an solidarischen Gesprächen teil."
-        image_url: ""
-        deeplink: ""
-        progression_label:
-          "1": "Noch 2 solidarische Chats, an denen du dieses Quartal teilnehmen kannst"
-          "2": "Noch 1 solidarischer Chat, an dem du dieses Quartal teilnehmen kannst"
-      voix_presente:
-        name: "Gemeinschaftsweber"
-        description: "Du belebst die Gruppen Woche für Woche."
-        image_url: ""
-        deeplink: ""
-        progression_label:
-          "1": "Noch 2 Wochen, um deine Gruppen aktiv zu halten"
-          "2": "Noch 1 Woche, um deine Gruppen aktiv zu halten"
-      moteur_rencontres:
-        name: "Veranstaltungsgestalter"
-        description: "Du organisierst regelmäßig Veranstaltungen in deiner Gemeinschaft."
-        image_url: ""
-        deeplink: ""
-        progression_label:
-          "1": "Noch 2 Veranstaltungen dieses Quartal zu organisieren"
-          "2": "Noch 1 Veranstaltung dieses Quartal zu organisieren"

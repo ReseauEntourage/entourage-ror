@@ -162,6 +162,40 @@ en:
     - fri
     - sat
 
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "Chat Champion"
+        description: "You regularly participate in solidarity chats."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "2 more solidarity chats to join this quarter"
+          "2": "1 more solidarity chat to join this quarter"
+        bilan: "You earned this badge on %{date} and took part in solidarity chats for several weeks. Well done for this commitment — your conversations created real bonds within the community."
+      voix_presente:
+        name: "Community Weaver"
+        description: "You keep groups alive week after week."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "2 more weeks to keep your groups active"
+          "2": "1 more week to keep your groups active"
+        bilan: "You earned this badge on %{date} and wore it for several months. Well done for this commitment — your presence really mattered to the groups in the app."
+      moteur_rencontres:
+        name: "Event Creator"
+        description: "You regularly organize events in your community."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "2 more events to organize this quarter"
+          "2": "1 more event to organize this quarter"
+        bilan: "You earned this badge on %{date} and organized events that got the community moving. Well done for this commitment — your energy benefited many people."
+    duration:
+      zero: "less than a month"
+      one: "1 month"
+      other: "%{count} months"
+
   email:
     badge:
       bienvenue:
@@ -179,30 +213,3 @@ en:
       moteur_rencontres:
         nom: "Event creator"
         description: "You've organised 3 events in the last 90 days. You're moving the Entourage community forward — well done!"
-
-  badge_mailer:
-    badges:
-      fidele_papotages:
-        name: "Chat Champion"
-        description: "You regularly participate in solidarity chats."
-        image_url: ""
-        deeplink: ""
-        progression_label:
-          "1": "2 more solidarity chats to join this quarter"
-          "2": "1 more solidarity chat to join this quarter"
-      voix_presente:
-        name: "Community Weaver"
-        description: "You keep groups alive week after week."
-        image_url: ""
-        deeplink: ""
-        progression_label:
-          "1": "2 more weeks to keep your groups active"
-          "2": "1 more week to keep your groups active"
-      moteur_rencontres:
-        name: "Event Creator"
-        description: "You regularly organize events in your community."
-        image_url: ""
-        deeplink: ""
-        progression_label:
-          "1": "2 more events to organize this quarter"
-          "2": "1 more event to organize this quarter"
