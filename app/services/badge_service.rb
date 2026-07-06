@@ -159,9 +159,13 @@ class BadgeService
           .where(messageable_type: 'Neighborhood', created_at: time_range)
           .select(:user_id)
 
+        # Driven from user_reactions (already bounded by time_range) and joined to
+        # chat_messages by primary key, so we never scan the full chat_messages table.
         reaction_users = UserReaction
-          .where(instance_type: 'Neighborhood', created_at: time_range)
-          .select(:user_id)
+          .joins("INNER JOIN chat_messages ON chat_messages.id = user_reactions.instance_id")
+          .where(user_reactions: { instance_type: 'ChatMessage', created_at: time_range })
+          .where(chat_messages: { messageable_type: 'Neighborhood' })
+          .select('user_reactions.user_id')
 
         ActiveRecord::Base.connection.select_values(
           "(#{message_users.to_sql}) UNION (#{reaction_users.to_sql})"

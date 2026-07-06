@@ -757,21 +757,41 @@ RSpec.describe BadgeService do
     end
 
     # 5.4 - Action = réaction groupe → WeeklyActivity créée
-    # The service checks UserReaction.where(instance_type: 'Neighborhood')
-    context '5.4 - when user reacted on a neighborhood during the previous week' do
+    # The service checks UserReaction.where(instance_type: 'ChatMessage') on chat messages of a Neighborhood
+    context '5.4 - when user reacted on a neighborhood chat message during the previous week' do
       let(:reference_date) { Date.today }
+      let(:neighborhood_chat_message) { create(:chat_message, messageable: neighborhood) }
 
       before do
         session_for(user)
         create(:user_reaction,
                user: user,
-               instance: neighborhood,
+               instance: neighborhood_chat_message,
                created_at: prev_week_range(reference_date).first + 1.day)
       end
 
       it 'creates a WeeklyActivity for the previous week' do
         expect { BadgeService.update_weekly_activity_from(reference_date) }
           .to change { WeeklyActivity.where(user: user).count }.by(1)
+      end
+    end
+
+    # 5.4bis - Action = réaction hors groupe → pas de WeeklyActivity
+    context '5.4bis - when user reacted on a chat message outside a neighborhood' do
+      let(:reference_date) { Date.today }
+      let(:other_chat_message) { create(:chat_message) }
+
+      before do
+        session_for(user)
+        create(:user_reaction,
+               user: user,
+               instance: other_chat_message,
+               created_at: prev_week_range(reference_date).first + 1.day)
+      end
+
+      it 'does not create a WeeklyActivity for the user' do
+        expect { BadgeService.update_weekly_activity_from(reference_date) }
+          .not_to change { WeeklyActivity.where(user: user).count }
       end
     end
 

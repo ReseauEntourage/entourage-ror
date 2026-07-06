@@ -1082,6 +1082,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["instance_id", "instance_type"], name: "index_user_reactions_on_instance_id_and_instance_type"
+    t.index ["instance_type", "created_at"], name: "index_user_reactions_on_instance_type_and_created_at"
     t.index ["reaction_id"], name: "index_user_reactions_on_reaction_id"
   end
 
