@@ -238,6 +238,29 @@ describe MemberMailer, type: :mailer do
     end
   end
 
+  describe '#first_steps_papotages_invitation' do
+    let!(:papotage) { create(:outing, :outing_class, online: true, title: 'Papotage du mardi') }
+    let(:mail) { MemberMailer.first_steps_papotages_invitation(user, [papotage]) }
+
+    expect_mailjet_email do
+      {
+        from: %("Le Réseau Entourage" <communaute@entourage.social>),
+        template_id: 8019081,
+        campaign_name: 'first_steps_papotages_invitation',
+        variables: {
+          outings_url: Entourage.share_url(:outings),
+          outings: [{
+            name: 'Papotage du mardi',
+            date: I18n.l(papotage.metadata[:starts_at].to_date, format: :short),
+            hour: papotage.metadata[:starts_at].strftime('%Hh%M'),
+            image_url: nil,
+            url: papotage.share_url
+          }]
+        }
+      }
+    end
+  end
+
   describe 'group variables' do
     let(:event) { build :outing, title: 'lol', uuid_v2: 'e12345' }
 

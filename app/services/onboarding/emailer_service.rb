@@ -16,6 +16,15 @@ module Onboarding
       end
     end
 
+    def self.deliver_papotages_invitation_email
+      upcoming_papotages = Outing.papotages.future_or_ongoing.limit(3)
+      return unless upcoming_papotages.any?
+
+      User.where(id: papotages_invitation_user_ids).find_each do |user|
+        MemberMailer.first_steps_papotages_invitation(user, upcoming_papotages).deliver_later
+      end
+    end
+
     private
 
     def self.papotages_invitation_user_ids_j7
@@ -41,6 +50,29 @@ module Onboarding
         .where('name_entered.created_at <= ?', MIN_DELAY.ago)
         .where('(goal is null or address_id is null)')
         .pluck(:id)
+    end
+
+    def self.papotages_invitation_user_ids
+      user_scope = User.where(community: :entourage, deleted: false).where("email <> ''")
+
+      registered_yesterday = JoinRequest
+        .accepted
+        .joins(:user, :entourage)
+        .merge(user_scope)
+        .merge(Outing.first_steps_category)
+        .where(join_requests: { created_at: 1.day.ago.all_day })
+        .pluck(:user_id)
+        .uniq
+
+      already_in_papotage = JoinRequest
+        .accepted
+        .joins(:entourage)
+        .merge(Outing.papotages)
+        .where(user_id: registered_yesterday)
+        .pluck(:user_id)
+        .uniq
+
+      registered_yesterday - already_in_papotage
     end
   end
 end

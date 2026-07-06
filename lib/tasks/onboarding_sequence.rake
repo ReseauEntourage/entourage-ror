@@ -55,6 +55,11 @@ namespace :onboarding_sequence do
     Onboarding::EmailerService.deliver_incomplete_profile_email
   end
 
+  desc 'send_papotages_invitation_email'
+  task send_papotages_invitation_email: :environment do
+    Onboarding::EmailerService.deliver_papotages_invitation_email
+  end
+
   desc 'send_welcome_messages'
   task send_welcome_messages: :environment do
     Onboarding::ChatMessagesService.deliver_welcome_message
