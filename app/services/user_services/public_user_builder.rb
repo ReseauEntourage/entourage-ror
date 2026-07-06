@@ -35,9 +35,6 @@ module UserServices
         UserServices::Avatar.new(user: user).upload(file: avatar_file)
       end
 
-      start_onboarding_sequence = should_start_onboarding_sequence(user: user, params: params)
-      user.onboarding_sequence_start_at = Time.zone.now if start_onboarding_sequence
-
       [:first_name, :last_name, :email].each do |key|
         params[key] = params[key]&.strip if params.key?(key)
       end
@@ -53,11 +50,5 @@ module UserServices
 
     private
     attr_reader :community
-
-    def should_start_onboarding_sequence(user:, params:)
-      user.onboarding_sequence_start_at.nil? &&
-      params[:email] && user.email.nil? &&
-      user.first_sign_in_at && user.first_sign_in_at >= 1.week.ago
-    end
   end
 end

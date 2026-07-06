@@ -547,6 +547,13 @@ class User < ApplicationRecord
     (targeting_profile.blank? && goal.to_s == 'offer_help') || targeting_profile.to_s == 'offers_help'
   end
 
+  def record_first_sign_in!
+    return if first_sign_in_at.present?
+
+    update_column(:first_sign_in_at, Time.zone.now)
+    UnseenResourceWelcomeJob.perform_at(first_sign_in_at + 24.hours, id)
+  end
+
   def public?
     user_type=='public'
   end
