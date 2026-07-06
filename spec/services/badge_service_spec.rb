@@ -1010,5 +1010,45 @@ RSpec.describe BadgeService do
       expect(badge.active).to be false
       expect(badge.awarded_at).to be_nil
     end
+
+    context 'when the badge was previously active' do
+      let!(:badge) { create(:user_badge, user: user, badge_tag: 'moteur_rencontres', active: true, awarded_at: 45.days.ago) }
+
+      it 'publishes a badge.deactivated event with the original awarded_at' do
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres')
+
+        expect(EventBus).to have_received(:publish).with(
+          'badge.deactivated',
+          hash_including(badge_tag: 'moteur_rencontres', awarded_at: badge.reload.awarded_at)
+        )
+      end
+
+      it 'passes the user matching the badge owner' do
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres')
+
+        expect(EventBus).to have_received(:publish).with(
+          'badge.deactivated',
+          hash_including(user: satisfy { |u| u.id == user.id })
+        )
+      end
+    end
+
+    context 'when the badge does not exist yet' do
+      it 'does not publish a badge.deactivated event' do
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres')
+
+        expect(EventBus).not_to have_received(:publish).with('badge.deactivated', anything)
+      end
+    end
+
+    context 'when the badge is already inactive (idempotence)' do
+      before { create(:user_badge, user: user, badge_tag: 'moteur_rencontres', active: false, awarded_at: 45.days.ago) }
+
+      it 'does not publish a badge.deactivated event' do
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres')
+
+        expect(EventBus).not_to have_received(:publish).with('badge.deactivated', anything)
+      end
+    end
   end
 end

@@ -15,6 +15,8 @@ class BadgeSubscriber
     EventBus.subscribe("outing.updated", method(:on_outing_updated))
 
     EventBus.subscribe("user.profile_updated", method(:on_user_profile_updated))
+
+    EventBus.subscribe("badge.deactivated", method(:on_badge_deactivated))
   end
 
   def self.on_join_request(payload)
@@ -63,5 +65,11 @@ class BadgeSubscriber
     user = payload[:record]
 
     BadgeService.check_bienvenue(user)
+  end
+
+  def self.on_badge_deactivated(payload)
+    BadgeMailer.deactivated(
+      payload[:user], payload[:badge_tag], payload[:awarded_at], payload[:deactivated_at]
+    ).deliver_later
   end
 end

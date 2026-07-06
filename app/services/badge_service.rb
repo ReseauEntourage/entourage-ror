@@ -130,8 +130,14 @@ class BadgeService
 
     def deactivate_badge(user, tag)
       badge = UserBadge.find_or_initialize_by(user_id: user.id, badge_tag: tag)
+      was_active = badge.active
+      awarded_at = badge.awarded_at
 
       badge.update(active: false)
+
+      if was_active && awarded_at.present?
+        EventBus.publish("badge.deactivated", user: user, badge_tag: tag, awarded_at: awarded_at, deactivated_at: Time.now)
+      end
     end
 
     def update_badge_status(user, tag, should_be_active, metadata)

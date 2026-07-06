@@ -741,6 +741,7 @@ fr:
         progression_label:
           "1": "Encore 2 papotages solidaires auxquels participer ce trimestre"
           "2": "Encore 1 papotage solidaire auquel participer ce trimestre"
+        bilan: "Vous avez obtenu ce badge le %{date} et participé à des papotages solidaires pendant plusieurs semaines. Bravo pour cet engagement, vos échanges ont créé de vrais liens dans la communauté."
       voix_presente:
         name: "Tisseur de liens"
         description: "Tu fais vivre les groupes semaine après semaine."
@@ -749,6 +750,7 @@ fr:
         progression_label:
           "1": "Plus que 2 semaines pour faire vivre vos groupes"
           "2": "Plus qu'1 semaine pour faire vivre vos groupes"
+        bilan: "Vous avez obtenu ce badge le %{date} et l'avez porté plusieurs mois. Bravo pour cet engagement, votre présence a vraiment compté pour les groupes dans l'application."
       moteur_rencontres:
         name: "Créateur de rencontres"
         description: "Tu organises régulièrement des événements dans ta communauté."
@@ -757,6 +759,11 @@ fr:
         progression_label:
           "1": "Encore 2 événements à organiser ce trimestre"
           "2": "Encore 1 événement à organiser ce trimestre"
+        bilan: "Vous avez obtenu ce badge le %{date} et organisé des événements qui ont fait bouger la communauté. Bravo pour cet engagement, votre énergie a profité à beaucoup de monde."
+    duration:
+      zero: "moins d'un mois"
+      one: "1 mois"
+      other: "%{count} mois"
 
   charts:
     conversations:

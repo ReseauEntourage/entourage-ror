@@ -195,4 +195,29 @@ RSpec.describe BadgeSubscriber do
       end
     end
   end
+
+  describe '.on_badge_deactivated' do
+    let(:awarded_at) { 45.days.ago }
+    let(:deactivated_at) { Time.now }
+    let(:mail) { instance_double(ActionMailer::MessageDelivery, deliver_later: true) }
+
+    before { allow(BadgeMailer).to receive(:deactivated).and_return(mail) }
+
+    it 'calls BadgeMailer.deactivated with the event payload' do
+      BadgeSubscriber.on_badge_deactivated(
+        user: user, badge_tag: 'moteur_rencontres', awarded_at: awarded_at, deactivated_at: deactivated_at
+      )
+
+      expect(BadgeMailer).to have_received(:deactivated)
+        .with(satisfy { |u| u.id == user.id }, 'moteur_rencontres', awarded_at, deactivated_at)
+    end
+
+    it 'delivers the mail later' do
+      BadgeSubscriber.on_badge_deactivated(
+        user: user, badge_tag: 'moteur_rencontres', awarded_at: awarded_at, deactivated_at: deactivated_at
+      )
+
+      expect(mail).to have_received(:deliver_later)
+    end
+  end
 end
