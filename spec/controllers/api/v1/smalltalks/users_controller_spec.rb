@@ -44,6 +44,7 @@ describe Api::V1::Smalltalks::UsersController do
         'partner' => nil,
         'partner_role_title' => nil,
         'birthday_today' => be_boolean,
+        'badges' => default_badges_json,
       }]) }
     end
   end
@@ -80,6 +81,7 @@ describe Api::V1::Smalltalks::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => default_badges_json,
           }
         })}
       end

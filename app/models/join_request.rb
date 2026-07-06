@@ -8,6 +8,7 @@ class JoinRequest < ApplicationRecord
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS, HIDDEN_STATUS]
 
   include JoinRequestAcceptTracking
+  include PublishesEvents
   include Salesforcable
 
   belongs_to :user
@@ -128,6 +129,10 @@ class JoinRequest < ApplicationRecord
 
   def outing?
     entourage? && joinable.outing?
+  end
+
+  def papotage?
+    entourage? && joinable.papotage?
   end
 
   def conversation?

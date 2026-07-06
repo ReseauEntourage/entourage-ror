@@ -10,7 +10,7 @@ module Api
         def index
           # conversation members
           render json: @conversation.join_requests
-            .includes(user: :partner)
+            .includes(user: :user_badges, user: :partner)
             .search_by_member(params[:query])
             .ordered_by_validated_users
             .accepted

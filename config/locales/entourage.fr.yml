@@ -362,6 +362,22 @@ fr:
   push_notifications:
     action:
       create_for_follower: "%s vous invite à rejoindre %s"
+    badge:
+      bienvenue:
+        title: "🎉 Un premier pas parmi nous !"
+        content: "Vous venez d’obtenir votre premier badge sur Entourage : Premier pas 👣"
+      premier_contact:
+        title: "✨ Un premier lien tissé !"
+        content: "Un message envoyé, un message reçu : découvrez votre badge Premier lien 👋"
+      moteur_rencontres:
+        title: "💫 Vous faites bouger les choses !"
+        content: "3 événements en 90 jours : vous animez votre quartier. Découvrez le badge Créateur de rencontres 💫"
+      fidele_papotages:
+        title: "💬 Bravo pour votre fidélité !"
+        content: "3 Papotages en 90 jours, vous faites du bien autour de vous. Découvrez votre badge As du papotage"
+      voix_presente:
+        title: "🌱 Vous faites vivre les groupes !"
+        content: "Vous êtes là, semaine après semaine. Découvrez le badge Tisseur de liens 🌱"
     birthday:
       title: Joyeux anniversaire 🎉
       content: On est heureux de vous compter parmi nous. Cliquez ici pour lire notre message d’anniversaire !

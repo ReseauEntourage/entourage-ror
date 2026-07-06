@@ -1,6 +1,6 @@
 class NotificationPermission < ApplicationRecord
-  INAPP_INSTANCES = %{neighborhood outing contribution solicitation user resource poi smalltalk user_smalltalk}
-  PUSH_INSTANCES = %{neighborhood outing contribution solicitation conversation user resource poi smalltalk user_smalltalk}
+  INAPP_INSTANCES = %{neighborhood outing contribution solicitation user resource poi smalltalk user_badge user_smalltalk}
+  PUSH_INSTANCES = %{neighborhood outing contribution solicitation conversation user resource poi smalltalk user_badge user_smalltalk}
 
   belongs_to :user
   validates_presence_of :user
@@ -60,6 +60,10 @@ class NotificationPermission < ApplicationRecord
   def chat_message instance_id = nil
     return true unless permissions && permissions.has_key?('chat_message')
     permissions['chat_message']
+  end
+
+  def user_badge instance_id = nil
+    true
   end
 
   def user_smalltalk instance_id = nil

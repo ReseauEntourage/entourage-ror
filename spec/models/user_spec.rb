@@ -621,6 +621,62 @@ describe User, type: :model do
     end
   end
 
+  describe 'profile update event' do
+    let(:user) { create(:public_user) }
+
+    before { allow(EventBus).to receive(:publish) }
+
+    shared_examples 'publishes user.profile_updated' do
+      it 'publishes the user.profile_updated event' do
+        expect(EventBus).to have_received(:publish)
+          .with("user.profile_updated", record: user)
+      end
+    end
+
+    shared_examples 'does not publish user.profile_updated' do
+      it 'does not publish the user.profile_updated event' do
+        expect(EventBus).not_to have_received(:publish)
+          .with("user.profile_updated", anything)
+      end
+    end
+
+    context 'when availability changes' do
+      before { user.update!(availability: { "1" => ["09:00-10:00"] }) }
+
+      include_examples 'publishes user.profile_updated'
+    end
+
+    context 'when interest_list changes' do
+      before { user.update!(interest_list: ['activites']) }
+
+      include_examples 'publishes user.profile_updated'
+    end
+
+    context 'when involvement_list changes' do
+      before { user.update!(involvement_list: ['resources']) }
+
+      include_examples 'publishes user.profile_updated'
+    end
+
+    context 'when concern_list changes' do
+      before { user.update!(concern_list: ['sharing_time']) }
+
+      include_examples 'publishes user.profile_updated'
+    end
+
+    context 'when an unrelated field changes' do
+      before { user.update!(about: 'Bonjour') }
+
+      include_examples 'does not publish user.profile_updated'
+    end
+
+    context 'when none of the profile fields change' do
+      before { user.update!(first_name: user.first_name) }
+
+      include_examples 'does not publish user.profile_updated'
+    end
+  end
+
   describe '#birthday_today?' do
     subject(:birthday_today?) { user.birthday_today? }
 

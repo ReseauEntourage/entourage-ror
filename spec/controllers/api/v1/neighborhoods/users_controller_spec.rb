@@ -53,6 +53,7 @@ describe Api::V1::Neighborhoods::UsersController do
         'partner' => nil,
         'partner_role_title' => nil,
         'birthday_today' => be_boolean,
+        'badges' => default_badges_json,
       }, {
         'id' => user.id,
         'uuid' => user.reload.uuid,
@@ -70,6 +71,7 @@ describe Api::V1::Neighborhoods::UsersController do
         'partner' => nil,
         'partner_role_title' => nil,
         'birthday_today' => be_boolean,
+        'badges' => default_badges_json,
       }]) }
     end
   end
@@ -105,6 +107,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => default_badges_json,
           }
         )}
       end
@@ -132,6 +135,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => default_badges_json,
           }
         )}
       end
@@ -177,6 +181,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => default_badges_json,
           }
         })}
       end
@@ -242,6 +247,7 @@ describe Api::V1::Neighborhoods::UsersController do
             'partner' => nil,
             'partner_role_title' => nil,
             'birthday_today' => be_boolean,
+            'badges' => default_badges_json,
           }
         })}
       end

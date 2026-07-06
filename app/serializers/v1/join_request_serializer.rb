@@ -15,7 +15,8 @@ module V1
                :avatar_url,
                :partner,
                :partner_role_title,
-               :birthday_today
+               :birthday_today,
+               :badges
 
     def id
       object.user_id
@@ -68,6 +69,12 @@ module V1
 
     def birthday_today
       object.user.birthday_today?
+    end
+
+    def badges
+      UserBadge.all_for_user(object.user).map do |user_badge|
+        V1::UserBadgeSerializer.new(user_badge).as_json
+      end
     end
   end
 end
