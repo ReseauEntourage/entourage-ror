@@ -1,4 +1,10 @@
 namespace :badges do
+  desc "Send deactivation warning emails for reversible badges at risk of expiring within 7 days"
+  task deactivation_warning: :environment do
+    BadgeDeactivationWarningJob.perform_now
+  end
+
+
   desc "Update weekly activity and 'Vie de groupe' badge for active users"
   task update_weekly_activity: :environment do
     BadgeService.update_weekly_activity_from(Date.today)
