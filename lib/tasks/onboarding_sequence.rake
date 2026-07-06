@@ -59,4 +59,9 @@ namespace :onboarding_sequence do
   task send_welcome_messages: :environment do
     Onboarding::ChatMessagesService.deliver_welcome_message
   end
+
+  desc 'papotages_invitation'
+  task papotages_invitation: :environment do
+    Onboarding::EmailerService.deliver_papotages_invitation_j7_email
+  end
 end
