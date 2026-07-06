@@ -186,3 +186,21 @@ ro:
       - joi
       - vin.
       - sâm.
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Primul pas"
+        description: "Tocmai ai făcut primul tău pas în comunitatea Entourage. Prezența ta contează deja — bine ai venit printre noi."
+      premier_contact:
+        nom: "Prima legătură"
+        description: "Tocmai ai schimbat primul tău mesaj cu un alt membru. Fiecare legătură țesută ține comunitatea în viață."
+      fidele_papotages:
+        nom: "As al conversației"
+        description: "Ai participat la 3 conversații solidare într-o lună și jumătate. Prezența ta regulată creează legături și face bine în jurul tău."
+      voix_presente:
+        nom: "Țesătorul zilnic"
+        description: "Ai fost activ 3 din 4 săptămâni în grupuri postând, comentând, reacționând — faci inima comunității să bată."
+      moteur_rencontres:
+        nom: "Creator de întâlniri"
+        description: "Ai organizat 3 evenimente în ultimele 90 de zile. Pui în mișcare comunitatea Entourage — felicitări!"

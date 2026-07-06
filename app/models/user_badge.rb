@@ -1,5 +1,15 @@
 class UserBadge < ApplicationRecord
   ALL_TAGS = %w[bienvenue premier_contact moteur_rencontres fidele_papotages voix_presente].freeze
+  BUCKET_PREFIX = "badges"
+
+  def self.display_data_for(tag, locale: I18n.locale)
+    return nil unless ALL_TAGS.include?(tag)
+
+    {
+      nom: I18n.t("email.badge.#{tag}.nom", locale: locale),
+      description: I18n.t("email.badge.#{tag}.description", locale: locale)
+    }
+  end
 
   DEFAULT_METADATA = {
     'bienvenue'          => {},
@@ -26,6 +36,24 @@ class UserBadge < ApplicationRecord
         awarded_at: nil,
         metadata: DEFAULT_METADATA[tag]
       )
+    end
+  end
+
+  class << self
+    def share_url
+      "#{ENV['MOBILE_HOST']}/app/badges"
+    end
+
+    def bucket
+      Storage::Client.images
+    end
+
+    def image_url_for badge_tag
+      bucket.public_url(key: path(badge_tag))
+    end
+
+    def path badge_tag
+      "#{BUCKET_PREFIX}/#{badge_tag}.png"
     end
   end
 end

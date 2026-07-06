@@ -966,6 +966,30 @@ RSpec.describe BadgeService do
       expect(badge.active).to be true
       expect(badge.awarded_at).to be_within(1.second).of(original_time)
     end
+
+    context 'email delivery' do
+      let(:mail_double) { instance_double(ActionMailer::MessageDelivery, deliver_later: nil) }
+
+      it 'sends a congratulations email on first award' do
+        expect(MemberMailer).to receive(:congratulations_new_badge)
+          .with(user, 'bienvenue', instance_of(ActiveSupport::TimeWithZone))
+          .and_return(mail_double)
+        BadgeService.send(:award_badge, user, 'bienvenue')
+        expect(mail_double).to have_received(:deliver_later)
+      end
+
+      it 'does not send email when badge is re-activated (already has awarded_at)' do
+        create(:user_badge, user: user, badge_tag: 'bienvenue', active: false, awarded_at: 2.days.ago)
+        expect(MemberMailer).not_to receive(:congratulations_new_badge)
+        BadgeService.send(:award_badge, user, 'bienvenue')
+      end
+
+      it 'does not send email when badge is already active' do
+        create(:user_badge, user: user, badge_tag: 'bienvenue', active: true, awarded_at: 1.day.ago)
+        expect(MemberMailer).not_to receive(:congratulations_new_badge)
+        BadgeService.send(:award_badge, user, 'bienvenue')
+      end
+    end
   end
 
   describe '.deactivate_badge (private)' do

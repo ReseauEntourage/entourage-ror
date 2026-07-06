@@ -740,3 +740,21 @@ fr:
       reactions: "Réactions"
       public_chat_messages: "Publications/Commentaires"
       private_chat_messages: "Messages privés"
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Premier pas"
+        description: "Vous venez de faire votre premier pas dans la communauté Entourage. Votre présence compte déjà, bienvenue parmi nous."
+      premier_contact:
+        nom: "Premier lien"
+        description: "Vous venez d'échanger votre premier message avec un autre membre. Chaque lien tissé fait vivre la communauté."
+      fidele_papotages:
+        nom: "As du papotage"
+        description: "Vous avez lancé 3 papotages solidaires en un mois et demi. Votre présence régulière crée du lien et fait du bien autour de vous."
+      voix_presente:
+        nom: "Tisseur de liens"
+        description: "Vous avez été actif 3 semaines sur 4 dans les groupes en posant, commentant, réagissant — vous faites battre le cœur de la communauté."
+      moteur_rencontres:
+        nom: "Créateur de rencontres"
+        description: "Vous avez organisé 3 événements sur les 90 derniers jours. Vous faites bouger la communauté Entourage, un grand bravo !"
