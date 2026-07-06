@@ -54,5 +54,7 @@ class OnboardingObserver < ActiveRecord::Observer
     return unless users_resource.resource.is_welcome_video?
 
     users_resource.user.welcome_watched!
+
+    SendFirstStepsInvitationJob.set(wait: 15.minutes).perform_later(users_resource.user_id)
   end
 end
