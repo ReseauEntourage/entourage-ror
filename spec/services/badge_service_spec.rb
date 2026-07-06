@@ -1009,6 +1009,12 @@ RSpec.describe BadgeService do
         expect(MemberMailer).not_to receive(:congratulations_new_badge)
         BadgeService.send(:award_badge, user, 'bienvenue')
       end
+
+      it 'does not send email on first award when notify: false' do
+        expect(MemberMailer).not_to receive(:congratulations_new_badge)
+        BadgeService.send(:award_badge, user, 'bienvenue', notify: false)
+        expect(UserBadge.find_by(user: user, badge_tag: 'bienvenue')).to be_active
+      end
     end
   end
 
@@ -1050,6 +1056,13 @@ RSpec.describe BadgeService do
           'badge.deactivated',
           hash_including(user: satisfy { |u| u.id == user.id })
         )
+      end
+
+      it 'does not publish a badge.deactivated event when notify: false' do
+        BadgeService.send(:deactivate_badge, user, 'moteur_rencontres', notify: false)
+
+        expect(EventBus).not_to have_received(:publish).with('badge.deactivated', anything)
+        expect(UserBadge.find_by(user: user, badge_tag: 'moteur_rencontres').active).to be false
       end
     end
 

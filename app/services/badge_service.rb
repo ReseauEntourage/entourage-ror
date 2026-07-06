@@ -5,13 +5,13 @@ class BadgeService
     end
 
     # Badge n°1 : Bienvenue
-    def check_bienvenue(user)
+    def check_bienvenue(user, notify: true)
       return unless eligible_user?(user)
       return if UserBadge.exists?(user_id: user.id, badge_tag: 'bienvenue')
       return unless onboarding_completed?(user)
       return unless first_engagement_detected?(user)
 
-      award_badge(user, 'bienvenue')
+      award_badge(user, 'bienvenue', notify: notify)
     end
 
     # Badge n°2 : Premier lien
@@ -40,18 +40,18 @@ class BadgeService
     end
 
     # Badge n°3 : Moteur de rencontres
-    def check_moteur_rencontres(user)
+    def check_moteur_rencontres(user, notify: true)
       total_count = Outing.accepted
         .where(user_id: user.id)
         .where(created_at: 90.days.ago..Time.now)
         .count
 
-      update_badge_status(user, 'moteur_rencontres', total_count >= 3, { current: total_count, target: 3 })
+      update_badge_status(user, 'moteur_rencontres', total_count >= 3, { current: total_count, target: 3 }, notify: notify)
     end
 
     # Badge n°4 : Fidèle aux papotages
     # Compute the count of papotages the user has participated in (join requests accepted with participate_at not null) in the last 90 days
-    def check_fidele_papotages(user)
+    def check_fidele_papotages(user, notify: true)
       # Use title as a proxy to avoid N+1 and SQL issues with tags
       count = JoinRequest.accepted
         .where.not(participate_at: nil)
@@ -59,25 +59,25 @@ class BadgeService
         .where(joinable_id: Outing.papotages.between(90.days.ago, Time.now))
         .count
 
-      update_badge_status(user, 'fidele_papotages', count >= 3, { current: count, target: 3 })
+      update_badge_status(user, 'fidele_papotages', count >= 3, { current: count, target: 3 }, notify: notify)
     end
 
     # Badge n°5 : Vie de groupe
-    def check_voix_presente(user)
+    def check_voix_presente(user, notify: true)
       count = WeeklyActivity
         .where(user_id: user.id)
         .recent
         .limit(4)
         .count
 
-      update_badge_status(user, 'voix_presente', count >= 3, { current: count, target: 3 })
+      update_badge_status(user, 'voix_presente', count >= 3, { current: count, target: 3 }, notify: notify)
     end
 
     def update_weekly_activity
       update_weekly_activity_from(Date.today)
     end
 
-    def update_weekly_activity_from date
+    def update_weekly_activity_from date, notify: true
       user_ids = SessionHistory
         .where('date between ? and ?', date - 1.month, date)
         .group(:user_id)
@@ -95,7 +95,7 @@ class BadgeService
           WeeklyActivity.find_or_create_by(user_id: user.id, week_iso: previous_week_iso)
         end
 
-        check_voix_presente(user)
+        check_voix_presente(user, notify: notify)
       end
     end
 
@@ -115,7 +115,7 @@ class BadgeService
       ChatMessage.where(user_id: user.id).exists?
     end
 
-    def award_badge(user, tag)
+    def award_badge(user, tag, notify: true)
       badge = UserBadge.find_or_initialize_by(user_id: user.id, badge_tag: tag)
 
       return if badge.persisted? && badge.active
@@ -125,26 +125,26 @@ class BadgeService
       badge.awarded_at ||= Time.now
       badge.save!
 
-      MemberMailer.congratulations_new_badge(user, tag, badge.awarded_at).deliver_later if is_new_award
+      MemberMailer.congratulations_new_badge(user, tag, badge.awarded_at).deliver_later if is_new_award && notify
     end
 
-    def deactivate_badge(user, tag)
+    def deactivate_badge(user, tag, notify: true)
       badge = UserBadge.find_or_initialize_by(user_id: user.id, badge_tag: tag)
       was_active = badge.active
       awarded_at = badge.awarded_at
 
       badge.update(active: false)
 
-      if was_active && awarded_at.present?
+      if was_active && awarded_at.present? && notify
         EventBus.publish("badge.deactivated", user: user, badge_tag: tag, awarded_at: awarded_at, deactivated_at: Time.now)
       end
     end
 
-    def update_badge_status(user, tag, should_be_active, metadata)
+    def update_badge_status(user, tag, should_be_active, metadata, notify: true)
       if should_be_active
-        award_badge(user, tag)
+        award_badge(user, tag, notify: notify)
       else
-        deactivate_badge(user, tag)
+        deactivate_badge(user, tag, notify: notify)
       end
 
       return unless badge = UserBadge.find_by(user_id: user.id, badge_tag: tag)
