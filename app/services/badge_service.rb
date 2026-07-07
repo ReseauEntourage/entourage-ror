@@ -15,7 +15,7 @@ class BadgeService
     end
 
     # Badge n°2 : Premier lien
-    def check_premier_contact(chat_message)
+    def check_premier_contact(chat_message, notify: true)
       return unless chat_message.conversation?
 
       user = chat_message.user
@@ -35,8 +35,8 @@ class BadgeService
 
       return unless has_other_message
 
-      award_badge(user, 'premier_contact') if eligible_user?(user)
-      award_badge(other_participant, 'premier_contact') if eligible_user?(other_participant)
+      award_badge(user, 'premier_contact', notify: notify) if eligible_user?(user)
+      award_badge(other_participant, 'premier_contact', notify: notify) if eligible_user?(other_participant)
     end
 
     # Badge n°3 : Moteur de rencontres
