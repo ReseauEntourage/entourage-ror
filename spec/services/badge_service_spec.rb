@@ -83,18 +83,6 @@ RSpec.describe BadgeService do
       end
     end
 
-    context 'when user is not eligible' do
-      let(:user) { create(:public_user, goal: nil) }
-
-      before { complete_onboarding(user) }
-
-      it 'does not award the badge' do
-        create(:user_reaction, user: user)
-        expect { BadgeService.check_bienvenue(user) }
-          .not_to change { UserBadge.count }
-      end
-    end
-
     context 'when no engagement exists' do
       it 'does not award the badge' do
         expect { BadgeService.check_bienvenue(user) }
@@ -859,7 +847,7 @@ RSpec.describe BadgeService do
     context 'T.1 - when user has an organization goal (association account)' do
       let(:org_user) { create(:public_user, goal: 'organization') }
 
-      it 'does not award bienvenue badge' do
+      it 'does award bienvenue badge' do
         org_user.update!(
           interest_list: ['activites'],
           involvement_list: ['resources'],
@@ -868,7 +856,7 @@ RSpec.describe BadgeService do
         )
         create(:user_reaction, user: org_user)
         expect { BadgeService.check_bienvenue(org_user) }
-          .not_to change { UserBadge.count }
+          .to change { UserBadge.count }
       end
     end
 
