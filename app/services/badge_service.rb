@@ -1,12 +1,7 @@
 class BadgeService
   class << self
-    def eligible_user?(user)
-      user.present? && !user.anonymous? && (user.is_ask_for_help? || user.is_offer_help? || user.ambassador?)
-    end
-
     # Badge n°1 : Bienvenue
     def check_bienvenue(user, notify: true)
-      return unless eligible_user?(user)
       return if UserBadge.exists?(user_id: user.id, badge_tag: 'bienvenue')
       return unless onboarding_completed?(user)
       return unless first_engagement_detected?(user)
@@ -35,8 +30,8 @@ class BadgeService
 
       return unless has_other_message
 
-      award_badge(user, 'premier_contact', notify: notify) if eligible_user?(user)
-      award_badge(other_participant, 'premier_contact', notify: notify) if eligible_user?(other_participant)
+      award_badge(user, 'premier_contact', notify: notify)
+      award_badge(other_participant, 'premier_contact', notify: notify)
     end
 
     # Badge n°3 : Moteur de rencontres

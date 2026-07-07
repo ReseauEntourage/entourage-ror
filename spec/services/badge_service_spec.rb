@@ -17,33 +17,6 @@ RSpec.describe BadgeService do
   # Prevent after_commit hooks from triggering the badge service during test setup
   before { allow(EventBus).to receive(:publish) }
 
-  describe '.eligible_user?' do
-    it 'returns true for ask_for_help public user' do
-      user = create(:public_user, goal: 'ask_for_help')
-      expect(BadgeService.eligible_user?(user)).to be true
-    end
-
-    it 'returns true for offer_help public user' do
-      user = create(:public_user, goal: 'offer_help')
-      expect(BadgeService.eligible_user?(user)).to be true
-    end
-
-    it 'returns false for nil' do
-      expect(BadgeService.eligible_user?(nil)).to be false
-    end
-
-    it 'returns false for anonymous user' do
-      user = create(:public_user, goal: 'ask_for_help')
-      allow(user).to receive(:anonymous?).and_return(true)
-      expect(BadgeService.eligible_user?(user)).to be false
-    end
-
-    it 'returns false for user with no goal' do
-      user = create(:public_user, goal: nil)
-      expect(BadgeService.eligible_user?(user)).to be false
-    end
-  end
-
   describe '.check_bienvenue' do
     let(:user) { eligible_user }
 
@@ -885,10 +858,6 @@ RSpec.describe BadgeService do
     # T.1 - Compte association : non éligible aux badges
     context 'T.1 - when user has an organization goal (association account)' do
       let(:org_user) { create(:public_user, goal: 'organization') }
-
-      it 'is not eligible for badges' do
-        expect(BadgeService.eligible_user?(org_user)).to be false
-      end
 
       it 'does not award bienvenue badge' do
         org_user.update!(

@@ -19,7 +19,6 @@ class BadgeDeactivationWarningJob < ApplicationJob
              .includes(:user)
              .find_each do |user_badge|
       user = user_badge.user
-      next unless BadgeService.eligible_user?(user)
       next if already_warned?(user.id, badge_tag)
 
       current = count_at_j7(user, badge_tag)
