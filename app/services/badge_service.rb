@@ -97,10 +97,21 @@ class BadgeService
     private
 
     def onboarding_completed?(user)
-      user.interest_names.present? &&
-      user.involvement_names.present? &&
-      user.concern_names.present? &&
-      user.availability.present?
+      return false unless user.interest_names.present? && user.involvement_names.present?
+
+      # team
+      return true if user.team?
+
+      # ask_for_help, offer_help
+      return user.concern_names.present? && user.availability.present? if user.is_ask_for_help? || user.is_offer_help?
+
+      # association
+      if user.association?
+        return false unless user.partner.present?
+        return user.partner.image_url.present? && user.partner.description.present?
+      end
+
+      true
     end
 
     def first_engagement_detected?(user)
