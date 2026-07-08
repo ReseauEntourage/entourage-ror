@@ -11,6 +11,7 @@ class BadgeService
 
     # Badge n°2 : Premier lien
     def check_premier_contact(chat_message, notify: true)
+      return unless chat_message.text? || chat_message.share?
       return unless chat_message.conversation?
 
       user = chat_message.user

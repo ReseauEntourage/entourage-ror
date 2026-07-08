@@ -154,8 +154,20 @@ class ChatMessage < ApplicationRecord
     status.to_sym == :offensive
   end
 
+  def text?
+    message_type == 'text'
+  end
+
+  def share?
+    message_type == 'share'
+  end
+
   def auto?
     message_type == 'auto'
+  end
+
+  def broadcast?
+    message_type == 'broadcast'
   end
 
   # @param force true to bypass deletion
