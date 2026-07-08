@@ -16,6 +16,7 @@ module V1
     attribute :address,      unless: :v1_list?
     attribute :hours,        if: :v2? || :default?
     attribute :languages,    if: :v2? || :default?
+    attribute :air_conditioned, if: :v2? || :default?
     attribute :source_url,   if: :v2? || :default?
     attribute :uuid,         unless: :v1_list?
     attribute :source,       if: :v2? || :default?
