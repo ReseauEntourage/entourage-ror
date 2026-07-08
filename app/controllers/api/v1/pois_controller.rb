@@ -19,6 +19,7 @@ module Api
           .with_category_ids(category_ids)
           .around(coordinates[:latitude], coordinates[:longitude], distance)
           .with_partners_filters(partners_filters)
+          .air_conditioned(air_conditioned)
           .order(Arel.sql('random()')).limit(100)
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
@@ -134,6 +135,12 @@ module Api
 
       def partners_filters
         @partners_filters ||= (params[:partners_filters] || '').split(',').compact.uniq.map(&:to_sym) & [:donations, :volunteers]
+      end
+
+      def air_conditioned
+        return nil unless params[:air_conditioned].present?
+
+        ActiveModel::Type::Boolean.new.cast(params[:air_conditioned])
       end
 
       def member_mailer

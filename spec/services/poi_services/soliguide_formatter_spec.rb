@@ -39,6 +39,7 @@ describe PoiServices::Soliguide do
         website: nil,
         email: nil,
         audience: '',
+        air_conditioned: nil,
         category_ids: [],
         source_category: nil,
         source_categories: [],
@@ -65,6 +66,32 @@ describe PoiServices::Soliguide do
       it { expect(subject[:phone]).to eq('0601020304') }
       it { expect(subject).to have_key(:phones) }
       it { expect(subject[:phones]).to eq('0601020304, 0712345678') }
+    end
+
+    describe 'with air conditioning' do
+      let(:poi) { {
+        'lieu_id' => 123,
+        'entity' => { 'name' => 'foo' },
+        'position' => { 'location' => { 'coordinates' => [1, 2] } },
+        'languages' => ['en'],
+        'services_all' => [{ 'name' => 'bar' }],
+        'modalities' => { 'thermalComfort' => { 'airConditioned' => true } }
+      } }
+
+      it { expect(subject[:air_conditioned]).to eq(true) }
+    end
+
+    describe 'without air conditioning' do
+      let(:poi) { {
+        'lieu_id' => 123,
+        'entity' => { 'name' => 'foo' },
+        'position' => { 'location' => { 'coordinates' => [1, 2] } },
+        'languages' => ['en'],
+        'services_all' => [{ 'name' => 'bar' }],
+        'modalities' => { 'thermalComfort' => { 'airConditioned' => false } }
+      } }
+
+      it { expect(subject[:air_conditioned]).to eq(false) }
     end
   end
 

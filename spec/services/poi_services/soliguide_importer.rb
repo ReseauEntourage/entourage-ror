@@ -102,7 +102,8 @@ describe PoiServices::Soliguide do
         'source' => 'soliguide',
         'source_id' => 17205,
         'hours' => " : Fermé\nVen : 10h00 à 20h00\nLun : 10h00 à 20h00\nSam : Fermé\nDim : Fermé\nJeu : 10h00 à 20h00\nMar : Fermé\nMer : 10h00 à 20h00",
-        'languages' => ''
+        'languages' => '',
+        'air_conditioned' => nil
       }) }
       it { expect(Poi.first.category_ids).to eq([6, 7]) }
     end

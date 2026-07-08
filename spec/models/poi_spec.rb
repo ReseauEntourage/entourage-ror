@@ -40,4 +40,14 @@ describe Poi, type: :model do
     end
   end
 
+  describe '.air_conditioned' do
+    let!(:poi_yes) { FactoryBot.create :poi, air_conditioned: true }
+    let!(:poi_no) { FactoryBot.create :poi, air_conditioned: false }
+    let!(:poi_unknown) { FactoryBot.create :poi, air_conditioned: nil }
+
+    it { expect(Poi.air_conditioned(true)).to eq([poi_yes]) }
+    it { expect(Poi.air_conditioned(false)).to eq([poi_no]) }
+    it { expect(Poi.air_conditioned(nil)).to match_array([poi_yes, poi_no, poi_unknown]) }
+  end
+
 end
