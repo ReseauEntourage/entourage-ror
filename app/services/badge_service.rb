@@ -26,6 +26,7 @@ class BadgeService
 
       has_other_message = ChatMessage.where(messageable: conversation, user_id: other_participant.id)
                                     .where(message_type: ['text', 'share'])
+                                    .where(created_at: 90.days.ago..Time.now)
                                     .exists?
 
       return unless has_other_message
