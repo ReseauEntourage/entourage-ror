@@ -1,50 +1,1000 @@
+---
 es:
   date:
     abbr_day_names:
-      - dom
-      - lun
-      - mar
-      - mié
-      - jue
-      - vie
-      - sáb
+    - dom
+    - lun
+    - mar
+    - mié
+    - jue
+    - vie
+    - sáb
     abbr_month_names:
-      -
-      - ene
-      - feb
-      - mar
-      - abr
-      - may
-      - jun
-      - jul
-      - ago
-      - sep
-      - oct
-      - nov
-      - dic
+    -
+    - ene
+    - feb
+    - mar
+    - abr
+    - may
+    - jun
+    - jul
+    - ago
+    - sep
+    - oct
+    - nov
+    - dic
     day_names:
-      - domingo
-      - lunes
-      - martes
-      - miércoles
-      - jueves
-      - viernes
-      - sábado
+    - domingo
+    - lunes
+    - martes
+    - miércoles
+    - jueves
+    - viernes
+    - sábado
     formats:
-      default: "%d/%m/%Y"
-      short: "%e %b"
-      long: "%e de %B de %Y"
+      default: "%-d/%-m/%Y"
+      short: "%-d de %b"
+      long: "%-d de %B de %Y"
     month_names:
-      -
-      - enero
-      - febrero
-      - marzo
-      - abril
-      - mayo
-      - junio
-      - julio
-      - agosto
-      - septiembre
-      - octubre
-      - noviembre
-      - diciembre
+    -
+    - enero
+    - febrero
+    - marzo
+    - abril
+    - mayo
+    - junio
+    - julio
+    - agosto
+    - septiembre
+    - octubre
+    - noviembre
+    - diciembre
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: alrededor de %{count} hora
+        other: alrededor de %{count} horas
+      about_x_months:
+        one: alrededor de %{count} mes
+        other: alrededor de %{count} meses
+      about_x_years:
+        one: alrededor de %{count} año
+        other: alrededor de %{count} años
+      almost_x_years:
+        one: casi %{count} año
+        other: casi %{count} años
+      half_a_minute: medio minuto
+      less_than_x_minutes:
+        one: menos de %{count} minuto
+        other: menos de %{count} minutos
+      less_than_x_seconds:
+        one: menos de %{count} segundo
+        other: menos de %{count} segundos
+      over_x_years:
+        one: más de %{count} año
+        other: más de %{count} años
+      x_days:
+        one: "%{count} día"
+        other: "%{count} días"
+      x_minutes:
+        one: "%{count} minuto"
+        other: "%{count} minutos"
+      x_months:
+        one: "%{count} mes"
+        other: "%{count} meses"
+      x_seconds:
+        one: "%{count} segundo"
+        other: "%{count} segundos"
+      x_years:
+        one: "%{count} año"
+        other: "%{count} años"
+    prompts:
+      day: Día
+      hour: Hora
+      minute: Minuto
+      month: Mes
+      second: Segundo
+      year: Año
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: debe ser aceptado
+      blank: no puede estar en blanco
+      confirmation: no coincide
+      empty: no puede estar vacío
+      equal_to: debe ser igual a %{count}
+      even: debe ser par
+      exclusion: está reservado
+      greater_than: debe ser mayor que %{count}
+      greater_than_or_equal_to: debe ser mayor que o igual a %{count}
+      in: debe estar en %{count}
+      inclusion: no está incluido en la lista
+      invalid: no es válido
+      less_than: debe ser menor que %{count}
+      less_than_or_equal_to: debe ser menor que o igual a %{count}
+      model_invalid: 'La validación falló: %{errors}'
+      not_a_number: no es un número
+      not_an_integer: debe ser un entero
+      odd: debe ser impar
+      other_than: debe ser distinto de %{count}
+      present: debe estar en blanco
+      record_invalid: 'La validación falló: %{errors}'
+      required: debe existir
+      restrict_dependent_destroy:
+        has_one: No se puede eliminar el registro porque existe un %{record} dependiente
+        has_many: No se puede eliminar el registro porque existen %{record} dependientes
+      taken: ya está en uso
+      too_long:
+        one: es demasiado largo (%{count} carácter máximo)
+        other: es demasiado largo (%{count} caracteres máximo)
+      too_short:
+        one: es demasiado corto (%{count} carácter mínimo)
+        other: es demasiado corto (%{count} caracteres mínimo)
+      wrong_length:
+        one: no tiene la longitud correcta (%{count} carácter exactos)
+        other: no tiene la longitud correcta (%{count} caracteres exactos)
+    template:
+      body: 'Se encontraron problemas con los siguientes campos:'
+      header:
+        one: No se pudo guardar este/a %{model} porque se encontró %{count} error
+        other: No se pudo guardar este/a %{model} porque se encontraron %{count} errores
+  helpers:
+    select:
+      prompt: Por favor seleccione
+    submit:
+      create: Crear %{model}
+      submit: Guardar %{model}
+      update: Actualizar %{model}
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "No se encontró ningún %{entry_name}"
+          one: "Mostrando <b>1</b> %{entry_name}"
+          other: "Mostrando <b>todos los</b> %{entry_name} (total: <b>%{count}</b>)"
+      more_pages:
+        display_entries: "Mostrando %{entry_name} <b>%{first}&nbsp;a&nbsp;%{last}</b> (total: <b>%{total}</b>)"
+  number:
+    currency:
+      format:
+        delimiter: "."
+        format: "%n %u"
+        precision: 2
+        separator: ","
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "€"
+    format:
+      delimiter: "."
+      precision: 3
+      round_mode: default
+      separator: ","
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: mil millones
+          million:
+            one: millón
+            other: millones
+          quadrillion: mil billones
+          thousand: mil
+          trillion:
+            one: billón
+            other: billones
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          eb: EB
+          gb: GB
+          kb: KB
+          mb: MB
+          pb: PB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+        format: "%n %"
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: " y "
+      two_words_connector: " y "
+      words_connector: ", "
+  time:
+    am: am
+    formats:
+      default: "%A, %-d de %B de %Y %H:%M:%S %z"
+      long: "%-d de %B de %Y %H:%M"
+      short: "%-d de %b %H:%M"
+    pm: pm
+  views:
+    pagination:
+      first: "&laquo; Primera"
+      last: "Última &raquo;"
+      previous: "&lsaquo; Anterior"
+      next: "Siguiente &rsaquo;"
+      truncate: "&hellip;"
+  activerecord:
+    attributes:
+      user:
+        first_name: Nombre
+        last_name: Apellidos
+        full_name: Nombre completo
+        email: Email
+        phone: Teléfono
+        organization: Asociación de rondas solidarias
+        about: Acerca de
+        roles: Roles
+        targeting_profile: Perfil de moderación
+        goal: Perfil declarado
+        partner: Asociación
+        partner_id: Asociación
+        admin_password: Contraseña
+        admin_password_confirmation: Confirmación de contraseña
+        created_at: Fecha de creación
+        address: Dirección
+        cnil_explanation: Motivos de esta acción
+        validation_status: Estado
+        last_sign_in_at: Fecha de la última conexión
+        postal_codes: Códigos postales
+        postal_code: Código postal
+        engaged?: "¿Comprometido/a?"
+        deleted: Eliminado
+        organization_name: Asociación
+        subscriptions: Suscripciones
+        action_creations_count: Número de acciones creadas
+        action_participations_count: Número de acciones a las que se unió
+        outing_participations_count: Número de eventos a los que se unió
+        conversation_participations_count: Número de conversaciones a las que se unió
+      user_blocked_user:
+        user: Usuario
+        blocked_user: Usuario bloqueado
+        status: Estado
+      user_history:
+        kind:
+          account: Cuenta creada
+          anonymize: Cuenta anonimizada
+          auto: auto
+          block: Cuenta bloqueada
+          deleted: Cuenta eliminada
+          unblock: Cuenta desbloqueada
+          phone_change_cancel: Cambio de teléfono cancelado
+          phone_change_change: Número de teléfono cambiado
+          phone_change_request: Cambio de teléfono solicitado
+          signal-action: Reporte de una acción
+          signal-user: Reporte del usuario
+          spam-alert: Alerta de usuarios spammeados
+          spam-detection: Spam detectado
+          sms: Código SMS solicitado de nuevo
+        sms:
+          invite: Invitación
+          welcome: Bienvenida
+          regenerate: Solicitud de nueva contraseña
+      organization:
+        name: Nombre
+        description: Descripción
+        phone: Teléfono
+        address: Dirección
+      entourage:
+        id: Id
+        title: Título
+        description: Descripción
+        display_address: Dirección
+        latitude: Latitud
+        longitude: Longitud
+        recurrency: Recurrencia
+        created_at: Creado el
+        starts_at: Comienza el
+        ends_at: Termina el
+        image_url: URL de la imagen
+        place_limit: Número de plazas disponibles
+        members_count: Número de participantes
+        outing_image_url: Foto del evento
+        cancellation_message: Mensaje de cancelación
+        sf_category: Tipo de evento
+        exclusive_to: Público objetivo del evento
+        categories:
+          social: Social
+          resource: Recurso
+          mat_help: Ayuda material
+          non_mat_help: Ayuda no material
+          other: Otro
+        entourage_types:
+          ask_for_help: Solicitud
+          contribution: Contribución
+        group_types:
+          action: Acción
+          outing: Evento
+          conversation: Conversación
+        statuses:
+          open: Activo
+          closed: Cerrado
+          blacklisted: En lista negra
+          suspended: Suspendido
+          full: Completo
+          cancelled: Cancelado
+      entourage_image:
+        title: Título
+        landscape_url: Foto horizontal
+        portrait_url: Foto vertical
+      entourage_moderation:
+        action_author_type: Emisor
+        action_recipient_type: Audiencia
+        action_target_type: Objetivo
+        action_type: Tipo de acción
+        action_recipient_consent_obtained: Consentimiento
+        moderated_at: Fecha de moderación
+        moderation_contact_channel: Medio de contacto
+        moderator_id: Interlocutor
+        moderation_action: Acción
+        moderation_comment: Notas
+        action_outcome_reported_at: Fecha de finalización
+        action_outcome: Resultado
+        action_success_reason: Motivo del éxito
+        action_failure_reason: Motivo del fracaso
+        section: Categoría
+      inapp_notification:
+        context_types:
+          birthday: birthday
+          chat_message_on_create: chat_message_created
+          join_request_on_create: join_request_created
+          join_request_on_update: join_request_updated
+          neighborhoods_entourage_on_create: outing_created
+          outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
+      user_moderation:
+        expectations: Expectativas
+        acquisition_channel: Cómo conoció Entourage
+        content_sent: Contenido enviado
+        skills: Habilidad
+        accepts_event_invitations: Aperitivo Entourage
+        accepts_volunteering_offers: Voluntariado
+        ambassador: Animador Entourage
+      partner:
+        name: Nombre
+        description: Descripción
+        phone: Teléfono
+        address: Dirección
+        website_url: Sitio web
+        email: Email
+        donations_needs: Donaciones aceptadas
+        volunteers_needs: Voluntarios buscados
+      poi:
+        id: ID
+        name: Nombre
+        adress: Dirección
+        description: Descripción
+        audience: Público
+        email: Email
+        website: Sitio web
+        phone: Teléfono
+        category_1: Categoría 1
+        category_2: Categoría 2
+        category_3: Categoría 3
+        category_4: Categoría 4
+        category_5: Categoría 5
+        category_6: Categoría 6
+        category_7: Categoría 7
+      announcement:
+        title: Título
+        icon: Icono
+        image_url: Imagen horizontal
+        image_portrait_url: Imagen vertical
+        body: Descripción
+        action: CTA
+        url: Enlace
+        webview: Abrir en
+        areas: Zonas geográficas
+        user_goals: Públicos
+        categories:
+          online: Evento en línea
+          ambassador: Programa de animador Entourage
+          poi_map: Lugares solidarios
+      moderation_area:
+        name: Nombre de la zona
+        departement: Departamento
+        animator_id: PEC
+        sourcing_id: PI
+        community_builder_id: Community builder
+        welcome_message_1: Mensaje de bienvenida
+        slack_moderator_id: Identificador de Slack
+      translation:
+        langs:
+          fr: Francés
+          en: Inglés
+          es: Español
+          de: Alemán
+          pl: Polaco
+          ro: Rumano
+          uk: Ucraniano
+          ar: Árabe
+      tour_area:
+        statuses:
+          active: Activa
+          inactive: Inactiva
+      conversation_message_broadcast:
+        moderation_area_id: Zona de moderación
+        content: Contenido
+        goal: Público
+        title: Título
+        archived_at: Archivado el
+        area: Zona
+        areas: Departamentos o códigos postales
+        area_type: Zona
+        area_types:
+          national: Nacional
+          hors_zone: Fuera de zona
+          sans_zone: Sin zona
+          list: Departamentos o códigos postales
+      neighborhood:
+        name: Nombre
+        description: Descripción
+        interests: Intereses
+        image_url: Imagen
+        reserved_female: Reservado a mujeres
+        status: Estado
+        statuses:
+          active: Activo
+          deleted: Eliminado
+          blacklisted: En lista negra
+      recommandation:
+        name: Nombre
+        instance: Objeto
+        action: Acción
+        argument_type: Tipo de argumento
+        argument_value: Valor del argumento (id o url)
+        user_goals: Perfiles
+        image_url: Imagen
+        status: Estado
+        actions:
+          index: Lista
+          show: Mostrar
+          create: Crear
+          join: Unirse
+          show_joined: Mostrar el más cercano ya unido
+          show_not_joined: Mostrar el más cercano no unido
+        instances:
+          user: Usuario
+          profile: Perfil
+          neighborhood: Grupo de vecinos
+          outing: Evento
+          poi: POI
+          resource: Contenido pedagógico
+          webview: Webview
+          conversation: Conversación
+          contribution: Contribución
+          solicitation: Solicitud
+      resource:
+        name: Nombre
+        category: Categoría
+        description: Descripción
+        url: Url
+        is_video: "¿Vídeo?"
+        duration: Duración
+        image_url: Imagen
+        tags:
+          neighborhood: "Grupos: la importancia de compartir lo que tenemos en común"
+          outing: "¿Cómo crear un evento?"
+          action: "Ayuda mutua: lo que puedo ofrecer / pedir"
+          welcome: "Vídeo de bienvenida"
+        categories:
+          act: Actuar
+          inspire: Inspirarse
+          understand: Comprender
+      smalltalk:
+        object: Buenas Vibras
+        new_message: Nuevo mensaje
+        title_with_participants: "%s"
+
+  community:
+    entourage:
+      roles:
+        admin: Administrador
+        ambassador: Animador Entourage
+        coordinator: Coordinador
+        ethics_charter_signed: Validó la carta ética
+        moderator: Moderador
+        not_validated: No validado
+        visitor: Visitante
+      targeting_profiles:
+        offers_help: Vecino
+        asks_for_help: Persona en situación precaria
+        partner: Asociación
+        ambassador: Animador Entourage
+        team: Equipo Entourage
+      goals:
+        offer_help: Vecino
+        ask_for_help: Persona aislada
+        organization: Asociación
+        goal_not_known: No definido
+        all: Todos los perfiles
+      goals_compact:
+        offer_help: Vecino
+        ask_for_help: Persona en situación precaria
+        organization: Asociación
+        goal_not_known: No definido
+        staff: Animadores Entourage y equipo
+        all: Todos los perfiles
+      icons:
+        offer_help: user
+        ask_for_help: street-view
+        organization: sitemap
+        goal_not_known: question
+    user:
+      profiles:
+        offer_help: Vecino solidario
+        ask_for_help: Persona en situación precaria
+        organization: Asociación
+        goal_not_known: No definido
+        all: Todos los perfiles
+      engagements:
+        engaged: Comprometido
+        not_engaged: No comprometido
+      statuses:
+        validated: Validado
+        anonymized: Anonimizado
+        blocked: Bloqueado
+        temporary_blocked: Bloqueado temporalmente
+        deleted: Eliminado
+        pending: Pendiente
+      roles:
+        moderator: Moderador
+        admin: Administrador
+    chat_messages:
+      status_update:
+        closed_user: el usuario ha salido de la red Entourage. ¡No dudes en unirte a otras acciones solidarias en la app!
+
+  push_notifications:
+    action:
+      create_for_follower: "%s te invita a unirte a %s"
+    badge:
+      bienvenue:
+        title: "🎉 ¡Un primer paso entre nosotros!"
+        content: "Acabas de obtener tu primera insignia en Entourage: Primer paso 👣"
+      premier_contact:
+        title: "✨ ¡Un primer vínculo creado!"
+        content: "Un mensaje enviado, un mensaje recibido: descubre tu insignia Primer vínculo 👋"
+      moteur_rencontres:
+        title: "💫 ¡Estás moviendo las cosas!"
+        content: "3 eventos en 90 días: estás dinamizando tu barrio. Descubre la insignia Creador de encuentros 💫"
+      fidele_papotages:
+        title: "💬 ¡Enhorabuena por tu constancia!"
+        content: "3 conversaciones solidarias en 90 días, haces el bien a tu alrededor. Descubre tu insignia As de la conversación"
+      voix_presente:
+        title: "🌱 ¡Haces vivir los grupos!"
+        content: "Estás ahí, semana tras semana. Descubre la insignia Tejedor de vínculos 🌱"
+    birthday:
+      title: Feliz cumpleaños 🎉
+      content: Estamos felices de contarte entre nosotros. ¡Haz clic aquí para leer nuestro mensaje de cumpleaños!
+    outing:
+      create: "Se ha añadido un nuevo evento a %s: %s previsto para el %s"
+      cancel: "Este evento previsto para el %s ha sido cancelado"
+      update: "El evento previsto para el %s ha sido modificado. Tendrá lugar el %s, en %s"
+      update_short: "El evento previsto para el %s ha sido modificado"
+      day_before:
+        title: "🔔 Recordatorio: ¡«%s» es mañana!"
+        content: "No olvides que este evento es mañana. ¿Sigues viniendo?"
+    chat_message:
+      mention: "%s te ha mencionado en su mensaje"
+    post:
+      create: "%s acaba de compartir: \"%s\""
+      create_image: "%s acaba de compartir una foto"
+    comment:
+      create: "%s acaba de comentar la publicación \"%s\""
+      create_image: "%s acaba de compartir una foto"
+    reaction:
+      create: "%s ha reaccionado a tu publicación: \"%s\""
+    join_request:
+      new: "Nuevo participante"
+      update: "Solicitud aceptada"
+      update_on_action: "Acabas de unirte a una acción de %s"
+      update_on_outing: "Acabas de unirte a un evento de %s"
+      update_on_neighborhood: "Acabas de unirte a un grupo de %s"
+      update_on_smalltalk: "Acabas de unirte a un nuevo grupo de Buenas Vibras"
+      create: "%s acaba de unirse a tu %s \"%s\""
+      create_outing: "%s acaba de unirse a tu evento \"%s\" del %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
+    contribution:
+      create: "Un vecino propone una nueva ayuda mutua"
+    solicitation:
+      create: "Un vecino busca ayuda"
+      create_section: "Un vecino busca un %s"
+    survey_response:
+      create: "%s respondió a tu encuesta: %s"
+    matching:
+      create: "Este contenido podría interesarte"
+      almost_match_title: "Sugerencia de grupo"
+      almost_match_content: "¡Este(os) grupo(s) de Buenas Vibras podría(n) coincidir con lo que buscas!"
+    user_smalltalk:
+      expire_object: "Todavía sin match 😕"
+      expire_content: |
+        Tu solicitud de Buenas Vibras ha caducado.
+        ¿Y si lo intentas con criterios un poco más flexibles? ✨
+
+  timeliner:
+    h1:
+      title: "¡Bienvenido a Entourage! 👌"
+      offer: "¿Lo sabías? ¡Basta un vídeo para acabar con tus prejuicios!"
+      ask: "No te imaginas todo lo que contiene tu nueva app: ¡ven a descubrirla!"
+
+  regions:
+    ouest: Oeste
+    sud_ouest: Suroeste
+    sud_est: Sureste
+    aura: Auvergne-Rhône-Alpes
+    nord: Norte
+    idf: Ile-de-France
+    centre_est: Centro-Este
+
+  conversations:
+    participants:
+      alone: Tú
+
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        ¡Bienvenido/a %s! 🙂 Nos alegra mucho que te unas a nosotros. Preséntate en pocas palabras para que el grupo pueda conocerte.
+      destroy_member: | # first_name
+        %s acaba de salir del grupo. Gracias por tu participación, ¡te deseamos lo mejor!
+      banned_member: | # first_name
+        %s ya no forma parte del grupo. Su comportamiento no encajaba del todo con el espíritu de las bandas solidarias. Contamos con ustedes para seguir cuidando este espacio con amabilidad y buen humor 🙏
+      incomplete: |
+        Te estamos preparando un bonito grupo de Buenas Vibras ✨ Mientras llegan las próximas personas, un pequeño reto: intenta adivinar el nombre de quien se unirá a continuación. Las probabilidades de acertar son escasas... ¿pero quién sabe? 👀
+      close: |
+        Todos los miembros de este grupo de Buenas Vibras han decidido abandonar la conversación, así que te has quedado solo/a aquí. El grupo está ahora cerrado. Siempre puedes consultar el historial de la conversación y volver si lo necesitas.
+
+        Si quieres seguir compartiendo Buenas Vibras, no dudes en crear una nueva solicitud para unirte a otro grupo. ¡Hasta pronto! 👋
+      complete: |
+        ¡El grupo está al completo! 🎉
+
+        Bienvenidos a su grupo de Buenas Vibras, un espacio para crear vínculos de forma sencilla y con calidez ✨
+
+        Su misión: charlar, compartir y, ¿por qué no?, conocerse, por videollamada o en persona.
+        Aquí tienen el enlace para una primera videollamada juntos: %s
+
+        👋 No duden en presentarse si todavía no lo han hecho.
+
+        🔥 Y a partir de mañana... comienzan 7 días de pequeños retos para conocerse y crear vínculos de verdad 🫶
+
+        ¡Contamos con ustedes para jugar a fondo! 😉
+      complete_j1: |
+        Reto del día: Tres verdades y una mentira: comparte tres datos ciertos sobre ti y uno falso. ¡Que los demás adivinen cuál es el intruso!
+      complete_j2: |
+        Reto del día: Ayer en mi vida... Cuenta tu día de ayer con solo tres emojis. ¡Los demás deben intentar adivinar qué pasó!
+      complete_j3: |
+        Hazle al grupo la pregunta más interesante para la que nunca has encontrado una respuesta satisfactoria. ¡Veamos si el grupo puede ayudarte a reflexionar sobre ella!
+      complete_j4: |
+        Reto del día: Comparte algo que la gente no adivinaría a primera vista: una pasión, una costumbre, un rasgo de tu carácter...
+      complete_j5: |
+        Reto del día: Durante 24 horas, una palabra común está prohibida en el grupo (por ejemplo: "sí", "yo", "comer"). Si alguien la escribe... ¡tiene que contar una anécdota graciosa sobre sí mismo!
+      complete_j6: |
+        Reto del día: Cada uno comparte lo que le ayuda a acercarse a alguien: una mirada, un lugar, una frase... ¡o un truco anti-timidez!
+      complete_j7: |
+        Reto del día: Comparte un evento chulo que se acerque cerca de ti o en línea. Si alguien más menciona el mismo evento o uno parecido, ¡quizá sea el momento perfecto para ir juntos (o encontraros en línea)!
+      complete_congratulations: | # meeting_url
+        ¡Felicidades a todos por su participación! Se tomaron el tiempo de compartir, escuchar y crear vínculos: eso ya es un gran logro 🧡
+
+        ¡Ahora, es momento del encuentro en grupo! Por videollamada o en persona, es el momento de darle vida a sus conversaciones, ponerle cara a los nombres y mantener vivas estas Buenas Vibras 🤝
+
+        Algunas ideas:
+
+        Una videollamada tranquila, cada uno desde su casa (¡pijama bienvenido 😄!)
+
+        Un café o algo para tomar si no viven lejos unos de otros
+
+        Un picnic o una actividad en común si el cuerpo (y el clima) lo permite
+
+        Para organizarse fácilmente, creamos este enlace de videollamada: %s
+        Propongan sus ideas, sugieran un momento y, sobre todo... siéntanse como en casa ✨
+      complete_j21: |
+        ¡Hola a todos! 👋
+
+        Esperamos que sus conversaciones hayan ido bien, ya sea por escrito, en videollamada o en persona.
+        Si tienen comentarios que compartir o si algo no salió bien, no duden en decírnoslo. El equipo de Entourage está aquí para escucharlos y acompañarlos, con toda la calidez del mundo 🧡
+
+        Y si todo va bien, ¡cuéntennoslo también! Sus comentarios nos ayudan a seguir haciendo que las Buenas Vibras funcionen lo mejor posible.
+
+        Gracias por su confianza ✨
+      inactive_j3: |
+        ¡Hola equipo! 👋 Tenemos curiosidad por saber qué los animó a unirse a este grupo 😊
+      inactive_j5: |
+        ¿No se sienten muy cómodos escribiendo? ¡No hay problema! También pueden optar por una videollamada tranquila o un café en petit comité ☕
+
+        Aquí tienen un enlace para verse fácilmente en línea:
+        👉 %s
+
+        No duden en decirnos qué les vendría mejor, ¡hay mil formas de crear vínculos! 🧡
+      inactive_j7: |
+        Sentimos que está un poco tranquilo por aquí...
+
+        Si no se intercambia ningún mensaje en los próximos 7 días, el grupo se cerrará automáticamente.
+
+        Gracias por haber estado aquí. Y si todavía tienen ganas de crear vínculos, las Buenas Vibras los recibirán de nuevo cuando quieran 🧡
+      happy_birthday: | # first_name
+        ¡Todo el grupo de Buenas Vibras le desea un feliz cumpleaños a %s! 🎉 Disfruta mucho de tu día y no dudes en contarnos cómo lo vas a celebrar.
+      chart_recall: |
+        Un pequeño recordatorio con cariño: las Buenas Vibras están para conversar con buen humor y respeto. Aquí tienen la carta ética. ¡Gracias a todos y todas!
+      smalltalk_anniversary_six_months: |
+        ¡Hoy nuestro grupo cumple ya seis meses! 🎉 Gracias por sus conversaciones y los buenos momentos compartidos.
+      smalltalk_anniversary_one_year: |
+        ¡Hoy nuestro grupo cumple ya un año! 🎉 Gracias por sus conversaciones y los buenos momentos compartidos.
+      user_one_year_membership: | # first_name
+        ¡Hoy, %s celebra 1 año con nosotros! 🎉 Gracias por estar con nosotros todo este tiempo, ¡cuéntanos un momento que recuerdes especialmente!
+      smalltalk_500_messages: |
+        ¡Están que arden! 🔥 Ya se han intercambiado 500 mensajes en el grupo, ¡aquí se conversa en serio! ¿Seguimos así? ¿Próximo objetivo: 1000 mensajes?
+      smalltalk_1000_messages: |
+        ¡Increíble, acaban de alcanzar los 1000 mensajes intercambiados! 🤯 ¡Son oficialmente los campeones de las Buenas Vibras!
+
+  pois:
+    soliguide:
+      public:
+        administrative: "Recepción: %s"
+        description: "Otra información importante: %s"
+        reception: Recepción
+      accueil:
+        preferentiel: "preferencial"
+        exclusif: "exclusivo"
+        inconditionnel: "incondicional"
+      age:
+        mineur: "menores de edad (-18 años)"
+        adulte: "solo adultos"
+        from: "a partir de %s años"
+        from_to: "de %s a %s años"
+      familiale:
+        isolated: "Persona sola"
+        family: "Familia"
+        couple: "Pareja"
+        pregnant: "Mujer embarazada"
+      administrative:
+        default: "personas %s"
+        regular: "en situación regular"
+        undocumented: "sin papeles"
+        asylum: "solicitantes de asilo"
+        refugee: "refugiados"
+      other:
+        violence: "víctima de violencia"
+        addiction: "en situación de adicción"
+        handicap: "en situación de discapacidad"
+        lgbt: "perteneciente a la comunidad LGBT+"
+        hiv: "portadora del VIH"
+        prostitution: "trabajador(a) sexual"
+        prison: "recién salido/a de prisión"
+        student: "estudiante"
+      modalities:
+        inconditionnel: "Recepción sin cita previa"
+        appointment: "Con cita previa (%s)"
+        inscription: "Con inscripción (%s)"
+        orientation: "Con orientación (%s)"
+        other_details: Otras precisiones
+      animal:
+        unauthorized: "Animales no permitidos"
+        authorized: "Animales permitidos"
+      hours:
+        closed: Cerrado
+        at: a
+
+  tags:
+    sections:
+      social:
+        name: Tiempo para compartir
+        subname: café, actividades...
+      services:
+        name: Servicio
+        subname: lavandería, impresión de documentos...
+      clothes:
+        name: Ropa
+        subname: zapatos, abrigo...
+      equipment:
+        name: Equipamiento
+        subname: teléfono, saco de dormir...
+      hygiene:
+        name: Producto de higiene
+        subname: jabón, protección higiénica...
+    orientations:
+      share: Compartir tus eventos de convivencia en la aplicación
+      guide: Orientar a tus beneficiarios hacia eventos de convivencia
+      help: Dar o pedir una mano
+    sf_categories:
+      atelier_femmes: Taller de sensibilización Mujeres en situación precaria
+      atelier_mdlr: Taller de sensibilización Mundo de la calle
+      atelier_preca: Taller de sensibilización Precariedad, exclusión y empleo
+      devenir_ambassadeur: ABC para convertirse en animador Entourage
+      convivialite: Evento de convivencia
+      papotages: Conversaciones solidarias
+      passion_sport: Pasión por el deporte
+      pratique_sport: Práctica deportiva
+      quizz_sensibilisation: Cuestionario de sensibilización
+      rencontre_nomade: Encuentro nómada
+      welcome_entourage_local: Cita de bienvenida Entourage Local
+      welcome_entourage_pro: Cita de bienvenida Entourage Pro
+    concerns:
+      sharing_time: Tiempo para compartir
+      material_donations: Donaciones materiales
+      services: Servicios
+    interests:
+      activites: Actividades manuales
+      animaux: Animales
+      bien-etre: Bienestar
+      cuisine: Cocina
+      culture: Arte y cultura
+      jeux: Juegos
+      nature: Naturaleza
+      sport: Deporte
+      marauding: Rondas solidarias
+      other: Otro
+    involvements:
+      resources: Aprender con contenidos pedagógicos
+      outings: Participar en eventos de convivencia
+      both_actions: Dar o pedir una mano
+      solicitations: Pedir una mano
+      neighborhoods: Unirte a un grupo de vecinos y crear vínculos
+      pois: Encontrar estructuras solidarias cerca de ti
+    signals:
+      spam: Spam
+      fraud: Estafa
+      insults: Comentarios inapropiados
+      in_danger: Situación de peligro
+      other: Otro
+
+  onboarding:
+    ethical_charter: |
+      ¡Soy yo otra vez!
+
+      En Entourage, nos importa mucho que cada persona se sienta bien, segura, escuchada y bienvenida. Por eso hemos redactado esta carta ética, que todos los miembros de la comunidad se comprometen a respetar al unirse a la aplicación. Puedes consultarla aquí:
+
+      https://www.entourage.social/app/resources/eMU_InNSSJbE
+
+      ¡Hasta muy pronto!
+
+      %s
+
+  outings:
+    tasks:
+      reminder_content: |
+        ¡Este evento se acerca a toda velocidad! Si todavía te interesa participar, coméntanos "Voy a participar" en los comentarios de este mensaje.
+      reminder_7_days_with_participants: |
+        Hola %{first_name},
+
+        Muchas gracias por organizar %{title}, ¡es una iniciativa genial para crear vínculos! 🙌
+
+        👉 Veo que tu evento se acerca y ya se han inscrito %{count} personas, ¡genial! Para ayudarles a no olvidarlo, puedes escribirles un pequeño mensaje en la conversación del evento.
+
+        Y si quieres que se inscriban más vecinos, te recomiendo compartir el enlace del evento en tu grupo de %{neighborhood}: ¡puede marcar la diferencia! Aquí tienes el enlace: %{link}
+
+        Si necesitas una mano, no dudes en decírmelo.
+
+        Gracias por tu compromiso y tus ganas de crear vínculos 🙏
+        Hasta muy pronto
+      reminder_7_days_without_participants: |
+        Hola %{first_name},
+
+        Muchas gracias por organizar %{title}, ¡es una iniciativa genial para crear vínculos! 🙌
+
+        Veo que tu evento se acerca pero todavía nadie se ha inscrito. Sin pánico: muchas veces la gente se anima en el último momento 😉
+
+        Te recomiendo compartir el enlace del evento en tu grupo de %{neighborhood}: ¡puede marcar la diferencia! Aquí tienes el enlace: %{link}
+
+        Si necesitas una mano, no dudes en decírmelo.
+
+        Gracias por tu compromiso y tus ganas de crear vínculos 🙏
+        Hasta muy pronto
+      reminder_1_day_with_participants: |
+        Hola %{first_name},
+
+        ¡Tu evento %{title} es mañana!
+        ¡Enhorabuena por esta bonita iniciativa! 💪
+
+        Aquí tienes algunos consejos sencillos para crear un momento agradable e inclusivo:
+
+        🌟 Recibir a cada participante personalmente con una palabra amable y una sonrisa
+        🌟 Empezar con una actividad de presentación (juegos para romper el hielo, ronda de nombres, etc.) para relajar el ambiente
+        🌟 Estar atento/a a cada persona: ayudar a quienes puedan sentirse un poco apartados a encontrar su lugar
+
+        Al final del evento, no dudes en hacer una foto de grupo (asegurándote de tener el permiso de cada participante) y publicarla en tu grupo de vecinos %{neighborhood} 👌
+
+        Gracias por tu compromiso y tu generosidad. Estás ayudando a tejer un barrio más solidario 💛
+
+        Hasta muy pronto
+      reminder_1_day_without_participants: |
+        Hola %{first_name},
+
+        ¡Tu evento %{title} es mañana! Enhorabuena por esta iniciativa 👏
+
+        Aunque todavía nadie se ha inscrito, no todo está perdido: ¡a veces los vecinos se deciden en el último momento!
+
+        Aquí tienes algunas ideas para animar a la gente:
+        💬 Enviar un mensaje en la conversación del evento
+        📣 Compartir el enlace en tu grupo de vecinos %{neighborhood}
+        🤝 Invitar directamente a vecinos que conozcas o con quienes ya hayas hablado
+
+        Y si al final te quedas solo/a mañana, ¡no es un fracaso! Ya has hecho lo más difícil: dar el paso para crear vínculos 💛
+
+        Gracias por tu compromiso. Aquí estamos si necesitas una mano 🙌
+
+        Hasta muy pronto
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "As de la conversación"
+        description: "Participas regularmente en las conversaciones solidarias."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Todavía 2 conversaciones solidarias más en las que participar este trimestre"
+          "2": "Todavía 1 conversación solidaria más en la que participar este trimestre"
+        bilan: "Obtuviste esta insignia el %{date} y participaste en conversaciones solidarias durante varias semanas. Enhorabuena por este compromiso, tus intercambios crearon verdaderos vínculos en la comunidad."
+      voix_presente:
+        name: "Tejedor de vínculos"
+        description: "Haces vivir los grupos semana tras semana."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Quedan 2 semanas para mantener activos tus grupos"
+          "2": "Queda 1 semana para mantener activos tus grupos"
+        bilan: "Obtuviste esta insignia el %{date} y la mantuviste durante varios meses. Enhorabuena por este compromiso, tu presencia realmente contó para los grupos en la aplicación."
+      moteur_rencontres:
+        name: "Creador de encuentros"
+        description: "Organizas regularmente eventos en tu comunidad."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "2 eventos más por organizar este trimestre"
+          "2": "1 evento más por organizar este trimestre"
+        bilan: "Obtuviste esta insignia el %{date} y organizaste eventos que movilizaron a la comunidad. Enhorabuena por este compromiso, tu energía benefició a mucha gente."
+    duration:
+      zero: "menos de un mes"
+      one: "1 mes"
+      other: "%{count} meses"
+
+  charts:
+    conversations:
+      memberships: "Participantes"
+    users:
+      member_outings: "Participante evento"
+      member_neighborhoods: "Miembro grupo de vecinos"
+      reactions: "Reacciones"
+      public_chat_messages: "Publicaciones/Comentarios"
+      private_chat_messages: "Mensajes privados"
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Primer paso"
+        description: "Acabas de dar tu primer paso en la comunidad Entourage. Tu presencia ya cuenta, bienvenido/a entre nosotros."
+      premier_contact:
+        nom: "Primer vínculo"
+        description: "Acabas de intercambiar tu primer mensaje con otro miembro. Cada vínculo creado da vida a la comunidad."
+      fidele_papotages:
+        nom: "As de la conversación"
+        description: "Has participado en 3 conversaciones solidarias en un mes y medio. Tu presencia regular crea vínculos y hace el bien a tu alrededor."
+      voix_presente:
+        nom: "Tejedor de vínculos"
+        description: "Has estado activo/a 3 de 4 semanas en los grupos publicando, comentando, reaccionando: haces latir el corazón de la comunidad."
+      moteur_rencontres:
+        nom: "Creador de encuentros"
+        description: "Has organizado 3 eventos en los últimos 90 días. Pones en movimiento a la comunidad Entourage, ¡enhorabuena!"

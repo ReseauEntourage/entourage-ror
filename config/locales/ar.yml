@@ -1,50 +1,1068 @@
+---
 ar:
   date:
     abbr_day_names:
-      - الأحد
-      - الاثنين
-      - الثلاثاء
-      - الأربعاء
-      - الخميس
-      - الجمعة
-      - السبت
+    - الأحد
+    - الإثنين
+    - الثّلاثاء
+    - الأربعاء
+    - الخميس
+    - الجمعة
+    - السّبت
     abbr_month_names:
-      -
-      - يناير
-      - فبراير
-      - مارس
-      - إبريل
-      - مايو
-      - يونيو
-      - يوليو
-      - أغسطس
-      - سبتمبر
-      - أكتوبر
-      - نوفمبر
-      - ديسمبر
+    -
+    - يناير
+    - فبراير
+    - مارس
+    - أبريل
+    - مايو
+    - يونيو
+    - يوليو
+    - أغسطس
+    - سبتمبر
+    - أكتوبر
+    - نوفمبر
+    - ديسمبر
     day_names:
-      - الأحد
-      - الاثنين
-      - الثلاثاء
-      - الأربعاء
-      - الخميس
-      - الجمعة
-      - السبت
+    - الأحد
+    - الإثنين
+    - الثّلاثاء
+    - الأربعاء
+    - الخميس
+    - الجمعة
+    - السّبت
     formats:
-      default: "%Y-%m-%d"
+      default: "%d-%m-%Y"
+      long: "%e %B، %Y"
       short: "%e %b"
-      long: "%e %B %Y"
     month_names:
-      -
-      - يناير
-      - فبراير
-      - مارس
-      - إبريل
-      - مايو
-      - يونيو
-      - يوليو
-      - أغسطس
-      - سبتمبر
-      - أكتوبر
-      - نوفمبر
-      - ديسمبر
+    -
+    - يناير
+    - فبراير
+    - مارس
+    - أبريل
+    - مايو
+    - يونيو
+    - يوليو
+    - أغسطس
+    - سبتمبر
+    - أكتوبر
+    - نوفمبر
+    - ديسمبر
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        zero: حوالي صفر ساعات
+        one: حوالي ساعة واحدة
+        two: حوالي ساعتان
+        few: حوالي %{count} ساعات
+        many: حوالي %{count} ساعة
+        other: حوالي %{count} ساعة
+      about_x_months:
+        zero: حوالي صفر أشهر
+        one: حوالي شهر واحد
+        two: حوالي شهران
+        few: حوالي %{count} أشهر
+        many: حوالي %{count} شهر
+        other: حوالي %{count} شهر
+      about_x_years:
+        zero: حوالي صفر سنوات
+        one: حوالي سنة
+        two: حوالي سنتان
+        few: حوالي %{count} سنوات
+        many: حوالي %{count} سنة
+        other: حوالي %{count} سنة
+      almost_x_years:
+        zero: ما يقرب من صفر سنوات
+        one: تقريبا سنة واحدة
+        two: ما يقرب من سنتين
+        few: ما يقرب من %{count} سنوات
+        many: ما يقرب من %{count} سنة
+        other: ما يقرب من %{count} سنة
+      half_a_minute: نصف دقيقة
+      less_than_x_seconds:
+        zero: أقل من صفر ثواني
+        one: أقل من ثانية
+        two: أقل من ثانيتان
+        few: أقل من %{count} ثوان
+        many: أقل من %{count} ثانية
+        other: أقل من %{count} ثانية
+      less_than_x_minutes:
+        zero: أقل من صفر دقائق
+        one: أقل من دقيقة
+        two: أقل من دقيقتان
+        few: أقل من %{count} دقائق
+        many: أقل من %{count} دقيقة
+        other: أقل من %{count} دقيقة
+      over_x_years:
+        zero: أكثر من صفر سنوات
+        one: أكثر من سنة
+        two: أكثر من سنتين
+        few: أكثر من %{count} سنوات
+        many: أكثر من %{count} سنة
+        other: أكثر من %{count} سنة
+      x_seconds:
+        zero: صفر ثواني
+        one: ثانية واحدة
+        two: ثانيتان
+        few: "%{count} ثوان"
+        many: "%{count} ثانية"
+        other: "%{count} ثانية"
+      x_minutes:
+        zero: صفر دقائق
+        one: دقيقة واحدة
+        two: دقيقتان
+        few: "%{count} دقائق"
+        many: "%{count} دقيقة"
+        other: "%{count} دقيقة"
+      x_days:
+        zero: صفر أيام
+        one: يوم واحد
+        two: يومان
+        few: "%{count} أيام"
+        many: "%{count} يوم"
+        other: "%{count} يوم"
+      x_months:
+        zero: صفر أشهر
+        one: شهر واحد
+        two: شهران
+        few: "%{count} أشهر"
+        many: "%{count} شهر"
+        other: "%{count} شهر"
+    prompts:
+      second: ثانية
+      minute: دقيقة
+      hour: ساعة
+      day: اليوم
+      month: الشهر
+      year: السنة
+  errors:
+    format: "%{message}"
+    messages:
+      accepted: يجب أن تقبل %{attribute}
+      blank: لا يمكن أن يكون محتوى %{attribute} فارغاً
+      confirmation: محتوى %{attribute} لا يتوافق مع %{attribute}
+      empty: لا يمكن أن يكون محتوى %{attribute} فارغاً
+      equal_to: يجب أن يساوي طول %{attribute} %{count}
+      even: يجب أن يكون عدد %{attribute} زوجياً
+      exclusion: حقل %{attribute} محجوز
+      greater_than: يجب أن يكون عدد %{attribute} أكبر من %{count}
+      greater_than_or_equal_to: يجب أن يكون عدد %{attribute} أكبر أو يساوي %{count}
+      inclusion: "%{attribute} غير وارد في القائمة"
+      invalid: محتوى %{attribute} غير صالح
+      less_than: يجب أن يكون عدد %{attribute} أصغر من %{count}
+      less_than_or_equal_to: يجب أن يكون عدد %{attribute} أصغر أو  يساوي %{count}
+      not_a_number: يجب أن يكون محتوى %{attribute} رقماً
+      not_an_integer: يجب أن يكون عدد %{attribute} عدد صحيحاً
+      odd: يجب أن يكون عدد %{attribute} عدداً فردياً
+      other_than:
+        zero: طول %{attribute} يجب ألاّ يكون صفر حرف
+        one: طول %{attribute} يجب ألاّ يكون حرفاً واحداً
+        two: طول %{attribute} يجب ألاّ يكون حرفان
+        few: طول %{attribute} يجب ألاّ يكون %{count} أحرف
+        many: طول %{attribute} يجب ألاّ يكون %{count} حرفاً
+        other: طول %{attribute} يجب ألاّ يكون %{count} حرفاً
+      present: يجب ترك حقل %{attribute} فارغاً
+      record_invalid: 'فشل التحقّق من: %{errors}'
+      restrict_dependent_destroy:
+        has_one: لا يمكن حذف السجل لوجود سجل يعتمد عليه %{record}
+        has_many: لا يمكن حذف السجل لوجود سجلات تعتمد عليه %{record}
+      taken: حقل %{attribute} محجوز مسبقاً
+      too_long:
+        zero: محتوى %{attribute} أطول من اللّازم (الحد الأقصى هو ولا حرف)
+        one: محتوى %{attribute} أطول من اللّازم (الحد الأقصى هو حرف واحد)
+        two: محتوى %{attribute} أطول من اللّازم (الحد الأقصى هو حرفان)
+        few: محتوى %{attribute} أطول من اللّازم (الحد الأقصى هو %{count} حروف)
+        many: محتوى %{attribute} أطول من اللّازم (الحد الأقصى هو %{count} حرف)
+        other: محتوى %{attribute} أطول من اللّازم (الحد الأقصى هو %{count} حرف)
+      too_short:
+        zero: محتوى %{attribute} أقصر من اللّازم (الحد الأدنى هو ولا حرف)
+        one: محتوى %{attribute} أقصر من اللّازم (الحد الأدنى هو حرف واحد)
+        two: محتوى %{attribute} أقصر من اللّازم (الحد الأدنى هو حرفان)
+        few: محتوى %{attribute} أقصر من اللّازم (الحد الأدنى هو %{count} حروف)
+        many: محتوى %{attribute} أقصر من اللّازم (الحد الأدنى هو %{count} حرف)
+        other: محتوى %{attribute} أقصر من اللّازم (الحد الأدنى هو %{count} حرف)
+      wrong_length:
+        zero: طول %{attribute} غير مطابق للحد المطلوب (يجب أن يكون ولا حرف)
+        one: طول %{attribute} غير مطابق للحد المطلوب (يجب أن يكون حرف واحد)
+        two: طول %{attribute} غير مطابق للحد المطلوب (يجب أن يكون حرفان)
+        few: طول %{attribute} غير مطابق للحد المطلوب (يجب أن يكون %{count} أحرف)
+        many: طول %{attribute} غير مطابق للحد المطلوب (يجب أن يكون %{count} حرف)
+        other: طول %{attribute} غير مطابق للحد المطلوب (يجب أن يكون %{count} حرف)
+    template:
+      body: يُرجى التحقّق من الحقول التّالية:%{attribute}
+      header:
+        zero: ليس بالامكان حفظ %{model} لسبب ولا خطأ.
+        one: ليس بالامكان حفظ %{model} لسبب وجود خطأ واحد.
+        two: ليس بالامكان حفظ %{model} لسبب وجود خطئان.
+        few: ليس بالامكان حفظ %{model} لسبب وجود %{count} أخطاء.
+        many: ليس بالامكان حفظ %{model} لسبب وجود %{count} خطأ.
+        other: ليس بالامكان حفظ %{model} لسبب وجود %{count} خطأ.
+  helpers:
+    select:
+      prompt: يُرجى الاختيار
+    submit:
+      create: "%{model} إنشاء"
+      submit: "%{model} حِفظ"
+      update: "%{model} تحديث"
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "لم يتم العثور على %{entry_name}"
+          one: "عرض <b>1</b> %{entry_name}"
+          other: "عرض <b>جميع</b> %{entry_name} (الإجمالي: <b>%{count}</b>)"
+      more_pages:
+        display_entries: "عرض %{entry_name} من <b>%{first}&nbsp;إلى&nbsp;%{last}</b> (الإجمالي: <b>%{total}</b>)"
+  number:
+    currency:
+      format:
+        delimiter: ","
+        format: "%u %n"
+        precision: 2
+        separator: "."
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "€"
+    format:
+      delimiter: ","
+      precision: 3
+      separator: "."
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: مليار
+          million: مليون
+          quadrillion: كدريليون
+          thousand: ألفّ
+          trillion: تريليون
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            zero: Bytes
+            one: Byte
+            two: Bytes
+            few: Bytes
+            many: Bytes
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: " و "
+      two_words_connector: " و "
+      words_connector: " ، "
+  time:
+    am: صباحًا
+    formats:
+      default: "%a %d %b %Y %H:%M:%S %Z"
+      long: "%d %B %Y %H:%M"
+      short: "%d %b %H:%M"
+    pm: مساءً
+
+  views:
+    pagination:
+      first: "&laquo; الأول"
+      last: "الأخير &raquo;"
+      previous: "&lsaquo; السابق"
+      next: "التالي &rsaquo;"
+      truncate: "&hellip;"
+
+  activerecord:
+    attributes:
+      user:
+        first_name: الاسم الأول
+        last_name: اسم العائلة
+        full_name: الاسم الكامل
+        email: البريد الإلكتروني
+        phone: رقم الهاتف
+        organization: جمعية الجولات الميدانية
+        about: نبذة
+        roles: الأدوار
+        targeting_profile: ملف تعريف الإشراف
+        goal: الملف المُعلن
+        partner: جمعية
+        partner_id: جمعية
+        admin_password: كلمة المرور
+        admin_password_confirmation: تأكيد كلمة المرور
+        created_at: تاريخ الإنشاء
+        address: العنوان
+        cnil_explanation: أسباب هذا الإجراء
+        validation_status: الحالة
+        last_sign_in_at: تاريخ آخر تسجيل دخول
+        postal_codes: الرموز البريدية
+        postal_code: الرمز البريدي
+        engaged?: "ملتزم؟"
+        deleted: محذوف
+        organization_name: جمعية
+        subscriptions: الاشتراكات
+        action_creations_count: عدد الأنشطة المُنشأة
+        action_participations_count: عدد الأنشطة المُنضم إليها
+        outing_participations_count: عدد الفعاليات المُنضم إليها
+        conversation_participations_count: عدد المحادثات المُنضم إليها
+      user_blocked_user:
+        user: مستخدم
+        blocked_user: مستخدم محظور
+        status: الحالة
+      user_history:
+        kind:
+          account: تم إنشاء الحساب
+          anonymize: تم إخفاء هوية الحساب
+          auto: تلقائي
+          block: تم حظر الحساب
+          deleted: تم حذف الحساب
+          unblock: تم إلغاء حظر الحساب
+          phone_change_cancel: تم إلغاء تغيير رقم الهاتف
+          phone_change_change: تم تغيير رقم الهاتف
+          phone_change_request: تم طلب تغيير رقم الهاتف
+          signal-action: الإبلاغ عن نشاط
+          signal-user: الإبلاغ عن المستخدم
+          spam-alert: تنبيه للمستخدمين الذين تعرضوا للإزعاج
+          spam-detection: تم اكتشاف رسائل مزعجة
+          sms: تمت إعادة طلب رمز الرسالة النصية
+        sms:
+          invite: دعوة
+          welcome: ترحيب
+          regenerate: طلب كلمة مرور جديدة
+      organization:
+        name: الاسم
+        description: الوصف
+        phone: رقم الهاتف
+        address: العنوان
+      entourage:
+        id: المعرف
+        title: العنوان
+        description: الوصف
+        display_address: العنوان
+        latitude: خط العرض
+        longitude: خط الطول
+        recurrency: التكرار
+        created_at: أُنشئ في
+        starts_at: يبدأ في
+        ends_at: ينتهي في
+        image_url: رابط الصورة
+        place_limit: عدد الأماكن المتاحة
+        members_count: عدد المشاركين
+        outing_image_url: صورة الفعالية
+        cancellation_message: رسالة الإلغاء
+        sf_category: نوع الفعالية
+        exclusive_to: الفئة المستهدفة من الفعالية
+        categories:
+          social: اجتماعي
+          resource: مورد
+          mat_help: مساعدة مادية
+          non_mat_help: مساعدة غير مادية
+          other: أخرى
+        entourage_types:
+          ask_for_help: طلب
+          contribution: مساهمة
+        group_types:
+          action: نشاط
+          outing: فعالية
+          conversation: محادثة
+        statuses:
+          open: نشط
+          closed: مغلق
+          blacklisted: محظور
+          suspended: معلّق
+          full: مكتمل
+          cancelled: ملغى
+      entourage_image:
+        title: العنوان
+        landscape_url: صورة أفقية
+        portrait_url: صورة عمودية
+      entourage_moderation:
+        action_author_type: الجهة المُصدرة
+        action_recipient_type: الجمهور المستهدف
+        action_target_type: الهدف
+        action_type: نوع الإجراء
+        action_recipient_consent_obtained: الموافقة
+
+        moderated_at: تاريخ الإشراف
+        moderation_contact_channel: وسيلة الاتصال
+        moderator_id: المُحاوِر
+        moderation_action: إجراء
+        moderation_comment: ملاحظات
+
+        action_outcome_reported_at: تاريخ الانتهاء
+        action_outcome: النتيجة
+        action_success_reason: سبب النجاح
+        action_failure_reason: سبب الفشل
+
+        section: الفئة
+
+      inapp_notification:
+        context_types:
+          birthday: birthday
+          chat_message_on_create: chat_message_created
+          join_request_on_create: join_request_created
+          join_request_on_update: join_request_updated
+          neighborhoods_entourage_on_create: outing_created
+          outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
+
+      user_moderation:
+        expectations: التوقعات
+        acquisition_channel: طريقة التعرف على Entourage
+        content_sent: المحتوى المُرسل
+        skills: المهارات
+
+        accepts_event_invitations: لقاء Entourage الودي
+        accepts_volunteering_offers: التطوع
+        ambassador: منشط Entourage
+
+      partner:
+        name: الاسم
+        description: الوصف
+        phone: رقم الهاتف
+        address: العنوان
+        website_url: الموقع الإلكتروني
+        email: البريد الإلكتروني
+        donations_needs: التبرعات المقبولة
+        volunteers_needs: المتطوعون المطلوبون
+      poi:
+        id: المعرف
+        name: الاسم
+        adress: العنوان
+        description: الوصف
+        audience: الجمهور
+        email: البريد الإلكتروني
+        website: الموقع الإلكتروني
+        phone: رقم الهاتف
+        category_1: الفئة 1
+        category_2: الفئة 2
+        category_3: الفئة 3
+        category_4: الفئة 4
+        category_5: الفئة 5
+        category_6: الفئة 6
+        category_7: الفئة 7
+      announcement:
+        title: العنوان
+        icon: الأيقونة
+        image_url: صورة أفقية
+        image_portrait_url: صورة عمودية
+        body: الوصف
+        action: زر الإجراء
+        url: الرابط
+        webview: فتح في
+        areas: المناطق الجغرافية
+        user_goals: الفئات المستهدفة
+        categories:
+          online: فعالية عبر الإنترنت
+          ambassador: برنامج منشطي Entourage
+          poi_map: أماكن تضامنية
+
+      moderation_area:
+        name: اسم المنطقة
+        departement: المحافظة
+        animator_id: PEC
+        sourcing_id: PI
+        community_builder_id: Community builder
+        welcome_message_1: رسالة الترحيب
+        slack_moderator_id: معرّف Slack
+      translation:
+        langs:
+          fr: الفرنسية
+          en: الإنجليزية
+          es: الإسبانية
+          de: الألمانية
+          pl: البولندية
+          ro: الرومانية
+          uk: الأوكرانية
+          ar: العربية
+      tour_area:
+        statuses:
+          active: نشطة
+          inactive: غير نشطة
+
+      conversation_message_broadcast:
+        moderation_area_id: منطقة الإشراف
+        content: المحتوى
+        goal: الجمهور
+        title: العنوان
+        archived_at: أُرشف في
+        area: المنطقة
+        areas: المحافظات أو الرموز البريدية
+        area_type: المنطقة
+        area_types:
+          national: وطني
+          hors_zone: خارج المنطقة
+          sans_zone: بدون منطقة
+          list: المحافظات أو الرموز البريدية
+      neighborhood:
+        name: الاسم
+        description: الوصف
+        interests: مراكز الاهتمام
+        image_url: الصورة
+        reserved_female: مخصصة للنساء
+        status: الحالة
+        statuses:
+          active: نشطة
+          deleted: محذوفة
+          blacklisted: محظورة
+      recommandation:
+        name: الاسم
+        instance: الكائن
+        action: الإجراء
+        argument_type: نوع المعطى
+        argument_value: "قيمة المعطى (المعرف أو الرابط)"
+        user_goals: الفئات
+        image_url: الصورة
+        status: الحالة
+        actions:
+          index: قائمة
+          show: عرض
+          create: إنشاء
+          join: انضمام
+          show_joined: عرض الأقرب الذي تم الانضمام إليه
+          show_not_joined: عرض الأقرب الذي لم يتم الانضمام إليه
+        instances:
+          user: مستخدم
+          profile: ملف تعريف
+          neighborhood: مجموعة جيران
+          outing: فعالية
+          poi: POI
+          resource: محتوى تعليمي
+          webview: Webview
+          conversation: محادثة
+          contribution: مساهمة
+          solicitation: طلب
+      resource:
+        name: الاسم
+        category: الفئة
+        description: الوصف
+        url: الرابط
+        is_video: "فيديو؟"
+        duration: المدة
+        image_url: الصورة
+        tags:
+          neighborhood: "المجموعات: أهمية مشاركة قواسمنا المشتركة"
+          outing: "كيف تنشئ فعالية؟"
+          action: "التعاضد: ما يمكنني تقديمه / طلبه"
+          welcome: "فيديو ترحيبي"
+        categories:
+          act: بادر
+          inspire: استلهم
+          understand: افهم
+      smalltalk:
+        object: الطاقات الإيجابية
+        new_message: رسالة جديدة
+        title_with_participants: "%s"
+
+  community:
+    entourage:
+      roles:
+        admin: مسؤول
+        ambassador: منشط Entourage
+        coordinator: منسّق
+        ethics_charter_signed: وافق على الميثاق الأخلاقي
+        moderator: مشرف
+        not_validated: غير مُصادق عليه
+        visitor: زائر
+      targeting_profiles:
+        offers_help: جار
+        asks_for_help: شخص في وضعية هشة
+        partner: جمعية
+        ambassador: منشط Entourage
+        team: فريق Entourage
+      goals:
+        offer_help: جار
+        ask_for_help: شخص معزول
+        organization: جمعية
+        goal_not_known: غير محدد
+        all: جميع الفئات
+      goals_compact:
+        offer_help: جار
+        ask_for_help: شخص في وضعية هشة
+        organization: جمعية
+        goal_not_known: غير محدد
+        staff: منشطو Entourage والفريق
+        all: جميع الفئات
+      icons:
+        offer_help: user
+        ask_for_help: street-view
+        organization: sitemap
+        goal_not_known: question
+    user:
+      profiles:
+        offer_help: جار متضامن
+        ask_for_help: شخص في وضعية هشة
+        organization: جمعية
+        goal_not_known: غير محدد
+        all: جميع الفئات
+      engagements:
+        engaged: ملتزم
+        not_engaged: غير ملتزم
+      statuses:
+        validated: مفعّل
+        anonymized: مجهول الهوية
+        blocked: محظور
+        temporary_blocked: محظور مؤقتًا
+        deleted: محذوف
+        pending: قيد الانتظار
+      roles:
+        moderator: مشرف
+        admin: مسؤول
+    chat_messages:
+      status_update:
+        closed_user: "غادر هذا المستخدم شبكة Entourage. لا تترددوا في الانضمام إلى أنشطة تضامنية أخرى على التطبيق!"
+
+  push_notifications:
+    action:
+      create_for_follower: "%s يدعوك للانضمام إلى %s"
+    badge:
+      bienvenue:
+        title: "🎉 خطوة أولى بيننا!"
+        content: "لقد حصلت للتو على أول وسام لك على Entourage: الخطوة الأولى 👣"
+      premier_contact:
+        title: "✨ أول رابط يُنسج!"
+        content: "رسالة أُرسلت، ورسالة وُصلت: اكتشف وسام أول رابط 👋"
+      moteur_rencontres:
+        title: "💫 أنت تُحرّك الأمور!"
+        content: "3 فعاليات في 90 يومًا: أنت تنشّط حيّك. اكتشف وسام منظم اللقاءات 💫"
+      fidele_papotages:
+        title: "💬 أحسنت على وفائك!"
+        content: "3 محادثات تضامنية في 90 يومًا، أنت تنشر الخير من حولك. اكتشف وسام بطل المحادثات"
+      voix_presente:
+        title: "🌱 أنت تُحيي المجموعات!"
+        content: "أنت حاضر، أسبوعًا بعد أسبوع. اكتشف وسام ناسج الروابط 🌱"
+    birthday:
+      title: عيد ميلاد سعيد 🎉
+      content: "يسعدنا انضمامك إلينا. اضغط هنا لقراءة رسالتنا بمناسبة عيد ميلادك!"
+    outing:
+      create: "تمت إضافة حدث جديد إلى %s: من المقرر أن يبدأ %s في %s"
+      cancel: "تم إلغاء هذا الحدث المقرر في %s"
+      update: "تم تعديل الحدث المقرر في %s. سيُقام الآن في %s، في %s"
+      update_short: "تم تحديث الحدث المقرر في %s"
+      day_before:
+        title: "🔔 تذكير: «%s» سيحدث غدًا!"
+        content: "لا تنسَ، هذا الحدث غدًا. هل ستشارك؟"
+    chat_message:
+      mention: "%s أشار إليك في رسالته"
+    post:
+      create: "%s شارك للتو: \"%s\""
+      create_image: "%s شارك للتو صورة"
+    comment:
+      create: "%s علق على المنشور \"%s\""
+      create_image: "%s شارك للتو صورة"
+    reaction:
+      create: "%s تفاعل مع منشورك: \"%s\""
+    join_request:
+      new: "طلب عضو جديد"
+      update: "تمت الموافقة على الطلب"
+      update_on_action: "لقد انضممت إلى نشاط يقوده %s"
+      update_on_outing: "لقد انضممت إلى حدث %s"
+      update_on_neighborhood: "لقد انضممت إلى مجموعة أنشأها %s"
+      update_on_smalltalk: "لقد انضممت إلى مجموعة جديدة من الطاقات الإيجابية"
+      create: "%s انضم إلى %s الخاص بك \"%s\""
+      create_outing: "%s انضم إلى الحدث الخاص بك \"%s\" في %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
+    contribution:
+      create: "جارٍ يطلب المساعدة"
+    solicitation:
+      create: "جارٍ يبحث عن مساعدة"
+      create_section: "جارٍ يبحث عن %s"
+    survey_response:
+      create: "%s أجاب على استطلاعك: %s"
+    matching:
+      create: "قد يهمّك هذا المحتوى"
+      almost_match_title: "اقتراح مجموعة"
+      almost_match_content: "قد تناسبك مجموعة (أو مجموعات) الطاقات الإيجابية هذه بحسب ما تبحث عنه!"
+    user_smalltalk:
+      expire_object: "لا تطابق بعد 😕"
+      expire_content: |
+        انتهت صلاحية طلبك للانضمام إلى الطاقات الإيجابية.
+        جرّب ربما معايير أكثر مرونة؟ ✨
+
+  timeliner:
+    h1:
+      title: "مرحبًا بك في Entourage 👌"
+      offer: "هل كنت تعلم؟ فيديو واحد يكفي لتحدي تحيزاتك!"
+      ask: "لن تتخيل كل ما يحتويه تطبيقك الجديد: تعال لاكتشافه!"
+
+  regions:
+    ouest: الغرب
+    sud_ouest: الجنوب الغربي
+    sud_est: الجنوب الشرقي
+    aura: Auvergne-Rhône-Alpes
+    nord: الشمال
+    idf: Ile-de-France
+    centre_est: الوسط الشرقي
+
+  conversations:
+    participants:
+      alone: أنت
+
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        مرحبًا %s 🙂 سعداء بانضمامك إلينا! قدم نفسك ببضع كلمات حتى يتعرف عليك باقي الأعضاء.
+      destroy_member: | # first_name
+        %s غادر المجموعة. شكرًا لمشاركتك ونتمنى لك التوفيق!
+      banned_member: | # first_name
+        %s لم يعد ضمن المجموعة. سلوكه لم يكن مناسبًا مع روح التضامن في مجموعتنا. نعتمد عليكم للحفاظ على هذا الفضاء بروح طيبة وبابتسامة دائمة 🙏
+      incomplete: |
+        نحضر لكم مجموعة جميلة من الطاقات الإيجابية ✨ في انتظار انضمام الأعضاء الجدد، تحدٍ صغير: حاولوا تخمين اسم العضو أو العضوة القادمة. الاحتمال ضعيف... لكن من يدري؟ 👀
+      close: |
+        قرر جميع أعضاء مجموعة الطاقات الإيجابية هذه مغادرة المحادثة، لذا أصبحت الآن وحيدًا هنا. تم إغلاق المجموعة الآن. يمكنك دائمًا الاطلاع على سجل المحادثات والعودة إليه عند الحاجة.
+
+        إذا كنت ترغب في الاستمرار بمشاركة الطاقات الإيجابية، لا تتردد في تقديم طلب جديد للانضمام إلى مجموعة أخرى. إلى اللقاء 👋
+      complete: |
+        المجموعة أصبحت مكتملة! 🎉
+
+        مرحبًا بكم في مجموعة الطاقات الإيجابية، فضاء للتواصل البسيط واللطيف ✨
+
+        مهمتكم: التبادل والمشاركة، وربما اللقاء أيضًا، عبر الفيديو أو في الواقع؟
+        هذا هو رابط أول لقاء بالفيديو نجتمع فيه: %s
+
+        👋 لا تترددوا في تقديم أنفسكم إن لم تفعلوا ذلك بعد.
+
+        🔥 وابتداءً من الغد... تبدأ التحديات اليومية لمدة 7 أيام للتعارف وبناء روابط حقيقية 🫶
+
+        نعتمد عليكم لتلعبوا اللعبة بكل حماس 😉
+      complete_j1: |
+        تحدي اليوم: ثلاث حقائق وكذبة: شارك ثلاث حقائق صحيحة عنك وكذبة واحدة. على الآخرين أن يخمنوا أيها الكذبة!
+      complete_j2: |
+        تحدي اليوم: يوم أمس في حياتي... احكِ عن يومك أمس باستخدام ثلاثة إيموجي فقط. وعلى الآخرين محاولة تخمين ما حدث!
+      complete_j3: |
+        اطرحوا على المجموعة أكثر سؤال محيّر لم تجدوا له إجابة مُرضية من قبل. لنرَ إن كانت المجموعة تستطيع مساعدتكم على التفكير فيه!
+      complete_j4: |
+        تحدي اليوم: شاركوا شيئًا لا يلاحظه الناس من أول نظرة: هواية، عادة، أو صفة شخصية...
+      complete_j5: |
+        تحدي اليوم: لمدة 24 ساعة، يُمنع استخدام كلمة شائعة في المجموعة (مثل: "نعم"، "أنا"، "أكل"). من يستخدمها... عليه أن يروي قصة طريفة عن نفسه!
+      complete_j6: |
+        تحدي اليوم: شاركوا ما يساعدكم على بدء الحديث مع الآخرين: نظرة، مكان، عبارة... أو نصيحة للتغلب على الخجل!
+      complete_j7: |
+        تحدي اليوم: شاركوا فعالية ممتعة قادمة في منطقتكم أو على الإنترنت! إذا ذكر أحد الأعضاء نفس الفعالية أو فعالية مشابهة، فقد تكون فرصة مثالية للذهاب معًا (أو اللقاء افتراضيًا)!
+      complete_congratulations: | # meeting_url
+        تهانينا على مشاركتكم! لقد خصصتم وقتًا للتبادل، والاستماع، وبناء علاقات: وهذا بحد ذاته إنجاز رائع 🧡
+
+        الآن، حان وقت اللقاء الجماعي! سواء عبر الفيديو أو في الواقع، حان وقت إعطاء الحياة لحديثكم، ورؤية الوجوه خلف الكلمات، وجعل هذه الطاقات الإيجابية تستمر 🤝
+
+        بعض الأفكار:
+
+        لقاء فيديو هادئ من المنزل (البيجامة مرحب بها 😄)
+
+        قهوة أو جلسة غير رسمية إذا كنتم قريبين من بعضكم البعض
+
+        نزهة أو نشاط مشترك إذا كنتم ترغبون بذلك (وإذا سمح الطقس)
+
+        لتسهيل التنظيم، إليكم رابط اللقاء: %s
+        شاركوا اقتراحاتكم، واقترحوا وقتًا، والأهم... تصرفوا وكأنكم في بيتكم ✨
+      complete_j21: |
+        مرحبًا بالجميع! 👋
+
+        نأمل أن تكون محادثاتكم قد مرت بشكل جيد، سواء كتابةً أو عبر الفيديو أو في الواقع!
+        إذا كان لديكم أي ملاحظات أو إذا حصل شيء لم يعجبكم، لا تترددوا أبدًا في إخبارنا. فريق Entourage هنا للاستماع والدعم بكل لطف 🧡
+
+        وإذا كان كل شيء على ما يرام، أخبرونا بذلك أيضًا! ملاحظاتكم تساعدنا على الاستمرار في إحياء الطاقات الإيجابية على أفضل وجه.
+
+        شكرًا لثقتكم ✨
+      inactive_j3: |
+        مرحبًا يا فريق! نود أن نعرف، ما الذي دفعكم للانضمام إلى هذه المجموعة؟ 😊
+      inactive_j5: |
+        لا تشعرون بالراحة الكافية في الكتابة؟ لا مشكلة! يمكنكم أيضًا اختيار لقاء فيديو هادئ أو قهوة في مجموعة صغيرة ☕
+
+        إليكم رابط للقاء بسهولة عبر الإنترنت:
+        👉 %s
+
+        لا تترددوا في إخبارنا بما يناسبكم أكثر، فهناك آلاف الطرق لنسج الروابط 🧡
+      inactive_j7: |
+        نشعر أن الأجواء هادئة بعض الشيء هنا…
+
+        إذا لم يتم تبادل أي رسالة خلال الأيام السبعة القادمة، سيتم إغلاق المجموعة تلقائيًا.
+
+        شكرًا لتواجدكم معنا. وإذا كانت لديكم رغبة في نسج روابط جديدة، فإن الطاقات الإيجابية سترحب بكم من جديد، متى شئتم 🧡
+      happy_birthday: | # first_name
+        كل مجموعة الطاقات الإيجابية تتمنى عيد ميلاد سعيد لـ %s! 🎉 استمتع بيومك، ولا تتردد في إخبارنا كيف ستحتفل!
+      chart_recall: |
+        تذكير لطيف: الطاقات الإيجابية مصممة للتبادل بروح مرحة ومحترمة. ستجدون الميثاق الأخلاقي هنا! شكرًا للجميع!
+      smalltalk_anniversary_six_months: |
+        مجموعتنا تحتفل اليوم بمرور ستة أشهر! 🎉 شكرًا على مشاركاتكم ولحظاتكم الجميلة معًا!
+      smalltalk_anniversary_one_year: |
+        مجموعتنا تحتفل اليوم بعامها الأول! 🎉 شكرًا على مشاركاتكم ولحظاتكم الجميلة معًا!
+      user_one_year_membership: | # first_name
+        اليوم، %s يحتفل بمرور عام على انضمامه لنا! 🎉 شكرًا لوجودك معنا طوال هذا الوقت، احكِ لنا عن لحظة لا تُنسى!
+      smalltalk_500_messages: |
+        أنتم مذهلون! 🔥 500 رسالة تم تبادلها في المجموعة، الحديث لا يتوقف هنا! نتابع؟ الهدف القادم: 1000 رسالة؟
+      smalltalk_1000_messages: |
+        مذهل، لقد وصلتم إلى 1000 رسالة متبادلة! 🤯 أنتم رسميًا أبطال الطاقات الإيجابية!
+
+  pois:
+    soliguide:
+      public:
+        administrative: "الاستقبال: %s"
+        description: "معلومات مهمة أخرى: %s"
+        reception: الاستقبال
+      accueil:
+        preferentiel: "تفضيلي"
+        exclusif: "حصري"
+        inconditionnel: "غير مشروط"
+      age:
+        mineur: "القُصّر (أقل من 18 عامًا)"
+        adulte: "للبالغين فقط"
+        from: "من %s عامًا"
+        from_to: "من %s إلى %s عامًا"
+      familiale:
+        isolated: "شخص منعزل"
+        family: "عائلة"
+        couple: "زوجان"
+        pregnant: "امرأة حامل"
+      administrative:
+        default: "أشخاص %s"
+        regular: "في وضع قانوني نظامي"
+        undocumented: "بدون وثائق"
+        asylum: "طالبو لجوء"
+        refugee: "لاجئون"
+      other:
+        violence: "ضحية عنف"
+        addiction: "في وضعية إدمان"
+        handicap: "في وضعية إعاقة"
+        lgbt: "ينتمون إلى مجتمع LGBT+"
+        hiv: "حاملون لفيروس نقص المناعة البشرية"
+        prostitution: "عامل(ة) في مجال الجنس"
+        prison: "خارجون من السجن"
+        student: "طالب(ة)"
+      modalities:
+        inconditionnel: "استقبال بدون موعد مسبق"
+        appointment: "بموعد مسبق (%s)"
+        inscription: "بالتسجيل (%s)"
+        orientation: "بالتوجيه (%s)"
+        other_details: توضيحات أخرى
+      animal:
+        unauthorized: "الحيوانات غير مسموح بها"
+        authorized: "الحيوانات مسموح بها"
+      hours:
+        closed: مغلق
+        at: عند
+
+  tags:
+    sections:
+      social:
+        name: وقت للمشاركة
+        subname: قهوة، نشاط...
+      services:
+        name: خدمة
+        subname: غسيل الملابس، طباعة المستندات...
+      clothes:
+        name: ملابس
+        subname: أحذية، معطف...
+      equipment:
+        name: معدات
+        subname: هاتف، كيس نوم...
+      hygiene:
+        name: منتج نظافة
+        subname: صابون، فوط صحية...
+    orientations:
+      share: شارك فعالياتك التفاعلية على التطبيق
+      guide: وجّه المستفيدين لديك نحو الفعاليات التفاعلية
+      help: قدّم يد المساعدة أو اطلبها
+    sf_categories:
+      atelier_femmes: ورشة توعية للنساء في وضعية هشة
+      atelier_mdlr: ورشة توعية لعالم الشارع
+      atelier_preca: ورشة توعية حول الهشاشة والإقصاء والتشغيل
+      devenir_ambassadeur: الخطوات الأساسية لتصبح منشط Entourage
+      convivialite: فعالية تفاعلية
+      papotages: محادثات تضامنية
+      passion_sport: شغف الرياضة
+      pratique_sport: ممارسة الرياضة
+      quizz_sensibilisation: مسابقة توعية
+      rencontre_nomade: لقاء متنقل
+      welcome_entourage_local: موعد ترحيب Entourage المحلي
+      welcome_entourage_pro: موعد ترحيب Entourage Pro
+    concerns:
+      sharing_time: وقت للمشاركة
+      material_donations: تبرعات مادية
+      services: خدمات
+    interests:
+      activites: أنشطة يدوية
+      animaux: حيوانات
+      bien-etre: الرفاهية
+      cuisine: الطبخ
+      culture: الفن والثقافة
+      jeux: ألعاب
+      nature: الطبيعة
+      sport: رياضة
+      marauding: الجولات الميدانية التضامنية
+      other: أخرى
+    involvements:
+      resources: تعلم من خلال محتوى تعليمي
+      outings: المشاركة في فعاليات تفاعلية
+      both_actions: قدّم يد المساعدة أو اطلبها
+      solicitations: اطلب يد المساعدة
+      neighborhoods: انضم إلى مجموعة جيران وابنِ روابط
+      pois: ابحث عن هياكل تضامنية قريبة منك
+    signals:
+      spam: رسائل مزعجة
+      fraud: احتيال
+      insults: كلام غير لائق
+      in_danger: تعريض للخطر
+      other: أخرى
+
+  onboarding:
+    ethical_charter: |
+      إنه أنا مجددًا!
+
+      في Entourage، نحرص فعلاً على أن يشعر كل شخص بالراحة والأمان، وأن يتم الإصغاء إليه واستقباله. لهذا السبب كتبنا هذا الميثاق الأخلاقي، الذي يلتزم جميع أعضاء المجتمع باحترامه عند الانضمام إلى التطبيق. اطّلع عليه هنا:
+
+      https://www.entourage.social/app/resources/eMU_InNSSJbE
+
+      إلى اللقاء قريبًا!
+
+      %s
+
+  outings:
+    tasks:
+      reminder_content: |
+        هذا الحدث يقترب بسرعة! إذا كنت لا تزال مهتمًا بالمشاركة، يرجى التعليق بـ "أنا مشارك" على هذه الرسالة.
+      reminder_7_days_with_participants: |
+        مرحبًا %{first_name}،
+
+        شكرًا جزيلاً على تنظيم %{title}، إنها مبادرة رائعة لنسج الروابط! 🙌
+
+        👉 ألاحظ أن موعد حدثكم يقترب وأن %{count} أشخاص قد سجّلوا بالفعل، هذا رائع! لمساعدتهم على عدم النسيان، يمكنكم كتابة رسالة صغيرة في نقاش الحدث.
+
+        وإذا كنتم ترغبون في تسجيل المزيد من الجيران، أنصحكم بمشاركة رابط الحدث في مجموعة %{neighborhood} الخاصة بكم: قد يُحدث ذلك فرقًا كبيرًا! إليكم الرابط: %{link}
+
+        إذا احتجتم إلى أي مساعدة، لا تترددوا في إخباري.
+
+        شكرًا على التزامكم ورغبتكم في نسج الروابط 🙏
+        إلى اللقاء قريبًا
+      reminder_7_days_without_participants: |
+        مرحبًا %{first_name}،
+
+        شكرًا جزيلاً على تنظيم %{title}، إنها مبادرة رائعة لنسج الروابط! 🙌
+
+        ألاحظ أن موعد حدثكم يقترب لكن لم يسجّل أحد بعد. لا داعي للقلق: غالبًا ما تتحرك الأمور في اللحظة الأخيرة 😉
+
+        أنصحكم بمشاركة رابط الحدث في مجموعة %{neighborhood} الخاصة بكم: قد يُحدث ذلك فرقًا كبيرًا! إليكم الرابط: %{link}
+
+        إذا احتجتم إلى أي مساعدة، لا تترددوا في إخباري.
+
+        شكرًا على التزامكم ورغبتكم في نسج الروابط 🙏
+        إلى اللقاء قريبًا
+      reminder_1_day_with_participants: |
+        مرحبًا %{first_name}،
+
+        حدثكم %{title} يُقام غدًا!
+        ألف مبروك على هذه المبادرة الجميلة 💪
+
+        إليكم بعض النصائح البسيطة لخلق لحظة ودية وشاملة للجميع:
+
+        🌟 استقبال كل مشارك(ة) بشكل شخصي بكلمة لطيفة وابتسامة
+        🌟 إطلاق نشاط للتعارف (ألعاب كسر الجليد، جولة الأسماء، إلخ) لتخفيف الأجواء
+        🌟 الانتباه لكل شخص: مساعدة من قد يشعر بالتهميش على إيجاد مكانه
+
+        في نهاية الحدث، لا تترددوا في التقاط صورة جماعية (مع التأكد من موافقة كل مشارك) ونشرها في مجموعة الجيران %{neighborhood} 👌
+
+        شكرًا على التزامكم وكرمكم. أنتم تساهمون في نسج حيّ أكثر تضامنًا 💛
+
+        إلى اللقاء قريبًا
+      reminder_1_day_without_participants: |
+        مرحبًا %{first_name}،
+
+        حدثكم %{title} يُقام غدًا! مبروك على هذه المبادرة 👏
+
+        حتى لو لم يسجّل أحد بعد، لا شيء ضائع: أحيانًا يقرر الجيران في اللحظة الأخيرة!
+
+        إليكم بعض الأفكار لتحفيز الجميع:
+        💬 إرسال رسالة في نقاش الحدث
+        📣 مشاركة الرابط في مجموعة الجيران %{neighborhood}
+        🤝 دعوة الجيران الذين تعرفونهم أو تواصلتم معهم من قبل مباشرة
+
+        وإذا وجدتم أنفسكم وحيدين غدًا، فهذا ليس فشلاً! لقد قمتم بالفعل بالأصعب: المبادرة لنسج الروابط 💛
+
+        شكرًا على التزامكم. نحن هنا إذا احتجتم إلى أي مساعدة 🙌
+
+        إلى اللقاء قريبًا
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "بطل المحادثات"
+        description: "تشارك بانتظام في المحادثات التضامنية."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "محادثتان تضامنيتان إضافيتان للمشاركة هذا الربع"
+          "2": "محادثة تضامنية إضافية واحدة للمشاركة هذا الربع"
+        bilan: "حصلت على هذا الوسام في %{date} وشاركت في محادثات تضامنية لعدة أسابيع. أحسنت على هذا الالتزام، تبادلاتك خلقت روابط حقيقية في المجتمع."
+      voix_presente:
+        name: "ناسج الروابط"
+        description: "تُبقي المجموعات حية أسبوعًا بعد أسبوع."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "أسبوعان إضافيان لإبقاء مجموعاتك نشطة"
+          "2": "أسبوع إضافي واحد لإبقاء مجموعاتك نشطة"
+        bilan: "حصلت على هذا الوسام في %{date} وحملته لعدة أشهر. أحسنت على هذا الالتزام، حضورك كان له أثر حقيقي على المجموعات في التطبيق."
+      moteur_rencontres:
+        name: "منظم اللقاءات"
+        description: "تنظم بانتظام فعاليات في مجتمعك."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "حدثان إضافيان لتنظيمهما هذا الربع"
+          "2": "حدث إضافي واحد لتنظيمه هذا الربع"
+        bilan: "حصلت على هذا الوسام في %{date} ونظمت فعاليات حركت المجتمع. أحسنت على هذا الالتزام، طاقتك أفادت الكثير من الناس."
+    duration:
+      zero: "أقل من شهر"
+      one: "شهر واحد"
+      other: "%{count} أشهر"
+
+  charts:
+    conversations:
+      memberships: "المشاركون"
+    users:
+      member_outings: "مشارك في حدث"
+      member_neighborhoods: "عضو في مجموعة جيران"
+      reactions: "تفاعلات"
+      public_chat_messages: "منشورات/تعليقات"
+      private_chat_messages: "رسائل خاصة"
+
+  email:
+    badge:
+      bienvenue:
+        nom: "الخطوة الأولى"
+        description: "لقد خطوت للتو خطوتك الأولى في مجتمع Entourage. حضورك يُحدث فرقاً بالفعل — مرحباً بك بيننا."
+      premier_contact:
+        nom: "أول رابط"
+        description: "لقد تبادلت للتو رسالتك الأولى مع عضو آخر. كل رابط نُسج يُحيي المجتمع."
+      fidele_papotages:
+        nom: "بطل المحادثات"
+        description: "لقد شاركت في 3 محادثات تضامنية في شهر ونصف. حضورك المنتظم يخلق روابط ويُحدث أثراً إيجابياً من حولك."
+      voix_presente:
+        nom: "ناسج الروابط"
+        description: "كنت نشطاً 3 أسابيع من أصل 4 في المجموعات بالنشر والتعليق والتفاعل — أنت تُحيي قلب المجتمع."
+      moteur_rencontres:
+        nom: "منظم اللقاءات"
+        description: "لقد نظمت 3 فعاليات خلال الـ 90 يوماً الماضية. أنت تُحرّك مجتمع Entourage — أحسنت!"
