@@ -60,7 +60,8 @@ module Api
           AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..])
         end
 
-        poi = Poi.validated.find_by_uuid(params[:id])
+        return render json: {} unless poi = Poi.validated.find_by_uuid(params[:id])
+
         render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
       end
 
