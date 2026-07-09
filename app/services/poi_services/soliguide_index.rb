@@ -25,7 +25,10 @@ module PoiServices
           else
             PoiServices::SoliguideFormatter.format(poi)
           end
-        end
+        rescue => e
+          Rails.logger.error("type=soliguide_index error: class=#{e.class} message=#{e.message.inspect} lieu_id=#{poi['lieu_id']}")
+          nil
+        end.compact
       end
 
       def post_only_query json_params

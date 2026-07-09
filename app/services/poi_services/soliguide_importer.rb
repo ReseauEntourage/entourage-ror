@@ -1,5 +1,8 @@
 module PoiServices
   class SoliguideImporter
+    # "S'orienter": catch-all category for Soliguide services with no (or no recognized) category
+    DEFAULT_CATEGORY_ID = 5
+
     attr_reader :starting_time
     attr_reader :poi_attributes
     attr_reader :batch_limit
@@ -12,16 +15,15 @@ module PoiServices
 
     def create_all
       find_all_iterator do |page|
-        post_all_for_page(page).each do |response|
-          poi = Poi.find_or_initialize_by(source_id: response[:source_id])
-          poi.update(response.slice(*poi_attributes))
-          poi.source = :soliguide
-          poi.validated = true
-          poi.updated_at = Time.zone.now
+        responses = post_all_for_page(page)
+        unchanged_source_ids, responses_to_import = partition_unchanged(responses)
 
-          unless poi.save
-            Rails.logger.error("type:soliguide_importer error: poi not saved: #{poi.errors.full_messages} (#{response[:source_id]})")
-          end
+        touch_unchanged_pois(unchanged_source_ids)
+
+        responses_to_import.each do |response|
+          import_poi(response)
+        rescue => e
+          Rails.logger.error("type=soliguide_importer error: class=#{e.class} message=#{e.message.inspect} source_id=#{response[:source_id]}")
         end
       end
 
@@ -29,6 +31,40 @@ module PoiServices
     end
 
     private
+
+    # Soliguide gives no way to fetch a diff of what changed since the last sync, but each
+    # place carries its own `updatedAt`. We store it locally so unchanged places can be
+    # skipped instead of being fully reformatted/revalidated/reindexed on every run.
+    def partition_unchanged responses
+      existing = Poi.source_soliguide.where(source_id: responses.map { |response| response[:source_id] })
+        .pluck(:source_id, :source_updated_at, :validated).to_h { |source_id, source_updated_at, validated| [source_id, [source_updated_at, validated]] }
+
+      responses.partition do |response|
+        source_updated_at, validated = existing[response[:source_id]]
+
+        validated && source_updated_at.present? && source_updated_at == response[:source_updated_at]
+      end.then { |unchanged, to_import| [unchanged.map { |response| response[:source_id] }, to_import] }
+    end
+
+    def touch_unchanged_pois source_ids
+      return if source_ids.empty?
+
+      Poi.source_soliguide.where(source_id: source_ids).update_all(updated_at: Time.zone.now)
+    end
+
+    def import_poi response
+      response[:category_ids] = [DEFAULT_CATEGORY_ID] if response[:category_ids].blank?
+
+      poi = Poi.find_or_initialize_by(source_id: response[:source_id])
+      poi.update(response.slice(*poi_attributes))
+      poi.source = :soliguide
+      poi.validated = true
+      poi.updated_at = Time.zone.now
+
+      unless poi.save
+        Rails.logger.error("type:soliguide_importer error: poi not saved: #{poi.errors.full_messages} (#{response[:source_id]})")
+      end
+    end
 
     def remove_deprecated_pois
       Rails.logger.info("#{self.class.name} unvalidate POI older than #{starting_time}")
