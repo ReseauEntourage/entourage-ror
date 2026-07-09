@@ -69,6 +69,7 @@ describe Api::V1::PoisController, type: :controller do
             'audience'=>nil,
             'hours'=>nil,
             'languages'=>nil,
+            'air_conditioned'=>nil,
             'partner_id'=>nil,
             'category_ids'=>[poi.category_id]
           })
@@ -136,6 +137,7 @@ describe Api::V1::PoisController, type: :controller do
           'audience' => 'Mon audience',
           'hours' => nil,
           'languages' => nil,
+          'air_conditioned' => nil,
           'partner_id' => nil,
           'category_ids' => [poi.category_id]
         }
@@ -243,6 +245,27 @@ describe Api::V1::PoisController, type: :controller do
         end
       end
 
+      context 'with air_conditioned parameter' do
+        let!(:poi1) { create :poi, air_conditioned: true, validated: true }
+        let!(:poi2) { create :poi, air_conditioned: false, validated: true }
+        let!(:poi3) { create :poi, air_conditioned: nil, validated: true }
+
+        context 'true' do
+          before { get 'index', params: { air_conditioned: 'true', format: :json } }
+          it { expect(assigns(:pois)).to match_array([poi1]) }
+        end
+
+        context 'false' do
+          before { get 'index', params: { air_conditioned: 'false', format: :json } }
+          it { expect(assigns(:pois)).to match_array([poi2]) }
+        end
+
+        context 'not set' do
+          before { get 'index', params: { format: :json } }
+          it { expect(assigns(:pois)).to match_array([poi1, poi2, poi3]) }
+        end
+      end
+
       context 'with location parameters' do
         let!(:poi1) { create :poi, latitude: 10, longitude: 12 }
         let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1 }
@@ -318,5 +341,31 @@ describe Api::V1::PoisController, type: :controller do
     it { expect(result).to have_key('clusters') }
     it { expect(result['clusters'].length).to eq(3) }
     it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi3.id, poi4.id, poi2.id]) }
+
+    context 'with air_conditioned parameter' do
+      let!(:poi1) { create :poi, latitude: 10, longitude: 12, air_conditioned: true }
+      let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1, air_conditioned: false }
+      let!(:poi3) { create :poi, latitude: 10, longitude: 10, air_conditioned: nil }
+      let!(:poi4) { create :poi, latitude: 10.05, longitude: 9.95, air_conditioned: true }
+      let!(:poi5) { create :poi, latitude: 12, longitude: 10, air_conditioned: false }
+
+      context 'true' do
+        before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, air_conditioned: 'true', format: :json } }
+        it { expect(response.status).to eq(200) }
+        it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi4.id]) }
+      end
+
+      context 'false' do
+        before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, air_conditioned: 'false', format: :json } }
+        it { expect(response.status).to eq(200) }
+        it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi2.id]) }
+      end
+
+      context 'not set' do
+        before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json } }
+        it { expect(response.status).to eq(200) }
+        it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi2.id, poi3.id, poi4.id]) }
+      end
+    end
   end
 end

@@ -23,6 +23,10 @@ class Poi < ApplicationRecord
     joins(:categories_pois).where(categories_pois: { category_id: category_ids })
   }
 
+  scope :air_conditioned, -> (value) {
+    where(air_conditioned: value) unless value.nil?
+  }
+
   scope :with_partners_filters, -> (partners_filters) {
     return unless partners_filters.present?
     return unless partners_filters.any?

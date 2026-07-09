@@ -31,6 +31,7 @@ module PoiServices
         website: poi['entity']['website'].presence,
         email: poi['entity']['mail'].presence,
         audience: format_audience(poi['publics'], poi['modalities'], lang),
+        air_conditioned: poi.dig('modalities', 'thermalComfort', 'airConditioned'),
         category_ids: format_category_ids(poi, lang),
         source_category: source_categories.compact.first,
         source_categories: source_categories.compact.uniq,

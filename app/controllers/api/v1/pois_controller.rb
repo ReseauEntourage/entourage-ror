@@ -19,6 +19,7 @@ module Api
           .with_category_ids(category_ids)
           .around(coordinates[:latitude], coordinates[:longitude], distance)
           .with_partners_filters(partners_filters)
+          .air_conditioned(air_conditioned)
           .order(Arel.sql('random()')).limit(100)
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
@@ -42,7 +43,7 @@ module Api
         render json:
           Poi.validated
             .with_partners_filters(partners_filters)
-            .clustered(coordinates[:latitude], coordinates[:longitude], distance)
+            .clustered(coordinates[:latitude], coordinates[:longitude], distance, { air_conditioned: air_conditioned })
             .text_search(params[:query])
             .with_category_ids(category_ids),
           root: :clusters,
@@ -59,7 +60,8 @@ module Api
           AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..])
         end
 
-        poi = Poi.validated.find_by_uuid(params[:id])
+        return render json: {} unless poi = Poi.validated.find_by_uuid(params[:id])
+
         render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
       end
 
@@ -134,6 +136,12 @@ module Api
 
       def partners_filters
         @partners_filters ||= (params[:partners_filters] || '').split(',').compact.uniq.map(&:to_sym) & [:donations, :volunteers]
+      end
+
+      def air_conditioned
+        return nil unless params[:air_conditioned].present?
+
+        ActiveModel::Type::Boolean.new.cast(params[:air_conditioned])
       end
 
       def member_mailer
