@@ -194,6 +194,7 @@ describe Api::V1::HomeController do
             'congratulations' => [],
             'unclosed_action' => nil,
             'moderator' => {},
+            'referent_benevole' => {},
             'signable_permission' => false,
             'birthday_today' => be_boolean,
             'events' => [
