@@ -9,7 +9,9 @@ class LegacyPhoneValidator
     french_number? ||
       belgian_number? ||
       maroc_number? ||
-      dom_tom_number?
+      dom_tom_number? ||
+      german_number? ||
+      swiss_number?
   end
 
   def foreign_number?
@@ -27,6 +29,14 @@ class LegacyPhoneValidator
 
   def maroc_number?
     formatted.match(/\A\+212[67]\d{8}\z/).present?
+  end
+
+  def german_number?
+    formatted.match(/\A\+49(15|16|17)\d{8,9}\z/).present?
+  end
+
+  def swiss_number?
+    formatted.match(/\A\+417[4-9]\d{7}\z/).present?
   end
 
   DOM_TOM_RULES = [
