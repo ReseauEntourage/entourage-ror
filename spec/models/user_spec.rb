@@ -76,6 +76,13 @@ describe User, type: :model do
     it { expect(build(:public_user, phone: '+212612345678').save).to be true } #maroc (mobile)
     it { expect(build(:public_user, phone: '+212212345678').save).to be false } #maroc (local)
 
+    it { expect(build(:public_user, phone: '+4915112345678').save).to be true } #german (mobile, 11 digits)
+    it { expect(build(:public_user, phone: '+491621234567').save).to be true } #german (mobile, 10 digits)
+    it { expect(build(:public_user, phone: '+4930123456').save).to be false } #german (landline, berlin)
+
+    it { expect(build(:public_user, phone: '+41791234567').save).to be true } #swiss (mobile)
+    it { expect(build(:public_user, phone: '+41221234567').save).to be false } #swiss (landline, geneva)
+
     it { expect(build(:public_user, phone: '+1-999-999-9999').save).to be false } #canadian number
     it { expect(build(:public_user, phone: '+40 (724) 593 579').save).to be false } #Apple formatted
     # wrongs
