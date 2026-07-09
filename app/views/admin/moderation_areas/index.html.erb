@@ -34,6 +34,22 @@
       </div>
     <% end %>
 
+    <% if @default_referent_benevole.present? %>
+      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Référent bénévole par défaut</b><br>
+          <b><%= @default_referent_benevole.full_name %></b> est le référent bénévole par défaut. Cela signifie que, si le référent bénévole d'une zone n'est pas renseigné, alors ce sera la personne affichée comme référent sur l'app à sa place.
+        </div>
+      </div>
+    <% else %>
+      <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Aucun référent bénévole par défaut</b><br>
+          Attention ! Aucun référent bénévole par défaut n'est défini. Actuellement, le SlackID par défaut est : <b><%= @default_referent_slack_id %></b> mais aucun compte admin actif n'est associé à cette valeur. Merci de contacter l'équipe tech pour régler ce problème.
+        </div>
+      </div>
+    <% end %>
+
     <table class="custom-table">
       <thead>
         <th></th>
@@ -41,6 +57,7 @@
         <th><%= t('activerecord.attributes.moderation_area.animator_id') %></th>
         <th><%= t('activerecord.attributes.moderation_area.sourcing_id') %></th>
         <th><%= t('activerecord.attributes.moderation_area.community_builder_id') %></th>
+        <th><%= t('activerecord.attributes.moderation_area.referent_benevole_id') %></th>
       </thead>
       <% @moderation_areas.each do |moderation_area| %>
         <tr>
@@ -57,10 +74,12 @@
             <td><%= render partial: "admin/moderation_areas/update/animator_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/sourcing_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
+            <td><%= render partial: "admin/moderation_areas/update/referent_benevole_form", locals: { moderation_area: moderation_area } %></td>
           <% else %>
             <td><%= moderation_area.animator.full_name if moderation_area.animator %></td>
             <td><%= moderation_area.sourcing.full_name if moderation_area.sourcing %></td>
             <td><%= moderation_area.community_builder.full_name if moderation_area.community_builder %></td>
+            <td><%= moderation_area.referent_benevole.full_name if moderation_area.referent_benevole %></td>
           <% end %>
         </tr>
       <% end %>
