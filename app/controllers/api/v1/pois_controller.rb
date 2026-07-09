@@ -43,7 +43,7 @@ module Api
         render json:
           Poi.validated
             .with_partners_filters(partners_filters)
-            .clustered(coordinates[:latitude], coordinates[:longitude], distance)
+            .clustered(coordinates[:latitude], coordinates[:longitude], distance, { air_conditioned: air_conditioned })
             .text_search(params[:query])
             .with_category_ids(category_ids),
           root: :clusters,
