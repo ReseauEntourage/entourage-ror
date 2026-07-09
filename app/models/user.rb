@@ -667,7 +667,9 @@ class User < ApplicationRecord
   end
 
   def default_lang?
-    lang == Translation::DEFAULT_LANG
+    return false unless lang.present? && lang.respond_to?(:to_sym)
+
+    lang.to_sym == Translation::DEFAULT_LANG
   end
 
   def not_default_lang?
