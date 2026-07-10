@@ -142,6 +142,49 @@ describe PoiServices::SoliguideImporter do
       it { expect { subject }.to change { Poi.where(source_id: poi_1[:source_id]).count }.by(1) }
     end
 
+    context 'when the unchanged-poi lookup itself fails (eg. a DB timeout)' do
+      before {
+        PoiServices::SoliguideIndex::BATCH_LIMIT = 1
+        PoiServices::SoliguideImporter.any_instance.stub(:nb_results) { 1 }
+        PoiServices::SoliguideIndex.stub(:post_all_for_page).with(1, :long) { [poi_0] }
+
+        call_count = 0
+        allow(Poi).to receive(:source_soliguide).and_wrap_original do |method|
+          call_count += 1
+          raise ActiveRecord::QueryCanceled, 'statement timeout' if call_count == 1
+
+          method.call
+        end
+      }
+
+      it { expect { subject }.not_to raise_error }
+      it { expect { subject }.to change { Poi.count }.by(1) }
+    end
+
+    context 'when the bulk touch of unchanged pois fails (eg. a DB timeout)' do
+      let!(:existing) { create(:poi, source: :soliguide, source_id: 17205, name: 'Old name', category: category_6, validated: true, source_updated_at: '2024-02-01T16:29:36.671Z', updated_at: 3.days.ago) }
+      let(:poi_0) { poi_struct.merge({ uuid: 's17205', source_id: 17205 }) }
+
+      before {
+        PoiServices::SoliguideIndex::BATCH_LIMIT = 1
+        PoiServices::SoliguideImporter.any_instance.stub(:nb_results) { 1 }
+        PoiServices::SoliguideIndex.stub(:post_all_for_page).with(1, :long) { [poi_0] }
+
+        call_count = 0
+        allow(Poi).to receive(:source_soliguide).and_wrap_original do |method|
+          call_count += 1
+          raise ActiveRecord::QueryCanceled, 'statement timeout' if call_count == 2
+
+          method.call
+        end
+      }
+
+      it 'still imports the poi instead of silently skipping it' do
+        expect { subject }.not_to raise_error
+        expect(existing.reload.updated_at).to be_within(1.minute).of(Time.zone.now)
+      end
+    end
+
     context 'when a poi is unchanged since the last sync' do
       let!(:existing) { create(:poi, source: :soliguide, source_id: 17205, name: 'Old name', category: category_6, validated: true, source_updated_at: '2024-02-01T16:29:36.671Z', updated_at: 3.days.ago) }
       let(:poi_0) { poi_struct.merge({ uuid: 's17205', source_id: 17205 }) }
