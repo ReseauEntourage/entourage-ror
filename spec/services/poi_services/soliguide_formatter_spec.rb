@@ -40,12 +40,26 @@ describe PoiServices::Soliguide do
         email: nil,
         audience: '',
         air_conditioned: nil,
+        source_updated_at: nil,
         category_ids: [],
         source_category: nil,
         source_categories: [],
         hours: [],
         languages: 'Anglais (English)'
       }) }
+    end
+
+    describe 'with updatedAt' do
+      let(:poi) { {
+        'lieu_id' => 123,
+        'entity' => { 'name' => 'foo' },
+        'position' => { 'location' => { 'coordinates' => [1, 2] } },
+        'languages' => ['en'],
+        'services_all' => [{ 'name' => 'bar' }],
+        'updatedAt' => '2024-02-01T16:29:36.671Z'
+      } }
+
+      it { expect(subject[:source_updated_at]).to eq('2024-02-01T16:29:36.671Z') }
     end
 
     describe 'with phones' do

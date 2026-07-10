@@ -1,5 +1,8 @@
 module PoiServices
   class SoliguideImporter
+    # "S'orienter": catch-all category for Soliguide services with no (or no recognized) category
+    DEFAULT_CATEGORY_ID = 5
+
     attr_reader :starting_time
     attr_reader :poi_attributes
     attr_reader :batch_limit
@@ -12,16 +15,13 @@ module PoiServices
 
     def create_all
       find_all_iterator do |page|
-        post_all_for_page(page).each do |response|
-          poi = Poi.find_or_initialize_by(source_id: response[:source_id])
-          poi.update(response.slice(*poi_attributes))
-          poi.source = :soliguide
-          poi.validated = true
-          poi.updated_at = Time.zone.now
+        responses = post_all_for_page(page)
+        unchanged, to_import = partition_unchanged(responses)
 
-          unless poi.save
-            Rails.logger.error("type:soliguide_importer error: poi not saved: #{poi.errors.full_messages} (#{response[:source_id]})")
-          end
+        (touch_unchanged_pois(unchanged) + to_import).each do |response|
+          import_poi(response)
+        rescue => e
+          Rails.logger.error("type=soliguide_importer error: class=#{e.class} message=#{e.message.inspect} source_id=#{response[:source_id]}")
         end
       end
 
@@ -29,6 +29,64 @@ module PoiServices
     end
 
     private
+
+    # Soliguide gives no way to fetch a diff of what changed since the last sync, but each
+    # place carries its own `updatedAt`. We store it locally so unchanged places can be
+    # skipped instead of being fully reformatted/revalidated/reindexed on every run.
+    #
+    # This lookup is an optimization, not a correctness requirement: if it fails (e.g. a
+    # statement timeout under load right after a big write, when planner stats are stale),
+    # fall back to treating the whole page as "to import" rather than aborting the sync.
+    def partition_unchanged responses
+      existing = Poi.source_soliguide.where(source_id: responses.map { |response| response[:source_id] })
+        .pluck(:source_id, :source_updated_at, :validated).to_h { |source_id, source_updated_at, validated| [source_id, [source_updated_at, validated]] }
+
+      responses.partition do |response|
+        source_updated_at, validated = existing[response[:source_id]]
+
+        validated && source_updated_at.present? && source_updated_at == response[:source_updated_at]
+      end
+    rescue => e
+      Rails.logger.error("type=soliguide_importer error: class=#{e.class} message=#{e.message.inspect} during partition_unchanged, importing full page")
+
+      [[], responses]
+    end
+
+    # Returns the responses that still need a full import, because the bulk touch failed
+    # (same fallback rationale as partition_unchanged above).
+    def touch_unchanged_pois responses
+      return [] if responses.empty?
+
+      Poi.source_soliguide.where(source_id: responses.map { |response| response[:source_id] }).update_all(updated_at: Time.zone.now)
+
+      []
+    rescue => e
+      Rails.logger.error("type=soliguide_importer error: class=#{e.class} message=#{e.message.inspect} during touch_unchanged_pois, importing full page instead")
+
+      responses
+    end
+
+    def import_poi response
+      response[:category_ids] = [DEFAULT_CATEGORY_ID] if response[:category_ids].blank?
+
+      poi = Poi.find_or_initialize_by(source_id: response[:source_id])
+      poi.update(response.slice(*poi_attributes))
+
+      # Poi#category_ids= only sets category_id the first time (leaves manual admin
+      # corrections alone afterwards). Once a POI has since learned a real category, let it
+      # out of the default fallback rather than leaving category_id stuck at it forever.
+      if poi.category_id == DEFAULT_CATEGORY_ID && response[:category_ids].first != DEFAULT_CATEGORY_ID
+        poi.category_id = response[:category_ids].first
+      end
+
+      poi.source = :soliguide
+      poi.validated = true
+      poi.updated_at = Time.zone.now
+
+      unless poi.save
+        Rails.logger.error("type:soliguide_importer error: poi not saved: #{poi.errors.full_messages} (#{response[:source_id]})")
+      end
+    end
 
     def remove_deprecated_pois
       Rails.logger.info("#{self.class.name} unvalidate POI older than #{starting_time}")
