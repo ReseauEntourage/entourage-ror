@@ -71,6 +71,14 @@ module PoiServices
 
       poi = Poi.find_or_initialize_by(source_id: response[:source_id])
       poi.update(response.slice(*poi_attributes))
+
+      # Poi#category_ids= only sets category_id the first time (leaves manual admin
+      # corrections alone afterwards). Once a POI has since learned a real category, let it
+      # out of the default fallback rather than leaving category_id stuck at it forever.
+      if poi.category_id == DEFAULT_CATEGORY_ID && response[:category_ids].first != DEFAULT_CATEGORY_ID
+        poi.category_id = response[:category_ids].first
+      end
+
       poi.source = :soliguide
       poi.validated = true
       poi.updated_at = Time.zone.now

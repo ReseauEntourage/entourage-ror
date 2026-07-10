@@ -127,6 +127,37 @@ describe PoiServices::SoliguideImporter do
       it { expect(Poi.first.category_ids).to eq([PoiServices::SoliguideImporter::DEFAULT_CATEGORY_ID]) }
     end
 
+    context 'when a poi was previously stuck on the default category and now has a real one' do
+      let!(:default_category) { create(:category, name: "S'orienter", id: PoiServices::SoliguideImporter::DEFAULT_CATEGORY_ID) }
+      let!(:existing) { create(:poi, source: :soliguide, source_id: 17205, category: default_category, validated: true, source_updated_at: '2020-01-01T00:00:00.000Z', updated_at: 3.days.ago) }
+      let(:poi_0) { poi_struct.merge({ uuid: 's17205', source_id: 17205, category_ids: [6] }) }
+
+      before {
+        PoiServices::SoliguideIndex::BATCH_LIMIT = 1
+        PoiServices::SoliguideImporter.any_instance.stub(:nb_results) { 1 }
+        PoiServices::SoliguideIndex.stub(:post_all_for_page).with(1, :long) { [poi_0] }
+      }
+
+      it 'unsticks category_id now that a real category is known' do
+        expect { subject }.to change { existing.reload.category_id }.from(PoiServices::SoliguideImporter::DEFAULT_CATEGORY_ID).to(6)
+      end
+    end
+
+    context 'when a poi keeps its manually-set category despite a default fallback response' do
+      let!(:existing) { create(:poi, source: :soliguide, source_id: 17205, category: category_6, validated: true, source_updated_at: '2020-01-01T00:00:00.000Z', updated_at: 3.days.ago) }
+      let(:poi_0) { poi_struct.merge({ uuid: 's17205', source_id: 17205, category_ids: [] }) }
+
+      before {
+        PoiServices::SoliguideIndex::BATCH_LIMIT = 1
+        PoiServices::SoliguideImporter.any_instance.stub(:nb_results) { 1 }
+        PoiServices::SoliguideIndex.stub(:post_all_for_page).with(1, :long) { [poi_0] }
+      }
+
+      it 'does not overwrite a category_id that is not the default fallback' do
+        expect { subject }.not_to change { existing.reload.category_id }
+      end
+    end
+
     context 'when importing one poi raises an unexpected error, others are still imported' do
       before {
         PoiServices::SoliguideIndex::BATCH_LIMIT = 2
