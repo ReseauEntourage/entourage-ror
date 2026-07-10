@@ -470,6 +470,11 @@ module PoiServices
       'provision_of_vehicles' => 7, # "Mise à disposition de véhicule" (se réinsérer)
       'chauffeur_driven_transport' => 7, # "Transport avec chauffeur" (se réinsérer)
       'mobility_assistance' => 7, # Aide à la mobilité (se réinsérer)
+      'mobility_financing' => 7, # Financement de la mobilité (se réinsérer)
+      'mobility_support' => 7, # Accompagnement à la mobilité (se réinsérer)
+      'transportation_mobility' => 7, # Transport & mobilité (se réinsérer)
+      'vehicle_maintenance' => 7, # Entretien de véhicule (se réinsérer)
+      'driving_license' => 7, # Permis de conduire (se réinsérer)
 
       # Hébergement
       'accomodation_and_housing' => 2, # HEBERGEMENT_LOGEMENT
@@ -478,6 +483,30 @@ module PoiServices
       'long_term_accomodation' => 2, # HEBERGEMENT_LONG_TERME
       'citizen_housing' => 2, # HEBERGEMENT_CITOYEN
       'access_to_housing' => 2, # CONSEIL_LOGEMENT
+      'medical_accommodation' => 2, # Hébergement médicalisé
+
+      # Santé sexuelle, mentale et spécialistes complémentaires (se soigner)
+      'abortion' => 3, # IVG
+      'addiction_care' => 3, # Soins liés aux addictions
+      'addiction_prevention_and_material' => 3, # Prévention et matériel de réduction des risques
+      'affective_life' => 3, # Vie affective et sexuelle
+      'contraception' => 3, # Contraception
+      'emergency_contraception' => 3, # Contraception d'urgence
+      'hearing_care' => 3, # Soins auditifs
+      'hiv_prevention' => 3, # Prévention VIH
+      'mental_health_education' => 3, # Sensibilisation santé mentale
+      'optical_care' => 3, # Soins optiques
+      'psychiatry' => 3, # Psychiatrie
+      'sexual_health_education' => 3, # Éducation à la santé sexuelle
+      'sexual_violence_support' => 3, # Accompagnement violences sexuelles
+      'sti_prevention_testing' => 3, # Prévention et dépistage IST
+      'support_groups' => 3, # Groupes de parole
+
+      # S'orienter (accompagnement administratif)
+      'health_coverage' => 5, # Aide à la couverture santé (CMU, AME...)
+
+      # S'occuper de soi
+      'therapeutic_activities' => 6, # Activités thérapeutiques
     }
 
     CATEGORIES_EQUIVALENTS_REVERSED = {
