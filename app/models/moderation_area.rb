@@ -2,6 +2,7 @@ class ModerationArea < ApplicationRecord
   belongs_to :animator, class_name: :User, optional: true
   belongs_to :sourcing, class_name: :User, optional: true
   belongs_to :community_builder, class_name: :User, optional: true
+  belongs_to :referent_benevole, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: '*') }
   scope :in_region, -> (region) {
@@ -56,6 +57,10 @@ class ModerationArea < ApplicationRecord
 
   def community_builder_with_fallback
     community_builder || default_interlocutor
+  end
+
+  def referent_benevole_with_fallback
+    referent_benevole || ModerationServices.default_referent_benevole
   end
 
   def departement_slug

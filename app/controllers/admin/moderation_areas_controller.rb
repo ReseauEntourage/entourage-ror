@@ -9,8 +9,11 @@ module Admin
       @default_slack_id = ModerationServices::DEFAULT_SLACK_MODERATOR_ID
       @default_moderator = User.find_by(slack_id: @default_slack_id, admin: true, validation_status: :validated)
 
+      @default_referent_slack_id = ModerationServices::SLACK_DEFAULT_REFERENT_ID
+      @default_referent_benevole = ModerationServices.default_referent_benevole
+
       @moderation_areas = ModerationArea
-        .includes(:animator, :sourcing, :community_builder)
+        .includes(:animator, :sourcing, :community_builder, :referent_benevole)
         .in_region(@params[:region])
         .order(:departement)
     end
@@ -75,6 +78,15 @@ module Admin
       end
     end
 
+    def update_referent_benevole
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(referent_benevole_id: params[:referent_benevole_id])
+      respond_to do |format|
+        format.js { render 'admin/moderation_areas/update/referent_benevole' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Référent bénévole mis à jour avec succès.' }
+      end
+    end
+
     private
 
     def area_params
@@ -88,6 +100,7 @@ module Admin
         :animator_id,
         :sourcing_id,
         :community_builder_id,
+        :referent_benevole_id,
         :departement,
         :name,
         :welcome_message_1_offer_help,
