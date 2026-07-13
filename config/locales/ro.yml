@@ -1,50 +1,996 @@
+---
 ro:
   date:
     abbr_day_names:
-      - dum
-      - lun
-      - mar
-      - mie
-      - joi
-      - vin
-      - sâm
+    - dum
+    - lun
+    - mar
+    - mie
+    - joi
+    - vin
+    - sâm
     abbr_month_names:
-      -
-      - ian
-      - feb
-      - mar
-      - apr
-      - mai
-      - iun
-      - iul
-      - aug
-      - sep
-      - oct
-      - nov
-      - dec
+    -
+    - ian
+    - feb
+    - mar
+    - apr
+    - mai
+    - iun
+    - iul
+    - aug
+    - sep
+    - oct
+    - noi
+    - dec
     day_names:
-      - duminică
-      - luni
-      - marți
-      - miercuri
-      - joi
-      - vineri
-      - sâmbătă
+    - duminică
+    - luni
+    - marți
+    - miercuri
+    - joi
+    - vineri
+    - sâmbătă
     formats:
-      default: "%d.%m.%Y"
-      short: "%e %b"
-      long: "%e %B %Y"
+      default: "%d-%m-%Y"
+      long: "%d %B %Y"
+      short: "%d %b"
     month_names:
-      -
-      - ianuarie
-      - februarie
-      - martie
-      - aprilie
-      - mai
-      - iunie
-      - iulie
-      - august
-      - septembrie
-      - octombrie
-      - noiembrie
-      - decembrie
+    -
+    - ianuarie
+    - februarie
+    - martie
+    - aprilie
+    - mai
+    - iunie
+    - iulie
+    - august
+    - septembrie
+    - octombrie
+    - noiembrie
+    - decembrie
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: aproximativ o oră
+        few: aproximativ %{count} ore
+        other: aproximativ %{count} ore
+      about_x_months:
+        one: aproximativ o lună
+        few: aproximativ %{count} luni
+        other: aproximativ %{count} luni
+      about_x_years:
+        one: aproximativ un an
+        few: aproximativ %{count} ani
+        other: aproximativ %{count} ani
+      almost_x_years:
+        one: aproape %{count} an
+        few: aproape %{count} ani
+        other: aproape %{count} ani
+      half_a_minute: jumătate de minut
+      less_than_x_seconds:
+        one: mai puțin de o secundă
+        few: mai puțin de %{count} secunde
+        other: mai puțin de %{count} secunde
+      less_than_x_minutes:
+        one: mai puțin de un minut
+        few: mai puțin de %{count} minute
+        other: mai puțin de %{count} minute
+      over_x_years:
+        one: mai mult de un an
+        few: mai mult de %{count} ani
+        other: mai mult de %{count} ani
+      x_seconds:
+        one: "%{count} secundă"
+        few: "%{count} secunde"
+        other: "%{count} secunde"
+      x_minutes:
+        one: "%{count} minut"
+        few: "%{count} minute"
+        other: "%{count} minute"
+      x_days:
+        one: "%{count} zi"
+        few: "%{count} zile"
+        other: "%{count} zile"
+      x_months:
+        one: "%{count} lună"
+        few: "%{count} luni"
+        other: "%{count} luni"
+    prompts:
+      second: secunda
+      minute: minutul
+      hour: ora
+      day: ziua
+      month: luna
+      year: anul
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: trebuie dat acceptul
+      blank: nu poate fi necompletat
+      confirmation: nu este confirmat
+      empty: nu poate fi necompletat
+      equal_to: trebuie să fie egal cu %{count}
+      even: trebuie să fie impar
+      exclusion: este rezervat
+      greater_than: trebuie să fie mai mare decât %{count}
+      greater_than_or_equal_to: trebuie să fie mai mare sau egal cu %{count}
+      inclusion: nu este inclus în listă
+      invalid: este invalid
+      less_than: trebuie să fie mai mic decât %{count}
+      less_than_or_equal_to: trebuie să fie mai mic sau egal cu %{count}
+      not_a_number: nu este un număr
+      not_an_integer: trebuie să fie un mumăr întreg
+      odd: trebuie să fie par
+      taken: este deja folosit
+      too_long: este prea lung (se pot folosi maximum %{count} caractere)
+      too_short: este prea scurt (minimum de caractere este %{count})
+      wrong_length: nu are lungimea corectă (trebuie să aibă %{count} caractere)
+    template:
+      body: 'Încearcă să corectezi urmatoarele câmpuri:'
+      header:
+        one: 'Nu am putut salva acest %{model}: o eroare'
+        few: 'Nu am putut salva acest %{model}: %{count} erori.'
+        other: 'Nu am putut salva acest %{model}: %{count} erori.'
+  helpers:
+    select:
+      prompt: Alegeți
+    submit:
+      create: Creare %{model}
+      submit: Salvare %{model}
+      update: Modificare %{model}
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "Niciun %{entry_name} găsit"
+          one: "Se afișează <b>1</b> %{entry_name}"
+          other: "Se afișează <b>toate</b> %{entry_name} (total: <b>%{count}</b>)"
+      more_pages:
+        display_entries: "Se afișează %{entry_name} <b>%{first}&nbsp;-&nbsp;%{last}</b> (total: <b>%{total}</b>)"
+  number:
+    currency:
+      format:
+        delimiter: "."
+        format: "%n %u"
+        precision: 2
+        separator: ","
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "€"
+    format:
+      delimiter: "."
+      precision: 3
+      separator: ","
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: miliard
+          million: milion
+          quadrillion: quadrilion
+          thousand: mie
+          trillion: trilion
+          unit: ''
+      format:
+        delimiter: ","
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            few: Bytes
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ","
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: " și "
+      two_words_connector: " și "
+      words_connector: ", "
+  time:
+    am: am
+    formats:
+      default: "%a %d %b %Y, %H:%M:%S %z"
+      long: "%d %B %Y %H:%M"
+      short: "%d %b %H:%M"
+    pm: pm
+  views:
+    pagination:
+      first: "&laquo; Prima"
+      last: "Ultima &raquo;"
+      previous: "&lsaquo; Anterior"
+      next: "Următor &rsaquo;"
+      truncate: "&hellip;"
+  activerecord:
+    attributes:
+      user:
+        first_name: Prenume
+        last_name: Nume
+        full_name: Nume
+        email: Email
+        phone: Telefon
+        organization: Organizație de asistență stradală
+        about: Despre
+        roles: Roluri
+        targeting_profile: Profil de moderare
+        goal: Profil declarat
+        partner: Asociație
+        partner_id: Asociație
+        admin_password: Parolă
+        admin_password_confirmation: Confirmarea parolei
+        created_at: Data creării
+        address: Adresă
+        cnil_explanation: Motivele acestei acțiuni
+        validation_status: Status
+        last_sign_in_at: Data ultimei conectări
+        postal_codes: Coduri poștale
+        postal_code: Cod poștal
+        engaged?: Implicat?
+        deleted: Șters
+        organization_name: Asociație
+        subscriptions: Abonamente
+        action_creations_count: Număr de acțiuni create
+        action_participations_count: Număr de acțiuni la care s-a alăturat
+        outing_participations_count: Număr de evenimente la care s-a alăturat
+        conversation_participations_count: Număr de conversații la care s-a alăturat
+      user_blocked_user:
+        user: Utilizator
+        blocked_user: Utilizator blocat
+        status: Status
+      user_history:
+        kind:
+          account: Cont creat
+          anonymize: Cont anonimizat
+          auto: auto
+          block: Cont blocat
+          deleted: Cont șters
+          unblock: Cont deblocat
+          phone_change_cancel: Schimbare de telefon anulată
+          phone_change_change: Număr de telefon schimbat
+          phone_change_request: Schimbare de telefon solicitată
+          signal-action: Semnalarea unei acțiuni
+          signal-user: Semnalarea utilizatorului
+          spam-alert: Alertă privind utilizatorii afectați de spam
+          spam-detection: Spam detectat
+          sms: Cod SMS resolicitat
+        sms:
+          invite: Invitație
+          welcome: Bun venit
+          regenerate: Solicitare de parolă nouă
+      organization:
+        name: Nume
+        description: Descriere
+        phone: Telefon
+        address: Adresă
+      entourage:
+        id: Id
+        title: Titlu
+        description: Descriere
+        display_address: Adresă
+        latitude: Latitudine
+        longitude: Longitudine
+        recurrency: Recurență
+        created_at: Creat la
+        starts_at: Începe la
+        ends_at: Se termină la
+        image_url: URL imagine
+        place_limit: Număr de locuri disponibile
+        members_count: Număr de participanți
+        outing_image_url: Fotografie eveniment
+        cancellation_message: Mesaj de anulare
+        sf_category: Tip de eveniment
+        exclusive_to: Public țintă al evenimentului
+        categories:
+          social: Social
+          resource: Resursă
+          mat_help: Ajutor material
+          non_mat_help: Ajutor nematerial
+          other: Altele
+        entourage_types:
+          ask_for_help: Cerere
+          contribution: Contribuție
+        group_types:
+          action: Acțiune
+          outing: Eveniment
+          conversation: Conversație
+        statuses:
+          open: Activ
+          closed: Închis
+          blacklisted: Blocat
+          suspended: Suspendat
+          full: Complet
+          cancelled: Anulat
+      entourage_image:
+        title: Titlu
+        landscape_url: Fotografie orizontală
+        portrait_url: Fotografie verticală
+      entourage_moderation:
+        action_author_type: Emițător
+        action_recipient_type: Audiență
+        action_target_type: Țintă
+        action_type: Tip de acțiune
+        action_recipient_consent_obtained: Consimțământ
+
+        moderated_at: Data moderării
+        moderation_contact_channel: Mijloc de contact
+        moderator_id: Interlocutor
+        moderation_action: Acțiune
+        moderation_comment: Note
+
+        action_outcome_reported_at: Data de finalizare
+        action_outcome: Rezultat
+        action_success_reason: Motivul reușitei
+        action_failure_reason: Motivul eșecului
+
+        section: Categorie
+
+      inapp_notification:
+        context_types:
+          birthday: birthday
+          chat_message_on_create: chat_message_created
+          join_request_on_create: join_request_created
+          join_request_on_update: join_request_updated
+          neighborhoods_entourage_on_create: outing_created
+          outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
+
+      user_moderation:
+        expectations: Așteptări
+        acquisition_channel: Modul de a cunoaște Entourage
+        content_sent: Conținut trimis
+        skills: Competențe
+
+        accepts_event_invitations: Apéro Entourage
+        accepts_volunteering_offers: Voluntariat
+        ambassador: Animator Entourage
+
+      partner:
+        name: Nume
+        description: Descriere
+        phone: Telefon
+        address: Adresă
+        website_url: Site web
+        email: Email
+        donations_needs: Donații acceptate
+        volunteers_needs: Voluntari căutați
+      poi:
+        id: ID
+        name: Nume
+        adress: Adresă
+        description: Descriere
+        audience: Public
+        email: Email
+        website: Website
+        phone: Telefon
+        category_1: Categoria 1
+        category_2: Categoria 2
+        category_3: Categoria 3
+        category_4: Categoria 4
+        category_5: Categoria 5
+        category_6: Categoria 6
+        category_7: Categoria 7
+      announcement:
+        title: Titlu
+        icon: Pictogramă
+        image_url: Imagine orizontală
+        image_portrait_url: Imagine verticală
+        body: Descriere
+        action: CTA
+        url: Link
+        webview: Deschide în
+        areas: Zone geografice
+        user_goals: Categorii de public
+        categories:
+          online: Eveniment online
+          ambassador: Program animator Entourage
+          poi_map: Locuri solidare
+
+      moderation_area:
+        name: Numele zonei
+        departement: Departament
+        animator_id: PEC
+        sourcing_id: PI
+        community_builder_id: Community builder
+        welcome_message_1: Mesaj de bun venit
+        slack_moderator_id: ID Slack
+      translation:
+        langs:
+          fr: Franceză
+          en: Engleză
+          es: Spaniolă
+          de: Germană
+          pl: Poloneză
+          ro: Română
+          uk: Ucraineană
+          ar: Arabă
+      tour_area:
+        statuses:
+          active: Activă
+          inactive: Inactivă
+
+      conversation_message_broadcast:
+        moderation_area_id: Zonă de moderare
+        content: Conținut
+        goal: Public
+        title: Titlu
+        archived_at: Arhivat la
+        area: Zonă
+        areas: Județe sau coduri poștale
+        area_type: Zonă
+        area_types:
+          national: Național
+          hors_zone: În afara zonei
+          sans_zone: Fără zonă
+          list: Județe sau coduri poștale
+      neighborhood:
+        name: Nume
+        description: Descriere
+        interests: Centre de interes
+        image_url: Imagine
+        reserved_female: Rezervat femeilor
+        status: Status
+        statuses:
+          active: Activ
+          deleted: Șters
+          blacklisted: Blocat
+      recommandation:
+        name: Nume
+        instance: Obiect
+        action: Acțiune
+        argument_type: Tip de argument
+        argument_value: Valoarea argumentului (id sau url)
+        user_goals: Profiluri
+        image_url: Imagine
+        status: Status
+        actions:
+          index: Listă
+          show: Afișare
+          create: Creare
+          join: Alăturare
+          show_joined: Afișează cel mai apropiat deja alăturat
+          show_not_joined: Afișează cel mai apropiat la care nu s-a alăturat încă
+        instances:
+          user: Utilizator
+          profile: Profil
+          neighborhood: Grup de vecinătate
+          outing: Eveniment
+          poi: POI
+          resource: Conținut educativ
+          webview: Webview
+          conversation: Conversație
+          contribution: Contribuție
+          solicitation: Cerere
+      resource:
+        name: Nume
+        category: Categorie
+        description: Descriere
+        url: Url
+        is_video: Video?
+        duration: Durată
+        image_url: Imagine
+        tags:
+          neighborhood: "Grupuri: importanța de a împărtăși ce ne unește"
+          outing: "Cum să creezi un eveniment?"
+          action: "Întrajutorare: ce pot oferi / cere"
+          welcome: "Videoclip de bun venit"
+        categories:
+          act: Acționează
+          inspire: Inspiră-te
+          understand: Înțelege
+      smalltalk:
+        object: Energii pozitive
+        new_message: Mesaj nou
+        title_with_participants: "%s"
+
+  community:
+    entourage:
+      roles:
+        admin: Administrator
+        ambassador: Animator Entourage
+        coordinator: Coordonator
+        ethics_charter_signed: A validat carta etică
+        moderator: Moderator
+        not_validated: Nevalidat
+        visitor: Vizitator
+      targeting_profiles:
+        offers_help: Vecin
+        asks_for_help: Persoană vulnerabilă
+        partner: Asociație
+        ambassador: Animator Entourage
+        team: Echipa Entourage
+      goals:
+        offer_help: Vecin
+        ask_for_help: Persoană izolată
+        organization: Asociație
+        goal_not_known: Nedefinit
+        all: Toate profilurile
+      goals_compact:
+        offer_help: Vecin
+        ask_for_help: Persoană vulnerabilă
+        organization: Asociație
+        goal_not_known: Nedefinit
+        staff: Animatori Entourage și echipă
+        all: Toate profilurile
+      icons:
+        offer_help: user
+        ask_for_help: street-view
+        organization: sitemap
+        goal_not_known: question
+    user:
+      profiles:
+        offer_help: Vecin solidar
+        ask_for_help: Persoană vulnerabilă
+        organization: Asociație
+        goal_not_known: Nedefinit
+        all: Toate profilurile
+      engagements:
+        engaged: Implicat
+        not_engaged: Neimplicat
+      statuses:
+        validated: Validat
+        anonymized: Anonimizat
+        blocked: Blocat
+        temporary_blocked: Blocat temporar
+        deleted: Șters
+        pending: În așteptare
+      roles:
+        moderator: Moderator
+        admin: Administrator
+    chat_messages:
+      status_update:
+        closed_user: utilizatorul a părăsit rețeaua Entourage. Nu ezita să te alături altor acțiuni solidare din aplicație!
+
+  push_notifications:
+    action:
+      create_for_follower: "%s te invită să te alături la %s"
+    badge:
+      bienvenue:
+        title: "🎉 Un prim pas printre noi!"
+        content: "Tocmai ai obținut prima ta insignă pe Entourage: Primul pas 👣"
+      premier_contact:
+        title: "✨ O primă legătură creată!"
+        content: "Un mesaj trimis, un mesaj primit: descoperă insigna ta Prima legătură 👋"
+      moteur_rencontres:
+        title: "💫 Pui lucrurile în mișcare!"
+        content: "3 evenimente în 90 de zile: dai viață cartierului tău. Descoperă insigna Creator de întâlniri 💫"
+      fidele_papotages:
+        title: "💬 Felicitări pentru fidelitatea ta!"
+        content: "3 conversații solidare în 90 de zile, faci bine în jurul tău. Descoperă insigna ta As al conversațiilor"
+      voix_presente:
+        title: "🌱 Dai viață grupurilor!"
+        content: "Ești prezent(ă), săptămână de săptămână. Descoperă insigna Țesător de legături 🌱"
+    birthday:
+      title: La mulți ani 🎉
+      content: Suntem bucuroși să te avem alături de noi. Apasă aici pentru a citi mesajul nostru aniversar!
+    outing:
+      create: "Un eveniment nou a fost adăugat la %s: %s programat pentru %s"
+      cancel: "Acest eveniment programat pentru %s a fost anulat"
+      update: "Evenimentul programat pentru %s a fost modificat. Va avea loc la %s, la %s"
+      update_short: "Evenimentul programat pentru %s a fost modificat"
+      day_before:
+        title: "🔔 Memento: „%s” are loc mâine!"
+        content: "Nu uita, acest eveniment este mâine. Mai vii?"
+    chat_message:
+      mention: "%s te-a menționat în mesajul său"
+    post:
+      create: "%s tocmai a distribuit: „%s”"
+      create_image: "%s tocmai a distribuit o fotografie"
+    comment:
+      create: "%s tocmai a comentat la postarea „%s”"
+      create_image: "%s tocmai a distribuit o fotografie"
+    reaction:
+      create: "%s a reacționat la publicația ta: „%s”"
+    join_request:
+      new: "Participant nou"
+      update: "Cererea a fost acceptată"
+      update_on_action: "Tocmai te-ai alăturat unei acțiuni de %s"
+      update_on_outing: "Tocmai te-ai alăturat unui eveniment de %s"
+      update_on_neighborhood: "Tocmai te-ai alăturat unui grup de %s"
+      update_on_smalltalk: "Tocmai te-ai alăturat unei noi bande de Energii Pozitive"
+      create: "%s tocmai s-a alăturat la %s-ul tău „%s”"
+      create_outing: "%s tocmai s-a alăturat la evenimentul tău „%s” din %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
+    contribution:
+      create: "Un vecin propune o nouă formă de întrajutorare"
+    solicitation:
+      create: "Un vecin caută ajutor"
+      create_section: "Un vecin caută %s"
+    survey_response:
+      create: "%s a răspuns la sondajul tău: %s"
+    matching:
+      create: "Acest conținut te-ar putea interesa"
+      almost_match_title: "Sugestie de grup"
+      almost_match_content: "Acest grup (sau aceste grupuri) de discuții Energii Pozitive ar putea corespunde cu ceea ce cauți!"
+    user_smalltalk:
+      expire_object: "Tot fără potrivire 😕"
+      expire_content: |
+        Cererea ta de Energii Pozitive a expirat.
+        Încearcă poate cu niște criterii un pic mai flexibile? ✨
+
+  timeliner:
+    h1:
+      title: "Bine ai venit la Entourage 👌"
+      offer: "Știai? Este nevoie de un singur videoclip pentru a-ți dărâma prejudecățile!"
+      ask: "Nu îți poți imagina tot ce conține noua ta aplicație: vino și descoperă-o!"
+
+  regions:
+    ouest: Vest
+    sud_ouest: Sud-Vest
+    sud_est: Sud-Est
+    aura: Auvergne-Rhône-Alpes
+    nord: Nord
+    idf: Ile-de-France
+    centre_est: Centru-Est
+
+  conversations:
+    participants:
+      alone: Tu
+
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Bun venit, %s 🙂 Ne bucurăm că ni te-ai alăturat! Prezintă-te în câteva cuvinte ca să te cunoască grupul.
+      destroy_member: | # first_name
+        %s tocmai a părăsit grupul. Mulțumim pentru participare și mult succes în continuare!
+      banned_member: | # first_name
+        %s nu mai face parte din grup. Comportamentul său nu s-a potrivit cu spiritul comunității solidare. Contăm pe voi să păstrați acest spațiu plin de bunăvoință și voie bună 🙏
+      incomplete: |
+        Vă pregătim un grup frumos de Energii Pozitive ✨ Până sosesc următorii membri, o mică provocare: încercați să ghiciți prenumele celui sau celei care urmează să se alăture. Șansele sunt mici... dar cine știe? 👀
+      close: |
+        Toți membrii acestui grup de Energii Pozitive au decis să părăsească discuția, așa că ai rămas singur(ă) aici. Grupul este acum închis. Poți oricând să consulți istoricul discuțiilor și să revii aici dacă ai nevoie.
+
+        Dacă vrei să continui să împărtășești Energii Pozitive, nu ezita să creezi o nouă cerere pentru a te alătura altui grup. Pe curând 👋
+      complete: |
+        Grupul este complet! 🎉
+
+        Bun venit în grupul vostru de energii pozitive, un spațiu pentru a crea legături într-un mod simplu și binevoitor ✨
+
+        Misiunea voastră: să comunicați, să împărtășiți și, de ce nu, să vă întâlniți – online sau în viața reală?
+        Iată linkul pentru o primă întâlnire video: %s
+
+        👋 Nu ezitați să vă prezentați dacă nu ați făcut-o deja.
+
+        🔥 Și de mâine... începeți 7 zile de mici provocări pentru a vă descoperi și a crea legături adevărate 🫶
+
+        Contăm pe voi să intrați în joc cu toată inima! 😉
+      complete_j1: |
+        Provocarea zilei: Trei adevăruri și o minciună – împărtășește trei lucruri adevărate despre tine și unul fals. Ceilalți trebuie să ghicească care este minciuna!
+      complete_j2: |
+        Provocarea zilei: Ieri în viața mea... Povestește-ți ziua de ieri folosind doar trei emojiuri. Ceilalți trebuie să încerce să ghicească ce s-a întâmplat!
+      complete_j3: |
+        Pune grupului cea mai interesantă întrebare la care nu ai găsit niciodată un răspuns satisfăcător. Poate grupul te poate ajuta să reflectezi!
+      complete_j4: |
+        Provocarea zilei: Împărtășește ceva ce oamenii nu ar ghici despre tine la prima vedere: o pasiune, un obicei, o trăsătură de caracter...
+      complete_j5: |
+        Provocarea zilei: Timp de 24 de ore, un cuvânt comun este interzis în grup (ex: „da”, „eu”, „mâncare”). Dacă cineva îl scrie... trebuie să povestească o întâmplare amuzantă despre el!
+      complete_j6: |
+        Provocarea zilei: Fiecare împărtășește ce îl ajută să se apropie de cineva: o privire, un loc, o frază... sau un truc anti-timiditate!
+      complete_j7: |
+        Provocarea zilei: Împărtășește un eveniment interesant care urmează în apropierea ta sau online! Dacă altcineva menționează același eveniment sau unul similar, poate fi momentul perfect să mergeți împreună (sau să vă întâlniți online)!
+      complete_congratulations: | # meeting_url
+        Felicitări tuturor pentru participare! Ați luat timp să împărtășiți, să ascultați și să creați legături: este deja o mare realizare 🧡
+
+        Acum e momentul pentru întâlnirea colectivă! Online sau în persoană, este timpul să dați viață schimburilor voastre, să puneți chipuri în spatele cuvintelor și să păstrați aceste energii pozitive 🤝
+
+        Câteva idei:
+
+        O întâlnire video relaxată, fiecare de acasă (pijamaua este binevenită 😄)
+
+        O cafea sau un aperitiv dacă locuiți aproape unii de alții
+
+        Un picnic sau o activitate comună, dacă aveți chef (și dacă vremea permite)
+
+        Pentru a vă organiza ușor, am creat acest link video: %s
+        Lansați idei, propuneți un moment, și mai ales... simțiți-vă ca acasă ✨
+      complete_j21: |
+        Salutare tuturor! 👋
+
+        Sperăm că schimburile voastre au decurs bine, fie în scris, în video sau față în față!
+        Dacă aveți feedback sau dacă ceva nu a mers bine, nu ezitați să ne spuneți. Echipa Entourage este aici pentru a vă asculta și susține, cu toată bunăvoința 🧡
+
+        Și dacă totul a fost bine, spuneți-ne și asta! Feedback-ul vostru ne ajută să menținem Energia Pozitivă cât mai fidel.
+
+        Vă mulțumim pentru încredere ✨
+      inactive_j3: |
+        Salut, echipă! Suntem curioși să știm ce v-a făcut să vă alăturați acestui grup? 😊
+      inactive_j5: |
+        Nu te simți foarte confortabil să scrii? Nicio problemă! Poți opta și pentru o întâlnire video relaxată sau o cafea în cerc restrâns ☕
+
+        Iată un link pentru a vă găsi ușor online:
+        👉 %s
+
+        Nu ezita să ne spui ce ți s-ar potrivi cel mai bine, sunt o mie de moduri de a crea legături 🧡
+      inactive_j7: |
+        Simțim că e puțin liniște pe aici…
+
+        Dacă niciun mesaj nu este schimbat în următoarele 7 zile, grupul se va închide automat.
+
+        Mulțumim că ai fost aici. Și dacă mai ai chef să creezi legături, Energiile Pozitive te vor primi din nou, oricând vrei 🧡
+      happy_birthday: | # first_name
+        Toată banda de Energii Pozitive îi urează la mulți ani lui %s! 🎉 Bucură-te din plin de ziua ta și nu ezita să ne povestești cum o vei sărbători!
+      chart_recall: |
+        Un mic memento binevoitor: Energiile Pozitive sunt făcute pentru a comunica cu bună dispoziție și respect. Găsiți aici carta etică! Mulțumim tuturor!
+      smalltalk_anniversary_six_months: |
+        Grupul nostru împlinește deja șase luni azi! 🎉 Mulțumim pentru toate schimburile și momentele frumoase petrecute împreună!
+      smalltalk_anniversary_one_year: |
+        Grupul nostru împlinește deja un an azi! 🎉 Mulțumim pentru toate schimburile și momentele frumoase petrecute împreună!
+      user_one_year_membership: | # first_name
+        Azi, %s aniversează 1 an alături de noi! 🎉 Mulțumim că ești cu noi de atât timp – spune-ne un moment memorabil!
+      smalltalk_500_messages: |
+        Sunteți minunați! 🔥 Deja 500 de mesaje schimbate în grup, ce conversații aprinse! Continuăm? Următorul obiectiv: 1000 de mesaje?
+      smalltalk_1000_messages: |
+        Incredibil, tocmai ați atins 1000 de mesaje schimbate! 🤯 Sunteți oficial campionii și campioanele Energiilor Pozitive!
+
+  pois:
+    soliguide:
+      public:
+        administrative: "Primire: %s"
+        description: "Alte informații importante: %s"
+        reception: Primire
+      accueil:
+        preferentiel: "preferențial"
+        exclusif: "exclusiv"
+        inconditionnel: "necondiționat"
+      age:
+        mineur: "minori (-18 ani)"
+        adulte: "doar pentru adulți"
+        from: "de la %s ani"
+        from_to: "de la %s la %s ani"
+      familiale:
+        isolated: "Persoană singură"
+        family: "Familie"
+        couple: "Cuplu"
+        pregnant: "Femeie însărcinată"
+      administrative:
+        default: "persoane %s"
+        regular: "în situație regulată"
+        undocumented: "fără acte"
+        asylum: "solicitanți de azil"
+        refugee: "refugiați"
+      other:
+        violence: "victimă a violenței"
+        addiction: "în situație de dependență"
+        handicap: "în situație de handicap"
+        lgbt: "aparținând comunităților LGBT+"
+        hiv: "purtătoare de HIV"
+        prostitution: "lucrător sexual"
+        prison: "eliberat din închisoare"
+        student: "student(ă)"
+      modalities:
+        inconditionnel: "Primire fără programare"
+        appointment: "Cu programare (%s)"
+        inscription: "Cu înscriere (%s)"
+        orientation: "Cu orientare (%s)"
+        other_details: Alte detalii
+      animal:
+        unauthorized: "Animalele nu sunt permise"
+        authorized: "Animalele sunt permise"
+      hours:
+        closed: Închis
+        at: la
+
+  tags:
+    sections:
+      social:
+        name: Timp petrecut împreună
+        subname: cafea, activitate...
+      services:
+        name: Serviciu
+        subname: spălătorie, printare documente...
+      clothes:
+        name: Îmbrăcăminte
+        subname: pantofi, palton...
+      equipment:
+        name: Echipament
+        subname: telefon, sac de dormit...
+      hygiene:
+        name: Produs de igienă
+        subname: săpun, produse de igienă...
+    orientations:
+      share: Distribuie evenimentele tale de socializare pe aplicație
+      guide: Îndrumă-ți beneficiarii către evenimente de socializare
+      help: Oferă sau solicită un ajutor
+    sf_categories:
+      atelier_femmes: "Atelier de sensibilizare: Femei aflate în situație de precaritate"
+      atelier_mdlr: "Atelier de sensibilizare: Lumea străzii"
+      atelier_preca: "Atelier de sensibilizare: Precaritate, excluziune și angajare"
+      devenir_ambassadeur: ABC-ul pentru a deveni animator Entourage
+      convivialite: Eveniment de socializare
+      papotages: Conversații solidare
+      passion_sport: Pasiune sport
+      pratique_sport: Practicarea sportului
+      quizz_sensibilisation: Chestionar de sensibilizare
+      rencontre_nomade: Întâlnire Nomadă
+      welcome_entourage_local: Întâlnire de bun venit Entourage Local
+      welcome_entourage_pro: Întâlnire de bun venit Entourage Pro
+    concerns:
+      sharing_time: Timp petrecut împreună
+      material_donations: Donații materiale
+      services: Servicii
+    interests:
+      activites: Activități manuale
+      animaux: Animale
+      bien-etre: Bunăstare
+      cuisine: Bucătărie
+      culture: Artă și cultură
+      jeux: Jocuri
+      nature: Natură
+      sport: Sport
+      marauding: Patrule sociale
+      other: Altele
+    involvements:
+      resources: Învață cu ajutorul conținuturilor educative
+      outings: Participă la evenimente de socializare
+      both_actions: Oferă sau solicită un ajutor
+      solicitations: Solicită un ajutor
+      neighborhoods: Alătură-te unui grup de vecini și creează legături
+      pois: Găsește structuri solidare din apropiere
+    signals:
+      spam: Spam
+      fraud: Escrocherie
+      insults: Limbaj nepotrivit
+      in_danger: Punere în pericol
+      other: Altele
+
+  onboarding:
+    ethical_charter: |
+      Sunt din nou eu!
+
+      La Entourage, chiar ținem ca fiecare să se simtă bine, în siguranță, ascultat(ă) și binevenit(ă). De aceea am redactat această cartă etică, pe care toți membrii comunității se angajează să o respecte atunci când se alătură aplicației. O poți consulta aici:
+
+      https://www.entourage.social/app/resources/eMU_InNSSJbE
+
+      Pe curând!
+
+      %s
+
+  outings:
+    tasks:
+      reminder_content: |
+        Acest eveniment se apropie cu pași repezi! Dacă ești în continuare interesat(ă) să participi, te rugăm să comentezi „Particip” la acest mesaj.
+      reminder_7_days_with_participants: |
+        Bună %{first_name},
+
+        Îți mulțumim mult pentru că ai organizat %{title}, este o inițiativă grozavă pentru a crea legături! 🙌
+
+        👉 Văd că evenimentul tău se apropie și %{count} persoane s-au înscris deja, este super! Ca să le ajuți să nu uite, le poți scrie un mic mesaj în discuția evenimentului.
+
+        Și dacă vrei ca alți vecini să se înscrie, îți recomand să distribui linkul evenimentului în grupul tău din %{neighborhood}: poate face toată diferența! Iată linkul: %{link}
+
+        Dacă ai nevoie de un ajutor, nu ezita să-mi spui.
+
+        Îți mulțumim pentru implicarea ta și dorința de a crea legături 🙏
+        Pe curând
+      reminder_7_days_without_participants: |
+        Bună %{first_name},
+
+        Îți mulțumim mult pentru că ai organizat %{title}, este o inițiativă grozavă pentru a crea legături! 🙌
+
+        Văd că evenimentul tău se apropie, dar nimeni nu s-a înscris încă. Fără panică: de multe ori lucrurile se mișcă chiar în ultimul moment 😉
+
+        Îți recomand să distribui linkul evenimentului în grupul tău din %{neighborhood}: poate face toată diferența! Iată linkul: %{link}
+
+        Dacă ai nevoie de un ajutor, nu ezita să-mi spui.
+
+        Îți mulțumim pentru implicarea ta și dorința de a crea legături 🙏
+        Pe curând
+      reminder_1_day_with_participants: |
+        Bună %{first_name},
+
+        Evenimentul tău %{title} are loc mâine!
+        Felicitări pentru această inițiativă frumoasă 💪
+
+        Iată câteva sfaturi simple pentru a crea un moment prietenos și incluziv:
+
+        🌟 Întâmpină fiecare participant(ă) personal, cu un cuvânt cald și un zâmbet
+        🌟 Începe cu o activitate de prezentare (jocuri de spart gheața, un tur al prenumelor etc.) pentru a destinde atmosfera
+        🌟 Fii atent(ă) la fiecare persoană: ajută-i pe cei care s-ar putea simți puțin retrași să își găsească locul
+
+        La finalul evenimentului, nu ezita să faci o poză de grup (asigurându-te că ai acordul fiecărui participant) și să o postezi în grupul tău de vecini %{neighborhood} 👌
+
+        Îți mulțumim pentru implicare și generozitate. Contribui la crearea unui cartier mai solidar 💛
+
+        Pe curând
+      reminder_1_day_without_participants: |
+        Bună %{first_name},
+
+        Evenimentul tău %{title} are loc mâine! Felicitări pentru această inițiativă 👏
+
+        Chiar dacă nimeni nu s-a înscris încă, nu e nimic pierdut: vecinii se decid uneori chiar în ultimul moment!
+
+        Iată câteva idei pentru a motiva trupele:
+        💬 Trimite un mesaj în discuția evenimentului
+        📣 Distribuie linkul în grupul tău de vecini %{neighborhood}
+        🤝 Invită direct vecini pe care îi cunoști sau cu care ai mai discutat
+
+        Și dacă în final ești singur(ă) mâine, nu e un eșec! Ai făcut deja partea cea mai grea: să treci la acțiune pentru a crea legături 💛
+
+        Îți mulțumim pentru implicare. Suntem aici dacă ai nevoie de o mână de ajutor 🙌
+
+        Pe curând
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "As al conversațiilor"
+        description: "Participi regulat la conversațiile solidare."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Încă 2 conversații solidare la care să participi acest trimestru"
+          "2": "Încă 1 conversație solidară la care să participi acest trimestru"
+        bilan: "Ai obținut această insignă pe %{date} și ai participat la conversații solidare timp de mai multe săptămâni. Felicitări pentru această implicare, schimburile tale au creat legături reale în comunitate."
+      voix_presente:
+        name: "Țesător de legături"
+        description: "Menții grupurile vii săptămână după săptămână."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Mai sunt 2 săptămâni pentru a menține grupurile active"
+          "2": "Mai este 1 săptămână pentru a menține grupurile active"
+        bilan: "Ai obținut această insignă pe %{date} și ai purtat-o timp de mai multe luni. Felicitări pentru această implicare, prezența ta a contat cu adevărat pentru grupurile din aplicație."
+      moteur_rencontres:
+        name: "Creator de întâlniri"
+        description: "Organizezi regulat evenimente în comunitatea ta."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Încă 2 evenimente de organizat acest trimestru"
+          "2": "Încă 1 eveniment de organizat acest trimestru"
+        bilan: "Ai obținut această insignă pe %{date} și ai organizat evenimente care au mișcat comunitatea. Felicitări pentru această implicare, energia ta a fost de folos multor oameni."
+    duration:
+      zero: "mai puțin de o lună"
+      one: "1 lună"
+      other: "%{count} luni"
+
+  charts:
+    conversations:
+      memberships: "Participanți"
+    users:
+      member_outings: "Participant eveniment"
+      member_neighborhoods: "Membru grup de vecini"
+      reactions: "Reacții"
+      public_chat_messages: "Publicații/Comentarii"
+      private_chat_messages: "Mesaje private"
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Primul pas"
+        description: "Tocmai ai făcut primul tău pas în comunitatea Entourage. Prezența ta contează deja — bine ai venit printre noi."
+      premier_contact:
+        nom: "Prima legătură"
+        description: "Tocmai ai schimbat primul tău mesaj cu un alt membru. Fiecare legătură țesută ține comunitatea în viață."
+      fidele_papotages:
+        nom: "As al conversațiilor"
+        description: "Ai inițiat 3 conversații solidare într-o lună și jumătate. Prezența ta regulată creează legături și face bine în jurul tău."
+      voix_presente:
+        nom: "Țesător de legături"
+        description: "Ai fost activ 3 din 4 săptămâni în grupuri postând, comentând, reacționând — faci inima comunității să bată."
+      moteur_rencontres:
+        nom: "Creator de întâlniri"
+        description: "Ai organizat 3 evenimente în ultimele 90 de zile. Pui în mișcare comunitatea Entourage — felicitări!"
