@@ -246,6 +246,22 @@ RSpec.describe Smalltalk, type: :model do
     end
   end
 
+  describe '#last_active_at' do
+    context 'when there is a last chat message' do
+      let!(:chat_message) { create(:chat_message, messageable: smalltalk, created_at: 2.days.ago) }
+
+      it 'returns the last chat message creation time' do
+        expect(smalltalk.last_active_at).to eq(chat_message.reload.created_at)
+      end
+    end
+
+    context 'when there is no chat message' do
+      it 'returns the smalltalk creation time' do
+        expect(smalltalk.last_active_at).to eq(smalltalk.created_at)
+      end
+    end
+  end
+
   describe '#cancel_auto_messages!' do
     it 'calls SmalltalkAutoChatMessageJob.cancel_jobs_for_smalltalk with correct id' do
       expect(SmalltalkAutoChatMessageJob).to receive(:cancel_jobs_for_smalltalk).with(smalltalk.id)
