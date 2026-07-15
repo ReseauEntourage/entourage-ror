@@ -44,5 +44,15 @@ describe ModerationServices do
     it 'returns nil when no admin matches' do
       expect(ModerationServices.default_referent_benevole).to be_nil
     end
+
+    context 'when SLACK_DEFAULT_REFERENT_ID is not set' do
+      before { stub_const('ModerationServices::SLACK_DEFAULT_REFERENT_ID', nil) }
+
+      it 'does not match an admin with a blank slack_id' do
+        create :admin_user, slack_id: nil
+
+        expect(ModerationServices.default_referent_benevole).to be_nil
+      end
+    end
   end
 end
