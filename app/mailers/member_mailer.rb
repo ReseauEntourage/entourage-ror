@@ -24,6 +24,7 @@ class MemberMailer < MailjetMailer
 
   def congratulations_new_badge(user, badge_tag, awarded_at)
     data = UserBadge.display_data_for(badge_tag, locale: user.lang)
+
     return unless data
 
     mailjet_email to: user,
@@ -41,6 +42,8 @@ class MemberMailer < MailjetMailer
 
   def first_steps_invitation(user)
     outings = Outing.first_steps_category.future_or_ongoing.default_order.limit(3)
+
+    return unless outings.any?
 
     mailjet_email to: user,
                   template_id: 7996265,
@@ -61,6 +64,8 @@ class MemberMailer < MailjetMailer
 
   def papotages_invitation_j7(user)
     outings = Outing.papotages.future_or_ongoing.default_order.limit(3)
+
+    return unless outings.any?
 
     mailjet_email to: user,
                   template_id: 8016225,
@@ -86,6 +91,8 @@ class MemberMailer < MailjetMailer
   end
 
   def first_steps_papotages_invitation(user, papotages)
+    return unless papotages.any?
+
     mailjet_email to: user,
                   template_id: 8019081,
                   campaign_name: 'first_steps_papotages_invitation',
