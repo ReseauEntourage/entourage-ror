@@ -100,6 +100,8 @@ module ModerationServices
   end
 
   def self.default_referent_benevole
+    return nil if SLACK_DEFAULT_REFERENT_ID.blank?
+
     User.find_by(slack_id: SLACK_DEFAULT_REFERENT_ID, admin: true, validation_status: :validated)
   end
 
