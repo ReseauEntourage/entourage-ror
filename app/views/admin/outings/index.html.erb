@@ -82,7 +82,7 @@
                 <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
                 <p><%= truncate(outing.description, length: 500) %></p>
               </td>
-              <td><%= l outing.starts_at, format: :long %></td>
+              <td><span class="badge <%= outing_temporality_class(outing) %>" title="<%= outing_temporality_title(outing) %>"><%= l outing.starts_at, format: :long %></span></td>
               <td><%= outing.postal_code %></td>
               <td><%= entourage_state_label(outing) %></td>
               <td><span class="badge" title="Participants"><%= outing.number_of_people %></span></td>
