@@ -206,6 +206,13 @@ Rails.application.routes.draw do
 
       resources :newsletter_subscriptions, only: [:index]
 
+      resources :scheduled_publications, only: [:edit, :update] do
+        member do
+          post :publish_now
+          post :cancel
+        end
+      end
+
       resources :openai_assistants, only: [:index, :edit, :update]
       resources :openai_requests, only: [:index, :show]
 

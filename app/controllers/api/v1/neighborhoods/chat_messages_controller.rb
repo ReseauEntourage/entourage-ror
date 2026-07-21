@@ -15,7 +15,7 @@ module Api
         end
 
         def index
-          messages = @neighborhood.parent_chat_messages.no_deleted_without_comments.includes(:translation, :user, :chat_message_reactions, :user_reactions, :survey, :user_survey_responses).ordered.page(page).per(per)
+          messages = @neighborhood.parent_chat_messages.excluding_scheduled.no_deleted_without_comments.includes(:translation, :user, :chat_message_reactions, :user_reactions, :survey, :user_survey_responses).ordered.page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user }
         end
@@ -142,7 +142,7 @@ module Api
 
         def set_chat_message
           # we want to force chat_message to belong to Neighborhood
-          @chat_message = ChatMessage.where(messageable_type: :Neighborhood).find_by_id_through_context(params[:chat_message_id] || params[:id], params)
+          @chat_message = ChatMessage.where(messageable_type: :Neighborhood).excluding_scheduled.find_by_id_through_context(params[:chat_message_id] || params[:id], params)
 
           render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
         rescue ActiveRecord::RecordNotFound

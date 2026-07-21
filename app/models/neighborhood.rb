@@ -102,7 +102,8 @@ class Neighborhood < ApplicationRecord
           chat_message_with_images.messageable_id = #{table_name}.id and
           chat_message_with_images.messageable_type = '#{self.name}'
         where
-          chat_message_with_images.image_url is not null
+          chat_message_with_images.image_url is not null and
+          chat_message_with_images.status != 'scheduled'
         group by #{table_name}.id
       ) as #{table_name}_imageable on
         #{table_name}_imageable.id = #{table_name}.id
@@ -118,7 +119,8 @@ class Neighborhood < ApplicationRecord
         from #{table_name}
         left join chat_messages as chat_message_on_max_created_at on
           chat_message_on_max_created_at.messageable_id = #{table_name}.id and
-          chat_message_on_max_created_at.messageable_type = '#{self.name}'
+          chat_message_on_max_created_at.messageable_type = '#{self.name}' and
+          chat_message_on_max_created_at.status != 'scheduled'
         group by #{table_name}.id
       ) as #{table_name}_messageable on
         #{table_name}_messageable.id = #{table_name}.id
