@@ -77,7 +77,7 @@ gem 'ffi', '~> 1.17'
 
 group :development, :test do
   gem 'foreman'
-  gem 'spring',                       '~> 2.1.0'
+  gem 'spring',                       '~> 4.1'
   gem 'spring-commands-rspec'#,        '~> 1.0.4'
   gem 'dotenv-rails'#,                 '~> 2.0.2'
   gem 'rails-controller-testing'

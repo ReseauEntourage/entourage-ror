@@ -27,6 +27,16 @@
           <div id="select-status" class="input-group">
             <%= select_tag :status, options_for_select(entourage_type_statuses, @params[:status]), multiple: true, class: 'form-control' %>
           </div>
+
+          <div class='input-group'>
+            <% category_options = [
+              ['Toutes les catégories', nil],
+              ['Papotages', 'papotages'],
+              ['Webinaires de bienvenue', 'first_steps_category'],
+              ['Ateliers de sensibilisation', 'webinar_category'],
+            ] %>
+            <%= select_tag :category, options_for_select(category_options, @params[:category]), class: 'form-control' %>
+          </div>
         </div>
       </div>
 
@@ -72,7 +82,7 @@
                 <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
                 <p><%= truncate(outing.description, length: 500) %></p>
               </td>
-              <td><%= l outing.starts_at, format: :long %></td>
+              <td><span class="badge <%= outing_temporality_class(outing) %>" title="<%= outing_temporality_title(outing) %>"><%= l outing.starts_at, format: :long %></span></td>
               <td><%= outing.postal_code %></td>
               <td><%= entourage_state_label(outing) %></td>
               <td><span class="badge" title="Participants"><%= outing.number_of_people %></span></td>

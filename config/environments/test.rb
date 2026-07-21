@@ -3,14 +3,12 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # While tests run files are not watched, reloading is not necessary.
-  config.enable_reloading = false
+  # Spring (used in local dev) requires reloading to be enabled; it manages
+  # its own class-caching across the persistent test process.
+  config.enable_reloading = true
 
   # Eager loading is useful in CI to ensure code is loaded as in production
   config.eager_load = ENV["CI"].present?
-
-  # Cache classes (faster test runs)
-  config.cache_classes = true
 
   # Cache compiled views
   config.action_view.cache_template_loading = true

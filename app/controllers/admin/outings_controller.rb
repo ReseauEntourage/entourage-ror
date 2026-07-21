@@ -33,7 +33,7 @@ module Admin
     end
 
     def filter_params
-      params.permit(:search, :area, :moderator_id, status: []).to_h
+      params.permit(:search, :area, :moderator_id, :category, status: []).to_h
     end
 
     def filtered_outings
@@ -48,6 +48,7 @@ module Admin
         .with_moderator_reads_for(user: current_user)
         .with_entourage_type(params[:entourage_type])
         .with_status(params[:status])
+        .with_category(params[:category])
         .moderator_search(params[:moderator_id])
         .select(%(
           entourages.*,

@@ -124,6 +124,16 @@ class Outing < Entourage
     :welcome_entourage_pro
   ]) }
 
+  scope :with_category, -> (category) {
+    case category.presence
+    when 'papotages' then papotages
+    when 'welcome_category' then welcome_category
+    when 'webinar_category' then webinar_category
+    when 'first_steps_category' then first_steps_category
+    else all
+    end
+  }
+
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
   scope :for_user, -> (user) {

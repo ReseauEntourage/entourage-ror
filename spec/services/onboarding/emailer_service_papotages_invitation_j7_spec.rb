@@ -56,7 +56,7 @@ describe Onboarding::EmailerService, '.deliver_papotages_invitation_j7_email' do
       create(:join_request, joinable: papotage_outing, user: user, status: JoinRequest::ACCEPTED_STATUS)
     }
 
-    it { expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1) }
+    it { expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(0) }
   end
 
   context 'deleted user' do

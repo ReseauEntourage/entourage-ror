@@ -118,6 +118,10 @@ class Smalltalk < ApplicationRecord
     SmalltalkAutoChatMessageJob.cancel_jobs_for_smalltalk(id)
   end
 
+  def last_active_at
+    last_chat_message&.created_at || created_at
+  end
+
   def add_event! key
     return if key.blank?
 

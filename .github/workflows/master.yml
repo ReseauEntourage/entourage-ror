@@ -38,6 +38,9 @@ jobs:
         ruby-version: 3.2.0
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
+    - name: Check YJIT availability
+      run: ruby -e "puts defined?(RubyVM::YJIT) ? \"YJIT available (#{RUBY_DESCRIPTION})\" : \"YJIT NOT available on this build\""
+
     - name: Setup Database
       run: |
         cp config/database.yml.github-actions config/database.yml
@@ -52,7 +55,7 @@ jobs:
         RAILS_ENV: test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-        REDIS_URL: redis://redis:6379
+        REDIS_URL: redis://localhost:6379
         HOST: localhost
       run: bundle exec rake
 

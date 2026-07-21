@@ -65,3 +65,7 @@ table.admin-table {
 .bg-info { background-color: #0dcaf0 !important; color: #212529 !important; }
 .bg-light { background-color: #f8f9fa !important; color: #212529 !important; }
 .bg-dark { background-color: #212529 !important }
+
+.outing-temporality-past { background-color: #f0ad4e !important; }
+.outing-temporality-ongoing { background-color: #5cb85c !important; }
+.outing-temporality-future { background-color: #5cb85c !important; }

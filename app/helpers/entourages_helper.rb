@@ -13,6 +13,34 @@ module EntouragesHelper
     content_tag :span, t("activerecord.attributes.entourage.statuses.#{entourage.status}"), class: "label #{state_to_class[entourage.status]}"
   end
 
+  def outing_temporality outing
+    now = Time.zone.now
+    starts_at = outing.starts_at
+    ends_at = outing.ends_at
+
+    if starts_at && starts_at > now
+      :future
+    elsif ends_at && ends_at < now
+      :past
+    else
+      :ongoing
+    end
+  end
+
+  OUTING_TEMPORALITY_TITLES = {
+    past: 'Événement passé',
+    ongoing: 'Événement en cours',
+    future: 'Événement à venir',
+  }.freeze
+
+  def outing_temporality_class outing
+    "outing-temporality-#{outing_temporality(outing)}"
+  end
+
+  def outing_temporality_title outing
+    OUTING_TEMPORALITY_TITLES[outing_temporality(outing)]
+  end
+
   def entourage_type_label entourage
     type_to_class = {
       'ask_for_help' => 'label-warning',
