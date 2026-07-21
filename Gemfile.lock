@@ -602,7 +602,7 @@ GEM
       multi_json (~> 1.10)
     slack-notifier (2.4.0)
     sorbet-runtime (0.6.12642)
-    spring (2.1.1)
+    spring (4.7.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprockets (4.2.2)
@@ -738,7 +738,7 @@ DEPENDENCIES
   sidekiq-cron
   sidekiq-unique-jobs
   slack-notifier
-  spring (~> 2.1.0)
+  spring (~> 4.1)
   spring-commands-rspec
   sprockets-rails (~> 3.2)
   store_attribute
