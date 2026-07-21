@@ -117,19 +117,6 @@ class MemberMailer < MailjetMailer
                   campaign_name: 'onboarding_j_8'
   end
 
-  def onboarding_day_14(user)
-    mailjet_email to: user,
-                  template_id: 456172,
-                  campaign_name: 'onboarding_j_14'
-  end
-
-  def reactivation_day_20(user)
-    mailjet_email to: user,
-                  template_id: 456175,
-                  campaign_name: 'relance_j_20',
-                  deliver_only_once: true
-  end
-
   def unseen_video_day_5(user)
     welcome_video = Resource.find_by(tag: :welcome)
     return unless welcome_video
