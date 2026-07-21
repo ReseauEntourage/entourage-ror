@@ -20,6 +20,24 @@ describe Admin::NeighborhoodsController do
 
       it { expect(result).to eq([]) }
     end
+
+    context 'a scheduled post with an image is not flagged as unread moderation content' do
+      let!(:neighborhood) { create(:neighborhood) }
+      let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled, image_url: 'foo') }
+
+      before { get :index }
+
+      it { expect(assigns(:neighborhoods).first.unread_images).to eq(false) }
+    end
+
+    context 'a published post with an image is flagged as unread moderation content' do
+      let!(:neighborhood) { create(:neighborhood) }
+      let!(:published_post) { create(:chat_message, messageable: neighborhood, status: :active, image_url: 'foo') }
+
+      before { get :index }
+
+      it { expect(assigns(:neighborhoods).first.unread_images).to eq(true) }
+    end
   end
 
   describe 'GET #edit' do
@@ -88,6 +106,75 @@ describe Admin::NeighborhoodsController do
         it { expect(chat_message.reload.child_ids).to eq([ChatMessage.last.id]) }
       end
     end
+
+    context 'scheduled' do
+      let!(:neighborhood) { create(:neighborhood, participants: [user]) }
+
+      around { |example| Sidekiq::Testing.disable!(&example) }
+
+      context 'with a valid future date' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00'
+          }
+        }
+
+        it { expect { request }.to change { ChatMessage.count }.by(1) }
+        it { expect { request }.to change { ScheduledPublication.count }.by(1) }
+
+        it 'creates the chat_message with a scheduled status, hidden from the feed' do
+          request
+
+          message = ChatMessage.last
+          expect(message.status).to eq('scheduled')
+        end
+
+        it 'schedules the publish job at the requested time' do
+          request
+
+          scheduled_publication = ScheduledPublication.last
+          job = Sidekiq::ScheduledSet.new.find { |j| j.args.first == scheduled_publication.id }
+          expect(job).to be_present
+        end
+      end
+
+      context 'with a date in the past' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.ago.to_date.to_s,
+            scheduled_time: '10:00'
+          }
+        }
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+        it { expect { request }.not_to change { ScheduledPublication.count } }
+      end
+
+      context 'without a date' do
+        let(:params) { { content: 'foo', scheduled: '1' } }
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+      end
+    end
+  end
+
+  describe 'GET #show_posts' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:published_post) { create(:chat_message, messageable: neighborhood, status: :active) }
+    let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: scheduled_post, neighborhood: neighborhood, author: user) }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    it { expect(assigns(:posts).map(&:id)).to eq([published_post.id]) }
+    it { expect(assigns(:scheduled_publications).map(&:id)).to eq([scheduled_publication.id]) }
   end
 
   describe 'DELETE destroy_message' do
