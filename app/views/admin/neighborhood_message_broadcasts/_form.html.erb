@@ -153,6 +153,15 @@
           <%= label_tag 'neighborhood_message_broadcast_recurrence_ends_on', 'Fin de la récurrence' %>
           <%= date_field_tag 'neighborhood_message_broadcast[recurrence_ends_on]', nil, class: 'form-control' %>
         </div>
+
+        <% if current_admin.slack_id.blank? %>
+          <div class="col-md-12">
+            <div class="alert alert-warning" style="margin-top: 10px">
+              Vous n'avez pas renseigné votre identifiant Slack : vous ne recevrez pas de notification à la diffusion.
+              <%= link_to "Renseignez-le ici", edit_admin_user_path(current_admin) %>.
+            </div>
+          </div>
+        <% end %>
       </div>
 
       <%= submit_tag 'Envoyer', id: 'broadcast-send-submit', class: 'btn btn-danger', data: {

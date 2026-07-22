@@ -117,6 +117,24 @@ describe Admin::NeighborhoodMessageBroadcastsController do
     it { expect(response.status).to eq(200) }
   end
 
+  describe 'GET #edit slack_id warning' do
+    render_views
+
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft) }
+
+    before { get :edit, params: { id: neighborhood_message_broadcast.id } }
+
+    context 'when the current admin has no slack_id' do
+      it { expect(response.body).to include("Vous n'avez pas renseigné votre identifiant Slack") }
+    end
+
+    context 'when the current admin has a slack_id' do
+      let!(:user) { admin_basic_login.tap { |u| u.update!(slack_id: 'U123') } }
+
+      it { expect(response.body).not_to include("Vous n'avez pas renseigné votre identifiant Slack") }
+    end
+  end
+
   describe 'GET #edit for a recurring scheduled broadcast' do
     render_views
 

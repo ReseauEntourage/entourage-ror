@@ -65,6 +65,15 @@
               <%= label_tag 'chat_message_recurrence_ends_on', 'Fin de la récurrence' %>
               <%= date_field_tag 'chat_message[recurrence_ends_on]', nil, class: 'form-control' %>
             </div>
+
+            <% if current_user.slack_id.blank? %>
+              <div class="col-md-12">
+                <div class="alert alert-warning" style="margin-top: 10px">
+                  Vous n'avez pas renseigné votre identifiant Slack : vous ne recevrez pas de notification à la publication.
+                  <%= link_to "Renseignez-le ici", edit_admin_user_path(current_user) %>.
+                </div>
+              </div>
+            <% end %>
           </div>
 
           <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true, id: 'chat-message-submit' %>
