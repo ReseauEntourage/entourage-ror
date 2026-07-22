@@ -8,6 +8,47 @@ describe Admin::ScheduledPublicationsController do
 
   around { |example| Sidekiq::Testing.disable!(&example) }
 
+  describe 'GET #index' do
+    let!(:post_publication) { create(:scheduled_publication, :post, scheduled_at: 1.day.from_now) }
+    let!(:broadcast_publication) { create(:scheduled_publication, :broadcast, scheduled_at: 2.days.from_now) }
+    let!(:published_publication) { create(:scheduled_publication, :post, status: :published, scheduled_at: 3.days.ago) }
+
+    context 'with no filter' do
+      before { get :index }
+
+      it 'lists all pending scheduled publications, not the already published ones' do
+        all = assigns(:grouped_scheduled_publications).values.flatten
+        expect(all).to match_array([post_publication, broadcast_publication])
+      end
+    end
+
+    context 'filtered by post type' do
+      before { get :index, params: { type: :post } }
+
+      it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([post_publication]) }
+    end
+
+    context 'filtered by broadcast type' do
+      before { get :index, params: { type: :broadcast } }
+
+      it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([broadcast_publication]) }
+    end
+
+    context 'searching by content' do
+      before { get :index, params: { search: post_publication.publishable.content } }
+
+      it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([post_publication]) }
+    end
+
+    context 'rendering the page' do
+      render_views
+
+      before { get :index }
+
+      it { expect(response.status).to eq(200) }
+    end
+  end
+
   describe 'GET #edit' do
     let(:scheduled_publication) { create(:scheduled_publication, :post) }
 

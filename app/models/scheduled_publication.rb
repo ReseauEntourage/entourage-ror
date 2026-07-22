@@ -38,4 +38,23 @@ class ScheduledPublication < ApplicationRecord
   def in_the_past?
     scheduled_at.present? && scheduled_at <= Time.zone.now
   end
+
+  def matches_search?(query)
+    return true if query.blank?
+
+    text = post? ? publishable.content.to_s : "#{publishable.title} #{publishable.content}"
+    text.downcase.include?(query.downcase)
+  end
+
+  def target_label
+    return neighborhood&.name if post?
+
+    "#{publishable.recipient_ids.count} groupes"
+  end
+
+  def recipients_count
+    return neighborhood&.number_of_people || 0 if post?
+
+    publishable.recipients.sum(:number_of_people)
+  end
 end

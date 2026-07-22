@@ -208,7 +208,7 @@ Rails.application.routes.draw do
 
       resources :newsletter_subscriptions, only: [:index]
 
-      resources :scheduled_publications, only: [:edit, :update] do
+      resources :scheduled_publications, only: [:index, :edit, :update] do
         member do
           post :publish_now
           post :cancel
