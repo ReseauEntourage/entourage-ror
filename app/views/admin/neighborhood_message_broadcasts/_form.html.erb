@@ -109,7 +109,7 @@
     <% end %>
   <% end %>
 
-  <% if @neighborhood_message_broadcast.draft? %>
+  <% if @neighborhood_message_broadcast.draft? || @neighborhood_message_broadcast.scheduled? %>
     <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
     <%= link_to "Annuler", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
   <% else %>
