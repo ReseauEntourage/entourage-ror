@@ -1,0 +1,75 @@
+<div class="container">
+  <h1>Publications programmées</h1>
+
+  <div class="sub" style="color: #888; margin-bottom: 10px">
+    <%= pluralize(@total_count, 'publication programmée') %> au total ·
+    <%= pluralize(@total_post_count, 'post') %> ·
+    <%= pluralize(@total_broadcast_count, 'diffusion') %>
+  </div>
+
+  <div style="margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 15px">
+    <div class="btn-group btn-group-sm">
+      <%= link_to("Toutes", @params.merge(type: :all), class: "btn btn-#{@type == :all ? :primary : :default}") %>
+      <%= link_to("Post dans un groupe", @params.merge(type: :post), class: "btn btn-#{@type == :post ? :primary : :default}") %>
+      <%= link_to("Diffusion multi-groupes", @params.merge(type: :broadcast), class: "btn btn-#{@type == :broadcast ? :primary : :default}") %>
+    </div>
+
+    <div class="btn-group btn-group-sm">
+      <%= link_to("Par mois", @params.merge(group_by: :month), class: "btn btn-#{@group_by == :month ? :primary : :default}") %>
+      <%= link_to("Par semaine", @params.merge(group_by: :week), class: "btn btn-#{@group_by == :week ? :primary : :default}") %>
+    </div>
+
+    <%= form_tag admin_scheduled_publications_path, method: :get, style: "margin: 0" do %>
+      <%= hidden_field_tag :type, @type unless @type == :all %>
+      <%= hidden_field_tag :group_by, @group_by %>
+      <%= search_field_tag :search, params[:search], placeholder: "Rechercher...", class: "form-control input-sm" %>
+    <% end %>
+  </div>
+
+  <% if @grouped_scheduled_publications.empty? %>
+    Aucune publication programmée.
+  <% else %>
+    <% @grouped_scheduled_publications.sort.each do |period, scheduled_publications| %>
+      <h4><%= @group_by == :week ? "Semaine du #{l period, format: '%d %B %Y'}" : l(period, format: '%B %Y') %></h4>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Contenu</th>
+            <th>Cible</th>
+            <th>Destinataires</th>
+            <th>Parution</th>
+            <th>Auteur</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% scheduled_publications.sort_by(&:scheduled_at).each do |scheduled_publication| %>
+            <tr>
+              <td><span class="label label-<%= scheduled_publication.post? ? 'info' : 'warning' %>"><%= scheduled_publication.post? ? 'Post' : 'Diffusion' %></span></td>
+              <td><%= truncate(scheduled_publication.post? ? scheduled_publication.publishable.content : scheduled_publication.publishable.title, length: 80) %></td>
+              <td><%= scheduled_publication.target_label %></td>
+              <td><%= scheduled_publication.recipients_count %></td>
+              <td>
+                <%= l scheduled_publication.scheduled_at.in_time_zone('Paris'), format: "%d/%m/%Y à %H h %M" %><br>
+                <small>dans <%= distance_of_time_in_words(Time.zone.now, scheduled_publication.scheduled_at) %></small>
+              </td>
+              <td><%= link_to scheduled_publication.author.full_name, admin_user_path(scheduled_publication.author) %></td>
+              <td>
+                <%= link_to "Éditer", edit_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), class: "btn btn-default btn-xs" %>
+                <%= link_to "Publier maintenant", publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Publier/diffuser maintenant ?" }, class: "btn btn-default btn-xs" %>
+                <% if scheduled_publication.recurring? %>
+                  <%= link_to "Annuler l'occurrence", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :occurrence, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }, class: "btn btn-danger btn-xs" %>
+                  <%= link_to "Annuler la série", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :series, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler toute la série récurrente ?" }, class: "btn btn-danger btn-xs" %>
+                <% else %>
+                  <%= link_to "Annuler", cancel_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler cette publication programmée ?" }, class: "btn btn-danger btn-xs" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  <% end %>
+</div>

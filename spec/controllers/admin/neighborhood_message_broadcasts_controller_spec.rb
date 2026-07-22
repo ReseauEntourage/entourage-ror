@@ -1,0 +1,161 @@
+require 'rails_helper'
+include AuthHelper
+
+describe Admin::NeighborhoodMessageBroadcastsController do
+  let!(:user) { admin_basic_login }
+
+  around { |example| Sidekiq::Testing.disable!(&example) }
+
+  describe 'POST #schedule' do
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, conversation_ids: [neighborhood.id]) }
+
+    context 'with a valid future date' do
+      let(:request) {
+        post :schedule, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: { scheduled_date: 1.day.from_now.to_date.to_s, scheduled_time: '10:00' }
+        }
+      }
+
+      it { expect { request }.to change { ScheduledPublication.count }.by(1) }
+
+      it 'schedules the broadcast' do
+        request
+
+        expect(neighborhood_message_broadcast.reload.status).to eq('scheduled')
+        expect(neighborhood_message_broadcast.scheduled_at).to be_present
+      end
+
+      it 'schedules the publish job' do
+        request
+
+        scheduled_publication = ScheduledPublication.last
+        job = Sidekiq::ScheduledSet.new.find { |j| j.args.first == scheduled_publication.id }
+        expect(job).to be_present
+      end
+    end
+
+    context 'with a date in the past' do
+      let(:request) {
+        post :schedule, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: { scheduled_date: 1.day.ago.to_date.to_s, scheduled_time: '10:00' }
+        }
+      }
+
+      it { expect { request }.not_to change { neighborhood_message_broadcast.reload.status } }
+      it { expect { request }.not_to change { ScheduledPublication.count } }
+    end
+
+    context 'with recurrence' do
+      let(:request) {
+        post :schedule, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: {
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'monthly',
+            recurrence_ends_on: 6.months.from_now.to_date.to_s
+          }
+        }
+      }
+
+      it { expect { request }.to change { RecurrenceRule.count }.by(1) }
+
+      it 'attaches the recurrence rule to the scheduled publication' do
+        request
+
+        expect(ScheduledPublication.last.recurrence_rule.frequency).to eq('monthly')
+      end
+    end
+
+    context 'when already sent' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :sent) }
+      let(:request) {
+        post :schedule, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: { scheduled_date: 1.day.from_now.to_date.to_s, scheduled_time: '10:00' }
+        }
+      }
+
+      it { expect { request }.not_to change { ScheduledPublication.count } }
+    end
+  end
+
+  describe 'GET #index' do
+    render_views
+
+    context 'scheduled tab' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
+      let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
+
+      before { get :index, params: { status: :scheduled } }
+
+      it { expect(assigns(:neighborhood_message_broadcasts)).to eq([neighborhood_message_broadcast]) }
+      it { expect(response.status).to eq(200) }
+    end
+  end
+
+  describe 'GET #edit' do
+    render_views
+
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
+
+    before { get :edit, params: { id: neighborhood_message_broadcast.id } }
+
+    it { expect(assigns(:scheduled_publication)).to eq(scheduled_publication) }
+    it { expect(response.status).to eq(200) }
+  end
+
+  describe 'GET #new' do
+    render_views
+
+    before { get :new }
+
+    it { expect(response.status).to eq(200) }
+  end
+
+  describe 'GET #edit slack_id warning' do
+    render_views
+
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft) }
+
+    before { get :edit, params: { id: neighborhood_message_broadcast.id } }
+
+    context 'when the current admin has no slack_id' do
+      it { expect(response.body).to include("Vous n'avez pas renseigné votre identifiant Slack") }
+    end
+
+    context 'when the current admin has a slack_id' do
+      let!(:user) { admin_basic_login.tap { |u| u.update!(slack_id: 'U123') } }
+
+      it { expect(response.body).not_to include("Vous n'avez pas renseigné votre identifiant Slack") }
+    end
+  end
+
+  describe 'GET #edit for a recurring scheduled broadcast' do
+    render_views
+
+    let!(:recurrence_rule) { create(:recurrence_rule) }
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, recurrence_rule: recurrence_rule, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
+
+    before { get :edit, params: { id: neighborhood_message_broadcast.id } }
+
+    it { expect(response.status).to eq(200) }
+  end
+
+  describe 'GET #index scheduled tab with a recurring broadcast' do
+    render_views
+
+    let!(:recurrence_rule) { create(:recurrence_rule) }
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, recurrence_rule: recurrence_rule, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
+
+    before { get :index, params: { status: :scheduled } }
+
+    it { expect(response.status).to eq(200) }
+  end
+end

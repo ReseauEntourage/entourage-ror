@@ -75,6 +75,10 @@ class ConversationMessageBroadcast < ApplicationRecord
     status&.to_sym == :sent
   end
 
+  def scheduled?
+    status&.to_sym == :scheduled
+  end
+
   def sent
     ChatMessage
     .where(messageable_type: self.class.messageable_type, message_type: :broadcast)

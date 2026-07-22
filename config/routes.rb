@@ -202,10 +202,18 @@ Rails.application.routes.draw do
           post 'rebroadcast'
           post 'clone'
           post 'kill'
+          post 'schedule'
         end
       end
 
       resources :newsletter_subscriptions, only: [:index]
+
+      resources :scheduled_publications, only: [:index, :edit, :update] do
+        member do
+          post :publish_now
+          post :cancel
+        end
+      end
 
       resources :openai_assistants, only: [:index, :edit, :update]
       resources :openai_requests, only: [:index, :show]

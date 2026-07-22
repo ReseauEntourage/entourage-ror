@@ -12,7 +12,7 @@ class ChatMessage < ApplicationRecord
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = 'chat_messages'
 
-  STATUSES = [:active, :updated, :deleted, :offensible, :offensive]
+  STATUSES = [:active, :updated, :deleted, :offensible, :offensive, :scheduled]
 
   store_attribute :options, :auto_post_type, :string
   store_attribute :options, :auto_post_id, :integer
@@ -43,6 +43,7 @@ class ChatMessage < ApplicationRecord
   scope :with_content, -> { where("content <> ''") }
   scope :with_image, -> { where("image_url <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
+  scope :excluding_scheduled, -> { where.not(status: :scheduled) }
 
   attribute :metadata, :jsonb_with_schema
 
@@ -152,6 +153,10 @@ class ChatMessage < ApplicationRecord
 
   def offensive?
     status.to_sym == :offensive
+  end
+
+  def scheduled?
+    status.to_sym == :scheduled
   end
 
   def text?

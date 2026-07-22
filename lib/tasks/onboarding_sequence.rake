@@ -35,14 +35,6 @@ namespace :onboarding_sequence do
       MemberMailer.unseen_video_day_5(user).deliver_later
     end
 
-    at_day 14, after: :registration do |user|
-      MemberMailer.onboarding_day_14(user).deliver_later
-    end
-
-    at_day 20, after: :last_session do |user|
-      MemberMailer.reactivation_day_20(user).deliver_later
-    end
-
     at_day 15, after: :action_creation do |action|
       MemberMailer.action_follow_up_day_15(action).deliver_later
     end

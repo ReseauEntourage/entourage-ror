@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 202405021415000) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_20_162000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages"]
+  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages", "onboarding.resource.welcome_unseen", "onboarding.neighborhood.national"]
   create_enum "sms_delivery_provider", ["AWS", "Nexmo", "Slack", "logs"]
   create_enum "sms_delivery_status", ["Ok", "Provider Error", "Sending Error"]
 
@@ -145,6 +145,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "conversation_type", default: "Entourage"
     t.json "conversation_ids", default: {}
     t.jsonb "specific_filters", default: {}, null: false
+    t.datetime "scheduled_at"
     t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
     t.index ["conversation_type"], name: "index_conversation_message_broadcasts_on_conversation_type"
@@ -508,6 +509,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "sourcing_id"
     t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
+    t.integer "referent_benevole_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
 
@@ -727,6 +729,8 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "hours"
     t.string "languages"
     t.string "postal_code"
+    t.boolean "air_conditioned"
+    t.string "source_updated_at"
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
@@ -769,6 +773,16 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
     t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_for_help", where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
+  end
+
+  create_table "recurrence_rules", force: :cascade do |t|
+    t.string "frequency", null: false
+    t.date "ends_on", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_recurrence_rules_on_active"
   end
 
   create_table "resource_images", force: :cascade do |t|
@@ -876,6 +890,24 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["salesforce_id"], name: "index_salesforce_configs_on_salesforce_id"
+  end
+
+  create_table "scheduled_publications", force: :cascade do |t|
+    t.string "publishable_type", null: false
+    t.integer "publishable_id", null: false
+    t.integer "neighborhood_id"
+    t.integer "author_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.string "status", default: "pending", null: false
+    t.text "failure_reason"
+    t.integer "recurrence_rule_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["neighborhood_id"], name: "index_scheduled_publications_on_neighborhood_id"
+    t.index ["publishable_type", "publishable_id"], name: "idx_on_publishable_type_publishable_id_ec436be32d"
+    t.index ["recurrence_rule_id"], name: "index_scheduled_publications_on_recurrence_rule_id"
+    t.index ["scheduled_at"], name: "index_scheduled_publications_on_scheduled_at"
+    t.index ["status"], name: "index_scheduled_publications_on_status"
   end
 
   create_table "sensitive_words", id: :serial, force: :cascade do |t|
@@ -1026,6 +1058,17 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family"
   end
 
+  create_table "user_badges", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "badge_tag", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "awarded_at"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "badge_tag"], name: "index_user_badges_on_user_id_and_badge_tag", unique: true
+  end
+
   create_table "user_blocked_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "blocked_user_id", null: false
@@ -1165,9 +1208,8 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "encrypted_password"
     t.jsonb "roles", default: [], null: false
     t.datetime "first_sign_in_at", precision: nil
-    t.datetime "onboarding_sequence_start_at", precision: nil
+    t.datetime "old_onboarding_sequence_start_at", precision: nil
     t.integer "address_id"
-    t.boolean "accepts_emails_deprecated", default: true, null: false
     t.datetime "last_email_sent_at", precision: nil
     t.string "targeting_profile"
     t.integer "partner_id"
@@ -1194,11 +1236,254 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
     t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "fr", default: {}, null: false
+    t.jsonb "en", default: {}, null: false
+    t.jsonb "de", default: {}, null: false
+    t.jsonb "pl", default: {}, null: false
+    t.jsonb "ro", default: {}, null: false
+    t.jsonb "uk", default: {}, null: false
+    t.jsonb "ar", default: {}, null: false
+    t.string "from_lang", default: "fr", null: false
+    t.jsonb "es", default: {}, null: false
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
+  end
+
+  create_table "user_applications", id: :serial, force: :cascade do |t|
+    t.string "push_token", null: false
+    t.string "device_os", null: false
+    t.string "version", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "device_family"
+    t.string "notifications_permissions"
+    t.index ["push_token"], name: "index_user_applications_on_push_token", unique: true
+    t.index ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family"
+  end
+
+  create_table "user_badges", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "badge_tag", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "awarded_at"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "badge_tag"], name: "index_user_badges_on_user_id_and_badge_tag", unique: true
+  end
+
+  create_table "user_blocked_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "blocked_user_id", null: false
+    t.string "status", default: "blocked", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["blocked_user_id"], name: "index_user_blocked_users_on_blocked_user_id"
+    t.index ["user_id", "blocked_user_id"], name: "index_user_blocked_users_on_user_id_and_blocked_user_id", unique: true
+    t.index ["user_id"], name: "index_user_blocked_users_on_user_id"
+  end
+
+  create_table "user_histories", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "updater_id"
+    t.string "kind", null: false
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["kind"], name: "index_user_histories_on_kind"
+    t.index ["updater_id"], name: "index_user_histories_on_updater_id"
+    t.index ["user_id"], name: "index_user_histories_on_user_id"
+  end
+
+  create_table "user_moderations", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "expectations"
+    t.string "acquisition_channel"
+    t.string "content_sent"
+    t.string "skills"
+    t.boolean "accepts_event_invitations"
+    t.boolean "accepts_volunteering_offers"
+    t.boolean "ambassador"
+    t.index ["user_id"], name: "index_user_moderations_on_user_id", unique: true
+  end
+
+  create_table "user_next_steps", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "next_step_suggestion_id", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "shown_at"
+    t.datetime "acted_at"
+    t.datetime "dismissed_at"
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["next_step_suggestion_id"], name: "index_user_next_steps_on_next_step_suggestion_id"
+    t.index ["user_id", "status"], name: "index_user_next_steps_on_user_id_and_status"
+    t.index ["user_id"], name: "index_user_next_steps_on_user_id"
+  end
+
+  create_table "user_phone_changes", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "admin_id"
+    t.string "kind", null: false
+    t.string "previous_phone", null: false
+    t.string "phone", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["admin_id"], name: "index_user_phone_changes_on_admin_id"
+    t.index ["kind"], name: "index_user_phone_changes_on_kind"
+    t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
+  end
+
+  create_table "user_reactions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "reaction_id", null: false
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["instance_id", "instance_type"], name: "index_user_reactions_on_instance_id_and_instance_type"
+    t.index ["instance_type", "created_at"], name: "index_user_reactions_on_instance_type_and_created_at"
+    t.index ["reaction_id"], name: "index_user_reactions_on_reaction_id"
+  end
+
+  create_table "user_recommandations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "recommandation_id"
+    t.datetime "completed_at", precision: nil
+    t.datetime "congrats_at", precision: nil
+    t.datetime "skipped_at", precision: nil
+    t.string "name"
+    t.string "image_url"
+    t.string "action", null: false
+    t.string "instance", null: false
+    t.integer "instance_id"
+    t.string "instance_url"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.integer "fragment"
+    t.index ["instance"], name: "index_user_recommandations_on_instance"
+    t.index ["user_id", "recommandation_id"], name: "index_user_recommandations_on_user_id_and_recommandation_id", unique: true, where: "((completed_at IS NULL) AND (skipped_at IS NULL))"
+    t.index ["user_id"], name: "index_user_recommandations_on_user_id"
+  end
+
+  create_table "user_relationships", id: :serial, force: :cascade do |t|
+    t.integer "source_user_id", null: false
+    t.integer "target_user_id", null: false
+    t.string "relation_type", null: false
+    t.index ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true
+  end
+
+  create_table "user_smalltalks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "smalltalk_id"
+    t.string "uuid_v2", limit: 12
+    t.integer "user_gender", default: 0
+    t.integer "user_profile", default: 0
+    t.float "user_latitude"
+    t.float "user_longitude"
+    t.integer "match_format", default: 0, null: false
+    t.boolean "match_locality", default: false
+    t.boolean "match_gender", default: false
+    t.boolean "match_interest", default: false
+    t.datetime "last_almost_match_computation_at", precision: nil
+    t.datetime "matched_at", precision: nil
+    t.datetime "deleted_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "member_status"
+    t.jsonb "user_interest_ids", default: []
+    t.index "st_setsrid(st_makepoint(user_longitude, user_latitude), 4326)", name: "index_user_smalltalks_on_coordinates", using: :gist
+    t.index ["smalltalk_id"], name: "index_user_smalltalks_on_smalltalk_id"
+    t.index ["user_id"], name: "index_user_smalltalks_on_user_id"
+    t.index ["uuid_v2"], name: "index_user_smalltalks_on_uuid_v2", unique: true
+  end
+
+  create_table "user_suggestions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "suggestion_type", null: false
+    t.integer "suggested_user_id"
+    t.integer "suggested_entourage_id"
+    t.string "suggested_action"
+    t.string "reason", null: false
+    t.string "reason_type", null: false
+    t.datetime "actioned_at"
+    t.datetime "dismissed_at"
+    t.datetime "dismissed_until"
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["suggested_entourage_id"], name: "index_user_suggestions_on_suggested_entourage_id"
+    t.index ["suggested_user_id"], name: "index_user_suggestions_on_suggested_user_id"
+    t.index ["user_id", "suggestion_type"], name: "index_user_suggestions_on_user_id_and_suggestion_type"
+    t.index ["user_id"], name: "index_user_suggestions_on_user_id"
+  end
+
+  create_table "users", id: :serial, force: :cascade do |t|
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.string "email", limit: 255
+    t.string "first_name", limit: 255
+    t.string "last_name", limit: 255
+    t.string "phone", null: false
+    t.string "token", limit: 255
+    t.string "device_id"
+    t.integer "device_type"
+    t.string "sms_code"
+    t.integer "organization_id"
+    t.boolean "manager", default: false, null: false
+    t.boolean "admin", default: false, null: false
+    t.string "user_type", default: "pro", null: false
+    t.string "avatar_key"
+    t.string "validation_status", default: "validated", null: false
+    t.boolean "deleted", default: false, null: false
+    t.integer "marketing_referer_id", default: 1, null: false
+    t.datetime "last_sign_in_at", precision: nil
+    t.boolean "old_atd_friend", default: false, null: false
+    t.string "about", limit: 200
+    t.string "community", limit: 9, null: false
+    t.string "encrypted_password"
+    t.jsonb "roles", default: [], null: false
+    t.datetime "first_sign_in_at", precision: nil
+    t.datetime "old_onboarding_sequence_start_at", precision: nil
+    t.integer "address_id"
+    t.datetime "last_email_sent_at", precision: nil
+    t.string "targeting_profile"
+    t.integer "partner_id"
+    t.boolean "partner_admin", default: false, null: false
+    t.string "partner_role_title"
+    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }
+    t.string "goal"
+    t.jsonb "interests_old", default: [], null: false
+    t.string "encrypted_admin_password"
+    t.string "reset_admin_password_token"
+    t.datetime "reset_admin_password_sent_at", precision: nil
+    t.boolean "super_admin", default: false
+    t.datetime "unblock_at", precision: nil
+    t.integer "travel_distance", default: 40
+    t.string "birthdate", limit: 10
+    t.string "other_interest"
+    t.json "options", default: {}
+    t.string "lang", default: "fr"
+    t.string "slack_id"
+    t.string "salesforce_id"
+    t.jsonb "availability", default: {}
+    t.boolean "willing_to_engage_locally", default: false
+    t.text "searchable_text"
+    t.index ["address_id"], name: "index_users_on_address_id"
+    t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
+    t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"
     t.index ["partner_id"], name: "index_users_on_partner_id_not_null", where: "(partner_id IS NOT NULL)"
     t.index ["phone", "community"], name: "index_users_on_phone_and_community", unique: true
     t.index ["roles"], name: "index_users_on_roles", using: :gin
     t.index ["searchable_text"], name: "index_users_on_searchable_text_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["token"], name: "index_users_on_token", unique: true
+    t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
   create_table "users_resources", force: :cascade do |t|
@@ -1212,10 +1497,24 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id"], name: "index_users_resources_on_user_id"
   end
 
+  create_table "weekly_activities", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "week_iso", null: false
+    t.boolean "has_group_action", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "week_iso"], name: "index_weekly_activities_on_user_id_and_week_iso", unique: true
+  end
+
   add_foreign_key "experimental_pending_request_reminders", "users"
   add_foreign_key "smalltalks", "meetings"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "user_next_steps", "next_step_suggestions"
+  add_foreign_key "user_next_steps", "users"
   add_foreign_key "user_smalltalks", "smalltalks"
   add_foreign_key "user_smalltalks", "users"
+  add_foreign_key "user_suggestions", "entourages", column: "suggested_entourage_id"
+  add_foreign_key "user_suggestions", "users"
+  add_foreign_key "user_suggestions", "users", column: "suggested_user_id"
   add_foreign_key "users", "addresses"
 end

@@ -38,10 +38,72 @@
         </div>
         <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
           <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
-          <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+
+          <div style="margin: 10px 0">
+            <label style="margin-right: 15px">
+              <%= radio_button_tag 'chat_message[scheduled]', '0', true, class: 'chat-message-scheduled-toggle' %> Envoyer maintenant
+            </label>
+            <label>
+              <%= radio_button_tag 'chat_message[scheduled]', '1', false, class: 'chat-message-scheduled-toggle' %> Programmer
+            </label>
+          </div>
+
+          <div id="chat-message-schedule-fields" class="row" style="display: none; margin-bottom: 10px">
+            <div class="col-md-3">
+              <%= label_tag 'chat_message_scheduled_date', 'Date' %>
+              <%= date_field_tag 'chat_message[scheduled_date]', nil, class: 'form-control' %>
+            </div>
+            <div class="col-md-3">
+              <%= label_tag 'chat_message_scheduled_time', 'Heure (heure de Paris)' %>
+              <%= time_field_tag 'chat_message[scheduled_time]', nil, class: 'form-control' %>
+            </div>
+            <div class="col-md-3">
+              <%= label_tag 'chat_message_recurrence_frequency', 'Récurrence' %>
+              <%= select_tag 'chat_message[recurrence_frequency]', options_for_select([['Aucune', ''], ['Quotidienne', 'daily'], ['Hebdomadaire', 'weekly'], ['Mensuelle', 'monthly']]), class: 'form-control' %>
+            </div>
+            <div class="col-md-3">
+              <%= label_tag 'chat_message_recurrence_ends_on', 'Fin de la récurrence' %>
+              <%= date_field_tag 'chat_message[recurrence_ends_on]', nil, class: 'form-control' %>
+            </div>
+
+            <% if current_user.slack_id.blank? %>
+              <div class="col-md-12">
+                <div class="alert alert-warning" style="margin-top: 10px">
+                  Vous n'avez pas renseigné votre identifiant Slack : vous ne recevrez pas de notification à la publication.
+                  <%= link_to "Renseignez-le ici", edit_admin_user_path(current_user) %>.
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true, id: 'chat-message-submit' %>
         <% end %>
       </div>
     </div>
+
+    <% if @scheduled_publications.present? %>
+      <div class="panel panel-default" style="margin-top: 15px">
+        <div class="panel-heading">Publications programmées</div>
+        <ul class="list-group">
+          <% @scheduled_publications.each do |scheduled_publication| %>
+            <li class="list-group-item">
+              <div><strong><%= l scheduled_publication.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %></strong></div>
+              <div><%= truncate(scheduled_publication.publishable.content, length: 140) %></div>
+              <div style="margin-top: 5px">
+                <%= link_to "Éditer", edit_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), class: "btn btn-default btn-xs" %>
+                <%= link_to "Publier maintenant", publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Publier ce post maintenant ?" }, class: "btn btn-default btn-xs" %>
+                <% if scheduled_publication.recurring? %>
+                  <%= link_to "Annuler cette occurrence", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :occurrence, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }, class: "btn btn-danger btn-xs" %>
+                  <%= link_to "Annuler la série", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :series, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler toute la série récurrente ?" }, class: "btn btn-danger btn-xs" %>
+                <% else %>
+                  <%= link_to "Annuler", cancel_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler cette publication programmée ?" }, class: "btn btn-danger btn-xs" %>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
     <% if @posts.empty? %>
       Il n'y a pas encore de message.
@@ -164,6 +226,12 @@
     var chatMessageSubmit = $('#new_chat_message [type=submit]')[0]
     $('#chat_message_content').on('input', function() {
       chatMessageSubmit.disabled = this.textLength === 0;
+    })
+
+    $('.chat-message-scheduled-toggle').on('change', function() {
+      var scheduled = $('.chat-message-scheduled-toggle:checked').val() === '1'
+      $('#chat-message-schedule-fields').toggle(scheduled)
+      $('#chat-message-submit').val(scheduled ? 'Programmer' : 'Envoyer')
     })
   })
 </script>

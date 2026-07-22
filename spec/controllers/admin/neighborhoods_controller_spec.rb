@@ -20,6 +20,24 @@ describe Admin::NeighborhoodsController do
 
       it { expect(result).to eq([]) }
     end
+
+    context 'a scheduled post with an image is not flagged as unread moderation content' do
+      let!(:neighborhood) { create(:neighborhood) }
+      let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled, image_url: 'foo') }
+
+      before { get :index }
+
+      it { expect(assigns(:neighborhoods).first.unread_images).to eq(false) }
+    end
+
+    context 'a published post with an image is flagged as unread moderation content' do
+      let!(:neighborhood) { create(:neighborhood) }
+      let!(:published_post) { create(:chat_message, messageable: neighborhood, status: :active, image_url: 'foo') }
+
+      before { get :index }
+
+      it { expect(assigns(:neighborhoods).first.unread_images).to eq(true) }
+    end
   end
 
   describe 'GET #edit' do
@@ -88,6 +106,142 @@ describe Admin::NeighborhoodsController do
         it { expect(chat_message.reload.child_ids).to eq([ChatMessage.last.id]) }
       end
     end
+
+    context 'scheduled' do
+      let!(:neighborhood) { create(:neighborhood, participants: [user]) }
+
+      around { |example| Sidekiq::Testing.disable!(&example) }
+
+      context 'with a valid future date' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00'
+          }
+        }
+
+        it { expect { request }.to change { ChatMessage.count }.by(1) }
+        it { expect { request }.to change { ScheduledPublication.count }.by(1) }
+
+        it 'creates the chat_message with a scheduled status, hidden from the feed' do
+          request
+
+          message = ChatMessage.last
+          expect(message.status).to eq('scheduled')
+        end
+
+        it 'schedules the publish job at the requested time' do
+          request
+
+          scheduled_publication = ScheduledPublication.last
+          job = Sidekiq::ScheduledSet.new.find { |j| j.args.first == scheduled_publication.id }
+          expect(job).to be_present
+        end
+      end
+
+      context 'with recurrence' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'weekly',
+            recurrence_ends_on: 2.months.from_now.to_date.to_s
+          }
+        }
+
+        it { expect { request }.to change { RecurrenceRule.count }.by(1) }
+
+        it 'attaches the recurrence rule to the scheduled publication' do
+          request
+
+          expect(ScheduledPublication.last.recurrence_rule.frequency).to eq('weekly')
+        end
+      end
+
+      context 'with a recurrence frequency but no end date' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'weekly'
+          }
+        }
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+        it { expect { request }.not_to change { RecurrenceRule.count } }
+      end
+
+      context 'with a date in the past' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.ago.to_date.to_s,
+            scheduled_time: '10:00'
+          }
+        }
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+        it { expect { request }.not_to change { ScheduledPublication.count } }
+      end
+
+      context 'without a date' do
+        let(:params) { { content: 'foo', scheduled: '1' } }
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+      end
+    end
+  end
+
+  describe 'GET #show_posts' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:published_post) { create(:chat_message, messageable: neighborhood, status: :active) }
+    let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: scheduled_post, neighborhood: neighborhood, author: user) }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    it { expect(assigns(:posts).map(&:id)).to eq([published_post.id]) }
+    it { expect(assigns(:scheduled_publications).map(&:id)).to eq([scheduled_publication.id]) }
+  end
+
+  describe 'GET #show_posts slack_id warning' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    context 'when the current user has no slack_id' do
+      it { expect(response.body).to include("Vous n'avez pas renseigné votre identifiant Slack") }
+    end
+
+    context 'when the current user has a slack_id' do
+      let!(:user) { admin_basic_login.tap { |u| u.update!(slack_id: 'U123') } }
+
+      it { expect(response.body).not_to include("Vous n'avez pas renseigné votre identifiant Slack") }
+    end
+  end
+
+  describe 'GET #show_posts with a recurring scheduled post' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:recurrence_rule) { create(:recurrence_rule) }
+    let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: scheduled_post, neighborhood: neighborhood, author: user, recurrence_rule: recurrence_rule) }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    it { expect(response.status).to eq(200) }
   end
 
   describe 'DELETE destroy_message' do

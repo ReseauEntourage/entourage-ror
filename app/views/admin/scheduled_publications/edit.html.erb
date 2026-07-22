@@ -1,0 +1,32 @@
+<div class="container">
+  <h1>Modifier la publication programmée</h1>
+
+  <p>
+    Groupe : <%= link_to @scheduled_publication.neighborhood.name, edit_admin_neighborhood_path(@scheduled_publication.neighborhood) %>
+  </p>
+
+  <%= form_for @scheduled_publication, url: admin_scheduled_publication_path(@scheduled_publication), method: :patch, as: :scheduled_publication do |f| %>
+    <div class="form-group">
+      <%= label_tag :scheduled_publication_content, 'Contenu' %>
+      <%= text_area_tag 'scheduled_publication[content]', @scheduled_publication.publishable.content, class: 'form-control', rows: 5 %>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3">
+        <%= label_tag :scheduled_publication_scheduled_date, 'Date de publication' %>
+        <%= date_field_tag 'scheduled_publication[scheduled_date]', @scheduled_publication.scheduled_at.in_time_zone('Paris').to_date, class: 'form-control' %>
+      </div>
+
+      <div class="col-md-3">
+        <%= label_tag :scheduled_publication_scheduled_time, 'Heure de publication (heure de Paris)' %>
+        <%= time_field_tag 'scheduled_publication[scheduled_time]', @scheduled_publication.scheduled_at.in_time_zone('Paris').strftime('%H:%M'), class: 'form-control' %>
+      </div>
+    </div>
+
+    <%= hidden_field_tag :return_to, params[:return_to] %>
+
+    <div class="form-group" style="margin-top: 15px">
+      <%= f.submit 'Enregistrer', class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
