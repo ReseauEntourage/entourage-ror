@@ -48,6 +48,8 @@
 <a href="#" data-role="select-neighborhoods" data-select="all">Tout sélectionner</a> ·
 <a href="#" data-role="select-neighborhoods" data-select="none">Tout désélectionner</a>
 
+<div id="neighborhoods-selection-recap" style="margin: 10px 0"><strong><span id="neighborhoods-selection-count">0</span> groupe(s) sélectionné(s), <span id="neighborhoods-selection-recipients">0</span> destinataire(s)</strong></div>
+
 <% neighborhoods_for_area = Neighborhood.with_zone(@zone).with_moderation_area(@area.to_s).includes([:user]).order(:postal_code, :name) %>
 
 <%= form_for record, url: path, method: :put do |f| %>
@@ -67,7 +69,7 @@
       <tbody>
         <%= collection_check_boxes(record_type, :neighborhood_ids, neighborhoods_for_area, :id, :name ) do |b| %>
           <tr>
-            <td><%= b.label(class: "checkbox-inline") { b.check_box + b.text } %></td>
+            <td><%= b.label(class: "checkbox-inline") { b.check_box(data: { members: b.object.members_count }) + b.text } %></td>
             <td><%= link_to b.object.id, edit_admin_neighborhood_path(b.object) %></td>
             <td><%= link_to b.object.name, edit_admin_neighborhood_path(b.object) %></td>
             <td><%= b.object.postal_code %></td>
@@ -88,6 +90,18 @@
 <script>
   var $neighborhoods = $('[type="checkbox"][name="<%= record_type %>[<%= recipient_ids %>][]"]');
 
+  function updateNeighborhoodsSelectionRecap() {
+    var count = 0, recipients = 0
+
+    $neighborhoods.filter(':checked').each(function() {
+      count += 1
+      recipients += parseInt($(this).data('members'), 10) || 0
+    })
+
+    $('#neighborhoods-selection-count').text(count)
+    $('#neighborhoods-selection-recipients').text(recipients)
+  }
+
   $(document).on('click', '[data-role="select-neighborhoods"]', function(e) {
     e.preventDefault()
     var select = $(this).data('select'),
@@ -101,5 +115,10 @@
       $box.prop('checked', check($box.val()))
       this.setCustomValidity('') // reset validations
     })
+
+    updateNeighborhoodsSelectionRecap()
   })
+
+  $neighborhoods.on('change', updateNeighborhoodsSelectionRecap)
+  updateNeighborhoodsSelectionRecap()
 </script>

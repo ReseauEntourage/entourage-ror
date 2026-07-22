@@ -22,6 +22,19 @@ describe ScheduledPublicationServices::Publisher do
       end
     end
 
+    context 'broadcast' do
+      let(:scheduled_publication) { create(:scheduled_publication, :broadcast) }
+
+      around { |example| Sidekiq::Testing.fake!(&example) }
+
+      it 'marks the broadcast as sent and enqueues the recipient jobs' do
+        described_class.new(scheduled_publication).publish!
+
+        expect(scheduled_publication.publishable.reload.status).to eq('sent')
+        expect(scheduled_publication.reload.status).to eq('published')
+      end
+    end
+
     context 'when publishing fails' do
       let(:scheduled_publication) { create(:scheduled_publication, :post) }
 

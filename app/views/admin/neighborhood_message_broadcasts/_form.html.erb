@@ -52,6 +52,15 @@
         }) %>
       </div>
     <% end %>
+  <% elsif @neighborhood_message_broadcast.scheduled? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Programmée</b><br>
+        Cette diffusion sera envoyée le <%= l @neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %> à <%= @neighborhood_message_broadcast.recipient_ids.count %> groupes.
+      </div>
+      <%= link_to("Diffuser maintenant", publish_now_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-danger", data: { confirm: "Diffuser ce message maintenant ?" }) if @scheduled_publication %>
+      <%= link_to("Annuler la programmation", cancel_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-default", data: { confirm: "Annuler cette diffusion programmée ?" }) if @scheduled_publication %>
+    </div>
   <% elsif @neighborhood_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -60,17 +69,6 @@
         Vous pouvez également choisir de l'archiver mais cette action n'est pas réversible.
       </div>
       <%= f.submit "Archiver", name: :archive, class: "btn btn-default" %>
-    </div>
-    <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
-      <div style="flex-grow: 1">
-        <b>Envoyer</b><br>
-        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> groupes correspondants aux filtres configurés.<br>
-
-        ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
-      </div>
-        <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
-          confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
-        }) %>
     </div>
   <% end %>
 
@@ -110,6 +108,67 @@
   <% else %>
     <%= link_to "Retour", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
   <% end %>
+<% end %>
+
+<% if @neighborhood_message_broadcast.persisted? && @neighborhood_message_broadcast.draft? %>
+  <div class="alert alert-danger" role="alert">
+    <div>
+      <b>Envoyer</b><br>
+      L'envoi sera effectué auprès de <span id="broadcast-recipient-count"><%= @neighborhood_message_broadcast.recipient_ids.count %></span> groupes correspondants aux filtres configurés, soit <%= @neighborhood_message_broadcast.recipients.sum(:number_of_people) %> destinataires.<br>
+
+      ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
+    </div>
+
+    <%= form_tag broadcast_admin_neighborhood_message_broadcast_path, method: :post, id: 'broadcast-send-form' do %>
+      <div style="margin: 10px 0">
+        <label style="margin-right: 15px">
+          <%= radio_button_tag 'neighborhood_message_broadcast_scheduled_toggle', '0', true, class: 'broadcast-scheduled-toggle' %> Envoyer maintenant
+        </label>
+        <label>
+          <%= radio_button_tag 'neighborhood_message_broadcast_scheduled_toggle', '1', false, class: 'broadcast-scheduled-toggle' %> Programmer
+        </label>
+      </div>
+
+      <div id="broadcast-schedule-fields" class="row" style="display: none; margin-bottom: 10px">
+        <div class="col-md-3">
+          <%= label_tag 'neighborhood_message_broadcast_scheduled_date', 'Date' %>
+          <%= date_field_tag 'neighborhood_message_broadcast[scheduled_date]', nil, class: 'form-control' %>
+        </div>
+        <div class="col-md-3">
+          <%= label_tag 'neighborhood_message_broadcast_scheduled_time', 'Heure (heure de Paris)' %>
+          <%= time_field_tag 'neighborhood_message_broadcast[scheduled_time]', nil, class: 'form-control' %>
+        </div>
+      </div>
+
+      <%= submit_tag 'Envoyer', id: 'broadcast-send-submit', class: 'btn btn-danger', data: {
+        confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
+      } %>
+    <% end %>
+  </div>
+
+  <script>
+    $(function() {
+      var $form = $('#broadcast-send-form')
+      var broadcastUrl = $form.attr('action')
+      var scheduleUrl = <%= raw schedule_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast).to_json %>
+      var sendConfirm = <%= raw "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?".to_json %>
+
+      $('.broadcast-scheduled-toggle').on('change', function() {
+        var scheduled = $('.broadcast-scheduled-toggle:checked').val() === '1'
+        var $submit = $('#broadcast-send-submit')
+
+        $('#broadcast-schedule-fields').toggle(scheduled)
+        $form.attr('action', scheduled ? scheduleUrl : broadcastUrl)
+        $submit.val(scheduled ? 'Programmer' : 'Envoyer')
+
+        if (scheduled) {
+          $submit.removeAttr('data-confirm')
+        } else {
+          $submit.attr('data-confirm', sendConfirm)
+        }
+      })
+    })
+  </script>
 <% end %>
 
 <% if @neighborhood_message_broadcast.persisted? %>

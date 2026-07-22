@@ -16,13 +16,22 @@ module ScheduledPublicationServices
     attr_reader :scheduled_publication
 
     def revert_publishable!
-      return raise NotImplementedError, "cannot cancel a #{scheduled_publication.publishable_type}" unless scheduled_publication.post?
+      return cancel_chat_message! if scheduled_publication.post?
+      return cancel_broadcast! if scheduled_publication.broadcast?
 
+      raise NotImplementedError, "cannot cancel a #{scheduled_publication.publishable_type}"
+    end
+
+    def cancel_chat_message!
       scheduled_publication.publishable.update!(
         status: :deleted,
         deleter_id: scheduled_publication.author_id,
         deleted_at: Time.current
       )
+    end
+
+    def cancel_broadcast!
+      scheduled_publication.publishable.update!(status: :draft, scheduled_at: nil)
     end
   end
 end
