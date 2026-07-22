@@ -1,50 +1,1063 @@
+---
 uk:
   date:
     abbr_day_names:
-      - нд
-      - пн
-      - вт
-      - ср
-      - чт
-      - пт
-      - сб
+    - нд.
+    - пн.
+    - вт.
+    - ср.
+    - чт.
+    - пт.
+    - сб.
     abbr_month_names:
-      -
-      - січ
-      - лют
-      - бер
-      - кві
-      - тра
-      - чер
-      - лип
-      - сер
-      - вер
-      - жов
-      - лис
-      - гру
+    -
+    - січ.
+    - лют.
+    - бер.
+    - квіт.
+    - трав.
+    - черв.
+    - лип.
+    - серп.
+    - вер.
+    - жовт.
+    - лист.
+    - груд.
     day_names:
-      - неділя
-      - понеділок
-      - вівторок
-      - середа
-      - четвер
-      - п'ятниця
-      - субота
+    - неділя
+    - понеділок
+    - вівторок
+    - середа
+    - четвер
+    - п'ятниця
+    - субота
     formats:
       default: "%d.%m.%Y"
-      short: "%e %b"
-      long: "%e %B %Y"
+      long: "%d %B %Y"
+      short: "%d %b"
     month_names:
-      -
-      - січень
-      - лютий
-      - березень
-      - квітень
-      - травень
-      - червень
-      - липень
-      - серпень
-      - вересень
-      - жовтень
-      - листопад
-      - грудень
+    -
+    - Січня
+    - Лютого
+    - Березня
+    - Квітня
+    - Травня
+    - Червня
+    - Липня
+    - Серпня
+    - Вересня
+    - Жовтня
+    - Листопада
+    - Грудня
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: близько %{count} години
+        few: близько %{count} годин
+        many: близько %{count} годин
+        other: близько %{count} години
+      about_x_months:
+        one: близько %{count} місяця
+        few: близько %{count} місяців
+        many: близько %{count} місяців
+        other: близько %{count} місяця
+      about_x_years:
+        one: близько %{count} року
+        few: близько %{count} років
+        many: близько %{count} років
+        other: близько %{count} року
+      almost_x_years:
+        one: майже %{count} рік
+        few: майже %{count} роки
+        many: майже %{count} років
+        other: майже %{count} років
+      half_a_minute: пів хвилини
+      less_than_x_seconds:
+        one: менше %{count} секунди
+        few: менше %{count} секунд
+        many: менше %{count} секунд
+        other: менше %{count} секунди
+      less_than_x_minutes:
+        one: менше %{count} хвилини
+        few: менше %{count} хвилин
+        many: менше %{count} хвилин
+        other: менше %{count} хвилини
+      over_x_years:
+        one: більше %{count} року
+        few: більше %{count} років
+        many: більше %{count} років
+        other: більше %{count} року
+      x_seconds:
+        one: "%{count} секунда"
+        few: "%{count} секунди"
+        many: "%{count} секунд"
+        other: "%{count} секунди"
+      x_minutes:
+        one: "%{count} хвилина"
+        few: "%{count} хвилини"
+        many: "%{count} хвилин"
+        other: "%{count} хвилини"
+      x_days:
+        one: "%{count} день"
+        few: "%{count} дні"
+        many: "%{count} днів"
+        other: "%{count} дня"
+      x_months:
+        one: "%{count} місяць"
+        few: "%{count} місяці"
+        many: "%{count} місяців"
+        other: "%{count} місяця"
+      x_years:
+        one: "%{count} рік"
+        few: "%{count} роки"
+        many: "%{count} років"
+        other: "%{count} року"
+    prompts:
+      second: Секунда
+      minute: Хвилина
+      hour: Година
+      day: День
+      month: Місяць
+      year: Рік
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: має бути прийнятий
+      blank: не може бути пустим
+      confirmation: не збігається з підтвердженням
+      empty: не може бути порожнім
+      equal_to: має дорівнювати %{count}
+      even: має бути парним
+      exclusion: зарезервовано
+      greater_than: має бути більше ніж %{count}
+      greater_than_or_equal_to: має бути більше ніж або дорівнювати %{count}
+      inclusion: не включено до переліку
+      invalid: недійсний
+      less_than: має бути менше ніж %{count}
+      less_than_or_equal_to: має бути менше ніж або дорівнювати %{count}
+      model_invalid: 'Виникли помилки: %{errors}'
+      not_a_number: не число
+      not_an_integer: не є цілим числом
+      odd: має бути непарним
+      other_than: має відрізнятись від %{count}
+      present: має бути пустим
+      required: не може бути порожнім
+      taken: вже зайнятий
+      too_long:
+        one: занадто довгий (максимум %{count} знак)
+        few: занадто довгий (максимум %{count} знаки)
+        many: занадто довгий (максимум %{count} знаків)
+        other: занадто довгий (максимум %{count} знаку)
+      too_short:
+        one: занадто короткий (мінімум %{count} знак)
+        few: занадто короткий (мінімум %{count} знаки)
+        many: занадто короткий (мінімум %{count} знаків)
+        other: занадто короткий (мінімум %{count} знаку)
+      wrong_length:
+        one: неправильна довжина (має бути %{count} знак)
+        few: неправильна довжина (має бути %{count} знаки)
+        many: неправильна довжина (має бути %{count} знаків)
+        other: неправильна довжина (має бути %{count} знаку)
+    template:
+      body: 'Помилки виявлено в таких полях:'
+      header:
+        one: "%{model} не збережено через %{count} помилку"
+        few: "%{model} не збережено через %{count} помилки"
+        many: "%{model} не збережено через %{count} помилок"
+        other: "%{model} не збережено через %{count} помилки"
+  helpers:
+    select:
+      prompt: 'Оберіть: '
+    submit:
+      create: Створити %{model}
+      submit: Зберегти %{model}
+      update: Зберегти %{model}
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "%{entry_name} не знайдено"
+          one: "Показано <b>1</b> %{entry_name}"
+          other: "Показано <b>всі</b> %{entry_name} (всього: <b>%{count}</b>)"
+      more_pages:
+        display_entries: "Показано %{entry_name} <b>%{first}&nbsp;–&nbsp;%{last}</b> (всього: <b>%{total}</b>)"
+  number:
+    currency:
+      format:
+        delimiter: " "
+        format: "%n %u"
+        precision: 2
+        separator: ","
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "€"
+    format:
+      delimiter: " "
+      precision: 3
+      separator: ","
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion:
+            one: Мільярд
+            few: Мільярдів
+            many: Мільярдів
+            other: Мільярдів
+          million:
+            one: Мільйон
+            few: Мільйонів
+            many: Мільйонів
+            other: Мільйонів
+          quadrillion:
+            one: Квадрильйон
+            few: Квадрильйонів
+            many: Квадрильйонів
+            other: Квадрильйонів
+          thousand:
+            one: Тисяча
+            few: Тисяч
+            many: Тисяч
+            other: Тисяч
+          trillion:
+            one: Трильйон
+            few: Трильйонів
+            many: Трильйонів
+            other: Трильйонів
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 1
+        significant: false
+        strip_insignificant_zeros: false
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: байт
+            few: байти
+            many: байтів
+            other: байту
+          gb: ГБ
+          kb: кБ
+          mb: МБ
+          tb: ТБ
+    percentage:
+      format:
+        delimiter: ''
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: " та "
+      two_words_connector: " і "
+      words_connector: ", "
+  time:
+    am: до полудня
+    formats:
+      default: "%a, %d %b %Y, %H:%M:%S %z"
+      long: "%d %B %Y, %H:%M"
+      short: "%d %b, %H:%M"
+    pm: по полудні
+
+  views:
+    pagination:
+      first: "&laquo; Перша"
+      last: "Остання &raquo;"
+      previous: "&lsaquo; Попередня"
+      next: "Наступна &rsaquo;"
+      truncate: "&hellip;"
+
+  activerecord:
+    attributes:
+      user:
+        first_name: Ім'я
+        last_name: Прізвище
+        full_name: Ім'я та прізвище
+        email: Email
+        phone: Телефон
+        organization: Асоціація патрулювання
+        about: Про себе
+        roles: Ролі
+        targeting_profile: Профіль модерації
+        goal: Заявлений профіль
+        partner: Асоціація
+        partner_id: Асоціація
+        admin_password: Пароль
+        admin_password_confirmation: Підтвердження пароля
+        created_at: Дата створення
+        address: Адреса
+        cnil_explanation: Причини цієї дії
+        validation_status: Статус
+        last_sign_in_at: Дата останнього входу
+        postal_codes: Поштові індекси
+        postal_code: Поштовий індекс
+        engaged?: Залучений(а)?
+        deleted: Видалено
+        organization_name: Асоціація
+        subscriptions: Підписки
+        action_creations_count: Кількість створених акцій
+        action_participations_count: Кількість акцій, до яких приєднався(лася)
+        outing_participations_count: Кількість подій, до яких приєднався(лася)
+        conversation_participations_count: Кількість розмов, до яких приєднався(лася)
+      user_blocked_user:
+        user: Користувач
+        blocked_user: Заблокований користувач
+        status: Статус
+      user_history:
+        kind:
+          account: Обліковий запис створено
+          anonymize: Обліковий запис анонімізовано
+          auto: авто
+          block: Обліковий запис заблоковано
+          deleted: Обліковий запис видалено
+          unblock: Обліковий запис розблоковано
+          phone_change_cancel: Зміну номера телефону скасовано
+          phone_change_change: Номер телефону змінено
+          phone_change_request: Запит на зміну номера телефону
+          signal-action: Скарга на акцію
+          signal-user: Скарга на користувача
+          spam-alert: Сповіщення про спам-користувачів
+          spam-detection: Виявлено спам
+          sms: Повторний запит SMS-коду
+        sms:
+          invite: Запрошення
+          welcome: Вітання
+          regenerate: Запит нового пароля
+      organization:
+        name: Назва
+        description: Опис
+        phone: Телефон
+        address: Адреса
+      entourage:
+        id: Id
+        title: Назва
+        description: Опис
+        display_address: Адреса
+        latitude: Широта
+        longitude: Довгота
+        recurrency: Періодичність
+        created_at: Створено
+        starts_at: Починається
+        ends_at: Закінчується
+        image_url: URL зображення
+        place_limit: Кількість вільних місць
+        members_count: Кількість учасників
+        outing_image_url: Фото події
+        cancellation_message: Повідомлення про скасування
+        sf_category: Тип події
+        exclusive_to: Цільова аудиторія події
+        categories:
+          social: Соціальне
+          resource: Ресурс
+          mat_help: Матеріальна допомога
+          non_mat_help: Нематеріальна допомога
+          other: Інше
+        entourage_types:
+          ask_for_help: Запит
+          contribution: Пропозиція
+        group_types:
+          action: Дія
+          outing: Подія
+          conversation: Розмова
+        statuses:
+          open: Активний
+          closed: Закритий
+          blacklisted: У чорному списку
+          suspended: Призупинений
+          full: Заповнений
+          cancelled: Скасований
+      entourage_image:
+        title: Назва
+        landscape_url: Горизонтальне фото
+        portrait_url: Вертикальне фото
+      entourage_moderation:
+        action_author_type: Ініціатор
+        action_recipient_type: Аудиторія
+        action_target_type: Ціль
+        action_type: Тип дії
+        action_recipient_consent_obtained: Згода
+
+        moderated_at: Дата модерації
+        moderation_contact_channel: Спосіб зв'язку
+        moderator_id: Співрозмовник
+        moderation_action: Дія
+        moderation_comment: Нотатки
+
+        action_outcome_reported_at: Дата завершення
+        action_outcome: Результат
+        action_success_reason: Причина успіху
+        action_failure_reason: Причина невдачі
+
+        section: Категорія
+
+      inapp_notification:
+        context_types:
+          birthday: birthday
+          chat_message_on_create: chat_message_created
+          join_request_on_create: join_request_created
+          join_request_on_update: join_request_updated
+          neighborhoods_entourage_on_create: outing_created
+          outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
+
+      user_moderation:
+        expectations: Очікування
+        acquisition_channel: Як дізнався(лася) про Entourage
+        content_sent: Надісланий контент
+        skills: Навички
+
+        accepts_event_invitations: Дружня зустріч Entourage
+        accepts_volunteering_offers: Волонтерство
+        ambassador: Активіст Entourage
+
+      partner:
+        name: Назва
+        description: Опис
+        phone: Телефон
+        address: Адреса
+        website_url: Веб-сайт
+        email: Email
+        donations_needs: Прийняті пожертви
+        volunteers_needs: Потрібні волонтери
+      poi:
+        id: ID
+        name: Назва
+        adress: Адреса
+        description: Опис
+        audience: Аудиторія
+        email: Email
+        website: Website
+        phone: Телефон
+        category_1: Категорія 1
+        category_2: Категорія 2
+        category_3: Категорія 3
+        category_4: Категорія 4
+        category_5: Категорія 5
+        category_6: Категорія 6
+        category_7: Категорія 7
+      announcement:
+        title: Назва
+        icon: Піктограма
+        image_url: Горизонтальне зображення
+        image_portrait_url: Вертикальне зображення
+        body: Опис
+        action: CTA
+        url: Посилання
+        webview: Відкрити у
+        areas: Географічні зони
+        user_goals: Аудиторії
+        categories:
+          online: Онлайн-подія
+          ambassador: Програма активістів Entourage
+          poi_map: Солідарні місця
+
+      moderation_area:
+        name: Назва зони
+        departement: Департамент
+        animator_id: PEC
+        sourcing_id: PI
+        community_builder_id: Community builder
+        welcome_message_1: Вітальне повідомлення
+        slack_moderator_id: Ідентифікатор Slack
+      translation:
+        langs:
+          fr: Французька
+          en: Англійська
+          es: Іспанська
+          de: Німецька
+          pl: Польська
+          ro: Румунська
+          uk: Українська
+          ar: Арабська
+      tour_area:
+        statuses:
+          active: Активна
+          inactive: Неактивна
+
+      conversation_message_broadcast:
+        moderation_area_id: Зона модерації
+        content: Контент
+        goal: Аудиторія
+        title: Назва
+        archived_at: Заархівовано
+        area: Зона
+        areas: Департаменти або поштові індекси
+        area_type: Зона
+        area_types:
+          national: Національна
+          hors_zone: Поза зоною
+          sans_zone: Без зони
+          list: Департаменти або поштові індекси
+      neighborhood:
+        name: Назва
+        description: Опис
+        interests: Інтереси
+        image_url: Зображення
+        reserved_female: Тільки для жінок
+        status: Статус
+        statuses:
+          active: Активний
+          deleted: Видалений
+          blacklisted: У чорному списку
+      recommandation:
+        name: Назва
+        instance: Об'єкт
+        action: Дія
+        argument_type: Тип аргументу
+        argument_value: Значення аргументу (id або url)
+        user_goals: Профілі
+        image_url: Зображення
+        status: Статус
+        actions:
+          index: Список
+          show: Показати
+          create: Створити
+          join: Приєднатися
+          show_joined: Показати найближчий вже приєднаний
+          show_not_joined: Показати найближчий ще не приєднаний
+        instances:
+          user: Користувач
+          profile: Профіль
+          neighborhood: Сусідська група
+          outing: Подія
+          poi: POI
+          resource: Освітній контент
+          webview: Webview
+          conversation: Розмова
+          contribution: Пропозиція
+          solicitation: Запит
+      resource:
+        name: Назва
+        category: Категорія
+        description: Опис
+        url: Url
+        is_video: Відео?
+        duration: Тривалість
+        image_url: Зображення
+        tags:
+          neighborhood: "Групи: важливість ділитися спільними інтересами"
+          outing: "Як створити подію?"
+          action: "Взаємодопомога: що я можу запропонувати / запитати"
+          welcome: "Вітальне відео"
+        categories:
+          act: Діяти
+          inspire: Надихатися
+          understand: Розуміти
+      smalltalk:
+        object: Добрі вібрації
+        new_message: Нове повідомлення
+        title_with_participants: "%s"
+
+
+  community:
+    entourage:
+      roles:
+        admin: Адміністратор
+        ambassador: Активіст Entourage
+        coordinator: Координатор
+        ethics_charter_signed: Підтвердив(ла) етичний кодекс
+        moderator: Модератор
+        not_validated: Не підтверджено
+        visitor: Відвідувач
+      targeting_profiles:
+        offers_help: Сусід
+        asks_for_help: Особа в скрутному становищі
+        partner: Асоціація
+        ambassador: Активіст Entourage
+        team: Команда Entourage
+      goals:
+        offer_help: Сусід
+        ask_for_help: Самотня людина
+        organization: Асоціація
+        goal_not_known: Не визначено
+        all: Усі профілі
+      goals_compact:
+        offer_help: Сусід
+        ask_for_help: Особа в скрутному становищі
+        organization: Асоціація
+        goal_not_known: Не визначено
+        staff: Активісти Entourage та команда
+        all: Усі профілі
+      icons:
+        offer_help: user
+        ask_for_help: street-view
+        organization: sitemap
+        goal_not_known: question
+    user:
+      profiles:
+        offer_help: Небайдужий сусід
+        ask_for_help: Особа в скрутному становищі
+        organization: Асоціація
+        goal_not_known: Не визначено
+        all: Усі профілі
+      engagements:
+        engaged: Залучений(а)
+        not_engaged: Не залучений(а)
+      statuses:
+        validated: Підтверджено
+        anonymized: Анонімізовано
+        blocked: Заблоковано
+        temporary_blocked: Тимчасово заблоковано
+        deleted: Видалено
+        pending: Очікує
+      roles:
+        moderator: Модератор
+        admin: Адміністратор
+    chat_messages:
+      status_update:
+        closed_user: користувач(ка) залишив(ла) мережу Entourage. Не соромся приєднатися до інших солідарних акцій у застосунку!
+
+
+  push_notifications:
+    action:
+      create_for_follower: "%s запрошує тебе приєднатися до %s"
+    badge:
+      bienvenue:
+        title: "🎉 Твій перший крок серед нас!"
+        content: "Ти щойно отримав(-ла) свій перший значок на Entourage: «Перший крок» 👣"
+      premier_contact:
+        title: "✨ Перший зв'язок зав'язано!"
+        content: "Одне надіслане повідомлення, одне отримане: відкрий свій значок «Перший зв'язок» 👋"
+      moteur_rencontres:
+        title: "💫 Ти рухаєш справи вперед!"
+        content: "3 заходи за 90 днів: ти оживляєш свій квартал. Відкрий значок «Творець зустрічей» 💫"
+      fidele_papotages:
+        title: "💬 Браво за твою відданість!"
+        content: "3 Папотажі за 90 днів — ти робиш добро навколо себе. Відкрий свій значок «Майстер розмов»"
+      voix_presente:
+        title: "🌱 Ти оживляєш групи!"
+        content: "Ти тут, тиждень за тижнем. Відкрий значок «Ткач зв'язків» 🌱"
+    birthday:
+      title: "З днем народження 🎉"
+      content: "Ми раді, що ти з нами. Натисни тут, щоб прочитати наше привітання з днем народження!"
+    outing:
+      create: "До %s щойно додано нову подію: %s заплановано на %s"
+      cancel: "Подію, заплановану на %s, щойно скасовано"
+      update: "Подію, заплановану на %s, змінено. Вона відбудеться %s, о %s"
+      update_short: "Подію, заплановану на %s, змінено"
+      day_before:
+        title: "🔔 Нагадування: «%s» відбудеться завтра!"
+        content: "Не забудь, ця подія завтра. Ти все ще плануєш прийти?"
+    chat_message:
+      mention: "%s згадав(-ла) тебе у своєму повідомленні"
+    post:
+      create: "%s щойно поділився(-лася): \"%s\""
+      create_image: "%s щойно поділився(-лася) фото"
+    comment:
+      create: "%s щойно прокоментував(-ла) публікацію \"%s\""
+      create_image: "%s щойно поділився(-лася) фото"
+    reaction:
+      create: "%s відреагував(-ла) на твою публікацію: \"%s\""
+    join_request:
+      new: "Новий учасник"
+      update: "Запит прийнято"
+      update_on_action: "Ти щойно приєднався(-лася) до дії від %s"
+      update_on_outing: "Ти щойно приєднався(-лася) до події від %s"
+      update_on_neighborhood: "Ти щойно приєднався(-лася) до групи від %s"
+      update_on_smalltalk: "Ти щойно приєднався(-лася) до нової компанії Добрих Вібрацій"
+      create: "%s щойно приєднався(-лася) до твого %s \"%s\""
+      create_outing: "%s щойно приєднався(-лася) до твоєї події \"%s\" від %s"
+      create_smalltalk_user_object: smalltalk_user_object
+      create_smalltalk_user_content: smalltalk_user_content
+      create_smalltalk_sibling_object: smalltalk_sibling_object
+      create_smalltalk_sibling_content: smalltalk_sibling_content
+    contribution:
+      create: "Сусід(-ка) пропонує нову взаємодопомогу"
+    solicitation:
+      create: "Сусід(-ка) шукає допомогу"
+      create_section: "Сусід(-ка) шукає %s"
+    survey_response:
+      create: "%s відповів(-ла) на твоє опитування: %s"
+    matching:
+      create: "Цей контент може тебе зацікавити"
+      almost_match_title: "Пропозиція групи"
+      almost_match_content: "Ця(ці) група(и) обговорень Добрих Вібрацій може(уть) відповідати тому, що ти шукаєш!"
+    user_smalltalk:
+      expire_object: "Досі немає збігу 😕"
+      expire_content: |
+        Твій запит на Добрі Вібрації закінчився.
+        Спробуй, можливо, з трохи гнучкішими критеріями? ✨
+
+
+  timeliner:
+    h1:
+      title: "Ласкаво просимо до Entourage 👌"
+      offer: "Чи знав(-ла) ти? Досить одного відео, щоб зруйнувати твої упередження!"
+      ask: "Ти навіть не уявляєш, що містить твій новий застосунок: приходь та дізнайся!"
+
+
+  regions:
+    ouest: Захід
+    sud_ouest: Південний Захід
+    sud_est: Південний Схід
+    aura: Овернь-Рона-Альпи
+    nord: Північ
+    idf: Іль-де-Франс
+    centre_est: Центрально-Східний регіон
+
+
+  conversations:
+    participants:
+      alone: Ти
+
+
+  smalltalks:
+    messager:
+      new_member: | # first_name
+        Ласкаво просимо, %s 🙂 Ми раді, що ти приєднався(-лася) до нас! Розкажи трохи про себе, щоб група могла тебе краще пізнати.
+      destroy_member: | # first_name
+        %s щойно покинув(-ла) групу. Дякуємо за участь і бажаємо тобі всього найкращого!
+      banned_member: | # first_name
+        %s більше не є частиною групи. Його/її поведінка не зовсім відповідала духу солідарних компаній. Розраховуємо на тебе, щоб і надалі підтримувати цей простір з доброзичливістю та гарним настроєм 🙏
+      incomplete: |
+        Ми готуємо для тебе чудову групу Добрих Вібрацій ✨ Поки чекаємо на нових учасників, маленький виклик: спробуй вгадати ім'я того чи тієї, хто приєднається наступним. Шансів вгадати небагато... але хто знає? 👀
+      close: |
+        Усі учасники цієї групи Добрих Вібрацій вирішили покинути розмову, тож тепер ти тут сам(а). Групу закрито. Ти завжди можеш переглянути історію повідомлень і повернутися сюди за потреби.
+
+        Якщо хочеш і далі ділитися Добрими Вібраціями, не соромся створити новий запит, щоб приєднатися до іншої групи. До зустрічі 👋
+      complete: |
+        Групу укомплектовано! 🎉
+
+        Ласкаво просимо до твоєї групи добрих вібрацій — простору, щоб просто і доброзичливо створювати зв'язки ✨
+
+        Твоя місія: спілкуватися, ділитися і, чому б ні, зустрітися — у відеодзвінку чи в реальному житті?
+        Ось посилання на першу спільну відеозустріч: %s
+
+        👋 Не соромся представитися, якщо ще цього не зробив(-ла).
+
+        🔥 А вже завтра... починаються 7 днів невеликих викликів, щоб краще пізнати одне одного і створити справжні зв'язки 🫶
+
+        Розраховуємо на твою активну участь! 😉
+      complete_j1: |
+        Виклик дня: Три правди, одна брехня: поділись трьома правдивими фактами про себе і одним неправдивим. Іншим треба вгадати, який зайвий!
+      complete_j2: |
+        Виклик дня: Вчора в моєму житті... Розкажи про свій вчорашній день лише трьома емодзі. Інші мають спробувати вгадати, що сталося!
+      complete_j3: |
+        Постав групі найцікавіше запитання, на яке ти так і не знайшов(-ла) задовільної відповіді. Подивимось, чи зможе група допомогти тобі про це подумати!
+      complete_j4: |
+        Виклик дня: Поділись чимось, про що люди не здогадаються з першого погляду: захопленням, звичкою, рисою характеру...
+      complete_j5: |
+        Виклик дня: Протягом 24 годин одне поширене слово заборонено в групі (наприклад: «так», «я», «їсти»). Якщо хтось його напише... доведеться розповісти кумедну історію про себе!
+      complete_j6: |
+        Виклик дня: Поділись тим, що допомагає тобі підійти до когось: поглядом, місцем, фразою... або лайфхаком проти сором'язливості!
+      complete_j7: |
+        Виклик дня: Поділись класною подією, яка скоро відбудеться поруч з тобою або онлайн! Якщо хтось інший згадає ту саму чи схожу подію — можливо, це ідеальний момент піти разом (або зустрітися онлайн)!
+      complete_congratulations: | # meeting_url
+        Браво всім за участь! Ви знайшли час ділитися, слухати і створювати зв'язки: це вже чудовий результат 🧡
+
+        Тепер настав час для спільної зустрічі! У відеодзвінку чи наживо — момент оживити ваше спілкування, побачити обличчя за словами і продовжити ці добрі вібрації 🤝
+
+        Кілька ідей:
+
+        Спокійний відеодзвінок, кожен(-на) у себе вдома (піжама вітається 😄)
+
+        Кава чи аперитив, якщо ви живете не дуже далеко одне від одного
+
+        Пікнік або спільна активність, якщо є бажання (і дозволяє погода)
+
+        Щоб було легше організуватися, ми створили це посилання на відеозустріч: %s
+        Пропонуйте свої ідеї, призначайте час і головне... почувайтеся як вдома ✨
+      complete_j21: |
+        Привіт усім! 👋
+
+        Сподіваємось, ваше спілкування пройшло добре — письмово, у відеодзвінку чи наживо!
+        Якщо є що розповісти або щось пішло не так, обов'язково повідомте нам про це. Команда Entourage тут, щоб вислухати вас і підтримати з усією доброзичливістю 🧡
+
+        А якщо все добре — теж дайте знати! Ваші відгуки допомагають нам і далі розвивати Добрі Вібрації якнайкраще.
+
+        Дякуємо за вашу довіру ✨
+      inactive_j3: |
+        Привіт, команда! Нам цікаво дізнатися, що спонукало вас приєднатися до цієї групи? 😊
+      inactive_j5: |
+        Не дуже комфортно писати? Жодних проблем! Можна також обрати спокійний відеодзвінок або каву у вузькому колі ☕
+
+        Ось посилання, щоб легко зустрітися онлайн:
+        👉 %s
+
+        Не соромтесь сказати, що вам підходить найкраще — є тисяча способів створити зв'язок 🧡
+      inactive_j7: |
+        Відчувається, що тут стало трохи тихо…
+
+        Якщо протягом наступних 7 днів не буде жодного повідомлення, групу буде закрито автоматично.
+
+        Дякуємо, що були з нами. І якщо у вас ще є бажання створювати зв'язки, Добрі Вібрації завжди приймуть вас знову, коли захочете 🧡
+      happy_birthday: | # first_name
+        Уся компанія Добрих Вібрацій вітає %s з днем народження! 🎉 Насолоджуйся своїм днем і розкажи нам, як плануєш його відсвяткувати!
+      chart_recall: |
+        Невеличке доброзичливе нагадування: Добрі Вібрації створені для спілкування в гарному настрої та повазі. Етичний кодекс можна знайти тут! Дякуємо всім!
+      smalltalk_anniversary_six_months: |
+        Сьогодні нашій групі виповнюється вже шість місяців! 🎉 Дякуємо за спілкування та приємні моменти, проведені разом!
+      smalltalk_anniversary_one_year: |
+        Сьогодні нашій групі виповнюється вже рік! 🎉 Дякуємо за спілкування та приємні моменти, проведені разом!
+      user_one_year_membership: | # first_name
+        Сьогодні %s святкує 1 рік з нами! 🎉 Дякуємо, що ти з нами весь цей час, розкажи нам про якийсь незабутній момент!
+      smalltalk_500_messages: |
+        Ви на вогні! 🔥 У групі вже обмінялися 500 повідомленнями, тут активно спілкуються! Продовжуємо в тому ж дусі? Наступна мета: 1000 повідомлень?
+      smalltalk_1000_messages: |
+        Неймовірно, ви щойно досягли позначки в 1000 повідомлень! 🤯 Ви офіційно чемпіони(-онки) Добрих Вібрацій!
+
+  pois:
+    soliguide:
+      public:
+        administrative: "Прийом: %s"
+        description: "Інша важлива інформація: %s"
+        reception: Прийом
+      accueil:
+        preferentiel: "переважний"
+        exclusif: "ексклюзивний"
+        inconditionnel: "безумовний"
+      age:
+        mineur: "неповнолітні (-18 років)"
+        adulte: "тільки для дорослих"
+        from: "від %s років"
+        from_to: "від %s до %s років"
+      familiale:
+        isolated: "Одинока особа"
+        family: "Сім'я"
+        couple: "Пара"
+        pregnant: "Вагітна жінка"
+      administrative:
+        default: "особи %s"
+        regular: "з врегульованим статусом"
+        undocumented: "без документів"
+        asylum: "шукачі притулку"
+        refugee: "біженці"
+      other:
+        violence: "жертва насильства"
+        addiction: "в ситуації залежності"
+        handicap: "в ситуації інвалідності"
+        lgbt: "належить до спільнот ЛГБТ+"
+        hiv: "носій ВІЛ"
+        prostitution: "секс-працівник(-ця)"
+        prison: "звільнений(-а) з в'язниці"
+        student: "студент(ка)"
+      modalities:
+        inconditionnel: "Прийом без попереднього запису"
+        appointment: "За записом (%s)"
+        inscription: "За реєстрацією (%s)"
+        orientation: "За направленням (%s)"
+        other_details: Інші деталі
+      animal:
+        unauthorized: "Тварини не дозволені"
+        authorized: "Тварини дозволені"
+      hours:
+        closed: Закрито
+        at: о
+
+
+  tags:
+    sections:
+      social:
+        name: Час для спілкування
+        subname: кава, заходи...
+      services:
+        name: Послуга
+        subname: прання, друк документів...
+      clothes:
+        name: Одяг
+        subname: взуття, пальто...
+      equipment:
+        name: Обладнання
+        subname: телефон, спальний мішок...
+      hygiene:
+        name: Засіб гігієни
+        subname: мило, засоби гігієни...
+    orientations:
+      share: Поширюй свої заходи з нетворкінгу в застосунку
+      guide: Скеровуй своїх підопічних на заходи з нетворкінгу
+      help: Запропонуй або попроси про допомогу
+    sf_categories:
+      atelier_femmes: Просвітницький захід для жінок у скрутному становищі
+      atelier_mdlr: Просвітницький захід "Світ вулиці"
+      atelier_preca: Просвітницький захід "Бідність, вилучення та зайнятість"
+      devenir_ambassadeur: "Абетка: як стати активістом Entourage"
+      convivialite: Захід для спілкування
+      papotages: Солідарні розмови
+      passion_sport: Пристрасть до спорту
+      pratique_sport: Заняття спортом
+      quizz_sensibilisation: Просвітницька вікторина
+      rencontre_nomade: Мандрівна зустріч
+      welcome_entourage_local: Вітальна зустріч Entourage Local
+      welcome_entourage_pro: Вітальна зустріч Entourage Pro
+    concerns:
+      sharing_time: Час для спілкування
+      material_donations: Матеріальні пожертви
+      services: Послуги
+    interests:
+      activites: Ручна праця
+      animaux: Тварини
+      bien-etre: Добробут
+      cuisine: Кулінарія
+      culture: Мистецтво та культура
+      jeux: Ігри
+      nature: Природа
+      sport: Спорт
+      marauding: Соціальні патрулювання
+      other: Інше
+    involvements:
+      resources: Навчайся за допомогою освітнього контенту
+      outings: Бери участь у заходах для спілкування
+      both_actions: Запропонуй або попроси про допомогу
+      solicitations: Попроси про допомогу
+      neighborhoods: Приєднайся до сусідської групи та створюй зв'язки
+      pois: Знаходь солідарні заклади поруч
+    signals:
+      spam: Спам
+      fraud: Шахрайство
+      insults: Образливі висловлювання
+      in_danger: Небезпека
+      other: Інше
+
+  onboarding:
+    ethical_charter: |
+      Це знову я!
+
+      В Entourage нам дуже важливо, щоб кожен(-на) почувався(-лася) добре, у безпеці, почутим(-ою) та прийнятим(-ою). Саме тому ми написали цю етичну хартію, яку всі учасники спільноти зобов'язуються дотримуватися, приєднуючись до застосунку. Ознайомся з нею тут:
+
+      https://www.entourage.social/app/resources/eMU_InNSSJbE
+
+      До зустрічі!
+
+      %s
+
+
+  outings:
+    tasks:
+      reminder_content: |
+        Ця подія вже зовсім скоро! Якщо ти все ще хочеш взяти участь, будь ласка, напиши "Я йду" в коментарі до цього повідомлення.
+      reminder_7_days_with_participants: |
+        Привіт, %{first_name},
+
+        Дуже дякуємо за організацію %{title}, це чудова ініціатива, щоб створювати зв'язки! 🙌
+
+        👉 Бачу, що твоя подія вже наближається і %{count} людей вже записалися, це супер! Щоб допомогти їм не забути, можеш написати їм невелике повідомлення в обговоренні події.
+
+        А якщо хочеш, щоб записалося ще більше сусідів, раджу поділитися посиланням на подію у своїй групі %{neighborhood}: це може все змінити! Ось посилання: %{link}
+
+        Якщо тобі потрібна допомога, не соромся сказати мені про це.
+
+        Дякую за твою залученість і бажання створювати зв'язки 🙏
+        До зустрічі
+      reminder_7_days_without_participants: |
+        Привіт, %{first_name},
+
+        Дуже дякуємо за організацію %{title}, це чудова ініціатива, щоб створювати зв'язки! 🙌
+
+        Бачу, що твоя подія вже наближається, але поки що ніхто не записався. Не хвилюйся: часто все вирішується в останню хвилину 😉
+
+        Раджу поділитися посиланням на подію у своїй групі %{neighborhood}: це може все змінити! Ось посилання: %{link}
+
+        Якщо тобі потрібна допомога, не соромся сказати мені про це.
+
+        Дякую за твою залученість і бажання створювати зв'язки 🙏
+        До зустрічі
+      reminder_1_day_with_participants: |
+        Привіт, %{first_name},
+
+        Твоя подія %{title} відбудеться завтра!
+        Великий молодець за цю чудову ініціативу 💪
+
+        Ось кілька простих порад, щоб створити теплу й дружню атмосферу:
+
+        🌟 Зустрічай кожного учасника(-цю) особисто, з добрим словом та посмішкою
+        🌟 Почни зі знайомства (криголами, коло імен тощо), щоб розслабити атмосферу
+        🌟 Будь уважним(-ою) до кожного: допоможи тим, хто почувається осторонь, знайти своє місце
+
+        Наприкінці події не соромся зробити групове фото (заручившись згодою кожного учасника) і опублікувати його у своїй сусідській групі %{neighborhood} 👌
+
+        Дякуємо за твою залученість і щедрість. Ти допомагаєш зробити квартал більш згуртованим 💛
+
+        До зустрічі
+      reminder_1_day_without_participants: |
+        Привіт, %{first_name},
+
+        Твоя подія %{title} відбудеться завтра! Молодець за цю ініціативу 👏
+
+        Навіть якщо поки що ніхто не записався, ще не все втрачено: сусіди іноді вирішуються в останню хвилину!
+
+        Ось кілька ідей, щоб надихнути учасників:
+        💬 Напиши повідомлення в обговоренні події
+        📣 Поділись посиланням у своїй сусідській групі %{neighborhood}
+        🤝 Запроси напряму сусідів, яких ти знаєш або з якими вже спілкувався(-лася)
+
+        А якщо завтра ти опинишся сам(-а) — це не провал! Ти вже зробив(-ла) найскладніше: наважився(-лася) діяти, щоб створити зв'язок 💛
+
+        Дякуємо за твою залученість. Ми поруч, якщо тобі знадобиться допомога 🙌
+
+        До зустрічі
+
+
+  badge_mailer:
+    badges:
+      fidele_papotages:
+        name: "Майстер розмов"
+        description: "Ти регулярно береш участь у солідарних розмовах."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Ще 2 солідарні розмови для участі цього кварталу"
+          "2": "Ще 1 солідарна розмова для участі цього кварталу"
+        bilan: "Ти отримав(-ла) цей значок %{date} і кілька тижнів брав(-ла) участь у солідарних розмовах. Молодець за цю відданість, твоє спілкування створило справжні зв'язки у спільноті."
+      voix_presente:
+        name: "Ткач зв'язків"
+        description: "Ти підтримуєш групи тиждень за тижнем."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Ще 2 тижні, щоб підтримати активність своїх груп"
+          "2": "Ще 1 тиждень, щоб підтримати активність своїх груп"
+        bilan: "Ти отримав(-ла) цей значок %{date} і носив(-ла) його кілька місяців. Молодець за цю відданість, твоя присутність справді мала значення для груп у застосунку."
+      moteur_rencontres:
+        name: "Творець зустрічей"
+        description: "Ти регулярно організовуєш заходи у своїй спільноті."
+        image_url: ""
+        deeplink: ""
+        progression_label:
+          "1": "Ще 2 заходи для організації цього кварталу"
+          "2": "Ще 1 захід для організації цього кварталу"
+        bilan: "Ти отримав(-ла) цей значок %{date} і організував(-ла) заходи, які згуртували спільноту. Молодець за цю відданість, твоя енергія принесла користь багатьом людям."
+    duration:
+      zero: "менше місяця"
+      one: "1 місяць"
+      other: "%{count} місяців"
+
+
+  charts:
+    conversations:
+      memberships: "Учасники"
+    users:
+      member_outings: "Учасник події"
+      member_neighborhoods: "Учасник сусідської групи"
+      reactions: "Реакції"
+      public_chat_messages: "Публікації/Коментарі"
+      private_chat_messages: "Приватні повідомлення"
+
+
+  email:
+    badge:
+      bienvenue:
+        nom: "Перший крок"
+        description: "Ти щойно зробив(-ла) свій перший крок у спільноті Entourage. Твоя присутність вже важлива — ласкаво просимо до нас."
+      premier_contact:
+        nom: "Перший зв'язок"
+        description: "Ти щойно обмінявся(-лася) першим повідомленням з іншим учасником. Кожен створений зв'язок оживляє спільноту."
+      fidele_papotages:
+        nom: "Майстер розмов"
+        description: "Ти розпочав(-ла) 3 солідарні розмови за півтора місяця. Твоя регулярна присутність створює зв'язки та робить добро навколо тебе."
+      voix_presente:
+        nom: "Ткач зв'язків"
+        description: "Ти був(-ла) активним(-ою) 3 тижні з 4 у групах — публікуючи, коментуючи, реагуючи. Ти змушуєш серце спільноти битися."
+      moteur_rencontres:
+        nom: "Творець зустрічей"
+        description: "Ти організував(-ла) 3 заходи за останні 90 днів. Ти рухаєш спільноту Entourage вперед — великий молодець!"
