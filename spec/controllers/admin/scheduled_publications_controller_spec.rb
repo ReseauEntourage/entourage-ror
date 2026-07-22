@@ -47,6 +47,17 @@ describe Admin::ScheduledPublicationsController do
 
       it { expect(response.status).to eq(200) }
     end
+
+    context 'rendering the page with a recurring item' do
+      render_views
+
+      let!(:recurrence_rule) { create(:recurrence_rule) }
+      let!(:recurring_publication) { create(:scheduled_publication, :post, recurrence_rule: recurrence_rule, scheduled_at: 4.days.from_now) }
+
+      before { get :index }
+
+      it { expect(response.status).to eq(200) }
+    end
   end
 
   describe 'GET #edit' do
@@ -131,6 +142,21 @@ describe Admin::ScheduledPublicationsController do
 
       expect(scheduled_publication.reload.status).to eq('cancelled')
       expect(scheduled_publication.publishable.reload.status).to eq('deleted')
+    end
+
+    context 'with a recurring occurrence' do
+      let!(:recurrence_rule) { create(:recurrence_rule, frequency: 'daily', ends_on: 1.month.from_now.to_date) }
+      let(:scheduled_publication) { create(:scheduled_publication, :post, recurrence_rule: recurrence_rule) }
+
+      it 'defaults to cancelling only this occurrence and keeps the series going' do
+        expect { post :cancel, params: { id: scheduled_publication.id } }.to change(ScheduledPublication, :count).by(1)
+        expect(recurrence_rule.reload.active?).to eq(true)
+      end
+
+      it 'cancels the whole series when scope=series' do
+        expect { post :cancel, params: { id: scheduled_publication.id, scope: :series } }.not_to change(ScheduledPublication, :count)
+        expect(recurrence_rule.reload.active?).to eq(false)
+      end
     end
   end
 end

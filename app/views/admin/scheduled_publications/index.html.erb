@@ -59,7 +59,12 @@
               <td>
                 <%= link_to "Éditer", edit_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), class: "btn btn-default btn-xs" %>
                 <%= link_to "Publier maintenant", publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Publier/diffuser maintenant ?" }, class: "btn btn-default btn-xs" %>
-                <%= link_to "Annuler", cancel_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler cette publication programmée ?" }, class: "btn btn-danger btn-xs" %>
+                <% if scheduled_publication.recurring? %>
+                  <%= link_to "Annuler l'occurrence", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :occurrence, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }, class: "btn btn-danger btn-xs" %>
+                  <%= link_to "Annuler la série", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :series, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler toute la série récurrente ?" }, class: "btn btn-danger btn-xs" %>
+                <% else %>
+                  <%= link_to "Annuler", cancel_admin_scheduled_publication_path(scheduled_publication, return_to: admin_scheduled_publications_path(@params)), method: :post, data: { confirm: "Annuler cette publication programmée ?" }, class: "btn btn-danger btn-xs" %>
+                <% end %>
               </td>
             </tr>
           <% end %>
