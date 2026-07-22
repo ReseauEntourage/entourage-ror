@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_20_160000) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_20_161000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -145,6 +145,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_20_160000) do
     t.string "conversation_type", default: "Entourage"
     t.json "conversation_ids", default: {}
     t.jsonb "specific_filters", default: {}, null: false
+    t.datetime "scheduled_at"
     t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
     t.index ["conversation_type"], name: "index_conversation_message_broadcasts_on_conversation_type"
@@ -508,6 +509,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_20_160000) do
     t.integer "sourcing_id"
     t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
+    t.integer "referent_benevole_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
 

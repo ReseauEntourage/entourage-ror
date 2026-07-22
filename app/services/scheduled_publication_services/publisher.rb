@@ -19,6 +19,7 @@ module ScheduledPublicationServices
 
     def publish_publishable!
       return publish_chat_message! if scheduled_publication.post?
+      return publish_broadcast! if scheduled_publication.broadcast?
 
       raise NotImplementedError, "cannot publish a #{scheduled_publication.publishable_type}"
     end
@@ -28,6 +29,18 @@ module ScheduledPublicationServices
       now = Time.current
 
       message.update!(status: :active, created_at: now, updated_at: now)
+    end
+
+    # mirrors Admin::NeighborhoodMessageBroadcastsController#broadcast
+    def publish_broadcast!
+      broadcast = scheduled_publication.publishable
+      broadcast.update!(status: :sent)
+
+      ConversationMessageBroadcastJob.perform_later(
+        broadcast.id,
+        scheduled_publication.author_id,
+        broadcast.content
+      )
     end
   end
 end
