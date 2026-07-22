@@ -202,6 +202,7 @@ Rails.application.routes.draw do
           post 'rebroadcast'
           post 'clone'
           post 'kill'
+          post 'schedule'
         end
       end
 
