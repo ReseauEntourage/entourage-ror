@@ -136,7 +136,7 @@ describe MemberMailer, type: :mailer do
     expect_mailjet_email do
       {
         from: %("Le Réseau Entourage" <contact@entourage.social>),
-        template_id: user.community.mailjet_template['welcome'],
+        template_id: 8166466,
         campaign_name: :welcome,
         variables: {
           outings_url: Entourage.share_url(:outings),
@@ -153,16 +153,8 @@ describe MemberMailer, type: :mailer do
     end
 
     describe 'community customization' do
-      before { allow(user).to receive(:community).and_return(community) }
-      let(:community) { OpenStruct.new(
-        slug: 'slug',
-        mailjet_template: {
-          'welcome' => 121212
-        }
-      )}
-
-      it { expect(mail['X-MJ-TemplateID'].value).to eq '121212' }
-      it { expect(mail['X-Mailjet-Campaign'].value).to eq 'slug_welcome' }
+      it { expect(mail['X-MJ-TemplateID'].value).to eq '8166466' }
+      it { expect(mail['X-Mailjet-Campaign'].value).to eq 'welcome' }
     end
   end
 
