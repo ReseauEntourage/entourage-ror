@@ -125,12 +125,17 @@ module Admin
         return redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La date et l'heure de programmation sont obligatoires et doivent être dans le futur."
       end
 
+      if recurrence_requested? && recurrence_ends_on_param.nil?
+        return redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La date de fin de récurrence est obligatoire."
+      end
+
       @neighborhood_message_broadcast.update!(status: :scheduled, scheduled_at: scheduled_at)
 
       scheduled_publication = ScheduledPublication.create!(
         publishable: @neighborhood_message_broadcast,
         author: current_admin,
-        scheduled_at: scheduled_at
+        scheduled_at: scheduled_at,
+        recurrence_rule: recurrence_requested? ? build_recurrence_rule : nil
       )
       PublishScheduledPublicationJob.schedule(scheduled_publication)
 
@@ -149,6 +154,24 @@ module Admin
       Time.zone.parse("#{params[:neighborhood_message_broadcast][:scheduled_date]} #{params[:neighborhood_message_broadcast][:scheduled_time]}")
     rescue ArgumentError
       nil
+    end
+
+    def recurrence_requested?
+      params[:neighborhood_message_broadcast][:recurrence_frequency].present?
+    end
+
+    def recurrence_ends_on_param
+      Date.parse(params[:neighborhood_message_broadcast][:recurrence_ends_on])
+    rescue ArgumentError, TypeError
+      nil
+    end
+
+    def build_recurrence_rule
+      RecurrenceRule.create!(
+        frequency: params[:neighborhood_message_broadcast][:recurrence_frequency],
+        ends_on: recurrence_ends_on_param,
+        created_by: current_admin
+      )
     end
 
     def neighborhood_message_broadcast_neighborhoods_param

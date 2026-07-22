@@ -47,5 +47,23 @@ describe ScheduledPublicationServices::Publisher do
         expect(scheduled_publication.reload.failure_reason).to eq('boom')
       end
     end
+
+    context 'recurring post' do
+      let!(:recurrence_rule) { create(:recurrence_rule, frequency: 'daily', ends_on: 1.month.from_now.to_date) }
+      let!(:scheduled_publication) { create(:scheduled_publication, :post, recurrence_rule: recurrence_rule) }
+
+      around { |example| Sidekiq::Testing.disable!(&example) }
+
+      it 'schedules the next occurrence after a successful publish' do
+        expect { described_class.new(scheduled_publication).publish! }.to change(ScheduledPublication, :count).by(1)
+      end
+
+      it 'still schedules the next occurrence when publishing fails, so one bad occurrence does not break the series' do
+        allow_any_instance_of(ChatMessage).to receive(:update!).and_raise(StandardError, 'boom')
+
+        expect { described_class.new(scheduled_publication).publish! }.to change(ScheduledPublication, :count).by(1)
+        expect(scheduled_publication.reload.status).to eq('failed')
+      end
+    end
   end
 end

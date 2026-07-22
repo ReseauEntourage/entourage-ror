@@ -141,6 +141,42 @@ describe Admin::NeighborhoodsController do
         end
       end
 
+      context 'with recurrence' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'weekly',
+            recurrence_ends_on: 2.months.from_now.to_date.to_s
+          }
+        }
+
+        it { expect { request }.to change { RecurrenceRule.count }.by(1) }
+
+        it 'attaches the recurrence rule to the scheduled publication' do
+          request
+
+          expect(ScheduledPublication.last.recurrence_rule.frequency).to eq('weekly')
+        end
+      end
+
+      context 'with a recurrence frequency but no end date' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'weekly'
+          }
+        }
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+        it { expect { request }.not_to change { RecurrenceRule.count } }
+      end
+
       context 'with a date in the past' do
         let(:params) {
           {
@@ -175,6 +211,19 @@ describe Admin::NeighborhoodsController do
 
     it { expect(assigns(:posts).map(&:id)).to eq([published_post.id]) }
     it { expect(assigns(:scheduled_publications).map(&:id)).to eq([scheduled_publication.id]) }
+  end
+
+  describe 'GET #show_posts with a recurring scheduled post' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:recurrence_rule) { create(:recurrence_rule) }
+    let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: scheduled_post, neighborhood: neighborhood, author: user, recurrence_rule: recurrence_rule) }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    it { expect(response.status).to eq(200) }
   end
 
   describe 'DELETE destroy_message' do
