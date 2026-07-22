@@ -23,6 +23,31 @@ describe ScheduledPublicationServices::Canceller do
     end
   end
 
+  describe '#cancel! for a recurring occurrence' do
+    let!(:recurrence_rule) { create(:recurrence_rule, frequency: 'daily', ends_on: 1.month.from_now.to_date) }
+    let!(:scheduled_publication) { create(:scheduled_publication, :post, recurrence_rule: recurrence_rule) }
+
+    around { |example| Sidekiq::Testing.disable!(&example) }
+
+    context 'scope: :occurrence (default)' do
+      it 'cancels only this occurrence and still schedules the next one' do
+        expect { described_class.new(scheduled_publication).cancel! }.to change(ScheduledPublication, :count).by(1)
+
+        expect(scheduled_publication.reload.status).to eq('cancelled')
+        expect(recurrence_rule.reload.active?).to eq(true)
+      end
+    end
+
+    context 'scope: :series' do
+      it 'cancels this occurrence and deactivates the series, without scheduling a next one' do
+        expect { described_class.new(scheduled_publication, scope: :series).cancel! }.not_to change(ScheduledPublication, :count)
+
+        expect(scheduled_publication.reload.status).to eq('cancelled')
+        expect(recurrence_rule.reload.active?).to eq(false)
+      end
+    end
+  end
+
   describe '#cancel! for a broadcast' do
     let(:scheduled_publication) { create(:scheduled_publication, :broadcast, scheduled_at: 1.hour.from_now) }
 

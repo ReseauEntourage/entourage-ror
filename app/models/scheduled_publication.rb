@@ -4,6 +4,7 @@ class ScheduledPublication < ApplicationRecord
   belongs_to :publishable, polymorphic: true
   belongs_to :neighborhood, optional: true
   belongs_to :author, class_name: 'User'
+  belongs_to :recurrence_rule, optional: true
 
   validates :scheduled_at, presence: true
   validates_inclusion_of :status, in: STATUSES.map(&:to_s)
@@ -33,6 +34,10 @@ class ScheduledPublication < ApplicationRecord
 
   def pending?
     status == 'pending'
+  end
+
+  def recurring?
+    recurrence_rule_id.present?
   end
 
   def in_the_past?

@@ -61,9 +61,11 @@ module Admin
     end
 
     def cancel
-      ScheduledPublicationServices::Canceller.new(@scheduled_publication).cancel!
+      scope = params[:scope].presence&.to_sym || :occurrence
+      ScheduledPublicationServices::Canceller.new(@scheduled_publication, scope: scope).cancel!
 
-      redirect_to return_path, notice: 'La publication programmée a été annulée'
+      notice = scope == :series ? 'La série a été annulée' : 'La publication programmée a été annulée'
+      redirect_to return_path, notice: notice
     end
 
     private
