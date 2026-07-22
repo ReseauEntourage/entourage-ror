@@ -417,6 +417,7 @@ fr:
         animator_id: PEC
         sourcing_id: PI
         community_builder_id: Community builder
+        referent_benevole_id: Référent bénévole
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
       translation:

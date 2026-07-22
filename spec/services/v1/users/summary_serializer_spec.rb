@@ -19,6 +19,7 @@ describe V1::Users::SummarySerializer do
     it { expect(serialized).to have_key(:recommandations) }
     it { expect(serialized).to have_key(:congratulations) }
     it { expect(serialized).to have_key(:moderator) }
+    it { expect(serialized).to have_key(:referent_benevole) }
 
     describe 'meetings_count' do
       context 'no outing, no action' do

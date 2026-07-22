@@ -16,6 +16,7 @@ module V1
         :congratulations,
         :unclosed_action,
         :moderator,
+        :referent_benevole,
         :signable_permission,
         :birthday_today,
         :events,
@@ -92,6 +93,16 @@ module V1
           id: moderator.id,
           display_name: UserPresenter.new(user: moderator).display_name,
           avatar_url: UserServices::Avatar.new(user: moderator).thumbnail_url
+        }
+      end
+
+      def referent_benevole
+        return Hash.new unless referent_benevole = ModerationServices.referent_benevole_for_user(object)
+
+        {
+          id: referent_benevole.id,
+          display_name: UserPresenter.new(user: referent_benevole).display_name,
+          avatar_url: UserServices::Avatar.new(user: referent_benevole).thumbnail_url
         }
       end
 

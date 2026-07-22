@@ -1,0 +1,5 @@
+<%= form_tag(update_referent_benevole_admin_moderation_area_path(moderation_area), method: :patch, remote: true, id: "update-referent-benevole-form-#{moderation_area.id}", class: "update-form") do %>
+  <div class="btn btn-default">
+    <%= select_tag 'referent_benevole_id', options_for_select(moderators_for_select, moderation_area.referent_benevole_id), include_blank: true, class: "form-control update-select" %>
+  </div>
+<% end %>

@@ -1,5 +1,6 @@
 module ModerationServices
   DEFAULT_SLACK_MODERATOR_ID = ENV['SLACK_DEFAULT_INTERLOCUTOR']
+  SLACK_DEFAULT_REFERENT_ID = ENV['SLACK_DEFAULT_REFERENT_ID']
 
   def self.moderator_with_error(community:)
     if community != :entourage
@@ -96,6 +97,18 @@ module ModerationServices
 
   def self.default_moderation_area
     moderation_area_for_departement('*', community: :entourage)
+  end
+
+  def self.default_referent_benevole
+    return nil if SLACK_DEFAULT_REFERENT_ID.blank?
+
+    User.find_by(slack_id: SLACK_DEFAULT_REFERENT_ID, admin: true, validation_status: :validated)
+  end
+
+  def self.referent_benevole_for_user user
+    return default_referent_benevole unless moderation_area = moderation_area_for_user_with_default(user)
+
+    moderation_area.referent_benevole_with_fallback
   end
 
   def self.slack_moderator_id object
