@@ -5,6 +5,6 @@
 // importmap-rails: serve all JS from app/javascript/ via Sprockets
 //= link_tree ../../javascript .js
 
-// Bundle des plugins UMD (chargé en defer via _head.html.erb)
+// Bundle des plugins UMD + TinyMCE (chargé en bloquant via _head.html.erb)
 //= link plugins.js
 

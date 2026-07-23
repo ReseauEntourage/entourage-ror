@@ -12,8 +12,10 @@
   <%# Bootstrap 3.4.1 — dernière version Bootstrap 3, compatible jQuery 3.x %>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
-  <%# Plugins jQuery UMD en defer — s'exécutent après DOM parsé, avant les modules ES %>
-  <%= javascript_include_tag 'plugins', defer: true %>
+  <%# Plugins jQuery UMD (select2, tinymce…) chargés en synchrone/bloquant : les vues %>
+  <%# admin ont des scripts inline dans le body (select2, aide tinymce du gem) %>
+  <%# qui s'exécutent pendant le parsing HTML, donc AVANT tout script defer/module. %>
+  <%= javascript_include_tag 'plugins' %>
   <%# Turbolinks chargé en différé — s'auto-démarre après le parsing HTML %>
   <script src="https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.js" defer></script>
   <%= javascript_importmap_tags %>

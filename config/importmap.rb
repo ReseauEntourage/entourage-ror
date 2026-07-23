@@ -12,8 +12,8 @@ pin "actioncable", to: "actioncable.esm.js"
 pin "chartkick", to: "https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.esm.js"
 pin "chart.js",  to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
 
-# TinyMCE (CDN - remplacer "no-api-key" par la vraie clé en prod)
-pin "tinymce", to: "https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js"
+# TinyMCE auto-hébergé via le gem tinymce-rails, servi par Sprockets (plugins.js, bloquant)
+# — voir app/assets/javascripts/plugins.js. Pas de pin ici : chargé en global, pas en module ES.
 
 # Fichiers locaux app/javascript/ — pinned pour obtenir les URLs fingerprinted en production
 # (les imports relatifs "./common" → 404 en prod car Sprockets ne sert que les URLs fingerprintées)
