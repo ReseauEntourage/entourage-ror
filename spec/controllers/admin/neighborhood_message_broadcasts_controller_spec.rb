@@ -107,6 +107,37 @@ describe Admin::NeighborhoodMessageBroadcastsController do
 
     it { expect(assigns(:scheduled_publication)).to eq(scheduled_publication) }
     it { expect(response.status).to eq(200) }
+
+    it 'renders a save button so title/content edits can actually be submitted' do
+      expect(response.body).to include('Enregistrer')
+    end
+  end
+
+  describe 'PATCH #update' do
+    context 'draft broadcast' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, title: 'old title') }
+
+      it 'updates the title and content' do
+        patch :update, params: { id: neighborhood_message_broadcast.id, neighborhood_message_broadcast: { title: 'new title', content: 'new content' } }
+
+        expect(neighborhood_message_broadcast.reload.title).to eq('new title')
+        expect(neighborhood_message_broadcast.content).to eq('new content')
+      end
+    end
+
+    context 'scheduled broadcast (not yet sent)' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now, title: 'old title') }
+
+      it 'updates the title and content without losing the schedule' do
+        patch :update, params: { id: neighborhood_message_broadcast.id, neighborhood_message_broadcast: { title: 'new title', content: 'new content' } }
+
+        neighborhood_message_broadcast.reload
+        expect(neighborhood_message_broadcast.title).to eq('new title')
+        expect(neighborhood_message_broadcast.content).to eq('new content')
+        expect(neighborhood_message_broadcast.status).to eq('scheduled')
+        expect(neighborhood_message_broadcast.scheduled_at).to be_present
+      end
+    end
   end
 
   describe 'GET #new' do
