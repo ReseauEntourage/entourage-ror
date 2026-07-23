@@ -3,6 +3,7 @@ class JoinRequestObserver < ActiveRecord::Observer
 
   def after_create(record)
     action(:create, record)
+    stats(record)
 
     mailer(record)
     user_smalltalk(record)
@@ -12,11 +13,13 @@ class JoinRequestObserver < ActiveRecord::Observer
     return unless record.saved_change_to_status?
 
     action(:update, record)
+    stats(record)
     user_smalltalk(record)
   end
 
   def after_destroy(record)
     action(:destroy, record)
+    stats(record)
   end
 
   private
@@ -29,6 +32,16 @@ class JoinRequestObserver < ActiveRecord::Observer
     return unless record.joinable.respond_to?(:members_has_changed!)
 
     record.joinable.members_has_changed!
+  rescue
+    # we want this hook to never fail the main process
+  end
+
+  # @see User#stats_has_changed!
+  def stats(record)
+    return unless record.user
+    return unless record.joinable.is_a?(Entourage) || record.joinable.is_a?(Neighborhood)
+
+    record.user.stats_has_changed!
   rescue
     # we want this hook to never fail the main process
   end
