@@ -748,6 +748,18 @@ class User < ApplicationRecord
     @watched_resource_ids ||= UsersResource.where(user_id: id, watched: true).pluck(:resource_id)
   end
 
+  # @see UserSerializer#stats
+  def stats_has_changed!
+    accepted_group_types = entourage_participations.merge(JoinRequest.accepted).group(:group_type).count
+
+    update_columns(
+      entourages_count: groups.count,
+      actions_count: accepted_group_types.fetch('action', 0),
+      outings_count: accepted_group_types.fetch('outing', 0),
+      neighborhoods_count: neighborhood_memberships.count
+    )
+  end
+
   def has_watched_resource? resource_id
     watched_resource_ids.include?(resource_id)
   end
