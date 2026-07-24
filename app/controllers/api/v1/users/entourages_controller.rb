@@ -9,6 +9,7 @@ module Api
           per = [(params[:per].try(:to_i) || 25), 25].min
           entourages = Entourage
                            .visible
+                           .includes(user: :partner)
                            .joins(:join_requests)
                            .where(join_requests: {user: @user, status: JoinRequest::ACCEPTED_STATUS})
                            .order(created_at: :desc)

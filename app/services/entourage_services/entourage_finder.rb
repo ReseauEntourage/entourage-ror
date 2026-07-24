@@ -52,7 +52,7 @@ module EntourageServices
     end
 
     def entourages
-      entourages = Entourage.includes(:join_requests, :entourage_invitations, :user)
+      entourages = Entourage.includes(:join_requests, :entourage_invitations, user: :partner)
       entourages = entourages.where(status: status || :open) # status
       entourages = entourages.where.not(group_type: [:conversation, :group]) # group_type
       entourages = entourages.where.not(group_type: [:outing]) if no_outings
@@ -109,7 +109,6 @@ module EntourageServices
         entourages = entourages.before(DateTime.parse(before)).limit(25)
       end
 
-      # entourages = entourages.preload(user: :partner)
       entourages = entourages.sort_by(&:created_at).reverse
       # Note: entourages is now an Array.
 

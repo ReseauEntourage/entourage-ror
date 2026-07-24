@@ -60,6 +60,7 @@ module Api
 
       def owned
         entourages = Entourage
+          .includes(user: :partner)
           .where(status: :open)
           .where(group_type: [:action])
           .where('entourages.created_at > ?', 1.year.ago)

@@ -119,7 +119,7 @@ module Api
       end
 
       def siblings
-        render json: @outing.siblings.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+        render json: @outing.siblings.includes(user: :partner).page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
