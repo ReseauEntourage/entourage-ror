@@ -126,7 +126,10 @@ module V1
 
     def current_join_request
       @current_join_request ||= begin
-        if scope[:user].nil?
+        if object.instance_variable_defined?(:@current_join_request)
+          # already batch-preloaded by the finder (e.g. EntourageFinder#preload_user_join_requests)
+          object.current_join_request
+        elsif scope[:user].nil?
           nil
         elsif scope.key?(:current_join_request)
           scope[:current_join_request]

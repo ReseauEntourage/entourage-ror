@@ -113,10 +113,17 @@ module V1
     end
 
     def current_join_request
-      # @fixme performance issue: we instanciate all records but we need only one
-      @current_join_request ||=  lazy_join_requests.select do |join_request|
-        join_request.user_id == scope[:user].id
-      end.first
+      @current_join_request ||= begin
+        if object.instance_variable_defined?(:@current_join_request)
+          # already batch-preloaded by the controller (see Preloaders::Entourage.preload_current_join_request)
+          object.current_join_request
+        else
+          # @fixme performance issue: we instanciate all records but we need only one
+          lazy_join_requests.select do |join_request|
+            join_request.user_id == scope[:user].id
+          end.first
+        end
+      end
     end
 
     def members

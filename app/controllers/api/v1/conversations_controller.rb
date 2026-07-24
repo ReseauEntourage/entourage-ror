@@ -18,6 +18,8 @@ module Api
           .order(updated_at: :desc)
           .page(page).per(per)
 
+        ::Preloaders::Entourage.preload_current_join_request(conversations, user: current_user)
+
         render json: conversations, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
           user: current_user
         }
