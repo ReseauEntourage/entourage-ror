@@ -39,7 +39,7 @@ class JoinRequestObserver < ActiveRecord::Observer
   # @see User#stats_has_changed!
   def stats(record)
     return unless record.user
-    return unless record.joinable.is_a?(Entourage) || record.joinable.is_a?(Neighborhood)
+    return unless record.entourage? || record.neighborhood?
 
     record.user.stats_has_changed!
   rescue
