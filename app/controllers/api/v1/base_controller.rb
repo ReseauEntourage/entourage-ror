@@ -43,7 +43,7 @@ module Api
       end
 
       def current_user
-        @current_user ||= community.users.eager_load(:address).find_by_token(params[:token])
+        @current_user ||= User.eager_load(:address).find_by_token(params[:token])
       end
 
       def current_anonymous_user
