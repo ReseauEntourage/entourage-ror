@@ -16,7 +16,8 @@ module HomeServices
     def find_all entourage_type: [:ask_for_help, :contribution]
       return [] unless latitude && longitude
 
-      Entourage.where(status: :open)
+      Entourage.includes(user: :partner)
+        .where(status: :open)
         .where.not(group_type: [:conversation, :group, :outing])
         .where('entourages.created_at > ?', time_range.hours.ago)
         .where(entourage_type: entourage_type)
