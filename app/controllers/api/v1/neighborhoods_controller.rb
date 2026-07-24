@@ -6,10 +6,15 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: NeighborhoodServices::Finder.new(current_user, index_params).find_all
+        neighborhoods = NeighborhoodServices::Finder.new(current_user, index_params).find_all
           .includes(:translation, :image_resize_actions, :user)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NotMemberListSerializer, scope: { user: current_user }
+          .per(per)
+
+        ::Preloaders::Interests.preload(neighborhoods.to_a)
+        ::Preloaders::Neighborhood.preload_future_outings_count(neighborhoods)
+
+        render json: neighborhoods, root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NotMemberListSerializer, scope: { user: current_user }
       end
 
       def national
@@ -18,10 +23,15 @@ module Api
           unrelevant_membership: true
         })
 
-        render json: NeighborhoodServices::Finder.new(current_user, national_params).find_all
+        neighborhoods = NeighborhoodServices::Finder.new(current_user, national_params).find_all
           .includes(:translation, :image_resize_actions, :user)
           .page(page)
-          .per(per), root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NationalListSerializer, scope: { user: current_user }
+          .per(per)
+
+        ::Preloaders::Interests.preload(neighborhoods.to_a)
+        ::Preloaders::Neighborhood.preload_future_outings_count(neighborhoods)
+
+        render json: neighborhoods, root: :neighborhoods, each_serializer: ::V1::Neighborhoods::NationalListSerializer, scope: { user: current_user }
       end
 
       def default

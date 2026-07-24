@@ -9,7 +9,7 @@ module Api
 
       def index
         conversations = Entourage.joins(:members)
-          .includes(:chat_messages)
+          .includes(user: :partner, accepted_members: :partner)
           .where("number_of_root_chat_messages > 0 or group_type = 'outing'")
           .where(group_type: [:conversation, :outing])
           .where('join_requests.user_id = ?', current_user.id)
@@ -17,6 +17,8 @@ module Api
           .where("group_type = 'conversation' or entourages.metadata->>'ends_at' >= ?", Time.at('2025-03-10'.to_time.to_i))
           .order(updated_at: :desc)
           .page(page).per(per)
+
+        ::Preloaders::Entourage.preload_current_join_request(conversations, user: current_user)
 
         render json: conversations, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
           user: current_user

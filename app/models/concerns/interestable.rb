@@ -62,8 +62,11 @@ module Interestable
   end
 
   def interest_names
-    # optimization to resolve n+1
-    interests.map(&:name)
+    if instance_variable_defined?(:@preloaded_interest_names)
+      @preloaded_interest_names
+    else
+      interests.map(&:name)
+    end
   end
 
   def interest_i18n

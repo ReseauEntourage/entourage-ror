@@ -45,9 +45,91 @@ describe V1::ConversationSerializer do
     end
 
     context 'without unread messages' do
-      before { JoinRequest.where(user_id: user.id, joinable_id: conversation.id).first.update_attribute(:last_message_read, 1.second.from_now) }
+      before { JoinRequest.where(user_id: user.id, joinable_id: conversation.id).first.set_chat_messages_as_read }
 
       it { expect(serialized[:number_of_unread_messages]).to eq(0) }
+    end
+  end
+
+  describe '#current_join_request' do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:participant) { FactoryBot.create(:public_user) }
+    let(:conversation) { FactoryBot.create(:conversation, participants: [user, participant]) }
+    let(:serializer) { V1::ConversationSerializer.new(conversation, scope: { user: user }) }
+
+    context 'not preloaded by the controller' do
+      it 'falls back to scanning the lazy join_requests' do
+        join_request = JoinRequest.where(user_id: user.id, joinable_id: conversation.id).first
+
+        expect(serializer.current_join_request).to eq(join_request)
+      end
+    end
+
+    context 'preloaded by the controller (see Preloaders::Entourage.preload_current_join_request)' do
+      it 'uses the preloaded value instead of scanning the lazy join_requests' do
+        join_request = JoinRequest.where(user_id: user.id, joinable_id: conversation.id).first
+        conversation.current_join_request = join_request
+
+        expect(serializer).not_to receive(:lazy_join_requests)
+        expect(serializer.current_join_request).to eq(join_request)
+      end
+    end
+  end
+
+  describe '#members' do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:participant) { FactoryBot.create(:public_user) }
+    let(:conversation) { FactoryBot.create(:conversation, participants: [user, participant]) }
+
+    context 'accepted_members is not preloaded' do
+      it 'queries accepted_members with a SQL limit' do
+        expect(conversation.association(:accepted_members).loaded?).to be false
+
+        members = V1::ConversationSerializer.new(conversation, scope: { user: user }).members
+
+        expect(members.map(&:id)).to match_array([user.id, participant.id])
+      end
+    end
+
+    context 'accepted_members is preloaded' do
+      it 'slices the preloaded array in Ruby instead of issuing a new query' do
+        preloaded = ::Entourage.includes(:accepted_members).find(conversation.id)
+        expect(preloaded.association(:accepted_members).loaded?).to be true
+
+        expect(preloaded.accepted_members).not_to receive(:limit)
+
+        members = V1::ConversationSerializer.new(preloaded, scope: { user: user }).members
+
+        expect(members.map(&:id)).to match_array([user.id, participant.id])
+      end
+    end
+  end
+
+  describe '#blockers (Blockers#other_participant_id)' do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:participant) { FactoryBot.create(:public_user) }
+    let(:conversation) { FactoryBot.create(:conversation, participants: [user, participant]) }
+    let!(:user_blocked_user) { FactoryBot.create(:user_blocked_user, user: user, blocked_user: participant) }
+
+    context 'accepted_members is not preloaded' do
+      it 'falls back to member_ids to find the other participant' do
+        expect(conversation.association(:accepted_members).loaded?).to be false
+
+        serialized = V1::ConversationSerializer.new(conversation, scope: { user: user }).serializable_hash
+
+        expect(serialized[:blockers]).to eq([:me])
+      end
+    end
+
+    context 'accepted_members is preloaded' do
+      it 'uses the preloaded accepted_members to find the other participant' do
+        preloaded = ::Entourage.includes(:accepted_members).find(conversation.id)
+        expect(preloaded.association(:accepted_members).loaded?).to be true
+
+        serialized = V1::ConversationSerializer.new(preloaded, scope: { user: user }).serializable_hash
+
+        expect(serialized[:blockers]).to eq([:me])
+      end
     end
   end
 end

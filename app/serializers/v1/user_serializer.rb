@@ -55,19 +55,16 @@ module V1
     end
 
     def stats
-      groups = object.entourage_participations.merge(JoinRequest.accepted).group(:group_type).count
-      groups.default = 0
-
       {
           tour_count: 0,
           encounter_count: 0,
-          entourage_count: object.groups.count,
-          actions_count: groups['action'],
+          entourage_count: object.entourages_count,
+          actions_count: object.actions_count,
           ask_for_help_creation_count: object.ask_for_help_creation_count,
           contribution_creation_count: object.contribution_creation_count,
-          events_count: groups['outing'],
-          outings_count: groups['outing'],
-          neighborhoods_count: object.neighborhood_memberships.count,
+          events_count: object.outings_count,
+          outings_count: object.outings_count,
+          neighborhoods_count: object.neighborhoods_count,
           good_waves_participation: false
       }
     end

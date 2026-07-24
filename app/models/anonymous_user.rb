@@ -122,6 +122,10 @@ class AnonymousUser
   def association?; false; end
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
+  def entourages_count; 0; end
+  def actions_count; 0; end
+  def outings_count; 0; end
+  def neighborhoods_count; 0; end
   def travel_distance; 10; end
   def created_at; nil; end
 end

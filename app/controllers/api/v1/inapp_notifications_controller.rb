@@ -5,7 +5,7 @@ module Api
       after_action :set_inapp_notications_displayed_at, only: [:index]
 
       def index
-        render json: current_user.inapp_notifications.page(page).per(per), each_serializer: ::V1::InappNotificationSerializer
+        render json: current_user.inapp_notifications.includes(:sender, :post).page(page).per(per), each_serializer: ::V1::InappNotificationSerializer
       end
 
       def count

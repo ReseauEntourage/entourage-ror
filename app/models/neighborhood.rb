@@ -74,6 +74,7 @@ class Neighborhood < ApplicationRecord
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
   attr_accessor :change_ownership_message
+  attr_writer :preloaded_future_outings_count
 
   default_scope { where(status: :active) }
 
@@ -250,6 +251,7 @@ class Neighborhood < ApplicationRecord
   end
 
   def future_outings_count
+    return @preloaded_future_outings_count if instance_variable_defined?(:@preloaded_future_outings_count)
     future_outings.length
   end
 

@@ -43,7 +43,7 @@ module Api
       end
 
       def current_user
-        @current_user ||= community.users.find_by_token params[:token]
+        @current_user ||= User.eager_load(:address).find_by_token(params[:token])
       end
 
       def current_anonymous_user
@@ -193,12 +193,12 @@ module Api
         return unless current_user
         return unless [200, 201].include?(response.status)
 
-        RouteCompletionService.new(
-          user: current_user,
-          controller_name: controller_name,
-          action_name: action_name,
-          params: params
-        ).run
+        RouteCompletionJob.perform_async(
+          current_user.id,
+          controller_name,
+          action_name,
+          params.to_unsafe_h
+        )
       rescue => e
         Sentry.capture_exception(e)
       end

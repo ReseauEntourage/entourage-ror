@@ -46,7 +46,10 @@ module V1
       # try to put other user as author if conversation
       # and user's name as title
       if object.group_type == 'conversation'
-        other_participant = object.accepted_members.find do |member|
+        # use the preloaded association when available (see Users::EntouragesController#index);
+        # otherwise fetch accepted_members with :partner in one query instead of two
+        pool = object.association(:accepted_members).loaded? ? object.accepted_members : object.accepted_members.includes(:partner)
+        other_participant = pool.find do |member|
           member.id != scope[:user]&.id
         end
 
@@ -126,7 +129,10 @@ module V1
 
     def current_join_request
       @current_join_request ||= begin
-        if scope[:user].nil?
+        if object.instance_variable_defined?(:@current_join_request)
+          # already batch-preloaded by the finder (e.g. EntourageFinder#preload_user_join_requests)
+          object.current_join_request
+        elsif scope[:user].nil?
           nil
         elsif scope.key?(:current_join_request)
           scope[:current_join_request]

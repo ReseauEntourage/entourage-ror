@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_20_162000) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -1233,6 +1233,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_20_162000) do
     t.jsonb "availability", default: {}
     t.boolean "willing_to_engage_locally", default: false
     t.text "searchable_text"
+    t.integer "entourages_count", default: 0, null: false
+    t.integer "actions_count", default: 0, null: false
+    t.integer "outings_count", default: 0, null: false
+    t.integer "neighborhoods_count", default: 0, null: false
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
     t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"

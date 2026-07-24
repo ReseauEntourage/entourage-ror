@@ -49,7 +49,8 @@ module HomeServices
     def find_outing category: nil, offset: 0
       return [] unless latitude && longitude
 
-      outing = user.community.entourages.where(group_type: :outing, status: :open)
+      outing = user.community.entourages.includes(user: :partner)
+        .where(group_type: :outing, status: :open)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .where(Arel.sql("metadata->>'ends_at' >= '#{Time.zone.now}'"))
         .order(Arel.sql("metadata->>'starts_at'"))
