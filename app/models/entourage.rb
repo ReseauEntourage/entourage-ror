@@ -39,6 +39,10 @@ class Entourage < ApplicationRecord
   has_one :chat_messages_count, -> {
     select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').group('messageable_id, messageable_type')
   }, as: :messageable, class_name: 'ChatMessage'
+  # @see V1::ConversationSerializer#has_personal_post: only the author id is needed, not the full message rows
+  has_many :chat_message_authors, -> {
+    select(:id, :messageable_id, :messageable_type, :user_id)
+  }, as: :messageable, class_name: 'ChatMessage'
   has_many :entourage_invitations, foreign_key: :invitable_id, dependent: :destroy
 
   has_one :entourage_score, dependent: :destroy

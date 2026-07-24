@@ -9,7 +9,7 @@ module Api
 
       def index
         conversations = Entourage.joins(:members)
-          .includes(:chat_messages, user: :partner, accepted_members: :partner)
+          .includes(user: :partner, accepted_members: :partner)
           .where("number_of_root_chat_messages > 0 or group_type = 'outing'")
           .where(group_type: [:conversation, :outing])
           .where('join_requests.user_id = ?', current_user.id)
