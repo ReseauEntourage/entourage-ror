@@ -46,7 +46,10 @@ module V1
       # try to put other user as author if conversation
       # and user's name as title
       if object.group_type == 'conversation'
-        other_participant = object.accepted_members.find do |member|
+        # use the preloaded association when available (see Users::EntouragesController#index);
+        # otherwise fetch accepted_members with :partner in one query instead of two
+        pool = object.association(:accepted_members).loaded? ? object.accepted_members : object.accepted_members.includes(:partner)
+        other_participant = pool.find do |member|
           member.id != scope[:user]&.id
         end
 
