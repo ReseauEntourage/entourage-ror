@@ -47,8 +47,7 @@ module V1
     end
 
     lazy_relationship :last_chat_message
-    lazy_relationship :chat_messages_count
-    lazy_relationship :chat_messages
+    lazy_relationship :chat_message_authors
     lazy_relationship :join_requests
 
     def type
@@ -88,18 +87,15 @@ module V1
       }
     end
 
+    # @see JoinRequest#unread_messages_count, maintained async by UnreadChatMessageJob
     def number_of_unread_messages
-      return lazy_chat_messages_count&.count || 0 if current_join_request.last_message_read.nil?
-
-      lazy_chat_messages.select do |chat_message|
-        chat_message.created_at > current_join_request.last_message_read
-      end.count
+      current_join_request&.unread_messages_count || 0
     end
 
     def has_personal_post
       return unless scope[:user]
 
-      (lazy_chat_messages.pluck(:user_id) & [scope[:user].id]).any?
+      lazy_chat_message_authors.any? { |message| message.user_id == scope[:user].id }
     end
 
     # protected

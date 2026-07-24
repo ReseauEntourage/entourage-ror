@@ -45,7 +45,7 @@ describe V1::ConversationSerializer do
     end
 
     context 'without unread messages' do
-      before { JoinRequest.where(user_id: user.id, joinable_id: conversation.id).first.update_attribute(:last_message_read, 1.second.from_now) }
+      before { JoinRequest.where(user_id: user.id, joinable_id: conversation.id).first.set_chat_messages_as_read }
 
       it { expect(serialized[:number_of_unread_messages]).to eq(0) }
     end
