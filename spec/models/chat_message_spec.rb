@@ -274,4 +274,72 @@ RSpec.describe ChatMessage, type: :model do
 
     it { expect(chat_message.survey_id).to eq(survey.id) }
   end
+
+  describe '#publish_events (EventBus)' do
+    let(:neighborhood) { create(:neighborhood) }
+
+    def published_events(event_names)
+      received = []
+      event_names.each { |name| EventBus.subscribe(name, ->(payload) { received << [name, payload] }) }
+      yield
+      received
+    end
+
+    it 'does not publish any event while the post is only scheduled' do
+      events = published_events(['chat_message.created', 'chat_message.updated']) do
+        create(:chat_message, messageable: neighborhood, status: :scheduled)
+      end
+
+      expect(events).to be_empty
+    end
+
+    it 'does not publish any event when editing content while still scheduled' do
+      message = create(:chat_message, messageable: neighborhood, status: :scheduled)
+
+      events = published_events(['chat_message.created', 'chat_message.updated']) do
+        message.update!(content: 'edited')
+      end
+
+      expect(events).to be_empty
+    end
+
+    it 'publishes a created event (not updated) when the scheduled post actually becomes active' do
+      message = create(:chat_message, messageable: neighborhood, status: :scheduled)
+
+      events = published_events(['chat_message.created', 'chat_message.updated']) do
+        message.update!(status: :active)
+      end
+
+      expect(events.map(&:first)).to eq(['chat_message.created'])
+      expect(events.first.last[:record]).to eq(message)
+    end
+
+    it 'does not publish a created event when a scheduled post is cancelled (status: deleted)' do
+      message = create(:chat_message, messageable: neighborhood, status: :scheduled)
+
+      events = published_events(['chat_message.created']) do
+        message.update!(status: :deleted, deleted_at: Time.current)
+      end
+
+      expect(events).to be_empty
+    end
+
+    it 'still publishes a created event for a normal (non-scheduled) post' do
+      events = published_events(['chat_message.created']) do
+        create(:chat_message, messageable: neighborhood, status: :active)
+      end
+
+      expect(events.size).to eq(1)
+    end
+
+    it 'still publishes an updated event for a normal content edit' do
+      message = create(:chat_message, messageable: neighborhood, status: :active)
+
+      events = published_events(['chat_message.updated']) do
+        message.update!(content: 'edited')
+      end
+
+      expect(events.size).to eq(1)
+    end
+  end
 end
