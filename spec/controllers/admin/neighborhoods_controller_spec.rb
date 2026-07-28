@@ -221,13 +221,13 @@ describe Admin::NeighborhoodsController do
     before { get :show_posts, params: { id: neighborhood.id } }
 
     context 'when the current user has no slack_id' do
-      it { expect(response.body).to include("Vous n'avez pas renseigné votre identifiant Slack") }
+      it { expect(response.body).to include("Ton identifiant Slack n'est pas renseigné") }
     end
 
     context 'when the current user has a slack_id' do
       let!(:user) { admin_basic_login.tap { |u| u.update!(slack_id: 'U123') } }
 
-      it { expect(response.body).not_to include("Vous n'avez pas renseigné votre identifiant Slack") }
+      it { expect(response.body).not_to include("Ton identifiant Slack n'est pas renseigné") }
     end
   end
 

@@ -56,6 +56,7 @@
             <div class="col-md-3">
               <%= label_tag 'chat_message_scheduled_time', 'Heure (heure de Paris)' %>
               <%= time_field_tag 'chat_message[scheduled_time]', nil, class: 'form-control' %>
+              <div class="help-block" style="margin: 4px 0 0">Fuseau : heure de Paris. Doit être dans le futur.</div>
             </div>
             <div class="col-md-3">
               <%= label_tag 'chat_message_recurrence_frequency', 'Récurrence' %>
@@ -69,8 +70,8 @@
             <% if current_user.slack_id.blank? %>
               <div class="col-md-12">
                 <div class="alert alert-warning" style="margin-top: 10px">
-                  Vous n'avez pas renseigné votre identifiant Slack : vous ne recevrez pas de notification à la publication.
-                  <%= link_to "Renseignez-le ici", edit_admin_user_path(current_user) %>.
+                  ℹ️ Ton identifiant Slack n'est pas renseigné : tu ne recevras pas de notification Slack à la publication de ce contenu.
+                  <%= link_to "Renseigne-le ici", edit_admin_user_path(current_user) %>.
                 </div>
               </div>
             <% end %>
