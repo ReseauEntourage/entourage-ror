@@ -84,11 +84,14 @@
 
     <% if @scheduled_publications.present? %>
       <div class="panel panel-default" style="margin-top: 15px">
-        <div class="panel-heading">Publications programmées</div>
+        <div class="panel-heading">Publications programmées (<%= @scheduled_publications.size %>)</div>
         <ul class="list-group">
           <% @scheduled_publications.each do |scheduled_publication| %>
             <li class="list-group-item">
-              <div><strong><%= l scheduled_publication.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %></strong></div>
+              <div>
+                <strong><%= l scheduled_publication.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %></strong>
+                <small class="text-muted">(dans <%= distance_of_time_in_words(Time.zone.now, scheduled_publication.scheduled_at) %>)</small>
+              </div>
               <div><%= truncate(scheduled_publication.publishable.content, length: 140) %></div>
               <div style="margin-top: 5px">
                 <%= link_to "Éditer", edit_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), class: "btn btn-default btn-xs" %>

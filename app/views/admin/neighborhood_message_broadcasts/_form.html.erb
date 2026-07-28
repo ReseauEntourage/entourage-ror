@@ -56,7 +56,10 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Programmée</b><br>
-        Cette diffusion sera envoyée le <%= l @neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %> à <%= @neighborhood_message_broadcast.recipient_ids.count %> groupes.
+        Cette diffusion sera envoyée le <%= l @neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %>
+        (dans <%= distance_of_time_in_words(Time.zone.now, @neighborhood_message_broadcast.scheduled_at) %>)
+        à <%= pluralize(@neighborhood_message_broadcast.recipient_ids.count, 'groupe', 'groupes') %>,
+        soit <%= pluralize(@neighborhood_message_broadcast.recipients.sum(:number_of_people), 'destinataire', 'destinataires') %>.
       </div>
       <% if @scheduled_publication %>
         <%= link_to("Diffuser maintenant", publish_now_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-danger", data: { confirm: "Diffuser ce message maintenant ?" }) %>
