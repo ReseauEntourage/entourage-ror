@@ -6,9 +6,3 @@
     class: "RefreshEngagementLevelsJob"
     queue: default
     description: "Refresh engagement levels materialized view daily at 2am"
-
-  reconcile_unread_messages_counts:
-    cron: "*/15 * * * *"
-    class: "ReconcileUnreadMessagesCountsJob"
-    queue: default
-    description: "Safety net: re-trigger UnreadChatMessageJob for conversations with recent activity, in case a run was lost"

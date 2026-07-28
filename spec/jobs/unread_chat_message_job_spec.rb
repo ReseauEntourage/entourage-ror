@@ -43,4 +43,20 @@ RSpec.describe UnreadChatMessageJob do
 
     expect { subject }.to change { join_request.reload.unread_messages_count }.from(0).to(1)
   end
+
+  describe 'concurrent triggers on the same conversation' do
+    # SidekiqUniqueJobs is disabled in the test environment altogether
+    # (spec/rails_helper.rb: `config.enabled = !Rails.env.test?`), so the
+    # lock/reschedule behavior itself can't be exercised here — this only
+    # locks in the configuration. Verified manually against a real Sidekiq +
+    # Redis (bin/rails runner, development env): pushing the same args twice
+    # results in 1 immediate job + 1 job rescheduled ~5s later (`"at"` key
+    # present) instead of the 2nd trigger being silently dropped.
+    it 'is configured to serialize runs per messageable and reschedule conflicts' do
+      options = described_class.get_sidekiq_options
+
+      expect(options['lock']).to eq(:until_executed)
+      expect(options['on_conflict']).to eq(:reschedule)
+    end
+  end
 end
