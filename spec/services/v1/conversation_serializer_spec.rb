@@ -130,6 +130,19 @@ describe V1::ConversationSerializer do
 
         expect(serialized[:blockers]).to eq([:me])
       end
+
+      it 'still finds the other participant when their own join_request is not accepted (e.g. hidden)' do
+        conversation.join_requests.find_by!(user: participant).update!(status: JoinRequest::HIDDEN_STATUS)
+
+        preloaded = ::Entourage.includes(:accepted_members).find(conversation.id)
+        expect(preloaded.accepted_members).not_to include(participant)
+
+        serialized = V1::ConversationSerializer.new(preloaded, scope: { user: user }).serializable_hash
+
+        expect(serialized[:name]).to eq(UserPresenter.new(user: participant).display_name)
+        expect(serialized[:user][:id]).to eq(participant.id)
+        expect(serialized[:blockers]).to eq([:me])
+      end
     end
   end
 end

@@ -617,8 +617,13 @@ class Entourage < ApplicationRecord
   def interlocutor_of user
     return unless conversation?
 
-    pool = association(:accepted_members).loaded? ? accepted_members : members
-    pool.find { |member| member.id != user.id }
+    return members.find { |member| member.id != user.id } unless association(:accepted_members).loaded?
+
+    # accepted_members can miss a real participant whose own join_request isn't
+    # "accepted" (e.g. status "hidden": they archived the conversation on their
+    # side, they're still a member) — fall back to an unscoped lookup by id.
+    accepted_members.find { |member| member.id != user.id } ||
+      User.find_by(id: member_ids - [user.id])
   end
 
   def set_moderation_dates_and_save

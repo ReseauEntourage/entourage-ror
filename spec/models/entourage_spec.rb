@@ -418,5 +418,14 @@ RSpec.describe Entourage, type: :model do
 
       expect(preloaded.interlocutor_of(user)).to eq(other)
     end
+
+    it 'finds the other participant even when their own join_request is not accepted (e.g. hidden)' do
+      conversation.join_requests.find_by!(user: other).update!(status: JoinRequest::HIDDEN_STATUS)
+
+      preloaded = ::Entourage.includes(:accepted_members).find(conversation.id)
+      expect(preloaded.accepted_members).not_to include(other)
+
+      expect(preloaded.interlocutor_of(user)).to eq(other)
+    end
   end
 end
