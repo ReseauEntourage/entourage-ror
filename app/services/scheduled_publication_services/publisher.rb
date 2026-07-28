@@ -26,16 +26,42 @@ module ScheduledPublicationServices
       SlackServices::DirectMessage.new(user: scheduled_publication.author, text: text).send!
     end
 
+    # copy: EN-9403-notifications-slack.md
     def success_message
-      if scheduled_publication.post?
-        "Votre post dans #{scheduled_publication.neighborhood&.name} a été publié : #{admin_link}"
-      else
-        "Votre diffusion vers #{scheduled_publication.publishable.recipient_ids.count} groupes a été envoyée : #{admin_link}"
-      end
+      now = Time.current.in_time_zone('Paris')
+
+      [
+        "✅ Ta publication programmée vient d'être publiée",
+        slack_title,
+        "Publiée le #{now.strftime('%d/%m/%Y')} à #{now.strftime('%H:%M')} dans #{slack_cible}",
+        "👉 <#{admin_link}|Voir la publication>"
+      ].join("\n")
     end
 
+    # copy: EN-9403-notifications-slack.md
     def failure_message
-      "Échec de la publication de votre publication programmée : #{admin_link}"
+      scheduled_at = scheduled_publication.scheduled_at.in_time_zone('Paris')
+
+      [
+        "⚠️ Ta publication programmée n'a pas pu être publiée",
+        slack_title,
+        "Prévue le #{scheduled_at.strftime('%d/%m/%Y')} à #{scheduled_at.strftime('%H:%M')} dans #{slack_cible}",
+        "Elle n'a pas été diffusée. Tu peux réessayer depuis le back-office.",
+        "👉 <#{admin_link}|Ouvrir la publication>"
+      ].join("\n")
+    end
+
+    def slack_title
+      return scheduled_publication.publishable.content(true).to_s.truncate(80) if scheduled_publication.post?
+
+      scheduled_publication.publishable.title
+    end
+
+    # {{cible}} : pour un post = « {{nom_du_groupe}} » ; pour une diffusion multi-groupes = « {{nombre}} groupes »
+    def slack_cible
+      return "« #{scheduled_publication.neighborhood&.name} »" if scheduled_publication.post?
+
+      "« #{scheduled_publication.publishable.recipient_ids.count} groupes »"
     end
 
     def admin_link

@@ -156,13 +156,13 @@ describe Admin::NeighborhoodMessageBroadcastsController do
     before { get :edit, params: { id: neighborhood_message_broadcast.id } }
 
     context 'when the current admin has no slack_id' do
-      it { expect(response.body).to include("Vous n'avez pas renseigné votre identifiant Slack") }
+      it { expect(response.body).to include("Ton identifiant Slack n'est pas renseigné") }
     end
 
     context 'when the current admin has a slack_id' do
       let!(:user) { admin_basic_login.tap { |u| u.update!(slack_id: 'U123') } }
 
-      it { expect(response.body).not_to include("Vous n'avez pas renseigné votre identifiant Slack") }
+      it { expect(response.body).not_to include("Ton identifiant Slack n'est pas renseigné") }
     end
   end
 

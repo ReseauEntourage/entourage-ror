@@ -49,25 +49,60 @@ describe ScheduledPublicationServices::Publisher do
     end
 
     context 'slack notification' do
-      let(:scheduled_publication) { create(:scheduled_publication, :post) }
+      context 'post, on success' do
+        let(:scheduled_publication) { create(:scheduled_publication, :post) }
 
-      it 'notifies the author of the successful publication' do
-        expect(SlackServices::DirectMessage).to receive(:new)
-          .with(hash_including(user: scheduled_publication.author))
-          .and_return(instance_double(SlackServices::DirectMessage, send!: true))
+        it 'notifies the author with the exact copy from EN-9403' do
+          expect(SlackServices::DirectMessage).to receive(:new) do |args|
+            expect(args[:user]).to eq(scheduled_publication.author)
+            expect(args[:text]).to start_with("✅ Ta publication programmée vient d'être publiée")
+            expect(args[:text]).to include(scheduled_publication.publishable.content(true).truncate(80))
+            expect(args[:text]).to match(/Publiée le \d{2}\/\d{2}\/\d{4} à \d{2}:\d{2} dans « #{Regexp.escape(scheduled_publication.neighborhood.name)} »/)
+            expect(args[:text]).to include('👉 <')
+            expect(args[:text]).to include('|Voir la publication>')
 
-        described_class.new(scheduled_publication).publish!
+            instance_double(SlackServices::DirectMessage, send!: true)
+          end
+
+          described_class.new(scheduled_publication).publish!
+        end
       end
 
-      it 'notifies the author with a distinct message when publishing fails' do
-        allow_any_instance_of(ChatMessage).to receive(:update!).and_raise(StandardError, 'boom')
+      context 'post, on failure' do
+        let(:scheduled_publication) { create(:scheduled_publication, :post, scheduled_at: 2.hours.from_now) }
 
-        expect(SlackServices::DirectMessage).to receive(:new) do |args|
-          expect(args[:text]).to match(/Échec/)
-          instance_double(SlackServices::DirectMessage, send!: true)
+        before { allow_any_instance_of(ChatMessage).to receive(:update!).and_raise(StandardError, 'boom') }
+
+        it 'notifies the author with the distinct failure copy from EN-9403' do
+          expect(SlackServices::DirectMessage).to receive(:new) do |args|
+            expect(args[:text]).to start_with("⚠️ Ta publication programmée n'a pas pu être publiée")
+            expect(args[:text]).to match(/Prévue le \d{2}\/\d{2}\/\d{4} à \d{2}:\d{2} dans «/)
+            expect(args[:text]).to include("Elle n'a pas été diffusée. Tu peux réessayer depuis le back-office.")
+            expect(args[:text]).to include('👉 <')
+            expect(args[:text]).to include('|Ouvrir la publication>')
+
+            instance_double(SlackServices::DirectMessage, send!: true)
+          end
+
+          described_class.new(scheduled_publication).publish!
         end
+      end
 
-        described_class.new(scheduled_publication).publish!
+      context 'broadcast, on success' do
+        let(:scheduled_publication) { create(:scheduled_publication, :broadcast) }
+
+        around { |example| Sidekiq::Testing.fake!(&example) }
+
+        it 'uses the broadcast title and the group count as cible' do
+          expect(SlackServices::DirectMessage).to receive(:new) do |args|
+            expect(args[:text]).to include(scheduled_publication.publishable.title)
+            expect(args[:text]).to match(/dans « \d+ groupes »/)
+
+            instance_double(SlackServices::DirectMessage, send!: true)
+          end
+
+          described_class.new(scheduled_publication).publish!
+        end
       end
     end
 
