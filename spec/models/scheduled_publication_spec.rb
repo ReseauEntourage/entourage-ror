@@ -47,9 +47,26 @@ describe ScheduledPublication do
       expect(scheduled_publication.target_label).to eq(scheduled_publication.neighborhood.name)
     end
 
-    it 'returns the group count for a broadcast' do
+    it 'returns the group count for a broadcast with no targeted group' do
       scheduled_publication = create(:scheduled_publication, :broadcast)
       expect(scheduled_publication.target_label).to eq('0 groupes')
+    end
+
+    it 'lists the targeted group names for a broadcast' do
+      neighborhood_a = create(:neighborhood, name: 'Groupe A')
+      neighborhood_b = create(:neighborhood, name: 'Groupe B')
+      scheduled_publication = create(:scheduled_publication, :broadcast)
+      scheduled_publication.publishable.update!(conversation_ids: [neighborhood_a.id, neighborhood_b.id])
+
+      expect(scheduled_publication.target_label).to eq('2 groupes : Groupe A, Groupe B')
+    end
+
+    it 'truncates the group name list beyond 3 groups' do
+      neighborhoods = create_list(:neighborhood, 4)
+      scheduled_publication = create(:scheduled_publication, :broadcast)
+      scheduled_publication.publishable.update!(conversation_ids: neighborhoods.map(&:id))
+
+      expect(scheduled_publication.target_label).to match(/^4 groupes : .+ et 1 autre$/)
     end
   end
 

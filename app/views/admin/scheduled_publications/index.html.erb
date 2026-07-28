@@ -10,8 +10,8 @@
   <div style="margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 15px">
     <div class="btn-group btn-group-sm">
       <%= link_to("Toutes", @params.merge(type: :all), class: "btn btn-#{@type == :all ? :primary : :default}") %>
-      <%= link_to("Post dans un groupe", @params.merge(type: :post), class: "btn btn-#{@type == :post ? :primary : :default}") %>
-      <%= link_to("Diffusion multi-groupes", @params.merge(type: :broadcast), class: "btn btn-#{@type == :broadcast ? :primary : :default}") %>
+      <%= link_to("Post", @params.merge(type: :post), class: "btn btn-#{@type == :post ? :primary : :default}") %>
+      <%= link_to("Diffusion", @params.merge(type: :broadcast), class: "btn btn-#{@type == :broadcast ? :primary : :default}") %>
     </div>
 
     <div class="btn-group btn-group-sm">
@@ -47,7 +47,7 @@
         <tbody>
           <% scheduled_publications.sort_by(&:scheduled_at).each do |scheduled_publication| %>
             <tr>
-              <td><span class="label label-<%= scheduled_publication.post? ? 'info' : 'warning' %>"><%= scheduled_publication.post? ? 'Post' : 'Diffusion' %></span></td>
+              <td><span class="label label-<%= scheduled_publication.post? ? 'info' : 'warning' %>"><%= scheduled_publication.post? ? 'Post groupe' : 'Diffusion multi-groupes' %></span></td>
               <td><%= truncate(scheduled_publication.post? ? scheduled_publication.publishable.content : scheduled_publication.publishable.title, length: 80) %></td>
               <td><%= scheduled_publication.target_label %></td>
               <td><%= scheduled_publication.recipients_count %></td>
