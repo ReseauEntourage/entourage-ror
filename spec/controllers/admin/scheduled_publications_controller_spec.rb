@@ -46,6 +46,12 @@ describe Admin::ScheduledPublicationsController do
       before { get :index }
 
       it { expect(response.status).to eq(200) }
+
+      it 'pluralizes the French summary line correctly' do
+        expect(response.body).to include('2 publications programmées')
+        expect(response.body).to include('1 post')
+        expect(response.body).to include('1 diffusion')
+      end
     end
 
     context 'rendering the page with a recurring item' do

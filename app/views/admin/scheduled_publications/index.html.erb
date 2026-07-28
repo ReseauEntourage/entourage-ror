@@ -2,9 +2,9 @@
   <h1>Publications programmées</h1>
 
   <div class="sub" style="color: #888; margin-bottom: 10px">
-    <%= pluralize(@total_count, 'publication programmée') %> au total ·
-    <%= pluralize(@total_post_count, 'post') %> ·
-    <%= pluralize(@total_broadcast_count, 'diffusion') %>
+    <%= pluralize(@total_count, 'publication programmée', 'publications programmées') %> au total ·
+    <%= pluralize(@total_post_count, 'post', 'posts') %> ·
+    <%= pluralize(@total_broadcast_count, 'diffusion', 'diffusions') %>
   </div>
 
   <div style="margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 15px">
