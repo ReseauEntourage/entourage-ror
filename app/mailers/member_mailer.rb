@@ -2,10 +2,9 @@ class MemberMailer < MailjetMailer
   default from: 'contact@entourage.social'
 
   def welcome(user)
-    community = user.community
     mailjet_email to: user,
-                  template_id: community.mailjet_template['welcome'],
-                  campaign_name: community_prefix(community, :welcome),
+                  template_id: 8166466,
+                  campaign_name: 'welcome',
                   from: email_with_name('contact@entourage.social', 'Le Réseau Entourage'),
                   variables: {
                     outings_url: Entourage.share_url(:outings),
