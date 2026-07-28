@@ -54,7 +54,13 @@ class ScheduledPublication < ApplicationRecord
   def target_label
     return neighborhood&.name if post?
 
-    "#{publishable.recipient_ids.count} groupes"
+    count = publishable.recipient_ids.count
+    return "#{count} groupes" if count.zero?
+
+    names = publishable.recipients.limit(3).pluck(:name)
+    label = "#{count} groupes : #{names.join(', ')}"
+    label += " et #{count - names.size} autre#{'s' if count - names.size > 1}" if count > names.size
+    label
   end
 
   def recipients_count
