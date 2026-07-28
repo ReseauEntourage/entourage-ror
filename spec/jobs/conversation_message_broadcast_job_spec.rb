@@ -30,5 +30,25 @@ RSpec.describe ConversationMessageBroadcastJob do
       expect(ChatMessage.ordered.last.content).to eq('Contenu de la diffusion')
       expect(conversation_message_broadcast.reload.sent_recipients_count).to eq(2)
     }
+
+    it 'starts from a NULL sent_recipients_count (no default in schema)' do
+      expect(conversation_message_broadcast.sent_recipients_count).to be_nil
+      job
+      expect(conversation_message_broadcast.reload.sent_recipients_count).to eq(2)
+    end
+
+    it 'increments the existing count instead of overwriting it' do
+      conversation_message_broadcast.update_column(:sent_recipients_count, 5)
+      job
+      expect(conversation_message_broadcast.reload.sent_recipients_count).to eq(7)
+    end
+
+    it 'increments sent_recipients_count with a single atomic UPDATE per recipient, never a read-then-write' do
+      expect(ConversationMessageBroadcast).to receive(:update_counters)
+        .with(conversation_message_broadcast.id, sent_recipients_count: 1)
+        .twice.and_call_original
+
+      job
+    end
   end
 end
