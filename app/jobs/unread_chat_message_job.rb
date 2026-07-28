@@ -1,7 +1,15 @@
 class UnreadChatMessageJob
   include Sidekiq::Worker
 
-  sidekiq_options retry: true, queue: :default
+  # @see ReconcileUnreadMessagesCountsJob for the periodic safety net that
+  # re-triggers this job if a run is ever lost (e.g. Sidekiq restart mid-job).
+  #
+  # `lock: :until_executed` serializes concurrent runs for the same
+  # messageable: this job always does a full recompute (not an increment), so
+  # two overlapping runs racing to UPDATE the same join_requests rows can let
+  # an earlier-computed (now stale) count overwrite a later, correct one —
+  # the lock makes runs for the same messageable execute one at a time instead.
+  sidekiq_options retry: true, queue: :default, lock: :until_executed, lock_args: ->(args) { args }
 
   def perform messageable_type, messageable_id
     compute_unread_on(messageable_type, messageable_id)
