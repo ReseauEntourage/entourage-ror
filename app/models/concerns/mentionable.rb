@@ -24,8 +24,8 @@ module Mentionable
     hash
   end
 
-  # remove html tags from text except for a.href and br
-  def self.filter_html_tags(content, allowed_tags = %w[a br])
+  # remove html tags from text except for basic rich text formatting (bold, italic, links, lists)
+  def self.filter_html_tags(content, allowed_tags = %w[a br p strong em ul ol li])
     return content unless content.is_a?(String)
     return content if content !~ /<[^>]+>/
 

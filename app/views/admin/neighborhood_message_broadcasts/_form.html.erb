@@ -97,6 +97,22 @@
     <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
   </div>
 
+  <script>
+    $(function(){
+      tinymce.init({
+        selector: '#neighborhood_message_broadcast_content',
+        license_key: 'gpl',
+        menubar: false,
+        statusbar: false,
+        branding: false,
+        height: 200,
+        toolbar: 'bold italic | bullist numlist | link',
+        plugins: 'lists link autoresize',
+        autoresize_bottom_margin: 16
+      })
+    })
+  </script>
+
   <% if @neighborhood_message_broadcast.neighborhood_ids.any? && @neighborhood_message_broadcast.new_record? %>
     <%# this case happens when neighborhood_message_broadcast has been cloned %>
     <% @neighborhood_message_broadcast.neighborhood_ids.each do |neighborhood_id| %>

@@ -1,5 +1,25 @@
+<% editor_id = "chat_message_content_edit_#{chat_message.id}" %>
 <%= form_for chat_message, url: admin_chat_message_path(chat_message.id), remote: true do |f| %>
-  <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+  <%= f.text_area :content, id: editor_id, class: "conversation-message-box", rows: 5 %>
   <%= f.submit 'Envoyer', class: "btn btn-primary" %>
   <%= link_to "Annuler", cancel_update_admin_chat_message_path(chat_message.id), class: "btn btn-default", remote: true %>
 <% end %>
+
+<script>
+  (function() {
+    var existing = tinymce.get('<%= editor_id %>');
+    if (existing) { existing.remove(); }
+
+    tinymce.init({
+      selector: '#<%= editor_id %>',
+      license_key: 'gpl',
+      menubar: false,
+      statusbar: false,
+      branding: false,
+      height: 150,
+      toolbar: 'bold italic | bullist numlist | link',
+      plugins: 'lists link autoresize',
+      autoresize_bottom_margin: 16
+    })
+  })()
+</script>

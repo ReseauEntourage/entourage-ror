@@ -141,7 +141,7 @@ RSpec.describe Mentionable, type: :module do
     context 'with default tags' do
       let(:result) { Mentionable.filter_html_tags(content) }
 
-      it { expect(result).to eq('Hello world! <a href="https://example.com">Click here</a><br>New line.') }
+      it { expect(result).to eq('Hello <strong>world</strong>! <a href="https://example.com">Click here</a><br>New line.') }
     end
 
     context 'with plain text' do
@@ -161,7 +161,7 @@ RSpec.describe Mentionable, type: :module do
       let(:content) { '<p dir="ltr"><a href="https://preprod.entourage.social/app/users/3445">@</a>. Voici une mention </p>\n' }
       let(:result) { Mentionable.filter_html_tags(content) }
 
-      it { expect(result).to eq('<a href="https://preprod.entourage.social/app/users/3445">@</a>. Voici une mention \n') }
+      it { expect(result).to eq('<p dir="ltr"><a href="https://preprod.entourage.social/app/users/3445">@</a>. Voici une mention </p>\n') }
     end
   end
 end
