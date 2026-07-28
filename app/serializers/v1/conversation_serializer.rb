@@ -47,8 +47,7 @@ module V1
     end
 
     lazy_relationship :last_chat_message
-    lazy_relationship :chat_messages_count
-    lazy_relationship :chat_messages
+    lazy_relationship :chat_message_authors
     lazy_relationship :join_requests
 
     def type
@@ -88,18 +87,15 @@ module V1
       }
     end
 
+    # @see JoinRequest#unread_messages_count, maintained async by UnreadChatMessageJob
     def number_of_unread_messages
-      return lazy_chat_messages_count&.count || 0 if current_join_request.last_message_read.nil?
-
-      lazy_chat_messages.select do |chat_message|
-        chat_message.created_at > current_join_request.last_message_read
-      end.count
+      current_join_request&.unread_messages_count || 0
     end
 
     def has_personal_post
       return unless scope[:user]
 
-      (lazy_chat_messages.pluck(:user_id) & [scope[:user].id]).any?
+      lazy_chat_message_authors.any? { |message| message.user_id == scope[:user].id }
     end
 
     # protected
@@ -117,14 +113,25 @@ module V1
     end
 
     def current_join_request
-      # @fixme performance issue: we instanciate all records but we need only one
-      @current_join_request ||=  lazy_join_requests.select do |join_request|
-        join_request.user_id == scope[:user].id
-      end.first
+      @current_join_request ||= begin
+        if object.instance_variable_defined?(:@current_join_request)
+          # already batch-preloaded by the controller (see Preloaders::Entourage.preload_current_join_request)
+          object.current_join_request
+        else
+          # @fixme performance issue: we instanciate all records but we need only one
+          lazy_join_requests.select do |join_request|
+            join_request.user_id == scope[:user].id
+          end.first
+        end
+      end
     end
 
     def members
-      object.accepted_members.limit(5)
+      if object.association(:accepted_members).loaded?
+        object.accepted_members.first(5)
+      else
+        object.accepted_members.limit(5)
+      end
     end
 
     private

@@ -34,6 +34,60 @@ describe V1::ActionSerializer do
 
       it { expect(serialized[:section]).to eq('clothes') }
     end
+
+    context 'section_taggings is preloaded' do
+      let(:action) {
+        contribution = FactoryBot.create(:contribution, section: 'clothes', display_category: nil)
+        Contribution.includes(section_taggings: :tag).find(contribution.id)
+      }
+
+      it 'reads the section from the preloaded taggings instead of querying section_list' do
+        expect(action.association(:section_taggings).loaded?).to be true
+        expect(action).not_to receive(:section_list)
+
+        expect(serialized[:section]).to eq('clothes')
+      end
+    end
+  end
+
+  describe 'member' do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:action) { FactoryBot.create(:contribution) }
+
+    let(:serialized) { V1::ActionSerializer.new(action, scope: { user: user }).serializable_hash }
+
+    context 'user is a member' do
+      before { FactoryBot.create(:join_request, joinable: action, user: user, status: JoinRequest::ACCEPTED_STATUS) }
+
+      it { expect(serialized[:member]).to eq(true) }
+    end
+
+    context 'no user in scope' do
+      before { FactoryBot.create(:join_request, joinable: action, user: user, status: JoinRequest::ACCEPTED_STATUS) }
+
+      let(:serialized) { V1::ActionSerializer.new(action).serializable_hash }
+
+      it { expect(serialized[:member]).to eq(false) }
+    end
+
+    context 'user is not a member' do
+      it { expect(serialized[:member]).to eq(false) }
+    end
+
+    context 'join_requests is preloaded' do
+      let(:action) {
+        contribution = FactoryBot.create(:contribution)
+        FactoryBot.create(:join_request, joinable: contribution, user: user, status: JoinRequest::ACCEPTED_STATUS)
+        Contribution.includes(:join_requests).find(contribution.id)
+      }
+
+      it 'reads membership from the preloaded join_requests instead of querying member_ids' do
+        expect(action.association(:join_requests).loaded?).to be true
+        expect(action).not_to receive(:member_ids)
+
+        expect(serialized[:member]).to eq(true)
+      end
+    end
   end
 
   describe 'distance' do

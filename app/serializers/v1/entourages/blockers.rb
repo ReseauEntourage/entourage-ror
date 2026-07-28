@@ -20,8 +20,13 @@ module V1
       private
 
       def other_participant_id
-        @other_participant_id ||= object.member_ids.find do |member_id|
-          member_id != scope[:user].id
+        @other_participant_id ||= begin
+          return object.member_ids.find { |id| id != scope[:user].id } unless object.association(:accepted_members).loaded?
+
+          # accepted_members can miss a real participant whose own join_request
+          # isn't "accepted" (e.g. status "hidden") — fall back to member_ids.
+          object.accepted_members.map(&:id).find { |id| id != scope[:user].id } ||
+            (object.member_ids - [scope[:user].id]).first
         end
       end
     end

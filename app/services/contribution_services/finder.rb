@@ -36,7 +36,7 @@ module ContributionServices
       end
 
       # order by created_at is already in default_scope
-      contributions.group(:id)
+      contributions.group(:id).includes(:user, :translation, :join_requests).preload(section_taggings: :tag)
     end
 
     private

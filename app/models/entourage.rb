@@ -39,6 +39,11 @@ class Entourage < ApplicationRecord
   has_one :chat_messages_count, -> {
     select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').group('messageable_id, messageable_type')
   }, as: :messageable, class_name: 'ChatMessage'
+  # @see V1::ConversationSerializer#has_personal_post: only the distinct author ids are needed, not one row per message
+  has_many :chat_message_authors, -> {
+    select('DISTINCT ON (messageable_id, messageable_type, user_id) id, messageable_id, messageable_type, user_id').
+      order('messageable_id, messageable_type, user_id')
+  }, as: :messageable, class_name: 'ChatMessage'
   has_many :entourage_invitations, foreign_key: :invitable_id, dependent: :destroy
 
   has_one :entourage_score, dependent: :destroy
@@ -612,9 +617,13 @@ class Entourage < ApplicationRecord
   def interlocutor_of user
     return unless conversation?
 
-    members.find do |member|
-      member.id != user.id
-    end
+    return members.find { |member| member.id != user.id } unless association(:accepted_members).loaded?
+
+    # accepted_members can miss a real participant whose own join_request isn't
+    # "accepted" (e.g. status "hidden": they archived the conversation on their
+    # side, they're still a member) — fall back to an unscoped lookup by id.
+    accepted_members.find { |member| member.id != user.id } ||
+      User.find_by(id: member_ids - [user.id])
   end
 
   def set_moderation_dates_and_save

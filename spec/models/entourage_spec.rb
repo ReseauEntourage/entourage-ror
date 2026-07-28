@@ -394,4 +394,38 @@ RSpec.describe Entourage, type: :model do
       it { expect(entourage.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
+
+  describe '#interlocutor_of' do
+    let(:user) { create(:public_user) }
+    let(:other) { create(:public_user) }
+    let(:conversation) { create(:conversation, participants: [user, other]) }
+
+    it 'returns nil when the entourage is not a conversation' do
+      entourage = create(:entourage, :joined, join_request_user: user)
+
+      expect(entourage.interlocutor_of(user)).to be_nil
+    end
+
+    it 'returns the other participant, falling back to a members query when accepted_members is not preloaded' do
+      expect(conversation.association(:accepted_members).loaded?).to be false
+
+      expect(conversation.interlocutor_of(user)).to eq(other)
+    end
+
+    it 'returns the other participant using accepted_members when preloaded' do
+      preloaded = ::Entourage.includes(:accepted_members).find(conversation.id)
+      expect(preloaded.association(:accepted_members).loaded?).to be true
+
+      expect(preloaded.interlocutor_of(user)).to eq(other)
+    end
+
+    it 'finds the other participant even when their own join_request is not accepted (e.g. hidden)' do
+      conversation.join_requests.find_by!(user: other).update!(status: JoinRequest::HIDDEN_STATUS)
+
+      preloaded = ::Entourage.includes(:accepted_members).find(conversation.id)
+      expect(preloaded.accepted_members).not_to include(other)
+
+      expect(preloaded.interlocutor_of(user)).to eq(other)
+    end
+  end
 end

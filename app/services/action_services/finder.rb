@@ -31,7 +31,7 @@ module ActionServices
       end
 
       # order by created_at is already in default_scope
-      actions.group(:id)
+      actions.group(:id).includes(:user, :translation, :join_requests).preload(section_taggings: :tag)
     end
 
     private

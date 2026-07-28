@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 202405021415000) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages"]
+  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages", "onboarding.resource.welcome_unseen", "onboarding.neighborhood.national"]
   create_enum "sms_delivery_provider", ["AWS", "Nexmo", "Slack", "logs"]
   create_enum "sms_delivery_status", ["Ok", "Provider Error", "Sending Error"]
 
@@ -145,6 +145,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "conversation_type", default: "Entourage"
     t.json "conversation_ids", default: {}
     t.jsonb "specific_filters", default: {}, null: false
+    t.datetime "scheduled_at"
     t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
     t.index ["conversation_type"], name: "index_conversation_message_broadcasts_on_conversation_type"
@@ -508,6 +509,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.integer "sourcing_id"
     t.boolean "activity", default: false, null: false
     t.integer "community_builder_id"
+    t.integer "referent_benevole_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
 
@@ -727,6 +729,8 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "hours"
     t.string "languages"
     t.string "postal_code"
+    t.boolean "air_conditioned"
+    t.string "source_updated_at"
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
@@ -769,6 +773,16 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
     t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_for_help", where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
+  end
+
+  create_table "recurrence_rules", force: :cascade do |t|
+    t.string "frequency", null: false
+    t.date "ends_on", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_recurrence_rules_on_active"
   end
 
   create_table "resource_images", force: :cascade do |t|
@@ -876,6 +890,24 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["salesforce_id"], name: "index_salesforce_configs_on_salesforce_id"
+  end
+
+  create_table "scheduled_publications", force: :cascade do |t|
+    t.string "publishable_type", null: false
+    t.integer "publishable_id", null: false
+    t.integer "neighborhood_id"
+    t.integer "author_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.string "status", default: "pending", null: false
+    t.text "failure_reason"
+    t.integer "recurrence_rule_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["neighborhood_id"], name: "index_scheduled_publications_on_neighborhood_id"
+    t.index ["publishable_type", "publishable_id"], name: "idx_on_publishable_type_publishable_id_ec436be32d"
+    t.index ["recurrence_rule_id"], name: "index_scheduled_publications_on_recurrence_rule_id"
+    t.index ["scheduled_at"], name: "index_scheduled_publications_on_scheduled_at"
+    t.index ["status"], name: "index_scheduled_publications_on_status"
   end
 
   create_table "sensitive_words", id: :serial, force: :cascade do |t|
@@ -1026,6 +1058,17 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family"
   end
 
+  create_table "user_badges", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "badge_tag", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "awarded_at"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "badge_tag"], name: "index_user_badges_on_user_id_and_badge_tag", unique: true
+  end
+
   create_table "user_blocked_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "blocked_user_id", null: false
@@ -1165,9 +1208,8 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.string "encrypted_password"
     t.jsonb "roles", default: [], null: false
     t.datetime "first_sign_in_at", precision: nil
-    t.datetime "onboarding_sequence_start_at", precision: nil
+    t.datetime "old_onboarding_sequence_start_at", precision: nil
     t.integer "address_id"
-    t.boolean "accepts_emails_deprecated", default: true, null: false
     t.datetime "last_email_sent_at", precision: nil
     t.string "targeting_profile"
     t.integer "partner_id"
@@ -1191,6 +1233,10 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.jsonb "availability", default: {}
     t.boolean "willing_to_engage_locally", default: false
     t.text "searchable_text"
+    t.integer "entourages_count", default: 0, null: false
+    t.integer "actions_count", default: 0, null: false
+    t.integer "outings_count", default: 0, null: false
+    t.integer "neighborhoods_count", default: 0, null: false
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
     t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"
@@ -1199,6 +1245,7 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["roles"], name: "index_users_on_roles", using: :gin
     t.index ["searchable_text"], name: "index_users_on_searchable_text_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["token"], name: "index_users_on_token", unique: true
+    t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
   create_table "users_resources", force: :cascade do |t|
@@ -1210,6 +1257,14 @@ ActiveRecord::Schema[7.1].define(version: 202405021415000) do
     t.index ["resource_id"], name: "index_users_resources_on_resource_id"
     t.index ["user_id", "resource_id"], name: "index_users_resources_on_user_id_and_resource_id", unique: true
     t.index ["user_id"], name: "index_users_resources_on_user_id"
+  end
+
+  create_table "weekly_activities", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "week_iso", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "week_iso"], name: "index_weekly_activities_on_user_id_and_week_iso", unique: true
   end
 
   add_foreign_key "experimental_pending_request_reminders", "users"

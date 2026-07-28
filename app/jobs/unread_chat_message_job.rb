@@ -1,7 +1,22 @@
 class UnreadChatMessageJob
   include Sidekiq::Worker
 
-  sidekiq_options retry: true, queue: :default
+  # This job always does a full recompute (not an increment), so two
+  # overlapping runs racing to UPDATE the same join_requests rows can let an
+  # earlier-computed (now stale) count overwrite a later, correct one.
+  #
+  # `lock: :until_executed` makes runs for the same messageable execute one
+  # at a time instead of overlapping. `on_conflict: :reschedule` covers the
+  # remaining case: a message that arrives *while* a run for the same
+  # messageable is already in flight would otherwise have its trigger
+  # silently dropped (the in-flight run may have already read its snapshot
+  # before that message existed) — instead it's automatically re-enqueued to
+  # run again once the current lock is released, so the recompute always
+  # ends up reflecting every message, without any extra polling.
+  sidekiq_options retry: true, queue: :default,
+    lock: :until_executed,
+    lock_args: ->(args) { args },
+    on_conflict: :reschedule
 
   def perform messageable_type, messageable_id
     compute_unread_on(messageable_type, messageable_id)

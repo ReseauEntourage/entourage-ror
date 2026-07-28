@@ -46,7 +46,11 @@ module V1
     end
 
     def section
-      object.section_list.first || ActionServices::Mapper.section_from_display_category(object.display_category)
+      if object.association(:section_taggings).loaded?
+        object.section_taggings.first&.tag&.name || ActionServices::Mapper.section_from_display_category(object.display_category)
+      else
+        object.section_list.first || ActionServices::Mapper.section_from_display_category(object.display_category)
+      end
     end
 
     def author
@@ -67,7 +71,11 @@ module V1
     def member
       return false unless scope && scope[:user]
 
-      object.member_ids.include?(scope[:user].id)
+      if object.association(:join_requests).loaded?
+        object.join_requests.map(&:user_id).include?(scope[:user].id)
+      else
+        object.member_ids.include?(scope[:user].id)
+      end
     end
 
     def members

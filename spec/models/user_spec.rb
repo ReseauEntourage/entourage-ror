@@ -735,4 +735,67 @@ describe User, type: :model do
       end
     end
   end
+
+  describe '#stats_has_changed!' do
+    # note: JoinRequestObserver already calls #stats_has_changed! on every join_request
+    # create/update/destroy, so counters are already up to date by the time these examples
+    # run `subject` again — these specs assert the *computed value* is correct rather than
+    # that calling the method changes anything.
+    let(:user) { create(:public_user) }
+
+    subject { user.stats_has_changed! }
+
+    it 'sets entourages_count to the number of groups created by the user' do
+      create(:entourage, user: user, group_type: 'action')
+      create(:outing, user: user)
+
+      subject
+
+      expect(user.reload.entourages_count).to eq(2)
+    end
+
+    it 'does not count conversations in entourages_count' do
+      create(:conversation, user: user, participants: [user])
+
+      subject
+
+      expect(user.reload.entourages_count).to eq(0)
+    end
+
+    it 'sets actions_count to the number of accepted join_requests on action entourages' do
+      action = create(:entourage, group_type: 'action')
+      create(:join_request, joinable: action, user: user, status: JoinRequest::ACCEPTED_STATUS)
+
+      subject
+
+      expect(user.reload.actions_count).to eq(1)
+    end
+
+    it 'sets outings_count to the number of accepted join_requests on outings' do
+      outing = create(:outing)
+      create(:join_request, joinable: outing, user: user, status: JoinRequest::ACCEPTED_STATUS)
+
+      subject
+
+      expect(user.reload.outings_count).to eq(1)
+    end
+
+    it 'does not count pending join_requests' do
+      outing = create(:outing)
+      create(:join_request, joinable: outing, user: user, status: JoinRequest::PENDING_STATUS)
+
+      subject
+
+      expect(user.reload.outings_count).to eq(0)
+    end
+
+    it 'sets neighborhoods_count to the number of accepted neighborhood memberships' do
+      neighborhood = create(:neighborhood)
+      create(:join_request, joinable: neighborhood, user: user, status: JoinRequest::ACCEPTED_STATUS)
+
+      subject
+
+      expect(user.reload.neighborhoods_count).to eq(1)
+    end
+  end
 end

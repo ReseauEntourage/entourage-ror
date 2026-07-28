@@ -118,4 +118,28 @@ describe V1::EntourageSerializer do
       it { expect(serialized[:display_category]).to eq('resource') }
     end
   end
+
+  describe '#current_join_request' do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user) }
+    let(:serializer) { V1::EntourageSerializer.new(entourage, scope: { user: user }) }
+
+    context 'not preloaded by the finder' do
+      it 'falls back to scanning the lazy join_requests' do
+        join_request = JoinRequest.where(user_id: user.id, joinable_id: entourage.id).first
+
+        expect(serializer.current_join_request).to eq(join_request)
+      end
+    end
+
+    context 'preloaded by the finder (see EntourageFinder#preload_user_join_requests)' do
+      it 'uses the preloaded value instead of scanning the lazy join_requests' do
+        join_request = JoinRequest.where(user_id: user.id, joinable_id: entourage.id).first
+        entourage.current_join_request = join_request
+
+        expect(serializer).not_to receive(:lazy_join_requests)
+        expect(serializer.current_join_request).to eq(join_request)
+      end
+    end
+  end
 end
