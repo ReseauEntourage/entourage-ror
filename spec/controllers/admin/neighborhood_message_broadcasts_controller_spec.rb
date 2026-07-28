@@ -87,13 +87,22 @@ describe Admin::NeighborhoodMessageBroadcastsController do
     render_views
 
     context 'scheduled tab' do
-      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
+      let!(:neighborhood) { create(:neighborhood, participants: create_list(:public_user, 2)) }
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now, conversation_ids: [neighborhood.id]) }
       let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
 
       before { get :index, params: { status: :scheduled } }
 
       it { expect(assigns(:neighborhood_message_broadcasts)).to eq([neighborhood_message_broadcast]) }
       it { expect(response.status).to eq(200) }
+
+      it 'shows the recipient count and a relative countdown, not just the group count' do
+        recipients_count = neighborhood_message_broadcast.recipients.sum(:number_of_people)
+        suffix = recipients_count == 1 ? '' : 's'
+
+        expect(response.body).to include("#{recipients_count} destinataire#{suffix}")
+        expect(response.body).to include('dans 1 jour')
+      end
     end
   end
 

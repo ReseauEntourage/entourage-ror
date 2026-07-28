@@ -45,8 +45,16 @@
               <td><%= neighborhood_message_broadcast.sent_recipients_count %></td>
               <td><%= NeighborhoodMessageBroadcast.pending_jobs[neighborhood_message_broadcast.id] %></td>
             <% elsif @status == :scheduled %>
-              <td><%= l neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" if neighborhood_message_broadcast.scheduled_at %></td>
-              <td><%= neighborhood_message_broadcast.recipient_ids.count %></td>
+              <td>
+                <% if neighborhood_message_broadcast.scheduled_at %>
+                  <%= l neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %><br>
+                  <small class="text-muted">dans <%= distance_of_time_in_words(Time.zone.now, neighborhood_message_broadcast.scheduled_at) %></small>
+                <% end %>
+              </td>
+              <td>
+                <%= pluralize(neighborhood_message_broadcast.recipient_ids.count, 'groupe', 'groupes') %><br>
+                <small class="text-muted"><%= pluralize(neighborhood_message_broadcast.recipients.sum(:number_of_people), 'destinataire', 'destinataires') %></small>
+              </td>
             <% end %>
             <td>
               <% if @status == :draft %>
