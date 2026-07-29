@@ -120,6 +120,43 @@ describe Admin::ScheduledPublicationsController do
         expect { request }.not_to change { scheduled_publication.reload.scheduled_at }
       end
     end
+
+    context 'with a blank content' do
+      let(:request) {
+        patch :update, params: {
+          id: scheduled_publication.id,
+          scheduled_publication: { content: '', scheduled_date: 2.days.from_now.to_date.to_s, scheduled_time: '09:00' }
+        }
+      }
+
+      it 'does not save the change and re-renders the edit form' do
+        request
+
+        expect(response).to render_template(:edit)
+        expect(scheduled_publication.publishable.reload.content).not_to eq('')
+      end
+    end
+
+    context 'for a broadcast (cannot be edited through this action)' do
+      let(:scheduled_publication) { create(:scheduled_publication, :broadcast, scheduled_at: 1.day.from_now) }
+      let(:request) {
+        patch :update, params: {
+          id: scheduled_publication.id,
+          scheduled_publication: { content: 'nouveau contenu', scheduled_date: 2.days.from_now.to_date.to_s, scheduled_time: '09:00' }
+        }
+      }
+
+      it 'does not modify the broadcast' do
+        expect { request }.not_to change { scheduled_publication.publishable.reload.content }
+      end
+
+      it 'redirects instead of rendering' do
+        request
+
+        expect(response).to have_http_status(:found)
+        expect(response.location).to eq(admin_neighborhood_message_broadcasts_url)
+      end
+    end
   end
 
   describe 'POST #publish_now' do
@@ -135,6 +172,17 @@ describe Admin::ScheduledPublicationsController do
 
       job = Sidekiq::ScheduledSet.new.find { |j| j.args.first == scheduled_publication.id }
       expect(job).to be_nil
+    end
+
+    context 'for a broadcast' do
+      let(:scheduled_publication) { create(:scheduled_publication, :broadcast) }
+
+      it 'sends the broadcast immediately' do
+        post :publish_now, params: { id: scheduled_publication.id }
+
+        expect(scheduled_publication.reload.status).to eq('published')
+        expect(scheduled_publication.publishable.reload.status).to eq('sent')
+      end
     end
   end
 
@@ -162,6 +210,17 @@ describe Admin::ScheduledPublicationsController do
       it 'cancels the whole series when scope=series' do
         expect { post :cancel, params: { id: scheduled_publication.id, scope: :series } }.not_to change(ScheduledPublication, :count)
         expect(recurrence_rule.reload.active?).to eq(false)
+      end
+    end
+
+    context 'for a broadcast' do
+      let(:scheduled_publication) { create(:scheduled_publication, :broadcast) }
+
+      it 'resets the broadcast back to draft' do
+        post :cancel, params: { id: scheduled_publication.id }
+
+        expect(scheduled_publication.reload.status).to eq('cancelled')
+        expect(scheduled_publication.publishable.reload.status).to eq('draft')
       end
     end
   end
