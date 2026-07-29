@@ -47,6 +47,9 @@
             <% elsif @status == :scheduled %>
               <td>
                 <% if neighborhood_message_broadcast.scheduled_at %>
+                  <% if (scheduled_publication = @scheduled_publications[neighborhood_message_broadcast.id])&.failed? %>
+                    <span class="label label-danger">Échec</span>
+                  <% end %>
                   <%= l neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %><br>
                   <small class="text-muted"><%= scheduled_countdown(neighborhood_message_broadcast.scheduled_at) %></small>
                 <% end %>
@@ -66,7 +69,7 @@
               <% elsif @status == :scheduled %>
                 <%= link_to "Modifier", edit_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), class: "btn btn-primary" %>
                 <% if (scheduled_publication = @scheduled_publications[neighborhood_message_broadcast.id]) %>
-                  <%= link_to "Diffuser maintenant", publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: admin_neighborhood_message_broadcasts_path(status: :scheduled)), method: :post, data: { confirm: "Diffuser ce message maintenant à #{neighborhood_message_broadcast.recipient_ids.count} groupes ?" }, class: "btn btn-default" %>
+                  <%= link_to (scheduled_publication.failed? ? "Réessayer maintenant" : "Diffuser maintenant"), publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: admin_neighborhood_message_broadcasts_path(status: :scheduled)), method: :post, data: { confirm: "Diffuser ce message maintenant à #{neighborhood_message_broadcast.recipient_ids.count} groupes ?" }, class: "btn btn-default" %>
                   <% if scheduled_publication.recurring? %>
                     <%= link_to "Annuler l'occurrence", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :occurrence, return_to: admin_neighborhood_message_broadcasts_path(status: :scheduled)), method: :post, data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }, class: "btn btn-danger" %>
                     <%= link_to "Annuler la série", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :series, return_to: admin_neighborhood_message_broadcasts_path(status: :scheduled)), method: :post, data: { confirm: "Annuler toute la série récurrente ?" }, class: "btn btn-danger" %>

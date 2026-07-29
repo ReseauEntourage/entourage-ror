@@ -89,13 +89,16 @@
           <% @scheduled_publications.each do |scheduled_publication| %>
             <li class="list-group-item">
               <div>
+                <% if scheduled_publication.failed? %>
+                  <span class="label label-danger">Échec</span>
+                <% end %>
                 <strong><%= l scheduled_publication.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %></strong>
                 <small class="text-muted">(<%= scheduled_countdown(scheduled_publication.scheduled_at) %>)</small>
               </div>
               <div><%= truncate(scheduled_publication.publishable.content, length: 140) %></div>
               <div style="margin-top: 5px">
                 <%= link_to "Éditer", edit_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), class: "btn btn-default btn-xs" %>
-                <%= link_to "Publier maintenant", publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Publier ce post maintenant ?" }, class: "btn btn-default btn-xs" %>
+                <%= link_to (scheduled_publication.failed? ? "Réessayer maintenant" : "Publier maintenant"), publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Publier ce post maintenant ?" }, class: "btn btn-default btn-xs" %>
                 <% if scheduled_publication.recurring? %>
                   <%= link_to "Annuler cette occurrence", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :occurrence, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }, class: "btn btn-danger btn-xs" %>
                   <%= link_to "Annuler la série", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :series, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler toute la série récurrente ?" }, class: "btn btn-danger btn-xs" %>

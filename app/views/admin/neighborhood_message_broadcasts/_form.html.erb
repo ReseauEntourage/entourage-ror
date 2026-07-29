@@ -55,14 +55,18 @@
   <% elsif @neighborhood_message_broadcast.scheduled? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
-        <b>Programmée</b><br>
+        <b>Programmée</b>
+        <% if @scheduled_publication&.failed? %>
+          <span class="label label-danger">Échec</span>
+        <% end %>
+        <br>
         Cette diffusion sera envoyée le <%= l @neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %>
         (<%= scheduled_countdown(@neighborhood_message_broadcast.scheduled_at) %>)
         à <%= pluralize(@neighborhood_message_broadcast.recipient_ids.count, 'groupe', 'groupes') %>,
         soit <%= pluralize(@neighborhood_message_broadcast.recipients.sum(:number_of_people), 'destinataire', 'destinataires') %>.
       </div>
       <% if @scheduled_publication %>
-        <%= link_to("Diffuser maintenant", publish_now_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-danger", data: { confirm: "Diffuser ce message maintenant ?" }) %>
+        <%= link_to(@scheduled_publication.failed? ? "Réessayer maintenant" : "Diffuser maintenant", publish_now_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-danger", data: { confirm: "Diffuser ce message maintenant ?" }) %>
         <% if @scheduled_publication.recurring? %>
           <%= link_to("Annuler l'occurrence", cancel_admin_scheduled_publication_path(@scheduled_publication, scope: :occurrence), method: :post, class: "btn btn-default", data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }) %>
           <%= link_to("Annuler la série", cancel_admin_scheduled_publication_path(@scheduled_publication, scope: :series), method: :post, class: "btn btn-default", data: { confirm: "Annuler toute la série récurrente ?" }) %>

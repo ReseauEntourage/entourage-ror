@@ -11,7 +11,9 @@ module Admin
       @type = params[:type].presence&.to_sym || :all
       @group_by = params[:group_by].presence&.to_sym || :month
 
-      pending_scheduled_publications = ScheduledPublication.pending.order(:scheduled_at).includes(:publishable, :author, :neighborhood)
+      # @caution includes :failed alongside :pending - a failed publication must stay visible
+      # here with a way to retry it (EN-9403: "Tu peux réessayer depuis le back-office")
+      pending_scheduled_publications = ScheduledPublication.where(status: [:pending, :failed]).order(:scheduled_at).includes(:publishable, :author, :neighborhood)
       @total_count = pending_scheduled_publications.count
       @total_post_count = pending_scheduled_publications.of_type(TYPES[:post]).count
       @total_broadcast_count = pending_scheduled_publications.of_type(TYPES[:broadcast]).count
@@ -42,7 +44,10 @@ module Admin
         return render :edit
       end
 
-      if message.save && @scheduled_publication.update(scheduled_at: scheduled_at)
+      # @caution resets status to :pending - a :failed publication edited with a new date must
+      # become due again, otherwise PublishScheduledPublicationJob#perform silently no-ops
+      # (it only runs for a pending? publication)
+      if message.save && @scheduled_publication.update(scheduled_at: scheduled_at, status: :pending)
         PublishScheduledPublicationJob.cancel(@scheduled_publication.id)
         PublishScheduledPublicationJob.schedule(@scheduled_publication)
 

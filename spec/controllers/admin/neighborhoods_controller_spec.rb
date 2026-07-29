@@ -234,6 +234,21 @@ describe Admin::NeighborhoodsController do
     it { expect(assigns(:scheduled_publications).map(&:id)).to eq([scheduled_publication.id]) }
   end
 
+  describe 'GET #show_posts with a failed scheduled post' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:scheduled_post) { create(:chat_message, messageable: neighborhood, status: :scheduled) }
+    let!(:failed_publication) { create(:scheduled_publication, publishable: scheduled_post, neighborhood: neighborhood, author: user, status: :failed) }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    # @caution a failed publication must stay visible here with a way to retry it
+    # (EN-9403: "Tu peux réessayer depuis le back-office")
+    it { expect(assigns(:scheduled_publications).map(&:id)).to eq([failed_publication.id]) }
+    it { expect(response.body).to include('Réessayer maintenant') }
+  end
+
   describe 'GET #show_posts slack_id warning' do
     render_views
 
