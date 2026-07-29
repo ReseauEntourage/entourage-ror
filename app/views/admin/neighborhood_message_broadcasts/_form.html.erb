@@ -57,7 +57,7 @@
       <div style="flex-grow: 1">
         <b>Programmée</b><br>
         Cette diffusion sera envoyée le <%= l @neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %>
-        (dans <%= distance_of_time_in_words(Time.zone.now, @neighborhood_message_broadcast.scheduled_at) %>)
+        (<%= scheduled_countdown(@neighborhood_message_broadcast.scheduled_at) %>)
         à <%= pluralize(@neighborhood_message_broadcast.recipient_ids.count, 'groupe', 'groupes') %>,
         soit <%= pluralize(@neighborhood_message_broadcast.recipients.sum(:number_of_people), 'destinataire', 'destinataires') %>.
       </div>

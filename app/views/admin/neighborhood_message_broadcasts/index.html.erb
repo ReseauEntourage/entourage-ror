@@ -48,7 +48,7 @@
               <td>
                 <% if neighborhood_message_broadcast.scheduled_at %>
                   <%= l neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %><br>
-                  <small class="text-muted">dans <%= distance_of_time_in_words(Time.zone.now, neighborhood_message_broadcast.scheduled_at) %></small>
+                  <small class="text-muted"><%= scheduled_countdown(neighborhood_message_broadcast.scheduled_at) %></small>
                 <% end %>
               </td>
               <td>

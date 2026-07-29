@@ -90,7 +90,7 @@
             <li class="list-group-item">
               <div>
                 <strong><%= l scheduled_publication.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %></strong>
-                <small class="text-muted">(dans <%= distance_of_time_in_words(Time.zone.now, scheduled_publication.scheduled_at) %>)</small>
+                <small class="text-muted">(<%= scheduled_countdown(scheduled_publication.scheduled_at) %>)</small>
               </div>
               <div><%= truncate(scheduled_publication.publishable.content, length: 140) %></div>
               <div style="margin-top: 5px">
