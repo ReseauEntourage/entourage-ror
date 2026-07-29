@@ -75,5 +75,27 @@ describe ScheduledPublication do
       scheduled_publication = create(:scheduled_publication, :post)
       expect(scheduled_publication.recipients_count).to eq(scheduled_publication.neighborhood.number_of_people)
     end
+
+    it 'returns the sum of members across the targeted groups for a broadcast' do
+      neighborhood_a = create(:neighborhood, participants: create_list(:public_user, 2))
+      neighborhood_b = create(:neighborhood, participants: create_list(:public_user, 3))
+      scheduled_publication = create(:scheduled_publication, :broadcast)
+      scheduled_publication.publishable.update!(conversation_ids: [neighborhood_a.id, neighborhood_b.id])
+
+      expected = Neighborhood.where(id: [neighborhood_a.id, neighborhood_b.id]).sum(:number_of_people)
+      expect(scheduled_publication.recipients_count).to eq(expected)
+      expect(scheduled_publication.recipients_count).to be > 0
+    end
+  end
+
+  describe '#matches_search? for a broadcast' do
+    let(:scheduled_publication) { create(:scheduled_publication, :broadcast) }
+
+    before { scheduled_publication.publishable.update!(title: 'Devenez ambassadeur', content: 'Rejoignez-nous') }
+
+    it { expect(scheduled_publication.matches_search?(nil)).to eq(true) }
+    it { expect(scheduled_publication.matches_search?('ambassadeur')).to eq(true) }
+    it { expect(scheduled_publication.matches_search?('rejoignez')).to eq(true) }
+    it { expect(scheduled_publication.matches_search?('barbecue')).to eq(false) }
   end
 end

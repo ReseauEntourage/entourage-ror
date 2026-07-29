@@ -256,6 +256,10 @@ module Admin
         if recurrence_requested? && recurrence_ends_on_param.nil?
           return redirect_to redirection_for_message, alert: "La date de fin de récurrence est obligatoire."
         end
+
+        if recurrence_requested? && !RecurrenceRule::FREQUENCIES.map(&:to_s).include?(params[:chat_message][:recurrence_frequency])
+          return redirect_to redirection_for_message, alert: "La fréquence de récurrence n'est pas valide."
+        end
       end
 
       builder_params = chat_messages_params

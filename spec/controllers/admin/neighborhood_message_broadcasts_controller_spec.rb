@@ -70,6 +70,28 @@ describe Admin::NeighborhoodMessageBroadcastsController do
       end
     end
 
+    context 'with an invalid recurrence frequency' do
+      let(:request) {
+        post :schedule, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: {
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'yearly',
+            recurrence_ends_on: 6.months.from_now.to_date.to_s
+          }
+        }
+      }
+
+      it 'does not raise and does not leave the broadcast stuck in a scheduled limbo' do
+        expect { request }.not_to raise_error
+      end
+
+      it { expect { request }.not_to change { neighborhood_message_broadcast.reload.status } }
+      it { expect { request }.not_to change { ScheduledPublication.count } }
+      it { expect { request }.not_to change { RecurrenceRule.count } }
+    end
+
     context 'when already sent' do
       let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :sent) }
       let(:request) {

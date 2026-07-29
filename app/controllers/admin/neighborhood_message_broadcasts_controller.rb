@@ -129,6 +129,10 @@ module Admin
         return redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La date de fin de récurrence est obligatoire."
       end
 
+      if recurrence_requested? && !RecurrenceRule::FREQUENCIES.map(&:to_s).include?(params[:neighborhood_message_broadcast][:recurrence_frequency])
+        return redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La fréquence de récurrence n'est pas valide."
+      end
+
       @neighborhood_message_broadcast.update!(status: :scheduled, scheduled_at: scheduled_at)
 
       scheduled_publication = ScheduledPublication.create!(

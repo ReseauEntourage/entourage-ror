@@ -177,6 +177,27 @@ describe Admin::NeighborhoodsController do
         it { expect { request }.not_to change { RecurrenceRule.count } }
       end
 
+      context 'with an invalid recurrence frequency' do
+        let(:params) {
+          {
+            content: 'foo',
+            scheduled: '1',
+            scheduled_date: 1.day.from_now.to_date.to_s,
+            scheduled_time: '10:00',
+            recurrence_frequency: 'yearly',
+            recurrence_ends_on: 2.months.from_now.to_date.to_s
+          }
+        }
+
+        it 'does not raise and does not create an orphaned scheduled post' do
+          expect { request }.not_to raise_error
+        end
+
+        it { expect { request }.not_to change { ChatMessage.count } }
+        it { expect { request }.not_to change { ScheduledPublication.count } }
+        it { expect { request }.not_to change { RecurrenceRule.count } }
+      end
+
       context 'with a date in the past' do
         let(:params) {
           {
