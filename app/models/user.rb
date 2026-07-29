@@ -749,15 +749,39 @@ class User < ApplicationRecord
   end
 
   # @see UserSerializer#stats
+  #
+  # Computed as a single UPDATE with correlated subqueries rather than 3 SELECTs
+  # + an update_columns: for users with a large join_requests/entourages history
+  # the previous 4-roundtrip version scaled linearly with that history on every
+  # call, and Datadog showed the two read queries running far more often than
+  # the final UPDATE (~2700 vs ~320 over 24h) - i.e. this was silently failing
+  # to complete for most callers before ever reaching update_columns.
   def stats_has_changed!
-    accepted_group_types = entourage_participations.merge(JoinRequest.accepted).group(:group_type).count
-
-    update_columns(
-      entourages_count: groups.count,
-      actions_count: accepted_group_types.fetch('action', 0),
-      outings_count: accepted_group_types.fetch('outing', 0),
-      neighborhoods_count: neighborhood_memberships.count
-    )
+    self.class.connection.execute(self.class.sanitize_sql_array([<<~SQL, id: id]))
+      UPDATE users SET
+        entourages_count = (
+          SELECT COUNT(*) FROM entourages
+          WHERE entourages.user_id = users.id AND entourages.group_type != 'conversation'
+        ),
+        actions_count = (
+          SELECT COUNT(*) FROM join_requests
+          INNER JOIN entourages ON entourages.id = join_requests.joinable_id
+          WHERE join_requests.user_id = users.id AND join_requests.joinable_type = 'Entourage'
+            AND join_requests.status = 'accepted' AND entourages.group_type = 'action'
+        ),
+        outings_count = (
+          SELECT COUNT(*) FROM join_requests
+          INNER JOIN entourages ON entourages.id = join_requests.joinable_id
+          WHERE join_requests.user_id = users.id AND join_requests.joinable_type = 'Entourage'
+            AND join_requests.status = 'accepted' AND entourages.group_type = 'outing'
+        ),
+        neighborhoods_count = (
+          SELECT COUNT(*) FROM join_requests
+          WHERE join_requests.user_id = users.id AND join_requests.joinable_type = 'Neighborhood'
+            AND join_requests.status = 'accepted'
+        )
+      WHERE users.id = :id
+    SQL
   end
 
   def has_watched_resource? resource_id

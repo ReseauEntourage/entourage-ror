@@ -41,7 +41,7 @@ class JoinRequestObserver < ActiveRecord::Observer
     return unless record.user
     return unless record.entourage? || record.neighborhood?
 
-    record.user.stats_has_changed!
+    UserStatsJob.perform_async(record.user_id)
   rescue
     # we want this hook to never fail the main process
   end
