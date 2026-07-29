@@ -14,14 +14,16 @@
     <div class="row">
       <div class="col-md-3">
         <%= label_tag :scheduled_publication_scheduled_date, 'Date de publication' %>
-        <%= date_field_tag 'scheduled_publication[scheduled_date]', @scheduled_publication.scheduled_at.in_time_zone('Paris').to_date, class: 'form-control', lang: 'fr' %>
+        <%= scheduled_date_field 'scheduled_publication[scheduled_date]', value: @scheduled_publication.scheduled_at.in_time_zone('Paris') %>
       </div>
 
       <div class="col-md-3">
-        <%= label_tag :scheduled_publication_scheduled_time, 'Heure de publication (heure de Paris)' %>
-        <%= time_field_tag 'scheduled_publication[scheduled_time]', @scheduled_publication.scheduled_at.in_time_zone('Paris').strftime('%H:%M'), class: 'form-control', lang: 'fr' %>
+        <%= label_tag :scheduled_publication_scheduled_hour, 'Heure de publication (heure de Paris)' %>
+        <%= scheduled_time_selects 'scheduled_publication', value: @scheduled_publication.scheduled_at.in_time_zone('Paris') %>
       </div>
     </div>
+
+    <script>$(function() { $('.js-datepicker').datepicker({ minDate: 0 }) })</script>
 
     <%= hidden_field_tag :return_to, params[:return_to] %>
 

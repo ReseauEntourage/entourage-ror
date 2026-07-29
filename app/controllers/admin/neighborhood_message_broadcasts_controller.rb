@@ -157,9 +157,10 @@ module Admin
     end
 
     def scheduled_at_param
-      return nil unless params[:neighborhood_message_broadcast][:scheduled_date].present? && params[:neighborhood_message_broadcast][:scheduled_time].present?
+      return nil unless params[:neighborhood_message_broadcast][:scheduled_date].present? && params[:neighborhood_message_broadcast][:scheduled_hour].present? && params[:neighborhood_message_broadcast][:scheduled_minute].present?
 
-      Time.zone.parse("#{params[:neighborhood_message_broadcast][:scheduled_date]} #{params[:neighborhood_message_broadcast][:scheduled_time]}")
+      date = Date.strptime(params[:neighborhood_message_broadcast][:scheduled_date], '%d/%m/%Y')
+      Time.zone.parse("#{date} #{params[:neighborhood_message_broadcast][:scheduled_hour]}:#{params[:neighborhood_message_broadcast][:scheduled_minute]}")
     rescue ArgumentError
       nil
     end
@@ -169,7 +170,7 @@ module Admin
     end
 
     def recurrence_ends_on_param
-      Date.parse(params[:neighborhood_message_broadcast][:recurrence_ends_on])
+      Date.strptime(params[:neighborhood_message_broadcast][:recurrence_ends_on], '%d/%m/%Y')
     rescue ArgumentError, TypeError
       nil
     end

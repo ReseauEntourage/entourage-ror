@@ -51,11 +51,11 @@
           <div id="chat-message-schedule-fields" class="row" style="display: none; margin-bottom: 10px">
             <div class="col-md-3">
               <%= label_tag 'chat_message_scheduled_date', 'Date' %>
-              <%= date_field_tag 'chat_message[scheduled_date]', nil, class: 'form-control', lang: 'fr' %>
+              <%= scheduled_date_field 'chat_message[scheduled_date]' %>
             </div>
             <div class="col-md-3">
-              <%= label_tag 'chat_message_scheduled_time', 'Heure (heure de Paris)' %>
-              <%= time_field_tag 'chat_message[scheduled_time]', nil, class: 'form-control', lang: 'fr' %>
+              <%= label_tag 'chat_message_scheduled_hour', 'Heure (heure de Paris)' %>
+              <%= scheduled_time_selects 'chat_message' %>
               <div class="help-block" style="margin: 4px 0 0">Fuseau : heure de Paris. Doit être dans le futur.</div>
             </div>
             <div class="col-md-3">
@@ -64,7 +64,7 @@
             </div>
             <div class="col-md-3">
               <%= label_tag 'chat_message_recurrence_ends_on', 'Fin de la récurrence' %>
-              <%= date_field_tag 'chat_message[recurrence_ends_on]', nil, class: 'form-control', lang: 'fr' %>
+              <%= scheduled_date_field 'chat_message[recurrence_ends_on]' %>
             </div>
 
             <% if current_user.slack_id.blank? %>
@@ -240,5 +240,7 @@
       $('#chat-message-schedule-fields').toggle(scheduled)
       $('#chat-message-submit').val(scheduled ? 'Programmer' : 'Envoyer')
     })
+
+    $('#chat-message-schedule-fields .js-datepicker').datepicker({ minDate: 0 })
   })
 </script>
