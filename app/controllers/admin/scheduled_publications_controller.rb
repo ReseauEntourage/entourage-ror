@@ -80,13 +80,14 @@ module Admin
     end
 
     def scheduled_publication_params
-      params.require(:scheduled_publication).permit(:content, :scheduled_date, :scheduled_time)
+      params.require(:scheduled_publication).permit(:content, :scheduled_date, :scheduled_hour, :scheduled_minute)
     end
 
     def scheduled_at_param
-      return nil unless scheduled_publication_params[:scheduled_date].present? && scheduled_publication_params[:scheduled_time].present?
+      return nil unless scheduled_publication_params[:scheduled_date].present? && scheduled_publication_params[:scheduled_hour].present? && scheduled_publication_params[:scheduled_minute].present?
 
-      Time.zone.parse("#{scheduled_publication_params[:scheduled_date]} #{scheduled_publication_params[:scheduled_time]}")
+      date = Date.strptime(scheduled_publication_params[:scheduled_date], '%d/%m/%Y')
+      Time.zone.parse("#{date} #{scheduled_publication_params[:scheduled_hour]}:#{scheduled_publication_params[:scheduled_minute]}")
     rescue ArgumentError
       nil
     end

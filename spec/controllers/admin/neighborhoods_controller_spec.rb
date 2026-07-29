@@ -117,8 +117,9 @@ describe Admin::NeighborhoodsController do
           {
             content: 'foo',
             scheduled: '1',
-            scheduled_date: 1.day.from_now.to_date.to_s,
-            scheduled_time: '10:00'
+            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '10',
+            scheduled_minute: '00'
           }
         }
 
@@ -146,10 +147,11 @@ describe Admin::NeighborhoodsController do
           {
             content: 'foo',
             scheduled: '1',
-            scheduled_date: 1.day.from_now.to_date.to_s,
-            scheduled_time: '10:00',
+            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '10',
+            scheduled_minute: '00',
             recurrence_frequency: 'weekly',
-            recurrence_ends_on: 2.months.from_now.to_date.to_s
+            recurrence_ends_on: 2.months.from_now.to_date.strftime('%d/%m/%Y')
           }
         }
 
@@ -167,8 +169,9 @@ describe Admin::NeighborhoodsController do
           {
             content: 'foo',
             scheduled: '1',
-            scheduled_date: 1.day.from_now.to_date.to_s,
-            scheduled_time: '10:00',
+            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '10',
+            scheduled_minute: '00',
             recurrence_frequency: 'weekly'
           }
         }
@@ -182,10 +185,11 @@ describe Admin::NeighborhoodsController do
           {
             content: 'foo',
             scheduled: '1',
-            scheduled_date: 1.day.from_now.to_date.to_s,
-            scheduled_time: '10:00',
+            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '10',
+            scheduled_minute: '00',
             recurrence_frequency: 'yearly',
-            recurrence_ends_on: 2.months.from_now.to_date.to_s
+            recurrence_ends_on: 2.months.from_now.to_date.strftime('%d/%m/%Y')
           }
         }
 
@@ -203,8 +207,9 @@ describe Admin::NeighborhoodsController do
           {
             content: 'foo',
             scheduled: '1',
-            scheduled_date: 1.day.ago.to_date.to_s,
-            scheduled_time: '10:00'
+            scheduled_date: 1.day.ago.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '10',
+            scheduled_minute: '00'
           }
         }
 

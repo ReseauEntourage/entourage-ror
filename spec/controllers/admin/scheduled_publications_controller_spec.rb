@@ -98,8 +98,9 @@ describe Admin::ScheduledPublicationsController do
           id: scheduled_publication.id,
           scheduled_publication: {
             content: 'nouveau contenu',
-            scheduled_date: new_scheduled_at.to_date.to_s,
-            scheduled_time: '09:00'
+            scheduled_date: new_scheduled_at.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '09',
+            scheduled_minute: '00'
           }
         }
       }
@@ -129,8 +130,9 @@ describe Admin::ScheduledPublicationsController do
           id: scheduled_publication.id,
           scheduled_publication: {
             content: 'nouveau contenu',
-            scheduled_date: new_scheduled_at.to_date.to_s,
-            scheduled_time: '09:00'
+            scheduled_date: new_scheduled_at.to_date.strftime('%d/%m/%Y'),
+            scheduled_hour: '09',
+            scheduled_minute: '00'
           }
         }
       }
@@ -146,7 +148,7 @@ describe Admin::ScheduledPublicationsController do
       let(:request) {
         patch :update, params: {
           id: scheduled_publication.id,
-          scheduled_publication: { content: 'foo', scheduled_date: 1.day.ago.to_date.to_s, scheduled_time: '09:00' }
+          scheduled_publication: { content: 'foo', scheduled_date: 1.day.ago.to_date.strftime('%d/%m/%Y'), scheduled_hour: '09', scheduled_minute: '00' }
         }
       }
 
@@ -159,7 +161,7 @@ describe Admin::ScheduledPublicationsController do
       let(:request) {
         patch :update, params: {
           id: scheduled_publication.id,
-          scheduled_publication: { content: '', scheduled_date: 2.days.from_now.to_date.to_s, scheduled_time: '09:00' }
+          scheduled_publication: { content: '', scheduled_date: 2.days.from_now.to_date.strftime('%d/%m/%Y'), scheduled_hour: '09', scheduled_minute: '00' }
         }
       }
 
@@ -176,7 +178,7 @@ describe Admin::ScheduledPublicationsController do
       let(:request) {
         patch :update, params: {
           id: scheduled_publication.id,
-          scheduled_publication: { content: 'nouveau contenu', scheduled_date: 2.days.from_now.to_date.to_s, scheduled_time: '09:00' }
+          scheduled_publication: { content: 'nouveau contenu', scheduled_date: 2.days.from_now.to_date.strftime('%d/%m/%Y'), scheduled_hour: '09', scheduled_minute: '00' }
         }
       }
 

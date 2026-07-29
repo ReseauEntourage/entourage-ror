@@ -425,9 +425,10 @@ module Admin
     end
 
     def scheduled_at_param
-      return nil unless params[:chat_message][:scheduled_date].present? && params[:chat_message][:scheduled_time].present?
+      return nil unless params[:chat_message][:scheduled_date].present? && params[:chat_message][:scheduled_hour].present? && params[:chat_message][:scheduled_minute].present?
 
-      Time.zone.parse("#{params[:chat_message][:scheduled_date]} #{params[:chat_message][:scheduled_time]}")
+      date = Date.strptime(params[:chat_message][:scheduled_date], '%d/%m/%Y')
+      Time.zone.parse("#{date} #{params[:chat_message][:scheduled_hour]}:#{params[:chat_message][:scheduled_minute]}")
     rescue ArgumentError
       nil
     end
@@ -437,7 +438,7 @@ module Admin
     end
 
     def recurrence_ends_on_param
-      Date.parse(params[:chat_message][:recurrence_ends_on])
+      Date.strptime(params[:chat_message][:recurrence_ends_on], '%d/%m/%Y')
     rescue ArgumentError, TypeError
       nil
     end
