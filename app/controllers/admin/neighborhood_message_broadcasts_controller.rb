@@ -12,8 +12,10 @@ module Admin
       @neighborhood_message_broadcasts = @neighborhood_message_broadcasts.page(page).per(per)
 
       if @status == :scheduled
+        # @caution includes :failed alongside :pending - a failed broadcast must stay visible
+        # here with a way to retry it (EN-9403: "Tu peux réessayer depuis le back-office")
         @scheduled_publications = ScheduledPublication
-          .pending
+          .where(status: [:pending, :failed])
           .of_type('ConversationMessageBroadcast')
           .where(publishable_id: @neighborhood_message_broadcasts.map(&:id))
           .index_by(&:publishable_id)
@@ -42,8 +44,10 @@ module Admin
       @zone ||= :zone_all
 
       if @neighborhood_message_broadcast.scheduled?
+        # @caution includes :failed alongside :pending - a failed broadcast must stay visible
+        # here with a way to retry it (EN-9403: "Tu peux réessayer depuis le back-office")
         @scheduled_publication = ScheduledPublication
-          .pending
+          .where(status: [:pending, :failed])
           .of_type('ConversationMessageBroadcast')
           .find_by(publishable_id: @neighborhood_message_broadcast.id)
       end

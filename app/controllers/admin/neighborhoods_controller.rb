@@ -153,8 +153,10 @@ module Admin
       @posts = @neighborhood.posts.excluding_scheduled.order(created_at: :desc).page(page).per(per).includes(:user, :survey, :translation)
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
 
+      # @caution includes :failed alongside :pending - a failed publication must stay visible
+      # here with a way to retry it (EN-9403: "Tu peux réessayer depuis le back-office")
       @scheduled_publications = ScheduledPublication
-        .pending
+        .where(status: [:pending, :failed])
         .of_type('ChatMessage')
         .where(neighborhood_id: @neighborhood.id)
         .order(:scheduled_at)

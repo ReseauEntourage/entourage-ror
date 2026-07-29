@@ -28,6 +28,19 @@ describe Admin::ScheduledPublicationsController do
       it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([post_publication]) }
     end
 
+    context 'with a failed publication' do
+      # @caution a failed publication must stay visible with a way to retry it
+      # (EN-9403: "Tu peux réessayer depuis le back-office")
+      let!(:failed_publication) { create(:scheduled_publication, :post, status: :failed, scheduled_at: 1.day.ago) }
+
+      before { get :index }
+
+      it 'lists it alongside the pending ones instead of hiding it' do
+        all = assigns(:grouped_scheduled_publications).values.flatten
+        expect(all).to include(failed_publication)
+      end
+    end
+
     context 'filtered by broadcast type' do
       before { get :index, params: { type: :broadcast } }
 
@@ -108,6 +121,27 @@ describe Admin::ScheduledPublicationsController do
       end
     end
 
+    context 'for a previously failed publication' do
+      let(:scheduled_publication) { create(:scheduled_publication, :post, status: :failed, scheduled_at: 1.day.ago) }
+      let(:new_scheduled_at) { 2.days.from_now.change(hour: 9, min: 0) }
+      let(:request) {
+        patch :update, params: {
+          id: scheduled_publication.id,
+          scheduled_publication: {
+            content: 'nouveau contenu',
+            scheduled_date: new_scheduled_at.to_date.to_s,
+            scheduled_time: '09:00'
+          }
+        }
+      }
+
+      it 'resets it to pending so the re-scheduled job actually runs' do
+        request
+
+        expect(scheduled_publication.reload.status).to eq('pending')
+      end
+    end
+
     context 'with a date in the past' do
       let(:request) {
         patch :update, params: {
@@ -182,6 +216,17 @@ describe Admin::ScheduledPublicationsController do
 
         expect(scheduled_publication.reload.status).to eq('published')
         expect(scheduled_publication.publishable.reload.status).to eq('sent')
+      end
+    end
+
+    context 'for a previously failed publication (EN-9403: "Tu peux réessayer depuis le back-office")' do
+      let(:scheduled_publication) { create(:scheduled_publication, :post, status: :failed, scheduled_at: 1.day.ago) }
+
+      it 'retries it successfully' do
+        post :publish_now, params: { id: scheduled_publication.id }
+
+        expect(scheduled_publication.reload.status).to eq('published')
+        expect(scheduled_publication.publishable.reload.status).to eq('active')
       end
     end
   end

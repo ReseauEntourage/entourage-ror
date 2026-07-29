@@ -36,6 +36,10 @@ class ScheduledPublication < ApplicationRecord
     status == 'pending'
   end
 
+  def failed?
+    status == 'failed'
+  end
+
   def recurring?
     recurrence_rule_id.present?
   end

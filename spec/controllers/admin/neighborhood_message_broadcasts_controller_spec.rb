@@ -126,6 +126,19 @@ describe Admin::NeighborhoodMessageBroadcastsController do
         expect(response.body).to include('dans 1 jour')
       end
     end
+
+    context 'scheduled tab with a failed broadcast' do
+      # @caution a failed broadcast must stay visible here with a way to retry it
+      # (EN-9403: "Tu peux réessayer depuis le back-office")
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.ago) }
+      let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, status: :failed, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
+
+      before { get :index, params: { status: :scheduled } }
+
+      it { expect(assigns(:neighborhood_message_broadcasts)).to eq([neighborhood_message_broadcast]) }
+      it { expect(response.body).to include('Réessayer maintenant') }
+      it { expect(response.body).to include('en retard de') }
+    end
   end
 
   describe 'GET #edit' do
@@ -142,6 +155,20 @@ describe Admin::NeighborhoodMessageBroadcastsController do
     it 'renders a save button so title/content edits can actually be submitted' do
       expect(response.body).to include('Enregistrer')
     end
+  end
+
+  describe 'GET #edit for a failed broadcast' do
+    render_views
+
+    # @caution a failed broadcast must stay visible here with a way to retry it
+    # (EN-9403: "Tu peux réessayer depuis le back-office")
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.ago) }
+    let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, status: :failed, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
+
+    before { get :edit, params: { id: neighborhood_message_broadcast.id } }
+
+    it { expect(assigns(:scheduled_publication)).to eq(scheduled_publication) }
+    it { expect(response.body).to include('Réessayer maintenant') }
   end
 
   describe 'PATCH #update' do
