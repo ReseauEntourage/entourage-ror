@@ -62,7 +62,7 @@ class ScheduledPublication < ApplicationRecord
     return "#{count} groupes" if count.zero?
 
     names = publishable.recipients.limit(3).pluck(:name)
-    label = "#{count} groupes : #{names.join(', ')}"
+    label = "#{count} groupes : #{names.sort.join(', ')}"
     label += " et #{count - names.size} autre#{'s' if count - names.size > 1}" if count > names.size
     label
   end
