@@ -274,4 +274,56 @@ RSpec.describe ChatMessage, type: :model do
 
     it { expect(chat_message.survey_id).to eq(survey.id) }
   end
+
+  describe 'comments_count denormalization' do
+    let(:parent) { create(:chat_message) }
+
+    it 'is 0 when the message has no comment yet' do
+      expect(parent.reload.comments_count).to eq(0)
+    end
+
+    it 'increments when an active comment is created' do
+      expect {
+        create(:chat_message, messageable: parent.messageable, parent: parent)
+      }.to change { parent.reload.comments_count }.from(0).to(1)
+    end
+
+    it 'accumulates across several comments' do
+      create_list(:chat_message, 3, messageable: parent.messageable, parent: parent)
+
+      expect(parent.reload.comments_count).to eq(3)
+    end
+
+    it 'does not count a comment created directly as deleted' do
+      create(:chat_message, messageable: parent.messageable, parent: parent, status: :deleted)
+
+      expect(parent.reload.comments_count).to eq(0)
+    end
+
+    it 'decrements when an existing comment is soft-deleted' do
+      comment = create(:chat_message, messageable: parent.messageable, parent: parent)
+      expect(parent.reload.comments_count).to eq(1)
+
+      comment.update_attribute(:status, :deleted)
+
+      expect(parent.reload.comments_count).to eq(0)
+    end
+
+    it 'increments back when a deleted comment is restored to active' do
+      comment = create(:chat_message, messageable: parent.messageable, parent: parent, status: :deleted)
+      expect(parent.reload.comments_count).to eq(0)
+
+      comment.update_attribute(:status, :active)
+
+      expect(parent.reload.comments_count).to eq(1)
+    end
+
+    it 'only counts comments belonging to the same parent' do
+      other_parent = create(:chat_message, messageable: parent.messageable)
+      create(:chat_message, messageable: parent.messageable, parent: other_parent)
+
+      expect(parent.reload.comments_count).to eq(0)
+      expect(other_parent.reload.comments_count).to eq(1)
+    end
+  end
 end

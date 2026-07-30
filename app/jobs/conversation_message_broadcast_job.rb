@@ -39,11 +39,9 @@ class ConversationMessageBroadcastJob
 
     chat_builder.create do |on|
       on.success do |message|
-        ApplicationRecord.transaction do
-          conversation_message_broadcast.update(
-            sent_recipients_count: (ConversationMessageBroadcast.find(conversation_message_broadcast_id).sent_recipients_count || 0) + 1
-          )
-        end
+        # atomic increment: the previous find-then-+1-then-update raced under
+        # Sidekiq concurrency and could lose increments
+        ConversationMessageBroadcast.update_counters(conversation_message_broadcast_id, sent_recipients_count: 1)
       end
     end
   end

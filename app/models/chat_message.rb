@@ -355,11 +355,26 @@ class ChatMessage < ApplicationRecord
   def update_parent_comments_count
     return unless ancestry.present?
 
-    parent.update(comments_count: parent.children
-      .where(status: :active)
-      .where(messageable_type: messageable_type)
-      .where(messageable_id: messageable_id)
-      .count
+    # single atomic UPDATE instead of read-then-write: concurrent comments on
+    # the same parent used to race each other and could leave a stale count
+    sql = <<-SQL
+      UPDATE chat_messages
+      SET comments_count = (
+        SELECT COUNT(*) FROM chat_messages children
+        WHERE children.ancestry = chat_messages.id::varchar
+          AND children.status = 'active'
+          AND children.messageable_type = :messageable_type
+          AND children.messageable_id = :messageable_id
+      )
+      WHERE chat_messages.id = :parent_id
+    SQL
+
+    ChatMessage.connection.execute(
+      ChatMessage.send(:sanitize_sql_array, [sql, {
+        messageable_type: messageable_type,
+        messageable_id: messageable_id,
+        parent_id: parent_id
+      }])
     )
   end
 
