@@ -18,7 +18,6 @@
       </div>
 
       <div class="col-md-3">
-        <%= label_tag :scheduled_publication_scheduled_hour, 'Heure de publication (heure de Paris)' %>
         <%= scheduled_time_selects 'scheduled_publication', value: @scheduled_publication.scheduled_at.in_time_zone('Paris') %>
       </div>
     </div>

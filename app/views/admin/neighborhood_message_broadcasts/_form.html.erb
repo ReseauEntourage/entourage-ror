@@ -149,9 +149,7 @@
           <%= scheduled_date_field 'neighborhood_message_broadcast[scheduled_date]' %>
         </div>
         <div class="col-md-3">
-          <%= label_tag 'neighborhood_message_broadcast_scheduled_hour', 'Heure (heure de Paris)' %>
           <%= scheduled_time_selects 'neighborhood_message_broadcast' %>
-          <div class="help-block" style="margin: 4px 0 0">Fuseau : heure de Paris. Doit être dans le futur.</div>
         </div>
         <div class="col-md-3">
           <%= label_tag 'neighborhood_message_broadcast_recurrence_frequency', 'Récurrence' %>

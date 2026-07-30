@@ -54,9 +54,7 @@
               <%= scheduled_date_field 'chat_message[scheduled_date]' %>
             </div>
             <div class="col-md-3">
-              <%= label_tag 'chat_message_scheduled_hour', 'Heure (heure de Paris)' %>
               <%= scheduled_time_selects 'chat_message' %>
-              <div class="help-block" style="margin: 4px 0 0">Fuseau : heure de Paris. Doit être dans le futur.</div>
             </div>
             <div class="col-md-3">
               <%= label_tag 'chat_message_recurrence_frequency', 'Récurrence' %>
