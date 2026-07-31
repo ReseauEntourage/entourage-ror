@@ -1,7 +1,7 @@
 module SlackServices
   # Sends a Slack DM to a specific user, unlike SlackServices::Notifier which only posts
   # to internal team channels via incoming webhooks. Requires the Slack Web API
-  # (chat.postMessage) with a user token (ENV['SLACK_USER_TOKEN'], scope chat:write) tied
+  # (chat.postMessage) with a user token (ENV['SLACK_DM_USER_TOKEN'], scope chat:write) tied
   # to a real Slack member (e.g. a dedicated service account) rather than a bot token -
   # Slack always files bot-authored DMs under "Apps" in the client sidebar, whereas a
   # user token makes the message appear as a normal person-to-person DM. The user's own
@@ -18,12 +18,12 @@ module SlackServices
 
     def send!
       return false if user.blank? || user.slack_id.blank?
-      return false if ENV['SLACK_USER_TOKEN'].blank?
+      return false if ENV['SLACK_DM_USER_TOKEN'].blank?
 
       response = self.class.post(
         '/chat.postMessage',
         headers: {
-          'Authorization' => "Bearer #{ENV['SLACK_USER_TOKEN']}",
+          'Authorization' => "Bearer #{ENV['SLACK_DM_USER_TOKEN']}",
           'Content-Type' => 'application/json'
         },
         body: { channel: user.slack_id, text: text }.to_json
