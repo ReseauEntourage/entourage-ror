@@ -67,12 +67,7 @@
       </div>
       <% if @scheduled_publication %>
         <%= link_to(@scheduled_publication.failed? ? "Réessayer maintenant" : "Diffuser maintenant", publish_now_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-danger", data: { confirm: "Diffuser ce message maintenant ?" }) %>
-        <% if @scheduled_publication.recurring? %>
-          <%= link_to("Annuler l'occurrence", cancel_admin_scheduled_publication_path(@scheduled_publication, scope: :occurrence), method: :post, class: "btn btn-default", data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }) %>
-          <%= link_to("Annuler la série", cancel_admin_scheduled_publication_path(@scheduled_publication, scope: :series), method: :post, class: "btn btn-default", data: { confirm: "Annuler toute la série récurrente ?" }) %>
-        <% else %>
-          <%= link_to("Annuler la programmation", cancel_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-default", data: { confirm: "Annuler cette diffusion programmée ?" }) %>
-        <% end %>
+        <%= link_to("Annuler la programmation", cancel_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-default", data: { confirm: "Annuler cette diffusion programmée ?" }) %>
       <% end %>
     </div>
   <% elsif @neighborhood_message_broadcast.persisted? %>
@@ -150,14 +145,6 @@
           <div class="col-md-3">
             <%= label_tag 'neighborhood_message_broadcast_scheduled_time', 'Heure' %><br/>
             <%= scheduled_time_selects 'neighborhood_message_broadcast' %>
-          </div>
-          <div class="col-md-3">
-            <%= label_tag 'neighborhood_message_broadcast_recurrence_frequency', 'Récurrence' %>
-            <%= select_tag 'neighborhood_message_broadcast[recurrence_frequency]', options_for_select([['Aucune', ''], ['Quotidienne', 'daily'], ['Hebdomadaire', 'weekly'], ['Mensuelle', 'monthly']]), class: 'form-control' %>
-          </div>
-          <div class="col-md-3">
-            <%= label_tag 'neighborhood_message_broadcast_recurrence_ends_on', 'Fin de la récurrence' %>
-            <%= scheduled_date_field 'neighborhood_message_broadcast[recurrence_ends_on]' %>
           </div>
 
           <% if current_admin.slack_id.blank? %>

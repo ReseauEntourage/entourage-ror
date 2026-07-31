@@ -48,52 +48,6 @@ describe Admin::NeighborhoodMessageBroadcastsController do
       it { expect { request }.not_to change { ScheduledPublication.count } }
     end
 
-    context 'with recurrence' do
-      let(:request) {
-        post :schedule, params: {
-          id: neighborhood_message_broadcast.id,
-          neighborhood_message_broadcast: {
-            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'),
-            scheduled_hour: '10',
-            scheduled_minute: '00',
-            recurrence_frequency: 'monthly',
-            recurrence_ends_on: 6.months.from_now.to_date.strftime('%d/%m/%Y')
-          }
-        }
-      }
-
-      it { expect { request }.to change { RecurrenceRule.count }.by(1) }
-
-      it 'attaches the recurrence rule to the scheduled publication' do
-        request
-
-        expect(ScheduledPublication.last.recurrence_rule.frequency).to eq('monthly')
-      end
-    end
-
-    context 'with an invalid recurrence frequency' do
-      let(:request) {
-        post :schedule, params: {
-          id: neighborhood_message_broadcast.id,
-          neighborhood_message_broadcast: {
-            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'),
-            scheduled_hour: '10',
-            scheduled_minute: '00',
-            recurrence_frequency: 'yearly',
-            recurrence_ends_on: 6.months.from_now.to_date.strftime('%d/%m/%Y')
-          }
-        }
-      }
-
-      it 'does not raise and does not leave the broadcast stuck in a scheduled limbo' do
-        expect { request }.not_to raise_error
-      end
-
-      it { expect { request }.not_to change { neighborhood_message_broadcast.reload.status } }
-      it { expect { request }.not_to change { ScheduledPublication.count } }
-      it { expect { request }.not_to change { RecurrenceRule.count } }
-    end
-
     context 'when already sent' do
       let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :sent) }
       let(:request) {
@@ -226,27 +180,4 @@ describe Admin::NeighborhoodMessageBroadcastsController do
     end
   end
 
-  describe 'GET #edit for a recurring scheduled broadcast' do
-    render_views
-
-    let!(:recurrence_rule) { create(:recurrence_rule) }
-    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
-    let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, recurrence_rule: recurrence_rule, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
-
-    before { get :edit, params: { id: neighborhood_message_broadcast.id } }
-
-    it { expect(response.status).to eq(200) }
-  end
-
-  describe 'GET #index scheduled tab with a recurring broadcast' do
-    render_views
-
-    let!(:recurrence_rule) { create(:recurrence_rule) }
-    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now) }
-    let!(:scheduled_publication) { create(:scheduled_publication, publishable: neighborhood_message_broadcast, author: user, recurrence_rule: recurrence_rule, scheduled_at: neighborhood_message_broadcast.scheduled_at) }
-
-    before { get :index, params: { status: :scheduled } }
-
-    it { expect(response.status).to eq(200) }
-  end
 end

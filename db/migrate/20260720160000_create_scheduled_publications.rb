@@ -8,7 +8,6 @@ class CreateScheduledPublications < ActiveRecord::Migration[7.1]
       t.datetime :scheduled_at, null: false
       t.string :status, null: false, default: 'pending'
       t.text :failure_reason
-      t.integer :recurrence_rule_id
 
       t.timestamps
     end
@@ -17,6 +16,5 @@ class CreateScheduledPublications < ActiveRecord::Migration[7.1]
     add_index :scheduled_publications, :status
     add_index :scheduled_publications, :scheduled_at
     add_index :scheduled_publications, :neighborhood_id
-    add_index :scheduled_publications, :recurrence_rule_id
   end
 end
