@@ -8,11 +8,11 @@ describe SlackServices::DirectMessage do
       it { expect(described_class.new(user: user, text: 'hello').send!).to eq(false) }
     end
 
-    context 'when SLACK_USER_TOKEN is not configured' do
+    context 'when SLACK_BOT_TOKEN is not configured' do
       let(:user) { create(:pro_user, slack_id: 'U123') }
 
       before { allow(ENV).to receive(:[]).and_call_original }
-      before { allow(ENV).to receive(:[]).with('SLACK_USER_TOKEN').and_return(nil) }
+      before { allow(ENV).to receive(:[]).with('SLACK_BOT_TOKEN').and_return(nil) }
 
       it { expect(described_class.new(user: user, text: 'hello').send!).to eq(false) }
     end
@@ -21,12 +21,12 @@ describe SlackServices::DirectMessage do
       let(:user) { create(:pro_user, slack_id: 'U123') }
 
       before { allow(ENV).to receive(:[]).and_call_original }
-      before { allow(ENV).to receive(:[]).with('SLACK_USER_TOKEN').and_return('xoxp-test') }
+      before { allow(ENV).to receive(:[]).with('SLACK_BOT_TOKEN').and_return('xoxb-test') }
 
       it 'posts to the Slack Web API and returns true on success' do
         stub_request(:post, 'https://slack.com/api/chat.postMessage')
           .with(
-            headers: { 'Authorization' => 'Bearer xoxp-test' },
+            headers: { 'Authorization' => 'Bearer xoxb-test' },
             body: { channel: 'U123', text: 'hello' }.to_json
           )
           .to_return(status: 200, body: { ok: true }.to_json, headers: { 'Content-Type' => 'application/json' })
