@@ -152,6 +152,104 @@ describe Admin::NeighborhoodMessageBroadcastsController do
         expect(neighborhood_message_broadcast.scheduled_at).to be_present
       end
     end
+
+    context 'with neighborhood_ids (tab "Par groupes")' do
+      let!(:neighborhood) { create(:neighborhood) }
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft) }
+
+      it 'saves the selected groups alongside the general fields, from a single submit' do
+        patch :update, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: { title: 'new title', neighborhood_ids: [neighborhood.id] }
+        }
+
+        neighborhood_message_broadcast.reload
+        expect(neighborhood_message_broadcast.title).to eq('new title')
+        expect(neighborhood_message_broadcast.neighborhood_ids).to eq([neighborhood.id])
+      end
+    end
+
+    context 'with departements and area_type (tab "Par départements")' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft) }
+
+      it 'saves the department filters alongside the general fields, from a single submit' do
+        patch :update, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: { title: 'new title', area_type: 'ville', departements: ['75'] }
+        }
+
+        neighborhood_message_broadcast.reload
+        expect(neighborhood_message_broadcast.title).to eq('new title')
+        expect(neighborhood_message_broadcast.area_type).to eq('ville')
+        expect(neighborhood_message_broadcast.departements).to eq(['75'])
+      end
+    end
+
+    context 'with the broadcast button (Envoyer)' do
+      let!(:neighborhood) { create(:neighborhood) }
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, conversation_ids: [neighborhood.id]) }
+
+      let(:request) {
+        patch :update, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: { title: 'new title', content: 'new content' },
+          broadcast: '1'
+        }
+      }
+
+      it 'saves the pending edits and immediately triggers the broadcast job with the up-to-date content' do
+        expect(ConversationMessageBroadcastJob).to receive(:perform_later).with(neighborhood_message_broadcast.id, user.id, 'new content')
+
+        request
+
+        neighborhood_message_broadcast.reload
+        expect(neighborhood_message_broadcast.title).to eq('new title')
+        expect(neighborhood_message_broadcast.status).to eq('sent')
+      end
+    end
+
+    context 'with the schedule button (Programmer)' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, title: 'old title') }
+
+      let(:request) {
+        patch :update, params: {
+          id: neighborhood_message_broadcast.id,
+          neighborhood_message_broadcast: {
+            title: 'new title',
+            scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'), scheduled_hour: '10', scheduled_minute: '00'
+          },
+          schedule: '1'
+        }
+      }
+
+      it 'saves the pending edits and schedules the broadcast' do
+        expect { request }.to change { ScheduledPublication.count }.by(1)
+
+        neighborhood_message_broadcast.reload
+        expect(neighborhood_message_broadcast.title).to eq('new title')
+        expect(neighborhood_message_broadcast.status).to eq('scheduled')
+      end
+
+      context 'with a date in the past' do
+        let(:request) {
+          patch :update, params: {
+            id: neighborhood_message_broadcast.id,
+            neighborhood_message_broadcast: {
+              title: 'new title',
+              scheduled_date: 1.day.ago.to_date.strftime('%d/%m/%Y'), scheduled_hour: '10', scheduled_minute: '00'
+            },
+            schedule: '1'
+          }
+        }
+
+        it 'still saves the title but does not schedule anything' do
+          expect { request }.not_to change { ScheduledPublication.count }
+
+          expect(neighborhood_message_broadcast.reload.title).to eq('new title')
+          expect(neighborhood_message_broadcast.status).to eq('draft')
+        end
+      end
+    end
   end
 
   describe 'GET #new' do

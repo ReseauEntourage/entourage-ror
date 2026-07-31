@@ -60,11 +60,22 @@ module Admin
         @neighborhood_message_broadcast.status = :archived
       end
 
-      if @neighborhood_message_broadcast.save
-        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast)
-      else
+      unless @neighborhood_message_broadcast.save
         @neighborhood_message_broadcast.status = @neighborhood_message_broadcast.status_was
-        render :edit
+        return render :edit
+      end
+
+      if params.key?(:broadcast)
+        perform_broadcast!
+        redirect_to admin_neighborhood_message_broadcasts_path
+      elsif params.key?(:schedule)
+        if perform_schedule?(scheduled_at_param)
+          redirect_to admin_neighborhood_message_broadcasts_path(status: :scheduled), notice: 'La diffusion a bien été programmée'
+        else
+          redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La date et l'heure de programmation sont obligatoires et doivent être dans le futur."
+        end
+      else
+        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast)
       end
     end
 
@@ -91,15 +102,7 @@ module Admin
     end
 
     def broadcast
-      unless @neighborhood_message_broadcast.sent? || @neighborhood_message_broadcast.sending?
-        @neighborhood_message_broadcast.update_attribute(:status, :sent)
-
-        ConversationMessageBroadcastJob.perform_later(
-          @neighborhood_message_broadcast.id,
-          current_admin.id,
-          @neighborhood_message_broadcast.content
-        )
-      end
+      perform_broadcast!
 
       redirect_to admin_neighborhood_message_broadcasts_path
     end
@@ -123,11 +126,29 @@ module Admin
         return redirect_to admin_neighborhood_message_broadcasts_path
       end
 
-      scheduled_at = scheduled_at_param
-
-      if scheduled_at.nil? || scheduled_at <= Time.zone.now
-        return redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La date et l'heure de programmation sont obligatoires et doivent être dans le futur."
+      if perform_schedule?(scheduled_at_param)
+        redirect_to admin_neighborhood_message_broadcasts_path(status: :scheduled), notice: 'La diffusion a bien été programmée'
+      else
+        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "La date et l'heure de programmation sont obligatoires et doivent être dans le futur."
       end
+    end
+
+    private
+
+    def perform_broadcast!
+      return if @neighborhood_message_broadcast.sent? || @neighborhood_message_broadcast.sending?
+
+      @neighborhood_message_broadcast.update_attribute(:status, :sent)
+
+      ConversationMessageBroadcastJob.perform_later(
+        @neighborhood_message_broadcast.id,
+        current_admin.id,
+        @neighborhood_message_broadcast.content
+      )
+    end
+
+    def perform_schedule?(scheduled_at)
+      return false if scheduled_at.nil? || scheduled_at <= Time.zone.now
 
       @neighborhood_message_broadcast.update!(status: :scheduled, scheduled_at: scheduled_at)
 
@@ -138,10 +159,8 @@ module Admin
       )
       PublishScheduledPublicationJob.schedule(scheduled_publication)
 
-      redirect_to admin_neighborhood_message_broadcasts_path(status: :scheduled), notice: 'La diffusion a bien été programmée'
+      true
     end
-
-    private
 
     def neighborhood_message_broadcast_params
       params.require(:neighborhood_message_broadcast).permit(:content, :title, :area_type, neighborhood_ids: [], departements: [])
