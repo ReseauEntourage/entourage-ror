@@ -129,9 +129,8 @@
       <% end %>
     </div>
   </div>
-<% end %>
 
-<% if @neighborhood_message_broadcast.persisted? && @neighborhood_message_broadcast.draft? %>
+  <% if @neighborhood_message_broadcast.persisted? && @neighborhood_message_broadcast.draft? %>
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">Date d'envoi</h4>
@@ -143,48 +142,43 @@
         ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
       </div>
 
-      <%= form_tag broadcast_admin_neighborhood_message_broadcast_path, method: :post, id: 'broadcast-send-form' do %>
-        <div style="margin: 10px 0">
-          <label style="margin-right: 15px">
-            <%= radio_button_tag 'neighborhood_message_broadcast_scheduled_toggle', '0', true, class: 'broadcast-scheduled-toggle' %> Envoyer maintenant
-          </label>
-          <label>
-            <%= radio_button_tag 'neighborhood_message_broadcast_scheduled_toggle', '1', false, class: 'broadcast-scheduled-toggle' %> Programmer
-          </label>
+      <div style="margin: 10px 0">
+        <label style="margin-right: 15px">
+          <%= radio_button_tag 'neighborhood_message_broadcast_scheduled_toggle', '0', true, class: 'broadcast-scheduled-toggle' %> Envoyer maintenant
+        </label>
+        <label>
+          <%= radio_button_tag 'neighborhood_message_broadcast_scheduled_toggle', '1', false, class: 'broadcast-scheduled-toggle' %> Programmer
+        </label>
+      </div>
+
+      <div id="broadcast-schedule-fields" class="row" style="display: none; margin-bottom: 10px">
+        <div class="col-md-3">
+          <%= label_tag 'neighborhood_message_broadcast_scheduled_date', 'Date' %>
+          <%= scheduled_date_field 'neighborhood_message_broadcast[scheduled_date]' %>
+        </div>
+        <div class="col-md-3">
+          <%= label_tag 'neighborhood_message_broadcast_scheduled_time', 'Heure' %><br/>
+          <%= scheduled_time_selects 'neighborhood_message_broadcast' %>
         </div>
 
-        <div id="broadcast-schedule-fields" class="row" style="display: none; margin-bottom: 10px">
-          <div class="col-md-3">
-            <%= label_tag 'neighborhood_message_broadcast_scheduled_date', 'Date' %>
-            <%= scheduled_date_field 'neighborhood_message_broadcast[scheduled_date]' %>
-          </div>
-          <div class="col-md-3">
-            <%= label_tag 'neighborhood_message_broadcast_scheduled_time', 'Heure' %><br/>
-            <%= scheduled_time_selects 'neighborhood_message_broadcast' %>
-          </div>
-
-          <% if current_admin.slack_id.blank? %>
-            <div class="col-md-12">
-              <div class="alert alert-warning" style="margin-top: 10px">
-                ℹ️ Ton identifiant Slack n'est pas renseigné : tu ne recevras pas de notification Slack à la publication de ce contenu.
-                <%= link_to "Renseigne-le ici", edit_admin_user_path(current_admin) %>.
-              </div>
+        <% if current_admin.slack_id.blank? %>
+          <div class="col-md-12">
+            <div class="alert alert-warning" style="margin-top: 10px">
+              ℹ️ Ton identifiant Slack n'est pas renseigné : tu ne recevras pas de notification Slack à la publication de ce contenu.
+              <%= link_to "Renseigne-le ici", edit_admin_user_path(current_admin) %>.
             </div>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
+      </div>
 
-        <%= submit_tag 'Envoyer', id: 'broadcast-send-submit', class: 'btn btn-danger', data: {
-          confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
-        } %>
-      <% end %>
+      <%= submit_tag 'Envoyer', id: 'broadcast-send-submit', name: :broadcast, class: 'btn btn-danger', data: {
+        confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
+      } %>
     </div>
   </div>
 
   <script>
     $(function() {
-      var $form = $('#broadcast-send-form')
-      var broadcastUrl = $form.attr('action')
-      var scheduleUrl = <%= raw schedule_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast).to_json %>
       var sendConfirm = <%= raw "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?".to_json %>
 
       $('.broadcast-scheduled-toggle').on('change', function() {
@@ -192,7 +186,7 @@
         var $submit = $('#broadcast-send-submit')
 
         $('#broadcast-schedule-fields').toggle(scheduled)
-        $form.attr('action', scheduled ? scheduleUrl : broadcastUrl)
+        $submit.attr('name', scheduled ? 'schedule' : 'broadcast')
         $submit.val(scheduled ? 'Programmer' : 'Envoyer')
 
         if (scheduled) {
@@ -226,19 +220,20 @@
 
       <% if @tab == :departements %>
         <%= render partial: "admin/neighborhoods/select_departements_form", locals: {
-          path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
           record: @neighborhood_message_broadcast,
           record_type: :neighborhood_message_broadcast,
-          recipient_ids: :neighborhood_ids
+          recipient_ids: :neighborhood_ids,
+          standalone: false
         } %>
       <% elsif @tab == :neighborhoods %>
         <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
-          path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
           record: @neighborhood_message_broadcast,
           record_type: :neighborhood_message_broadcast,
-          recipient_ids: :neighborhood_ids
+          recipient_ids: :neighborhood_ids,
+          standalone: false
         } %>
       <% end %>
     </div>
   </div>
+<% end %>
 <% end %>

@@ -15,6 +15,7 @@
   @area = params[:area].presence&.to_sym ||
     NeighborhoodServices::Helper.new(record).main_departement_slug ||
     :dep_75
+  standalone = local_assigns.fetch(:standalone, true)
 %>
 
 <%= render partial: "admin/neighborhoods/show_selection" %>
@@ -52,7 +53,7 @@
 
 <% neighborhoods_for_area = Neighborhood.with_zone(@zone).with_moderation_area(@area.to_s).includes([:user]).order(:postal_code, :name) %>
 
-<%= form_for record, url: path, method: :put do |f| %>
+<% neighborhoods_table = capture do %>
   <table id="neighborhoods-for-area-list" class="table table-striped">
     <% if neighborhoods_for_area.any? %>
       <thead>
@@ -82,8 +83,15 @@
       <caption><%= "Il n'y a pas encore de groupe associable à cette zone de modération."%></caption>
     <% end %>
   </table>
+<% end %>
 
-  <%= f.submit 'Valider', class: "btn btn-primary" unless neighborhoods_for_area.empty? %>
+<% if standalone %>
+  <%= form_for record, url: path, method: :put do %>
+    <%= neighborhoods_table %>
+    <%= submit_tag 'Valider', class: "btn btn-primary" unless neighborhoods_for_area.empty? %>
+  <% end %>
+<% else %>
+  <%= neighborhoods_table %>
 <% end %>
 
 
