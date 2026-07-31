@@ -56,14 +56,6 @@
             <div class="col-md-3">
               <%= scheduled_time_selects 'chat_message' %>
             </div>
-            <div class="col-md-3">
-              <%= label_tag 'chat_message_recurrence_frequency', 'Récurrence' %>
-              <%= select_tag 'chat_message[recurrence_frequency]', options_for_select([['Aucune', ''], ['Quotidienne', 'daily'], ['Hebdomadaire', 'weekly'], ['Mensuelle', 'monthly']]), class: 'form-control' %>
-            </div>
-            <div class="col-md-3">
-              <%= label_tag 'chat_message_recurrence_ends_on', 'Fin de la récurrence' %>
-              <%= scheduled_date_field 'chat_message[recurrence_ends_on]' %>
-            </div>
 
             <% if current_user.slack_id.blank? %>
               <div class="col-md-12">
@@ -97,12 +89,7 @@
               <div style="margin-top: 5px">
                 <%= link_to "Éditer", edit_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), class: "btn btn-default btn-xs" %>
                 <%= link_to (scheduled_publication.failed? ? "Réessayer maintenant" : "Publier maintenant"), publish_now_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Publier ce post maintenant ?" }, class: "btn btn-default btn-xs" %>
-                <% if scheduled_publication.recurring? %>
-                  <%= link_to "Annuler cette occurrence", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :occurrence, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler cette occurrence ? La suivante restera programmée." }, class: "btn btn-danger btn-xs" %>
-                  <%= link_to "Annuler la série", cancel_admin_scheduled_publication_path(scheduled_publication, scope: :series, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler toute la série récurrente ?" }, class: "btn btn-danger btn-xs" %>
-                <% else %>
-                  <%= link_to "Annuler", cancel_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler cette publication programmée ?" }, class: "btn btn-danger btn-xs" %>
-                <% end %>
+                <%= link_to "Annuler", cancel_admin_scheduled_publication_path(scheduled_publication, return_to: show_posts_admin_neighborhood_path(@neighborhood)), method: :post, data: { confirm: "Annuler cette publication programmée ?" }, class: "btn btn-danger btn-xs" %>
               </div>
             </li>
           <% end %>

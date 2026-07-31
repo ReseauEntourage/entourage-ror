@@ -775,16 +775,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
   end
 
-  create_table "recurrence_rules", force: :cascade do |t|
-    t.string "frequency", null: false
-    t.date "ends_on", null: false
-    t.boolean "active", default: true, null: false
-    t.integer "created_by_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["active"], name: "index_recurrence_rules_on_active"
-  end
-
   create_table "resource_images", force: :cascade do |t|
     t.string "title"
     t.string "image_url"
@@ -900,12 +890,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
     t.datetime "scheduled_at", null: false
     t.string "status", default: "pending", null: false
     t.text "failure_reason"
-    t.integer "recurrence_rule_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["neighborhood_id"], name: "index_scheduled_publications_on_neighborhood_id"
     t.index ["publishable_type", "publishable_id"], name: "idx_on_publishable_type_publishable_id_ec436be32d"
-    t.index ["recurrence_rule_id"], name: "index_scheduled_publications_on_recurrence_rule_id"
     t.index ["scheduled_at"], name: "index_scheduled_publications_on_scheduled_at"
     t.index ["status"], name: "index_scheduled_publications_on_status"
   end

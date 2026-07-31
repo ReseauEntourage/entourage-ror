@@ -13,9 +13,6 @@ module ScheduledPublicationServices
       Sentry.capture_exception(e)
       scheduled_publication.update!(status: :failed, failure_reason: e.message)
       notify_author!(failure_message)
-    ensure
-      # a failed occurrence must not stop the series - the next one is scheduled regardless
-      ScheduledPublicationServices::RecurrenceGenerator.new(scheduled_publication).generate_next!
     end
 
     private

@@ -254,14 +254,6 @@ module Admin
         if @scheduled_at.nil? || @scheduled_at <= Time.zone.now
           return redirect_to redirection_for_message, alert: "La date et l'heure de programmation sont obligatoires et doivent être dans le futur."
         end
-
-        if recurrence_requested? && recurrence_ends_on_param.nil?
-          return redirect_to redirection_for_message, alert: "La date de fin de récurrence est obligatoire."
-        end
-
-        if recurrence_requested? && !RecurrenceRule::FREQUENCIES.map(&:to_s).include?(params[:chat_message][:recurrence_frequency])
-          return redirect_to redirection_for_message, alert: "La fréquence de récurrence n'est pas valide."
-        end
       end
 
       builder_params = chat_messages_params
@@ -281,8 +273,7 @@ module Admin
               publishable: message,
               neighborhood: @neighborhood,
               author: current_user,
-              scheduled_at: @scheduled_at,
-              recurrence_rule: recurrence_requested? ? build_recurrence_rule : nil
+              scheduled_at: @scheduled_at
             )
             PublishScheduledPublicationJob.schedule(scheduled_publication)
           else
@@ -431,24 +422,6 @@ module Admin
       Time.zone.parse("#{date} #{params[:chat_message][:scheduled_hour]}:#{params[:chat_message][:scheduled_minute]}")
     rescue ArgumentError
       nil
-    end
-
-    def recurrence_requested?
-      params[:chat_message][:recurrence_frequency].present?
-    end
-
-    def recurrence_ends_on_param
-      Date.strptime(params[:chat_message][:recurrence_ends_on], '%d/%m/%Y')
-    rescue ArgumentError, TypeError
-      nil
-    end
-
-    def build_recurrence_rule
-      RecurrenceRule.create!(
-        frequency: params[:chat_message][:recurrence_frequency],
-        ends_on: recurrence_ends_on_param,
-        created_by: current_user
-      )
     end
 
     def page
