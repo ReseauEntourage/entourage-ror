@@ -95,6 +95,18 @@ describe Admin::NeighborhoodMessageBroadcastsController do
       it { expect(response.body).to include('Réessayer maintenant') }
       it { expect(response.body).to include('en retard de') }
     end
+
+    context 'draft tab' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft) }
+
+      before { get :index, params: { status: :draft } }
+
+      it { expect(assigns(:neighborhood_message_broadcasts)).to eq([neighborhood_message_broadcast]) }
+
+      it 'offers an immediate send button, now that scheduling saves through Enregistrer' do
+        expect(response.body).to include('Envoyer')
+      end
+    end
   end
 
   describe 'GET #edit' do
@@ -185,30 +197,7 @@ describe Admin::NeighborhoodMessageBroadcastsController do
       end
     end
 
-    context 'with the broadcast button (Envoyer)' do
-      let!(:neighborhood) { create(:neighborhood) }
-      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, conversation_ids: [neighborhood.id]) }
-
-      let(:request) {
-        patch :update, params: {
-          id: neighborhood_message_broadcast.id,
-          neighborhood_message_broadcast: { title: 'new title', content: 'new content' },
-          broadcast: '1'
-        }
-      }
-
-      it 'saves the pending edits and immediately triggers the broadcast job with the up-to-date content' do
-        expect(ConversationMessageBroadcastJob).to receive(:perform_later).with(neighborhood_message_broadcast.id, user.id, 'new content')
-
-        request
-
-        neighborhood_message_broadcast.reload
-        expect(neighborhood_message_broadcast.title).to eq('new title')
-        expect(neighborhood_message_broadcast.status).to eq('sent')
-      end
-    end
-
-    context 'with the schedule button (Programmer)' do
+    context 'with schedule fields filled in' do
       let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, title: 'old title') }
 
       let(:request) {
@@ -217,12 +206,11 @@ describe Admin::NeighborhoodMessageBroadcastsController do
           neighborhood_message_broadcast: {
             title: 'new title',
             scheduled_date: 1.day.from_now.to_date.strftime('%d/%m/%Y'), scheduled_hour: '10', scheduled_minute: '00'
-          },
-          schedule: '1'
+          }
         }
       }
 
-      it 'saves the pending edits and schedules the broadcast' do
+      it 'saves the pending edits and schedules the broadcast, from the single Enregistrer submit' do
         expect { request }.to change { ScheduledPublication.count }.by(1)
 
         neighborhood_message_broadcast.reload
@@ -237,8 +225,7 @@ describe Admin::NeighborhoodMessageBroadcastsController do
             neighborhood_message_broadcast: {
               title: 'new title',
               scheduled_date: 1.day.ago.to_date.strftime('%d/%m/%Y'), scheduled_hour: '10', scheduled_minute: '00'
-            },
-            schedule: '1'
+            }
           }
         }
 
@@ -249,6 +236,33 @@ describe Admin::NeighborhoodMessageBroadcastsController do
           expect(neighborhood_message_broadcast.status).to eq('draft')
         end
       end
+    end
+
+    context 'without touching the schedule fields' do
+      let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, title: 'old title') }
+
+      it 'saves the general fields and leaves the broadcast as a draft' do
+        expect {
+          patch :update, params: { id: neighborhood_message_broadcast.id, neighborhood_message_broadcast: { title: 'new title' } }
+        }.not_to change { ScheduledPublication.count }
+
+        neighborhood_message_broadcast.reload
+        expect(neighborhood_message_broadcast.title).to eq('new title')
+        expect(neighborhood_message_broadcast.status).to eq('draft')
+      end
+    end
+  end
+
+  describe 'POST #broadcast' do
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:neighborhood_message_broadcast) { create(:neighborhood_message_broadcast, status: :draft, conversation_ids: [neighborhood.id], content: 'the content') }
+
+    it 'immediately triggers the broadcast job and marks the broadcast as sent' do
+      expect(ConversationMessageBroadcastJob).to receive(:perform_later).with(neighborhood_message_broadcast.id, user.id, 'the content')
+
+      post :broadcast, params: { id: neighborhood_message_broadcast.id }
+
+      expect(neighborhood_message_broadcast.reload.status).to eq('sent')
     end
   end
 

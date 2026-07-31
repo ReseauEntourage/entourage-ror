@@ -65,10 +65,7 @@ module Admin
         return render :edit
       end
 
-      if params.key?(:broadcast)
-        perform_broadcast!
-        redirect_to admin_neighborhood_message_broadcasts_path
-      elsif params.key?(:schedule)
+      if scheduling_requested?
         if perform_schedule?(scheduled_at_param)
           redirect_to admin_neighborhood_message_broadcasts_path(status: :scheduled), notice: 'La diffusion a bien été programmée'
         else
@@ -164,6 +161,10 @@ module Admin
 
     def neighborhood_message_broadcast_params
       params.require(:neighborhood_message_broadcast).permit(:content, :title, :area_type, neighborhood_ids: [], departements: [])
+    end
+
+    def scheduling_requested?
+      params[:neighborhood_message_broadcast][:scheduled_date].present?
     end
 
     def scheduled_at_param
