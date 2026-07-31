@@ -4,6 +4,11 @@ module Admin
 
     before_action :authenticate_admin!
 
+    rescue_from ActionController::InvalidAuthenticityToken do
+      redirect_back fallback_location: admin_neighborhood_message_broadcasts_path,
+        alert: "Une erreur de session est survenue, merci de réessayer."
+    end
+
     def home
       if current_admin
         redirect_to admin_actions_path

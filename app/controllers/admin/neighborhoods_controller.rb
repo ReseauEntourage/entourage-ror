@@ -41,6 +41,7 @@ module Admin
 
       @message_count = ChatMessage
         .with_moderator_reads_for(user: current_user)
+        .excluding_scheduled
         .where(messageable: @neighborhoods.map(&:id))
         .group(:messageable_id)
         .select(%{
@@ -149,8 +150,17 @@ module Admin
     end
 
     def show_posts
-      @posts = @neighborhood.posts.order(created_at: :desc).page(page).per(per).includes(:user, :survey, :translation)
+      @posts = @neighborhood.posts.excluding_scheduled.order(created_at: :desc).page(page).per(per).includes(:user, :survey, :translation)
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
+
+      # @caution includes :failed alongside :pending - a failed publication must stay visible
+      # here with a way to retry it (EN-9403: "Tu peux réessayer depuis le back-office")
+      @scheduled_publications = ScheduledPublication
+        .where(status: [:pending, :failed])
+        .of_type('ChatMessage')
+        .where(neighborhood_id: @neighborhood.id)
+        .order(:scheduled_at)
+        .includes(:publishable, :author)
     end
 
     def show_post_comments
@@ -238,31 +248,46 @@ module Admin
 
     # POST
     def message
+      if scheduling_requested?
+        @scheduled_at = scheduled_at_param
+
+        if @scheduled_at.nil? || @scheduled_at <= Time.zone.now
+          return redirect_to redirection_for_message, alert: "La date et l'heure de programmation sont obligatoires et doivent être dans le futur."
+        end
+      end
+
+      builder_params = chat_messages_params
+      builder_params = builder_params.merge(status: :scheduled) if scheduling_requested?
+
       ChatServices::ChatMessageBuilder.new(
-        params: chat_messages_params,
+        params: builder_params,
         user: current_user,
         joinable: @neighborhood,
         join_request: @join_request
       ).create do |on|
-        redirection = if chat_messages_params.has_key?(:parent_id)
-          show_post_comments_admin_neighborhood_path(@neighborhood, post_id: chat_messages_params[:parent_id])
-        else
-          show_posts_admin_neighborhood_path(@neighborhood)
-        end
-
         on.success do |message|
           @message = message
 
-          @join_request.set_chat_messages_as_read_from(message.created_at)
+          if scheduling_requested?
+            scheduled_publication = ScheduledPublication.create!(
+              publishable: message,
+              neighborhood: @neighborhood,
+              author: current_user,
+              scheduled_at: @scheduled_at
+            )
+            PublishScheduledPublicationJob.schedule(scheduled_publication)
+          else
+            @join_request.set_chat_messages_as_read_from(message.created_at)
+          end
 
           respond_to do |format|
             format.js
-            format.html { redirect_to redirection }
+            format.html { redirect_to redirection_for_message }
           end
         end
 
         on.failure do |message|
-          redirect_to redirection, alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+          redirect_to redirection_for_message, alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
         end
       end
     end
@@ -376,6 +401,27 @@ module Admin
 
     def chat_messages_params
       params.require(:chat_message).permit(:content, :parent_id)
+    end
+
+    def redirection_for_message
+      if chat_messages_params.has_key?(:parent_id)
+        show_post_comments_admin_neighborhood_path(@neighborhood, post_id: chat_messages_params[:parent_id])
+      else
+        show_posts_admin_neighborhood_path(@neighborhood)
+      end
+    end
+
+    def scheduling_requested?
+      params[:chat_message][:scheduled].to_s == '1' && !chat_messages_params.has_key?(:parent_id)
+    end
+
+    def scheduled_at_param
+      return nil unless params[:chat_message][:scheduled_date].present? && params[:chat_message][:scheduled_hour].present? && params[:chat_message][:scheduled_minute].present?
+
+      date = Date.strptime(params[:chat_message][:scheduled_date], '%d/%m/%Y')
+      Time.zone.parse("#{date} #{params[:chat_message][:scheduled_hour]}:#{params[:chat_message][:scheduled_minute]}")
+    rescue ArgumentError
+      nil
     end
 
     def page

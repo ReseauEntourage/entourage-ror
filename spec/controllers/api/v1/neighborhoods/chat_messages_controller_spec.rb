@@ -76,6 +76,15 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       }) }
     end
 
+    context 'with a scheduled post not yet published' do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+      let!(:scheduled_chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, status: :scheduled) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it { expect(result['chat_messages'].map { |m| m['id'] }).not_to include(scheduled_chat_message.id) }
+    end
+
     context 'chat_message read and last_message_read' do
       let(:last_message_read) { join_request.reload.last_message_read.to_s }
       let(:time) { Time.now }
@@ -191,6 +200,17 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           'auto_post_from' => nil,
         }
       }) }
+    end
+
+    context 'a scheduled post not yet published' do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+      let!(:scheduled_chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, status: :scheduled) }
+
+      before { get :show, params: { neighborhood_id: neighborhood.to_param, id: scheduled_chat_message.id, token: user.token } }
+
+      it 'is not directly accessible even by a member who knows its id' do
+        expect(response.status).to eq(400)
+      end
     end
 
     describe 'no deeplink' do

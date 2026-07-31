@@ -4,6 +4,11 @@ RSpec.describe NeighborhoodMessageBroadcast, type: :model do
   it { should validate_presence_of(:content) }
   it { should validate_presence_of(:title) }
 
+  describe '#scheduled?' do
+    it { expect(build(:neighborhood_message_broadcast, status: :scheduled).scheduled?).to eq(true) }
+    it { expect(build(:neighborhood_message_broadcast, status: :draft).scheduled?).to eq(false) }
+  end
+
   let!(:neighborhood_75009) { create(:neighborhood, postal_code: "75009", zone: "ville") }
   let!(:neighborhood_75018) { create(:neighborhood, postal_code: "75018", zone: "departement") }
   let!(:neighborhood_44240) { create(:neighborhood, postal_code: "44240", zone: "departement") }
