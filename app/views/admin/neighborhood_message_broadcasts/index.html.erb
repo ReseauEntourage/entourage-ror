@@ -62,6 +62,7 @@
             <td>
               <% if @status == :draft %>
                 <%= link_to "Modifier", edit_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), class: "btn btn-primary" %>
+                <%= link_to "Envoyer", broadcast_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), method: :post, data: { confirm: "Êtes vous sûr de vouloir diffuser ce message à #{neighborhood_message_broadcast.recipient_ids.count} groupes ?" }, class: "btn btn-danger" %>
               <% elsif [:sent, :archived].include? @status %>
                 <%= link_to "Dupliquer", clone_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), method: :post, class: "btn btn-danger" %>
               <% elsif @status == :sending %>
