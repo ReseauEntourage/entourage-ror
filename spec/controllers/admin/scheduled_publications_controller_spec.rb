@@ -14,18 +14,18 @@ describe Admin::ScheduledPublicationsController do
     let!(:published_publication) { create(:scheduled_publication, :post, status: :published, scheduled_at: 3.days.ago) }
 
     context 'with no filter' do
-      before { get :index }
+      before { get :index, params: { mine: :all } }
 
       it 'lists all pending scheduled publications, not the already published ones' do
         all = assigns(:grouped_scheduled_publications).values.flatten
-        expect(all).to match_array([post_publication, broadcast_publication])
+        expect(all.map(&:id)).to match_array([post_publication.id, broadcast_publication.id])
       end
     end
 
     context 'filtered by post type' do
-      before { get :index, params: { type: :post } }
+      before { get :index, params: { type: :post, mine: :all } }
 
-      it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([post_publication]) }
+      it { expect(assigns(:grouped_scheduled_publications).values.flatten.map(&:id)).to eq([post_publication.id]) }
     end
 
     context 'with a failed publication' do
@@ -33,30 +33,30 @@ describe Admin::ScheduledPublicationsController do
       # (EN-9403: "Tu peux réessayer depuis le back-office")
       let!(:failed_publication) { create(:scheduled_publication, :post, status: :failed, scheduled_at: 1.day.ago) }
 
-      before { get :index }
+      before { get :index, params: { mine: :all } }
 
       it 'lists it alongside the pending ones instead of hiding it' do
         all = assigns(:grouped_scheduled_publications).values.flatten
-        expect(all).to include(failed_publication)
+        expect(all.map(&:id)).to include(failed_publication.id)
       end
     end
 
     context 'filtered by broadcast type' do
-      before { get :index, params: { type: :broadcast } }
+      before { get :index, params: { type: :broadcast, mine: :all } }
 
-      it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([broadcast_publication]) }
+      it { expect(assigns(:grouped_scheduled_publications).values.flatten.map(&:id)).to eq([broadcast_publication.id]) }
     end
 
     context 'searching by content' do
-      before { get :index, params: { search: post_publication.publishable.content } }
+      before { get :index, params: { search: post_publication.publishable.content, mine: :all } }
 
-      it { expect(assigns(:grouped_scheduled_publications).values.flatten).to eq([post_publication]) }
+      it { expect(assigns(:grouped_scheduled_publications).values.flatten.map(&:id)).to eq([post_publication.id]) }
     end
 
     context 'rendering the page' do
       render_views
 
-      before { get :index }
+      before { get :index, params: { mine: :all } }
 
       it { expect(response.status).to eq(200) }
 
@@ -75,7 +75,7 @@ describe Admin::ScheduledPublicationsController do
     before { get :edit, params: { id: scheduled_publication.id } }
 
     it { expect(response.status).to eq(200) }
-    it { expect(assigns(:scheduled_publication)).to eq(scheduled_publication) }
+    it { expect(assigns(:scheduled_publication).id).to eq(scheduled_publication.id) }
   end
 
   describe 'PATCH #update' do
