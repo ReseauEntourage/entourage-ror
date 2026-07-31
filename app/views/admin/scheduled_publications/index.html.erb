@@ -9,6 +9,11 @@
 
   <div style="margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 15px">
     <div class="btn-group btn-group-sm">
+      <%= link_to("Mes publications programmées", @params.merge(mine: :mine), class: "btn btn-#{@mine == :mine ? :primary : :default}") %>
+      <%= link_to("Toutes les publications programmées", @params.merge(mine: :all), class: "btn btn-#{@mine == :all ? :primary : :default}") %>
+    </div>
+
+    <div class="btn-group btn-group-sm">
       <%= link_to("Toutes", @params.merge(type: :all), class: "btn btn-#{@type == :all ? :primary : :default}") %>
       <%= link_to("Post", @params.merge(type: :post), class: "btn btn-#{@type == :post ? :primary : :default}") %>
       <%= link_to("Diffusion", @params.merge(type: :broadcast), class: "btn btn-#{@type == :broadcast ? :primary : :default}") %>
@@ -22,6 +27,7 @@
     <%= form_tag admin_scheduled_publications_path, method: :get, style: "margin: 0" do %>
       <%= hidden_field_tag :type, @type unless @type == :all %>
       <%= hidden_field_tag :group_by, @group_by %>
+      <%= hidden_field_tag :mine, @mine unless @mine == :mine %>
       <%= search_field_tag :search, params[:search], placeholder: "Rechercher...", class: "form-control input-sm" %>
     <% end %>
   </div>

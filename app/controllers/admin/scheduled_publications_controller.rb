@@ -7,13 +7,15 @@ module Admin
     TYPES = { post: 'ChatMessage', broadcast: 'ConversationMessageBroadcast' }.freeze
 
     def index
-      @params = params.permit([:type, :search, :group_by]).to_h
+      @params = params.permit([:type, :search, :group_by, :mine]).to_h
       @type = params[:type].presence&.to_sym || :all
       @group_by = params[:group_by].presence&.to_sym || :month
+      @mine = params[:mine].presence&.to_sym || :mine
 
       # @caution includes :failed alongside :pending - a failed publication must stay visible
       # here with a way to retry it (EN-9403: "Tu peux réessayer depuis le back-office")
       pending_scheduled_publications = ScheduledPublication.where(status: [:pending, :failed]).order(:scheduled_at).includes(:publishable, :author, :neighborhood)
+      pending_scheduled_publications = pending_scheduled_publications.where(author: current_admin) if @mine == :mine
       @total_count = pending_scheduled_publications.count
       @total_post_count = pending_scheduled_publications.of_type(TYPES[:post]).count
       @total_broadcast_count = pending_scheduled_publications.of_type(TYPES[:broadcast]).count
