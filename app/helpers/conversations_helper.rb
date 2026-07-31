@@ -45,7 +45,7 @@ module ConversationsHelper
       content_tag(:p, 'Ce message a été modéré comme offensant :', style: 'color: red;') +
         content_tag(:em, simple_format(chat_message.content(true)).html_safe)
     else
-      content_tag(:div, simple_format(chat_message.content).html_safe, id: "chat-message-#{chat_message.id}")
+      content_tag(:div, format_chat_message_content(chat_message), id: "chat-message-#{chat_message.id}")
     end
 
     if chat_message.translation&.foreign?
@@ -54,6 +54,11 @@ module ConversationsHelper
     end
 
     message_html
+  end
+
+  def format_chat_message_content(chat_message)
+    content = chat_message.content
+    chat_message.mentions.contains_html? ? content.html_safe : simple_format(content).html_safe
   end
 
 end

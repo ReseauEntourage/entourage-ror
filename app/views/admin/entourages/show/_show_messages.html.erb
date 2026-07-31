@@ -174,8 +174,22 @@
 
   $(function(){
     var chatMessageSubmit = $('#new_chat_message [type=submit]')[0]
-    $('#chat_message_content').on('input', function() {
-      chatMessageSubmit.disabled = this.textLength === 0;
+
+    tinymce.init({
+      selector: '#chat_message_content',
+      license_key: 'gpl',
+      menubar: false,
+      statusbar: false,
+      branding: false,
+      height: 150,
+      toolbar: 'bold italic | link | emoticons',
+      plugins: 'link autoresize emoticons',
+      autoresize_bottom_margin: 16,
+      setup: function(editor) {
+        editor.on('input change undo redo SetContent', function() {
+          chatMessageSubmit.disabled = editor.getContent({ format: 'text' }).trim().length === 0;
+        })
+      }
     })
   })
 </script>
