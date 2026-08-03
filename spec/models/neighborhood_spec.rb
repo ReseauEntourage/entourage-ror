@@ -241,4 +241,37 @@ RSpec.describe Neighborhood, type: :model do
       end
     end
   end
+
+  describe '.join_chat_message_with_images' do
+    let!(:neighborhood) { create(:neighborhood) }
+
+    it 'ignores a scheduled post with an image' do
+      create(:chat_message, messageable: neighborhood, status: :scheduled, image_url: 'foo')
+
+      result = Neighborhood.where(id: neighborhood.id).join_chat_message_with_images.select('neighborhoods.*, neighborhoods_imageable.id is not null as has_image').first
+
+      expect(result.has_image).to eq(false)
+    end
+
+    it 'picks up a published post with an image' do
+      create(:chat_message, messageable: neighborhood, status: :active, image_url: 'foo')
+
+      result = Neighborhood.where(id: neighborhood.id).join_chat_message_with_images.select('neighborhoods.*, neighborhoods_imageable.id is not null as has_image').first
+
+      expect(result.has_image).to eq(true)
+    end
+  end
+
+  describe '.join_chat_messages_on_max_created_at' do
+    let!(:neighborhood) { create(:neighborhood) }
+
+    it 'ignores a scheduled post when computing the max created_at' do
+      create(:chat_message, messageable: neighborhood, status: :active, created_at: 2.days.ago)
+      create(:chat_message, messageable: neighborhood, status: :scheduled, created_at: Time.current)
+
+      result = Neighborhood.where(id: neighborhood.id).join_chat_messages_on_max_created_at.select('neighborhoods.*, neighborhoods_messageable.max_created_at').first
+
+      expect(result.max_created_at).to be_within(1.minute).of(2.days.ago)
+    end
+  end
 end

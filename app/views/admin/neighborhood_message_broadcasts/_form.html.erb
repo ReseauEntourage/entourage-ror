@@ -52,6 +52,24 @@
         }) %>
       </div>
     <% end %>
+  <% elsif @neighborhood_message_broadcast.scheduled? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Programmée</b>
+        <% if @scheduled_publication&.failed? %>
+          <span class="label label-danger">Échec</span>
+        <% end %>
+        <br>
+        Cette diffusion sera envoyée le <%= l @neighborhood_message_broadcast.scheduled_at.in_time_zone('Paris'), format: "%A %-d %B %Y à %H h %M" %>
+        (<%= scheduled_countdown(@neighborhood_message_broadcast.scheduled_at) %>)
+        à <%= pluralize(@neighborhood_message_broadcast.recipient_ids.count, 'groupe', 'groupes') %>,
+        soit <%= pluralize(@neighborhood_message_broadcast.recipients.sum(:number_of_people), 'destinataire', 'destinataires') %>.
+      </div>
+      <% if @scheduled_publication %>
+        <%= link_to(@scheduled_publication.failed? ? "Réessayer maintenant" : "Diffuser maintenant", publish_now_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-danger", data: { confirm: "Diffuser ce message maintenant ?" }) %>
+        <%= link_to("Annuler la programmation", cancel_admin_scheduled_publication_path(@scheduled_publication), method: :post, class: "btn btn-default", data: { confirm: "Annuler cette diffusion programmée ?" }) %>
+      <% end %>
+    </div>
   <% elsif @neighborhood_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -61,75 +79,117 @@
       </div>
       <%= f.submit "Archiver", name: :archive, class: "btn btn-default" %>
     </div>
-    <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
-      <div style="flex-grow: 1">
-        <b>Envoyer</b><br>
-        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> groupes correspondants aux filtres configurés.<br>
+  <% end %>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Informations générales</h4>
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :title, "Titre", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :title, class: "form-control", required: true %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :content %>
+        <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
+      </div>
+
+      <% if @neighborhood_message_broadcast.neighborhood_ids.any? && @neighborhood_message_broadcast.new_record? %>
+        <%# this case happens when neighborhood_message_broadcast has been cloned %>
+        <% @neighborhood_message_broadcast.neighborhood_ids.each do |neighborhood_id| %>
+          <%= hidden_field_tag "neighborhood_message_broadcast[neighborhood_ids][]", neighborhood_id %>
+        <% end %>
+      <% end %>
+
+      <% if @neighborhood_message_broadcast.draft? || @neighborhood_message_broadcast.scheduled? %>
+        <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+        <%= link_to "Annuler", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
+      <% else %>
+        <%= link_to "Retour", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @neighborhood_message_broadcast.persisted? && @neighborhood_message_broadcast.draft? %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Date d'envoi</h4>
+    </div>
+    <div class="panel-body">
+      <div class="alert alert-danger" role="alert">
+        L'envoi sera effectué auprès de <span id="broadcast-recipient-count"><%= @neighborhood_message_broadcast.recipient_ids.count %></span> groupes correspondants aux filtres configurés, soit <%= @neighborhood_message_broadcast.recipients.sum(:number_of_people) %> destinataires.<br>
 
         ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
       </div>
-        <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
-          confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
-        }) %>
-    </div>
-  <% end %>
 
-  <% if @neighborhood_message_broadcast.persisted? %>
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="<%= :active if @tab == :departements %>">
-        <%= link_to "Par départements", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast, tab: :departements) %>
-      </li>
-      <li role="presentation" class="<%= :active if @tab == :neighborhoods %>">
-        <%= link_to "Par groupes", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast, tab: :neighborhoods) %>
-      </li>
-    </ul>
-  <% end %>
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-md-3">
+          <%= label_tag 'neighborhood_message_broadcast_scheduled_date', 'Date' %>
+          <%= scheduled_date_field 'neighborhood_message_broadcast[scheduled_date]' %>
+        </div>
+        <div class="col-md-3">
+          <%= label_tag 'neighborhood_message_broadcast_scheduled_time', 'Heure' %><br/>
+          <%= scheduled_time_selects 'neighborhood_message_broadcast' %>
+        </div>
 
-  <div class="form-group">
-    <%= f.label :title, "Titre", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :title, class: "form-control", required: true %>
+        <% if current_admin.slack_id.blank? %>
+          <div class="col-md-12">
+            <div class="alert alert-warning" style="margin-top: 10px">
+              ℹ️ Ton identifiant Slack n'est pas renseigné : tu ne recevras pas de notification Slack à la publication de ce contenu.
+              <%= link_to "Renseigne-le ici", edit_admin_user_path(current_admin) %>.
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <p class="text-muted">Laissez ces champs vides pour garder cette diffusion en brouillon : vous pourrez l'envoyer immédiatement depuis la liste des brouillons.</p>
     </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :content %>
-    <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
-  </div>
-
-  <% if @neighborhood_message_broadcast.neighborhood_ids.any? && @neighborhood_message_broadcast.new_record? %>
-    <%# this case happens when neighborhood_message_broadcast has been cloned %>
-    <% @neighborhood_message_broadcast.neighborhood_ids.each do |neighborhood_id| %>
-      <%= hidden_field_tag "neighborhood_message_broadcast[neighborhood_ids][]", neighborhood_id %>
-    <% end %>
-  <% end %>
-
-  <% if @neighborhood_message_broadcast.draft? %>
-    <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
-    <%= link_to "Annuler", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
-  <% else %>
-    <%= link_to "Retour", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
-  <% end %>
+  <script>
+    $(function() {
+      $('.js-datepicker').datepicker({ minDate: 0 })
+    })
+  </script>
 <% end %>
 
 <% if @neighborhood_message_broadcast.persisted? %>
-  <% if @tab == :departements %>
-    <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Cible : groupes de voisins destinataires</h4>
+    </div>
+    <div class="panel-body">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="<%= :active if @tab == :departements %>">
+          <%= link_to "Par départements", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast, tab: :departements) %>
+        </li>
+        <li role="presentation" class="<%= :active if @tab == :neighborhoods %>">
+          <%= link_to "Par groupes", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast, tab: :neighborhoods) %>
+        </li>
+      </ul>
 
-    <%= render partial: "admin/neighborhoods/select_departements_form", locals: {
-      path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
-      record: @neighborhood_message_broadcast,
-      record_type: :neighborhood_message_broadcast,
-      recipient_ids: :neighborhood_ids
-    } %>
-  <% elsif @tab == :neighborhoods %>
       <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
 
-      <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
-        path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
-        record: @neighborhood_message_broadcast,
-        record_type: :neighborhood_message_broadcast,
-        recipient_ids: :neighborhood_ids
-      } %>
-  <% end %>
+      <% if @tab == :departements %>
+        <%= render partial: "admin/neighborhoods/select_departements_form", locals: {
+          record: @neighborhood_message_broadcast,
+          record_type: :neighborhood_message_broadcast,
+          recipient_ids: :neighborhood_ids,
+          standalone: false
+        } %>
+      <% elsif @tab == :neighborhoods %>
+        <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
+          record: @neighborhood_message_broadcast,
+          record_type: :neighborhood_message_broadcast,
+          recipient_ids: :neighborhood_ids,
+          standalone: false
+        } %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 <% end %>

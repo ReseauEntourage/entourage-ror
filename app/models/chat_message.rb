@@ -12,7 +12,7 @@ class ChatMessage < ApplicationRecord
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = 'chat_messages'
 
-  STATUSES = [:active, :updated, :deleted, :offensible, :offensive]
+  STATUSES = [:active, :updated, :deleted, :offensible, :offensive, :scheduled]
 
   store_attribute :options, :auto_post_type, :string
   store_attribute :options, :auto_post_id, :integer
@@ -43,6 +43,7 @@ class ChatMessage < ApplicationRecord
   scope :with_content, -> { where("content <> ''") }
   scope :with_image, -> { where("image_url <> ''") }
   scope :no_deleted_without_comments, -> { where("(status != 'deleted' or comments_count > 0)") }
+  scope :excluding_scheduled, -> { where.not(status: :scheduled) }
 
   attribute :metadata, :jsonb_with_schema
 
@@ -152,6 +153,10 @@ class ChatMessage < ApplicationRecord
 
   def offensive?
     status.to_sym == :offensive
+  end
+
+  def scheduled?
+    status.to_sym == :scheduled
   end
 
   def text?
@@ -295,6 +300,26 @@ class ChatMessage < ApplicationRecord
   end
 
   private
+
+  # @caution overrides PublishesEvents#publish_events - a scheduled post must not be visible
+  # to the outside world (EventBus subscribers such as BadgeSubscriber, which awards the
+  # "bienvenue" badge and sends a congratulations email on a user's first ChatMessage) before
+  # it is actually published. ScheduledPublicationServices::Publisher flips status to :active
+  # via a plain #update!, which re-triggers this same after_commit callback - that transition
+  # is treated as the real "created" event instead of the generic "updated" one.
+  def publish_events
+    return if scheduled?
+
+    event = if saved_change_to_status? && status_before_last_save == 'scheduled' && active?
+      :created
+    elsif previous_changes.key?('id')
+      :created
+    else
+      :updated
+    end
+
+    EventBus.publish("chat_message.#{event}", record: self)
+  end
 
   def generate_content
     self.content = generated_content

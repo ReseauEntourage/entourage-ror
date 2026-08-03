@@ -13,6 +13,7 @@
 <%
   @params = params.permit(:tab).to_h
   @departements = record.departements
+  standalone = local_assigns.fetch(:standalone, true)
 %>
 
 <%= render partial: "admin/neighborhoods/show_selection" %>
@@ -46,7 +47,7 @@
 <a href="#" data-role="select-departments" data-select="all">Tout sélectionner</a> ·
 <a href="#" data-role="select-departments" data-select="none">Tout désélectionner</a>
 
-<%= form_for record, url: path, method: :put do |f| %>
+<% departements_fields = capture do %>
   <%= hidden_field_tag "#{record_type}[departements][]", '' %>
 
   <div id="departements-selected">
@@ -56,15 +57,22 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :area_type %>
+    <%= label_tag "#{record_type}_area_type", record.class.human_attribute_name(:area_type) %>
     <div class="controls">
       <% area_types = { "Département": :departement, "Ville": :ville, "Thématique": :no_zone, "Tous": :zone_all } %>
 
-      <%= f.select :area_type, options_for_select(area_types, record.area_type), { include_blank: false }, class: "form-control" %>
+      <%= select_tag "#{record_type}[area_type]", options_for_select(area_types, record.area_type), { include_blank: false }, class: "form-control" %>
     </div>
   </div>
+<% end %>
 
-  <%= f.submit 'Valider', class: "btn btn-primary" %>
+<% if standalone %>
+  <%= form_for record, url: path, method: :put do %>
+    <%= departements_fields %>
+    <%= submit_tag 'Valider', class: "btn btn-primary" %>
+  <% end %>
+<% else %>
+  <%= departements_fields %>
 <% end %>
 
 <script>

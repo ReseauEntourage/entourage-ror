@@ -15,6 +15,7 @@
   @area = params[:area].presence&.to_sym ||
     NeighborhoodServices::Helper.new(record).main_departement_slug ||
     :dep_75
+  standalone = local_assigns.fetch(:standalone, true)
 %>
 
 <%= render partial: "admin/neighborhoods/show_selection" %>
@@ -48,9 +49,11 @@
 <a href="#" data-role="select-neighborhoods" data-select="all">Tout sélectionner</a> ·
 <a href="#" data-role="select-neighborhoods" data-select="none">Tout désélectionner</a>
 
+<div id="neighborhoods-selection-recap" style="margin: 10px 0"><strong><span id="neighborhoods-selection-count">0</span> groupe(s) sélectionné(s), <span id="neighborhoods-selection-recipients">0</span> destinataire(s)</strong></div>
+
 <% neighborhoods_for_area = Neighborhood.with_zone(@zone).with_moderation_area(@area.to_s).includes([:user]).order(:postal_code, :name) %>
 
-<%= form_for record, url: path, method: :put do |f| %>
+<% neighborhoods_table = capture do %>
   <table id="neighborhoods-for-area-list" class="table table-striped">
     <% if neighborhoods_for_area.any? %>
       <thead>
@@ -67,7 +70,7 @@
       <tbody>
         <%= collection_check_boxes(record_type, :neighborhood_ids, neighborhoods_for_area, :id, :name ) do |b| %>
           <tr>
-            <td><%= b.label(class: "checkbox-inline") { b.check_box + b.text } %></td>
+            <td><%= b.label(class: "checkbox-inline") { b.check_box(data: { members: b.object.members_count }) + b.text } %></td>
             <td><%= link_to b.object.id, edit_admin_neighborhood_path(b.object) %></td>
             <td><%= link_to b.object.name, edit_admin_neighborhood_path(b.object) %></td>
             <td><%= b.object.postal_code %></td>
@@ -80,13 +83,32 @@
       <caption><%= "Il n'y a pas encore de groupe associable à cette zone de modération."%></caption>
     <% end %>
   </table>
+<% end %>
 
-  <%= f.submit 'Valider', class: "btn btn-primary" unless neighborhoods_for_area.empty? %>
+<% if standalone %>
+  <%= form_for record, url: path, method: :put do %>
+    <%= neighborhoods_table %>
+    <%= submit_tag 'Valider', class: "btn btn-primary" unless neighborhoods_for_area.empty? %>
+  <% end %>
+<% else %>
+  <%= neighborhoods_table %>
 <% end %>
 
 
 <script>
   var $neighborhoods = $('[type="checkbox"][name="<%= record_type %>[<%= recipient_ids %>][]"]');
+
+  function updateNeighborhoodsSelectionRecap() {
+    var count = 0, recipients = 0
+
+    $neighborhoods.filter(':checked').each(function() {
+      count += 1
+      recipients += parseInt($(this).data('members'), 10) || 0
+    })
+
+    $('#neighborhoods-selection-count').text(count)
+    $('#neighborhoods-selection-recipients').text(recipients)
+  }
 
   $(document).on('click', '[data-role="select-neighborhoods"]', function(e) {
     e.preventDefault()
@@ -101,5 +123,10 @@
       $box.prop('checked', check($box.val()))
       this.setCustomValidity('') // reset validations
     })
+
+    updateNeighborhoodsSelectionRecap()
   })
+
+  $neighborhoods.on('change', updateNeighborhoodsSelectionRecap)
+  updateNeighborhoodsSelectionRecap()
 </script>
