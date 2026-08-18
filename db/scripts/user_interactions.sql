@@ -33,22 +33,6 @@
 -- ---------------------------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS stats;
 
-DO $$
-BEGIN
-  IF to_regclass('stats.user_interactions') IS NOT NULL
-     AND (SELECT relkind FROM pg_class WHERE oid = 'stats.user_interactions'::regclass) <> 'p'
-  THEN
-    EXECUTE 'ALTER TABLE stats.user_interactions RENAME TO user_interactions_unpartitioned';
-    EXECUTE 'ALTER TABLE stats.user_interactions_unpartitioned RENAME CONSTRAINT user_interactions_pkey TO user_interactions_unpartitioned_pkey';
-    EXECUTE 'ALTER SEQUENCE stats.user_interactions_id_seq RENAME TO user_interactions_unpartitioned_id_seq';
-    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_user_id';
-    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_interaction_type';
-    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_interaction_at';
-    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_object';
-    RAISE NOTICE 'stats.user_interactions_unpartitioned conservée en sauvegarde — à supprimer manuellement une fois la nouvelle table repeuplée et vérifiée.';
-  END IF;
-END $$;
-
 -- Clé de partition (interaction_at) obligatoirement incluse dans la clé
 -- primaire ; l'unicité de id reste garantie globalement par la séquence
 -- partagée, pas par la contrainte de clé primaire (même remarque que
@@ -322,7 +306,7 @@ SELECT
   'Utilisateur',
   ubu.blocked_user_id,
   ubu.created_at,
-  ubu.status
+  'bloqué'
 FROM user_blocked_users ubu;
 
 

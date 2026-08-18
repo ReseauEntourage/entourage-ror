@@ -18,6 +18,14 @@ Pensées ensemble : `user_profile` donne les **nœuds** du graphe (qui est
 l'utilisateur), `user_interactions` donne les **arêtes** (ce qu'il a fait,
 avec qui/quoi, et quand).
 
+Pour récupérer un export CSV des deux tables (par exemple pour les
+charger dans un notebook ou un outil de graphe hors base), voir
+`export_stats_tables.sql` (même dossier) : à jouer avec le client
+`psql` (`psql "<connexion>" -f db/scripts/export_stats_tables.sql`), il
+génère `stats_user_profile.csv` et `stats_user_interactions.csv` — ce
+dernier couvre automatiquement toutes les partitions par année de
+`stats.user_interactions`, une requête sur la table parente suffit.
+
 ## ⚠️ À savoir avant d'interroger les données
 
 - **Aucune des deux tables n'est un journal immuable.** Chaque exécution
