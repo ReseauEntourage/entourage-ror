@@ -35,6 +35,16 @@ avec qui/quoi, et quand).
 - Toutes deux sont préfixées par le schéma `stats` : penser à qualifier
   (`stats.user_profile`) ou faire un `SET search_path TO stats, public;`
   en session.
+- **`stats.user_interactions` est partitionnée par année** sur
+  `interaction_at` (une table physique `stats.user_interactions_<année>`
+  par année, plus `stats.user_interactions_default` en secours). C'est
+  totalement transparent pour vos requêtes : interroger
+  `stats.user_interactions` normalement (`SELECT ... WHERE ...`) — pas
+  besoin de cibler une partition en particulier. Cela ne devient utile à
+  savoir que si vous inspectez le catalogue Postgres directement
+  (`\d+ stats.user_interactions`) ou pour des requêtes très ciblées sur
+  une seule année, où filtrer sur `interaction_at` permet à Postgres
+  d'ignorer les autres partitions (*partition pruning*).
 
 ## `stats.user_profile` — un utilisateur = une ligne
 

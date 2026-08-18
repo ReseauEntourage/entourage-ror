@@ -142,6 +142,23 @@ CREATE TABLE stats.user_interactions (
   importants en production : envisager de lancer ces sections hors heures
   de forte charge, et de vérifier le temps d'exécution en préprod avant
   de jouer en prod.
+- La table est **partitionnée par RANGE (année) sur `interaction_at`**
+  (une partition `stats.user_interactions_<année>` par année de 2015 à
+  2035, plus une partition `_default` pour toute date hors bornes) —
+  transparent pour les sections 1 à 19, qui continuent de cibler
+  `stats.user_interactions` (le parent) sans rien changer. Même logique
+  que `db/migrate/20260505120000_partition_join_requests_by_type_and_year.rb`,
+  mais sans le niveau de partitionnement LIST par type (pas de notion de
+  "type" polymorphique équivalente à `joinable_type` ici : un seul niveau
+  RANGE suffit). Si la table existait déjà en version non partitionnée,
+  la section 0 la renomme automatiquement en
+  `stats.user_interactions_unpartitioned` (à supprimer manuellement une
+  fois la nouvelle table repeuplée par les sections suivantes et
+  vérifiée) plutôt que de tenter une conversion en place.
+- Pour étendre la plage de partitions au-delà de 2035, ajouter une
+  nouvelle section rejouant uniquement la boucle `DO $$ ... FOR yr IN
+  ... $$` de la section 0 avec la plage voulue (les partitions déjà
+  créées ne sont pas affectées grâce à `IF NOT EXISTS`).
 - `db/schema.rb` contenait une anomalie (blocs `translations`/`users` et
   plusieurs autres tables `user_*` dupliqués, avec un premier bloc `users`
   tronqué, et deux tables `user_next_steps`/`user_suggestions` provenant

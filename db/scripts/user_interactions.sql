@@ -9,29 +9,83 @@
 --          (DELETE puis INSERT sur son propre interaction_type), donc
 --          le script peut être rejoué sans créer de doublons.
 --
+-- Partitionnement : la table est partitionnée par RANGE (année) sur
+-- interaction_at, une partition par année (voir section 0). C'est
+-- transparent pour les sections 1 à 19 : DELETE/INSERT/ANALYZE
+-- continuent de cibler stats.user_interactions normalement, Postgres
+-- routant chaque ligne vers la bonne partition. Même approche que
+-- db/migrate/20260505120000_partition_join_requests_by_type_and_year.rb
+-- (partitionnement par année), sans le niveau LIST par type ici.
+--
 -- Voir aussi : user_interactions_prompt.md (même dossier) qui documente
 -- la spécification ayant servi à générer ce script.
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
--- 0. Création du schéma et de la table cible
+-- 0. Création du schéma et de la table cible, partitionnée par année
+--    sur interaction_at.
+--
+--    Si une version non partitionnée de la table existe déjà (le script
+--    a été joué avant la mise en place du partitionnement), elle est
+--    mise de côté : ses données sont de toute façon régénérées à
+--    l'identique par les sections 1 à 19, qui repartent des tables
+--    sources — inutile donc de les recopier.
 -- ---------------------------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS stats;
 
+DO $$
+BEGIN
+  IF to_regclass('stats.user_interactions') IS NOT NULL
+     AND (SELECT relkind FROM pg_class WHERE oid = 'stats.user_interactions'::regclass) <> 'p'
+  THEN
+    EXECUTE 'ALTER TABLE stats.user_interactions RENAME TO user_interactions_unpartitioned';
+    EXECUTE 'ALTER TABLE stats.user_interactions_unpartitioned RENAME CONSTRAINT user_interactions_pkey TO user_interactions_unpartitioned_pkey';
+    EXECUTE 'ALTER SEQUENCE stats.user_interactions_id_seq RENAME TO user_interactions_unpartitioned_id_seq';
+    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_user_id';
+    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_interaction_type';
+    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_interaction_at';
+    EXECUTE 'DROP INDEX IF EXISTS stats.index_user_interactions_on_object';
+    RAISE NOTICE 'stats.user_interactions_unpartitioned conservée en sauvegarde — à supprimer manuellement une fois la nouvelle table repeuplée et vérifiée.';
+  END IF;
+END $$;
+
+-- Clé de partition (interaction_at) obligatoirement incluse dans la clé
+-- primaire ; l'unicité de id reste garantie globalement par la séquence
+-- partagée, pas par la contrainte de clé primaire (même remarque que
+-- pour join_requests).
 CREATE TABLE IF NOT EXISTS stats.user_interactions (
-  id               BIGSERIAL PRIMARY KEY,
+  id               BIGSERIAL,
   user_id          INTEGER      NOT NULL,
   interaction_type VARCHAR(40)  NOT NULL,
   object_type      VARCHAR(40)  NOT NULL,
   object_id        BIGINT,
   interaction_at   TIMESTAMP    NOT NULL,
-  description      TEXT
-);
+  description      TEXT,
+  CONSTRAINT user_interactions_pkey PRIMARY KEY (id, interaction_at)
+) PARTITION BY RANGE (interaction_at);
 
 CREATE INDEX IF NOT EXISTS index_user_interactions_on_user_id ON stats.user_interactions (user_id);
 CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_type ON stats.user_interactions (interaction_type);
 CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_at ON stats.user_interactions (interaction_at);
 CREATE INDEX IF NOT EXISTS index_user_interactions_on_object ON stats.user_interactions (object_type, object_id);
+
+-- Une partition par année (2015 à 2035, même plage que
+-- db/migrate/20260505120000_partition_join_requests_by_type_and_year.rb),
+-- plus une partition "default" qui absorbe toute date hors bornes
+-- (evite un échec d'INSERT si une donnée source a une date aberrante).
+DO $$
+DECLARE
+  yr INT;
+BEGIN
+  FOR yr IN 2015..2035 LOOP
+    EXECUTE format(
+      'CREATE TABLE IF NOT EXISTS stats.user_interactions_%1$s PARTITION OF stats.user_interactions FOR VALUES FROM (%2$L) TO (%3$L)',
+      yr, yr || '-01-01', (yr + 1) || '-01-01'
+    );
+  END LOOP;
+END $$;
+
+CREATE TABLE IF NOT EXISTS stats.user_interactions_default PARTITION OF stats.user_interactions DEFAULT;
 
 
 -- ---------------------------------------------------------------------
