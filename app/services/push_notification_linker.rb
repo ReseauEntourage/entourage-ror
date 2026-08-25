@@ -64,11 +64,6 @@ class PushNotificationLinker
           instance: 'conversation',
           instance_id: object.messageable_id
         }
-      elsif object.is_a?(ChatMessage) && outing?(object.messageable)
-        {
-          instance: "conversation",
-          instance_id: object.messageable_id
-        }
       elsif object.is_a?(UserBadge)
         {
           instance: "user_badge",

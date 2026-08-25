@@ -284,7 +284,8 @@ describe Api::V1::Smalltalks::ChatMessagesController do
               group_type: 'smalltalk',
               type: 'NEW_CHAT_MESSAGE',
               instance: 'smalltalk',
-              instance_id: smalltalk.id
+              instance_id: smalltalk.id,
+              chat_message_id: kind_of(Integer)
             }
           )
 
