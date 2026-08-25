@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_25_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -420,6 +420,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
     t.integer "sender_id"
     t.string "title"
     t.string "instance_baseclass", default: "Entourage"
+    t.integer "chat_message_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 

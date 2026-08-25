@@ -296,7 +296,8 @@ describe Api::V1::Conversations::ChatMessagesController do
               group_type: 'conversation',
               type: 'NEW_CHAT_MESSAGE',
               instance: 'conversation',
-              instance_id: conversation.id
+              instance_id: conversation.id,
+              chat_message_id: kind_of(Integer)
             }
           )
 

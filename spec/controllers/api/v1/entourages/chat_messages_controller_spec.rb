@@ -301,7 +301,8 @@ describe Api::V1::Entourages::ChatMessagesController do
               group_type: 'action',
               type: 'NEW_CHAT_MESSAGE',
               instance: 'conversation',
-              instance_id: entourage.id
+              instance_id: entourage.id,
+              chat_message_id: kind_of(Integer)
             }
           )
 

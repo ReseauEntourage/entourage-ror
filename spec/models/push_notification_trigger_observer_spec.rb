@@ -421,7 +421,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 joinable_id: contribution.id,
                 type: 'NEW_CHAT_MESSAGE'
               }
-            }
+            },
+            chat_message_id: kind_of(Integer)
           )
         }
       end
@@ -486,7 +487,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
               extra: {
                 tracking: :comment_on_create_to_neighborhood
               }
-            }
+            },
+            chat_message_id: kind_of(Integer)
           ).once
         }
       end
@@ -507,7 +509,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
               extra: {
                 tracking: :comment_on_create_to_neighborhood
               }
-            }
+            },
+            chat_message_id: kind_of(Integer)
           ).once
         }
       end
@@ -575,7 +578,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 joinable_type: 'Entourage',
                 type: 'NEW_CHAT_MESSAGE'
               },
-            }
+            },
+            chat_message_id: kind_of(Integer)
           )
         }
       end
