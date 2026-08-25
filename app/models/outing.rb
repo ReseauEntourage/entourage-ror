@@ -136,6 +136,18 @@ class Outing < Entourage
 
   scope :unlimited, -> { where("(metadata->>'place_limit' is null or metadata->>'place_limit' = '0' or metadata->>'place_limit' = '')") }
 
+  scope :reserved_female, -> { where("metadata->>'reserved_female' = 'true'") }
+
+  scope :entourage_only, -> { where(user_id: User.team.select(:id)) }
+
+  scope :with_format, -> (format) {
+    case format.presence
+    when 'in_person' then where(online: false)
+    when 'online' then where(online: true)
+    else all
+    end
+  }
+
   scope :for_user, -> (user) {
     return unless user
 

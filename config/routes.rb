@@ -597,10 +597,15 @@ Rails.application.routes.draw do
       resources :outings do
         collection do
           post :presigned_upload
+          # shorcuts for outings index with filters
           get :papotages
           get :firsts_steps
           get :webinar
+          get :reserved_female
+          get :onlines
+          get :entourage_only
 
+          # other routes
           get :smalltalk
           get :sensibilisation
           get :first_steps

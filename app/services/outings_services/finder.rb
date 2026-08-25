@@ -1,6 +1,6 @@
 module OutingsServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :before_date
+    attr_reader :user, :latitude, :longitude, :distance, :q, :interests, :before_date, :reserved_female, :entourage_only, :format
 
     def initialize user, params
       @user = user
@@ -31,6 +31,10 @@ module OutingsServices
       @papotages = @category.present? && @category == 'papotages'
       @first_steps = @category.present? && @category == 'first_steps'
       @webinar = @category.present? && @category == 'webinar'
+
+      @reserved_female = params[:reserved_female] == 'true'
+      @entourage_only = params[:entourage_only] == 'true'
+      @format = params[:format]
     end
 
     def base_query
@@ -48,6 +52,10 @@ module OutingsServices
       outings = outings.papotages if @papotages
       outings = outings.first_steps_category if @first_steps
       outings = outings.webinar_category if @webinar
+
+      outings = outings.reserved_female if reserved_female
+      outings = outings.entourage_only if entourage_only
+      outings = outings.with_format(format) if format.present?
 
       # order by starts_at is already in default_scope
       outings.group(:id)

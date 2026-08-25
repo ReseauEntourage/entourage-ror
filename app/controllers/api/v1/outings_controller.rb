@@ -36,6 +36,8 @@ module Api
         }
       end
 
+      # shorcuts for outings index with filters
+
       def papotages
         redirect_to api_v1_outings_path(category: 'papotages', **index_params.to_h)
       end
@@ -47,6 +49,20 @@ module Api
       def webinar
         redirect_to api_v1_outings_path(category: 'webinar', **index_params.to_h)
       end
+
+      def reserved_female
+        redirect_to api_v1_outings_path(reserved_female: 'true', **index_params.to_h)
+      end
+
+      def onlines
+        redirect_to api_v1_outings_path(format: 'online', **index_params.to_h)
+      end
+
+      def entourage_only
+        redirect_to api_v1_outings_path(entourage_only: 'true', **index_params.to_h)
+      end
+
+      # other routes
 
       def create
         EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
@@ -240,7 +256,7 @@ module Api
       end
 
       def index_params
-        params.permit(:q, :latitude, :longitude, :travel_distance, :within_days, :category, :page, :per, :interest_list, interests: [])
+        params.permit(:q, :latitude, :longitude, :travel_distance, :within_days, :category, :page, :per, :interest_list, :reserved_female, :entourage_only, :format, interests: [])
       end
 
       def outing_params
