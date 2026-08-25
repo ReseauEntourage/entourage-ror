@@ -100,7 +100,7 @@ CREATE TABLE stats.user_interactions (
 | `session_histories`        | `session`                                  | 1 ligne/jour/plateforme |
 | `entourages`                | `creation_groupe` / `creation_entraide` / `creation_evenement` / `creation_conversation` | selon `group_type` (`group` / `action` / `outing` / `conversation`) |
 | `neighborhoods`             | `creation_quartier`                        | |
-| `join_requests`             | `demande_adhesion` / `demande_adhesion_entraide` | date = `requested_at` ou `created_at` ; type `_entraide` si `group_type = 'action'` |
+| `join_requests`             | `demande_adhesion` / `demande_adhesion_entraide` | date = `requested_at` ou `created_at` ; type `_entraide` si `group_type = 'action'` ; uniquement `accepted_at` NULL (non acceptées) |
 | `join_requests`             | `adhesion_confirmee` / `adhesion_confirmee_entraide` | date = `accepted_at`, si non nul ; type `_entraide` si `group_type = 'action'` |
 | `join_requests`             | `participation_evenement`                   | date = `participate_at`, si non nul, uniquement events |
 | `chat_messages`             | `message_envoye` / `publication_groupe`     | messages actifs/mis à jour, hors messages techniques ; `publication_groupe` si `group_type IN ('group', 'action')`, sinon `message_envoye` (conversations, événements, quartiers, bonnes ondes) |

@@ -184,7 +184,8 @@ SELECT
   COALESCE(jr.requested_at, jr.created_at),
   'statut=' || jr.status || ', role=' || jr.role
 FROM join_requests jr
-LEFT JOIN entourages e ON jr.joinable_type = 'Entourage' AND e.id = jr.joinable_id;
+LEFT JOIN entourages e ON jr.joinable_type = 'Entourage' AND e.id = jr.joinable_id
+WHERE jr.accepted_at IS NULL;
 
 
 -- ---------------------------------------------------------------------

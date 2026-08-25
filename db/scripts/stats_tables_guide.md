@@ -114,8 +114,8 @@ sur demande).
 | `creation_evenement`                       | `Evenement`                    | `entourages` (`group_type='outing'`) | `created_at` | Création d'un événement |
 | `creation_conversation`                      | `Conversation`                  | `entourages` (`group_type='conversation'`) | `created_at` | Création d'une conversation privée |
 | `creation_quartier`                            | `Quartier`                      | `neighborhoods` | `created_at` | Création d'un quartier |
-| `demande_adhesion`                               | `Groupe`/`Evenement`/`Conversation`/`Quartier`/`Bonnes ondes` | `join_requests` | `requested_at` ou `created_at` | Demande pour rejoindre (hors entraide) |
-| `demande_adhesion_entraide`                        | `Entraide`                       | `join_requests` (`group_type='action'`) | idem | Demande pour rejoindre une entraide |
+| `demande_adhesion`                               | `Groupe`/`Evenement`/`Conversation`/`Quartier`/`Bonnes ondes` | `join_requests` (`accepted_at` NULL) | `requested_at` ou `created_at` | Demande pour rejoindre (hors entraide), non acceptée |
+| `demande_adhesion_entraide`                        | `Entraide`                       | `join_requests` (`group_type='action'`, `accepted_at` NULL) | idem | Demande pour rejoindre une entraide, non acceptée |
 | `adhesion_confirmee`                                 | idem que `demande_adhesion`        | `join_requests` (`accepted_at` non nul) | `accepted_at` | Adhésion confirmée (hors entraide) |
 | `adhesion_confirmee_entraide`                          | `Entraide`                         | idem, `group_type='action'` | `accepted_at` | Adhésion confirmée à une entraide |
 | `participation_evenement`                                | `Evenement`                        | `join_requests` (`participate_at` non nul) | `participate_at` | Participation confirmée à un événement |
