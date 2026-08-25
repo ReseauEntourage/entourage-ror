@@ -4,6 +4,7 @@ class InappNotification < ApplicationRecord
   belongs_to :user # user that is notified
   belongs_to :sender, class_name: :User, required: false # user that created the notification
   belongs_to :post, class_name: :ChatMessage, required: false
+  belongs_to :chat_message, class_name: :ChatMessage, required: false
 
   default_scope { order(created_at: :desc) }
 

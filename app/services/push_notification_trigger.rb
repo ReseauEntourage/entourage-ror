@@ -346,7 +346,8 @@ class PushNotificationTrigger
             joinable_type: @record.messageable_type,
             type: 'NEW_CHAT_MESSAGE'
           }
-        }
+        },
+        chat_message_id: @record.id
       )
     end
   end
@@ -371,7 +372,8 @@ class PushNotificationTrigger
             joinable_type: @record.messageable_type,
             type: 'NEW_CHAT_MESSAGE'
           }
-        }
+        },
+        chat_message_id: @record.id
       )
     end
   end
@@ -414,7 +416,8 @@ class PushNotificationTrigger
             joinable_type: @record.messageable_type,
             type: 'NEW_CHAT_MESSAGE'
           }
-        }
+        },
+        chat_message_id: @record.id
       )
     end
   end
@@ -456,7 +459,8 @@ class PushNotificationTrigger
           extra: {
             tracking: tracking
           }
-        }
+        },
+        chat_message_id: @record.id
       )
     end
   end
@@ -489,7 +493,8 @@ class PushNotificationTrigger
           extra: {
             tracking: :chat_message_on_mention
           }
-        }
+        },
+        chat_message_id: @record.id
       )
     end
 
@@ -515,7 +520,8 @@ class PushNotificationTrigger
         extra: {
           tracking: :reaction_on_create
         }
-      }
+      },
+      chat_message_id: (@record.instance.id if @record.instance.is_a?(ChatMessage))
     )
   end
 
@@ -645,7 +651,8 @@ class PushNotificationTrigger
         extra: {
           tracking: :survey_response_on_create,
         }
-      }
+      },
+      chat_message_id: @record.chat_message.id
     )
   end
 
@@ -750,15 +757,18 @@ class PushNotificationTrigger
   end
 
   # use params[:extra] to be compliant with v7
-  def notify sender_id:, referent:, instance:, users:, params: {}
-    notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
-    notify_inapp(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
+  def notify sender_id:, referent:, instance:, users:, params: {}, chat_message_id: nil
+    notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params, chat_message_id: chat_message_id)
+    notify_inapp(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params, chat_message_id: chat_message_id)
     notify_cable(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
   end
 
-  def notify_push sender_id:, referent:, instance:, users:, params: {}
+  def notify_push sender_id:, referent:, instance:, users:, params: {}, chat_message_id: nil
     instance = PushNotificationLinker.get(instance)
     referent = PushNotificationLinker.get(referent)
+
+    extra = instance.merge(params[:extra] || {})
+    extra[:chat_message_id] = chat_message_id if chat_message_id
 
     PushNotificationService.new.send_notification(
       params[:sender],
@@ -767,11 +777,11 @@ class PushNotificationTrigger
       users,
       referent[:instance],
       referent[:instance_id],
-      instance.merge(params[:extra] || {}).merge(params[:options] || {})
+      extra.merge(params[:options] || {})
     )
   end
 
-  def notify_inapp sender_id:, referent:, instance:, users:, params: {}
+  def notify_inapp sender_id:, referent:, instance:, users:, params: {}, chat_message_id: nil
     instance = PushNotificationLinker.get(instance)
     referent = PushNotificationLinker.get(referent)
 
@@ -784,6 +794,7 @@ class PushNotificationTrigger
         instance: instance[:instance],
         instance_id: instance[:instance_id],
         post_id: instance[:post_id],
+        chat_message_id: chat_message_id,
         referent: referent[:instance],
         referent_id: referent[:instance_id],
         title: params[:object].to(user.lang),

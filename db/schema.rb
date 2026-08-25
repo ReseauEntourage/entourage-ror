@@ -421,6 +421,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_120100) do
     t.integer "sender_id"
     t.string "title"
     t.string "instance_baseclass", default: "Entourage"
+    t.integer "chat_message_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
