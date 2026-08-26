@@ -2,8 +2,6 @@ module SalesforceServices
   class Client
     def self.connexion
       @client ||= Restforce.new(
-        username: ENV['SALESFORCE_USERNAME'],
-        password: ENV['SALESFORCE_PASSWORD'],
         instance_url: ENV['SALESFORCE_LOGIN_URL'],
         host: ENV['SALESFORCE_HOST'],
         client_id: ENV['SALESFORCE_CLIENT_ID'],
