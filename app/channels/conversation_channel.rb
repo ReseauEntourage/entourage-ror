@@ -47,6 +47,14 @@ class ConversationChannel < ApplicationCable::Channel
       broadcast_reaction_event(user_reaction, chat_message, "user_reaction_removed")
     end
 
+    def broadcast_member_joined(join_request)
+      broadcast_membership_event(join_request, "member_joined")
+    end
+
+    def broadcast_member_left(join_request)
+      broadcast_membership_event(join_request, "member_left")
+    end
+
     def stream_for(instance)
       "#{STREAM_PREFIX}:#{stream_type_for(instance)}:#{instance.id}"
     end
@@ -62,12 +70,12 @@ class ConversationChannel < ApplicationCable::Channel
       instance.class.name
     end
 
-    def broadcast_event(messageable, type:, user_id:, instance_type:, instance_id:, data:)
-      return unless messageable
-      return unless stream_type_for(messageable)
+    def broadcast_event(subject, type:, user_id:, instance_type:, instance_id:, data:)
+      return unless subject
+      return unless stream_type_for(subject)
 
       ActionCable.server.broadcast(
-        stream_for(messageable),
+        stream_for(subject),
         {
           type:          type,
           user_id:       user_id,
@@ -94,8 +102,23 @@ class ConversationChannel < ApplicationCable::Channel
       )
     end
 
+    def broadcast_membership_event(join_request, type)
+      broadcast_event(
+        join_request.joinable,
+        type:          type,
+        user_id:       join_request.user_id,
+        instance_type: "JoinRequest",
+        instance_id:   join_request.id,
+        data:          serialize_join_request(join_request)
+      )
+    end
+
     def serialize_chat_message(message)
       V1::ChatMessageSerializer.new(message, scope: {}, root: false).as_json
+    end
+
+    def serialize_join_request(join_request)
+      V1::JoinRequestSerializer.new(join_request, scope: {}, root: false).as_json
     end
   end
 
