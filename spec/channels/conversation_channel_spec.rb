@@ -313,6 +313,45 @@ RSpec.describe ConversationChannel, type: :channel do
     end
   end
 
+  describe ".broadcast_member_joined" do
+    let!(:join_request) { create(:join_request, joinable: outing, user: user, status: 'accepted') }
+
+    it "diffuse sur le stream de l'outing avec le type member_joined" do
+      expect {
+        ConversationChannel.broadcast_member_joined(join_request)
+      }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
+        .with(hash_including(
+          type:          "member_joined",
+          user_id:       user.id,
+          instance_type: "JoinRequest",
+          instance_id:   join_request.id
+        ))
+    end
+
+    it "inclut les données sérialisées du membre" do
+      expect {
+        ConversationChannel.broadcast_member_joined(join_request)
+      }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
+        .with(hash_including(data: hash_including("id" => user.id)))
+    end
+  end
+
+  describe ".broadcast_member_left" do
+    let!(:join_request) { create(:join_request, joinable: outing, user: user, status: 'cancelled') }
+
+    it "diffuse sur le stream de l'outing avec le type member_left" do
+      expect {
+        ConversationChannel.broadcast_member_left(join_request)
+      }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
+        .with(hash_including(
+          type:          "member_left",
+          user_id:       user.id,
+          instance_type: "JoinRequest",
+          instance_id:   join_request.id
+        ))
+    end
+  end
+
   # ─── Broadcasts — conversation privée ───────────────────────────────────────
 
   describe ".broadcast_chat_message_created — conversation privée" do
@@ -363,6 +402,28 @@ RSpec.describe ConversationChannel, type: :channel do
     end
   end
 
+  describe ".broadcast_member_joined — neighborhood" do
+    let!(:join_request) { create(:join_request, joinable: neighborhood, user: user, status: 'accepted') }
+
+    it "diffuse sur le stream du neighborhood avec le type member_joined" do
+      expect {
+        ConversationChannel.broadcast_member_joined(join_request)
+      }.to have_broadcasted_to("conversation:Neighborhood:#{neighborhood.id}")
+        .with(hash_including(type: "member_joined", instance_type: "JoinRequest"))
+    end
+  end
+
+  describe ".broadcast_member_left — neighborhood" do
+    let!(:join_request) { create(:join_request, joinable: neighborhood, user: user, status: 'cancelled') }
+
+    it "diffuse sur le stream du neighborhood avec le type member_left" do
+      expect {
+        ConversationChannel.broadcast_member_left(join_request)
+      }.to have_broadcasted_to("conversation:Neighborhood:#{neighborhood.id}")
+        .with(hash_including(type: "member_left", instance_type: "JoinRequest"))
+    end
+  end
+
   # ─── Smalltalk broadcast ─────────────────────────────────────────────────────
 
   describe ".broadcast_chat_message_created — smalltalk" do
@@ -373,6 +434,17 @@ RSpec.describe ConversationChannel, type: :channel do
         ConversationChannel.broadcast_chat_message_created(message)
       }.to have_broadcasted_to("conversation:Smalltalk:#{smalltalk.id}")
         .with(hash_including(type: "chat_message_created", instance_type: "ChatMessage"))
+    end
+  end
+
+  describe ".broadcast_member_joined — smalltalk" do
+    let!(:join_request) { create(:join_request, joinable: smalltalk, user: user, status: 'accepted') }
+
+    it "diffuse sur le stream du smalltalk avec le type member_joined" do
+      expect {
+        ConversationChannel.broadcast_member_joined(join_request)
+      }.to have_broadcasted_to("conversation:Smalltalk:#{smalltalk.id}")
+        .with(hash_including(type: "member_joined", instance_type: "JoinRequest"))
     end
   end
 
