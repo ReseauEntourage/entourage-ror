@@ -523,6 +523,17 @@ class Entourage < ApplicationRecord
     Solicitation
   end
 
+  # Specific subclass this record is broadcast/subscribed as on ConversationChannel.
+  # nil for group_type "group", which has no dedicated class and no websocket support.
+  def websocket_class
+    return Outing if outing?
+    return Conversation if conversation?
+    return Contribution if action? && contribution?
+    return Solicitation if action? && solicitation?
+
+    nil
+  end
+
   def cancelled?
     status && status.to_sym == :cancelled
   end
