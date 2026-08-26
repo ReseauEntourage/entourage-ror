@@ -13,7 +13,7 @@ RSpec.describe ConversationBroadcastObserver do
       it "diffuse chat_message_created sur le stream de l'outing" do
         expect {
           create(:chat_message, messageable: outing, user: user, content: "Hello !")
-        }.to have_broadcasted_to("conversation:Entourage:#{outing.id}")
+        }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
           .with(hash_including(
             type:          "chat_message_created",
             user_id:       user.id,
@@ -35,7 +35,7 @@ RSpec.describe ConversationBroadcastObserver do
       it "ne diffuse pas" do
         expect {
           create(:chat_message, :closed_as_success, messageable: outing, user: user)
-        }.not_to have_broadcasted_to("conversation:Entourage:#{outing.id}")
+        }.not_to have_broadcasted_to("conversation:Outing:#{outing.id}")
       end
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe ConversationBroadcastObserver do
     it "diffuse chat_message_updated quand le statut change" do
       expect {
         message.update!(status: :offensive)
-      }.to have_broadcasted_to("conversation:Entourage:#{outing.id}")
+      }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
         .with(hash_including(
           type:          "chat_message_updated",
           user_id:       user.id,
@@ -60,7 +60,7 @@ RSpec.describe ConversationBroadcastObserver do
     it "ne diffuse pas si le contenu change sans changer le statut" do
       expect {
         message.update!(content: "Nouveau contenu")
-      }.not_to have_broadcasted_to("conversation:Entourage:#{outing.id}")
+      }.not_to have_broadcasted_to("conversation:Outing:#{outing.id}")
         .with(hash_including(type: "chat_message_updated"))
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe ConversationBroadcastObserver do
     it "diffuse user_reaction_added quand une réaction est créée" do
       expect {
         create(:user_reaction, user: user, reaction: reaction, instance: message)
-      }.to have_broadcasted_to("conversation:Entourage:#{outing.id}")
+      }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
         .with(hash_including(
           type:          "user_reaction_added",
           user_id:       user.id,
@@ -95,7 +95,7 @@ RSpec.describe ConversationBroadcastObserver do
     it "diffuse user_reaction_removed quand une réaction est détruite" do
       expect {
         user_reaction.destroy!
-      }.to have_broadcasted_to("conversation:Entourage:#{outing.id}")
+      }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
         .with(hash_including(
           type:    "user_reaction_removed",
           user_id: user.id

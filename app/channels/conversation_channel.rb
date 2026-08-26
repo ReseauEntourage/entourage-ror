@@ -1,6 +1,6 @@
 class ConversationChannel < ApplicationCable::Channel
   STREAM_PREFIX = "conversation"
-  ALLOWED_INSTANCE_TYPES = %w[Entourage Neighborhood].freeze
+  ALLOWED_INSTANCE_TYPES = %w[Outing Conversation Solicitation Contribution Neighborhood Smalltalk].freeze
 
   def subscribed
     reject and return unless current_user
@@ -48,13 +48,23 @@ class ConversationChannel < ApplicationCable::Channel
     end
 
     def stream_for(instance)
-      "#{STREAM_PREFIX}:#{instance.class.name}:#{instance.id}"
+      "#{STREAM_PREFIX}:#{stream_type_for(instance)}:#{instance.id}"
     end
 
     private
 
+    # For Entourage records, the stream type is derived from group_type/entourage_type
+    # rather than instance.class.name: messageable_type is always stored as the base
+    # class "Entourage", so message.messageable is always a plain Entourage instance.
+    def stream_type_for(instance)
+      return instance.websocket_class&.name if instance.is_a?(Entourage)
+
+      instance.class.name
+    end
+
     def broadcast_event(messageable, type:, user_id:, instance_type:, instance_id:, data:)
       return unless messageable
+      return unless stream_type_for(messageable)
 
       ActionCable.server.broadcast(
         stream_for(messageable),
