@@ -428,4 +428,26 @@ RSpec.describe Entourage, type: :model do
       expect(preloaded.interlocutor_of(user)).to eq(other)
     end
   end
+
+  describe '#websocket_class' do
+    it 'returns Outing for group_type outing' do
+      expect(build(:outing).websocket_class).to eq(Outing)
+    end
+
+    it 'returns Conversation for group_type conversation' do
+      expect(build(:conversation).websocket_class).to eq(Conversation)
+    end
+
+    it 'returns Solicitation for group_type action / entourage_type ask_for_help' do
+      expect(build(:solicitation).websocket_class).to eq(Solicitation)
+    end
+
+    it 'returns Contribution for group_type action / entourage_type contribution' do
+      expect(build(:contribution).websocket_class).to eq(Contribution)
+    end
+
+    it 'returns nil for group_type group' do
+      expect(Entourage.new(group_type: 'group', entourage_type: 'ask_for_help').websocket_class).to be_nil
+    end
+  end
 end
