@@ -24,8 +24,8 @@
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
--- 0. Contrôle : liste des partitions de user_interactions et nombre de
---    lignes par partition, à comparer avec le total exporté plus bas.
+-- 0. Contrôle : liste des partitions de user_interactions et taille
+--    par partition, à comparer avec le total exporté plus bas.
 -- ---------------------------------------------------------------------
 SELECT
   child.relname  AS partition,
