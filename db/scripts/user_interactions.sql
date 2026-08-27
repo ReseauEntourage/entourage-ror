@@ -48,11 +48,6 @@ CREATE TABLE IF NOT EXISTS stats.user_interactions (
   CONSTRAINT user_interactions_pkey PRIMARY KEY (id, interaction_at)
 ) PARTITION BY RANGE (interaction_at);
 
-CREATE INDEX IF NOT EXISTS index_user_interactions_on_user_id ON stats.user_interactions (user_id);
-CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_type ON stats.user_interactions (interaction_type);
-CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_at ON stats.user_interactions (interaction_at);
-CREATE INDEX IF NOT EXISTS index_user_interactions_on_object ON stats.user_interactions (object_type, object_id);
-
 -- Une partition par année (2015 à 2035, même plage que
 -- db/migrate/20260505120000_partition_join_requests_by_type_and_year.rb),
 -- plus une partition "default" qui absorbe toute date hors bornes
@@ -70,6 +65,11 @@ BEGIN
 END $$;
 
 CREATE TABLE IF NOT EXISTS stats.user_interactions_default PARTITION OF stats.user_interactions DEFAULT;
+
+CREATE INDEX IF NOT EXISTS index_user_interactions_on_user_id ON stats.user_interactions (user_id);
+CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_type ON stats.user_interactions (interaction_type);
+CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_at ON stats.user_interactions (interaction_at);
+CREATE INDEX IF NOT EXISTS index_user_interactions_on_object ON stats.user_interactions (object_type, object_id);
 
 
 -- ---------------------------------------------------------------------
