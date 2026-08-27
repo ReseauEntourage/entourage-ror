@@ -115,6 +115,7 @@ LEFT JOIN addresses a ON a.id = u.address_id;
 -- Fin : mise à jour des statistiques pour l'optimiseur de requêtes
 -- ---------------------------------------------------------------------
 ANALYZE stats.user_profile;
+COMMIT;
 
 -- Contrôle rapide : répartition par objectif
 -- SELECT goal, count(*)
