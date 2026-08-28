@@ -44,6 +44,39 @@ CREATE TABLE stats.user_interactions (
 );
 ```
 
+## Filtre sur les utilisateurs
+
+Comme pour `stats.user_profile` (cf. `user_profile_prompt.md`), seuls les
+utilisateurs suivants sont dans le périmètre du script :
+
+```sql
+SELECT u.id FROM users u
+WHERE
+  u.community = 'entourage'
+  AND u.last_sign_in_at IS NOT NULL
+  AND NOT (
+    COALESCE(u.targeting_profile, '') = 'team'
+    AND u.roles @> '["moderator"]'::jsonb
+  )
+```
+
+Le troisième critère (`NOT (...)`) exclut en plus les modérateurs de
+l'équipe entourage (`targeting_profile = 'team'` et rôle `moderator` dans
+`roles`) : sur demande explicite, ils sont retirés des interactions (leur
+activité de modération n'est pas un signal de profilage comportemental
+exploitable pour le clustering) mais **restent** dans `stats.user_profile`
+— ce filtre n'est donc appliqué qu'ici, pas dans `user_profile.sql`.
+
+Pour éviter de répéter ce filtre dans chacune des 19 sections (chaque
+section part d'une table source différente — `login_histories`,
+`chat_messages`, `join_requests`... — pas de `users`), le script matérialise
+ce périmètre une fois dans une table temporaire `tmp_scope_users` (section
+0bis), que chaque section rejoint sur sa colonne `user_id` (ou équivalent,
+ex. `inviter_id` pour `entourage_invitations`). Les deux tables
+`stats.user_profile` et `stats.user_interactions` restent donc cohérentes
+sur `community`/`last_sign_in_at`, mais `user_interactions` a un périmètre
+utilisateurs légèrement plus restreint (sans les modérateurs team).
+
 ## Méthode
 
 1. Lire `db/schema.rb` en entier pour lister toutes les tables de la base
@@ -169,6 +202,15 @@ CREATE TABLE stats.user_interactions (
 
 ## Historique des ajustements
 
+- 2026-08-28 : ajout du filtre utilisateurs (`community = 'entourage'` et
+  `last_sign_in_at IS NOT NULL`, cf. « Filtre sur les utilisateurs »),
+  pour aligner le périmètre de `stats.user_interactions` sur celui de
+  `stats.user_profile`. Implémenté via une table temporaire
+  `tmp_scope_users` (section 0bis) rejointe dans chacune des 19 sections.
+- 2026-08-28 : exclusion des modérateurs de l'équipe entourage
+  (`targeting_profile = 'team'` et rôle `moderator`) du filtre
+  `tmp_scope_users` — ils gardent une ligne dans `stats.user_profile`
+  mais n'apparaissent plus dans `stats.user_interactions`.
 - 2026-08-18 : la table cible est déplacée du schéma `public` vers le
   schéma `stats` (`stats.user_interactions`), toutes les instructions du
   script (`CREATE TABLE`, index, `DELETE`, `INSERT`, `ANALYZE`) sont

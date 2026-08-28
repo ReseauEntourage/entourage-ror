@@ -108,7 +108,9 @@ SELECT
      FROM user_badges ub
      WHERE ub.user_id = u.id AND ub.active)
 FROM users u
-LEFT JOIN addresses a ON a.id = u.address_id;
+LEFT JOIN addresses a ON a.id = u.address_id
+WHERE u.community = 'entourage'
+  AND u.last_sign_in_at IS NOT NULL;
 
 
 -- ---------------------------------------------------------------------

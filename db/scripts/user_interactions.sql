@@ -73,6 +73,32 @@ CREATE INDEX IF NOT EXISTS index_user_interactions_on_object ON stats.user_inter
 
 
 -- ---------------------------------------------------------------------
+-- 0bis. Périmètre utilisateurs : mêmes utilisateurs que stats.user_profile
+--       (cf. user_profile_prompt.md « Filtre sur les utilisateurs ») —
+--       community = 'entourage' et déjà connectés au moins une fois —
+--       moins les modérateurs de l'équipe entourage (targeting_profile
+--       = 'team' et rôle 'moderator'), exclus des interactions mais pas
+--       de user_profile.
+--       Table temporaire pour éviter de répéter le filtre dans chacune
+--       des sections 1 à 19 ci-dessous ; recréée à chaque exécution du
+--       script, purgée automatiquement en fin de session.
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS tmp_scope_users;
+CREATE TEMP TABLE tmp_scope_users AS
+SELECT u.id FROM users u
+WHERE
+  u.community = 'entourage'
+  AND u.last_sign_in_at IS NOT NULL
+  AND NOT (
+    COALESCE(u.targeting_profile, '') = 'team'
+    AND u.roles @> '["moderator"]'::jsonb
+  )
+  ;
+
+CREATE UNIQUE INDEX ON tmp_scope_users (id);
+
+
+-- ---------------------------------------------------------------------
 -- 1. Connexions (login_histories)
 -- ---------------------------------------------------------------------
 DELETE FROM stats.user_interactions WHERE interaction_type = 'connexion';
@@ -85,7 +111,8 @@ SELECT
   NULL,
   lh.connected_at,
   NULL
-FROM login_histories lh;
+FROM login_histories lh
+JOIN tmp_scope_users su ON su.id = lh.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -102,7 +129,8 @@ SELECT
   sh.date::timestamp,
   'plateforme=' || sh.platform ||
     COALESCE(', notifications=' || sh.notifications_permissions, '')
-FROM session_histories sh;
+FROM session_histories sh
+JOIN tmp_scope_users su ON su.id = sh.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -133,7 +161,8 @@ SELECT
   e.id,
   e.created_at,
   e.title
-FROM entourages e;
+FROM entourages e
+JOIN tmp_scope_users su ON su.id = e.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -149,7 +178,8 @@ SELECT
   n.id,
   n.created_at,
   n.name
-FROM neighborhoods n;
+FROM neighborhoods n
+JOIN tmp_scope_users su ON su.id = n.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -184,6 +214,7 @@ SELECT
   COALESCE(jr.requested_at, jr.created_at),
   'statut=' || jr.status || ', role=' || jr.role
 FROM join_requests jr
+JOIN tmp_scope_users su ON su.id = jr.user_id
 LEFT JOIN entourages e ON jr.joinable_type = 'Entourage' AND e.id = jr.joinable_id
 WHERE jr.accepted_at IS NULL;
 
@@ -217,6 +248,7 @@ SELECT
   jr.accepted_at,
   'role=' || jr.role
 FROM join_requests jr
+JOIN tmp_scope_users su ON su.id = jr.user_id
 LEFT JOIN entourages e ON jr.joinable_type = 'Entourage' AND e.id = jr.joinable_id
 WHERE jr.accepted_at IS NOT NULL;
 
@@ -235,6 +267,7 @@ SELECT
   jr.participate_at,
   NULL
 FROM join_requests jr
+JOIN tmp_scope_users su ON su.id = jr.user_id
 WHERE jr.participate_at IS NOT NULL
   AND jr.joinable_type = 'Entourage';
 
@@ -272,6 +305,7 @@ SELECT
   cm.created_at,
   LEFT(cm.content, 255)
 FROM chat_messages cm
+JOIN tmp_scope_users su ON su.id = cm.user_id
 LEFT JOIN entourages e ON cm.messageable_type = 'Entourage' AND e.id = cm.messageable_id
 WHERE cm.status <> 'deleted'
   AND cm.message_type NOT IN ('status_update', 'auto', 'broadcast');
@@ -291,6 +325,7 @@ SELECT
   ur.created_at,
   r.key
 FROM user_reactions ur
+JOIN tmp_scope_users su ON su.id = ur.user_id
 LEFT JOIN reactions r ON r.id = ur.reaction_id
 WHERE ur.instance_type = 'ChatMessage';
 
@@ -308,7 +343,8 @@ SELECT
   ubu.blocked_user_id,
   ubu.created_at,
   'bloqué'
-FROM user_blocked_users ubu;
+FROM user_blocked_users ubu
+JOIN tmp_scope_users su ON su.id = ubu.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -324,7 +360,8 @@ SELECT
   ei.invitee_id,
   ei.created_at,
   'entourage_id=' || ei.invitable_id || ', statut=' || ei.status
-FROM entourage_invitations ei;
+FROM entourage_invitations ei
+JOIN tmp_scope_users su ON su.id = ei.inviter_id;
 
 
 -- ---------------------------------------------------------------------
@@ -341,6 +378,7 @@ SELECT
   f.created_at,
   CASE WHEN f.active THEN 'actif' ELSE 'inactif' END
 FROM followings f
+JOIN tmp_scope_users su ON su.id = f.user_id
 WHERE f.created_at IS NOT NULL;
 
 
@@ -358,6 +396,7 @@ SELECT
   pjr.created_at,
   pjr.new_partner_name
 FROM partner_join_requests pjr
+JOIN tmp_scope_users su ON su.id = pjr.user_id
 WHERE pjr.created_at IS NOT NULL;
 
 
@@ -374,7 +413,8 @@ SELECT
   us.smalltalk_id,
   us.created_at,
   NULL
-FROM user_smalltalks us;
+FROM user_smalltalks us
+JOIN tmp_scope_users su ON su.id = us.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -391,6 +431,7 @@ SELECT
   us.matched_at,
   NULL
 FROM user_smalltalks us
+JOIN tmp_scope_users su ON su.id = us.user_id
 WHERE us.matched_at IS NOT NULL;
 
 
@@ -407,7 +448,8 @@ SELECT
   sr.chat_message_id,
   sr.created_at,
   NULL
-FROM survey_responses sr;
+FROM survey_responses sr
+JOIN tmp_scope_users su ON su.id = sr.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -424,6 +466,7 @@ SELECT
   COALESCE(ub.awarded_at, ub.created_at),
   ub.badge_tag
 FROM user_badges ub
+JOIN tmp_scope_users su ON su.id = ub.user_id
 WHERE ub.active;
 
 
@@ -442,7 +485,8 @@ SELECT
   inn.created_at,
   'sender_id=' || COALESCE(inn.sender_id::text, 'system') ||
     COALESCE(', titre=' || inn.title, '')
-FROM inapp_notifications inn;
+FROM inapp_notifications inn
+JOIN tmp_scope_users su ON su.id = inn.user_id;
 
 
 -- ---------------------------------------------------------------------
@@ -461,6 +505,7 @@ SELECT
   ur.updated_at,
   r.name || ' (categorie=' || r.category || COALESCE(', tag=' || r.tag, '') || ')'
 FROM users_resources ur
+JOIN tmp_scope_users su ON su.id = ur.user_id
 JOIN resources r ON r.id = ur.resource_id
 WHERE ur.watched = true;
 

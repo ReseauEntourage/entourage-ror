@@ -56,6 +56,25 @@ CREATE TABLE stats.user_profile (
 );
 ```
 
+## Filtre sur les utilisateurs
+
+Le snapshot ne porte pas sur toute la table `users`, mais uniquement sur
+les utilisateurs pertinents pour le profilage :
+
+```sql
+WHERE u.community = 'entourage'
+  AND u.last_sign_in_at IS NOT NULL
+```
+
+- `community = 'entourage'` : exclut les autres communautés (ex. voisins
+  solidaires) hors périmètre de ce profilage. La colonne `community`
+  n'est pour autant pas stockée dans `user_profile` (cf. « Colonnes
+  explorées mais volontairement exclues ») : elle sert de filtre à
+  l'exécution, pas d'attribut de segmentation.
+- `last_sign_in_at IS NOT NULL` : exclut les comptes jamais connectés
+  (créés mais jamais activés), qui n'ont pas de signal comportemental
+  exploitable pour un clustering par interactions.
+
 ## Méthode
 
 1. Lire `db/schema.rb`, table `users`, et `app/models/user.rb` en entier
@@ -130,7 +149,9 @@ CREATE TABLE stats.user_profile (
   redondantes avec les tags actuels.
 - `organization_id` : colonne présente en base mais non référencée dans
   `app/models` (remplacée par `partner_id`).
-- `community` : écartée sur demande.
+- `community` : écartée sur demande en tant que colonne stockée, mais
+  utilisée comme critère de filtrage (`community = 'entourage'`, cf.
+  « Filtre sur les utilisateurs »).
 - `marketing_referer_id`, `old_atd_friend`,
   `old_onboarding_sequence_start_at`, `use_suggestions`,
   `first_sign_in_at` (redondant avec `created_at`/`last_sign_in_at`),
