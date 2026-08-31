@@ -644,13 +644,13 @@ fr:
       ask: "Vous n'imaginez pas tout ce que contient votre nouvelle app : venez la découvrir !"
 
   regions:
-    ouest: Ouest
     sud_ouest: Sud-Ouest
     sud_est: Sud-Est
-    aura: Auvergne-Rhône-Alpes
-    nord: Nord
+    grand_ouest: Grand-Ouest
+    centre: Centre
     idf: Ile-de-France
-    centre_est: Centre-Est
+    hauts_de_france: Hauts-de-France
+    grand_est: Grand-Est
 
   conversations:
     participants:
