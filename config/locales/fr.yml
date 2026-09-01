@@ -647,9 +647,7 @@ fr:
     sud_ouest: Sud-Ouest
     sud_est: Sud-Est
     grand_ouest: Grand-Ouest
-    centre: Centre
     idf: Ile-de-France
-    hauts_de_france: Hauts-de-France
     grand_est: Grand-Est
 
   conversations:
