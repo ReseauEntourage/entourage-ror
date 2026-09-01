@@ -99,12 +99,18 @@ conservée).
 
 ## Méthode
 
-1. Découper la règle 1 (échange de messages) en 5 sous-requêtes unifiées par
-   `UNION ALL`, une par combinaison (règle structurelle × contenant), plutôt
-   qu'une seule requête générique : les règles diffèrent trop (avec/sans
+1. Découper la règle 1 (échange de messages) en 4 requêtes indépendantes,
+   une par combinaison (règle structurelle × contenant), plutôt qu'une
+   seule requête générique : les règles diffèrent trop (avec/sans
    restriction d'`ancestry`, avec/sans règle publication-publication) pour
    être exprimées simplement en une seule requête paramétrée par
-   `group_type`.
+   `group_type`. Chacune des 4 est un `INSERT ... GROUP BY ... ON CONFLICT
+   (...) DO UPDATE` indépendant sur `stats.user_interaction_pairs`
+   (occurrences additionnées, bornes de dates étendues en cas de conflit),
+   plutôt qu'un `UNION ALL` combiné en une seule requête agrégée : chaque
+   instruction reste petite et rapide à planifier/exécuter sur une base
+   partagée (demande explicite du 2026-09-01, cf. « Historique des
+   ajustements »).
 2. `chat_messages.ancestry` est à un seul niveau dans ce schéma (impossible
    de commenter un commentaire, cf. `ChatMessage#validate_ancestry!`) : pour
    un commentaire, `ancestry` vaut directement l'id (en texte) de la
@@ -113,7 +119,7 @@ conservée).
 3. Matérialiser une fois dans `tmp_context_messages` les messages actifs,
    dans le périmètre utilisateurs, et restreints aux 4 contenants couverts
    par la règle 1 (quartier / événement / conversation / bonnes ondes),
-   pour éviter de répéter ces filtres dans les 5 sous-requêtes.
+   pour éviter de répéter ces filtres dans les 4 requêtes.
 4. Le délai de 30 jours (règle 1) est vérifié **au niveau de la paire de
    messages qualifiante** (`ABS(EXTRACT(EPOCH FROM (m2.created_at -
    m1.created_at))) <= 30 * 86400`), pas au niveau du fil de discussion en
@@ -177,6 +183,18 @@ règle 3 (participation à un événement, `group_type = 'outing'`) s'appuie sur
 
 ## Historique des ajustements
 
+- 2026-09-01 : script exécuté sur preprod (`entourage-backend-postgresql-preprod`,
+  ~1,4s pour ~40k `chat_messages` / 37k `join_requests`). Un bug réel a été
+  trouvé au passage (`join_requests.accepted_at` peut être NULL même avec
+  `status = 'accepted'`, cf. point 6 ci-dessus) et corrigé. Résultat obtenu :
+  2090 paires (4 catégories de contenant pour `echange_messages`, 1 pour
+  `reaction`, 1 pour `participation_evenement`) ; vérifié sans fuite côté
+  équipe ou paires bloquées. Sur demande explicite, la règle 1 (échange de
+  messages) est ensuite passée de 4 sous-requêtes combinées en un seul
+  `UNION ALL` + agrégation à 4 `INSERT ... ON CONFLICT DO UPDATE`
+  indépendants sur `stats.user_interaction_pairs`, pour rester léger à
+  exécuter sur une base partagée (cf. point 1 ci-dessus) — comportement
+  fonctionnellement identique, revalidé sur le même jeu de données de test.
 - 2026-09-01 : sur demande explicite, l'exclusion des groupes
   communautaires/entraides (`group_type IN ('group', 'action')`) est
   étendue de la règle 1 (échange de messages) à la règle 2 (réaction), qui

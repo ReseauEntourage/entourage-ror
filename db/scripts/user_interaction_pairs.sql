@@ -143,107 +143,153 @@ CREATE INDEX ON tmp_context_messages (context_kind, ancestry);
 --      deux messages de deux utilisateurs différents suffisent (1c/1d).
 --    Dans tous les cas, l'écart entre les deux messages doit être
 --    inférieur à 30 jours.
+--
+--    Les 4 règles structurelles ci-dessus sont désormais exécutées comme
+--    4 INSERT indépendants (un par auto-jointure) plutôt que combinées en
+--    une seule requête UNION ALL + agrégation : chaque instruction reste
+--    petite et rapide à planifier/exécuter sur une base partagée, au lieu
+--    d'un plan unique cumulant les 4 auto-jointures avant d'agréger.
+--    Chaque INSERT agrège et filtre (paires bloquées) sur son propre
+--    résultat, puis fusionne dans la table cible via
+--    `ON CONFLICT ... DO UPDATE` sur la contrainte d'unicité
+--    (user_id_1, user_id_2, interaction_type, context_type, context_id) :
+--    si une même paire est trouvée par plusieurs règles dans le même
+--    contenant (ex. un utilisateur a à la fois commenté une publication
+--    ET commenté au même endroit qu'un autre commentateur), les
+--    `occurrences` s'additionnent et les bornes de dates s'étendent,
+--    exactement comme le faisait l'unique agrégation précédente.
 -- ---------------------------------------------------------------------
 DELETE FROM stats.user_interaction_pairs WHERE interaction_type = 'echange_messages';
 
+-- 1a/1b. Commentaires de même publication (même ancestry), quartier + événement
 INSERT INTO stats.user_interaction_pairs (
   user_id_1, user_id_2, interaction_type, context_type, context_id,
   occurrences, first_interaction_at, last_interaction_at
 )
-WITH message_pairs AS (
-  -- 1a/1b. Commentaires de même publication (même ancestry), quartier + événement
-  SELECT
-    LEAST(m1.user_id, m2.user_id)    AS user_id_1,
-    GREATEST(m1.user_id, m2.user_id) AS user_id_2,
-    CASE m1.context_kind WHEN 'neighborhood' THEN 'Quartier' WHEN 'outing' THEN 'Evenement' END AS context_type,
-    m1.messageable_id AS context_id,
-    m1.created_at AS t1,
-    m2.created_at AS t2
-  FROM tmp_context_messages m1
-  JOIN tmp_context_messages m2
-    ON m2.messageable_type = m1.messageable_type
-   AND m2.messageable_id = m1.messageable_id
-   AND m2.ancestry = m1.ancestry
-   AND m2.id > m1.id
-   AND m2.user_id <> m1.user_id
-  WHERE m1.context_kind IN ('neighborhood', 'outing')
-    AND m1.ancestry IS NOT NULL
-    AND ABS(EXTRACT(EPOCH FROM (m2.created_at - m1.created_at))) <= 30 * 86400
+SELECT
+  LEAST(m1.user_id, m2.user_id),
+  GREATEST(m1.user_id, m2.user_id),
+  'echange_messages',
+  CASE m1.context_kind WHEN 'neighborhood' THEN 'Quartier' WHEN 'outing' THEN 'Evenement' END,
+  m1.messageable_id,
+  COUNT(*),
+  MIN(LEAST(m1.created_at, m2.created_at)),
+  MAX(GREATEST(m1.created_at, m2.created_at))
+FROM tmp_context_messages m1
+JOIN tmp_context_messages m2
+  ON m2.messageable_type = m1.messageable_type
+ AND m2.messageable_id = m1.messageable_id
+ AND m2.ancestry = m1.ancestry
+ AND m2.id > m1.id
+ AND m2.user_id <> m1.user_id
+LEFT JOIN tmp_blocked_pairs bp
+  ON bp.user_id_1 = LEAST(m1.user_id, m2.user_id) AND bp.user_id_2 = GREATEST(m1.user_id, m2.user_id)
+WHERE m1.context_kind IN ('neighborhood', 'outing')
+  AND m1.ancestry IS NOT NULL
+  AND ABS(EXTRACT(EPOCH FROM (m2.created_at - m1.created_at))) <= 30 * 86400
+  AND bp.user_id_1 IS NULL
+GROUP BY 1, 2, 4, 5
+ON CONFLICT (user_id_1, user_id_2, interaction_type, context_type, context_id) DO UPDATE SET
+  occurrences = stats.user_interaction_pairs.occurrences + EXCLUDED.occurrences,
+  first_interaction_at = LEAST(stats.user_interaction_pairs.first_interaction_at, EXCLUDED.first_interaction_at),
+  last_interaction_at = GREATEST(stats.user_interaction_pairs.last_interaction_at, EXCLUDED.last_interaction_at);
 
-  UNION ALL
-
-  -- 1a/1b. Commentaire <-> publication racine qu'il commente, quartier + événement
-  SELECT
-    LEAST(c.user_id, p.user_id)    AS user_id_1,
-    GREATEST(c.user_id, p.user_id) AS user_id_2,
-    CASE c.context_kind WHEN 'neighborhood' THEN 'Quartier' WHEN 'outing' THEN 'Evenement' END AS context_type,
-    c.messageable_id AS context_id,
-    c.created_at AS t1,
-    p.created_at AS t2
-  FROM tmp_context_messages c
-  JOIN tmp_context_messages p
-    ON p.messageable_type = c.messageable_type
-   AND p.messageable_id = c.messageable_id
-   AND p.ancestry IS NULL
-   AND p.id = c.ancestry::bigint
-   AND p.user_id <> c.user_id
-  WHERE c.context_kind IN ('neighborhood', 'outing')
-    AND c.ancestry IS NOT NULL
-    AND ABS(EXTRACT(EPOCH FROM (c.created_at - p.created_at))) <= 30 * 86400
-
-  UNION ALL
-
-  -- 1b. Publication <-> publication, événement uniquement
-  SELECT
-    LEAST(p1.user_id, p2.user_id)    AS user_id_1,
-    GREATEST(p1.user_id, p2.user_id) AS user_id_2,
-    'Evenement' AS context_type,
-    p1.messageable_id AS context_id,
-    p1.created_at AS t1,
-    p2.created_at AS t2
-  FROM tmp_context_messages p1
-  JOIN tmp_context_messages p2
-    ON p2.messageable_type = p1.messageable_type
-   AND p2.messageable_id = p1.messageable_id
-   AND p2.ancestry IS NULL
-   AND p2.id > p1.id
-   AND p2.user_id <> p1.user_id
-  WHERE p1.context_kind = 'outing'
-    AND p1.ancestry IS NULL
-    AND ABS(EXTRACT(EPOCH FROM (p2.created_at - p1.created_at))) <= 30 * 86400
-
-  UNION ALL
-
-  -- 1c/1d. Conversation privée et bonnes ondes : aucune restriction de hiérarchie
-  SELECT
-    LEAST(m1.user_id, m2.user_id)    AS user_id_1,
-    GREATEST(m1.user_id, m2.user_id) AS user_id_2,
-    CASE m1.context_kind WHEN 'conversation' THEN 'Conversation' WHEN 'smalltalk' THEN 'Bonnes ondes' END AS context_type,
-    m1.messageable_id AS context_id,
-    m1.created_at AS t1,
-    m2.created_at AS t2
-  FROM tmp_context_messages m1
-  JOIN tmp_context_messages m2
-    ON m2.messageable_type = m1.messageable_type
-   AND m2.messageable_id = m1.messageable_id
-   AND m2.id > m1.id
-   AND m2.user_id <> m1.user_id
-  WHERE m1.context_kind IN ('conversation', 'smalltalk')
-    AND ABS(EXTRACT(EPOCH FROM (m2.created_at - m1.created_at))) <= 30 * 86400
+-- 1a/1b. Commentaire <-> publication racine qu'il commente, quartier + événement
+INSERT INTO stats.user_interaction_pairs (
+  user_id_1, user_id_2, interaction_type, context_type, context_id,
+  occurrences, first_interaction_at, last_interaction_at
 )
 SELECT
-  mp.user_id_1,
-  mp.user_id_2,
+  LEAST(c.user_id, p.user_id),
+  GREATEST(c.user_id, p.user_id),
   'echange_messages',
-  mp.context_type,
-  mp.context_id,
+  CASE c.context_kind WHEN 'neighborhood' THEN 'Quartier' WHEN 'outing' THEN 'Evenement' END,
+  c.messageable_id,
   COUNT(*),
-  MIN(LEAST(mp.t1, mp.t2)),
-  MAX(GREATEST(mp.t1, mp.t2))
-FROM message_pairs mp
-LEFT JOIN tmp_blocked_pairs bp ON bp.user_id_1 = mp.user_id_1 AND bp.user_id_2 = mp.user_id_2
-WHERE bp.user_id_1 IS NULL
-GROUP BY mp.user_id_1, mp.user_id_2, mp.context_type, mp.context_id;
+  MIN(LEAST(c.created_at, p.created_at)),
+  MAX(GREATEST(c.created_at, p.created_at))
+FROM tmp_context_messages c
+JOIN tmp_context_messages p
+  ON p.messageable_type = c.messageable_type
+ AND p.messageable_id = c.messageable_id
+ AND p.ancestry IS NULL
+ AND p.id = c.ancestry::bigint
+ AND p.user_id <> c.user_id
+LEFT JOIN tmp_blocked_pairs bp
+  ON bp.user_id_1 = LEAST(c.user_id, p.user_id) AND bp.user_id_2 = GREATEST(c.user_id, p.user_id)
+WHERE c.context_kind IN ('neighborhood', 'outing')
+  AND c.ancestry IS NOT NULL
+  AND ABS(EXTRACT(EPOCH FROM (c.created_at - p.created_at))) <= 30 * 86400
+  AND bp.user_id_1 IS NULL
+GROUP BY 1, 2, 4, 5
+ON CONFLICT (user_id_1, user_id_2, interaction_type, context_type, context_id) DO UPDATE SET
+  occurrences = stats.user_interaction_pairs.occurrences + EXCLUDED.occurrences,
+  first_interaction_at = LEAST(stats.user_interaction_pairs.first_interaction_at, EXCLUDED.first_interaction_at),
+  last_interaction_at = GREATEST(stats.user_interaction_pairs.last_interaction_at, EXCLUDED.last_interaction_at);
+
+-- 1b. Publication <-> publication, événement uniquement
+INSERT INTO stats.user_interaction_pairs (
+  user_id_1, user_id_2, interaction_type, context_type, context_id,
+  occurrences, first_interaction_at, last_interaction_at
+)
+SELECT
+  LEAST(p1.user_id, p2.user_id),
+  GREATEST(p1.user_id, p2.user_id),
+  'echange_messages',
+  'Evenement',
+  p1.messageable_id,
+  COUNT(*),
+  MIN(LEAST(p1.created_at, p2.created_at)),
+  MAX(GREATEST(p1.created_at, p2.created_at))
+FROM tmp_context_messages p1
+JOIN tmp_context_messages p2
+  ON p2.messageable_type = p1.messageable_type
+ AND p2.messageable_id = p1.messageable_id
+ AND p2.ancestry IS NULL
+ AND p2.id > p1.id
+ AND p2.user_id <> p1.user_id
+LEFT JOIN tmp_blocked_pairs bp
+  ON bp.user_id_1 = LEAST(p1.user_id, p2.user_id) AND bp.user_id_2 = GREATEST(p1.user_id, p2.user_id)
+WHERE p1.context_kind = 'outing'
+  AND p1.ancestry IS NULL
+  AND ABS(EXTRACT(EPOCH FROM (p2.created_at - p1.created_at))) <= 30 * 86400
+  AND bp.user_id_1 IS NULL
+GROUP BY 1, 2, 4, 5
+ON CONFLICT (user_id_1, user_id_2, interaction_type, context_type, context_id) DO UPDATE SET
+  occurrences = stats.user_interaction_pairs.occurrences + EXCLUDED.occurrences,
+  first_interaction_at = LEAST(stats.user_interaction_pairs.first_interaction_at, EXCLUDED.first_interaction_at),
+  last_interaction_at = GREATEST(stats.user_interaction_pairs.last_interaction_at, EXCLUDED.last_interaction_at);
+
+-- 1c/1d. Conversation privée et bonnes ondes : aucune restriction de hiérarchie
+INSERT INTO stats.user_interaction_pairs (
+  user_id_1, user_id_2, interaction_type, context_type, context_id,
+  occurrences, first_interaction_at, last_interaction_at
+)
+SELECT
+  LEAST(m1.user_id, m2.user_id),
+  GREATEST(m1.user_id, m2.user_id),
+  'echange_messages',
+  CASE m1.context_kind WHEN 'conversation' THEN 'Conversation' WHEN 'smalltalk' THEN 'Bonnes ondes' END,
+  m1.messageable_id,
+  COUNT(*),
+  MIN(LEAST(m1.created_at, m2.created_at)),
+  MAX(GREATEST(m1.created_at, m2.created_at))
+FROM tmp_context_messages m1
+JOIN tmp_context_messages m2
+  ON m2.messageable_type = m1.messageable_type
+ AND m2.messageable_id = m1.messageable_id
+ AND m2.id > m1.id
+ AND m2.user_id <> m1.user_id
+LEFT JOIN tmp_blocked_pairs bp
+  ON bp.user_id_1 = LEAST(m1.user_id, m2.user_id) AND bp.user_id_2 = GREATEST(m1.user_id, m2.user_id)
+WHERE m1.context_kind IN ('conversation', 'smalltalk')
+  AND ABS(EXTRACT(EPOCH FROM (m2.created_at - m1.created_at))) <= 30 * 86400
+  AND bp.user_id_1 IS NULL
+GROUP BY 1, 2, 4, 5
+ON CONFLICT (user_id_1, user_id_2, interaction_type, context_type, context_id) DO UPDATE SET
+  occurrences = stats.user_interaction_pairs.occurrences + EXCLUDED.occurrences,
+  first_interaction_at = LEAST(stats.user_interaction_pairs.first_interaction_at, EXCLUDED.first_interaction_at),
+  last_interaction_at = GREATEST(stats.user_interaction_pairs.last_interaction_at, EXCLUDED.last_interaction_at);
 
 
 -- ---------------------------------------------------------------------
