@@ -76,9 +76,10 @@ CREATE INDEX IF NOT EXISTS index_user_interactions_on_object ON stats.user_inter
 -- 0bis. Périmètre utilisateurs : mêmes utilisateurs que stats.user_profile
 --       (cf. user_profile_prompt.md « Filtre sur les utilisateurs ») —
 --       community = 'entourage' et déjà connectés au moins une fois —
---       moins les modérateurs de l'équipe entourage (targeting_profile
---       = 'team' et rôle 'moderator'), exclus des interactions mais pas
---       de user_profile.
+--       moins l'équipe entourage (targeting_profile = 'team'), exclue des
+--       interactions mais pas de user_profile. Harmonisé avec le filtre
+--       de stats.user_interaction_pairs (cf. user_interaction_pairs_prompt.md) :
+--       exclusion de toute l'équipe, plus seulement des modérateurs.
 --       Table temporaire pour éviter de répéter le filtre dans chacune
 --       des sections 1 à 19 ci-dessous ; recréée à chaque exécution du
 --       script, purgée automatiquement en fin de session.
@@ -89,11 +90,7 @@ SELECT u.id FROM users u
 WHERE
   u.community = 'entourage'
   AND u.last_sign_in_at IS NOT NULL
-  AND NOT (
-    COALESCE(u.targeting_profile, '') = 'team'
-    AND u.roles @> '["moderator"]'::jsonb
-  )
-  ;
+  AND COALESCE(u.targeting_profile, '') <> 'team';
 
 CREATE UNIQUE INDEX ON tmp_scope_users (id);
 
@@ -185,19 +182,21 @@ JOIN tmp_scope_users su ON su.id = n.user_id;
 -- ---------------------------------------------------------------------
 -- 5. Demandes d'adhésion à un groupe / entraide / événement / quartier /
 --    bonnes ondes (join_requests, une ligne par demande - date de la
---    demande). Les entraides (group_type = 'action') sont distinguées
---    des groupes communautaires (group_type = 'group') via un
---    interaction_type dédié.
+--    demande). Les entraides (group_type = 'action') ne sont plus
+--    distinguées des groupes communautaires (group_type = 'group') par un
+--    interaction_type dédié (`demande_adhesion_entraide`) : cette
+--    fonctionnalité n'étant plus utilisable, la distinction est devenue
+--    obsolète et a été retirée (le DELETE ci-dessous cible encore
+--    l'ancien type pour nettoyer les lignes générées par une exécution
+--    antérieure du script). Le détail groupe/entraide reste visible via
+--    `object_type` (Groupe / Entraide).
 -- ---------------------------------------------------------------------
 DELETE FROM stats.user_interactions WHERE interaction_type IN ('demande_adhesion', 'demande_adhesion_entraide');
 
 INSERT INTO stats.user_interactions (user_id, interaction_type, object_type, object_id, interaction_at, description)
 SELECT
   jr.user_id,
-  CASE
-    WHEN jr.joinable_type = 'Entourage' AND e.group_type = 'action' THEN 'demande_adhesion_entraide'
-    ELSE 'demande_adhesion'
-  END,
+  'demande_adhesion',
   CASE
     WHEN jr.joinable_type = 'Entourage' THEN
       CASE e.group_type
@@ -221,17 +220,15 @@ WHERE jr.accepted_at IS NULL;
 
 -- ---------------------------------------------------------------------
 -- 6. Adhésions confirmées (join_requests.accepted_at renseigné). Même
---    distinction groupe / entraide que la section précédente.
+--    simplification que la section précédente : plus de distinction
+--    d'interaction_type groupe / entraide.
 -- ---------------------------------------------------------------------
 DELETE FROM stats.user_interactions WHERE interaction_type IN ('adhesion_confirmee', 'adhesion_confirmee_entraide');
 
 INSERT INTO stats.user_interactions (user_id, interaction_type, object_type, object_id, interaction_at, description)
 SELECT
   jr.user_id,
-  CASE
-    WHEN jr.joinable_type = 'Entourage' AND e.group_type = 'action' THEN 'adhesion_confirmee_entraide'
-    ELSE 'adhesion_confirmee'
-  END,
+  'adhesion_confirmee',
   CASE
     WHEN jr.joinable_type = 'Entourage' THEN
       CASE e.group_type

@@ -54,18 +54,18 @@ SELECT u.id FROM users u
 WHERE
   u.community = 'entourage'
   AND u.last_sign_in_at IS NOT NULL
-  AND NOT (
-    COALESCE(u.targeting_profile, '') = 'team'
-    AND u.roles @> '["moderator"]'::jsonb
-  )
+  AND COALESCE(u.targeting_profile, '') <> 'team'
 ```
 
-Le troisième critère (`NOT (...)`) exclut en plus les modérateurs de
-l'équipe entourage (`targeting_profile = 'team'` et rôle `moderator` dans
-`roles`) : sur demande explicite, ils sont retirés des interactions (leur
-activité de modération n'est pas un signal de profilage comportemental
-exploitable pour le clustering) mais **restent** dans `stats.user_profile`
-— ce filtre n'est donc appliqué qu'ici, pas dans `user_profile.sql`.
+Le troisième critère exclut en plus toute l'équipe entourage
+(`targeting_profile = 'team'`) : sur demande explicite, elle est retirée des
+interactions (son activité n'est pas un signal de profilage comportemental
+exploitable pour le clustering) mais **reste** dans `stats.user_profile` —
+ce filtre n'est donc appliqué qu'ici, pas dans `user_profile.sql`. Ce
+critère a été durci le 2026-09-01 (voir « Historique des ajustements ») pour
+être harmonisé avec `stats.user_interaction_pairs`, qui exclut toute
+l'équipe sans condition de rôle ; auparavant, seuls les `team` ayant le rôle
+`moderator` étaient exclus ici.
 
 Pour éviter de répéter ce filtre dans chacune des 19 sections (chaque
 section part d'une table source différente — `login_histories`,
@@ -133,8 +133,8 @@ utilisateurs légèrement plus restreint (sans les modérateurs team).
 | `session_histories`        | `session`                                  | 1 ligne/jour/plateforme |
 | `entourages`                | `creation_groupe` / `creation_entraide` / `creation_evenement` / `creation_conversation` | selon `group_type` (`group` / `action` / `outing` / `conversation`) |
 | `neighborhoods`             | `creation_quartier`                        | |
-| `join_requests`             | `demande_adhesion` / `demande_adhesion_entraide` | date = `requested_at` ou `created_at` ; type `_entraide` si `group_type = 'action'` ; uniquement `accepted_at` NULL (non acceptées) |
-| `join_requests`             | `adhesion_confirmee` / `adhesion_confirmee_entraide` | date = `accepted_at`, si non nul ; type `_entraide` si `group_type = 'action'` |
+| `join_requests`             | `demande_adhesion`         | date = `requested_at` ou `created_at` ; uniquement `accepted_at` NULL (non acceptées) ; `object_type` distingue toujours Groupe/Entraide/Evenement/Quartier/Bonnes ondes |
+| `join_requests`             | `adhesion_confirmee`       | date = `accepted_at`, si non nul ; même distinction `object_type` |
 | `join_requests`             | `participation_evenement`                   | date = `participate_at`, si non nul, uniquement events |
 | `chat_messages`             | `message_envoye` / `publication_groupe`     | messages actifs/mis à jour, hors messages techniques ; `publication_groupe` si `group_type IN ('group', 'action')`, sinon `message_envoye` (conversations, événements, quartiers, bonnes ondes) |
 | `user_reactions`            | `reaction`                                  | toujours sur un `ChatMessage` |
@@ -202,6 +202,21 @@ utilisateurs légèrement plus restreint (sans les modérateurs team).
 
 ## Historique des ajustements
 
+- 2026-09-01 : durcissement du filtre utilisateurs — exclusion de toute
+  l'équipe entourage (`targeting_profile = 'team'`), et non plus seulement
+  des `team` ayant le rôle `moderator`, pour harmoniser le périmètre avec
+  `stats.user_interaction_pairs` (cf. `user_interaction_pairs_prompt.md`).
+- 2026-09-01 : suppression de la distinction groupe/entraide au niveau de
+  l'`interaction_type` pour les sections 5 et 6 (`demande_adhesion_entraide`,
+  `adhesion_confirmee_entraide`) : les adhésions à une entraide n'étant plus
+  possibles, cette distinction est devenue une fonctionnalité morte. Les
+  deux sections utilisent désormais uniquement `demande_adhesion` /
+  `adhesion_confirmee`, quel que soit `group_type` ; le détail groupe/
+  entraide reste visible via `object_type` (Groupe / Entraide), qui n'est
+  pas concerné par ce nettoyage. Le `DELETE` de chaque section continue de
+  cibler l'ancien type `_entraide` en plus du nouveau, pour purger les
+  lignes générées par une exécution antérieure du script. La section 3
+  (création, `creation_entraide`) n'est pas concernée par ce changement.
 - 2026-08-28 : ajout du filtre utilisateurs (`community = 'entourage'` et
   `last_sign_in_at IS NOT NULL`, cf. « Filtre sur les utilisateurs »),
   pour aligner le périmètre de `stats.user_interactions` sur celui de
