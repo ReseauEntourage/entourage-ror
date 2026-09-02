@@ -417,7 +417,6 @@ es:
         departement: Departamento
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community builder
         welcome_message_1: Mensaje de bienvenida
         slack_moderator_id: Identificador de Slack
       translation:

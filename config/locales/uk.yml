@@ -468,7 +468,6 @@ uk:
         departement: Департамент
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community builder
         welcome_message_1: Вітальне повідомлення
         slack_moderator_id: Ідентифікатор Slack
       translation:
