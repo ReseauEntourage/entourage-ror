@@ -249,17 +249,19 @@
             } %>
           </td>
         </tr>
-        <tr>
-          <td>
-            Anonymiser l'utilisateur
-            <i class="text-muted" style="color: red">(attention, action irréversible)</i>
-          </td>
-          <td>
-            <%= link_to "Anonymiser", anonymize_admin_user_path(@user), method: :put, class: "btn btn-default", data: {
-              confirm: "Cette action va anonymiser les email, nom, prénom, téléphone de l'utilisateur ainsi que supprimer sa photo de profil, ses adresses. Son compte sera également marqué comme supprimé. Souhaitez-vous continuer ?"
-            } %>
-          </td>
-        </tr>
+        <% unless @user.anonymized? %>
+          <tr>
+            <td>
+              Anonymiser l'utilisateur
+              <i class="text-muted" style="color: red">(attention, action irréversible)</i>
+            </td>
+            <td>
+              <%= link_to "Anonymiser", anonymize_admin_user_path(@user), method: :put, class: "btn btn-default", data: {
+                confirm: "Cette action va anonymiser les email, nom, prénom, téléphone de l'utilisateur ainsi que supprimer sa photo de profil, ses adresses. Son compte sera également marqué comme supprimé. Souhaitez-vous continuer ?"
+              } %>
+            </td>
+          </tr>
+        <% end %>
       </table>
     </div>
   <% end %>

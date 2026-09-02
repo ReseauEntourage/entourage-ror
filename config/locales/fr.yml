@@ -263,6 +263,7 @@ fr:
         kind:
           account: Compte créé
           anonymize: Compte anonymisé
+          reactivate: Compte réactivé
           auto: auto
           block: Compte bloqué
           deleted: Compte supprimé

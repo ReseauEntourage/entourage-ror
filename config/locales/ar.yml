@@ -330,6 +330,7 @@ ar:
         kind:
           account: تم إنشاء الحساب
           anonymize: تم إخفاء هوية الحساب
+          reactivate: تم إعادة تفعيل الحساب
           auto: تلقائي
           block: تم حظر الحساب
           deleted: تم حذف الحساب

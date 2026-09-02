@@ -267,6 +267,7 @@ en:
         kind:
           account: Account created
           anonymize: Account anonymized
+          reactivate: Account reactivated
           auto: auto
           block: Account blocked
           deleted: Account deleted

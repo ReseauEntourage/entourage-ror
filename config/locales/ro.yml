@@ -258,6 +258,7 @@ ro:
         kind:
           account: Cont creat
           anonymize: Cont anonimizat
+          reactivate: Cont reactivat
           auto: auto
           block: Cont blocat
           deleted: Cont șters

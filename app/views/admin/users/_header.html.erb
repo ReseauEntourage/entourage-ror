@@ -40,6 +40,8 @@
     <div class="panel-body">
       Les utilisateurs anonymisé ne peuvent pas se connecter ou utiliser l'application,<br>
       et leur photo de profil est supprimée.
+      <br><br>
+      <%= link_to "Réactiver le compte", edit_reactivate_admin_user_path(@user), class: "btn btn-danger" %>
     </div>
   </div>
 <% elsif @user.deleted? %>
