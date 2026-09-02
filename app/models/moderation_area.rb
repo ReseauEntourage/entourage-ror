@@ -1,7 +1,6 @@
 class ModerationArea < ApplicationRecord
   belongs_to :animator, class_name: :User, optional: true
   belongs_to :sourcing, class_name: :User, optional: true
-  belongs_to :community_builder, class_name: :User, optional: true
   belongs_to :referent_benevole, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: '*') }
@@ -53,10 +52,6 @@ class ModerationArea < ApplicationRecord
 
   def sourcing_with_fallback
     sourcing || default_interlocutor
-  end
-
-  def community_builder_with_fallback
-    community_builder || default_interlocutor
   end
 
   def referent_benevole_with_fallback

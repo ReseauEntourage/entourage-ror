@@ -416,7 +416,6 @@ fr:
         departement: Département
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community builder
         referent_benevole_id: Référent bénévole
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
@@ -647,9 +646,7 @@ fr:
     sud_ouest: Sud-Ouest
     sud_est: Sud-Est
     grand_ouest: Grand-Ouest
-    centre: Centre
     idf: Ile-de-France
-    hauts_de_france: Hauts-de-France
     grand_est: Grand-Est
 
   conversations:

@@ -411,7 +411,6 @@ ro:
         departement: Departament
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community builder
         welcome_message_1: Mesaj de bun venit
         slack_moderator_id: ID Slack
       translation:

@@ -7,20 +7,14 @@ module ModerationServices
       # sud_est: paca, corse
       sud_est: %w{ 04 05 06 13 83 84 2A 2B 38 42 69 01 03 07 15 26 43 63 73 74 },
 
-      # grand_ouest: bretagne, pays de la loire, normandie
-      grand_ouest: %w{ 22 29 35 56 44 49 53 72 85 14 27 50 61 76 },
-
-      # centre: centre val de loire, bourgogne, grand est
-      centre: %w{ 18 28 36 37 41 45 },
+      # grand_ouest: bretagne, pays de la loire, normandie, centre val de loire
+      grand_ouest: %w{ 22 29 35 56 44 49 53 72 85 14 27 50 61 76 18 28 36 37 41 45 },
 
       # idf: idf
       idf: %w{ 75 77 78 91 92 93 94 95 },
 
-      # hauts_de_france: hauts de france
-      hauts_de_france: %w{ 02 59 60 62 80 },
-
-      # grand_est: hauts de france
-      grand_est: %w{ 08 10 51 52 54 55 57 67 68 88 21 25 58 70 71 89 90 39 },
+      # grand_est: hauts de france, bourgogne, grand est
+      grand_est: %w{ 02 59 60 62 80 08 10 51 52 54 55 57 67 68 88 21 25 58 70 71 89 90 39 },
     }.freeze
 
     RegionStruct = Struct.new(:id, :name, :departments) do
