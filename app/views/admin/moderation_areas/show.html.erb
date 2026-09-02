@@ -44,11 +44,6 @@
             <%= @area.sourcing.try(:full_name) %>
           </p>
 
-          <p>
-            <strong><%= label_tag :community_builder_id, t('activerecord.attributes.moderation_area.community_builder_id') %></strong>
-            <%= @area.community_builder.try(:full_name) %>
-          </p>
-
           <!-- Ajoutez les autres champs de l'utilisateur selon le besoin -->
 
           <ul class="nav nav-tabs">

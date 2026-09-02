@@ -432,7 +432,6 @@ pl:
         departement: Departament
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community builder
         welcome_message_1: Wiadomość powitalna
         slack_moderator_id: Identyfikator Slack
       translation:

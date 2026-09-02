@@ -56,7 +56,6 @@
         <th></th>
         <th><%= t('activerecord.attributes.moderation_area.animator_id') %></th>
         <th><%= t('activerecord.attributes.moderation_area.sourcing_id') %></th>
-        <th><%= t('activerecord.attributes.moderation_area.community_builder_id') %></th>
         <th><%= t('activerecord.attributes.moderation_area.referent_benevole_id') %></th>
       </thead>
       <% @moderation_areas.each do |moderation_area| %>
@@ -73,12 +72,10 @@
           <% if current_user.super_admin? %>
             <td><%= render partial: "admin/moderation_areas/update/animator_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/sourcing_form", locals: { moderation_area: moderation_area } %></td>
-            <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/referent_benevole_form", locals: { moderation_area: moderation_area } %></td>
           <% else %>
             <td><%= moderation_area.animator.full_name if moderation_area.animator %></td>
             <td><%= moderation_area.sourcing.full_name if moderation_area.sourcing %></td>
-            <td><%= moderation_area.community_builder.full_name if moderation_area.community_builder %></td>
             <td><%= moderation_area.referent_benevole.full_name if moderation_area.referent_benevole %></td>
           <% end %>
         </tr>
