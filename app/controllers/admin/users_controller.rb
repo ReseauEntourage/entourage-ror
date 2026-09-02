@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -263,6 +263,31 @@ module Admin
       redirect_to [:admin, @user], flash: { success: 'Utilisateur anonymisé' }
     end
 
+    def edit_reactivate
+      redirect_to [:admin, @user], flash: { error: "Cet utilisateur n'est pas anonymisé" } and return unless @user.anonymized?
+
+      @user.first_name = nil
+      @user.last_name = nil
+      @user.email = nil
+      @user.phone = nil
+    end
+
+    def reactivate
+      redirect_to [:admin, @user], flash: { error: "Cet utilisateur n'est pas anonymisé" } and return unless @user.anonymized?
+
+      @user.assign_attributes(reactivate_params)
+
+      unless @user.reactivate! current_user
+        flash.now[:error] = 'Erreur lors de la réactivation'
+        render :edit_reactivate and return
+      end
+
+      redirect_flash = { success: 'Utilisateur réactivé' }
+      redirect_flash[:error] = "L'adresse n'a pas pu être enregistrée" unless reactivate_address!
+
+      redirect_to [:admin, @user], flash: redirect_flash
+    end
+
     def new_spam_warning
       redirect_to [:admin, @user], flash: { success: 'On ne peut prévenir du spam que sur un utilisateur bloqué' } unless @user.blocked?
 
@@ -314,6 +339,33 @@ module Admin
 
     def block_params
       params.require(:user).permit(:cnil_explanation)
+    end
+
+    def reactivate_params
+      params.require(:user).permit(:first_name, :last_name, :email, :phone)
+    end
+
+    def reactivate_address_params
+      return ActionController::Parameters.new if params[:address].blank?
+
+      params.require(:address).permit(:google_place_id)
+    end
+
+    def reactivate_address!
+      google_place_id = reactivate_address_params[:google_place_id]
+      return true if google_place_id.blank?
+
+      success = false
+
+      UserServices::AddressService.new(
+        user: @user,
+        position: 1,
+        params: { google_place_id: google_place_id }
+      ).synchronous_update do |on|
+        on.success { success = true }
+      end
+
+      success
     end
 
     def moderation_params

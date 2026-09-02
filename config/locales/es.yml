@@ -271,6 +271,7 @@ es:
         kind:
           account: Cuenta creada
           anonymize: Cuenta anonimizada
+          reactivate: Cuenta reactivada
           auto: auto
           block: Cuenta bloqueada
           deleted: Cuenta eliminada

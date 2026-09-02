@@ -666,6 +666,22 @@ class User < ApplicationRecord
     Address.where(user_id: id).delete_all
   end
 
+  def reactivate! updater
+    self.validation_status = 'validated'
+    self.deleted = false
+
+    return false unless save
+
+    UserHistory.create({
+      user_id: self.id,
+      updater_id: updater.id,
+      kind: 'reactivate',
+      metadata: {}
+    })
+
+    true
+  end
+
   def default_lang?
     return false unless lang.present? && lang.respond_to?(:to_sym)
 
