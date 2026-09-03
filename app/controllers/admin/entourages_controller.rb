@@ -203,6 +203,19 @@ module Admin
       redirect_to admin_entourages_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (actions créées depuis moins d'un mois ou événements ayant eu lieu il y a moins d'un mois)" }
     end
 
+    def upcoming
+      @days = params[:days].presence&.to_i || 14
+
+      @outings = Entourage
+        .where(group_type: 'outing', status: ModerationServices::OPEN_ENTOURAGE_STATUSES)
+        .where(%(metadata->>'starts_at' >= :from and metadata->>'starts_at' <= :to), {
+          from: Time.zone.now,
+          to: @days.days.from_now,
+        })
+        .order(Arel.sql(%(metadata->>'starts_at' asc)))
+        .page(params[:page]).per(50)
+    end
+
     def bulk_assign_moderator
       entourage_ids = Array(params[:entourage_ids]).reject(&:blank?)
       moderator_id = params[:assign_moderator_id].presence

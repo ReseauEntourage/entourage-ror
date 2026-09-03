@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="h1">Sorties à venir</div>
+
+  <div class="btn-group btn-group-sm" style="margin-bottom: 15px">
+    <%= link_to "7 jours", upcoming_admin_entourages_path(days: 7), class: "btn btn-#{@days == 7 ? :primary : :default}" %>
+    <%= link_to "14 jours", upcoming_admin_entourages_path(days: 14), class: "btn btn-#{@days == 14 ? :primary : :default}" %>
+    <%= link_to "30 jours", upcoming_admin_entourages_path(days: 30), class: "btn btn-#{@days == 30 ? :primary : :default}" %>
+  </div>
+
+  <table class="table admin-table custom-table" style="table-layout: auto">
+    <thead>
+      <th>Sortie</th>
+      <th>Date</th>
+      <th>Participants</th>
+      <th>Message rapide aux participants</th>
+    </thead>
+    <tbody>
+      <% @outings.each do |outing| %>
+        <tr>
+          <td><%= link_to outing.title, admin_entourage_path(outing) %></td>
+          <td><%= l outing.starts_at, format: "%-d %B %Y à %H:%M" %></td>
+          <td><span class="badge" title="Participants"><%= outing.members_count %></span></td>
+          <td>
+            <%= form_for ChatMessage.new, url: message_admin_entourage_path(outing), html: { style: "display: flex; gap: 8px" } do |f| %>
+              <%= f.text_field :content, class: "form-control", placeholder: "Ex : rappel, RDV à 14h devant..." %>
+              <%= f.submit "Envoyer", class: "btn btn-default btn-sm" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+
+      <% if @outings.none? %>
+        <tr>
+          <td colspan="4" style="text-align: center">
+            <span class="text-muted">Aucune sortie dans les <%= @days %> prochains jours.</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= page_entries_info @outings, entry_name: 'sorties' %>
+  <div class="container"><%= paginate @outings %></div>
+</div>

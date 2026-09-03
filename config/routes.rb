@@ -133,6 +133,7 @@ Rails.application.routes.draw do
           post :destroy_message
           delete :destroy_message
           post :bulk_assign_moderator
+          get :upcoming
         end
 
         resources :users, controller: 'entourages/users', only: [:destroy]
