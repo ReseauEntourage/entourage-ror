@@ -129,4 +129,17 @@ module ModerationServices
       country: object.country
     ))
   end
+
+  OPEN_ENTOURAGE_STATUSES = %w(open suspended full).freeze
+
+  def self.assigned_open_entourages moderator
+    Entourage
+      .where(group_type: ['action', 'outing'], status: OPEN_ENTOURAGE_STATUSES)
+      .with_moderation
+      .moderator_search(moderator.id)
+  end
+
+  def self.open_queue_count moderator
+    assigned_open_entourages(moderator).count
+  end
 end

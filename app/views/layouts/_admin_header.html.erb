@@ -76,8 +76,20 @@
             Actions et événements
           </a>
           <ul class="dropdown-menu">
+            <% my_queue_count = ModerationServices.open_queue_count(current_user) if current_user.roles.include?(:moderator) %>
+            <% if my_queue_count %>
+              <li>
+                <%= link_to admin_entourages_path(moderator_id: current_user.id) do %>
+                  Ma file
+                  <% if my_queue_count > 0 %>
+                    <span class="badge badge-danger"><%= my_queue_count %></span>
+                  <% end %>
+                <% end %>
+              </li>
+            <% end %>
             <li><%= link_to "Actions", admin_actions_path %></li>
             <li><%= link_to "Événements", admin_outings_path %></li>
+            <li><%= link_to "Charge de travail par modérateur", admin_moderator_workloads_path %></li>
           </ul>
         </li>
 
