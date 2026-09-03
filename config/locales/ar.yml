@@ -484,7 +484,6 @@ ar:
         departement: المحافظة
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community builder
         welcome_message_1: رسالة الترحيب
         slack_moderator_id: معرّف Slack
       translation:

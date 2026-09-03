@@ -431,7 +431,6 @@ de:
         departement: Departement
         animator_id: PEC
         sourcing_id: PI
-        community_builder_id: Community Builder
         welcome_message_1: Willkommensnachricht
         slack_moderator_id: Slack-Kennung
       translation:

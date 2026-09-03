@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -508,7 +508,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_23_093622) do
     t.integer "animator_id"
     t.integer "sourcing_id"
     t.boolean "activity", default: false, null: false
-    t.integer "community_builder_id"
     t.integer "referent_benevole_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end

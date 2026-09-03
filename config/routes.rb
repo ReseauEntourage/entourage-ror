@@ -153,7 +153,6 @@ Rails.application.routes.draw do
         member do
           patch 'update_animator'
           patch 'update_sourcing'
-          patch 'update_community_builder'
           patch 'update_referent_benevole'
         end
       end

@@ -13,7 +13,7 @@ module Admin
       @default_referent_benevole = ModerationServices.default_referent_benevole
 
       @moderation_areas = ModerationArea
-        .includes(:animator, :sourcing, :community_builder, :referent_benevole)
+        .includes(:animator, :sourcing, :referent_benevole)
         .in_region(@params[:region])
         .order(:departement)
     end
@@ -69,15 +69,6 @@ module Admin
       end
     end
 
-    def update_community_builder
-      @moderation_area = ModerationArea.find(params[:id])
-      @moderation_area.update(community_builder_id: params[:community_builder_id])
-      respond_to do |format|
-        format.js { render 'admin/moderation_areas/update/community_builder' }
-        format.html { redirect_to admin_moderation_areas, notice: 'Community builder mis à jour avec succès.' }
-      end
-    end
-
     def update_referent_benevole
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(referent_benevole_id: params[:referent_benevole_id])
@@ -99,7 +90,6 @@ module Admin
       params.require(:moderation_area).permit(
         :animator_id,
         :sourcing_id,
-        :community_builder_id,
         :referent_benevole_id,
         :departement,
         :name,
