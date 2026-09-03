@@ -253,6 +253,27 @@ RSpec.describe ConversationChannel, type: :channel do
       }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
         .with(hash_including(data: hash_including("id" => message.id)))
     end
+
+    context "avec des réactions sur le message" do
+      let(:reaction) { create(:reaction) }
+      let!(:user_reaction) { create(:user_reaction, user: user, reaction: reaction, instance: message) }
+
+      it "inclut le résumé des réactions dans les données du message" do
+        # on recharge le message : l'association chat_message_reactions a été mise
+        # en cache (vide) lors du broadcast automatique déclenché par sa création,
+        # avant l'ajout de la réaction
+        expect {
+          ConversationChannel.broadcast_chat_message_created(ChatMessage.find(message.id))
+        }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
+          .with(hash_including(
+            data: hash_including(
+              "reactions" => array_including(
+                hash_including("reaction_id" => reaction.id, "reactions_count" => 1)
+              )
+            )
+          ))
+      end
+    end
   end
 
   describe ".broadcast_chat_message_updated" do
