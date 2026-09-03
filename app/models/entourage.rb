@@ -50,6 +50,7 @@ class Entourage < ApplicationRecord
   has_one :moderation, class_name: 'EntourageModeration', autosave: true
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
   has_one :sensitive_words_check, as: :record, dependent: :destroy
+  has_many :admin_notes, as: :notable, dependent: :destroy
 
   attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
   attr_accessor :change_ownership_message

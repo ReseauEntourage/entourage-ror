@@ -86,6 +86,7 @@ class User < ApplicationRecord
   has_many :user_recommandations
   has_many :inapp_notifications, dependent: :destroy
   has_many :email_preferences, dependent: :destroy
+  has_many :admin_notes, as: :notable, dependent: :destroy
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
   has_many :user_smalltalks

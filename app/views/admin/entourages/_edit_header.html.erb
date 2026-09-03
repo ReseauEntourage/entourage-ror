@@ -59,5 +59,9 @@
           <%= link_to "Récurrences", show_siblings_admin_entourage_path(@entourage, @params) %>
         </li>
       <% end %>
+
+      <li role="presentation" class="<%= :active if params[:action] == 'show_notes' %>">
+        <%= link_to "Notes internes (#{@entourage.admin_notes.count})", show_notes_admin_entourage_path(@entourage, @params) %>
+      </li>
     </ul>
   </div>

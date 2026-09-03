@@ -106,6 +106,7 @@ Rails.application.routes.draw do
           get 'comments/:message_id' => :show_comments, :as => :show_comments
           get :show_matchings
           get :show_siblings
+          get :show_notes
           post :send_matching
           post :stop_recurrences
           get :sensitive_words
@@ -280,6 +281,8 @@ Rails.application.routes.draw do
 
       resources :sensitive_words, only: [:index, :new, :create, :edit, :update, :destroy]
 
+      resources :admin_notes, only: [:create, :destroy]
+
       namespace :slack do
         post :message_action
         post :offensive_text
@@ -351,6 +354,7 @@ Rails.application.routes.draw do
           get 'neighborhoods'
           get 'outings'
           get 'history'
+          get 'notes'
           get 'blocked_users'
           put 'destroy_avatar'
           get 'new_spam_warning'
