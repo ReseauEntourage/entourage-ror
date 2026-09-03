@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     scope module: 'admin', as: 'admin' do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
+      get 'dashboard' => 'dashboard#index', as: :dashboard
       get 'activity_feed' => 'activity_feed#index', as: :activity_feed
       get 'moderator_workloads' => 'moderator_workloads#index', as: :moderator_workloads
       get '/sessions/new', to: redirect('/admin/sessions/new')

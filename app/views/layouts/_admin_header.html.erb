@@ -2,12 +2,14 @@
   <div class="container">
     <div class="navbar-header">
       <div class='navbar-brand',>
-          <div class='images'>
-            <%= image_tag('logo.png', alt:'Entourage', title: EnvironmentHelper.git_sha) %>
-            <% if UserServices::Avatar.new(user: current_user).thumbnail_url %>
-              <%= image_tag(UserServices::Avatar.new(user: current_user).thumbnail_url, alt:'avatar', class:"nav-thumbnail", title: EnvironmentHelper.git_sha) %>
-            <% end %>
-          </div>
+          <%= link_to admin_dashboard_path, style: "color: inherit" do %>
+            <div class='images'>
+              <%= image_tag('logo.png', alt:'Entourage', title: EnvironmentHelper.git_sha) %>
+              <% if UserServices::Avatar.new(user: current_user).thumbnail_url %>
+                <%= image_tag(UserServices::Avatar.new(user: current_user).thumbnail_url, alt:'avatar', class:"nav-thumbnail", title: EnvironmentHelper.git_sha) %>
+              <% end %>
+            </div>
+          <% end %>
           <%= current_admin.try(:first_name) %>
       </div>
     </div>

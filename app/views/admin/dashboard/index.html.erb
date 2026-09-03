@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="h1">Tableau de bord</div>
+
+  <div class="row" style="display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 20px">
+    <div class="panel panel-default" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600"><%= @new_users_count %></div>
+        <div class="text-muted">Nouvelles inscriptions (48h)</div>
+      </div>
+    </div>
+
+    <div class="panel <%= @pending_moderation_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600"><%= @pending_moderation_count %></div>
+        <div class="text-muted">Actions/événements non modérés</div>
+      </div>
+    </div>
+
+    <div class="panel <%= @unassigned_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600"><%= @unassigned_count %></div>
+        <div class="text-muted">Sans modérateur assigné</div>
+      </div>
+    </div>
+
+    <% if @my_queue_count %>
+      <div class="panel panel-default" style="flex: 1; min-width: 200px">
+        <div class="panel-body" style="text-align: center">
+          <div style="font-size: 30px; font-weight: 600"><%= @my_queue_count %></div>
+          <div class="text-muted">Dans ma file</div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="row" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start">
+    <div class="panel panel-default" style="flex: 1; min-width: 320px">
+      <div class="panel-heading">
+        Comptes bloqués récemment
+      </div>
+      <div class="panel-body">
+        <% if @recent_blocks.empty? %>
+          <p class="text-muted">Aucun blocage dans les 48 dernières heures.</p>
+        <% else %>
+          <ul class="list-unstyled">
+            <% @recent_blocks.each do |history| %>
+              <li style="border-top: 1px solid #eee; padding: 8px 0">
+                <%= link_to history.user&.full_name || "Utilisateur ##{history.user_id}", edit_admin_user_path(history.user_id) %>
+                <div class="text-muted" style="font-size: 12px">
+                  <%= l history.created_at, format: "%-d %B %Y à %H:%M" %>
+                  <% if history.updater %>
+                    &middot; par <%= history.updater.full_name %>
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="panel panel-default" style="flex: 1; min-width: 320px">
+      <div class="panel-heading" style="display: flex; justify-content: space-between; align-items: center">
+        <span>Modérateurs les plus chargés</span>
+        <%= link_to "voir tous", admin_moderator_workloads_path %>
+      </div>
+      <div class="panel-body">
+        <% if @busiest_moderators.empty? %>
+          <p class="text-muted">Aucun modérateur.</p>
+        <% else %>
+          <ul class="list-unstyled">
+            <% @busiest_moderators.each do |row| %>
+              <li style="border-top: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between">
+                <%= row[:moderator].full_name %>
+                <span class="badge"><%= row[:open_count] %></span>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 16px">
+    <%= link_to "Voir l'activité récente", admin_activity_feed_path, class: "btn btn-default" %>
+  </div>
+</div>
