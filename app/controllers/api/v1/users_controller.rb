@@ -420,18 +420,22 @@ module Api
 
       def verify_request_signature!
         secret = api_request.key_infos&.dig(:hmac_secret)
-        # Mode transition : si la clé n'a pas encore de secret configuré, on laisse passer.
-        # Cela permet de déployer le backend avant les nouvelles versions des apps.
-        return if secret.blank?
+
+        if secret.blank?
+          Rails.logger.info "SIGNUP_FAILED: missing signing key - params: #{params.inspect}"
+          return render_error(code: 'MISSING_SIGNING_KEY', message: 'This client is not allowed to create accounts', status: 401)
+        end
 
         timestamp = request.headers['X-Request-Timestamp'].to_i
         signature = request.headers['X-Request-Signature'].to_s
 
         if signature.blank? || timestamp.zero?
+          Rails.logger.info "SIGNUP_FAILED: missing request signature - params: #{params.inspect}"
           return render_error(code: 'MISSING_SIGNATURE', message: 'Missing request signature', status: 401)
         end
 
         if (Time.now.to_i - timestamp).abs > 300
+          Rails.logger.info "SIGNUP_FAILED: expired request signature - params: #{params.inspect}"
           return render_error(code: 'EXPIRED_SIGNATURE', message: 'Request signature has expired', status: 401)
         end
 
@@ -439,7 +443,8 @@ module Api
         expected = OpenSSL::HMAC.base64digest('SHA256', secret, "POST\n/api/v1/users\n#{timestamp}\n#{phone}")
 
         unless ActiveSupport::SecurityUtils.secure_compare(expected, signature)
-          render_error(code: 'INVALID_SIGNATURE', message: 'Invalid request signature', status: 401)
+          Rails.logger.info "SIGNUP_FAILED: invalid request signature - params: #{params.inspect}"
+          return render_error(code: 'INVALID_SIGNATURE', message: 'Invalid request signature', status: 401)
         end
       end
 

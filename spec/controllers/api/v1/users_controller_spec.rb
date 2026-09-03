@@ -3,6 +3,7 @@ include AuthHelper
 include CommunityHelper
 
 RSpec.describe Api::V1::UsersController, type: :controller do
+  include HmacSignatureHelper
   render_views
 
   let(:result) { JSON.parse(response.body) }
@@ -739,14 +740,18 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   end
 
   describe 'POST create' do
+    let(:phone) { '+33612345678' }
+
+    before { sign_user_creation_request(phone: phone) }
+
     it 'creates a new user' do
       expect {
-        post 'create', params: { user: {phone: '+33612345678'} }
+        post 'create', params: { user: {phone: phone} }
       }.to change { User.count }.by(1)
     end
 
     context 'valid params' do
-      before { post 'create', params: { user: { phone: '+33612345678', travel_distance: 16 } } }
+      before { post 'create', params: { user: { phone: phone, travel_distance: 16 } } }
       it { expect(User.last.user_type).to eq('public') }
       it { expect(User.last.community).to eq('entourage') }
       it { expect(User.last.roles).to eq([]) }
@@ -769,7 +774,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     context 'newsletter_subscription' do
       let(:params) { Hash.new }
-      let(:request) { post 'create', params: { user: { phone: '+33612345678', travel_distance: 16, email: 'foo@bar.fr' }.merge(params) } }
+      let(:request) { post 'create', params: { user: { phone: phone, travel_distance: 16, email: 'foo@bar.fr' }.merge(params) } }
 
       context 'no newsletter_subscription param' do
         before { request }
@@ -814,24 +819,27 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     context 'already has a user without email' do
       let!(:previous_user) { FactoryBot.create(:public_user, email: nil) }
-      before { post 'create', params: { user: {phone: '+33612345678'} } }
+      before { post 'create', params: { user: {phone: phone} } }
       it { expect(response.status).to eq(201) }
     end
 
     context 'user with Apple formated phone number' do
-      before { post 'create', params: { user: {phone: '+337 44 21 94 91'} } }
+      let(:phone) { '+337 44 21 94 91' }
+      before { post 'create', params: { user: {phone: phone} } }
       it { expect(User.last.phone).to eq('+33744219491') }
     end
 
     context 'invalid params' do
+      let(:phone) { '123' }
+
       it "doesn't create a new user" do
         expect {
-          post 'create', params: { user: {phone: '123'} }
+          post 'create', params: { user: {phone: phone} }
         }.to change { User.count }.by(0)
       end
 
       it 'returns error' do
-        post 'create', params: { user: {phone: '123'} }
+        post 'create', params: { user: {phone: phone} }
         user = User.last
         expect(response.status).to eq(400)
         expect(result).to eq({'error'=>{'code'=>'INVALID_PHONE_FORMAT', 'message'=>'Phone devrait être au format +33... ou 06...'}})
@@ -840,10 +848,74 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     context 'phone already exists' do
       let!(:existing_user) { FactoryBot.create(:public_user, phone: '+33612345678') }
-      before { post 'create', params: { user: {phone: '+33612345678'} } }
+      before { post 'create', params: { user: {phone: phone} } }
       it { expect(User.count).to eq(1) }
       it { expect(response.status).to eq(400) }
       it { expect(result).to eq({'error'=>{'code'=>'PHONE_ALREADY_EXIST', 'message'=>"Phone +33612345678 n'est pas disponible"}}) }
+    end
+
+    context 'signature verification' do
+      context 'with a valid signature' do
+        before { post 'create', params: { user: {phone: phone} } }
+        it { expect(response.status).to eq(201) }
+      end
+
+      context 'without a signature' do
+        before { request.headers['X-Request-Timestamp'] = nil; request.headers['X-Request-Signature'] = nil }
+
+        it "doesn't create a new user" do
+          expect {
+            post 'create', params: { user: {phone: phone} }
+          }.not_to change { User.count }
+        end
+
+        it 'returns error' do
+          post 'create', params: { user: {phone: phone} }
+          expect(response.status).to eq(401)
+          expect(result).to eq({'error'=>{'code'=>'MISSING_SIGNATURE', 'message'=>'Missing request signature'}})
+        end
+      end
+
+      context 'with an expired signature' do
+        before { sign_user_creation_request(phone: phone, timestamp: 10.minutes.ago.to_i) }
+        before { post 'create', params: { user: {phone: phone} } }
+
+        it { expect(response.status).to eq(401) }
+        it { expect(result).to eq({'error'=>{'code'=>'EXPIRED_SIGNATURE', 'message'=>'Request signature has expired'}}) }
+      end
+
+      context 'with an invalid signature' do
+        before { request.headers['X-Request-Timestamp'] = Time.now.to_i.to_s; request.headers['X-Request-Signature'] = 'not-a-valid-signature' }
+        before { post 'create', params: { user: {phone: phone} } }
+
+        it { expect(response.status).to eq(401) }
+        it { expect(result).to eq({'error'=>{'code'=>'INVALID_SIGNATURE', 'message'=>'Invalid request signature'}}) }
+      end
+
+      context 'with a signature computed for a different phone number' do
+        before { sign_user_creation_request(phone: '+33600000000') }
+        before { post 'create', params: { user: {phone: phone} } }
+
+        it { expect(response.status).to eq(401) }
+        it { expect(result).to eq({'error'=>{'code'=>'INVALID_SIGNATURE', 'message'=>'Invalid request signature'}}) }
+      end
+
+      context 'with a client that has no signing key configured (legacy app version)' do
+        # '5071ce2e119e8a43747cd89c' is a real, pre-HMAC key (iOS 8.0.0) from Api::ApplicationKey
+        before { request.headers['X-API-KEY'] = '5071ce2e119e8a43747cd89c' }
+
+        it "doesn't create a new user" do
+          expect {
+            post 'create', params: { user: {phone: phone} }
+          }.not_to change { User.count }
+        end
+
+        it 'returns error' do
+          post 'create', params: { user: {phone: phone} }
+          expect(response.status).to eq(401)
+          expect(result).to eq({'error'=>{'code'=>'MISSING_SIGNING_KEY', 'message'=>'This client is not allowed to create accounts'}})
+        end
+      end
     end
   end
 
