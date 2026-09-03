@@ -128,6 +128,7 @@ Rails.application.routes.draw do
           get :download_list_export
           post :destroy_message
           delete :destroy_message
+          post :bulk_assign_moderator
         end
 
         resources :users, controller: 'entourages/users', only: [:destroy]
@@ -345,6 +346,7 @@ Rails.application.routes.draw do
           get :search
           get 'moderate'
           get 'download_list_export'
+          post 'bulk_block'
         end
 
         member do

@@ -362,4 +362,31 @@ describe Admin::UsersController do
       it { expect(blocked_user.reload.validation_status).to eq('validated') }
     end
   end
+
+  describe 'POST bulk_block' do
+    let!(:admin) { admin_basic_login }
+    let!(:user1) { FactoryBot.create(:pro_user, validation_status: 'validated') }
+    let!(:user2) { FactoryBot.create(:pro_user, validation_status: 'validated') }
+
+    context 'without cnil_explanation' do
+      before { post :bulk_block, params: { user_ids: [user1.id, user2.id], cnil_explanation: '' } }
+
+      it { expect(user1.reload.validation_status).to eq('validated') }
+      it { expect(user2.reload.validation_status).to eq('validated') }
+    end
+
+    context 'without any selected user' do
+      before { post :bulk_block, params: { user_ids: [], cnil_explanation: 'raison' } }
+
+      it { expect(user1.reload.validation_status).to eq('validated') }
+    end
+
+    context 'with cnil_explanation and selected users' do
+      before { post :bulk_block, params: { user_ids: [user1.id, user2.id], cnil_explanation: 'raison' } }
+
+      it { expect(user1.reload.validation_status).to eq('blocked') }
+      it { expect(user2.reload.validation_status).to eq('blocked') }
+      it { expect(user1.reload.histories.count).to eq(1) }
+    end
+  end
 end

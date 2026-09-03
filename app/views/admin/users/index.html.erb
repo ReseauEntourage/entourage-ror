@@ -94,11 +94,22 @@
   </div>
 <% end %>
 
-<table class="table custom-table" style="table-layout: auto">
-  <thead>
-    <th>Nom</th>
-    <th>Prénom</th>
-    <th>Association</th>
+<%= form_tag bulk_block_admin_users_path, method: :post, id: "bulk_actions_form" do %>
+  <div class="panel panel-default">
+    <div class="panel-body" style="display: flex; align-items: center; gap: 10px">
+      <span id="bulk_actions_count" class="text-muted">Aucun utilisateur sélectionné</span>
+      <%= text_field_tag :cnil_explanation, nil, class: "form-control", placeholder: "Raisons du blocage (obligatoire)", style: "max-width: 400px" %>
+      <%= submit_tag "Bloquer la sélection", class: "btn btn-danger btn-sm",
+            data: { confirm: "Bloquer les comptes sélectionnés ?" } %>
+    </div>
+  </div>
+
+  <table class="table custom-table" style="table-layout: auto">
+    <thead>
+      <th><input type="checkbox" id="select_all_users"></th>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Association</th>
 
     <% if @status == :pending %>
       <th>Email lié au compte</th>
@@ -120,6 +131,7 @@
 
   <% @users.each do |user| %>
     <tr>
+      <td><%= check_box_tag "user_ids[]", user.id, false, class: "user_checkbox", id: "user_#{user.id}" %></td>
       <td><%= link_to user.last_name,  edit_admin_user_path(user)%></td>
       <td><%= link_to user.first_name,  edit_admin_user_path(user)%></td>
       <td>
@@ -164,7 +176,8 @@
       <% end %>
     </tr>
   <% end %>
-</table>
+  </table>
+<% end %>
 
 <%= page_entries_info @users, entry_name: 'utilisateurs' %>
 <div class="container">
@@ -176,5 +189,17 @@
     $('form select').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
+
+    var updateBulkCount = function() {
+      var count = $('#bulk_actions_form .user_checkbox:checked').length;
+      $('#bulk_actions_count').text(count > 0 ? count + ' utilisateur(s) sélectionné(s)' : 'Aucun utilisateur sélectionné');
+    };
+
+    $('#select_all_users').on('change', function(event) {
+      $('#bulk_actions_form .user_checkbox').prop('checked', $(event.target).prop('checked'));
+      updateBulkCount();
+    });
+
+    $('#bulk_actions_form').on('change', '.user_checkbox', updateBulkCount);
   })
 </script>

@@ -103,28 +103,44 @@
 
 <% outing_filter = params[:q] && params[:q][:group_type_eq] == 'outing' %>
 
-<table class="table admin-table custom-table" style="table-layout: auto">
-  <thead>
-    <th>Titre</th>
-    <th>Date de création</th>
-    <% if outing_filter %>
-      <th>Date de l'événement</th>
-    <% end %>
-    <th>Description</th>
-    <th>Statut</th>
-    <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
-    <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </thead>
-  <tbody>
-    <% @entourages.each do |entourage| %>
-      <% unread_count = @message_count[entourage.id].unread %>
-      <% unread_images_count = @message_count[entourage.id].unread_images %>
+<%= form_tag bulk_assign_moderator_admin_entourages_path, method: :post, id: "bulk_assign_form" do %>
+  <div class="panel panel-default">
+    <div class="panel-body" style="display: flex; align-items: center; gap: 10px">
+      <span id="bulk_assign_count" class="text-muted">Aucune sélection</span>
+      <%
+        moderator_options = current_user.community.users
+          .moderators.validated.order(:first_name)
+          .map { |u| [u.first_name, u.id] }
+      %>
+      <%= select_tag :assign_moderator_id, options_for_select([['Assigner au modérateur…', nil]] + moderator_options), class: "form-control" %>
+      <%= submit_tag "Assigner la sélection", class: "btn btn-default btn-sm" %>
+    </div>
+  </div>
 
-      <tr class="<%= 'not-open' if entourage.status != 'open' %>">
-        <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
+  <table class="table admin-table custom-table" style="table-layout: auto">
+    <thead>
+      <th><input type="checkbox" id="select_all_entourages"></th>
+      <th>Titre</th>
+      <th>Date de création</th>
+      <% if outing_filter %>
+        <th>Date de l'événement</th>
+      <% end %>
+      <th>Description</th>
+      <th>Statut</th>
+      <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
+      <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </thead>
+    <tbody>
+      <% @entourages.each do |entourage| %>
+        <% unread_count = @message_count[entourage.id].unread %>
+        <% unread_images_count = @message_count[entourage.id].unread_images %>
+
+        <tr class="<%= 'not-open' if entourage.status != 'open' %>">
+          <td><%= check_box_tag "entourage_ids[]", entourage.id, false, class: "entourage_checkbox", id: "entourage_#{entourage.id}" %></td>
+          <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
         <td><%= l entourage.created_at, format:  :date_short %></td>
         <% if outing_filter %>
           <td><%= l entourage.starts_at, format: :date_short %></td>
@@ -173,7 +189,8 @@
       </tr>
     <% end %>
   </tbody>
-</table>
+  </table>
+<% end %>
 
 <%= page_entries_info @entourages, entry_name: 'entourages' %>
 
@@ -194,8 +211,20 @@
       },
     });
 
-    $('form select:not(#q_status_in)').on('change', function(event) {
+    $('form select:not(#q_status_in):not(#assign_moderator_id)').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
+
+    var updateBulkAssignCount = function() {
+      var count = $('#bulk_assign_form .entourage_checkbox:checked').length;
+      $('#bulk_assign_count').text(count > 0 ? count + ' sélectionné(s)' : 'Aucune sélection');
+    };
+
+    $('#select_all_entourages').on('change', function(event) {
+      $('#bulk_assign_form .entourage_checkbox').prop('checked', $(event.target).prop('checked'));
+      updateBulkAssignCount();
+    });
+
+    $('#bulk_assign_form').on('change', '.entourage_checkbox', updateBulkAssignCount);
   })
 </script>

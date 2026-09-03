@@ -197,6 +197,27 @@ module Admin
       redirect_to admin_entourages_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (actions créées depuis moins d'un mois ou événements ayant eu lieu il y a moins d'un mois)" }
     end
 
+    def bulk_assign_moderator
+      entourage_ids = Array(params[:entourage_ids]).reject(&:blank?)
+      moderator_id = params[:assign_moderator_id].presence
+
+      if entourage_ids.empty? || moderator_id.blank?
+        redirect_to admin_entourages_path(filter_params), flash: {
+          error: 'Merci de sélectionner au moins une action ou un événement et un modérateur'
+        } and return
+      end
+
+      Entourage.where(id: entourage_ids).find_each do |entourage|
+        moderation = entourage.moderation || entourage.build_moderation
+        moderation.moderator_id = moderator_id
+        moderation.save!
+      end
+
+      redirect_to admin_entourages_path(filter_params), flash: {
+        success: "#{entourage_ids.count} action(s)/événement(s) assigné(s)"
+      }
+    end
+
     def stop_recurrences
       @outing = Outing.find(params[:id])
       @recurrence = @outing.recurrence

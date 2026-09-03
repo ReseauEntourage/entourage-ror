@@ -184,6 +184,24 @@ module Admin
       @users = User.validated.where('avatar_key IS NOT NULL').order('updated_at DESC').page(params[:page]).per(25)
     end
 
+    def bulk_block
+      user_ids = Array(params[:user_ids]).reject(&:blank?)
+      cnil_explanation = params[:cnil_explanation]
+
+      if user_ids.empty? || cnil_explanation.blank?
+        redirect_to admin_users_path(params: filter_params), flash: {
+          error: 'Merci de sélectionner au moins un utilisateur et de renseigner les raisons de cette action'
+        } and return
+      end
+
+      users = current_user.community.users.where(id: user_ids)
+      users.find_each { |target| target.block! current_user, cnil_explanation }
+
+      redirect_to admin_users_path(params: filter_params), flash: {
+        success: "#{users.count} utilisateur(s) bloqué(s)"
+      }
+    end
+
     def edit_block
     end
 
