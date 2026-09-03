@@ -1,24 +1,86 @@
 <div class="container">
-  <div class="h1">Tableau de bord</div>
+  <div class="h1" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
+    <span>Tableau de bord</span>
+
+    <% if @departments.any? %>
+      <div class="btn-group btn-group-sm">
+        <%= link_to "Ma zone (#{@departments.join(', ')})", admin_dashboard_path(zone: 'mine'), class: "btn btn-#{@zone == :mine ? :primary : :default}" %>
+        <%= link_to "Toute la plateforme", admin_dashboard_path(zone: 'all'), class: "btn btn-#{@zone == :all ? :primary : :default}" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Activité récente<% if @zone == :mine %> — départements <%= @departments.join(', ') %><% end %></div>
+    <div class="panel-body" style="overflow-x: auto">
+      <table class="table admin-table custom-table" style="table-layout: auto; min-width: 560px">
+        <thead>
+          <th>Indicateur</th>
+          <% @activity.each do |row| %>
+            <th style="text-align: center">Depuis <%= row[:days] %> jour<%= 's' if row[:days] > 1 %></th>
+          <% end %>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nouveaux comptes</td>
+            <% @activity.each do |row| %>
+              <td style="text-align: center">
+                <%= link_to row[:new_users], admin_users_path(q: { created_at_gteq: row[:days].days.ago.to_date, postal_code_start_any: (@zone == :mine ? @departments : nil) }) %>
+              </td>
+            <% end %>
+          </tr>
+          <tr>
+            <td>Nouvelles actions / événements</td>
+            <% @activity.each do |row| %>
+              <td style="text-align: center">
+                <%= link_to row[:new_entourages], admin_entourages_path(q: { created_at_gteq: row[:days].days.ago.to_date, postal_code_start_any: (@zone == :mine ? @departments : nil) }) %>
+              </td>
+            <% end %>
+          </tr>
+          <tr>
+            <td>Dont non modérés</td>
+            <% @activity.each do |row| %>
+              <td style="text-align: center">
+                <% if row[:new_unmoderated_entourages] > 0 %>
+                  <%= link_to row[:new_unmoderated_entourages], admin_entourages_path(q: { created_at_gteq: row[:days].days.ago.to_date, postal_code_start_any: (@zone == :mine ? @departments : nil) }), class: "custom-badge warning" %>
+                <% else %>
+                  0
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+          <tr>
+            <td>Messages échangés</td>
+            <% @activity.each do |row| %>
+              <td style="text-align: center"><%= row[:new_messages] %></td>
+            <% end %>
+          </tr>
+        </tbody>
+      </table>
+      <p class="text-muted" style="margin: 10px 0 0">
+        « Dont non modérés » compte, parmi les actions/événements créés sur la période, ceux qui n'ont toujours pas été modérés à ce jour.
+      </p>
+    </div>
+  </div>
 
   <div class="row" style="display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 20px">
-    <div class="panel panel-default" style="flex: 1; min-width: 200px">
+    <div class="panel <%= @photo_queue_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
       <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= @new_users_count %></div>
-        <div class="text-muted">Nouvelles inscriptions (48h)</div>
+        <div style="font-size: 30px; font-weight: 600"><%= link_to @photo_queue_count, moderate_admin_users_path %></div>
+        <div class="text-muted">Photos de profil à modérer (total)</div>
       </div>
     </div>
 
     <div class="panel <%= @pending_moderation_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
       <div class="panel-body" style="text-align: center">
         <div style="font-size: 30px; font-weight: 600"><%= @pending_moderation_count %></div>
-        <div class="text-muted">Actions/événements non modérés</div>
+        <div class="text-muted">Actions/événements non modérés (total)</div>
       </div>
     </div>
 
     <div class="panel <%= @unassigned_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
       <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= @unassigned_count %></div>
+        <div style="font-size: 30px; font-weight: 600"><%= link_to @unassigned_count, admin_entourages_path(moderator_id: :none) %></div>
         <div class="text-muted">Sans modérateur assigné</div>
       </div>
     </div>
@@ -26,7 +88,7 @@
     <% if @my_queue_count %>
       <div class="panel panel-default" style="flex: 1; min-width: 200px">
         <div class="panel-body" style="text-align: center">
-          <div style="font-size: 30px; font-weight: 600"><%= @my_queue_count %></div>
+          <div style="font-size: 30px; font-weight: 600"><%= link_to @my_queue_count, admin_entourages_path(moderator_id: current_user.id) %></div>
           <div class="text-muted">Dans ma file</div>
         </div>
       </div>
@@ -81,7 +143,9 @@
     </div>
   </div>
 
-  <div class="row" style="margin-top: 16px">
+  <div class="row" style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap">
     <%= link_to "Voir l'activité récente", admin_activity_feed_path, class: "btn btn-default" %>
+    <%= link_to "Sorties à venir", upcoming_admin_entourages_path, class: "btn btn-default" %>
+    <%= link_to "En attente de réponse", unanswered_admin_entourages_path, class: "btn btn-default" %>
   </div>
 </div>

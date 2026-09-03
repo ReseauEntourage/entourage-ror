@@ -168,4 +168,16 @@ module ModerationServices
       .moderator_search('none')
       .count
   end
+
+  def self.moderation_areas_for user
+    ModerationArea
+      .no_hz
+      .where(animator: user)
+      .or(ModerationArea.no_hz.where(sourcing: user))
+      .or(ModerationArea.no_hz.where(referent_benevole: user))
+  end
+
+  def self.departments_for user
+    moderation_areas_for(user).pluck(:departement).uniq
+  end
 end

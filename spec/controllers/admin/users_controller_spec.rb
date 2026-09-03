@@ -390,6 +390,18 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index with postal_code_start_any' do
+    let!(:admin) { admin_basic_login }
+    let!(:paris_user) { FactoryBot.create(:public_user, community: admin.community) }
+    let!(:paris_address) { FactoryBot.create(:address, user: paris_user, postal_code: '75001', country: 'FR') }
+    let!(:lyon_user) { FactoryBot.create(:public_user, community: admin.community) }
+    let!(:lyon_address) { FactoryBot.create(:address, user: lyon_user, postal_code: '69001', country: 'FR') }
+
+    before { get :index, params: { q: { postal_code_start_any: ['75', '69'] } } }
+
+    it { expect(assigns(:users)).to include(paris_user, lyon_user) }
+  end
+
   describe 'GET timeline' do
     let!(:admin) { admin_basic_login }
     let!(:user) { FactoryBot.create(:public_user) }

@@ -5,12 +5,14 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :timeline, :rpush_notifications, :neighborhoods, :outings, :history, :notes, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all, :created_at_gteq, :created_at_lteq, :last_sign_in_at_gteq, :last_sign_in_at_lteq]]).to_h
+      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all, :created_at_gteq, :created_at_lteq, :last_sign_in_at_gteq, :last_sign_in_at_lteq, postal_code_start_any: []]]).to_h
 
       @status = get_status
       @role = get_role
 
-      @q = filtered_users.ransack(params[:q])
+      ransack_params = (params[:q] || {}).except(:country_eq, :postal_code_start, :postal_code_not_start_all, :postal_code_start_any)
+
+      @q = filtered_users.ransack(ransack_params)
       @users = @q.result.includes(:address, :engagement_level).order('created_at DESC').page(params[:page]).per(25)
     end
 
@@ -424,6 +426,7 @@ module Admin
 
       @users = @users.in_area('dep_' + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
+      @users = @users.in_specific_areas(params[:q][:postal_code_start_any]) if params[:q] && params[:q][:postal_code_start_any].present?
       @users.group('users.id')
       @users
     end
