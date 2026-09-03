@@ -216,6 +216,24 @@ module Admin
         .page(params[:page]).per(50)
     end
 
+    def unanswered
+      @days = params[:days].presence&.to_i || 3
+
+      last_messages = ChatMessage
+        .where(messageable_type: 'Entourage')
+        .select('DISTINCT ON (messageable_id) messageable_id, user_id, created_at')
+        .order('messageable_id, created_at desc')
+
+      @entourages = Entourage
+        .where(group_type: ['action', 'outing'], status: ModerationServices::OPEN_ENTOURAGE_STATUSES)
+        .joins("inner join (#{last_messages.to_sql}) last_messages on last_messages.messageable_id = entourages.id")
+        .where('last_messages.user_id != entourages.user_id')
+        .where('last_messages.created_at <= ?', @days.days.ago)
+        .select('entourages.*, last_messages.created_at as last_message_at, last_messages.user_id as last_message_user_id')
+        .order('last_messages.created_at asc')
+        .page(params[:page]).per(50)
+    end
+
     def bulk_assign_moderator
       entourage_ids = Array(params[:entourage_ids]).reject(&:blank?)
       moderator_id = params[:assign_moderator_id].presence

@@ -1,0 +1,44 @@
+<%
+  senders = User.where(id: @entourages.map(&:last_message_user_id)).index_by(&:id)
+%>
+
+<div class="container">
+  <div class="h1">Entourages en attente de réponse</div>
+  <p class="text-muted">Dernier message envoyé par un participant, sans réponse de l'organisateur ni d'un modérateur.</p>
+
+  <div class="btn-group btn-group-sm" style="margin-bottom: 15px">
+    <%= link_to "Depuis 1 jour", unanswered_admin_entourages_path(days: 1), class: "btn btn-#{@days == 1 ? :primary : :default}" %>
+    <%= link_to "Depuis 3 jours", unanswered_admin_entourages_path(days: 3), class: "btn btn-#{@days == 3 ? :primary : :default}" %>
+    <%= link_to "Depuis 7 jours", unanswered_admin_entourages_path(days: 7), class: "btn btn-#{@days == 7 ? :primary : :default}" %>
+  </div>
+
+  <table class="table admin-table custom-table" style="table-layout: auto">
+    <thead>
+      <th>Titre</th>
+      <th>Dernier message envoyé par</th>
+      <th>Depuis le</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <% @entourages.each do |entourage| %>
+        <tr>
+          <td><%= link_to entourage.title, admin_entourage_path(entourage) %></td>
+          <td><%= senders[entourage.last_message_user_id]&.full_name || "Utilisateur ##{entourage.last_message_user_id}" %></td>
+          <td><%= l entourage.last_message_at, format: "%-d %B %Y à %H:%M" %></td>
+          <td><%= link_to "Répondre", show_messages_admin_entourage_path(entourage), class: "btn btn-default btn-sm" %></td>
+        </tr>
+      <% end %>
+
+      <% if @entourages.none? %>
+        <tr>
+          <td colspan="4" style="text-align: center">
+            <span class="text-muted">Aucun message sans réponse sur cette période.</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= page_entries_info @entourages, entry_name: 'entourages' %>
+  <div class="container"><%= paginate @entourages %></div>
+</div>

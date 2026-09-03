@@ -134,6 +134,7 @@ Rails.application.routes.draw do
           delete :destroy_message
           post :bulk_assign_moderator
           get :upcoming
+          get :unanswered
         end
 
         resources :users, controller: 'entourages/users', only: [:destroy]
