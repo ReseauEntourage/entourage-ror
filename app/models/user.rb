@@ -291,6 +291,10 @@ class User < ApplicationRecord
     User.find_by_phone(ENV['ENTOURAGE_USER_PHONE'])
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "last_sign_in_at"]
+  end
+
   def self.find_by_id_or_phone identifier
     return find_by_id(identifier) unless identifier.is_a?(String)
 

@@ -31,6 +31,22 @@
         <%= select_tag :status, options_for_select([['Tous les statuts', nil]] + user_statuses, @params[:status]), class: 'form-control' %>
       </div>
     </div>
+
+    <% q = @params[:q] || {} %>
+    <div style="padding: 0 0 15px 15px">
+      <div class="input-group">
+        <label style="margin: 0 4px 0 0; font-weight: normal">Inscrit(e) entre</label>
+        <%= date_field_tag "q[created_at_gteq]", q[:created_at_gteq], class: "form-control", style: "width: auto; display: inline-block" %>
+        <label style="margin: 0 4px">et</label>
+        <%= date_field_tag "q[created_at_lteq]", q[:created_at_lteq], class: "form-control", style: "width: auto; display: inline-block" %>
+      </div>
+      <div class="input-group">
+        <label style="margin: 0 4px 0 0; font-weight: normal">Dernière connexion entre</label>
+        <%= date_field_tag "q[last_sign_in_at_gteq]", q[:last_sign_in_at_gteq], class: "form-control", style: "width: auto; display: inline-block" %>
+        <label style="margin: 0 4px">et</label>
+        <%= date_field_tag "q[last_sign_in_at_lteq]", q[:last_sign_in_at_lteq], class: "form-control", style: "width: auto; display: inline-block" %>
+      </div>
+    </div>
   </div>
 
   <div style="float: left; margin: -10px 0 10px">
