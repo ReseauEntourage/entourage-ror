@@ -366,6 +366,8 @@ Rails.application.routes.draw do
           get 'download_export'
           get 'send_export'
           put 'anonymize'
+          get 'edit_reactivate'
+          put 'reactivate'
         end
       end
 

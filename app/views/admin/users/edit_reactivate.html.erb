@@ -1,0 +1,88 @@
+<div class="col-md-10 col-md-offset-1">
+  <div class="row">
+    <div class="h1">
+      <span>Utilisateur #<%= @user.id %></span>
+    </div>
+
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        Réactiver l'utilisateur anonymisé
+      </div>
+      <div class="panel-body">
+        Cet utilisateur a été anonymisé. Pour le réactiver, veuillez saisir ses informations personnelles (prénom, nom, email, téléphone). L'adresse est facultative.
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <%= form_for([:admin, @user], url: reactivate_admin_user_path(@user), method: :put, html: { class: "form-horizontal", role: "form" }) do |f| %>
+      <%= render partial: "layouts/errors", locals: { obj: @user } %>
+
+      <div class="control-group">
+        <%= f.label :first_name, "Prénom", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :first_name, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <%= f.label :last_name, "Nom", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :last_name, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <%= f.label :email, "Email", class: "control-label" %>
+        <div class="controls">
+          <%= f.email_field :email, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <%= f.label :phone, "Téléphone", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :phone, class: "form-control", required: true %>
+        </div>
+      </div>
+
+      <div class="control-group" id="address-block">
+        <label class="control-label">Adresse</label>
+        <div class="controls">
+          <input id="autocomplete" type="text" class="form-control">
+          <%= hidden_field_tag "address[google_place_id]", nil, disabled: true %>
+        </div>
+      </div>
+
+      <br>
+      <%= f.submit "Réactiver", class: "btn btn-danger" %>
+      <%= link_to "Annuler", admin_user_path(@user), class: "btn btn-default" %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  var reactivateAutocomplete;
+
+  function initReactivateAutocomplete() {
+    var $autocomplete = $('#autocomplete');
+    reactivateAutocomplete = new google.maps.places.Autocomplete($autocomplete[0], {
+      types: ['geocode']
+    });
+
+    reactivateAutocomplete.addListener('place_changed', function() {
+      var place = reactivateAutocomplete.getPlace();
+      if (!place.place_id) return;
+
+      $('#address_google_place_id').val(place.place_id).prop('disabled', false);
+    });
+
+    $autocomplete.on('keypress', function(e) {
+      if ((e.keyCode || e.which || e.charCode) === 13) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  initReactivateAutocomplete();
+</script>

@@ -287,6 +287,7 @@ pl:
         kind:
           account: Konto utworzone
           anonymize: Konto zanonimizowane
+          reactivate: Konto reaktywowane
           auto: auto
           block: Konto zablokowane
           deleted: Konto usunięte
