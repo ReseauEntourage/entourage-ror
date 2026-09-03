@@ -114,7 +114,7 @@ class ConversationChannel < ApplicationCable::Channel
     end
 
     def serialize_chat_message(message)
-      V1::ChatMessageSerializer.new(message, scope: {}, root: false).as_json
+      V1::ChatMessageWebsocketSerializer.new(message, scope: {}, root: false).as_json
     end
 
     def serialize_join_request(join_request)
