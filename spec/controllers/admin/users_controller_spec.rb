@@ -389,4 +389,25 @@ describe Admin::UsersController do
       it { expect(user1.reload.histories.count).to eq(1) }
     end
   end
+
+  describe 'GET timeline' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, user: user) }
+
+    before { get :timeline, params: { id: user.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(assigns(:timeline).map { |i| i[:record] }).to include(entourage) }
+  end
+
+  describe 'GET index engagement badge' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+
+    before { get :index }
+
+    it { expect(assigns(:users)).to include(user) }
+    it { expect { assigns(:users).each(&:engagement) }.not_to raise_error }
+  end
 end

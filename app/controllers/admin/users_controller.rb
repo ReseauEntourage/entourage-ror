@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :notes, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :timeline, :rpush_notifications, :neighborhoods, :outings, :history, :notes, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all, :created_at_gteq, :created_at_lteq, :last_sign_in_at_gteq, :last_sign_in_at_lteq]]).to_h
@@ -11,7 +11,7 @@ module Admin
       @role = get_role
 
       @q = filtered_users.ransack(params[:q])
-      @users = @q.result.includes(:address).order('created_at DESC').page(params[:page]).per(25)
+      @users = @q.result.includes(:address, :engagement_level).order('created_at DESC').page(params[:page]).per(25)
     end
 
     def search
@@ -67,6 +67,10 @@ module Admin
     end
 
     def engagement
+    end
+
+    def timeline
+      @timeline = UserServices::Timeline.new(user).get
     end
 
     def rpush_notifications

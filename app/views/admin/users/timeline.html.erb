@@ -1,0 +1,57 @@
+<div class="col-md-10 col-md-offset-1">
+  <div class="row">
+    <%= render 'header', tab: :timeline %>
+  </div>
+
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">Résumé</div>
+      <div class="panel-body" style="display: flex; gap: 24px; flex-wrap: wrap">
+        <div>
+          <div style="font-size: 22px; font-weight: 600"><%= @user.entourages_count %></div>
+          <div class="text-muted">Entourages créés</div>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 600"><%= @user.actions_count %></div>
+          <div class="text-muted">Actions rejointes</div>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 600"><%= @user.outings_count %></div>
+          <div class="text-muted">Événements rejoints</div>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 600"><%= @user.neighborhoods_count %></div>
+          <div class="text-muted">Groupes de voisins rejoints</div>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 600"><%= @user.engagement.badge %></div>
+          <div class="text-muted">Niveau d'engagement</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Activité (créations et participations)</div>
+      <div class="panel-body">
+        <% if @timeline.empty? %>
+          <p class="text-muted">Aucune activité enregistrée.</p>
+        <% else %>
+          <ul class="list-unstyled">
+            <% @timeline.each do |item| %>
+              <li style="border-top: 1px solid #eee; padding: 10px 0">
+                <div>
+                  <% if item[:kind] == :joined_neighborhood %>
+                    <%= link_to item[:label], edit_admin_neighborhood_path(item[:record]) %>
+                  <% else %>
+                    <%= link_to item[:label], admin_entourage_path(item[:record]) %>
+                  <% end %>
+                </div>
+                <div class="text-muted" style="font-size: 12px"><%= l item[:date], format: "%-d %B %Y à %H:%M" %></div>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

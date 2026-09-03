@@ -117,6 +117,7 @@
 
     <th>Code postal</th>
     <th>Profil</th>
+    <th>Engagement</th>
 
     <% if [:admin, :moderators].include? @role %>
       <th>Rôle modérateur</th>
@@ -159,6 +160,9 @@
             <%= t "community.entourage.goals_compact.#{user.goal}" %>
           </span>
         <% end %>
+      </td>
+      <td>
+        <span class="custom-badge <%= user.engagement.engaged? ? 'success' : 'info' %>"><%= user.engagement.badge %></span>
       </td>
 
       <% if [:admin, :moderators].include? @role %>
