@@ -1,0 +1,32 @@
+<%= render partial: 'common/errors', locals: { obj: @word } %>
+
+<%= form_for [:admin, @word], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :raw, "Mot ou expression" %>
+    <%= f.text_field :raw, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :category %>
+    <%= f.text_field :category, class: "form-control", list: "sensitive_word_categories" %>
+    <datalist id="sensitive_word_categories">
+      <% @categories.each do |category| %>
+        <option value="<%= category %>">
+      <% end %>
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :match_type, "Type de correspondance" %>
+    <%= f.select :match_type, SensitiveWord::MATCH_TYPES.map { |type| [type == 'stem' ? 'Racine (variantes incluses)' : 'Exact', type] }, {}, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :scope, "Portée" %>
+    <%= f.select :scope, SensitiveWord::SCOPES.map { |scope| [scope == 'public' ? 'Contenus publics uniquement' : 'Tous les contenus', scope] }, {}, class: "form-control" %>
+  </div>
+
+  <div class="text-right">
+    <%= f.submit "Enregistrer", class: "btn btn-success" %>
+  </div>
+<% end %>

@@ -38,7 +38,7 @@
         <% if word.nil? %>
           (supprimé)
         <% else %>
-          <%= link_to [:admin, word] do %>
+          <%= link_to edit_admin_sensitive_word_path(word) do %>
             <%= word.raw %> (<%= word.category %>)
           <% end %>
         <% end %>

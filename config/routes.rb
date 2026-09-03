@@ -278,7 +278,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :sensitive_words, only: [:show, :destroy]
+      resources :sensitive_words, only: [:index, :new, :create, :edit, :update, :destroy]
 
       namespace :slack do
         post :message_action

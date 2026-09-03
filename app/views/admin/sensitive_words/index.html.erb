@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="h1" style="display: flex; align-items: center;">
+    <div style="flex-grow: 1">Mots sensibles</div>
+    <%= link_to "Ajouter un mot sensible", new_admin_sensitive_word_path, class: "btn btn-success" %>
+  </div>
+
+  <%= form_tag admin_sensitive_words_path, class: 'form-inline', method: :get do %>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="input-group">
+          <%= text_field_tag :search, @search, class: "form-control", placeholder: "Rechercher un mot" %>
+        </div>
+        <div class="input-group">
+          <%= select_tag :category, options_for_select([['Toutes les catégories', nil]] + @categories.map { |c| [c, c] }, @category), class: "form-control" %>
+        </div>
+        <span class="input-group-btn">
+          <%= submit_tag "Filtrer", class: "btn btn-default" %>
+        </span>
+        <%= link_to "Réinitialiser", admin_sensitive_words_path, class: "btn btn-default" %>
+      </div>
+    </div>
+  <% end %>
+
+  <table class="table admin-table custom-table">
+    <thead>
+      <th>Mot</th>
+      <th>Catégorie</th>
+      <th>Type</th>
+      <th>Portée</th>
+      <th>Ajouté par</th>
+      <th>Ajouté le</th>
+      <th></th>
+    </thead>
+
+    <% @words.each do |word| %>
+      <tr>
+        <td><%= link_to word.raw, edit_admin_sensitive_word_path(word) %></td>
+        <td><%= word.category %></td>
+        <td><%= word.match_type == 'stem' ? 'Racine' : 'Exact' %></td>
+        <td><%= word.scope == 'public' ? 'Public' : 'Tous' %></td>
+        <td>
+          <% if word.created_by %>
+            <%= word.created_by.full_name %>
+          <% else %>
+            <span class="text-muted">&mdash;</span>
+          <% end %>
+        </td>
+        <td>
+          <% if word.created_at %>
+            <%= l word.created_at, format: "%-d %B %Y" %>
+          <% else %>
+            <span class="text-muted">&mdash;</span>
+          <% end %>
+        </td>
+        <td>
+          <%= link_to "Supprimer", [:admin, word], method: :delete,
+                data: { confirm: "Supprimer #{word.raw} ?" }, class: "btn btn-danger btn-xs" %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+
+  <%= page_entries_info @words, entry_name: 'mots' %>
+  <div class="container">
+    <%= paginate @words %>
+  </div>
+</div>

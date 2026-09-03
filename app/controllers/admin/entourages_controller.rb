@@ -444,6 +444,7 @@ module Admin
     def sensitive_words_check
       check = @entourage.sensitive_words_check || @entourage.build_sensitive_words_check
       check.status = params[:status]
+      check.checked_by = current_user
       check.save!
       redirect_to admin_entourage_path(@entourage)
     end
