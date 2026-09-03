@@ -288,4 +288,12 @@ describe Admin::EntouragesController do
       it { expect(entourage1.reload.moderation&.moderator_id).not_to eq(moderator.id) }
     end
   end
+
+  describe 'GET show_history' do
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    before { get :show_history, params: { id: entourage.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(assigns(:histories).map { |h| h[:kind] }).to include(:creation) }
+  end
 end

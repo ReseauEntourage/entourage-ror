@@ -109,6 +109,7 @@ Rails.application.routes.draw do
           get :show_matchings
           get :show_siblings
           get :show_notes
+          get :show_history
           post :send_matching
           post :stop_recurrences
           get :sensitive_words

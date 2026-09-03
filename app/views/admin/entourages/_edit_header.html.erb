@@ -63,5 +63,8 @@
       <li role="presentation" class="<%= :active if params[:action] == 'show_notes' %>">
         <%= link_to "Notes internes (#{@entourage.admin_notes.count})", show_notes_admin_entourage_path(@entourage, @params) %>
       </li>
+      <li role="presentation" class="<%= :active if params[:action] == 'show_history' %>">
+        <%= link_to "Historique", show_history_admin_entourage_path(@entourage, @params) %>
+      </li>
     </ul>
   </div>
