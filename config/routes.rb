@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     scope module: 'admin', as: 'admin' do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
+      get 'activity_feed' => 'activity_feed#index', as: :activity_feed
       get '/sessions/new', to: redirect('/admin/sessions/new')
 
       get 'public_user_autocomplete' => 'users_search#public_user_autocomplete'
