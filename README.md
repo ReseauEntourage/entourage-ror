@@ -36,13 +36,23 @@ Generate a secret with:
 ruby -e "require 'securerandom'; puts SecureRandom.hex(32)"
 ```
 
-**Deployment order:**
+**The check is mandatory.** Every `POST /api/v1/users` request must carry a valid signature, computed with the API key's `hmac_secret`. There is no bypass: a client whose key has no `hmac_secret` configured (any app version below 9.0.0, `web`, or a debug key) is rejected with `MISSING_SIGNING_KEY`, and a request without valid `X-Request-Timestamp` / `X-Request-Signature` headers is rejected with `MISSING_SIGNATURE` / `EXPIRED_SIGNATURE` / `INVALID_SIGNATURE`.
 
-1. Deploy the backend **without** setting these variables → the check is skipped (backwards-compatible).
-2. Release the updated Android and iOS apps (they include the signing code).
-3. Set `HMAC_SECRET_ANDROID` and `HMAC_SECRET_IOS` in the environment and restart the backend → the check activates for v9.0.0+ keys.
+⚠️ **`HMAC_SECRET_ANDROID` and `HMAC_SECRET_IOS` must be set in every environment that needs to accept account creation** (including `development`, if you test signup locally) — without them, even v9.0.0+ clients are rejected and account creation is entirely unavailable.
 
-> In development, leave both variables empty: requests are passed through without signature verification.
+To create an account locally without a real mobile app, sign the request yourself:
+
+```bash
+ruby -e "
+  require 'openssl'
+  secret = ENV.fetch('HMAC_SECRET_IOS')
+  timestamp = Time.now.to_i
+  phone = '+33612345678'
+  signature = OpenSSL::HMAC.base64digest('SHA256', secret, \"POST\n/api/v1/users\n#{timestamp}\n#{phone}\")
+  puts \"X-Request-Timestamp: #{timestamp}\"
+  puts \"X-Request-Signature: #{signature}\"
+"
+```
 
 Note that the `.env` file is used for all Rails environments. If you want to target only one (e.g. the `development` environment but not the `test` environment), use a file named `.env.{environment_name}` (e.g `.env.development`).
 
