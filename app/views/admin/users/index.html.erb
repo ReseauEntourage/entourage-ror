@@ -2,19 +2,15 @@
 
 <%= form_tag admin_users_path, class: 'form-inline', method: :get do |f| %>
   <div class="panel panel-default">
-    <div class="panel-body">
-      <div style="float: left">
-        <div class='input-group'>
-          <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "nom, prénom, email..." %>
-          <span class="input-group-btn">
-            <%= submit_tag "Chercher", class: "btn btn-default" %>
-          </span>
-        </div>
+    <div class="panel-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
+      <div class='input-group'>
+        <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "nom, prénom, email..." %>
+        <span class="input-group-btn">
+          <%= submit_tag "Chercher", class: "btn btn-default" %>
+        </span>
       </div>
 
-      <div style="float: right">
-        <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
-      </div>
+      <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
     </div>
 
     <div style="padding: 0 0 15px 15px">
@@ -49,22 +45,20 @@
     </div>
   </div>
 
-  <div style="float: left; margin: -10px 0 10px">
-    <%
-      q = @params[:q] || {}
-      locations = moderation_area_filters
-    %>
+  <%
+    q = @params[:q] || {}
+    locations = moderation_area_filters
+  %>
 
-    <%= hidden_field_tag "q[country_eq]", q[:country_eq] if q[:country_eq] %>
-    <%= hidden_field_tag "q[postal_code_start]", q[:postal_code_start] if q[:postal_code_start] %>
-    <%= hidden_field_tag "q[postal_code_not_start_all]", q[:postal_code_not_start_all] if q[:postal_code_not_start_all] %>
-  </div>
+  <%= hidden_field_tag "q[country_eq]", q[:country_eq] if q[:country_eq] %>
+  <%= hidden_field_tag "q[postal_code_start]", q[:postal_code_start] if q[:postal_code_start] %>
+  <%= hidden_field_tag "q[postal_code_not_start_all]", q[:postal_code_not_start_all] if q[:postal_code_not_start_all] %>
 
-  <div style="float: left; margin: -10px 0 10px">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 10px 0">
     <div class="btn-group btn-group-sm">
       <% location_keys = [:country_eq, :postal_code_start, :postal_code_not_start_all] %>
       <% active = locations.key q.slice(*location_keys).compact.symbolize_keys %>
-      
+
       <%= link_to("Partout", @params.merge(q: q.except(*location_keys)), class: "btn btn-#{(!@params.keys.include? 'q') ? :primary : :default}") %>
 
       <% locations.sort.each do |name, options| %>
@@ -75,11 +69,11 @@
         <% end %>
       <% end %>
     </div>
-  </div>
 
-  <div style="float: right; margin: -10px 0 10px">
-    <%= link_to "Télécharger", download_list_export_admin_users_path(@params), class: "btn btn-default" %>
-    <%= link_to "Réinitialiser les filtres", admin_users_path, class: "btn btn-default" %>
+    <div>
+      <%= link_to "Télécharger", download_list_export_admin_users_path(@params), class: "btn btn-default" %>
+      <%= link_to "Réinitialiser les filtres", admin_users_path, class: "btn btn-default" %>
+    </div>
   </div>
 <% end %>
 
