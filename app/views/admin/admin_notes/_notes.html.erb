@@ -19,7 +19,7 @@
     <% if notable.admin_notes.any? %>
       <ul class="list-unstyled" style="margin-top: 15px">
         <% notable.admin_notes.each do |note| %>
-          <li style="border-top: 1px solid #eee; padding: 10px 0">
+          <li style="border-top: 1px solid var(--bo-line); padding: 10px 0">
             <div><%= simple_format note.body %></div>
             <div class="text-muted" style="font-size: 12px">
               <%= note.author&.full_name || "modérateur supprimé" %>

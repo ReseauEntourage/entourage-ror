@@ -1,18 +1,21 @@
-<div class="row">
-  <div class="sign-in-block col-md-4 center-block" style="float: none">
-    <div id="flash">
-      <%= display_flash_messages %>
-    </div>
+<div style="display: flex; justify-content: center; padding-top: 60px">
+  <div class="panel panel-default" style="width: 100%; max-width: 360px">
+    <div class="panel-body" style="padding: 32px 28px">
+      <h1 style="font-size: 22px; margin-bottom: 22px">Modification du mot de passe</h1>
 
-    <p><b>Modification du mot de passe</b></p>
-    <%= form_for @user, :url => admin_password_reset_path(params[:id]) do |f| %>
-      <div class="field form-group">
-        <%= f.password_field :admin_password, placeholder: t('activerecord.attributes.user.admin_password'), class: 'form-control' %>
+      <div id="flash">
+        <%= display_flash_messages %>
       </div>
-      <div class="field form-group">
-        <%= f.password_field :admin_password_confirmation, placeholder: t('activerecord.attributes.user.admin_password_confirmation'), class: 'form-control' %>
-      </div>
-      <div class='actions form-group'><%= f.submit 'Mise à jour', class: "btn btn-lg btn-entourage" %></div>
-    <% end %>
+
+      <%= form_for @user, :url => admin_password_reset_path(params[:id]) do |f| %>
+        <div class="field form-group">
+          <%= f.password_field :admin_password, placeholder: t('activerecord.attributes.user.admin_password'), class: 'form-control' %>
+        </div>
+        <div class="field form-group">
+          <%= f.password_field :admin_password_confirmation, placeholder: t('activerecord.attributes.user.admin_password_confirmation'), class: 'form-control' %>
+        </div>
+        <div class='actions form-group'><%= f.submit 'Mise à jour', class: "btn btn-lg btn-primary", style: "width: 100%" %></div>
+      <% end %>
+    </div>
   </div>
 </div>

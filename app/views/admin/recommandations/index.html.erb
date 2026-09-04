@@ -18,12 +18,15 @@
   }
 
   #instances {
-    background-color: #ddd;
+    background-color: var(--bo-line);
     padding-top: 1px; /* top separator */
+    border-radius: var(--bo-radius);
+    overflow: hidden;
+    box-shadow: var(--bo-shadow);
   }
   .instance {
     display: flex;
-    background-color: #fff;
+    background-color: var(--bo-paper-raised);
   }
   #instances.animate,
   #instances.animate .instance {
@@ -48,19 +51,19 @@
   #instances.reorder {
     padding: 8px;
     margin: -7px -8px 0;
-    background-color: #ebecf0;
-    border-radius: 3px;
+    background-color: var(--bo-line);
+    border-radius: var(--bo-radius);
   }
   .reorder .instance {
     box-shadow: 0 1px 0 rgba(9,30,66,.25);
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: grab;
   }
   .reorder .instance + .instance {
     margin-top: 8px;
   }
   .reorder .instance:hover {
-    background-color: #f4f5f7;
+    background-color: var(--bo-paper);
   }
   .reorder .overlay,
   .instance.gu-mirror .overlay {
@@ -110,25 +113,32 @@
   .invisible-searchable-block::-webkit-scrollbar {
       display: none; /* Chrome Safari */
   }
+
+  .bo-toolbar {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
 </style>
 
 <div class="container">
   <%= render 'header', profile: @profile, fragment: @fragment %>
 
-  <div style="margin: auto">
-    <div style="float: right">
-      <%= link_to "Ajouter une recommandation", new_admin_recommandation_path, class: "btn btn-default" %>
-    </div>
+  <h1>Recommandations</h1>
+
+  <div class="bo-toolbar">
+    <%= link_to "Ajouter une recommandation", new_admin_recommandation_path, class: "btn btn-default" %>
 
     <div style="margin-left: auto">
       <a href="#" class="btn btn-default btn-sm" id="start-reorder">Modifier l'ordre des cartes</a>
       <a href="#" class="btn btn-default btn-sm hide" id="cancel-reorder">Annuler</a>
       <a href="#" class="btn btn-success btn-sm hide" id="save-reorder">Enregistrer l'ordre des cartes</a>
     </div>
+  </div>
 
-    <h1>Recommandations</h1>
-
-    <div id="instances">
+  <div id="instances">
       <% unless @recommandations.none? %>
         <% @recommandations.each do |recommandation| %>
           <div class="instance overlay-container" data-id="<%= recommandation.id %>">
@@ -147,7 +157,6 @@
         <% end %>
       <% end %>
     </div>
-  </div>
 </div>
 
 <%= form_tag reorder_admin_recommandations_path, class: "hide", id: "reorder-form" do %>

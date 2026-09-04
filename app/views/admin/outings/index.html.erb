@@ -4,17 +4,15 @@
 
     <%= form_tag admin_outings_path, class: 'form-inline', id: "search-form", method: :get do |f| %>
       <div class="panel panel-default">
-        <div class="panel-body">
-          <div style="float: right">
-            <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
-          </div>
-
+        <div class="panel-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
           <div class='input-group'>
             <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Rechercher un événement" %>
             <span class="input-group-btn">
               <%= submit_tag "Chercher", class: "btn btn-default" %>
             </span>
           </div>
+
+          <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
         </div>
 
         <div style="padding: 0 0 15px 15px">
@@ -40,7 +38,7 @@
         </div>
       </div>
 
-      <div style="float: left; margin: -10px 0 10px">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 10px 0">
         <div class="btn-group btn-group-sm">
           <%= radio_button_tag :area, :all, @area == :all, id: "area_all", style: "display: none;" %>
           <%= label_tag "area_all", "Tous", class: "btn btn-#{@area == :all ? :primary : :default}" %>
@@ -50,11 +48,11 @@
             <%= label_tag "area_#{slug}", area.short_name, class: "btn btn-#{@area == slug ? :primary : :default}" %>
           <% end %>
         </div>
-      </div>
 
-      <div style="float: right; margin: -10px 0 10px">
-        <%= link_to "Exporter", download_list_export_admin_outings_path(@params), class: "btn btn-default" %>
-        <%= link_to "Réinitialiser les filtres", admin_outings_path, class: "btn btn-default" %>
+        <div>
+          <%= link_to "Exporter", download_list_export_admin_outings_path(@params), class: "btn btn-default" %>
+          <%= link_to "Réinitialiser les filtres", admin_outings_path, class: "btn btn-default" %>
+        </div>
       </div>
     <% end %>
 
@@ -75,7 +73,7 @@
             <tr class="above-row row-<%= parite %>">
               <td>
                 <% unless outing.moderated %>
-                  <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
+                  <span class="badge badge-warning" title="Non modéré">●</span>
                 <% end %>
               </td>
               <td>

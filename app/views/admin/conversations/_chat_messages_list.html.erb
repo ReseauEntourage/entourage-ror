@@ -30,7 +30,7 @@
   .conversation-icon {
     width: 2em;
     height: 2em;
-    color: #fff;
+    color: var(--bo-paper-raised);
     text-align: center;
     line-height: 2;
     font-size: 18px;
@@ -55,26 +55,26 @@
   .conversation-day-divider-label {
     display: inline-block;
     padding: 4px 12px;
-    background-color: #fff;
+    background-color: var(--bo-paper-raised);
     font-weight: bold;
     z-index: 1;
     position: relative;
     border-radius: 3px;
   }
   .conversation-day-divider+.conversation-message {
-    border-top: 1px solid #e8e8e8;
+    border-top: 1px solid var(--bo-line);
     padding-top: 16px;
   }
   .conversation-day-divider+.conversation-unread-divider+.conversation-message {
     padding-top: 16px;
   }
   .conversation-unread-divider+.conversation-message {
-    border-top: 1px solid #f26130;
+    border-top: 1px solid var(--bo-accent);
   }
   .conversation-unread-status {
-    background: #29B2EE;
+    background: var(--bo-info);
     border-radius: 6px;
-    color: #fff;
+    color: var(--bo-paper-raised);
     text-shadow: 0 1px rgba(0,0,0,.15);
     height: 25px;
     font-size: 13px;
@@ -85,17 +85,17 @@
     margin-bottom: 6px;
   }
   .conversation-unread-status:hover {
-    background: #3d9cd4;
+    filter: brightness(0.92);
   }
   .conversation-unread-divider {
     text-align: center;
   }
   .conversation-unread-divider-label {
-    background: #fff;
+    background: var(--bo-paper-raised);
     margin: -4px 0 -9px 0;
     float: right;
     padding: 0 5px 3px;
-    color: #f26130;
+    color: var(--bo-accent);
     font-weight: bold;
     font-size: 13px;
     line-height: 8px;
@@ -107,7 +107,7 @@
     width: 100%;
   }
   .conversation-message-box {
-    border: 2px solid #bcbcbe;
+    border: 2px solid var(--bo-line-strong);
     border-radius: 6px;
     padding: 9px;
     outline: 0;
@@ -121,7 +121,7 @@
     color: var(--bo-ink-faint);
   }
   .text-danger {
-    color: #d72b3f !important;
+    color: var(--bo-danger) !important;
   }
 </style>
 

@@ -1,8 +1,8 @@
 <div class="container">
-  <div class="h1" style="display: flex; align-items: center;">
-    <div style="flex-grow: 1">Mots sensibles</div>
+  <h1 style="display: flex; align-items: center;">
+    <span style="flex-grow: 1">Mots sensibles</span>
     <%= link_to "Ajouter un mot sensible", new_admin_sensitive_word_path, class: "btn btn-success" %>
-  </div>
+  </h1>
 
   <%= form_tag admin_sensitive_words_path, class: 'form-inline', method: :get do %>
     <div class="panel panel-default">

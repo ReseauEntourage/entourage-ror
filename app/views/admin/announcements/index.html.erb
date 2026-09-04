@@ -18,12 +18,15 @@
   }
 
   #announcements {
-    background-color: #ddd;
+    background-color: var(--bo-line);
     padding-top: 1px; /* top separator */
+    border-radius: var(--bo-radius);
+    overflow: hidden;
+    box-shadow: var(--bo-shadow);
   }
   .announcement {
     display: flex;
-    background-color: #fff;
+    background-color: var(--bo-paper-raised);
   }
   #announcements.animate,
   #announcements.animate .announcement {
@@ -48,19 +51,19 @@
   #announcements.reorder {
     padding: 8px;
     margin: -7px -8px 0;
-    background-color: #ebecf0;
-    border-radius: 3px;
+    background-color: var(--bo-line);
+    border-radius: var(--bo-radius);
   }
   .reorder .announcement {
     box-shadow: 0 1px 0 rgba(9,30,66,.25);
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: grab;
   }
   .reorder .announcement + .announcement {
     margin-top: 8px;
   }
   .reorder .announcement:hover {
-    background-color: #f4f5f7;
+    background-color: var(--bo-paper);
   }
   .reorder .overlay,
   .announcement.gu-mirror .overlay {
@@ -110,21 +113,27 @@
   .invisible-searchable-block::-webkit-scrollbar {
       display: none; /* Chrome Safari */
   }
+
+  .bo-toolbar {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
 </style>
 
 <div class="container">
   <h1>Cartes d'annonce</h1>
 
-  <div style="margin-bottom: 15px; display: flex">
+  <div class="bo-toolbar">
     <div class="btn-group btn-group-sm">
       <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
       <%= link_to("Actives", @params.except(:status), class: "btn btn-#{@status == :active ? :primary : :default}") %>
       <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
     </div>
 
-    <div style="margin-left: 15px">
-      <%= link_to("Nouvelle carte", new_admin_announcement_path, class: "btn btn-default btn-sm") %>
-    </div>
+    <%= link_to("Nouvelle carte", new_admin_announcement_path, class: "btn btn-default btn-sm") %>
 
     <% if @status == :active %>
       <div style="margin-left: auto">
@@ -135,7 +144,7 @@
     <% end %>
   </div>
 
-  <div style="margin-bottom: 15px; display: flex">
+  <div class="bo-toolbar">
     <div class="btn-group btn-group-sm">
       <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
       <% ModerationArea.by_slug.sort.each do |slug, area| %>
@@ -143,7 +152,7 @@
       <% end %>
     </div>
 
-    <div class="btn-group btn-group-sm" style="margin-left: 15px">
+    <div class="btn-group btn-group-sm">
       <%= link_to("Tous", @params.merge(user_goal: :all), class: "btn btn-#{@user_goal == :all ? :primary : :default}") %>
       <% UserGoalPresenter.all(current_user.community).each do |user_goal| %>
         <%= link_to("", @params.merge(user_goal: user_goal.slug), class: "btn btn-#{@user_goal == user_goal.slug ? :primary : :default} fa fa-#{user_goal.icon}") %>

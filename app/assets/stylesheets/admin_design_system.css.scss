@@ -51,7 +51,9 @@ body.admin {
     font-family: 'Roboto', sans-serif !important;
   }
 
-  a {
+  // excludes .btn: a <a class="btn btn-success"> must keep its button text
+  // color (usually white), not the generic link color
+  a:not(.btn) {
     color: var(--bo-accent-ink);
   }
 
@@ -129,6 +131,12 @@ body.admin {
     color: var(--bo-ink);
   }
 
+  .btn-primary, .btn-entourage {
+    background: var(--bo-accent);
+    border-color: var(--bo-accent);
+    color: #fff;
+  }
+
   .btn-success {
     background: var(--bo-success);
     border-color: var(--bo-success);
@@ -140,8 +148,11 @@ body.admin {
   }
 
   .btn-warning {
-    background: var(--bo-warning);
-    border-color: var(--bo-warning);
+    // --bo-warning is tuned as text-on-soft-background (badges, alert boxes);
+    // as a solid button fill it reads muddy, so use a brighter amber here
+    background: #d99a2b;
+    border-color: #d99a2b;
+    color: #fff;
   }
 
   .btn-info {
@@ -321,6 +332,56 @@ body.admin {
       font-size: 12px;
       color: var(--bo-ink-faint);
       margin-top: 3px;
+    }
+  }
+
+  // ---- alert boxes (used across ~40 admin views for banners/warnings) ----
+  .alert {
+    border-radius: var(--bo-radius);
+    border: 1px solid transparent;
+  }
+
+  .alert-info {
+    background: var(--bo-info-soft);
+    color: var(--bo-info);
+  }
+
+  .alert-warning {
+    background: var(--bo-warning-soft);
+    color: var(--bo-warning);
+  }
+
+  .alert-danger {
+    background: var(--bo-danger-soft);
+    color: var(--bo-danger);
+  }
+
+  .alert-success {
+    background: var(--bo-success-soft);
+    color: var(--bo-success);
+  }
+
+  .alert b, .alert strong {
+    color: inherit;
+  }
+
+  // the bespoke .custom-button system (used e.g. in user_message_broadcasts)
+  // predates the token palette — align its accent/danger colors
+  .custom-button.custom-primary {
+    background-color: var(--bo-accent) !important;
+    border-color: var(--bo-accent);
+
+    &:hover {
+      color: var(--bo-accent-ink) !important;
+    }
+
+    &.red {
+      background-color: var(--bo-danger) !important;
+      border-color: var(--bo-danger);
+
+      &:hover {
+        color: var(--bo-danger) !important;
+      }
     }
   }
 }

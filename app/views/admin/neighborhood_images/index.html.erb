@@ -1,8 +1,8 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-offset-2 col-xs-8">
-      <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Photos de groupe de voisinage</div>
+      <div class="title-container">
+        <h1>Photos de groupe de voisinage</h1>
         <%= link_to "Ajouter une photo", new_admin_neighborhood_image_path, class: "btn btn-default" %>
       </div>
 
@@ -27,7 +27,7 @@
                 <%= image_tag(NeighborhoodImage::image_url_for(neighborhood_image.image_url_medium_or_default), size: '225x96') if neighborhood_image.image_url_medium_or_default.present? %>
               </td>
               <td>
-                <%= link_to "Modifier", edit_admin_neighborhood_image_path(neighborhood_image), class: "custom-button custom-primary-inverted" %>
+                <%= link_to "Modifier", edit_admin_neighborhood_image_path(neighborhood_image), class: "btn btn-default" %>
               </td>
             </tr>
           <% end %>

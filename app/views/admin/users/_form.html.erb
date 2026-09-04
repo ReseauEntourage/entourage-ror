@@ -35,52 +35,39 @@
       </div>
 
       <% unless @user.new_record? %>
-        <div style="display: flex">
-          <div class="control-group">
-            <label class="control-label">Zone d'action</label>
-            <div class="controls">
+        <div class="stat-grid" style="margin: 0 0 15px">
+          <div class="stat-tile">
+            <div class="n">
               <% if @user.address&.postal_code.present? %>
                 <%= @user.address.postal_code %>
                 <% if @user.address.country != 'FR' %>
                   (<%= @user.address.country %>)
                 <% end %>
               <% else %>
-                <span class="text-muted">Non définie</span>
+                <span class="text-muted">&mdash;</span>
               <% end %>
             </div>
+            <div class="l">Zone d'action</div>
           </div>
 
-          <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Action créées</label>
-            <div class="controls">
-              <%= @user.groups.count %>
-              <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
-            </div>
+          <div class="stat-tile">
+            <div class="n"><%= link_to @user.groups.count, admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %></div>
+            <div class="l">Actions créées</div>
           </div>
 
-          <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Actions rejointes</label>
-            <div class="controls">
-              <%= @user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
-            </div>
+          <div class="stat-tile">
+            <div class="n"><%= @user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %></div>
+            <div class="l">Actions rejointes</div>
           </div>
 
-          <div class="control-group" style="margin-left: 30px" title="1">
-            <label class="control-label" title="de moins de six mois">
-              Conversations <span class="badge">i</span>
-            </label>
-            <div class="controls">
-              <%= @user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>
-            </div>
+          <div class="stat-tile">
+            <div class="n"><%= @user.conversations.where("entourages.created_at > ?", 6.months.ago).count %></div>
+            <div class="l">Conversations <span class="badge" title="de moins de six mois">i</span></div>
           </div>
 
-          <div class="control-group" style="margin-left: 30px">
-            <label class="control-label" title="de moins de six mois">
-              Messages <span class="badge">i</span>
-            </label>
-            <div class="controls">
-              <%= @user.chat_messages.where("created_at > ?", 6.months.ago).count %>
-            </div>
+          <div class="stat-tile">
+            <div class="n"><%= @user.chat_messages.where("created_at > ?", 6.months.ago).count %></div>
+            <div class="l">Messages <span class="badge" title="de moins de six mois">i</span></div>
           </div>
         </div>
       <% end %>
@@ -253,7 +240,7 @@
           <tr>
             <td>
               Anonymiser l'utilisateur
-              <i class="text-muted" style="color: red">(attention, action irréversible)</i>
+              <i class="text-muted" style="color: var(--bo-danger)">(attention, action irréversible)</i>
             </td>
             <td>
               <%= link_to "Anonymiser", anonymize_admin_user_path(@user), method: :put, class: "btn btn-default", data: {

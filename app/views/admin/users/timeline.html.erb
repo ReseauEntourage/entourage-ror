@@ -4,29 +4,27 @@
   </div>
 
   <div class="row">
-    <div class="panel panel-default">
-      <div class="panel-heading">Résumé</div>
-      <div class="panel-body" style="display: flex; gap: 24px; flex-wrap: wrap">
-        <div>
-          <div style="font-size: 22px; font-weight: 600"><%= @user.entourages_count %></div>
-          <div class="text-muted">Entourages créés</div>
-        </div>
-        <div>
-          <div style="font-size: 22px; font-weight: 600"><%= @user.actions_count %></div>
-          <div class="text-muted">Actions rejointes</div>
-        </div>
-        <div>
-          <div style="font-size: 22px; font-weight: 600"><%= @user.outings_count %></div>
-          <div class="text-muted">Événements rejoints</div>
-        </div>
-        <div>
-          <div style="font-size: 22px; font-weight: 600"><%= @user.neighborhoods_count %></div>
-          <div class="text-muted">Groupes de voisins rejoints</div>
-        </div>
-        <div>
-          <div style="font-size: 22px; font-weight: 600"><%= @user.engagement.badge %></div>
-          <div class="text-muted">Niveau d'engagement</div>
-        </div>
+    <h2 style="margin: 0 0 10px">Résumé</h2>
+    <div class="stat-grid" style="margin: 0 0 20px">
+      <div class="stat-tile">
+        <div class="n"><%= @user.entourages_count %></div>
+        <div class="l">Entourages créés</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.actions_count %></div>
+        <div class="l">Actions rejointes</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.outings_count %></div>
+        <div class="l">Événements rejoints</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.neighborhoods_count %></div>
+        <div class="l">Groupes de voisins rejoints</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.engagement.badge %></div>
+        <div class="l">Niveau d'engagement</div>
       </div>
     </div>
 
@@ -38,7 +36,7 @@
         <% else %>
           <ul class="list-unstyled">
             <% @timeline.each do |item| %>
-              <li style="border-top: 1px solid #eee; padding: 10px 0">
+              <li style="border-top: 1px solid var(--bo-line); padding: 10px 0">
                 <div>
                   <% if [:joined_neighborhood, :created_neighborhood].include?(item[:kind]) %>
                     <%= link_to item[:label], edit_admin_neighborhood_path(item[:record]) %>
