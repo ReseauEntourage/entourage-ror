@@ -1,0 +1,6 @@
+<% if @chat_message.errors.any? %>
+  $("#chat-message-video-<%= @chat_message.id %>").show().html("<%= j render(partial: 'edit_video') %>");
+  alert("<%= j @chat_message.errors.full_messages.to_sentence %>");
+<% else %>
+  $("#chat-message-video-<%= @chat_message.id %>").show().html("<%= j render(partial: 'display_video') %>");
+<% end %>

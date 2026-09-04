@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_03_150000) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_04_120547) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -118,6 +118,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_03_150000) do
     t.integer "survey_id"
     t.integer "comments_count", default: 0
     t.jsonb "options"
+    t.string "video_url"
     t.index "((metadata ->> 'conversation_message_broadcast_id'::text))", name: "index_chat_messages_on_conversation_broadcast_id"
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
     t.index ["created_at"], name: "index_chat_messages_on_created_at"

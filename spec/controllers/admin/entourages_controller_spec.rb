@@ -121,6 +121,22 @@ describe Admin::EntouragesController do
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 
+  describe 'GET #show_messages with a video post' do
+    render_views
+
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    let!(:video_post) { FactoryBot.create(:chat_message, messageable: entourage, content: 'regardez cette vidéo', video_url: 'https://www.youtube.com/embed/abc123') }
+
+    before do
+      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil))
+      get :show_messages, params: { id: entourage.to_param }
+    end
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).to include('https://www.youtube.com/embed/abc123') }
+    it { expect(response.body).to include('Modifier la vidéo') }
+  end
+
   describe 'POST message' do
     context 'commenting (parent_id) on an outing' do
       let(:outing) { FactoryBot.create(:outing) }

@@ -1,0 +1,11 @@
+<%= form_for(@chat_message, url: update_video_admin_chat_message_path(@chat_message), method: :put, remote: true) do |f| %>
+  <div class="form-group">
+    <%= f.text_field :video_url, class: "form-control", placeholder: "https://www.youtube.com/embed/…", value: @chat_message.video_url %>
+    <p class="help-block">Lien d'intégration YouTube, au format https://www.youtube.com/embed/[identifiant-video]</p>
+  </div>
+  <input type="submit" value="Enregistrer" class="btn btn-success"/>
+  <%= link_to "Annuler la modification", cancel_update_video_admin_chat_message_path(@chat_message), class: "btn btn-default", remote: true %>
+  <% if @chat_message.video_url.present? %>
+    <%= link_to "Supprimer la vidéo", delete_video_admin_chat_message_path(@chat_message), class: "btn btn-default", method: :delete, remote: true %>
+  <% end %>
+<% end %>

@@ -97,6 +97,14 @@
           <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
         <% end %>
 
+        <% if message.video_url.present? %>
+          <div id="chat-message-video-<%= message.id %>" style="margin-bottom: 15px">
+            <iframe src="<%= message.video_url %>" width="320" height="180" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        <% else %>
+          <div id="chat-message-video-<%= message.id %>" hidden="hidden"></div>
+        <% end %>
+
         <% if message.has_children? %>
           <div><%= link_to "voir les commentaires", show_comments_admin_entourage_path(@entourage.id, message_id: message.id) %></div>
         <% end %>
@@ -127,6 +135,10 @@
 
             <li>
               <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(message.id), remote: true %>
+            </li>
+
+            <li>
+              <%= link_to message.video_url.present? ? "Modifier la vidéo" : "Ajouter une vidéo", edit_video_admin_chat_message_path(message.id), remote: true %>
             </li>
 
             <li>
