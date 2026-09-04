@@ -257,4 +257,76 @@ describe Admin::EntouragesController do
       it { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
     end
   end
+
+  describe 'POST bulk_assign_moderator' do
+    let!(:entourage1) { FactoryBot.create(:entourage) }
+    let!(:entourage2) { FactoryBot.create(:entourage) }
+    let!(:moderator) { FactoryBot.create(:pro_user) }
+
+    context 'with a moderator and selected entourages' do
+      before do
+        post :bulk_assign_moderator, params: { entourage_ids: [entourage1.id, entourage2.id], assign_moderator_id: moderator.id }
+      end
+
+      it { expect(entourage1.reload.moderation.moderator_id).to eq(moderator.id) }
+      it { expect(entourage2.reload.moderation.moderator_id).to eq(moderator.id) }
+    end
+
+    context 'without a moderator selected' do
+      before do
+        post :bulk_assign_moderator, params: { entourage_ids: [entourage1.id], assign_moderator_id: '' }
+      end
+
+      it { expect(entourage1.reload.moderation&.moderator_id).not_to eq(moderator.id) }
+    end
+
+    context 'without any selected entourage' do
+      before do
+        post :bulk_assign_moderator, params: { entourage_ids: [], assign_moderator_id: moderator.id }
+      end
+
+      it { expect(entourage1.reload.moderation&.moderator_id).not_to eq(moderator.id) }
+    end
+  end
+
+  describe 'GET show_history' do
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    before { get :show_history, params: { id: entourage.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(assigns(:histories).map { |h| h[:kind] }).to include(:creation) }
+  end
+
+  describe 'GET index rendering (regression: ransack allowlist)' do
+    render_views
+
+    it 'renders with no params' do
+      get :index
+
+      expect(response).to be_successful
+    end
+
+    it 'renders when filtering on moderator_id=none' do
+      get :index, params: { moderator_id: 'none' }
+
+      expect(response).to be_successful
+    end
+
+    it 'renders when filtering on a specific moderator_id' do
+      get :index, params: { moderator_id: user.id }
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe 'Entourage.ransack display_category_eq (regression)' do
+    let!(:social) { FactoryBot.create(:entourage, display_category: 'social') }
+    let!(:other) { FactoryBot.create(:entourage, display_category: 'other') }
+
+    it 'actually filters by display_category' do
+      result = Entourage.ransack(display_category_eq: 'social').result
+      expect(result).to include(social)
+      expect(result).not_to include(other)
+    end
+  end
 end

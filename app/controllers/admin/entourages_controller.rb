@@ -2,7 +2,7 @@ module Admin
   class EntouragesController < Admin::BaseController
     EXPORT_PERIOD = 1.month
 
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_matchings, :show_siblings, :send_matching, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_matchings, :show_siblings, :show_notes, :show_history, :send_matching, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -167,6 +167,16 @@ module Admin
       render :show
     end
 
+    def show_notes
+      render :show
+    end
+
+    def show_history
+      @histories = EntourageServices::History.new(@entourage).get
+
+      render :show
+    end
+
     def send_matching
       @matching = Matching.find(params[:matching_id])
 
@@ -191,6 +201,58 @@ module Admin
       MemberMailer.entourages_csv_export(entourage_ids, current_user.email).deliver_later
 
       redirect_to admin_entourages_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (actions créées depuis moins d'un mois ou événements ayant eu lieu il y a moins d'un mois)" }
+    end
+
+    def upcoming
+      @days = params[:days].presence&.to_i || 14
+
+      @outings = Entourage
+        .where(group_type: 'outing', status: ModerationServices::OPEN_ENTOURAGE_STATUSES)
+        .where(%(metadata->>'starts_at' >= :from and metadata->>'starts_at' <= :to), {
+          from: Time.zone.now,
+          to: @days.days.from_now,
+        })
+        .order(Arel.sql(%(metadata->>'starts_at' asc)))
+        .page(params[:page]).per(50)
+    end
+
+    def unanswered
+      @days = params[:days].presence&.to_i || 3
+
+      last_messages = ChatMessage
+        .where(messageable_type: 'Entourage')
+        .select('DISTINCT ON (messageable_id) messageable_id, user_id, created_at')
+        .order('messageable_id, created_at desc')
+
+      @entourages = Entourage
+        .where(group_type: ['action', 'outing'], status: ModerationServices::OPEN_ENTOURAGE_STATUSES)
+        .joins("inner join (#{last_messages.to_sql}) last_messages on last_messages.messageable_id = entourages.id")
+        .where('last_messages.user_id != entourages.user_id')
+        .where('last_messages.created_at <= ?', @days.days.ago)
+        .select('entourages.*, last_messages.created_at as last_message_at, last_messages.user_id as last_message_user_id')
+        .order('last_messages.created_at asc')
+        .page(params[:page]).per(50)
+    end
+
+    def bulk_assign_moderator
+      entourage_ids = Array(params[:entourage_ids]).reject(&:blank?)
+      moderator_id = params[:assign_moderator_id].presence
+
+      if entourage_ids.empty? || moderator_id.blank?
+        redirect_to admin_entourages_path(filter_params), flash: {
+          error: 'Merci de sélectionner au moins une action ou un événement et un modérateur'
+        } and return
+      end
+
+      Entourage.where(id: entourage_ids).find_each do |entourage|
+        moderation = entourage.moderation || entourage.build_moderation
+        moderation.moderator_id = moderator_id
+        moderation.save!
+      end
+
+      redirect_to admin_entourages_path(filter_params), flash: {
+        success: "#{entourage_ids.count} action(s)/événement(s) assigné(s)"
+      }
     end
 
     def stop_recurrences
@@ -444,6 +506,7 @@ module Admin
     def sensitive_words_check
       check = @entourage.sensitive_words_check || @entourage.build_sensitive_words_check
       check.status = params[:status]
+      check.checked_by = current_user
       check.save!
       redirect_to admin_entourage_path(@entourage)
     end

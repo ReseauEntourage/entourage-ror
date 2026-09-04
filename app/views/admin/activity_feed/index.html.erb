@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="h1">Activité récente</div>
+  <p class="text-muted">Nouveaux comptes, actions/événements et groupes de voisins créés dans les <%= (@window / 1.day).to_i %> derniers jours, tous types confondus.</p>
+
+  <table class="table admin-table custom-table">
+    <thead>
+      <th>Type</th>
+      <th>Élément</th>
+      <th>Créé par</th>
+      <th>Créé le</th>
+    </thead>
+    <tbody>
+      <% @items.each do |item| %>
+        <% record = item[:record] %>
+        <tr>
+          <td>
+            <% case item[:type] %>
+            <% when :user %>
+              <span class="custom-badge info">Utilisateur</span>
+            <% when :entourage %>
+              <span class="custom-badge <%= record.action? ? 'success' : 'warning' %>"><%= record.action? ? 'Action' : 'Événement' %></span>
+            <% when :neighborhood %>
+              <span class="custom-badge">Groupe de voisins</span>
+            <% end %>
+          </td>
+          <td>
+            <% case item[:type] %>
+            <% when :user %>
+              <%= link_to [record.first_name, record.last_name].compact.join(' ').presence || "Utilisateur ##{record.id}", edit_admin_user_path(record) %>
+            <% when :entourage %>
+              <%= link_to record.title, admin_entourage_path(record) %>
+            <% when :neighborhood %>
+              <%= link_to record.name.presence || "Groupe de voisins ##{record.id}", edit_admin_neighborhood_path(record) %>
+            <% end %>
+          </td>
+          <td>
+            <% creator = item[:type] == :user ? record : record.user %>
+            <% if creator %>
+              <%= link_to [creator.first_name, creator.last_name].compact.join(' ').presence || "Utilisateur ##{creator.id}", edit_admin_user_path(creator) %>
+            <% else %>
+              <span class="text-muted">&mdash;</span>
+            <% end %>
+          </td>
+          <td><%= l item[:created_at], format: "%-d %B %Y à %H:%M" %></td>
+        </tr>
+      <% end %>
+
+      <% if @items.empty? %>
+        <tr>
+          <td colspan="4" style="text-align: center">
+            <span class="text-muted">Aucune création récente.</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

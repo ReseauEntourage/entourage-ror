@@ -1,0 +1,25 @@
+<div class="panel panel-default">
+  <div class="panel-heading">Historique</div>
+  <div class="panel-body">
+    <% if @histories.empty? %>
+      <p class="text-muted">Aucun événement enregistré.</p>
+    <% else %>
+      <ul class="list-unstyled">
+        <% @histories.reverse.each do |history| %>
+          <li style="border-top: 1px solid #eee; padding: 10px 0">
+            <div>
+              <span class="custom-badge info"><%= history[:kind] %></span>
+              <%= history[:metadata] %>
+            </div>
+            <div class="text-muted" style="font-size: 12px">
+              <%= l history[:date], format: "%-d %B %Y à %H:%M" %>
+              <% if history[:moderator] %>
+                &middot; <%= history[:moderator].full_name %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>

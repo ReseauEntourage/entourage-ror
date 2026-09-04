@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="h1">Charge de travail par modérateur</div>
+  <p class="text-muted">Actions et événements ouverts (statut open/suspendu/complet) actuellement assignés à chaque modérateur.</p>
+
+  <% if @unassigned_count > 0 %>
+    <div class="panel panel-warning">
+      <div class="panel-body">
+        <b><%= @unassigned_count %></b> action(s)/événement(s) ouvert(s) sans modérateur assigné —
+        <%= link_to "voir la liste", admin_entourages_path(moderator_id: :none) %>
+      </div>
+    </div>
+  <% end %>
+
+  <table class="table admin-table custom-table">
+    <thead>
+      <th>Modérateur</th>
+      <th>File ouverte</th>
+      <th>Dont non modérés</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <% @rows.each do |row| %>
+        <tr>
+          <td><%= row[:moderator].full_name %></td>
+          <td><span class="badge"><%= row[:open_count] %></span></td>
+          <td>
+            <% if row[:unmoderated_count] > 0 %>
+              <span class="badge badge-warning"><%= row[:unmoderated_count] %></span>
+            <% else %>
+              <span class="text-muted">0</span>
+            <% end %>
+          </td>
+          <td><%= link_to "Voir sa file", admin_entourages_path(moderator_id: row[:moderator].id) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

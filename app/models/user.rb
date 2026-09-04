@@ -86,6 +86,7 @@ class User < ApplicationRecord
   has_many :user_recommandations
   has_many :inapp_notifications, dependent: :destroy
   has_many :email_preferences, dependent: :destroy
+  has_many :admin_notes, as: :notable, dependent: :destroy
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
   has_many :user_smalltalks
@@ -289,6 +290,10 @@ class User < ApplicationRecord
 
   def self.find_entourage_user
     User.find_by_phone(ENV['ENTOURAGE_USER_PHONE'])
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "last_sign_in_at"]
   end
 
   def self.find_by_id_or_phone identifier

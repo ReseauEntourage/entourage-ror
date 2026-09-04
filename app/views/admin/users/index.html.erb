@@ -2,19 +2,15 @@
 
 <%= form_tag admin_users_path, class: 'form-inline', method: :get do |f| %>
   <div class="panel panel-default">
-    <div class="panel-body">
-      <div style="float: left">
-        <div class='input-group'>
-          <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "nom, prénom, email..." %>
-          <span class="input-group-btn">
-            <%= submit_tag "Chercher", class: "btn btn-default" %>
-          </span>
-        </div>
+    <div class="panel-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
+      <div class='input-group'>
+        <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "nom, prénom, email..." %>
+        <span class="input-group-btn">
+          <%= submit_tag "Chercher", class: "btn btn-default" %>
+        </span>
       </div>
 
-      <div style="float: right">
-        <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
-      </div>
+      <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
     </div>
 
     <div style="padding: 0 0 15px 15px">
@@ -31,24 +27,38 @@
         <%= select_tag :status, options_for_select([['Tous les statuts', nil]] + user_statuses, @params[:status]), class: 'form-control' %>
       </div>
     </div>
+
+    <% q = @params[:q] || {} %>
+    <div style="padding: 0 0 15px 15px">
+      <div class="input-group">
+        <label style="margin: 0 4px 0 0; font-weight: normal">Inscrit(e) entre</label>
+        <%= date_field_tag "q[created_at_gteq]", q[:created_at_gteq], class: "form-control", style: "width: auto; display: inline-block" %>
+        <label style="margin: 0 4px">et</label>
+        <%= date_field_tag "q[created_at_lteq]", q[:created_at_lteq], class: "form-control", style: "width: auto; display: inline-block" %>
+      </div>
+      <div class="input-group">
+        <label style="margin: 0 4px 0 0; font-weight: normal">Dernière connexion entre</label>
+        <%= date_field_tag "q[last_sign_in_at_gteq]", q[:last_sign_in_at_gteq], class: "form-control", style: "width: auto; display: inline-block" %>
+        <label style="margin: 0 4px">et</label>
+        <%= date_field_tag "q[last_sign_in_at_lteq]", q[:last_sign_in_at_lteq], class: "form-control", style: "width: auto; display: inline-block" %>
+      </div>
+    </div>
   </div>
 
-  <div style="float: left; margin: -10px 0 10px">
-    <%
-      q = @params[:q] || {}
-      locations = moderation_area_filters
-    %>
+  <%
+    q = @params[:q] || {}
+    locations = moderation_area_filters
+  %>
 
-    <%= hidden_field_tag "q[country_eq]", q[:country_eq] if q[:country_eq] %>
-    <%= hidden_field_tag "q[postal_code_start]", q[:postal_code_start] if q[:postal_code_start] %>
-    <%= hidden_field_tag "q[postal_code_not_start_all]", q[:postal_code_not_start_all] if q[:postal_code_not_start_all] %>
-  </div>
+  <%= hidden_field_tag "q[country_eq]", q[:country_eq] if q[:country_eq] %>
+  <%= hidden_field_tag "q[postal_code_start]", q[:postal_code_start] if q[:postal_code_start] %>
+  <%= hidden_field_tag "q[postal_code_not_start_all]", q[:postal_code_not_start_all] if q[:postal_code_not_start_all] %>
 
-  <div style="float: left; margin: -10px 0 10px">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 10px 0">
     <div class="btn-group btn-group-sm">
       <% location_keys = [:country_eq, :postal_code_start, :postal_code_not_start_all] %>
       <% active = locations.key q.slice(*location_keys).compact.symbolize_keys %>
-      
+
       <%= link_to("Partout", @params.merge(q: q.except(*location_keys)), class: "btn btn-#{(!@params.keys.include? 'q') ? :primary : :default}") %>
 
       <% locations.sort.each do |name, options| %>
@@ -59,11 +69,11 @@
         <% end %>
       <% end %>
     </div>
-  </div>
 
-  <div style="float: right; margin: -10px 0 10px">
-    <%= link_to "Télécharger", download_list_export_admin_users_path(@params), class: "btn btn-default" %>
-    <%= link_to "Réinitialiser les filtres", admin_users_path, class: "btn btn-default" %>
+    <div>
+      <%= link_to "Télécharger", download_list_export_admin_users_path(@params), class: "btn btn-default" %>
+      <%= link_to "Réinitialiser les filtres", admin_users_path, class: "btn btn-default" %>
+    </div>
   </div>
 <% end %>
 
@@ -78,11 +88,22 @@
   </div>
 <% end %>
 
-<table class="table custom-table" style="table-layout: auto">
-  <thead>
-    <th>Nom</th>
-    <th>Prénom</th>
-    <th>Association</th>
+<%= form_tag bulk_block_admin_users_path, method: :post, id: "bulk_actions_form" do %>
+  <div class="panel panel-default">
+    <div class="panel-body" style="display: flex; align-items: center; gap: 10px">
+      <span id="bulk_actions_count" class="text-muted">Aucun utilisateur sélectionné</span>
+      <%= text_field_tag :cnil_explanation, nil, class: "form-control", placeholder: "Raisons du blocage (obligatoire)", style: "max-width: 400px" %>
+      <%= submit_tag "Bloquer la sélection", class: "btn btn-danger btn-sm",
+            data: { confirm: "Bloquer les comptes sélectionnés ?" } %>
+    </div>
+  </div>
+
+  <table class="table custom-table" style="table-layout: auto">
+    <thead>
+      <th><input type="checkbox" id="select_all_users"></th>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Association</th>
 
     <% if @status == :pending %>
       <th>Email lié au compte</th>
@@ -96,6 +117,7 @@
 
     <th>Code postal</th>
     <th>Profil</th>
+    <th>Engagement</th>
 
     <% if [:admin, :moderators].include? @role %>
       <th>Rôle modérateur</th>
@@ -104,6 +126,7 @@
 
   <% @users.each do |user| %>
     <tr>
+      <td><%= check_box_tag "user_ids[]", user.id, false, class: "user_checkbox", id: "user_#{user.id}" %></td>
       <td><%= link_to user.last_name,  edit_admin_user_path(user)%></td>
       <td><%= link_to user.first_name,  edit_admin_user_path(user)%></td>
       <td>
@@ -138,6 +161,9 @@
           </span>
         <% end %>
       </td>
+      <td>
+        <span class="custom-badge <%= user.engagement.engaged? ? 'success' : 'info' %>"><%= user.engagement.badge %></span>
+      </td>
 
       <% if [:admin, :moderators].include? @role %>
         <td>
@@ -148,7 +174,8 @@
       <% end %>
     </tr>
   <% end %>
-</table>
+  </table>
+<% end %>
 
 <%= page_entries_info @users, entry_name: 'utilisateurs' %>
 <div class="container">
@@ -160,5 +187,17 @@
     $('form select').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
+
+    var updateBulkCount = function() {
+      var count = $('#bulk_actions_form .user_checkbox:checked').length;
+      $('#bulk_actions_count').text(count > 0 ? count + ' utilisateur(s) sélectionné(s)' : 'Aucun utilisateur sélectionné');
+    };
+
+    $('#select_all_users').on('change', function(event) {
+      $('#bulk_actions_form .user_checkbox').prop('checked', $(event.target).prop('checked'));
+      updateBulkCount();
+    });
+
+    $('#bulk_actions_form').on('change', '.user_checkbox', updateBulkCount);
   })
 </script>

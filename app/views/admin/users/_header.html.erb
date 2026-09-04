@@ -21,6 +21,7 @@
       Utilisateur #<%= @user.id %>
     <% end %>
   </span>
+  <span class="custom-badge <%= @user.engagement.engaged? ? 'success' : 'info' %>" title="Niveau d'engagement"><%= @user.engagement.badge %></span>
   <div class="pull-right">
     <%
       uuid = ConversationService.list_for_participants([current_admin.id, @user.id])
@@ -65,6 +66,9 @@
   <li role="presentation" class="<%= :active if tab == :engagement %>">
     <%= link_to "Engagement", engagement_admin_user_path(@user) %>
   </li>
+  <li role="presentation" class="<%= :active if tab == :timeline %>">
+    <%= link_to "Activité", timeline_admin_user_path(@user) %>
+  </li>
   <li role="presentation" class="<%= :active if tab == :neighborhoods %>">
     <%= link_to "Groupes de voisins", neighborhoods_admin_user_path(@user) %>
   </li>
@@ -76,6 +80,9 @@
   </li>
   <li role="presentation" class="<%= :active if tab == :blocked_users %>">
     <%= link_to "Blocages", blocked_users_admin_user_path(@user) %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :notes %>">
+    <%= link_to "Notes internes (#{@user.admin_notes.count})", notes_admin_user_path(@user) %>
   </li>
   <% if current_user.super_admin? %>
     <li role="presentation" class="<%= :active if tab == :rpush_notifications %>">

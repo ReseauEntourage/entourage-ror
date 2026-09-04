@@ -129,4 +129,55 @@ module ModerationServices
       country: object.country
     ))
   end
+
+  OPEN_ENTOURAGE_STATUSES = %w(open suspended full).freeze
+
+  def self.assigned_open_entourages moderator
+    Entourage
+      .where(group_type: ['action', 'outing'], status: OPEN_ENTOURAGE_STATUSES)
+      .with_moderation
+      .moderator_search(moderator.id)
+  end
+
+  def self.open_queue_count moderator
+    assigned_open_entourages(moderator).count
+  end
+
+  def self.unmoderated_entourages scope
+    scope.where(%(
+      entourage_moderations.moderated_at is null and entourages.created_at >= '2018-01-01'
+    ))
+  end
+
+  def self.workload_rows moderators
+    moderators.map do |moderator|
+      assigned = assigned_open_entourages(moderator)
+
+      {
+        moderator: moderator,
+        open_count: assigned.count,
+        unmoderated_count: unmoderated_entourages(assigned).count,
+      }
+    end.sort_by { |row| -row[:open_count] }
+  end
+
+  def self.unassigned_open_entourages_count
+    Entourage
+      .where(group_type: ['action', 'outing'], status: OPEN_ENTOURAGE_STATUSES)
+      .with_moderation
+      .moderator_search('none')
+      .count
+  end
+
+  def self.moderation_areas_for user
+    ModerationArea
+      .no_hz
+      .where(animator: user)
+      .or(ModerationArea.no_hz.where(sourcing: user))
+      .or(ModerationArea.no_hz.where(referent_benevole: user))
+  end
+
+  def self.departments_for user
+    moderation_areas_for(user).pluck(:departement).uniq
+  end
 end

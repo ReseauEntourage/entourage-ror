@@ -2,15 +2,18 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :timeline, :rpush_notifications, :neighborhoods, :outings, :history, :notes, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
+      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all, :created_at_gteq, :created_at_lteq, :last_sign_in_at_gteq, :last_sign_in_at_lteq, postal_code_start_any: []]]).to_h
 
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:address).order('created_at DESC').page(params[:page]).per(25)
+      ransack_params = (params[:q] || {}).except(:country_eq, :postal_code_start, :postal_code_not_start_all, :postal_code_start_any)
+
+      @q = filtered_users.ransack(ransack_params)
+      @users = @q.result.includes(:address, :engagement_level).order('created_at DESC').page(params[:page]).per(25)
     end
 
     def search
@@ -68,6 +71,10 @@ module Admin
     def engagement
     end
 
+    def timeline
+      @timeline = UserServices::Timeline.new(user).get
+    end
+
     def rpush_notifications
       @user_applications = UserApplication.where(user_id: @user.id)
         .select(:push_token, :device_os, :version, :notifications_permissions)
@@ -113,6 +120,9 @@ module Admin
       @user_blocked_users = user
         .user_blocked_users
         .order('user_blocked_users.created_at desc')
+    end
+
+    def notes
     end
 
     def edit
@@ -178,6 +188,24 @@ module Admin
 
     def moderate
       @users = User.validated.where('avatar_key IS NOT NULL').order('updated_at DESC').page(params[:page]).per(25)
+    end
+
+    def bulk_block
+      user_ids = Array(params[:user_ids]).reject(&:blank?)
+      cnil_explanation = params[:cnil_explanation]
+
+      if user_ids.empty? || cnil_explanation.blank?
+        redirect_to admin_users_path(params: filter_params), flash: {
+          error: 'Merci de sélectionner au moins un utilisateur et de renseigner les raisons de cette action'
+        } and return
+      end
+
+      users = current_user.community.users.where(id: user_ids)
+      users.find_each { |target| target.block! current_user, cnil_explanation }
+
+      redirect_to admin_users_path(params: filter_params), flash: {
+        success: "#{users.count} utilisateur(s) bloqué(s)"
+      }
     end
 
     def edit_block
@@ -398,6 +426,7 @@ module Admin
 
       @users = @users.in_area('dep_' + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
+      @users = @users.in_specific_areas(params[:q][:postal_code_start_any]) if params[:q] && params[:q][:postal_code_start_any].present?
       @users.group('users.id')
       @users
     end

@@ -1,0 +1,39 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Notes internes (<%= notable.admin_notes.count %>)
+  </div>
+  <div class="panel-body">
+    <p class="text-muted">Visibles par tous les modérateurs et administrateurs. Pas de suppression accidentelle : réfléchissez avant de publier.</p>
+
+    <%= form_tag admin_admin_notes_path, method: :post do %>
+      <%= hidden_field_tag :notable_type, notable.class.name %>
+      <%= hidden_field_tag :notable_id, notable.id %>
+      <div class="form-group">
+        <%= text_area_tag "admin_note[body]", nil, class: "form-control", rows: 2, placeholder: "Ajouter une note…", required: true %>
+      </div>
+      <div class="text-right">
+        <%= submit_tag "Ajouter la note", class: "btn btn-default btn-sm" %>
+      </div>
+    <% end %>
+
+    <% if notable.admin_notes.any? %>
+      <ul class="list-unstyled" style="margin-top: 15px">
+        <% notable.admin_notes.each do |note| %>
+          <li style="border-top: 1px solid #eee; padding: 10px 0">
+            <div><%= simple_format note.body %></div>
+            <div class="text-muted" style="font-size: 12px">
+              <%= note.author&.full_name || "modérateur supprimé" %>
+              &middot;
+              <%= l note.created_at, format: "%-d %B %Y à %H:%M" %>
+              &middot;
+              <%= link_to "Supprimer", admin_admin_note_path(note), method: :delete,
+                    data: { confirm: "Supprimer cette note ?" } %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-muted" style="margin-top: 15px">Aucune note pour le moment.</p>
+    <% end %>
+  </div>
+</div>

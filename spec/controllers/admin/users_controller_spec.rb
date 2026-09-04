@@ -362,4 +362,64 @@ describe Admin::UsersController do
       it { expect(blocked_user.reload.validation_status).to eq('validated') }
     end
   end
+
+  describe 'POST bulk_block' do
+    let!(:admin) { admin_basic_login }
+    let!(:user1) { FactoryBot.create(:pro_user, validation_status: 'validated') }
+    let!(:user2) { FactoryBot.create(:pro_user, validation_status: 'validated') }
+
+    context 'without cnil_explanation' do
+      before { post :bulk_block, params: { user_ids: [user1.id, user2.id], cnil_explanation: '' } }
+
+      it { expect(user1.reload.validation_status).to eq('validated') }
+      it { expect(user2.reload.validation_status).to eq('validated') }
+    end
+
+    context 'without any selected user' do
+      before { post :bulk_block, params: { user_ids: [], cnil_explanation: 'raison' } }
+
+      it { expect(user1.reload.validation_status).to eq('validated') }
+    end
+
+    context 'with cnil_explanation and selected users' do
+      before { post :bulk_block, params: { user_ids: [user1.id, user2.id], cnil_explanation: 'raison' } }
+
+      it { expect(user1.reload.validation_status).to eq('blocked') }
+      it { expect(user2.reload.validation_status).to eq('blocked') }
+      it { expect(user1.reload.histories.count).to eq(1) }
+    end
+  end
+
+  describe 'GET index with postal_code_start_any' do
+    let!(:admin) { admin_basic_login }
+    let!(:paris_user) { FactoryBot.create(:public_user, community: admin.community) }
+    let!(:paris_address) { FactoryBot.create(:address, user: paris_user, postal_code: '75001', country: 'FR') }
+    let!(:lyon_user) { FactoryBot.create(:public_user, community: admin.community) }
+    let!(:lyon_address) { FactoryBot.create(:address, user: lyon_user, postal_code: '69001', country: 'FR') }
+
+    before { get :index, params: { q: { postal_code_start_any: ['75', '69'] } } }
+
+    it { expect(assigns(:users)).to include(paris_user, lyon_user) }
+  end
+
+  describe 'GET timeline' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, user: user) }
+
+    before { get :timeline, params: { id: user.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(assigns(:timeline).map { |i| i[:record] }).to include(entourage) }
+  end
+
+  describe 'GET index engagement badge' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+
+    before { get :index }
+
+    it { expect(assigns(:users)).to include(user) }
+    it { expect { assigns(:users).each(&:engagement) }.not_to raise_error }
+  end
 end

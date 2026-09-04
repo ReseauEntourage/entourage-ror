@@ -10,6 +10,9 @@ Rails.application.routes.draw do
     scope module: 'admin', as: 'admin' do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
+      get 'dashboard' => 'dashboard#index', as: :dashboard
+      get 'activity_feed' => 'activity_feed#index', as: :activity_feed
+      get 'moderator_workloads' => 'moderator_workloads#index', as: :moderator_workloads
       get '/sessions/new', to: redirect('/admin/sessions/new')
 
       get 'public_user_autocomplete' => 'users_search#public_user_autocomplete'
@@ -106,6 +109,8 @@ Rails.application.routes.draw do
           get 'comments/:message_id' => :show_comments, :as => :show_comments
           get :show_matchings
           get :show_siblings
+          get :show_notes
+          get :show_history
           post :send_matching
           post :stop_recurrences
           get :sensitive_words
@@ -127,6 +132,9 @@ Rails.application.routes.draw do
           get :download_list_export
           post :destroy_message
           delete :destroy_message
+          post :bulk_assign_moderator
+          get :upcoming
+          get :unanswered
         end
 
         resources :users, controller: 'entourages/users', only: [:destroy]
@@ -278,7 +286,9 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :sensitive_words, only: [:show, :destroy]
+      resources :sensitive_words, only: [:index, :new, :create, :edit, :update, :destroy]
+
+      resources :admin_notes, only: [:create, :destroy]
 
       namespace :slack do
         post :message_action
@@ -342,15 +352,18 @@ Rails.application.routes.draw do
           get :search
           get 'moderate'
           get 'download_list_export'
+          post 'bulk_block'
         end
 
         member do
           get 'messages'
           get 'engagement'
+          get 'timeline'
           get 'rpush_notifications'
           get 'neighborhoods'
           get 'outings'
           get 'history'
+          get 'notes'
           get 'blocked_users'
           put 'destroy_avatar'
           get 'new_spam_warning'

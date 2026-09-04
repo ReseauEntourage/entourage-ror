@@ -86,10 +86,27 @@ table.custom-table {
         color: $orange;
     }
     &.danger {
-        background-color: #fddfd2;
-        border: #f55f241a 1px solid;
-        color: $orange;
+        background-color: #fbe2e1;
+        border: #d9534f1a 1px solid;
+        color: #d9534f;
     }
+    &.success {
+        background-color: #e1f0e5;
+        border: #3e8f5b1a 1px solid;
+        color: #3e8f5b;
+    }
+    &.dark {
+        background-color: #d9e6e5;
+        border: #19534f1a 1px solid;
+        color: #19534f;
+    }
+}
+
+// semantic modifiers for the plain bootstrap .badge (status dots/counters in tables)
+.badge {
+    &.badge-warning { background-color: #f0ad4e; }
+    &.badge-danger { background-color: #d9534f; }
+    &.badge-dark { background-color: #19534f; }
 }
 
 
