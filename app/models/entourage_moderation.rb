@@ -7,6 +7,10 @@ class EntourageModeration < ApplicationRecord
 
   after_commit :auto_post_at_create
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["action_outcome"]
+  end
+
   SUCCESSFUL_VALUES = ['Oui', 'Échange de coordonnées', 'Orientation via modérateur']
 
   VALUES = {

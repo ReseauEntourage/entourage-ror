@@ -194,7 +194,11 @@ class Entourage < ApplicationRecord
   alias_attribute :name, :title
 
   def self.ransackable_attributes(auth_object = nil)
-    ["status", "title", "entourage_type", "group_type", "online", "postal_code", "country", "created_at"]
+    ["status", "title", "entourage_type", "group_type", "online", "postal_code", "country", "created_at", "display_category"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["moderation"]
   end
 
   def create_from_join_requests!

@@ -296,4 +296,37 @@ describe Admin::EntouragesController do
     it { expect(response).to be_successful }
     it { expect(assigns(:histories).map { |h| h[:kind] }).to include(:creation) }
   end
+
+  describe 'GET index rendering (regression: ransack allowlist)' do
+    render_views
+
+    it 'renders with no params' do
+      get :index
+
+      expect(response).to be_successful
+    end
+
+    it 'renders when filtering on moderator_id=none' do
+      get :index, params: { moderator_id: 'none' }
+
+      expect(response).to be_successful
+    end
+
+    it 'renders when filtering on a specific moderator_id' do
+      get :index, params: { moderator_id: user.id }
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe 'Entourage.ransack display_category_eq (regression)' do
+    let!(:social) { FactoryBot.create(:entourage, display_category: 'social') }
+    let!(:other) { FactoryBot.create(:entourage, display_category: 'other') }
+
+    it 'actually filters by display_category' do
+      result = Entourage.ransack(display_category_eq: 'social').result
+      expect(result).to include(social)
+      expect(result).not_to include(other)
+    end
+  end
 end
