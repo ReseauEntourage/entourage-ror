@@ -8,25 +8,29 @@ module Admin
     def index
       @params = params.permit([:filter])
 
-      @conversations = Conversation
-        .includes(:user)
+      base_conversations = Conversation
         .joins(:join_requests)
         .search_by_id(params[:search])
         .search_by_member(params[:search])
         .with_chat_messages
         .merge(current_admin.join_requests.accepted)
+
+      params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
+
+      base_conversations = if params[:filter] == 'archived'
+        base_conversations.where('archived_at >= feed_updated_at')
+      else
+        base_conversations.where('archived_at < feed_updated_at or archived_at is null')
+      end
+
+      @unread_count = base_conversations.where('unread_messages_count > 0').count
+
+      @conversations = base_conversations
+        .includes(:user)
         .select('entourages.*, (unread_messages_count > 0) as unread')
         .order('feed_updated_at desc')
         .page(params[:page])
         .per(50)
-
-      params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
-
-      @conversations = if params[:filter] == 'archived'
-        @conversations.where('archived_at >= feed_updated_at')
-      else
-        @conversations.where('archived_at < feed_updated_at or archived_at is null')
-      end
 
       @conversations = @conversations.where('unread_messages_count > 0') if params[:filter] == 'unread'
 

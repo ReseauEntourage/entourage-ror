@@ -26,6 +26,9 @@
       <div class="input-group">
         <%= select_tag :status, options_for_select([['Tous les statuts', nil]] + user_statuses, @params[:status]), class: 'form-control' %>
       </div>
+      <div class="input-group">
+        <%= select_tag "interests[]", options_for_select(user_interests, @params[:interests]), multiple: true, class: 'form-control', style: 'height: auto', title: "Centres d'intérêt" %>
+      </div>
     </div>
 
     <% q = @params[:q] || {} %>
@@ -130,7 +133,11 @@
       <td><%= link_to user.last_name,  edit_admin_user_path(user)%></td>
       <td><%= link_to user.first_name,  edit_admin_user_path(user)%></td>
       <td>
-        <span class="text-muted">&mdash;</span>
+        <% if user.partner %>
+          <%= user.partner.name %>
+        <% else %>
+          <span class="text-muted">&mdash;</span>
+        <% end %>
       </td>
 
       <% if @status == :pending %>
@@ -184,7 +191,7 @@
 
 <script>
   $(function(){
-    $('form select').on('change', function(event) {
+    $('form select:not([multiple])').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
 

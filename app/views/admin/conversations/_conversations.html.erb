@@ -32,6 +32,9 @@
               </div>
               <div class="conversation-details">
                 <div class="conversation-recipients">
+                  <% if conversation.unread %>
+                    <span class="conversation-unread-dot" title="Non lu"></span>
+                  <% end %>
                   <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
                 </div>
 

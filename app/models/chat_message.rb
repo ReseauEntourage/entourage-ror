@@ -31,7 +31,8 @@ class ChatMessage < ApplicationRecord
   before_validation :generate_content
 
   validates :messageable_id, :messageable_type, :user_id, presence: true
-  validates :content, presence: true, unless: -> (m) { m.image_url.present? || m.deleted? }
+  validates :content, presence: true, unless: -> (m) { m.image_url.present? || m.video_url.present? || m.deleted? }
+  validates :video_url, format: { with: %r{\Ahttps://www\.youtube\.com/embed/}, message: "doit être un lien d'intégration YouTube (https://www.youtube.com/embed/...)" }, allow_blank: true
   validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 

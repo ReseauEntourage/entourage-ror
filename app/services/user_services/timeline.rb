@@ -7,7 +7,7 @@ module UserServices
     end
 
     def get
-      (created_entourages + joined_entourages + joined_neighborhoods)
+      (created_entourages + joined_entourages + joined_neighborhoods + created_neighborhoods)
         .sort_by { |item| item[:date] }
         .reverse
     end
@@ -15,12 +15,25 @@ module UserServices
     private
 
     def created_entourages
-      user.entourages.where.not(group_type: 'conversation').map do |entourage|
+      user.entourages.where.not(group_type: 'conversation').includes(:moderation).map do |entourage|
         {
           kind: :created,
           date: entourage.created_at,
           record: entourage,
           label: "A créé « #{entourage.title} »",
+          moderator: entourage.moderation&.moderator,
+        }
+      end
+    end
+
+    def created_neighborhoods
+      Neighborhood.where(user_id: user.id).map do |neighborhood|
+        {
+          kind: :created_neighborhood,
+          date: neighborhood.created_at,
+          record: neighborhood,
+          label: "A créé le quartier « #{neighborhood.name} »",
+          moderator: nil,
         }
       end
     end
@@ -39,6 +52,7 @@ module UserServices
             date: join_request.created_at,
             record: entourage,
             label: "A rejoint « #{entourage.title} »",
+            moderator: nil,
           }
         end.compact
     end
@@ -57,6 +71,7 @@ module UserServices
             date: join_request.created_at,
             record: neighborhood,
             label: "A rejoint le quartier « #{neighborhood.name} »",
+            moderator: nil,
           }
         end.compact
     end

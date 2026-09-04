@@ -115,6 +115,39 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index with profile=entourage_volunteer' do
+    let!(:admin) { admin_basic_login }
+    let!(:staff_partner) { FactoryBot.create(:partner, staff: true) }
+    let!(:ambassador) { FactoryBot.create(:public_user, targeting_profile: 'ambassador') }
+    let!(:riverain) { FactoryBot.create(:public_user, goal: 'offer_help') }
+
+    before { get :index, params: { profile: 'entourage_volunteer' } }
+
+    it { expect(assigns(:users)).to contain_exactly(ambassador) }
+  end
+
+  describe 'GET index with interests filter' do
+    let!(:admin) { admin_basic_login }
+    let!(:cook) { FactoryBot.create(:public_user, interest_list: 'cuisine') }
+    let!(:sporty) { FactoryBot.create(:public_user, interest_list: 'sport') }
+    let!(:no_interest) { FactoryBot.create(:public_user) }
+
+    before { get :index, params: { interests: ['cuisine'] } }
+
+    it { expect(assigns(:users)).to contain_exactly(cook) }
+  end
+
+  describe 'GET index association column' do
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner, name: 'Croix-Rouge') }
+    let!(:with_partner) { FactoryBot.create(:public_user, first_name: 'Ada', partner: partner) }
+    let!(:without_partner) { FactoryBot.create(:public_user, first_name: 'Bob') }
+
+    before { get :index, params: { search: with_partner.first_name } }
+
+    it { expect(assigns(:users).map(&:partner)).to eq([partner]) }
+  end
+
 
 
 
@@ -413,6 +446,26 @@ describe Admin::UsersController do
     it { expect(assigns(:timeline).map { |i| i[:record] }).to include(entourage) }
   end
 
+  describe 'GET neighborhoods' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:neighborhood) { FactoryBot.create(:neighborhood, participants: [user]) }
+    let!(:left_neighborhood) { FactoryBot.create(:neighborhood, cancelled_participants: [user]) }
+    let!(:post) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, content: 'hello') }
+
+    before { get :neighborhoods, params: { id: user.id } }
+
+    it { expect(response).to be_successful }
+
+    it 'excludes cancelled memberships' do
+      expect(assigns(:join_requests).map(&:joinable_id)).to contain_exactly(neighborhood.id)
+    end
+
+    it 'exposes the content created by the user' do
+      expect(assigns(:created_content).map { |i| i[:message] }).to contain_exactly(post)
+    end
+  end
+
   describe 'GET index engagement badge' do
     let!(:admin) { admin_basic_login }
     let!(:user) { FactoryBot.create(:public_user) }
@@ -421,5 +474,65 @@ describe Admin::UsersController do
 
     it { expect(assigns(:users)).to include(user) }
     it { expect { assigns(:users).each(&:engagement) }.not_to raise_error }
+  end
+
+  describe 'rendering (regression: missing partial / template errors)' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner) }
+    let!(:user) { FactoryBot.create(:public_user, partner: partner) }
+    let!(:entourage) { FactoryBot.create(:entourage, user: user) }
+    let!(:note) { FactoryBot.create(:admin_note, notable: user, author: admin) }
+
+    before do
+      # _header.html.erb links to Salesforce; stub the live API call, unrelated to what's under test here
+      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil, is_synchable?: false))
+    end
+
+    it 'renders index' do
+      get :index
+      expect(response).to be_successful
+    end
+
+    it 'renders edit (fiche header: notes tab, timeline tab, engagement badge)' do
+      get :edit, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders edit with clarified labels for travel_distance and lang' do
+      get :edit, params: { id: user.id }
+      expect(response.body).to include('Distance de déplacement')
+      expect(response.body).to include('Langue de communication')
+    end
+
+    it 'renders notes' do
+      get :notes, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders timeline' do
+      get :timeline, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders neighborhoods (contenus créés section)' do
+      neighborhood = FactoryBot.create(:neighborhood, participants: [user])
+      FactoryBot.create(:chat_message, messageable: neighborhood, user: user, content: 'hello')
+
+      get :neighborhoods, params: { id: user.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Contenus créés par #{user.first_name}")
+    end
+
+    it 'renders timeline with the entourage moderator when present' do
+      entourage.moderation.update!(moderator: admin)
+
+      get :timeline, params: { id: user.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Modéré par #{admin.full_name}")
+    end
   end
 end

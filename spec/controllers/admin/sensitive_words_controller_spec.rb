@@ -62,4 +62,25 @@ describe Admin::SensitiveWordsController do
     it { expect(response).to redirect_to(admin_sensitive_words_path) }
     it { expect(SensitiveWord.find_by(id: word.id)).to be_nil }
   end
+
+  describe 'rendering (regression: missing partial / template errors)' do
+    render_views
+
+    let!(:word) { FactoryBot.create(:sensitive_word, raw: 'exemple', category: 'Insulte') }
+
+    it 'renders index' do
+      get :index
+      expect(response).to be_successful
+    end
+
+    it 'renders new' do
+      get :new
+      expect(response).to be_successful
+    end
+
+    it 'renders edit' do
+      get :edit, params: { id: word.id }
+      expect(response).to be_successful
+    end
+  end
 end

@@ -2,6 +2,8 @@ require 'rails_helper'
 include AuthHelper
 
 describe Admin::ModeratorWorkloadsController do
+  render_views
+
   let!(:admin) { admin_basic_login }
   let!(:moderator1) { FactoryBot.create(:admin_user, roles: [:moderator], validation_status: 'validated', phone: '+33711111111') }
   let!(:moderator2) { FactoryBot.create(:admin_user, roles: [:moderator], validation_status: 'validated', phone: '+33722222222') }

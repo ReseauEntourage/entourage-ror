@@ -15,7 +15,7 @@ class User < ApplicationRecord
   include UserServices::Options
 
   TEMPORARY_BLOCK_PERIOD = 1.month
-  PROFILES = [:offer_help, :ask_for_help, :ask_and_offer_help, :organization, :goal_not_known]
+  PROFILES = [:offer_help, :ask_for_help, :ask_and_offer_help, :organization, :entourage_volunteer, :goal_not_known]
   GOALS = %w[offer_help ask_for_help organization staff]
   STATUSES = [:validated, :blocked, :temporary_blocked, :deleted, :pending]
   ROLES = [:moderator, :admin]
@@ -161,6 +161,7 @@ class User < ApplicationRecord
   scope :unknown, -> { goal_not_known }
   scope :ask_for_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where("(COALESCE(targeting_profile, '') = '' and goal = ?) or targeting_profile = ?", :offer_help, :offers_help) }
+  scope :entourage_volunteer, -> { where(targeting_profile: ['ambassador', 'team']) }
 
   scope :search_by, -> (query) {
     return unless query.present?
@@ -241,6 +242,8 @@ class User < ApplicationRecord
       where.not(partner_id: nil)
     elsif profile.to_sym == :organization
       where.not(partner_id: nil)
+    elsif profile.to_sym == :entourage_volunteer
+      entourage_volunteer
     elsif profile.to_sym == :goal_not_known
       goal_not_known
     end

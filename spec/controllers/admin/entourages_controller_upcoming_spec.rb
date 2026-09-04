@@ -2,6 +2,8 @@ require 'rails_helper'
 include AuthHelper
 
 describe Admin::EntouragesController do
+  render_views
+
   let!(:user) { admin_basic_login }
 
   describe 'GET upcoming' do
