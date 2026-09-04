@@ -115,6 +115,17 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index association column' do
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner, name: 'Croix-Rouge') }
+    let!(:with_partner) { FactoryBot.create(:public_user, first_name: 'Ada', partner: partner) }
+    let!(:without_partner) { FactoryBot.create(:public_user, first_name: 'Bob') }
+
+    before { get :index, params: { search: with_partner.first_name } }
+
+    it { expect(assigns(:users).map(&:partner)).to eq([partner]) }
+  end
+
 
 
 
@@ -427,7 +438,8 @@ describe Admin::UsersController do
     render_views
 
     let!(:admin) { admin_basic_login }
-    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:partner) { FactoryBot.create(:partner) }
+    let!(:user) { FactoryBot.create(:public_user, partner: partner) }
     let!(:entourage) { FactoryBot.create(:entourage, user: user) }
     let!(:note) { FactoryBot.create(:admin_note, notable: user, author: admin) }
 

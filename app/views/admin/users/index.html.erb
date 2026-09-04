@@ -130,7 +130,11 @@
       <td><%= link_to user.last_name,  edit_admin_user_path(user)%></td>
       <td><%= link_to user.first_name,  edit_admin_user_path(user)%></td>
       <td>
-        <span class="text-muted">&mdash;</span>
+        <% if user.partner %>
+          <%= user.partner.name %>
+        <% else %>
+          <span class="text-muted">&mdash;</span>
+        <% end %>
       </td>
 
       <% if @status == :pending %>
