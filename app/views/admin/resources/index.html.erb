@@ -1,10 +1,9 @@
 <div class="container">
   <div style="margin: auto">
-    <div style="float: right">
+    <h1 style="display: flex; align-items: center; justify-content: space-between">
+      <span>Contenus pédagogiques</span>
       <%= link_to "Ajouter un contenu pédagogique", new_admin_resource_path, class: "btn btn-default" %>
-    </div>
-
-    <h1>Contenus pédagogiques</h1>
+    </h1>
 
     <div class="row">
       <% unless @resources.none? %>

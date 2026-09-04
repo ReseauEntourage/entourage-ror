@@ -40,9 +40,9 @@
               <td><%= status_label neighborhood %></td>
               <td>
                 <% if neighborhood.unread_images %>
-                  <span class="badge" style="background: #19534f" title="Images non lues">●</span>
+                  <span class="badge badge-dark" title="Images non lues">●</span>
                 <% elsif unread_count > 0 %>
-                  <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
+                  <span class="badge badge-dark" title="Images non lues"><%= unread_images_count %></span>
                 <% end %>
               </td>
             </tr>

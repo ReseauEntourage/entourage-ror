@@ -6,7 +6,7 @@
     <% else %>
       <ul class="list-unstyled">
         <% @histories.reverse.each do |history| %>
-          <li style="border-top: 1px solid #eee; padding: 10px 0">
+          <li style="border-top: 1px solid var(--bo-line); padding: 10px 0">
             <div>
               <span class="custom-badge info"><%= history[:kind] %></span>
               <%= history[:metadata] %>

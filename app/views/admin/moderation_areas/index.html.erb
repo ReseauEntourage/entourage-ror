@@ -1,8 +1,8 @@
 <div class="container">
   <div class="row">
-    <div class="h1" style="display: flex; align-items: center;">
-      <div style="flex-grow: 1">Zones de modération</div>
-    </div>
+    <h1 style="display: flex; align-items: center;">
+      <span style="flex-grow: 1">Zones de modération</span>
+    </h1>
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
@@ -62,9 +62,9 @@
         <tr>
           <td style="width: 3em">
             <% if moderation_area.activity? %>
-              <span class="badge" style="background: #19534f" title="Zone active"><%= moderation_area.departement %></span>
+              <span class="badge badge-dark" title="Zone active"><%= moderation_area.departement %></span>
             <% else %>
-              <span class="badge" style="background: #d9534f" title="Zone non active"><%= moderation_area.departement %></span>
+              <span class="badge badge-danger" title="Zone non active"><%= moderation_area.departement %></span>
             <% end %>
           </td>
 

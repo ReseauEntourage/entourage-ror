@@ -13,23 +13,23 @@
   </li>
 </ol>
 
-<div class="h1">
-  <span>
+<h1 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
+  <span style="display: flex; align-items: center; gap: 8px">
     <% if [@user.first_name, @user.last_name].any?(&:present?) %>
       <%= @user.first_name %> <%= @user.last_name %>
     <% else %>
       Utilisateur #<%= @user.id %>
     <% end %>
+    <span class="custom-badge <%= @user.engagement.engaged? ? 'success' : 'info' %>" title="Niveau d'engagement"><%= @user.engagement.badge %></span>
   </span>
-  <span class="custom-badge <%= @user.engagement.engaged? ? 'success' : 'info' %>" title="Niveau d'engagement"><%= @user.engagement.badge %></span>
-  <div class="pull-right">
+  <span>
     <%
       uuid = ConversationService.list_for_participants([current_admin.id, @user.id])
     %>
     <%= link_to "Contacter", admin_conversation_path(uuid), class: "btn btn-primary" %>
     <%= link_to (@user.blocked? ? "Débloquer" : "Bloquer"), edit_block_admin_user_path(@user), class: "btn btn-success" %>
-  </div>
-</div>
+  </span>
+</h1>
 
 <%= render partial: "block_panel", locals: { user: @user } %>
 

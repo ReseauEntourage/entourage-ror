@@ -2,7 +2,7 @@
 <html>
 <%= render partial: "layouts/head" %>
 
-<body class="with-navbar">
+<body class="with-navbar <%= 'admin' if controller_path.start_with?('admin/') %>">
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
