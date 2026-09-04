@@ -9,12 +9,26 @@
     font-weight: bold;
   }
 
+  .conversation-unread-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d9534f;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
   .conversation-link {
     display: block;
     text-decoration: none;
     color: inherit;
     padding: 10px;
     transition: background-color 0.3s;
+  }
+
+  .conversation-link:hover {
+    background: #f5f5f5;
   }
 
   .conversation {
@@ -87,7 +101,7 @@
   <div style="margin-bottom: 15px">
     <div class="btn-group btn-group-sm">
       <%= link_to "Tous", @params.except(:filter), class: "btn btn-#{params.key?(:filter) ? :default : :primary}" %>
-      <%= link_to "Non-lus", @params.merge(filter: :unread), class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}" %>
+      <%= link_to "Non-lus (#{@unread_count})", @params.merge(filter: :unread), class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}" %>
     </div>
 
     <%= link_to "Archivés", @params.merge(filter: :archived), class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm" %>
