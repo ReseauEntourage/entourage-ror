@@ -121,6 +121,41 @@ describe Admin::EntouragesController do
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 
+  describe 'POST message' do
+    context 'commenting (parent_id) on an outing' do
+      let(:outing) { FactoryBot.create(:outing) }
+      let(:post_message) { FactoryBot.create(:chat_message, messageable: outing) }
+
+      before {
+        post :message, params: { id: outing.to_param, chat_message: { content: 'nice', parent_id: post_message.id } }
+      }
+
+      it { expect(response).to redirect_to(show_messages_admin_entourage_path(outing)) }
+      it { expect(ChatMessage.where(content: 'nice')).to be_empty }
+    end
+
+    context 'posting a top-level message on an outing' do
+      let(:outing) { FactoryBot.create(:outing) }
+
+      before {
+        post :message, params: { id: outing.to_param, chat_message: { content: 'nice' } }
+      }
+
+      it { expect(ChatMessage.where(content: 'nice')).to be_present }
+    end
+
+    context 'commenting (parent_id) on a regular entourage' do
+      let(:entourage) { FactoryBot.create(:entourage) }
+      let(:post_message) { FactoryBot.create(:chat_message, messageable: entourage) }
+
+      before {
+        post :message, params: { id: entourage.to_param, chat_message: { content: 'nice', parent_id: post_message.id } }
+      }
+
+      it { expect(ChatMessage.where(content: 'nice')).to be_present }
+    end
+  end
+
   describe 'DELETE destroy_message' do
     context 'on chat_message' do
       let(:entourage) { create(:entourage) }
@@ -306,6 +341,37 @@ describe Admin::EntouragesController do
     before { get :show_notes, params: { id: entourage.id } }
 
     it { expect(response).to be_successful }
+  end
+
+  describe 'GET show_messages rendering (regression: no comment entry point on outings)' do
+    render_views
+
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:post_message) { FactoryBot.create(:chat_message, messageable: outing, content: 'hello') }
+
+    before do
+      allow_any_instance_of(Entourage).to receive(:sf).and_return(double(url: nil))
+      get :show_messages, params: { id: outing.id }
+    end
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).not_to include('Ajouter un commentaire') }
+  end
+
+  describe 'GET show_comments rendering (regression: no reply form on outings)' do
+    render_views
+
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:post_message) { FactoryBot.create(:chat_message, messageable: outing, content: 'hello') }
+    let!(:comment) { FactoryBot.create(:chat_message, messageable: outing, content: 'a comment', parent: post_message) }
+
+    before do
+      allow_any_instance_of(Entourage).to receive(:sf).and_return(double(url: nil))
+      get :show_comments, params: { id: outing.id, message_id: post_message.id }
+    end
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).not_to include('conversation-message-box') }
   end
 
   describe 'GET index rendering (regression: ransack allowlist)' do

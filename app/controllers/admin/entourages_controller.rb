@@ -417,6 +417,10 @@ module Admin
     end
 
     def message
+      if @entourage.outing? && chat_messages_params.has_key?(:parent_id)
+        return redirect_to show_messages_admin_entourage_path(@entourage), alert: "Les commentaires ne sont pas autorisés sur la discussion d'un événement"
+      end
+
       ChatServices::ChatMessageBuilder.new(
         params: chat_messages_params,
         user: current_user,
