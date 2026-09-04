@@ -13,7 +13,7 @@ module Admin
       ransack_params = (params[:q] || {}).except(:country_eq, :postal_code_start, :postal_code_not_start_all, :postal_code_start_any)
 
       @q = filtered_users.ransack(ransack_params)
-      @users = @q.result.includes(:address, :engagement_level, :partner).order('created_at DESC').page(params[:page]).per(25)
+      @users = @q.result.includes(:address, :engagement_level, :partner).order('users.created_at DESC').page(params[:page]).per(25)
     end
 
     def search

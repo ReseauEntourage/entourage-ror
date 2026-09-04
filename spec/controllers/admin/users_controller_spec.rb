@@ -476,6 +476,29 @@ describe Admin::UsersController do
     it { expect { assigns(:users).each(&:engagement) }.not_to raise_error }
   end
 
+  describe 'GET index with engagement filter (regression: ambiguous created_at)' do
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner) }
+    let!(:user) { FactoryBot.create(:public_user, partner: partner) }
+    let!(:address) { FactoryBot.create(:address, user: user) }
+
+    before do
+      FactoryBot.create(:denorm_daily_engagements_with_type, user: user, engagement_type: 'reaction', date: 1.day.ago.to_date)
+      ActiveRecord::Base.connection.execute("REFRESH MATERIALIZED VIEW engagement_levels")
+    end
+
+    it 'does not raise on ?engagement=engaged (address/partner joins made created_at ambiguous)' do
+      expect { get :index, params: { engagement: 'engaged' } }.not_to raise_error
+      expect(response).to be_successful
+      expect(assigns(:users)).to include(user)
+    end
+
+    it 'does not raise on ?engagement=not_engaged' do
+      expect { get :index, params: { engagement: 'not_engaged' } }.not_to raise_error
+      expect(response).to be_successful
+    end
+  end
+
   describe 'rendering (regression: missing partial / template errors)' do
     render_views
 
