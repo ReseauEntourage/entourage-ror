@@ -75,61 +75,47 @@
     </div>
   </div>
 
-  <div class="row" style="display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 20px">
-    <div class="panel <%= @pending_moderation_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= @pending_moderation_count %></div>
-        <div class="text-muted">Actions/événements non modérés (total)</div>
-      </div>
+  <div class="stat-grid" style="margin: 0 0 20px">
+    <div class="stat-tile <%= 'is-alert' if @pending_moderation_count > 0 %>">
+      <div class="n"><%= @pending_moderation_count %></div>
+      <div class="l">Actions/événements non modérés (total)</div>
     </div>
 
-    <div class="panel <%= @unassigned_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= link_to @unassigned_count, admin_entourages_path(moderator_id: :none) %></div>
-        <div class="text-muted">Sans modérateur assigné</div>
-      </div>
+    <div class="stat-tile <%= 'is-alert' if @unassigned_count > 0 %>">
+      <div class="n"><%= link_to @unassigned_count, admin_entourages_path(moderator_id: :none) %></div>
+      <div class="l">Sans modérateur assigné</div>
     </div>
 
-    <div class="panel panel-default" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600">
-          <% if @avg_moderation_days %>
-            <%= @avg_moderation_days %>j
-          <% else %>
-            &mdash;
-          <% end %>
-        </div>
-        <div class="text-muted">Délai de modération moyen (7j)</div>
+    <div class="stat-tile">
+      <div class="n">
+        <% if @avg_moderation_days %>
+          <%= @avg_moderation_days %>j
+        <% else %>
+          &mdash;
+        <% end %>
       </div>
+      <div class="l">Délai de modération moyen (7j)</div>
     </div>
 
-    <div class="panel panel-default" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= link_to @upcoming_outings_count, upcoming_admin_entourages_path %></div>
-        <div class="text-muted">Sorties dans les 7 prochains jours</div>
-      </div>
+    <div class="stat-tile">
+      <div class="n"><%= link_to @upcoming_outings_count, upcoming_admin_entourages_path %></div>
+      <div class="l">Sorties dans les 7 prochains jours</div>
     </div>
 
-    <div class="panel <%= @unanswered_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= link_to @unanswered_count, unanswered_admin_entourages_path %></div>
-        <div class="text-muted">En attente de réponse (3j+)</div>
-      </div>
+    <div class="stat-tile <%= 'is-alert' if @unanswered_count > 0 %>">
+      <div class="n"><%= link_to @unanswered_count, unanswered_admin_entourages_path %></div>
+      <div class="l">En attente de réponse (3j+)</div>
     </div>
 
-    <div class="panel <%= @photo_queue_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= link_to @photo_queue_count, moderate_admin_users_path %></div>
-        <div class="text-muted">Photos de profil à modérer (total)</div>
-      </div>
+    <div class="stat-tile <%= 'is-alert' if @photo_queue_count > 0 %>">
+      <div class="n"><%= link_to @photo_queue_count, moderate_admin_users_path %></div>
+      <div class="l">Photos de profil à modérer (total)</div>
     </div>
 
     <% if @my_queue_count %>
-      <div class="panel panel-default" style="flex: 1; min-width: 200px">
-        <div class="panel-body" style="text-align: center">
-          <div style="font-size: 30px; font-weight: 600"><%= link_to @my_queue_count, admin_entourages_path(moderator_id: current_user.id) %></div>
-          <div class="text-muted">Dans ma file</div>
-        </div>
+      <div class="stat-tile">
+        <div class="n"><%= link_to @my_queue_count, admin_entourages_path(moderator_id: current_user.id) %></div>
+        <div class="l">Dans ma file</div>
       </div>
     <% end %>
   </div>

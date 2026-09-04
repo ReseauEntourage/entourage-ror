@@ -2,7 +2,7 @@
   .conversations-menu {
     height: calc(100vh - 350px);
     overflow-y: auto;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid var(--bo-line);
   }
 
   .conversation.unread {
@@ -14,7 +14,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #d9534f;
+    background: var(--bo-danger);
     margin-right: 6px;
     vertical-align: middle;
   }
@@ -28,13 +28,13 @@
   }
 
   .conversation-link:hover {
-    background: #f5f5f5;
+    background: var(--bo-paper);
   }
 
   .conversation {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--bo-line);
     padding: 10px;
   }
 
@@ -59,13 +59,13 @@
   }
 
   .conversation-message {
-    color: #666;
+    color: var(--bo-ink-soft);
   }
 
   .conversation-date {
     flex: 0 0 auto;
     font-size: 0.8em;
-    color: #999;
+    color: var(--bo-ink-faint);
   }
 
   .nav-tabs-container {
