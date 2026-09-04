@@ -90,8 +90,11 @@ module Admin
       @join_requests = user
         .join_requests
         .where(joinable_type: :Neighborhood)
+        .where.not(status: JoinRequest::CANCELLED_STATUS)
         .includes(joinable: :chat_messages)
         .order(status: :asc, created_at: :desc)
+
+      @created_content = UserServices::CreatedContent.new(user, messageable_type: 'Neighborhood').get
     end
 
     def outings

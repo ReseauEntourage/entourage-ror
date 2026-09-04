@@ -446,6 +446,26 @@ describe Admin::UsersController do
     it { expect(assigns(:timeline).map { |i| i[:record] }).to include(entourage) }
   end
 
+  describe 'GET neighborhoods' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:neighborhood) { FactoryBot.create(:neighborhood, participants: [user]) }
+    let!(:left_neighborhood) { FactoryBot.create(:neighborhood, cancelled_participants: [user]) }
+    let!(:post) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, content: 'hello') }
+
+    before { get :neighborhoods, params: { id: user.id } }
+
+    it { expect(response).to be_successful }
+
+    it 'excludes cancelled memberships' do
+      expect(assigns(:join_requests).map(&:joinable_id)).to contain_exactly(neighborhood.id)
+    end
+
+    it 'exposes the content created by the user' do
+      expect(assigns(:created_content).map { |i| i[:message] }).to contain_exactly(post)
+    end
+  end
+
   describe 'GET index engagement badge' do
     let!(:admin) { admin_basic_login }
     let!(:user) { FactoryBot.create(:public_user) }
@@ -467,7 +487,7 @@ describe Admin::UsersController do
 
     before do
       # _header.html.erb links to Salesforce; stub the live API call, unrelated to what's under test here
-      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil))
+      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil, is_synchable?: false))
     end
 
     it 'renders index' do
@@ -494,6 +514,16 @@ describe Admin::UsersController do
     it 'renders timeline' do
       get :timeline, params: { id: user.id }
       expect(response).to be_successful
+    end
+
+    it 'renders neighborhoods (contenus créés section)' do
+      neighborhood = FactoryBot.create(:neighborhood, participants: [user])
+      FactoryBot.create(:chat_message, messageable: neighborhood, user: user, content: 'hello')
+
+      get :neighborhoods, params: { id: user.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Contenus créés par #{user.first_name}")
     end
 
     it 'renders timeline with the entourage moderator when present' do
