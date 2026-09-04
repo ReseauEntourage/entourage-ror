@@ -290,11 +290,22 @@ describe Admin::EntouragesController do
   end
 
   describe 'GET show_history' do
+    render_views
+
     let!(:entourage) { FactoryBot.create(:entourage) }
     before { get :show_history, params: { id: entourage.id } }
 
     it { expect(response).to be_successful }
     it { expect(assigns(:histories).map { |h| h[:kind] }).to include(:creation) }
+  end
+
+  describe 'GET show_notes' do
+    render_views
+
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    before { get :show_notes, params: { id: entourage.id } }
+
+    it { expect(response).to be_successful }
   end
 
   describe 'GET index rendering (regression: ransack allowlist)' do
