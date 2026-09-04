@@ -36,4 +36,27 @@ describe UserServices::Timeline do
     dates = subject.map { |i| i[:date] }
     expect(dates).to eq(dates.sort.reverse)
   end
+
+  it 'includes neighborhoods created by the user' do
+    neighborhood = FactoryBot.create(:neighborhood, user: user)
+
+    item = subject.find { |i| i[:kind] == :created_neighborhood }
+    expect(item[:record]).to eq(neighborhood)
+  end
+
+  it 'exposes the entourage moderator when the entourage has been moderated' do
+    moderator = FactoryBot.create(:admin_user)
+    entourage = FactoryBot.create(:entourage, user: user)
+    entourage.moderation.update!(moderator: moderator)
+
+    item = subject.find { |i| i[:kind] == :created }
+    expect(item[:moderator]).to eq(moderator)
+  end
+
+  it 'has a nil moderator when the entourage has not been moderated' do
+    FactoryBot.create(:entourage, user: user)
+
+    item = subject.find { |i| i[:kind] == :created }
+    expect(item[:moderator]).to be_nil
+  end
 end

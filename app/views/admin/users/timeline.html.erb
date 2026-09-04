@@ -40,13 +40,18 @@
             <% @timeline.each do |item| %>
               <li style="border-top: 1px solid #eee; padding: 10px 0">
                 <div>
-                  <% if item[:kind] == :joined_neighborhood %>
+                  <% if [:joined_neighborhood, :created_neighborhood].include?(item[:kind]) %>
                     <%= link_to item[:label], edit_admin_neighborhood_path(item[:record]) %>
                   <% else %>
                     <%= link_to item[:label], admin_entourage_path(item[:record]) %>
                   <% end %>
                 </div>
-                <div class="text-muted" style="font-size: 12px"><%= l item[:date], format: "%-d %B %Y à %H:%M" %></div>
+                <div class="text-muted" style="font-size: 12px">
+                  <%= l item[:date], format: "%-d %B %Y à %H:%M" %>
+                  <% if item[:moderator] %>
+                    &mdash; Modéré par <%= item[:moderator].full_name %>
+                  <% end %>
+                </div>
               </li>
             <% end %>
           </ul>

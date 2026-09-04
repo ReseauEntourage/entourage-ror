@@ -495,5 +495,14 @@ describe Admin::UsersController do
       get :timeline, params: { id: user.id }
       expect(response).to be_successful
     end
+
+    it 'renders timeline with the entourage moderator when present' do
+      entourage.moderation.update!(moderator: admin)
+
+      get :timeline, params: { id: user.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Modéré par #{admin.full_name}")
+    end
   end
 end
