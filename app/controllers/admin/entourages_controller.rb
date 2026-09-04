@@ -206,12 +206,7 @@ module Admin
     def upcoming
       @days = params[:days].presence&.to_i || 14
 
-      @outings = Entourage
-        .where(group_type: 'outing', status: ModerationServices::OPEN_ENTOURAGE_STATUSES)
-        .where(%(metadata->>'starts_at' >= :from and metadata->>'starts_at' <= :to), {
-          from: Time.zone.now,
-          to: @days.days.from_now,
-        })
+      @outings = ModerationServices.upcoming_outings(days: @days)
         .order(Arel.sql(%(metadata->>'starts_at' asc)))
         .page(params[:page]).per(50)
     end
@@ -219,16 +214,7 @@ module Admin
     def unanswered
       @days = params[:days].presence&.to_i || 3
 
-      last_messages = ChatMessage
-        .where(messageable_type: 'Entourage')
-        .select('DISTINCT ON (messageable_id) messageable_id, user_id, created_at')
-        .order('messageable_id, created_at desc')
-
-      @entourages = Entourage
-        .where(group_type: ['action', 'outing'], status: ModerationServices::OPEN_ENTOURAGE_STATUSES)
-        .joins("inner join (#{last_messages.to_sql}) last_messages on last_messages.messageable_id = entourages.id")
-        .where('last_messages.user_id != entourages.user_id')
-        .where('last_messages.created_at <= ?', @days.days.ago)
+      @entourages = ModerationServices.unanswered_entourages(days: @days)
         .select('entourages.*, last_messages.created_at as last_message_at, last_messages.user_id as last_message_user_id')
         .order('last_messages.created_at asc')
         .page(params[:page]).per(50)

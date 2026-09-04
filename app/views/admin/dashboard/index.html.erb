@@ -30,6 +30,12 @@
             <% end %>
           </tr>
           <tr>
+            <td>Dont avec photo de profil</td>
+            <% @activity.each do |row| %>
+              <td style="text-align: center"><%= row[:new_profile_photos] %></td>
+            <% end %>
+          </tr>
+          <tr>
             <td>Nouvelles actions / événements</td>
             <% @activity.each do |row| %>
               <td style="text-align: center">
@@ -50,6 +56,12 @@
             <% end %>
           </tr>
           <tr>
+            <td>Nouveaux groupes de voisins</td>
+            <% @activity.each do |row| %>
+              <td style="text-align: center"><%= row[:new_neighborhoods] %></td>
+            <% end %>
+          </tr>
+          <tr>
             <td>Messages échangés</td>
             <% @activity.each do |row| %>
               <td style="text-align: center"><%= row[:new_messages] %></td>
@@ -58,19 +70,12 @@
         </tbody>
       </table>
       <p class="text-muted" style="margin: 10px 0 0">
-        « Dont non modérés » compte, parmi les actions/événements créés sur la période, ceux qui n'ont toujours pas été modérés à ce jour.
+        « Dont non modérés » compte, parmi les actions/événements créés sur la période, ceux qui n'ont toujours pas été modérés à ce jour. « Dont avec photo de profil » n'indique pas un statut de modération (voir note plus bas).
       </p>
     </div>
   </div>
 
   <div class="row" style="display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 20px">
-    <div class="panel <%= @photo_queue_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
-      <div class="panel-body" style="text-align: center">
-        <div style="font-size: 30px; font-weight: 600"><%= link_to @photo_queue_count, moderate_admin_users_path %></div>
-        <div class="text-muted">Photos de profil à modérer (total)</div>
-      </div>
-    </div>
-
     <div class="panel <%= @pending_moderation_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
       <div class="panel-body" style="text-align: center">
         <div style="font-size: 30px; font-weight: 600"><%= @pending_moderation_count %></div>
@@ -85,6 +90,40 @@
       </div>
     </div>
 
+    <div class="panel panel-default" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600">
+          <% if @avg_moderation_days %>
+            <%= @avg_moderation_days %>j
+          <% else %>
+            &mdash;
+          <% end %>
+        </div>
+        <div class="text-muted">Délai de modération moyen (7j)</div>
+      </div>
+    </div>
+
+    <div class="panel panel-default" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600"><%= link_to @upcoming_outings_count, upcoming_admin_entourages_path %></div>
+        <div class="text-muted">Sorties dans les 7 prochains jours</div>
+      </div>
+    </div>
+
+    <div class="panel <%= @unanswered_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600"><%= link_to @unanswered_count, unanswered_admin_entourages_path %></div>
+        <div class="text-muted">En attente de réponse (3j+)</div>
+      </div>
+    </div>
+
+    <div class="panel <%= @photo_queue_count > 0 ? 'panel-warning' : 'panel-default' %>" style="flex: 1; min-width: 200px">
+      <div class="panel-body" style="text-align: center">
+        <div style="font-size: 30px; font-weight: 600"><%= link_to @photo_queue_count, moderate_admin_users_path %></div>
+        <div class="text-muted">Photos de profil à modérer (total)</div>
+      </div>
+    </div>
+
     <% if @my_queue_count %>
       <div class="panel panel-default" style="flex: 1; min-width: 200px">
         <div class="panel-body" style="text-align: center">
@@ -94,6 +133,9 @@
       </div>
     <% end %>
   </div>
+  <p class="text-muted" style="margin: -12px 0 20px">
+    « Photos de profil à modérer » est un total cumulé : la donnée ne distingue pas une date d'entrée en file de la date de création du compte.
+  </p>
 
   <div class="row" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start">
     <div class="panel panel-default" style="flex: 1; min-width: 320px">
@@ -145,7 +187,5 @@
 
   <div class="row" style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap">
     <%= link_to "Voir l'activité récente", admin_activity_feed_path, class: "btn btn-default" %>
-    <%= link_to "Sorties à venir", upcoming_admin_entourages_path, class: "btn btn-default" %>
-    <%= link_to "En attente de réponse", unanswered_admin_entourages_path, class: "btn btn-default" %>
   </div>
 </div>

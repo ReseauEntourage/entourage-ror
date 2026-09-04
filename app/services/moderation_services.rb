@@ -169,6 +169,42 @@ module ModerationServices
       .count
   end
 
+  def self.upcoming_outings days:
+    Entourage
+      .where(group_type: 'outing', status: OPEN_ENTOURAGE_STATUSES)
+      .where(%(metadata->>'starts_at' >= :from and metadata->>'starts_at' <= :to), {
+        from: Time.zone.now,
+        to: days.days.from_now,
+      })
+  end
+
+  def self.unanswered_entourages days:
+    last_messages = ChatMessage
+      .where(messageable_type: 'Entourage')
+      .select('DISTINCT ON (messageable_id) messageable_id, user_id, created_at')
+      .order('messageable_id, created_at desc')
+
+    Entourage
+      .where(group_type: ['action', 'outing'], status: OPEN_ENTOURAGE_STATUSES)
+      .joins("inner join (#{last_messages.to_sql}) last_messages on last_messages.messageable_id = entourages.id")
+      .where('last_messages.user_id != entourages.user_id')
+      .where('last_messages.created_at <= ?', days.days.ago)
+  end
+
+  # average number of days between an entourage's creation and its moderation,
+  # for entourages created since the given date and already moderated.
+  # entourage_moderations.moderated_at is a `date` column (no time-of-day),
+  # so day-level granularity is the best precision this data supports.
+  def self.average_moderation_delay_days since:
+    days = ::EntourageModeration
+      .joins(:entourage)
+      .where.not(moderated_at: nil)
+      .where('entourages.created_at >= ?', since)
+      .average(Arel.sql('entourage_moderations.moderated_at - entourages.created_at::date'))
+
+    days&.round(1)
+  end
+
   def self.moderation_areas_for user
     ModerationArea
       .no_hz
