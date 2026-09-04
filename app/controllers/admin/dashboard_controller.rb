@@ -10,12 +10,15 @@ module Admin
       @activity = WINDOWS.map do |days|
         since = days.days.ago
         entourages_in_window = zone_scoped_entourages.where('entourages.created_at >= ?', since)
+        new_users_in_window = zone_scoped_users.where('users.created_at >= ?', since)
 
         {
           days: days,
-          new_users: zone_scoped_users.where('users.created_at >= ?', since).count,
+          new_users: new_users_in_window.count,
+          new_profile_photos: new_users_in_window.where.not(avatar_key: nil).count,
           new_entourages: entourages_in_window.count,
           new_unmoderated_entourages: ModerationServices.unmoderated_entourages(entourages_in_window.with_moderation).count,
+          new_neighborhoods: zone_scoped_neighborhoods.where('neighborhoods.created_at >= ?', since).count,
           new_messages: ChatMessage
             .where(messageable_type: 'Entourage', messageable_id: zone_scoped_entourages.select(:id))
             .where('chat_messages.created_at >= ?', since)
@@ -23,11 +26,15 @@ module Admin
         }
       end
 
+      @avg_moderation_days = ModerationServices.average_moderation_delay_days(since: 7.days.ago)
+
       @photo_queue_count = User.validated.where('avatar_key IS NOT NULL').count
       @pending_moderation_count = ModerationServices.unmoderated_entourages(
         Entourage.where(group_type: ['action', 'outing'], status: ModerationServices::OPEN_ENTOURAGE_STATUSES).with_moderation
       ).count
       @unassigned_count = ModerationServices.unassigned_open_entourages_count
+      @upcoming_outings_count = ModerationServices.upcoming_outings(days: 7).count
+      @unanswered_count = ModerationServices.unanswered_entourages(days: 3).count
 
       @recent_blocks = UserHistory.blocked.where('user_histories.created_at >= ?', RECENT_WINDOW.ago).includes(:user, :updater).limit(10)
 
@@ -51,6 +58,12 @@ module Admin
       return entourages if @zone == :all
 
       entourages.where(country: 'FR').where('left(postal_code, 2) in (?)', @departments)
+    end
+
+    def zone_scoped_neighborhoods
+      return Neighborhood.all if @zone == :all
+
+      Neighborhood.where(country: 'FR').where('left(postal_code, 2) in (?)', @departments)
     end
   end
 end

@@ -36,6 +36,30 @@ describe Admin::DashboardController do
     it { expect(assigns(:unassigned_count)).to be >= 1 }
     it { expect(assigns(:recent_blocks).map(&:user)).to include(blocked_user) }
     it { expect(assigns(:busiest_moderators)).to be_an(Array) }
+    it { expect(assigns(:upcoming_outings_count)).to be_a(Integer) }
+    it { expect(assigns(:unanswered_count)).to be_a(Integer) }
+    it { expect(assigns(:avg_moderation_days)).to be_nil.or be_a(Numeric) }
+
+    it 'counts new profile photos and new neighborhoods within each window' do
+      row_30 = assigns(:activity).find { |r| r[:days] == 30 }
+      expect(row_30).to have_key(:new_profile_photos)
+      expect(row_30).to have_key(:new_neighborhoods)
+    end
+  end
+
+  describe 'GET index average moderation delay' do
+    let!(:moderated_entourage) { FactoryBot.create(:entourage, created_at: 3.days.ago) }
+
+    before do
+      moderation = moderated_entourage.moderation || moderated_entourage.build_moderation
+      moderation.update!(moderated_at: moderated_entourage.created_at.to_date + 2.days)
+
+      get :index
+    end
+
+    it 'computes the average delay in days' do
+      expect(assigns(:avg_moderation_days)).to eq(2.0)
+    end
   end
 
   describe 'GET index with a moderation zone' do
