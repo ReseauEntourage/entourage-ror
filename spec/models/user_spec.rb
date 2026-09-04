@@ -798,4 +798,15 @@ describe User, type: :model do
       expect(user.reload.neighborhoods_count).to eq(1)
     end
   end
+
+  describe '.entourage_volunteer' do
+    let!(:staff_partner) { create(:partner, staff: true) }
+    let!(:ambassador) { create(:public_user, targeting_profile: 'ambassador') }
+    let!(:team) { create(:public_user, targeting_profile: 'team', partner: staff_partner) }
+    let!(:riverain) { create(:public_user, goal: 'offer_help') }
+
+    it 'returns only ambassador and team users' do
+      expect(User.entourage_volunteer).to contain_exactly(ambassador, team)
+    end
+  end
 end

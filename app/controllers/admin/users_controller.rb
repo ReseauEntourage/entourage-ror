@@ -433,7 +433,7 @@ module Admin
 
     def get_profile
       profile = params[:profile].presence&.to_sym
-      profile = :all unless profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
+      profile = :all unless profile.in?([:offer_help, :ask_for_help, :organization, :entourage_volunteer, :goal_not_known])
       profile
     end
 

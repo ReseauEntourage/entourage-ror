@@ -115,6 +115,17 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index with profile=entourage_volunteer' do
+    let!(:admin) { admin_basic_login }
+    let!(:staff_partner) { FactoryBot.create(:partner, staff: true) }
+    let!(:ambassador) { FactoryBot.create(:public_user, targeting_profile: 'ambassador') }
+    let!(:riverain) { FactoryBot.create(:public_user, goal: 'offer_help') }
+
+    before { get :index, params: { profile: 'entourage_volunteer' } }
+
+    it { expect(assigns(:users)).to contain_exactly(ambassador) }
+  end
+
   describe 'GET index association column' do
     let!(:admin) { admin_basic_login }
     let!(:partner) { FactoryBot.create(:partner, name: 'Croix-Rouge') }
