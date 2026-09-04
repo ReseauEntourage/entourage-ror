@@ -5,7 +5,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :timeline, :rpush_notifications, :neighborhoods, :outings, :history, :notes, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all, :created_at_gteq, :created_at_lteq, :last_sign_in_at_gteq, :last_sign_in_at_lteq, postal_code_start_any: []]]).to_h
+      @params = params.permit([:profile, :engagement, :status, :role, :search, interests: [], q: [:country_eq, :postal_code_start, :postal_code_not_start_all, :created_at_gteq, :created_at_lteq, :last_sign_in_at_gteq, :last_sign_in_at_lteq, postal_code_start_any: []]]).to_h
 
       @status = get_status
       @role = get_role
@@ -403,7 +403,7 @@ module Admin
     end
 
     def filter_params
-      params.permit(:search, :profile, :engagement, :status, :role, q: {})
+      params.permit(:search, :profile, :engagement, :status, :role, interests: [], q: {})
     end
 
     def filtered_users
@@ -427,6 +427,7 @@ module Admin
       @users = @users.in_area('dep_' + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users = @users.in_specific_areas(params[:q][:postal_code_start_any]) if params[:q] && params[:q][:postal_code_start_any].present?
+      @users = @users.where(id: @users.match_at_least_one_interest(params[:interests]).select('users.id')) if params[:interests].present?
       @users.group('users.id')
       @users
     end

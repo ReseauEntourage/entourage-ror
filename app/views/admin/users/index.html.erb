@@ -26,6 +26,9 @@
       <div class="input-group">
         <%= select_tag :status, options_for_select([['Tous les statuts', nil]] + user_statuses, @params[:status]), class: 'form-control' %>
       </div>
+      <div class="input-group">
+        <%= select_tag "interests[]", options_for_select(user_interests, @params[:interests]), multiple: true, class: 'form-control', style: 'height: auto', title: "Centres d'intérêt" %>
+      </div>
     </div>
 
     <% q = @params[:q] || {} %>
@@ -188,7 +191,7 @@
 
 <script>
   $(function(){
-    $('form select').on('change', function(event) {
+    $('form select:not([multiple])').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
 

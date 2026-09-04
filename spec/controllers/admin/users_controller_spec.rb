@@ -126,6 +126,17 @@ describe Admin::UsersController do
     it { expect(assigns(:users)).to contain_exactly(ambassador) }
   end
 
+  describe 'GET index with interests filter' do
+    let!(:admin) { admin_basic_login }
+    let!(:cook) { FactoryBot.create(:public_user, interest_list: 'cuisine') }
+    let!(:sporty) { FactoryBot.create(:public_user, interest_list: 'sport') }
+    let!(:no_interest) { FactoryBot.create(:public_user) }
+
+    before { get :index, params: { interests: ['cuisine'] } }
+
+    it { expect(assigns(:users)).to contain_exactly(cook) }
+  end
+
   describe 'GET index association column' do
     let!(:admin) { admin_basic_login }
     let!(:partner) { FactoryBot.create(:partner, name: 'Croix-Rouge') }
