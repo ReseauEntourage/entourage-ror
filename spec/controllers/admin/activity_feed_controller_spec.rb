@@ -2,6 +2,8 @@ require 'rails_helper'
 include AuthHelper
 
 describe Admin::ActivityFeedController do
+  render_views
+
   let!(:admin) { admin_basic_login }
 
   describe 'GET index' do

@@ -422,4 +422,38 @@ describe Admin::UsersController do
     it { expect(assigns(:users)).to include(user) }
     it { expect { assigns(:users).each(&:engagement) }.not_to raise_error }
   end
+
+  describe 'rendering (regression: missing partial / template errors)' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, user: user) }
+    let!(:note) { FactoryBot.create(:admin_note, notable: user, author: admin) }
+
+    before do
+      # _header.html.erb links to Salesforce; stub the live API call, unrelated to what's under test here
+      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil))
+    end
+
+    it 'renders index' do
+      get :index
+      expect(response).to be_successful
+    end
+
+    it 'renders edit (fiche header: notes tab, timeline tab, engagement badge)' do
+      get :edit, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders notes' do
+      get :notes, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders timeline' do
+      get :timeline, params: { id: user.id }
+      expect(response).to be_successful
+    end
+  end
 end
