@@ -9,7 +9,7 @@ describe Reactionnable do
   let(:entourage) { create(:reaction, key: :entourage) }
 
   describe 'reactions.summary' do
-    let(:subject) { instance.reactions.summary }
+    let(:subject) { instance.reload.reactions.summary }
 
     context 'no reaction' do
       it { expect(subject.count).to eq(0) }
