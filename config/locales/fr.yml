@@ -255,6 +255,8 @@ fr:
         action_participations_count: Nombre d'actions rejointes
         outing_participations_count: Nombre d'événements rejoints
         conversation_participations_count: Nombre de conversations rejointes
+        travel_distance: Distance de déplacement acceptée (km)
+        lang: Langue de communication
       user_blocked_user:
         user: Utilisateur
         blocked_user: Utilisateur bloqué

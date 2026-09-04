@@ -480,6 +480,12 @@ describe Admin::UsersController do
       expect(response).to be_successful
     end
 
+    it 'renders edit with clarified labels for travel_distance and lang' do
+      get :edit, params: { id: user.id }
+      expect(response.body).to include('Distance de déplacement')
+      expect(response.body).to include('Langue de communication')
+    end
+
     it 'renders notes' do
       get :notes, params: { id: user.id }
       expect(response).to be_successful
