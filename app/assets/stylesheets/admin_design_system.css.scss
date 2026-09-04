@@ -1,0 +1,326 @@
+// Design tokens and component refresh for the admin back-office.
+//
+// Scoped entirely under `body.admin` because this file ships inside the single
+// site-wide `application.css` bundle (see app/assets/config/manifest.js) and
+// must not affect the public site or the separate organization_admin layout,
+// which share the same compiled stylesheet.
+//
+// Rather than introducing a parallel component system, this overrides the
+// Bootstrap 3 classes and bespoke classes (.custom-badge, .custom-table,
+// .admin-table, .custom-nav-tabs) already used throughout app/views/admin, so
+// every existing view benefits without markup changes. .stat-tile/.stat-grid
+// are the only genuinely new classes, opt-in for pages that want the
+// dashboard-style summary tiles.
+
+body.admin {
+  --bo-paper: #f5f4f1;
+  --bo-paper-raised: #ffffff;
+  --bo-ink: #1e2126;
+  --bo-ink-soft: #5a5f68;
+  --bo-ink-faint: #93979f;
+  --bo-line: #e4e1da;
+  --bo-line-strong: #d3cfc4;
+  --bo-accent: #ef5a24;
+  --bo-accent-ink: #b23f14;
+  --bo-accent-soft: #fde6da;
+  --bo-success: #2f8f5d;
+  --bo-success-soft: #e3f3e9;
+  --bo-warning: #a8790f;
+  --bo-warning-soft: #f7ecd4;
+  --bo-danger: #c0392b;
+  --bo-danger-soft: #f8e2df;
+  --bo-info: #2e6da4;
+  --bo-info-soft: #dfeaf5;
+  --bo-dark: #1f4e49;
+  --bo-dark-soft: #dce9e7;
+  --bo-shadow: 0 1px 2px rgba(30, 33, 38, .05), 0 8px 20px -10px rgba(30, 33, 38, .18);
+  --bo-radius: 10px;
+
+  background: var(--bo-paper);
+  color: var(--bo-ink);
+  font-family: 'Roboto', sans-serif;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    color: var(--bo-ink);
+  }
+
+  .form-control, select, .btn, table {
+    font-family: 'Roboto', sans-serif !important;
+  }
+
+  a {
+    color: var(--bo-accent-ink);
+  }
+
+  // ---- navbar ----
+  .navbar.navbar-fixed-top {
+    height: 60px;
+    box-shadow: none;
+    border-bottom: 1px solid var(--bo-line);
+
+    .navbar-brand {
+      height: 60px;
+    }
+
+    .nav {
+      > li.custom-nav-item {
+        height: 60px;
+
+        &.active {
+          border-bottom: var(--bo-accent) 2px solid;
+        }
+      }
+    }
+
+    .dropdown-menu {
+      border-color: var(--bo-line);
+      border-radius: 8px;
+      box-shadow: var(--bo-shadow);
+    }
+  }
+
+  // ---- panels -> cards ----
+  .panel {
+    border: 1px solid var(--bo-line);
+    border-radius: var(--bo-radius);
+    box-shadow: var(--bo-shadow);
+  }
+
+  .panel-heading {
+    background: var(--bo-paper-raised);
+    border-bottom: 1px solid var(--bo-line);
+    border-radius: var(--bo-radius) var(--bo-radius) 0 0 !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+
+  .panel-warning {
+    background: var(--bo-warning-soft);
+    border-color: transparent;
+
+    .panel-heading {
+      background: transparent;
+      border: none;
+    }
+  }
+
+  .panel-info {
+    background: var(--bo-info-soft);
+    border-color: transparent;
+
+    .panel-heading {
+      background: transparent;
+      border: none;
+    }
+  }
+
+  // ---- buttons ----
+  .btn {
+    border-radius: 7px;
+    font-weight: 500;
+  }
+
+  .btn-default {
+    background: var(--bo-paper-raised);
+    border-color: var(--bo-line-strong);
+    color: var(--bo-ink);
+  }
+
+  .btn-success {
+    background: var(--bo-success);
+    border-color: var(--bo-success);
+  }
+
+  .btn-danger {
+    background: var(--bo-danger);
+    border-color: var(--bo-danger);
+  }
+
+  .btn-warning {
+    background: var(--bo-warning);
+    border-color: var(--bo-warning);
+  }
+
+  .btn-info {
+    background: var(--bo-info);
+    border-color: var(--bo-info);
+  }
+
+  // ---- status tags: unify label / badge / custom-badge into one look ----
+  .label, .badge, .custom-badge {
+    border-radius: 100px !important;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .label-success, .badge-success {
+    background-color: var(--bo-success-soft) !important;
+    color: var(--bo-success) !important;
+  }
+
+  .label-danger, .badge-danger {
+    background-color: var(--bo-danger-soft) !important;
+    color: var(--bo-danger) !important;
+  }
+
+  .label-warning, .badge-warning {
+    background-color: var(--bo-warning-soft) !important;
+    color: var(--bo-warning) !important;
+  }
+
+  .label-info {
+    background-color: var(--bo-info-soft) !important;
+    color: var(--bo-info) !important;
+  }
+
+  .label-default {
+    background-color: var(--bo-paper) !important;
+    color: var(--bo-ink-soft) !important;
+    border: 1px solid var(--bo-line);
+  }
+
+  .badge-dark {
+    background-color: var(--bo-dark-soft) !important;
+    color: var(--bo-dark) !important;
+  }
+
+  // a couple of leftover Bootstrap-5-style utility classes (admin.css) still
+  // used for badges here and there, with hex values that don't match the
+  // rest of the palette above
+  .bg-success {
+    background-color: var(--bo-success-soft) !important;
+    color: var(--bo-success) !important;
+  }
+
+  .custom-badge {
+    background-color: var(--bo-accent-soft) !important;
+    border-color: transparent !important;
+    color: var(--bo-accent-ink) !important;
+
+    &.info {
+      background-color: var(--bo-info-soft) !important;
+      color: var(--bo-info) !important;
+    }
+
+    &.warning {
+      background-color: var(--bo-warning-soft) !important;
+      color: var(--bo-warning) !important;
+    }
+
+    &.danger {
+      background-color: var(--bo-danger-soft) !important;
+      color: var(--bo-danger) !important;
+    }
+
+    &.success {
+      background-color: var(--bo-success-soft) !important;
+      color: var(--bo-success) !important;
+    }
+
+    &.dark {
+      background-color: var(--bo-dark-soft) !important;
+      color: var(--bo-dark) !important;
+    }
+  }
+
+  // ---- tables ----
+  table.table, table.custom-table, table.admin-table {
+    th {
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: .04em;
+      color: var(--bo-ink-faint);
+      font-weight: 700;
+      border-bottom: 1px solid var(--bo-line) !important;
+      background: transparent !important;
+    }
+
+    td {
+      border-color: var(--bo-line) !important;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover td {
+      background: var(--bo-paper);
+    }
+  }
+
+  // ---- tabs ----
+  .nav-tabs, .custom-nav-tabs {
+    border-bottom: 1px solid var(--bo-line);
+
+    > li > a, li a {
+      color: var(--bo-ink-faint);
+      border: none !important;
+      background: transparent !important;
+    }
+
+    > li.active > a, li a.active {
+      color: var(--bo-ink) !important;
+      border-bottom: 2px solid var(--bo-accent) !important;
+    }
+  }
+
+  // ---- forms ----
+  .form-control {
+    border-color: var(--bo-line-strong);
+    border-radius: 7px;
+  }
+
+  .form-control:focus {
+    border-color: var(--bo-accent);
+    box-shadow: 0 0 0 3px var(--bo-accent-soft);
+  }
+
+  // ---- stat tiles (new, opt-in component for dashboard-style summaries) ----
+  .stat-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .stat-tile {
+    background: var(--bo-paper-raised);
+    border: 1px solid var(--bo-line);
+    border-radius: var(--bo-radius);
+    box-shadow: var(--bo-shadow);
+    padding: 16px 18px;
+    flex: 1;
+    min-width: 140px;
+
+    &.is-alert {
+      background: var(--bo-warning-soft);
+      border-color: transparent;
+
+      .n {
+        color: var(--bo-warning);
+      }
+    }
+
+    .n {
+      font-family: 'Poppins', sans-serif;
+      font-size: 26px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--bo-ink);
+
+      a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--bo-accent-ink);
+        }
+      }
+    }
+
+    .l {
+      font-size: 12px;
+      color: var(--bo-ink-faint);
+      margin-top: 3px;
+    }
+  }
+}
