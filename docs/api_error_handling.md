@@ -47,6 +47,101 @@ Statuts volontairement **non touchés**, faute de preuve d'un problème réel ou
 - `pois_controller.rb` (vérification de signature webhook Typeform, serveur à serveur) et `uptimes_controller.rb` (endpoint d'ops réservé aux super-admins) : pas de client mobile concerné.
 - `entourages/invitations_controller.rb` : la réponse d'invitations SMS en partie échouées (`{successfull_numbers, failed_numbers}`, statut 400) est un résultat mixte, pas une erreur simple — laissée telle quelle.
 
+## Exemples concrets
+
+**403 (était 401) — pas membre d'une entourage/sortie/quartier/conversation**
+
+`POST /api/v1/entourages/:id/chat_messages` par un utilisateur non accepté :
+
+```jsonc
+// Avant : HTTP 401
+{ "message": "unauthorized : you are not accepted in this entourage" }
+
+// Après : HTTP 403
+{
+  "message": "unauthorized : you are not accepted in this entourage",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Vous n'avez pas les droits nécessaires pour effectuer cette action."
+  }
+}
+```
+
+**404 (était 400, ou une page HTML en cas de crash) — ressource introuvable**
+
+`GET /api/v1/conversations/:id` avec un id inconnu :
+
+```jsonc
+// Avant : HTTP 400
+{ "message": "Could not find conversation" }
+
+// Après : HTTP 404 (le champ "message" ne bouge pas)
+{
+  "message": "Could not find conversation",
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Cette ressource n'existe pas ou n'est plus disponible."
+  }
+}
+```
+
+`GET /api/v1/entourages/:id` avec un id qui n'existe pas du tout (géré par le filet de sécurité global, aucun `render` local n'existait avant) :
+
+```jsonc
+// Après : HTTP 404
+{
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Cette ressource n'existe pas ou n'est plus disponible."
+  }
+}
+```
+
+**422 (était 400) — validation**
+
+`POST /api/v1/entourages` avec un titre vide :
+
+```jsonc
+// Avant : HTTP 400
+{ "message": "Could not create entourage", "reasons": ["Title can't be blank"] }
+
+// Après : HTTP 422 (message et reasons inchangés)
+{
+  "message": "Could not create entourage",
+  "reasons": ["Title can't be blank"],
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Certaines informations saisies ne sont pas valides."
+  }
+}
+```
+
+**401 conservé — vrai échec d'authentification**
+
+`POST /api/v1/login` avec un mauvais code SMS (comportement inchangé par ce chantier) :
+
+```jsonc
+// HTTP 401, avant comme après
+{
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "wrong phone / sms_code"
+  }
+}
+```
+
+**Bonus : un message vide devient exploitable**
+
+`GET /api/v1/users/code` pour un numéro inconnu utilisait déjà `error.code`, mais avec un message vide - désormais rempli automatiquement par le texte générique :
+
+```jsonc
+// Avant : HTTP 404
+{ "error": { "code": "USER_NOT_FOUND", "message": "" } }
+
+// Après : HTTP 404 (code inchangé, message enfin exploitable)
+{ "error": { "code": "USER_NOT_FOUND", "message": "Une erreur est survenue. Veuillez réessayer." } }
+```
+
 ## Pour les équipes mobile (iOS / Android)
 
 Rien n'est cassé : ce sont des changements additifs, déployés dès le merge, sans nouvelle version d'app requise.
