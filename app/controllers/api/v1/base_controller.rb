@@ -36,7 +36,10 @@ module Api
 
       rescue_from ForbiddenResourceError do |e|
         Rails.logger.error e
-        render_error(code: ErrorCodes::FORBIDDEN, message: e.message.presence, legacy: {message: e.message}, status: :forbidden)
+        # error.message is the localized, user-facing text (not e.message,
+        # which is an internal/English string) - the raw text is preserved
+        # unchanged in the legacy top-level `message` field.
+        render_error(code: ErrorCodes::FORBIDDEN, legacy: {message: e.message}, status: :forbidden)
       end
 
       rescue_from ApiRequest::Unauthorised do |e|
