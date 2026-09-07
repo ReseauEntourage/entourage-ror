@@ -8,23 +8,34 @@ class RemoveRedundantMessageableIndexFromChatMessages < ActiveRecord::Migration[
   # cover every messageable_id + messageable_type equality lookup in the app.
 
   def up
-    # chat_messages is a multi-GB, high-write table: dropping a heavily-used
-    # index concurrently can take longer than the app's default 2s
-    # statement_timeout (config/database.yml), which migrations inherit
-    execute "SET statement_timeout = '15min'"
-    remove_index :chat_messages, column: [:messageable_id, :messageable_type],
-      name: INDEX_NAME,
-      algorithm: :concurrently
-  ensure
-    execute "RESET statement_timeout"
+    with_extended_statement_timeout do
+      remove_index :chat_messages, column: [:messageable_id, :messageable_type],
+        name: INDEX_NAME,
+        algorithm: :concurrently
+    end
   end
 
   def down
+    with_extended_statement_timeout do
+      add_index :chat_messages, [:messageable_id, :messageable_type],
+        name: INDEX_NAME,
+        algorithm: :concurrently
+    end
+  end
+
+  private
+
+  # chat_messages is a multi-GB, high-write table: dropping/re-adding this
+  # index concurrently can take longer than the connection's statement_timeout
+  # (2s by default, 90s during the Heroku release phase - see Procfile).
+  # RESET would not bring back that prior value: it falls back to Postgres's
+  # own server/role default, ignoring whatever was SET earlier in the session.
+  # So capture and restore the exact previous value instead.
+  def with_extended_statement_timeout
+    previous_timeout = execute('SHOW statement_timeout').first['statement_timeout']
     execute "SET statement_timeout = '15min'"
-    add_index :chat_messages, [:messageable_id, :messageable_type],
-      name: INDEX_NAME,
-      algorithm: :concurrently
+    yield
   ensure
-    execute "RESET statement_timeout"
+    execute "SET statement_timeout = #{connection.quote(previous_timeout)}"
   end
 end
