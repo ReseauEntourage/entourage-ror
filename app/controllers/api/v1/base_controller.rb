@@ -1,4 +1,6 @@
 require 'api/v1/api_error'
+require 'api/v1/error_codes'
+require 'api/v1/forbidden_resource_error'
 
 module Api
   module V1
@@ -17,6 +19,29 @@ module Api
       skip_before_action :authenticate_user!, only: [:ping, :ping_db, :ping_mq, :ping_op_lapin]
       before_action :authenticate_user_or_anonymous!, only: [:ping, :ping_db, :ping_mq]
 
+      # NOTE on rescue_from ordering: Rails looks up handlers in reverse
+      # declaration order and uses the first match, so the most generic
+      # handler (StandardError) must be declared first for the more specific
+      # ones below to take priority over it.
+      rescue_from StandardError do |e|
+        Rails.logger.error e
+        Sentry.capture_exception(e)
+        render_error(code: ErrorCodes::INTERNAL_ERROR, status: :internal_server_error)
+      end
+
+      rescue_from ActiveRecord::RecordNotFound do |e|
+        Rails.logger.error e
+        render_error(code: ErrorCodes::NOT_FOUND, status: :not_found)
+      end
+
+      rescue_from ForbiddenResourceError do |e|
+        Rails.logger.error e
+        # error.message is the localized, user-facing text (not e.message,
+        # which is an internal/English string) - the raw text is preserved
+        # unchanged in the legacy top-level `message` field.
+        render_error(code: ErrorCodes::FORBIDDEN, legacy: {message: e.message}, status: :forbidden)
+      end
+
       rescue_from ApiRequest::Unauthorised do |e|
         Rails.logger.error e
         render json: {message: 'Missing API Key or invalid key'}, status: 426
@@ -29,7 +54,7 @@ module Api
 
       rescue_from ActionController::ParameterMissing do |e|
         Rails.logger.error e
-        render_error(code: 'PARAMETER_MISSING', message: e.message, status: :bad_request)
+        render_error(code: ErrorCodes::PARAMETER_MISSING, message: e.message, status: :bad_request)
       end
 
       def allow_cors
@@ -67,7 +92,7 @@ module Api
             current_user.sync_salesforce
           end
         else
-          render json: {message: 'unauthorized'}, status: :unauthorized
+          render_error(code: ErrorCodes::UNAUTHORIZED, legacy: {message: 'unauthorized'}, status: :unauthorized)
         end
       end
 
@@ -92,8 +117,27 @@ module Api
         api_request.validate!
       end
 
-      def render_error(code:, message:, status:)
-        render json: {"error": {"code": code, "message": message}}, status: status
+      # Renders a JSON error body as { error: { code:, message: } }, merging
+      # in any `legacy:` keys so existing top-level fields (message, reasons, ...)
+      # already relied upon by older app versions keep being returned unchanged.
+      # `code` is always rendered as a non-blank string (some mobile clients
+      # force-cast it and would crash on a missing/null code).
+      def render_error(code:, status:, message: nil, legacy: {})
+        render json: legacy.merge(
+          error: { code: code.to_s, message: message.presence || localized_error_message(code) }
+        ), status: status
+      end
+
+      def localized_error_message(code)
+        I18n.t(
+          "api.errors.#{code.to_s.underscore}",
+          locale: error_locale,
+          default: I18n.t('api.errors.generic', locale: error_locale)
+        )
+      end
+
+      def error_locale
+        (current_user&.lang || Translation::DEFAULT_LANG).to_sym
       end
 
       #curl -H "X-API-KEY: api_debug" "http://api.entourage.social/api/v1/check.json"
@@ -180,7 +224,10 @@ module Api
         end
 
         if api_request.key_infos.blank? || $server_community != api_request.key_infos[:community]
-          return render json: { message: 'Unauthorized API key' }, status: :unauthorized
+          # 403, not 401: an API key/community mismatch is a client configuration
+          # issue, not an authentication failure - 401 would trigger a forced
+          # logout on the mobile apps for a logged-in user hitting this.
+          return render_error(code: ErrorCodes::FORBIDDEN, legacy: {message: 'Unauthorized API key'}, status: :forbidden)
         end
       end
 

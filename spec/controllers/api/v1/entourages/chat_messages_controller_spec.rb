@@ -103,25 +103,25 @@ describe Api::V1::Entourages::ChatMessagesController do
 
       context "i don't belong to the entourage" do
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'i am still in pending status' do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: 'pending') }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'i am rejected from the entourage' do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: 'rejected') }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'i quit the entourage' do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: 'cancelled') }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'pagination' do
@@ -316,14 +316,14 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         before { request }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(ChatMessage.count).to eq(0) }
       end
 
       context "post in a entourage i don't belong to" do
         before { request }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'post in a entourage i am still in pending status' do
@@ -331,7 +331,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         before { request }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'post in a entourage i am rejected from' do
@@ -339,7 +339,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         before { request }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'post in a entourage i have quit' do
@@ -347,7 +347,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         before { request }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'invalid message type' do
@@ -356,9 +356,12 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         before { request }
 
-        it { expect(response.status).to eq(400) }
-        it { expect(JSON.parse(response.body)).to eq('message'=>'Could not create chat message',
-                                                     'reasons'=>["Message type n'est pas inclus(e) dans la liste"]) }
+        it { expect(response.status).to eq(422) }
+        it { expect(JSON.parse(response.body)).to eq(
+          'message'=>'Could not create chat message',
+          'reasons'=>["Message type n'est pas inclus(e) dans la liste"],
+          'error'=>{'code'=>'VALIDATION_ERROR', 'message'=>I18n.t('api.errors.validation_error', locale: :fr)}
+        ) }
       end
 
       describe 'to a null conversations by list uuid' do
@@ -374,7 +377,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(422) }
           it { expect(ChatMessage.count).to eq(0) }
         end
 
@@ -384,7 +387,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(422) }
           it { expect(ChatMessage.count).to eq(0) }
         end
 
@@ -452,7 +455,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(422) }
           it { expect(ChatMessage.count).to eq(0) }
           it { expect(Entourage.count).to eq(0) }
           it { expect(JoinRequest.count).to eq(0) }

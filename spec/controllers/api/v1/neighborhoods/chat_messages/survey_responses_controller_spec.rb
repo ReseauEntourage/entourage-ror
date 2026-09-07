@@ -23,7 +23,7 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
       context 'no survey' do
         let(:chat_message) { create(:chat_message, messageable: neighborhood) }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(404) }
       end
 
       context 'survey' do
@@ -53,7 +53,7 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'member' do
@@ -98,7 +98,7 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'member' do
@@ -114,7 +114,7 @@ describe Api::V1::Neighborhoods::ChatMessages::SurveyResponsesController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(404) }
         end
       end
 

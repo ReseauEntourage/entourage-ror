@@ -15,7 +15,7 @@ module Api
         end
 
         def default
-          return head :not_found unless @user.default_neighborhood
+          return render_error(code: Api::V1::ErrorCodes::NOT_FOUND, status: :not_found) unless @user.default_neighborhood
 
           render json: @user.default_neighborhood, serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: @user }
         end

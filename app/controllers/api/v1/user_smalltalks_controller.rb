@@ -18,7 +18,7 @@ module Api
       end
 
       def current
-        return render json: { error: 'UserSmalltalk not found' }, status: :not_found unless @user_smalltalk.present?
+        return render_error(code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'UserSmalltalk not found' }, status: :not_found) unless @user_smalltalk.present?
 
         redirect_to user_smalltalk_path(@user_smalltalk)
       end
@@ -30,7 +30,7 @@ module Api
         if @user_smalltalk.save
           render json: @user_smalltalk, status: 201, serializer: ::V1::UserSmalltalkSerializer
         else
-          render json: { message: 'Could not create UserSmalltalk', reasons: @user_smalltalk.errors.full_messages }, status: 400
+          render_error(code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not create UserSmalltalk', reasons: @user_smalltalk.errors.full_messages }, status: :unprocessable_entity)
         end
       end
 
@@ -40,9 +40,11 @@ module Api
         if @user_smalltalk.save
           render json: @user_smalltalk, status: 200, serializer: ::V1::UserSmalltalkSerializer
         else
-          render json: {
-            message: 'Could not update user_smalltalk', reasons: @user_smalltalk.errors.full_messages
-          }, status: 400
+          render_error(
+            code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+            legacy: { message: 'Could not update user_smalltalk', reasons: @user_smalltalk.errors.full_messages },
+            status: :unprocessable_entity
+          )
         end
       end
 
@@ -80,9 +82,11 @@ module Api
         if @user_smalltalk.update(deleted_at: Time.zone.now)
           render json: @user_smalltalk, root: 'user', status: 200, serializer: ::V1::UserSmalltalkSerializer
         else
-          render json: {
-            message: 'Could not delete user_smalltalk', reasons: @user_smalltalk.errors.full_messages
-          }, status: :bad_request
+          render_error(
+            code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+            legacy: { message: 'Could not delete user_smalltalk', reasons: @user_smalltalk.errors.full_messages },
+            status: :unprocessable_entity
+          )
         end
       end
 
@@ -95,11 +99,12 @@ module Api
           UserSmalltalk.not_matched.find_by(user: current_user)
         end
 
-        render json: { message: 'Could not find user_smalltalk' }, status: 400 unless @user_smalltalk.present?
+        render_error(code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find user_smalltalk' }, status: :not_found) unless @user_smalltalk.present?
       end
 
       def ensure_is_creator
-        render json: { message: 'unauthorized' }, status: :unauthorized unless @user_smalltalk.user == current_user
+        # 403, not 401: the user is authenticated but doesn't own this user_smalltalk
+        render_error(code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }, status: :forbidden) unless @user_smalltalk.user == current_user
       end
 
       def user_smalltalk_params

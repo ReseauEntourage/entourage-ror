@@ -96,8 +96,9 @@ describe Api::V1::Resources::UsersController do
 
         before { delete :destroy, params: { resource_id: resource.to_param, id: member.id, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
         it { expect(result).to have_key('message') }
+        it { expect(result['error']['code']).to eq('FORBIDDEN') }
       end
 
       context "user didn't watched resource" do

@@ -228,7 +228,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "manager is a manager" do
@@ -314,7 +314,7 @@ describe Api::V1::Outings::UsersController do
     context "requester is not organizer" do
       before { post :participate, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "manager is not a manager" do
@@ -322,7 +322,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "not as participant" do
@@ -350,7 +350,7 @@ describe Api::V1::Outings::UsersController do
     context "requester is not organizer" do
       before { post :cancel_participation, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "manager is not a manager" do
@@ -358,7 +358,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "not as participant" do
@@ -396,7 +396,7 @@ describe Api::V1::Outings::UsersController do
     context "requester is not organizer" do
       before { post :photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "manager is not a manager" do
@@ -404,7 +404,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "not as participant" do
@@ -432,7 +432,7 @@ describe Api::V1::Outings::UsersController do
     context "requester is not organizer" do
       before { post :cancel_photo_acceptance, params: { outing_id: outing.to_param, id: user.to_param, token: create(:public_user).token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "manager is not a manager" do
@@ -440,7 +440,7 @@ describe Api::V1::Outings::UsersController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context "not as participant" do
@@ -504,7 +504,7 @@ describe Api::V1::Outings::UsersController do
 
         before { delete :destroy, params: { outing_id: outing.to_param, id: user.id, token: user.token } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(result).to have_key('message') }
       end
 
@@ -515,14 +515,14 @@ describe Api::V1::Outings::UsersController do
 
         before { delete :destroy, params: { outing_id: outing.to_param, id: member.id, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
         it { expect(result).to have_key('message') }
       end
 
       context "user didn't request to join outing" do
         before { delete :destroy, params: { outing_id: outing.to_param, id: user.id, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(404) }
         it { expect(result).to have_key('message') }
       end
     end

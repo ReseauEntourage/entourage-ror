@@ -191,7 +191,7 @@ describe Api::V1::Neighborhoods::UsersController do
 
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: user.id, token: user.token } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(result).to have_key('message') }
       end
 
@@ -202,14 +202,14 @@ describe Api::V1::Neighborhoods::UsersController do
 
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: member.id, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
         it { expect(result).to have_key('message') }
       end
 
       context "user didn't request to join neighborhood" do
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: user.id, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(404) }
         it { expect(result).to have_key('message') }
       end
     end

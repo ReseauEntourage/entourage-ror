@@ -30,7 +30,11 @@ module Api
           end
 
           on.failure do |contribution|
-            render json: { message: 'Could not create contribution', reasons: contribution.errors.full_messages }, status: 400
+            render_error(
+              status: :unprocessable_entity,
+              code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+              legacy: { message: 'Could not create contribution', reasons: contribution.errors.full_messages }
+            )
           end
         end
       end
@@ -42,9 +46,11 @@ module Api
           end
 
           on.failure do |contribution|
-            render json: {
-              message: 'Could not update contribution', reasons: contribution.errors.full_messages
-            }, status: 400
+            render_error(
+              status: :unprocessable_entity,
+              code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+              legacy: { message: 'Could not update contribution', reasons: contribution.errors.full_messages }
+            )
           end
         end
       end
@@ -56,25 +62,31 @@ module Api
           end
 
           on.failure do |contribution|
-            render json: {
-              message: 'Could not delete contribution', reasons: contribution.errors.full_messages
-            }, status: :bad_request
+            render_error(
+              status: :unprocessable_entity,
+              code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+              legacy: { message: 'Could not delete contribution', reasons: contribution.errors.full_messages }
+            )
           end
 
           on.not_authorized do
-            render json: {
-              message: 'You are not authorized to delete this contribution'
-            }, status: :unauthorized
+            render_error(
+              status: :forbidden,
+              code: Api::V1::ErrorCodes::FORBIDDEN,
+              legacy: { message: 'You are not authorized to delete this contribution' }
+            )
           end
         end
       end
 
       def report
         unless report_params[:signals].present?
-          render json: {
+          return render_error(
+            status: :unprocessable_entity,
             code: 'CANNOT_REPORT_DONATION',
-            message: 'signals is required'
-          }, status: :bad_request and return
+            message: 'signals is required',
+            legacy: { code: 'CANNOT_REPORT_DONATION', message: 'signals is required' }
+          )
         end
 
         SlackServices::SignalContribution.new(
@@ -107,7 +119,8 @@ module Api
       def set_contribution
         @contribution = Contribution.find_by_id_through_context(params[:id], params)
 
-        render json: { message: 'Could not find contribution' }, status: 400 unless @contribution.present?
+        return if @contribution.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find contribution' })
       end
 
       def index_params
@@ -155,7 +168,7 @@ module Api
 
       def authorised?
         unless @contribution.user == current_user
-          render json: { message: 'unauthorized user' }, status: :unauthorized
+          render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized user' })
         end
       end
     end

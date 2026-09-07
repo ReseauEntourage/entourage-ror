@@ -47,7 +47,8 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq(
           'message' => 'Could not create entourage participation request',
-          'reasons' => []
+          'reasons' => [],
+          'error' => {'code' => 'FORBIDDEN', 'message' => I18n.t('api.errors.forbidden', locale: :fr)}
         )}
       end
 
@@ -317,7 +318,7 @@ describe Api::V1::Entourages::UsersController do
     context 'rejected is not accepted in entourage' do
       let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: 'rejected') }
       before { patch :update, params: { entourage_id: entourage.to_param, id: user.id, user: {status: 'accepted'}, token: user.token } }
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'pending is accepted in entourage' do
@@ -329,16 +330,14 @@ describe Api::V1::Entourages::UsersController do
     context 'invalid status' do
       let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: 'accepted') }
       before { patch :update, params: { entourage_id: entourage.to_param, id: user.id, user: {status: 'foo'}, token: user.token } }
-      it { expect(response.status).to eq(400) }
-      it { expect(result).to eq({'message'=>'Invalid status : foo'}) }
+      it { expect(response.status).to eq(422) }
+      it { expect(result).to eq({'message'=>'Invalid status : foo', 'error'=>{'code'=>'VALIDATION_ERROR', 'message'=>'Invalid status : foo'}}) }
     end
 
     context "user didn't request to join entourage" do
-      it 'raises not found' do
-        expect {
-          patch :update, params: { entourage_id: entourage.to_param, id: user.id, user: {status: 'accepted'}, token: user.token }
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+      before { patch :update, params: { entourage_id: entourage.to_param, id: user.id, user: {status: 'accepted'}, token: user.token } }
+      it { expect(response.status).to eq(404) }
+      it { expect(result['error']['code']).to eq('NOT_FOUND') }
     end
 
     context 'update my join request message' do
@@ -353,7 +352,7 @@ describe Api::V1::Entourages::UsersController do
       let!(:other_join_request) { FactoryBot.create(:join_request, user: other_user, joinable: entourage, status: 'accepted') }
       let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: entourage, message: 'foobar') }
       before { patch :update, params: { entourage_id: entourage.to_param, id: user.id, request: {message: 'something'}, token: other_user.token } }
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
   end
 
@@ -443,15 +442,14 @@ describe Api::V1::Entourages::UsersController do
       let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: 'pending') }
       let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: 'pending') }
       before { delete :destroy, params: { entourage_id: entourage.to_param, id: other_user.id, token: user.token } }
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context "user didn't request to join entourage" do
-      it 'raises not found' do
-        expect {
-          delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token }
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+      before { delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token } }
+      it { expect(response.status).to eq(404) }
+      it { expect(result['error']['code']).to eq('NOT_FOUND') }
     end
   end
 end

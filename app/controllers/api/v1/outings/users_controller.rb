@@ -25,9 +25,9 @@ module Api
           if @membership.save
             render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not create outing participation request', reasons: @membership.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -42,9 +42,9 @@ module Api
           if @outing.save(context: :unsubscribed_participants)
             render json: @outing, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not update outing', reasons: @outing.errors.full_messages
-            }, status: 400
+            })
           end
 
         end
@@ -56,9 +56,9 @@ module Api
           if @membership.save
             render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not confirm outing participation request', reasons: @membership.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -68,9 +68,9 @@ module Api
           if @membership.save
             render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not participate outing participation request', reasons: @membership.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -80,9 +80,9 @@ module Api
           if @membership.save
             render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not participate outing participation request', reasons: @membership.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -90,9 +90,9 @@ module Api
           if @membership.user.update(photo_acceptance: true) && @membership.update(participate_at: Time.zone.now)
             render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not photo_acceptance outing participation request', reasons: @membership.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -100,23 +100,23 @@ module Api
           if @membership.user.update(photo_acceptance: false) && @membership.update(participate_at: Time.zone.now)
             render json: @membership, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: @membership.user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not photo_acceptance outing participation request', reasons: @membership.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
         def destroy
-          return render json: {
+          return render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: {
             message: 'Could not find outing participation for user'
-          }, status: :unauthorized unless @join_request
+          }) unless @join_request
 
           if @join_request.update(status: :cancelled)
             render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not destroy outing participation request', reasons: @join_request.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -156,14 +156,14 @@ module Api
           return unless params[:id].present?
 
           unless current_user == User.find_by_id_or_uuid!(params[:id])
-            render json: { message: 'unauthorized' }, status: :unauthorized
+            render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' })
           end
         end
 
         def check_management_permission!
           return if current_user.ambassador? || current_user.team?
 
-          render json: { message: 'You must be an ambassador or team to perform this action' }, status: :unauthorized
+          render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'You must be an ambassador or team to perform this action' })
         end
 
         def page

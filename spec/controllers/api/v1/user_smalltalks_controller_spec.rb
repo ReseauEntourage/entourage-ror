@@ -171,7 +171,7 @@ describe Api::V1::UserSmalltalksController, type: :controller do
         let(:user_smalltalk) { create :user_smalltalk, user: create(:pro_user), smalltalk: smalltalk, match_format: :one }
 
         before { patch :update, params: { id: user_smalltalk.to_param, user_smalltalk: { match_format: :many }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -239,7 +239,7 @@ describe Api::V1::UserSmalltalksController, type: :controller do
 
       before { delete :destroy, params: { id: user_smalltalk.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.deleted_at).to be_nil }
     end
 

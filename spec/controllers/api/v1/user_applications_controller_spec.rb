@@ -27,7 +27,7 @@ describe Api::V1::UserApplicationsController do
       context 'with application parameter' do
         before { get :update, params: { token: user.token, application: { push_token: random_token(10, 64) } } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(subject).to have_key('message') }
         it { expect(subject).to have_key('reasons') }
       end

@@ -1003,3 +1003,12 @@ en:
       moteur_rencontres:
         nom: "Event Creator"
         description: "You've organized 3 events in the last 90 days. You're moving the Entourage community forward — well done!"
+  api:
+    errors:
+      generic: "Something went wrong. Please try again."
+      unauthorized: "You must be signed in to perform this action."
+      forbidden: "You don't have permission to perform this action."
+      not_found: "This resource could not be found."
+      validation_error: "Some of the information provided is invalid."
+      parameter_missing: "A required piece of information is missing from the request."
+      internal_error: "A technical error occurred. Please try again later."

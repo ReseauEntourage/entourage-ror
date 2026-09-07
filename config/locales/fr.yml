@@ -995,6 +995,15 @@ fr:
       fidele_papotages:
         nom: "As du papotage"
         description: "Vous avez lancé 3 papotages solidaires en un mois et demi. Votre présence régulière crée du lien et fait du bien autour de vous."
+  api:
+    errors:
+      generic: "Une erreur est survenue. Veuillez réessayer."
+      unauthorized: "Vous devez être connecté·e pour effectuer cette action."
+      forbidden: "Vous n'avez pas les droits nécessaires pour effectuer cette action."
+      not_found: "Cette ressource n'existe pas ou n'est plus disponible."
+      validation_error: "Certaines informations saisies ne sont pas valides."
+      parameter_missing: "Une information obligatoire est manquante dans la requête."
+      internal_error: "Une erreur technique est survenue. Veuillez réessayer plus tard."
       voix_presente:
         nom: "Tisseur de liens"
         description: "Vous avez été actif 3 semaines sur 4 dans les groupes en posant, commentant, réagissant — vous faites battre le cœur de la communauté."

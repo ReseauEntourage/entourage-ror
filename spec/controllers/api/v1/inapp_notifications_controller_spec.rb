@@ -84,7 +84,8 @@ describe Api::V1::InappNotificationsController, type: :controller do
       describe 'not the same user' do
         before { delete :destroy, params: { token: user.token, id: inapp_notification.id } }
 
-        it { expect(response.status).to eq 401 }
+        it { expect(response.status).to eq 403 }
+        it { expect(JSON.parse(response.body)['error']['code']).to eq('FORBIDDEN') }
         it { expect(InappNotification.find(inapp_notification.id).completed_at).to be_nil }
       end
     end

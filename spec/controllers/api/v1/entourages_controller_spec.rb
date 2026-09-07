@@ -343,15 +343,23 @@ describe Api::V1::EntouragesController do
 
         context 'community support' do
           with_community :pfp
-          it { expect(response.status).to eq(400) }
-          it { expect(JSON.parse(response.body)).to eq({'message'=>'Could not create entourage', 'reasons'=>["Group type n'est pas inclus(e) dans la liste"]}) }
+          it { expect(response.status).to eq(422) }
+          it { expect(JSON.parse(response.body)).to eq({
+            'message'=>'Could not create entourage',
+            'reasons'=>["Group type n'est pas inclus(e) dans la liste"],
+            'error'=>{'code'=>'VALIDATION_ERROR', 'message'=>I18n.t('api.errors.validation_error', locale: :fr)}
+          }) }
         end
       end
 
       context 'invalid params' do
         before { post :create, params: { entourage: { location: {longitude: '', latitude: 4.567}, title: 'foo', entourage_type: 'ask_for_help', display_category: 'social' }, token: user.token } }
-        it { expect(JSON.parse(response.body)).to eq({'message'=>'Could not create entourage', 'reasons'=>['Longitude doit être rempli(e)']}) }
-        it { expect(response.status).to eq(400) }
+        it { expect(JSON.parse(response.body)).to eq({
+          'message'=>'Could not create entourage',
+          'reasons'=>['Longitude doit être rempli(e)'],
+          'error'=>{'code'=>'VALIDATION_ERROR', 'message'=>I18n.t('api.errors.validation_error', locale: :fr)}
+        }) }
+        it { expect(response.status).to eq(422) }
       end
 
       context 'metadata (outings)' do
@@ -681,11 +689,9 @@ describe Api::V1::EntouragesController do
       end
 
       context "entourage doesn't exists" do
-        it 'return not found' do
-          expect {
-              get :show, params: { id: 0, token: user.token }
-            }.to raise_error(ActiveRecord::RecordNotFound)
-        end
+        before { get :show, params: { id: 0, token: user.token } }
+        it { expect(response.status).to eq(404) }
+        it { expect(JSON.parse(response.body)['error']['code']).to eq('NOT_FOUND') }
       end
     end
   end
@@ -834,10 +840,14 @@ describe Api::V1::EntouragesController do
 
         context 'invalid success value' do
           let(:success) { '' }
-          it { expect(response.code).to eq '400' }
+          it { expect(response.code).to eq '422' }
           it { expect(user_entourage.reload.status).to eq 'open' }
           it { expect(user_entourage.moderation&.action_outcome).to be_nil }
-          it { expect(JSON.parse(response.body)).to eq('message'=>'Could not update entourage', 'reasons'=>['outcome.success must be a boolean']) }
+          it { expect(JSON.parse(response.body)).to eq(
+            'message'=>'Could not update entourage',
+            'reasons'=>['outcome.success must be a boolean'],
+            'error'=>{'code'=>'VALIDATION_ERROR', 'message'=>I18n.t('api.errors.validation_error', locale: :fr)}
+          ) }
         end
       end
 
@@ -878,21 +888,23 @@ describe Api::V1::EntouragesController do
 
       context 'entourage does not belong to user' do
         before { patch :update, params: { id: entourage.to_param, entourage: {title: 'new_title'}, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context "entourage doesn't exists" do
-        it 'return not found' do
-          expect {
-            patch :update, params: { id: 0, entourage: {title: 'new_title'}, token: user.token }
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        end
+        before { patch :update, params: { id: 0, entourage: {title: 'new_title'}, token: user.token } }
+        it { expect(response.status).to eq(404) }
+        it { expect(JSON.parse(response.body)['error']['code']).to eq('NOT_FOUND') }
       end
 
       context 'invalid params' do
         before { patch :update, params: { id: user_entourage.to_param, entourage: {status: 'not exist'}, token: user.token } }
-        it { expect(JSON.parse(response.body)).to eq({'message'=>'Could not update entourage', 'reasons'=>["Status n'est pas inclus(e) dans la liste"]}) }
-        it { expect(response.status).to eq(400) }
+        it { expect(JSON.parse(response.body)).to eq({
+          'message'=>'Could not update entourage',
+          'reasons'=>["Status n'est pas inclus(e) dans la liste"],
+          'error'=>{'code'=>'VALIDATION_ERROR', 'message'=>I18n.t('api.errors.validation_error', locale: :fr)}
+        }) }
+        it { expect(response.status).to eq(422) }
       end
 
       context 'update location' do
@@ -990,7 +1002,7 @@ describe Api::V1::EntouragesController do
         expect_any_instance_of(SlackServices::SignalGroup).not_to receive(:notify)
         post 'report', params: { token: reporting_user.token, id: reported_group.id, entourage_report: {message: ''} }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
     end
   end
 

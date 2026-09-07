@@ -1,18 +1,12 @@
 module Api
   module V1
     module Outings
-      class UnauthorizedOuting < StandardError; end
-
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_outing, only: [:index, :show, :create, :update, :destroy, :report, :comments, :presigned_upload]
         before_action :set_chat_message, only: [:show, :update, :destroy, :report, :comments]
         before_action :ensure_is_member, only: [:create, :report, :presigned_upload]
 
         after_action :set_last_message_read, only: [:index]
-
-        rescue_from Api::V1::Outings::UnauthorizedOuting do |exception|
-          render json: { message: 'unauthorized : you are not accepted in this outing' }, status: :unauthorized
-        end
 
         def index
           messages = @outing.parent_chat_messages.no_deleted_without_comments.includes(:translation, :user, :chat_message_reactions, :user_reactions, :survey, :user_survey_responses).ordered.page(page).per(per)
@@ -21,7 +15,7 @@ module Api
         end
 
         def show
-          return render json: { message: 'Wrong chat_message' }, status: :bad_request unless @chat_message
+          return render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Wrong chat_message' }) unless @chat_message
 
           render json: @chat_message, serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user, image_size: params[:image_size] }
         end
@@ -38,25 +32,25 @@ module Api
             end
 
             on.failure do |message|
-              render json: {
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
                 message: 'Could not create chat message', reasons: message.errors.full_messages
-              }, status: :bad_request
+              })
             end
           end
         end
 
         def update
-          return render json: { message: 'unauthorized' }, status: :unauthorized if @chat_message.user != current_user
-          return render json: { message: 'chat_message is already deleted' }, status: :bad_request if @chat_message.deleted?
+          return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }) if @chat_message.user != current_user
+          return render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'chat_message is already deleted' }) if @chat_message.deleted?
 
           @chat_message.assign_attributes(chat_message_update_params.merge({ status: :updated }))
 
           if @chat_message.save
             render json: @chat_message, status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not update chat_message', reasons: @chat_message.errors.full_messages
-            }, status: 400
+            })
           end
         end
 
@@ -67,27 +61,27 @@ module Api
             end
 
             on.failure do |chat_message|
-              render json: {
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
                 message: 'Could not delete chat_message', reasons: chat_message.errors.full_messages
-              }, status: :bad_request
+              })
             end
 
             on.not_authorized do
-              render json: {
+              render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {
                 message: 'You are not authorized to delete this chat_message'
-              }, status: :unauthorized
+              })
             end
           end
         end
 
         def report
-          return render json: { message: 'Wrong chat_message' }, status: :bad_request unless @chat_message
+          return render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Wrong chat_message' }) unless @chat_message
 
           if report_params[:signals].blank?
-            render json: {
+            render_error(status: :unprocessable_entity, code: 'CANNOT_REPORT_OUTING', legacy: {
               code: 'CANNOT_REPORT_OUTING',
               message: 'signals is required'
-            }, status: :bad_request and return
+            }) and return
           end
 
           SlackServices::SignalOutingChatMessage.new(
@@ -112,7 +106,7 @@ module Api
 
           unless params[:content_type].in? allowed_types
             type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-            return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+            return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: :unprocessable_entity)
           end
 
           extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
@@ -137,14 +131,14 @@ module Api
         def set_outing
           @outing = Outing.find_by_id_through_context(params[:outing_id], params)
 
-          render json: { message: 'Could not find outing' }, status: 400 unless @outing.present?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find outing' }) unless @outing.present?
         end
 
         def set_chat_message
           # we want to force chat_message to belong to Outing
           @chat_message = ChatMessage.where(messageable_type: :Entourage).find_by_id_through_context(params[:chat_message_id] || params[:id], params)
 
-          render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find chat_message' }) unless @chat_message.present?
         end
 
         def report_params
@@ -156,7 +150,7 @@ module Api
         end
 
         def ensure_is_member
-          raise Api::V1::Outings::UnauthorizedOuting unless join_request
+          raise Api::V1::ForbiddenResourceError, 'unauthorized : you are not accepted in this outing' unless join_request
         end
 
         def set_last_message_read

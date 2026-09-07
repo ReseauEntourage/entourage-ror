@@ -645,7 +645,8 @@ describe Api::V1::ConversationsController do
       context 'using id fails' do
         before { get :show, params: { token: user.token, id: conversation.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
+        it { expect(subject['error']['code']).to eq('NOT_FOUND') }
       end
     end
   end
@@ -668,8 +669,9 @@ describe Api::V1::ConversationsController do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: params }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'open' }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('FORBIDDEN') }
     end
 
     describe 'authorized' do
@@ -708,7 +710,8 @@ describe Api::V1::ConversationsController do
         post :report, params: params
       }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('CANNOT_REPORT_CONVERSATION') }
     end
 
     context 'user is not member' do
@@ -719,7 +722,8 @@ describe Api::V1::ConversationsController do
         post :report, params: params
       }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('FORBIDDEN') }
     end
   end
 end

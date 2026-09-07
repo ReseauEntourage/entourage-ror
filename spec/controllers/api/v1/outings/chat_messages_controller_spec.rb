@@ -248,7 +248,7 @@ describe Api::V1::Outings::ChatMessagesController do
       context 'using id fails' do
         before { get :show, params: { token: user.token, outing_id: outing.to_param, id: chat_message.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -268,7 +268,7 @@ describe Api::V1::Outings::ChatMessagesController do
         outing_id: outing.to_param, chat_message: { content: 'foobar', message_type: :text }, token: user.token
       } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'signed in' do
@@ -447,7 +447,7 @@ describe Api::V1::Outings::ChatMessagesController do
 
       context 'user is not creator' do
         before { patch :update, params: { id: chat_message.id, outing_id: outing.id, chat_message: { content: 'new content' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -476,7 +476,7 @@ describe Api::V1::Outings::ChatMessagesController do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: chat_message.id, outing_id: outing.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'active' }
     end
 
@@ -514,7 +514,7 @@ describe Api::V1::Outings::ChatMessagesController do
           message: 'bar'
         } }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
     end
 
     context 'wrong messageable cause message does not belong to outing' do
@@ -635,7 +635,7 @@ describe Api::V1::Outings::ChatMessagesController do
       context 'using id fails' do
         before { get :comments, params: { token: user.token, outing_id: outing.to_param, id: chat_message_1.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -656,7 +656,7 @@ describe Api::V1::Outings::ChatMessagesController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'signed in and in outing' do

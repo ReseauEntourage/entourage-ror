@@ -334,13 +334,13 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       context 'params are invalid' do
         before { patch 'update', params: { token: user.token, user: { email: 'bademail', sms_code: 'badcode' }, format: :json } }
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(result).to eq({'error'=>{'code'=>'CANNOT_UPDATE_USER', 'message'=>["Email n'est pas valide"]}}) }
       end
 
       context 'about is too long' do
         before { patch 'update', params: { token: user.token, user: { about: 'x' * 201 }, format: :json } }
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(result).to eq({'error'=>{'code'=>'CANNOT_UPDATE_USER', 'message'=>['À propos est trop long (pas plus de 200 caractères)']}}) }
       end
 
@@ -635,7 +635,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
       context 'on web' do
         let(:api_key) { 'api_debug_web' }
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 422 }
       end
     end
 
@@ -686,7 +686,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     describe 'missing phone' do
       before { patch 'code', params: { id: 'me', user: { foo: 'bar' }, code: {action: 'regenerate'}, format: :json } }
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq 'MISSING_PHONE' }
     end
 
     describe 'unknown phone' do
@@ -697,7 +698,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
     describe 'unknown action' do
       before { patch 'code', params: { id: 'me', user: { phone: user.phone }, code: {action: 'foo'}, format: :json } }
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq 'UNKNOWN_ACTION' }
     end
   end
 
@@ -841,7 +843,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it 'returns error' do
         post 'create', params: { user: {phone: phone} }
         user = User.last
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(422)
         expect(result).to eq({'error'=>{'code'=>'INVALID_PHONE_FORMAT', 'message'=>'Phone devrait être au format +33... ou 06...'}})
       end
     end
@@ -850,7 +852,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       let!(:existing_user) { FactoryBot.create(:public_user, phone: '+33612345678') }
       before { post 'create', params: { user: {phone: phone} } }
       it { expect(User.count).to eq(1) }
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
       it { expect(result).to eq({'error'=>{'code'=>'PHONE_ALREADY_EXIST', 'message'=>"Phone +33612345678 n'est pas disponible"}}) }
     end
 
@@ -1292,7 +1294,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: nil, signals: ['foo'] } }
       }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
       it { expect(result['message']).to eq 'Signal is invalid' }
     end
 
@@ -1302,7 +1304,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: '' } }
       }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
       it { expect(result['message']).to eq 'Message is required' }
     end
 
@@ -1312,7 +1314,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: 'foobar', signals: [''] } }
       }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
       it { expect(result['message']).to eq 'Signal is invalid' }
     end
   end
@@ -1356,7 +1358,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       before { subject }
 
       shared_examples 'common tests' do
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 422 }
         it { expect(JSON.parse(response.body)).to eq({
           'error'=>{
             'code'=>'CANNOT_UPDATE_ADDRESS',

@@ -279,7 +279,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
 
       context 'user is not creator' do
         before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: 'new name' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -665,7 +665,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
       context 'using id fails' do
         before { get :show, params: { token: user.token, id: neighborhood.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -757,7 +757,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: neighborhood.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'active' }
     end
 
@@ -787,7 +787,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
         expect_any_instance_of(SlackServices::SignalNeighborhood).not_to receive(:notify)
         post 'report', params: { token: user.token, id: neighborhood.id, report: { signals: [], message: 'bar' } }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
     end
   end
 end
