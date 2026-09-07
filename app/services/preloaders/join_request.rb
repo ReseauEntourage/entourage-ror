@@ -35,7 +35,12 @@ module Preloaders
       joinables = join_requests.each_with_object(Hash.new { |h, k| h[k] = [] }) do |join_request, h|
         h[join_request.joinable_type] << join_request.joinable_id
       end.transform_values!(&:uniq).to_h do |klass, ids|
-        [klass, klass.constantize.where(id: ids).index_by(&:id)]
+        constant = klass.constantize
+        scope = constant.where(id: ids)
+        # Entourage#interlocutor_of relies on accepted_members being preloaded
+        # to avoid an extra users/join_requests query per conversation.
+        scope = scope.includes(:accepted_members) if constant == ::Entourage
+        [klass, scope.index_by(&:id)]
       end
 
       join_requests.each do |join_request|
