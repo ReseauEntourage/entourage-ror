@@ -55,7 +55,7 @@ module Api
           end
 
           on.failure do |outing|
-            render json: { message: 'Could not create outing', reasons: outing.errors.full_messages }, status: 400
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not create outing', reasons: outing.errors.full_messages })
           end
         end
       end
@@ -76,7 +76,7 @@ module Api
         end
 
         if errors.present?
-          render json: { message: 'Could not update outing', reasons: errors }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not update outing', reasons: errors })
         else
           render json: @outing.reload, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
@@ -102,7 +102,7 @@ module Api
         end
 
         if errors.present?
-          render json: { message: 'Could not update outing', reasons: errors }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not update outing', reasons: errors })
         else
           render json: @outings, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
@@ -130,16 +130,13 @@ module Api
         if duplicate.save
           render json: duplicate, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not duplicate outing', reasons: duplicate.errors.full_messages }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not duplicate outing', reasons: duplicate.errors.full_messages })
         end
       end
 
       def report
         if report_params[:signals].blank?
-          render json: {
-            code: 'CANNOT_REPORT_OUTING',
-            message: 'signals is required'
-          }, status: :bad_request and return
+          return render_error(status: :unprocessable_entity, code: 'CANNOT_REPORT_OUTING', message: 'signals is required', legacy: { code: 'CANNOT_REPORT_OUTING', message: 'signals is required' })
         end
 
         SlackServices::SignalOuting.new(
@@ -156,7 +153,7 @@ module Api
         if EntourageServices::EntourageBuilder.cancel(entourage: @outing, params: cancel_params.to_h)
           render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not cancel outing', reasons: @outing.errors.full_messages.to_sentence }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not cancel outing', reasons: @outing.errors.full_messages.to_sentence })
         end
       end
 
@@ -164,7 +161,7 @@ module Api
         if EntourageServices::EntourageBuilder.close(entourage: @outing)
           render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not close outing', reasons: @outing.errors.full_messages.to_sentence }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not close outing', reasons: @outing.errors.full_messages.to_sentence })
         end
       end
 
@@ -172,7 +169,7 @@ module Api
         if @outing = Outing.future_or_ongoing.where("title ilike '\%papotage\%'").find_by(online: true)
           render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not find outing' }, status: 400
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find outing' })
         end
       end
 
@@ -180,7 +177,7 @@ module Api
         if @outing = Outing.future_or_ongoing.webinar_category.first
           render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not find outing' }, status: 400
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find outing' })
         end
       end
 
@@ -188,7 +185,7 @@ module Api
         if @outing = Outing.future_or_ongoing.first_steps_category.first
           render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not find outing' }, status: 400
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find outing' })
         end
       end
 
@@ -213,7 +210,7 @@ module Api
 
         unless params[:content_type].in? allowed_types
           type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: :unprocessable_entity)
         end
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
@@ -230,13 +227,16 @@ module Api
         return unless current_user.association?
         return unless current_user.ambassador?
 
-        render json: { message: :unauthorized }, status: :unauthorized
+        # not a session issue - the user is authenticated but lacks the
+        # required profile, hence 403 rather than 401 (which would force a
+        # logout on the mobile apps).
+        render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: :unauthorized })
       end
 
       def set_outing
         @outing = Outing.find_by_id_through_context(params[:id], params)
 
-        render json: { message: 'Could not find outing' }, status: 400 unless @outing.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find outing' }) unless @outing.present?
       end
 
       def index_params
@@ -319,7 +319,7 @@ module Api
 
       def authorised?
         unless @outing.can_be_managed_by?(current_user)
-          render json: { message: 'unauthorized user' }, status: :unauthorized
+          render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized user' })
         end
       end
 
@@ -327,11 +327,11 @@ module Api
         outing = Outing.find_by_id_or_uuid!(params[:id])
 
         unless current_user == outing.user
-          render json: { message: 'unauthorized user' }, status: :unauthorized
+          return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized user' })
         end
 
         unless outing.recurrence.present?
-          render json: { message: 'no recurrency settings' }, status: :unauthorized
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'no recurrency settings' })
         end
       end
     end

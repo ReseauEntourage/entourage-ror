@@ -77,18 +77,18 @@ module Api
         if @poi.save
           render json: @poi, status: 201, serializer: ::V1::PoiSerializer, scope: { version: :v2 }
         else
-          render json: { message: 'Could not create POI', reasons: @poi.errors.full_messages }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not create POI', reasons: @poi.errors.full_messages })
         end
       end
 
       def report
         poi = Poi.find_by(id: params[:id])
         if poi.nil?
-          head '404'
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND)
         else
           message = params[:message]
           if message.nil?
-            render json: {message: "Missing 'message' params"}, status: 400
+            render_error(status: :bad_request, code: Api::V1::ErrorCodes::PARAMETER_MISSING, legacy: {message: "Missing 'message' params"})
           else
             member_mailer.poi_report(poi, @current_user, message).deliver_later
             render json: {message: message}, status: 201
@@ -153,7 +153,8 @@ module Api
       end
 
       def validate_form_signature
-        render json: { message: 'unauthorized' }, status: :unauthorized unless PoiServices::Typeform.new(request).verify
+        # Webhook signature check (server-to-server, not a mobile user session) - kept at 401.
+        render_error(status: :unauthorized, code: Api::V1::ErrorCodes::UNAUTHORIZED, legacy: { message: 'unauthorized' }) unless PoiServices::Typeform.new(request).verify
       end
     end
   end

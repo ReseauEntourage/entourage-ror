@@ -209,7 +209,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       before { get :show, params: { neighborhood_id: neighborhood.to_param, id: scheduled_chat_message.id, token: user.token } }
 
       it 'is not directly accessible even by a member who knows its id' do
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(404)
       end
     end
 
@@ -245,7 +245,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       context 'using id fails' do
         before { get :show, params: { token: user.token, neighborhood_id: neighborhood.to_param, id: chat_message.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -265,7 +265,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         neighborhood_id: neighborhood.to_param, chat_message: { content: 'foobar', message_type: :text }, token: user.token
       } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'signed in' do
@@ -443,7 +443,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       context 'user is not creator' do
         before { patch :update, params: { id: chat_message.id, neighborhood_id: neighborhood.id, chat_message: { content: 'new content' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -472,7 +472,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: chat_message.id, neighborhood_id: neighborhood.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'active' }
     end
 
@@ -511,7 +511,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           message: 'bar'
         } }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
     end
 
     context 'wrong messageable cause message does not belong to neighborhood' do
@@ -522,7 +522,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).not_to receive(:notify)
         post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: entourage_chat_message.id }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
   end
 
@@ -632,7 +632,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       context 'using id fails' do
         before { get :comments, params: { token: user.token, neighborhood_id: neighborhood.to_param, id: chat_message_1.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -653,7 +653,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'signed in and in neighborhood' do

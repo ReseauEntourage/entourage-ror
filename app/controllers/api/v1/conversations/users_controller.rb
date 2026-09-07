@@ -32,14 +32,14 @@ module Api
           if @join_request.save
             render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not create conversation participation request', reasons: @join_request.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
         def invite
-          return render json: { message: 'inviter should be conversation creator' }, status: :bad_request unless current_user.id == @conversation.user_id
+          return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'inviter should be conversation creator' }) unless current_user.id == @conversation.user_id
 
           user = User.find_by_id_or_uuid!(params[:id])
 
@@ -56,9 +56,9 @@ module Api
           if @join_request.save
             render json: @join_request, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not create conversation participation request', reasons: @join_request.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -66,9 +66,9 @@ module Api
           if @join_request.update(status: JoinRequest::HIDDEN_STATUS)
             render json: @join_request, root: :user, status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not destroy action participation request', reasons: @join_request.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -77,12 +77,12 @@ module Api
         def set_conversation
           @conversation = Entourage.find_by_id_through_context(params[:conversation_id], params)
 
-          render json: { message: 'Could not find conversation' }, status: 400 unless @conversation.present?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find conversation' }) unless @conversation.present?
         end
 
         # create should be requested using uuid or uuid_v2 to avoid users to join private conversations they were not invited in
         def ensure_is_requested_with_uuid_or_uuid_v2
-          render json: { message: 'conversation uuid or uuid_v2 does not match' }, status: :unauthorized unless [@conversation.uuid, @conversation.uuid_v2].include?(params[:conversation_id])
+          render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'conversation uuid or uuid_v2 does not match' }) unless [@conversation.uuid, @conversation.uuid_v2].include?(params[:conversation_id])
         end
 
         def set_default_join_request

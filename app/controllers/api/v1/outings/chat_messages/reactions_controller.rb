@@ -2,16 +2,10 @@ module Api
   module V1
     module Outings
       module ChatMessages
-        class UnauthorizedReaction < StandardError; end
-
         class ReactionsController < Api::V1::BaseController
           before_action :set_outing
           before_action :set_chat_message
           before_action :ensure_is_member, only: [:create, :destroy]
-
-          rescue_from Api::V1::Outings::ChatMessages::UnauthorizedReaction do |exception|
-            render json: { message: 'unauthorized : you are not accepted in this outing' }, status: :unauthorized
-          end
 
           def index
             render json: { reactions: @chat_message.reactions.summary }
@@ -44,9 +38,9 @@ module Api
             if reaction.save
               render json: reaction, status: 201, serializer: ::V1::ReactionSerializer
             else
-              render json: {
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
                 message: 'Could not create reaction', reasons: reaction.errors.full_messages
-              }, status: 400
+              })
             end
           end
 
@@ -54,7 +48,7 @@ module Api
             if reaction_id = @chat_message.reactions.destroy(user: current_user)
               render json: { reaction_id: reaction_id }, status: 200
             else
-              render json: { message: 'Could not delete reaction' }, status: 400
+              render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not delete reaction' })
             end
           end
 
@@ -63,14 +57,14 @@ module Api
           def set_outing
             @outing = Outing.find_by_id_through_context(params[:outing_id], params)
 
-            render json: { message: 'Could not find outing' }, status: 400 unless @outing.present?
+            render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find outing' }) unless @outing.present?
           end
 
           def set_chat_message
             # we want to force chat_message to belong to Outing
             @chat_message = ChatMessage.where(messageable: @outing).find_by_id_through_context(params[:chat_message_id], params)
 
-            render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
+            render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find chat_message' }) unless @chat_message.present?
           end
 
           def join_request
@@ -78,7 +72,7 @@ module Api
           end
 
           def ensure_is_member
-            raise Api::V1::Outings::ChatMessages::UnauthorizedReaction unless join_request
+            raise Api::V1::ForbiddenResourceError, 'unauthorized : you are not accepted in this outing' unless join_request
           end
 
           def page

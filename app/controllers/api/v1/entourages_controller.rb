@@ -104,16 +104,17 @@ module Api
           end
 
           on.failure do |entourage|
-            render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not create entourage', reasons: entourage.errors.full_messages})
           end
         end
       end
 
       def update
-        return render json: {message: 'unauthorized'}, status: :unauthorized if @entourage.user != current_user
+        return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {message: 'unauthorized'}) if @entourage.user != current_user
 
         unless ['action', 'outing', 'group'].include?(@entourage.group_type)
-          return render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+          message = "This operation is not available for groups of type '#{@entourage.group_type}'"
+          return render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, message: message, legacy: {message: message})
         end
 
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
@@ -123,7 +124,7 @@ module Api
           end
 
           on.failure do |entourage|
-            render json: {message: 'Could not update entourage', reasons: @entourage.errors.full_messages}, status: 400
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not update entourage', reasons: @entourage.errors.full_messages})
           end
         end
       end
@@ -158,7 +159,7 @@ module Api
       def report
         message = entourage_report_params[:message]
         if message.blank?
-          render json: { code: 'CANNOT_REPORT_ENTOURAGE' }, status: :bad_request
+          render_error(status: :unprocessable_entity, code: 'CANNOT_REPORT_ENTOURAGE', legacy: {code: 'CANNOT_REPORT_ENTOURAGE'})
           return
         end
 
@@ -217,10 +218,13 @@ module Api
         set_entourage and return unless ConversationService.list_uuid?(params[:id])
 
         if current_user_or_anonymous.anonymous?
-          return render json: {
+          # Kept at 401 (not 403): there is no non-anonymous session at all here,
+          # this is an authentication requirement, not a permission check on an
+          # already-authenticated user.
+          return render_error(status: :unauthorized, code: 'ANONYMOUS_USER_AUTHENTICATION_REQUIRED', legacy: {
             message: "Anonymous user can't access this resource.",
             code: 'ANONYMOUS_USER_AUTHENTICATION_REQUIRED'
-          }, status: :unauthorized
+          })
         end
 
         participant_ids = ConversationService.participant_ids_from_list_uuid(params[:id], current_user: current_user)

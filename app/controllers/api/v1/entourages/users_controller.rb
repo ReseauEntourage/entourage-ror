@@ -60,11 +60,11 @@ module Api
               end
 
               on.failure do |join_request|
-                render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+                render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages})
               end
 
               on.not_authorised do
-                render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+                render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages})
               end
             end
            return
@@ -77,7 +77,7 @@ module Api
             end
 
             on.failure do |join_request|
-              render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages})
             end
           end
         end
@@ -94,7 +94,8 @@ module Api
 
           updater.update do |on|
             on.invalid_status do |status|
-              render json: {message: "Invalid status : #{status}"}, status: :bad_request
+              message = "Invalid status : #{status}"
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, message: message, legacy: {message: message})
             end
 
             on.success do
@@ -102,11 +103,11 @@ module Api
             end
 
             on.failure do |join_request|
-              render json: {message: 'Could not update entourage participation request status', reasons: join_request.errors.full_messages}, status: :bad_request
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not update entourage participation request status', reasons: join_request.errors.full_messages})
             end
 
             on.not_authorised do
-              return render json: {message: "You don't have rights to manage users of this entourage"}, status: :unauthorized
+              return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {message: "You don't have rights to manage users of this entourage"})
             end
           end
         end
@@ -124,15 +125,16 @@ module Api
             end
 
             on.failure do |join_request|
-              render json: {message: 'Could not update entourage participation request status', reasons: @join_request.errors.full_messages}, status: :bad_request
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not update entourage participation request status', reasons: @join_request.errors.full_messages})
             end
 
             on.not_authorised do
-              render json: {message: "You are not accepted in this entourage, you don't have rights to manage users of this entourage"}, status: :unauthorized
+              render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {message: "You are not accepted in this entourage, you don't have rights to manage users of this entourage"})
             end
 
             on.remove_author do
-              render json: {message: 'Cannot remove the author of the entourage'}, status: :bad_request
+              message = 'Cannot remove the author of the entourage'
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, message: message, legacy: {message: message})
             end
 
             on.quit do
@@ -162,7 +164,8 @@ module Api
 
         def restrict_group_types!
           unless ['action', 'outing', 'group'].include?(@entourage.group_type)
-            render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+            message = "This operation is not available for groups of type '#{@entourage.group_type}'"
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, message: message, legacy: {message: message})
           end
         end
 

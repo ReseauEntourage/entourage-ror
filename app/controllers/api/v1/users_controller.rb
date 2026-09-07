@@ -70,7 +70,7 @@ module Api
           end
 
           on.failure do |user|
-            render_error(code: 'CANNOT_UPDATE_USER', message: user.errors.full_messages, status: 400)
+            render_error(code: 'CANNOT_UPDATE_USER', message: user.errors.full_messages, status: :unprocessable_entity)
           end
         end
       end
@@ -85,44 +85,45 @@ module Api
 
           on.failure do |user|
             Rails.logger.info "SIGNUP_FAILED: invalid params - params: #{params.inspect}"
-            render_error(code: 'CANNOT_CREATE_USER', message: user.errors.full_messages, status: 400)
+            render_error(code: 'CANNOT_CREATE_USER', message: user.errors.full_messages, status: :unprocessable_entity)
           end
 
           on.duplicate do
             Rails.logger.info "SIGNUP_FAILED: phone number already exists - params: #{params.inspect}"
-            render_error(code: 'PHONE_ALREADY_EXIST', message: "Phone #{user_params["phone"]} n'est pas disponible", status: 400)
+            render_error(code: 'PHONE_ALREADY_EXIST', message: "Phone #{user_params["phone"]} n'est pas disponible", status: :unprocessable_entity)
           end
 
           on.invalid_phone_format do
             Rails.logger.info "SIGNUP_FAILED: invalid phone number format - params: #{params.inspect}"
-            render_error(code: 'INVALID_PHONE_FORMAT', message: 'Phone devrait être au format +33... ou 06...', status: 400)
+            render_error(code: 'INVALID_PHONE_FORMAT', message: 'Phone devrait être au format +33... ou 06...', status: :unprocessable_entity)
           end
         end
       end
 
       def code
         if user_params[:phone].blank?
-          return render json: {error: 'Missing phone number'}, status: 400
+          return render_error(code: 'MISSING_PHONE', message: 'Missing phone number', status: :unprocessable_entity)
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
         user = community.users.where(phone: user_phone).first
 
         if user.nil?
-          return render_error(code: 'USER_NOT_FOUND', message: '', status: 404)
+          # code/status kept as-is: substring-matched by the Android app
+          return render_error(code: 'USER_NOT_FOUND', status: 404)
         end
 
         if params[:code][:action] == 'regenerate' && !user.deleted && !user.blocked?
           UserServices::SmsSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
           render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
-          render json: {error: 'Unknown action'}, status: 400
+          render_error(code: 'UNKNOWN_ACTION', message: 'Unknown action', status: :unprocessable_entity)
         end
       end
 
       def request_phone_change
         if user_params[:current_phone].blank? || user_params[:requested_phone].blank?
-          return render json: { error: 'Veuillez vérifier vos numéros de téléphone' }, status: 400
+          return render_error(code: 'MISSING_PHONE_NUMBERS', message: 'Veuillez vérifier vos numéros de téléphone', status: :unprocessable_entity)
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:current_phone]).format
@@ -180,7 +181,7 @@ module Api
           end
 
           on.failure do |message|
-            render json: { code: 'CANNOT_REPORT_USER', message: message }, status: :bad_request
+            render_error(code: 'CANNOT_REPORT_USER', message: message, legacy: { code: 'CANNOT_REPORT_USER', message: message }, status: :unprocessable_entity)
           end
         end
       end
@@ -223,7 +224,7 @@ module Api
 
         unless params[:content_type].in? allowed_types
           type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: :unprocessable_entity)
         end
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
@@ -261,7 +262,7 @@ module Api
               code: 'CANNOT_UPDATE_ADDRESS',
               message: address.errors.full_messages +
                        user.errors.full_messages,
-              status: 400
+              status: :unprocessable_entity
             )
           end
         end
@@ -291,13 +292,14 @@ module Api
         if success
           render status: 200, json: {following: {partner_id: following.partner_id, active: following.active}}
         else
-          render_error(code: 'CANNOT_UPDATE_FOLLOWING', message: following.errors.full_messages, status: 400)
+          render_error(code: 'CANNOT_UPDATE_FOLLOWING', message: following.errors.full_messages, status: :unprocessable_entity)
         end
       end
 
       def lookup
         unless LegacyPhoneValidator.new(phone: params[:phone]).valid?
-          return render_error(code: 'INVALID_PHONE_FORMAT', message: 'invalid phone number format', status: 401)
+          # 422, not 401: this is a pre-auth format-validation endpoint, not a login attempt
+          return render_error(code: 'INVALID_PHONE_FORMAT', message: 'invalid phone number format', status: :unprocessable_entity)
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: params[:phone]).format

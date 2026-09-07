@@ -39,7 +39,8 @@ RSpec.describe Api::V1::ContactSubscriptionsController, type: :controller do
     describe 'with incorrect parameters' do
       before { post 'create', params: { contact_subscription: {not_email_param: 'subscriber@contact.com', not_active_param: true}, format: :json } }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
   end
 end

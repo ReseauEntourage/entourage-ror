@@ -22,7 +22,7 @@ module Api
                 code: 'CANNOT_UPDATE_ADDRESS',
                 message: address.errors.full_messages +
                 user.errors.full_messages,
-                status: 400
+                status: :unprocessable_entity
               )
             end
           end
@@ -34,7 +34,7 @@ module Api
             return render_error(
                 code: 'CANNOT_DELETE_ADDRESS',
                 message: 'Invalid address id',
-                status: 400
+                status: :unprocessable_entity
             )
           end
           address = current_user.addresses.find_by(position: position)

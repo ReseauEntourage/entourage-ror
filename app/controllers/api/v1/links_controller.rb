@@ -6,7 +6,7 @@ module Api
 
       def redirect
         if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'action_faq', 'propose-poi'])
-          return render json: {message: 'unauthorized'}, status: :unauthorized
+          return render_error(status: :unauthorized, code: Api::V1::ErrorCodes::UNAUTHORIZED, legacy: {message: 'unauthorized'})
         end
 
         user_id =

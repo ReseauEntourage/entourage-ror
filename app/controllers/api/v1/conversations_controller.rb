@@ -155,7 +155,7 @@ module Api
           user: current_user
         }
       rescue => e
-        render json: { message: 'unable to create conversation' }, status: :bad_request
+        render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'unable to create conversation' })
       end
 
       def destroy
@@ -165,25 +165,25 @@ module Api
           end
 
           on.failure do |conversation|
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not delete conversation', reasons: conversation.errors.full_messages
-            }, status: :bad_request
+            })
           end
 
           on.not_authorized do
-            render json: {
+            render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {
               message: 'You are not authorized to delete this conversation'
-            }, status: :unauthorized
+            })
           end
         end
       end
 
       def report
         unless report_params[:signals].present?
-          render json: {
+          render_error(status: :unprocessable_entity, code: 'CANNOT_REPORT_CONVERSATION', message: 'signals is required', legacy: {
             code: 'CANNOT_REPORT_CONVERSATION',
             message: 'signals is required'
-          }, status: :bad_request and return
+          }) and return
         end
 
         SlackServices::SignalConversation.new(
@@ -205,7 +205,7 @@ module Api
       def set_conversation
         @conversation = Entourage.find_by_id_through_context(params[:id], params)
 
-        render json: { message: 'Could not find conversation' }, status: 400 unless @conversation.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find conversation' }) unless @conversation.present?
       end
 
       def conversation_params
@@ -213,11 +213,11 @@ module Api
       end
 
       def ensure_is_member
-        render json: { message: 'unauthorized user' }, status: :unauthorized unless join_request
+        render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized user' }) unless join_request
       end
 
       def ensure_is_creator
-        render json: { message: 'unauthorized user' }, status: :unauthorized unless @conversation.user_id == current_user.id
+        render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized user' }) unless @conversation.user_id == current_user.id
       end
 
       def join_request

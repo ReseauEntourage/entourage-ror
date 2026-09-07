@@ -63,7 +63,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
     describe 'create third address' do
       before { post :create_or_update, params: { position: 3, address: work, user_id: 'me', token: user.token } }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
       it { expect(result).to eq(
         'error'=>{
           'code'=>'CANNOT_UPDATE_ADDRESS',
@@ -122,7 +122,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
     describe 'delete first address' do
       before { delete :destroy, params: { position: 1, user_id: 'me', token: user.token } }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
       it { expect(result).to eq(
         'error' => {
           'code' => 'CANNOT_DELETE_ADDRESS',

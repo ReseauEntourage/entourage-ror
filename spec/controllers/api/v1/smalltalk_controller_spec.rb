@@ -44,7 +44,8 @@ describe Api::V1::SmalltalksController, type: :controller do
       context 'not a member' do
         let(:smalltalk) { create :smalltalk }
 
-        it { expect(response.status).to eq 401 }
+        it { expect(response.status).to eq 403 }
+        it { expect(result['error']['code']).to eq('FORBIDDEN') }
       end
 
       context 'member' do

@@ -94,7 +94,7 @@ RSpec.describe Api::V1::BaseController, type: :controller do
       context 'on the entourage server' do
         with_community :entourage
         let(:api_key) { 'api_debug_pfp' }
-        it { is_expected.to eq(401) }
+        it { is_expected.to eq(403) }
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe Api::V1::BaseController, type: :controller do
 
       context 'on the pfp server' do
         with_community :pfp
-        it { is_expected.to eq(401) }
+        it { is_expected.to eq(403) }
       end
     end
 
@@ -124,8 +124,84 @@ RSpec.describe Api::V1::BaseController, type: :controller do
 
       context 'on the pfp server' do
         with_community :pfp
-        it { is_expected.to eq(401) }
+        it { is_expected.to eq(403) }
       end
     end
+  end
+
+  describe 'render_error' do
+    controller do
+      skip_before_action :authenticate_user!, only: [:index]
+
+      def index
+        render_error(code: 'SOMETHING_WRONG', status: :bad_request)
+      end
+    end
+
+    before { @request.env['X-API-KEY'] = 'api_debug' }
+    before { get :index }
+
+    let(:result) { JSON.parse(response.body) }
+
+    it { expect(response.status).to eq(400) }
+    it { expect(result['error']['code']).to eq('SOMETHING_WRONG') }
+    it { expect(result['error']['message']).to eq(I18n.t('api.errors.generic', locale: :fr)) }
+  end
+
+  describe 'unhandled exceptions' do
+    controller do
+      skip_before_action :authenticate_user!, only: [:index]
+
+      def index
+        raise 'boom'
+      end
+    end
+
+    before { @request.env['X-API-KEY'] = 'api_debug' }
+    before { allow(Sentry).to receive(:capture_exception) }
+    before { get :index }
+
+    let(:result) { JSON.parse(response.body) }
+
+    it { expect(response.status).to eq(500) }
+    it { expect(result['error']['code']).to eq('INTERNAL_ERROR') }
+    it { expect(Sentry).to have_received(:capture_exception) }
+  end
+
+  describe 'ActiveRecord::RecordNotFound' do
+    controller do
+      skip_before_action :authenticate_user!, only: [:index]
+
+      def index
+        raise ActiveRecord::RecordNotFound
+      end
+    end
+
+    before { @request.env['X-API-KEY'] = 'api_debug' }
+    before { get :index }
+
+    let(:result) { JSON.parse(response.body) }
+
+    it { expect(response.status).to eq(404) }
+    it { expect(result['error']['code']).to eq('NOT_FOUND') }
+  end
+
+  describe 'Api::V1::ForbiddenResourceError' do
+    controller do
+      skip_before_action :authenticate_user!, only: [:index]
+
+      def index
+        raise Api::V1::ForbiddenResourceError, 'you are not accepted here'
+      end
+    end
+
+    before { @request.env['X-API-KEY'] = 'api_debug' }
+    before { get :index }
+
+    let(:result) { JSON.parse(response.body) }
+
+    it { expect(response.status).to eq(403) }
+    it { expect(result['error']['code']).to eq('FORBIDDEN') }
+    it { expect(result['message']).to eq('you are not accepted here') }
   end
 end

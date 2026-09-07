@@ -32,35 +32,40 @@ RSpec.describe Api::V1::UptimesController, type: :controller do
       let(:token) { user.token }
 
       it { expect(response.status).to eq(401) }
-      it { expect(response.body).to eq({ message: :unauthorized }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('unauthorized') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('UNAUTHORIZED') }
     end
 
     context 'token unauthorized' do
       let(:response_status) { 401 }
 
       it { expect(response.status).to eq(401) }
-      it { expect(response.body).to eq({ message: :bad_token }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('bad_token') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('UNAUTHORIZED') }
     end
 
     context 'code validity bad_request' do
       let(:response_status) { :foo }
 
       it { expect(response.status).to eq(400) }
-      it { expect(response.body).to eq({ message: :unexcepted_status }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('unexcepted_status') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
 
     context 'not_parsable' do
       let(:body) { 'foo' }
 
       it { expect(response.status).to eq(400) }
-      it { expect(response.body).to eq({ message: :not_parsable }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('not_parsable') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
 
     context 'no places key' do
       let(:body) { '{"foo":[{}]}' }
 
       it { expect(response.status).to eq(400) }
-      it { expect(response.body).to eq({ message: :no_places }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('no_places') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
   end
 
@@ -84,35 +89,40 @@ RSpec.describe Api::V1::UptimesController, type: :controller do
       let(:token) { user.token }
 
       it { expect(response.status).to eq(401) }
-      it { expect(response.body).to eq({ message: :unauthorized }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('unauthorized') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('UNAUTHORIZED') }
     end
 
     context 'token unauthorized' do
       let(:response_status) { 401 }
 
       it { expect(response.status).to eq(401) }
-      it { expect(response.body).to eq({ message: :bad_token }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('bad_token') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('UNAUTHORIZED') }
     end
 
     context 'code validity bad_request' do
       let(:response_status) { :foo }
 
       it { expect(response.status).to eq(400) }
-      it { expect(response.body).to eq({ message: :unexcepted_status }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('unexcepted_status') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
 
     context 'not_parsable' do
       let(:body) { 'foo' }
 
       it { expect(response.status).to eq(400) }
-      it { expect(response.body).to eq({ message: :not_parsable }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('not_parsable') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
 
     context 'no place' do
       let(:body) { '{}' }
 
       it { expect(response.status).to eq(400) }
-      it { expect(response.body).to eq({ message: :no_place }.to_json) }
+      it { expect(JSON.parse(response.body)['message']).to eq('no_place') }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
     end
   end
 end

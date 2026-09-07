@@ -10,7 +10,7 @@ module Api
           end
 
           on.failure do
-            render json: { message: "Erreur lors de la recherche de #{current_user.email}" }, status: 400
+            render_error(code: 'NEWSLETTER_ERROR', legacy: { message: "Erreur lors de la recherche de #{current_user.email}" }, status: 400)
           end
         end
       end
@@ -22,7 +22,7 @@ module Api
           end
 
           on.failure do
-            render json: { message: "Erreur lors de l'ajout de #{newsletter_subscription_params[:email]}" }, status: 400
+            render_error(code: 'NEWSLETTER_ERROR', legacy: { message: "Erreur lors de l'ajout de #{newsletter_subscription_params[:email]}" }, status: 400)
           end
         end
       end
@@ -34,7 +34,7 @@ module Api
           end
 
           on.failure do
-            render json: { message: "Erreur lors de la suppression de #{current_user.email}" }, status: 400
+            render_error(code: 'NEWSLETTER_ERROR', legacy: { message: "Erreur lors de la suppression de #{current_user.email}" }, status: 400)
           end
         end
       end

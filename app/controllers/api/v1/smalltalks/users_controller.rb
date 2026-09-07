@@ -20,16 +20,17 @@ module Api
         end
 
         def destroy
-          return render json: {
+          # "not found", not "unauthorized": there is simply no join_request to cancel for this user
+          return render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: {
             message: 'Could not find smalltalk participation for user'
-          }, status: :unauthorized unless @join_request
+          }) unless @join_request
 
           if @join_request.update(status: :cancelled)
             render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not destroy smalltalk participation request', reasons: @join_request.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -47,7 +48,7 @@ module Api
           return unless params[:id].present?
 
           unless current_user == User.find_by_id_or_uuid!(params[:id])
-            render json: { message: 'unauthorized' }, status: :unauthorized
+            render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' })
           end
         end
 

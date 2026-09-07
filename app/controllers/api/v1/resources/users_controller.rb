@@ -12,9 +12,9 @@ module Api
           if @user_resource.save
             render json: @user_resource, status: 201, serializer: ::V1::UsersResourceSerializer
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not create resource watched request', reasons: @user_resource.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -27,9 +27,9 @@ module Api
           if @user_resource.save
             render json: @user_resource, status: 201, serializer: ::V1::UsersResourceSerializer
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not destroy resource watched request', reasons: @user_resource.errors.full_messages
-            }, status: :bad_request
+            })
           end
         end
 
@@ -47,7 +47,7 @@ module Api
           return unless params[:id].present?
 
           unless current_user == User.find_by_id_or_uuid!(params[:id])
-            render json: { message: 'unauthorized' }, status: :unauthorized
+            render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' })
           end
         end
       end
