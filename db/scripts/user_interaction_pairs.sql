@@ -358,8 +358,8 @@ SELECT
   COUNT(*),
   MIN(LEAST(COALESCE(jr1.accepted_at, jr1.created_at), COALESCE(jr2.accepted_at, jr2.created_at))),
   MAX(GREATEST(COALESCE(jr1.accepted_at, jr1.created_at), COALESCE(jr2.accepted_at, jr2.created_at)))
-FROM join_requests jr1
-JOIN join_requests jr2
+FROM stats.join_requests jr1
+JOIN stats.join_requests jr2
   ON jr2.joinable_type = jr1.joinable_type
  AND jr2.joinable_id = jr1.joinable_id
  AND jr2.id > jr1.id

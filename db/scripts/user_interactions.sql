@@ -212,7 +212,7 @@ SELECT
   jr.joinable_id,
   COALESCE(jr.requested_at, jr.created_at),
   'statut=' || jr.status || ', role=' || jr.role
-FROM join_requests jr
+FROM stats.join_requests jr
 JOIN tmp_scope_users su ON su.id = jr.user_id
 LEFT JOIN entourages e ON jr.joinable_type = 'Entourage' AND e.id = jr.joinable_id
 WHERE jr.accepted_at IS NULL;
@@ -244,7 +244,7 @@ SELECT
   jr.joinable_id,
   jr.accepted_at,
   'role=' || jr.role
-FROM join_requests jr
+FROM stats.join_requests jr
 JOIN tmp_scope_users su ON su.id = jr.user_id
 LEFT JOIN entourages e ON jr.joinable_type = 'Entourage' AND e.id = jr.joinable_id
 WHERE jr.accepted_at IS NOT NULL;
@@ -263,7 +263,7 @@ SELECT
   jr.joinable_id,
   jr.participate_at,
   NULL
-FROM join_requests jr
+FROM stats.join_requests jr
 JOIN tmp_scope_users su ON su.id = jr.user_id
 WHERE jr.participate_at IS NOT NULL
   AND jr.joinable_type = 'Entourage';

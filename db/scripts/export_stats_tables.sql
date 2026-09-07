@@ -1,6 +1,7 @@
 -- =====================================================================
--- Script : export de stats.user_profile et stats.user_interactions
--- But    : exporter les deux tables en CSV pour analyse externe
+-- Script : export de stats.user_profile, stats.user_interactions et
+--          stats.user_interaction_pairs
+-- But    : exporter les trois tables en CSV pour analyse externe
 --          (profilage / graphe).
 --
 -- Usage  : ce script utilise \copy, une méta-commande psql (pas une
@@ -51,10 +52,19 @@ ORDER BY child.relname;
 
 
 -- ---------------------------------------------------------------------
--- 3. Contrôle post-export : nombre de lignes exportées par table.
+-- 3. Export de stats.user_interaction_pairs (arêtes du graphe social,
+--    non partitionnée : une seule requête suffit).
+-- ---------------------------------------------------------------------
+\copy (SELECT * FROM stats.user_interaction_pairs ORDER BY user_id_1, user_id_2, interaction_type, context_type, context_id) TO 'stats_user_interaction_pairs.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8')
+
+
+-- ---------------------------------------------------------------------
+-- 4. Contrôle post-export : nombre de lignes exportées par table.
 --    À comparer avec `wc -l` (ou équivalent) sur les fichiers générés
 --    (en retirant 1 pour l'en-tête CSV).
 -- ---------------------------------------------------------------------
 SELECT 'stats.user_profile' AS table_name, count(*) FROM stats.user_profile
 UNION ALL
-SELECT 'stats.user_interactions', count(*) FROM stats.user_interactions;
+SELECT 'stats.user_interactions', count(*) FROM stats.user_interactions
+UNION ALL
+SELECT 'stats.user_interaction_pairs', count(*) FROM stats.user_interaction_pairs;

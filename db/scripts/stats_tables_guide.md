@@ -1,30 +1,37 @@
-# Guide des tables `stats.user_interactions` et `stats.user_profile`
+# Guide des tables `stats.user_interactions`, `stats.user_profile` et `stats.user_interaction_pairs`
 
 Ce document s'adresse aux personnes qui vont **exploiter** les données une
 fois les scripts joués (analyse, clustering, construction d'un graphe
 utilisateurs) — pas à celles qui génèrent/maintiennent les scripts SQL
-(voir pour cela `user_interactions_prompt.md` et `user_profile_prompt.md`,
-qui documentent les choix de conception).
+(voir pour cela `user_interactions_prompt.md`, `user_profile_prompt.md` et
+`user_interaction_pairs_prompt.md`, qui documentent les choix de
+conception).
 
-Les deux tables vivent dans le schéma `stats` (pas `public`) de la base
+Les trois tables vivent dans le schéma `stats` (pas `public`) de la base
 `entourage-back-preprod` :
 
 | Table                        | Grain                          | Rafraîchissement | Généré par              |
 |-------------------------------|---------------------------------|-------------------|--------------------------|
 | `stats.user_profile`          | 1 ligne par utilisateur          | Snapshot complet (`TRUNCATE` + `INSERT`) | `user_profile.sql` |
 | `stats.user_interactions`     | 1 ligne par événement/interaction | Recalculé section par section (`DELETE`+`INSERT` par `interaction_type`) | `user_interactions.sql` |
+| `stats.user_interaction_pairs` | 1 ligne par paire d'utilisateurs en interaction, par contexte | Recalculé section par section (`DELETE`+`INSERT` par `interaction_type`, `ON CONFLICT DO UPDATE` en cas de recouvrement) | `user_interaction_pairs.sql` |
 
 Pensées ensemble : `user_profile` donne les **nœuds** du graphe (qui est
-l'utilisateur), `user_interactions` donne les **arêtes** (ce qu'il a fait,
-avec qui/quoi, et quand).
+l'utilisateur), `user_interactions` donne le **journal d'activité** par
+utilisateur (ce qu'il a fait, avec qui/quoi, et quand), et
+`user_interaction_pairs` donne directement les **arêtes** du graphe social
+(quels utilisateurs ont réellement interagi entre eux) — voir le détail des
+trois catégories d'interaction plus bas.
 
-Pour récupérer un export CSV des deux tables (par exemple pour les
+Pour récupérer un export CSV des tables (par exemple pour les
 charger dans un notebook ou un outil de graphe hors base), voir
 `export_stats_tables.sql` (même dossier) : à jouer avec le client
 `psql` (`psql "<connexion>" -f db/scripts/export_stats_tables.sql`), il
-génère `stats_user_profile.csv` et `stats_user_interactions.csv` — ce
-dernier couvre automatiquement toutes les partitions par année de
-`stats.user_interactions`, une requête sur la table parente suffit.
+génère `stats_user_profile.csv`, `stats_user_interactions.csv` et
+`stats_user_interaction_pairs.csv` — le second couvre automatiquement
+toutes les partitions par année de `stats.user_interactions`, une requête
+sur la table parente suffit ; le troisième n'est pas partitionné, une
+requête simple suffit aussi.
 
 ## ⚠️ À savoir avant d'interroger les données
 
@@ -53,6 +60,14 @@ dernier couvre automatiquement toutes les partitions par année de
   (`\d+ stats.user_interactions`) ou pour des requêtes très ciblées sur
   une seule année, où filtrer sur `interaction_at` permet à Postgres
   d'ignorer les autres partitions (*partition pruning*).
+- **`stats.user_interaction_pairs` a un périmètre utilisateurs légèrement
+  différent des deux autres tables** : elle exclut *tous* les comptes
+  Entourage (`targeting_profile = 'team'`), alors que
+  `stats.user_interactions`/`stats.user_profile` n'excluent que les
+  modérateurs de l'équipe. Elle exclut aussi explicitement les paires
+  d'utilisateurs qui se sont bloqués (dans un sens ou dans l'autre, à la
+  date d'exécution du script — un blocage récent efface une interaction
+  passée), et n'est pas partitionnée.
 
 ## `stats.user_profile` — un utilisateur = une ligne
 
@@ -140,16 +155,69 @@ ou `instance_baseclass`), donc potentiellement toute classe du modèle
 (`Entourage`, `ChatMessage`, `User`...). À traiter séparément si besoin
 d'une catégorisation homogène.
 
-### Construire un graphe à partir des deux tables
+## `stats.user_interaction_pairs` — une paire d'utilisateurs en interaction = une ligne
+
+Contrairement à `stats.user_interactions` (journal d'activité **par
+utilisateur**, une ligne = une action d'un seul utilisateur), cette table
+matérialise directement les **arêtes** d'un graphe social : une ligne = un
+couple `(user_id_1, user_id_2)` ayant réellement interagi entre eux dans un
+contexte donné (un quartier, un événement...), avec le nombre
+d'occurrences et les dates de première/dernière occurrence — plutôt qu'une
+ligne par message/réaction, ce qui exploserait le volume sans ajouter
+d'information utile pour un graphe. Voir `user_interaction_pairs_prompt.md`
+pour le détail de la spécification et des choix retenus.
+
+| Colonne                 | Type         | Contenu |
+|--------------------------|--------------|---------|
+| `id`                       | BIGSERIAL (PK) | Identifiant technique de la ligne |
+| `user_id_1`                  | INTEGER      | Le plus petit des deux `user_id` de la paire (`LEAST`) |
+| `user_id_2`                    | INTEGER      | Le plus grand des deux `user_id` de la paire (`GREATEST`) — `user_id_1 < user_id_2` toujours, une paire n'est donc jamais dupliquée dans les deux sens |
+| `interaction_type`               | VARCHAR(30)  | `echange_messages`, `reaction` ou `participation_evenement`, voir table ci-dessous |
+| `context_type`                     | VARCHAR(20)  | `Quartier`, `Evenement`, `Conversation` ou `Bonnes ondes` — le type de contenant dans lequel l'interaction a eu lieu |
+| `context_id`                         | BIGINT       | Identifiant du contenant (son sens dépend de `context_type`) |
+| `occurrences`                          | INTEGER      | Nombre d'occurrences agrégées sous cette ligne (paires de messages qualifiantes, réactions ou participations) — sert de poids d'arête |
+| `first_interaction_at`                   | TIMESTAMP    | Date de la première occurrence agrégée |
+| `last_interaction_at`                      | TIMESTAMP    | Date de la dernière occurrence agrégée |
+
+Une contrainte d'unicité porte sur
+`(user_id_1, user_id_2, interaction_type, context_type, context_id)` : pour
+une même paire d'utilisateurs, un même type d'interaction peut donc donner
+lieu à plusieurs lignes si elle a eu lieu dans plusieurs contextes (ex. deux
+utilisateurs actifs à la fois dans un même quartier et dans un même
+événement), mais jamais deux lignes pour le même contexte.
+
+### Types d'interaction (`interaction_type`)
+
+| `interaction_type`          | `context_type` possibles | Ce que ça représente |
+|-------------------------------|-----------------------------|------------------------|
+| `echange_messages`               | `Quartier`, `Evenement`, `Conversation`, `Bonnes ondes` | Échange de messages entre les deux utilisateurs (règles de rattachement différentes selon le contenant — commentaires de même publication, commentaire ↔ publication racine, ou simple co-présence pour conversation/bonnes ondes — écart maximum de 30 jours entre les deux messages qualifiants) |
+| `reaction`                         | `Quartier`, `Evenement`, `Conversation`, `Bonnes ondes` | Un des deux utilisateurs a réagi à un contenu (publication, commentaire ou message) posté par l'autre |
+| `participation_evenement`             | `Evenement`                | Les deux utilisateurs ont une participation acceptée (`join_requests.status = 'accepted'`) au même événement |
+
+Groupes communautaires (`group_type = 'group'`) et entraides
+(`group_type = 'action'`) sont volontairement exclus de toutes les règles
+ci-dessus (demande explicite, cf. `user_interaction_pairs_prompt.md`) : un
+échange de messages ou une réaction dans un groupe ou une entraide n'est
+pas comptabilisé ici (il reste néanmoins visible dans
+`stats.user_interactions`, ex. `publication_groupe`).
+
+### Construire un graphe à partir des trois tables
 
 - **Nœuds** : une ligne de `stats.user_profile` par utilisateur, avec ses
   attributs pour le clustering (tags, localisation, ancienneté, etc.).
-- **Arêtes utilisateur → utilisateur** : filtrer
+- **Arêtes utilisateur ↔ utilisateur (interactions directes)** : une ligne
+  de `stats.user_interaction_pairs` par paire/contexte, `occurrences`
+  servant de poids ; cumuler sur `(user_id_1, user_id_2)` pour obtenir un
+  poids global tous contextes/types confondus si besoin.
+- **Arêtes utilisateur → utilisateur (actions unilatérales)** : filtrer
   `stats.user_interactions` sur `object_type = 'Utilisateur'`
   (`interaction_type IN ('blocage_utilisateur', 'invitation_envoyee')`) —
-  `user_id` et `object_id` désignent alors chacun un utilisateur.
+  `user_id` et `object_id` désignent alors chacun un utilisateur. Non
+  repris dans `user_interaction_pairs` (qui ne couvre que les trois
+  catégories d'interaction mutuelle listées plus haut).
 - **Arêtes utilisateur → objet partagé** (ex: deux utilisateurs actifs
-  dans le même groupe) : à reconstruire en croisant `stats.user_interactions`
-  sur `(object_type, object_id)` identiques pour des `user_id` différents
-  (ex: tous les `user_id` ayant `publication_groupe` sur le même
-  `object_id` de type `Groupe`).
+  dans le même groupe communautaire ou la même entraide, hors périmètre de
+  `user_interaction_pairs`) : à reconstruire en croisant
+  `stats.user_interactions` sur `(object_type, object_id)` identiques pour
+  des `user_id` différents (ex: tous les `user_id` ayant
+  `publication_groupe` sur le même `object_id` de type `Groupe`).
