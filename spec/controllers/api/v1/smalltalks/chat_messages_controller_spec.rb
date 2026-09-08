@@ -67,7 +67,9 @@ describe Api::V1::Smalltalks::ChatMessagesController do
           'read' => false,
           'message_type' => 'text',
           'status' => 'active',
-          'survey' => nil
+          'survey' => nil,
+          'reactions' => [],
+          'reaction_id' => nil
         }, {
           'id' => chat_message_2.id,
           'uuid_v2' => chat_message_2.uuid_v2,
@@ -102,7 +104,9 @@ describe Api::V1::Smalltalks::ChatMessagesController do
           'read' => false,
           'message_type' => 'text',
           'status' => 'active',
-          'survey' => nil
+          'survey' => nil,
+          'reactions' => [],
+          'reaction_id' => nil
         }]
       }) }
     end
@@ -237,7 +241,9 @@ describe Api::V1::Smalltalks::ChatMessagesController do
             'read' => nil,
             'message_type' => 'text',
             'status' => 'active',
-            'survey' => nil
+            'survey' => nil,
+            'reactions' => [],
+            'reaction_id' => false
           }
         }}
 
@@ -404,8 +410,27 @@ describe Api::V1::Smalltalks::ChatMessagesController do
           'message_type' => 'text',
           'status' => 'active',
           'survey' => nil,
+          'reactions' => [],
+          'reaction_id' => nil,
         }]
       }) }
+    end
+
+    context 'with a reaction on a comment' do
+      let!(:user_reaction) { FactoryBot.create(:user_reaction, instance: chat_message_2, user: user) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it {
+        comment = result['chat_messages'].first
+        expect(comment['reaction_id']).to eq(user_reaction.reaction_id)
+        expect(comment['reactions']).to match_array([{
+          'chat_message_id' => chat_message_2.id,
+          'reaction_id' => user_reaction.reaction_id,
+          'reactions_count' => 1
+        }])
+      }
     end
 
     context 'ordered' do

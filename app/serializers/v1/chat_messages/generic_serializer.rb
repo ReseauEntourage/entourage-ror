@@ -16,7 +16,9 @@ module V1
                  :read,
                  :message_type,
                  :status,
-                 :survey
+                 :survey,
+                 :reactions,
+                 :reaction_id
 
       def content
         return '' unless object.visible?
@@ -90,6 +92,16 @@ module V1
         return unless object.survey
 
         V1::SurveySerializer.new(object.survey, root: false).as_json
+      end
+
+      def reactions
+        object.reactions.summary
+      end
+
+      def reaction_id
+        return false unless scope[:user].present?
+
+        object.reactions.user_reaction_id(scope[:user].id)
       end
 
       private
