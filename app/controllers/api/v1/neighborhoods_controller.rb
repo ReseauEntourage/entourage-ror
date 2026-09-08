@@ -51,21 +51,21 @@ module Api
         if @neighborhood.save
           render json: @neighborhood, status: 201, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
         else
-          render json: { message: 'Could not create Neighborhood', reasons: @neighborhood.errors.full_messages }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not create Neighborhood', reasons: @neighborhood.errors.full_messages })
         end
       end
 
       def update
-        return render json: { message: 'unauthorized' }, status: :unauthorized if @neighborhood.user != current_user
+        return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }) if @neighborhood.user != current_user
 
         @neighborhood.assign_attributes(neighborhood_update_params)
 
         if @neighborhood.save
           render json: @neighborhood, status: 200, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
         else
-          render json: {
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
             message: 'Could not update neighborhood', reasons: @neighborhood.errors.full_messages
-          }, status: 400
+          })
         end
       end
 
@@ -80,25 +80,25 @@ module Api
           end
 
           on.failure do |neighborhood|
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not delete neighborhood', reasons: neighborhood.errors.full_messages
-            }, status: :bad_request
+            })
           end
 
           on.not_authorized do
-            render json: {
+            render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {
               message: 'You are not authorized to delete this neighborhood'
-            }, status: :unauthorized
+            })
           end
         end
       end
 
       def report
         unless report_params[:signals].present?
-          render json: {
+          render_error(status: :unprocessable_entity, code: 'CANNOT_REPORT_NEIGHBORHOOD', legacy: {
             code: 'CANNOT_REPORT_NEIGHBORHOOD',
             message: 'signals is required'
-          }, status: :bad_request and return
+          }) and return
         end
 
         SlackServices::SignalNeighborhood.new(
@@ -116,7 +116,7 @@ module Api
       def set_neighborhood
         @neighborhood = Neighborhood.find_by_id_through_context(params[:id], params)
 
-        render json: { message: 'Could not find neighborhood' }, status: 400 unless @neighborhood.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find neighborhood' }) unless @neighborhood.present?
       end
 
       def index_params

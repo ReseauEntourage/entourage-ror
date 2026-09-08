@@ -1,15 +1,9 @@
 module Api
   module V1
     module Neighborhoods
-      class UnauthorizedOuting < StandardError; end
-
       class OutingsController < Api::V1::BaseController
         before_action :set_neighborhood, only: [:index, :create, :destroy]
         before_action :authorised_to_see_messages?, only: [:create, :destroy]
-
-        rescue_from Api::V1::Neighborhoods::UnauthorizedOuting do |exception|
-          render json: { message: 'unauthorized : you are not accepted in this neighborhood' }, status: :unauthorized
-        end
 
         def index
           render json: @neighborhood.outings_with_admin_online.active.future_or_past_today.default_order.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
@@ -24,7 +18,7 @@ module Api
             end
 
             on.failure do |outing|
-              render json: { message: 'Could not create outing', reasons: outing.errors.full_messages }, status: 400
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'Could not create outing', reasons: outing.errors.full_messages })
             end
           end
         end
@@ -55,7 +49,7 @@ module Api
         end
 
         def authorised_to_see_messages?
-          raise Api::V1::Neighborhoods::UnauthorizedOuting unless join_request
+          raise Api::V1::ForbiddenResourceError, 'unauthorized : you are not accepted in this neighborhood' unless join_request
         end
 
         def page

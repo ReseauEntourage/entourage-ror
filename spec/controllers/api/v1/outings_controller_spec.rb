@@ -280,7 +280,7 @@ describe Api::V1::OutingsController do
     context 'not joined' do
       before { post :create, params: { outing: params, token: user.token } }
       it { expect(response.body).to include('User has to be a member of every neighborhoods') }
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
       it { expect(Outing.count).to eq(0) }
     end
 
@@ -295,12 +295,13 @@ describe Api::V1::OutingsController do
           latitude: 4.567
         }, token: user.token } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(Outing.count).to eq(0) }
         it { expect(neighborhood_1.outings.count).to eq(0) }
         it { expect(neighborhood_2.outings.count).to eq(0) }
         it { expect(JSON.parse(response.body)).to have_key('message') }
         it { expect(JSON.parse(response.body)).to have_key('reasons') }
+        it { expect(JSON.parse(response.body)['error']['code']).to eq('VALIDATION_ERROR') }
       end
 
       context 'with all required parameters' do
@@ -366,7 +367,7 @@ describe Api::V1::OutingsController do
           post :create, params: { outing: params, token: user.token }
         }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(subject).to have_key('message') }
       end
 
@@ -427,7 +428,7 @@ describe Api::V1::OutingsController do
 
           before { request }
 
-          it { expect(response.status).to eq(401) }
+          it { expect(response.status).to eq(403) }
         end
 
         context 'user is not creator' do
@@ -437,7 +438,7 @@ describe Api::V1::OutingsController do
 
           before { request }
 
-          it { expect(response.status).to eq(401) }
+          it { expect(response.status).to eq(403) }
         end
 
         context 'creator is an ambassador, so is the requester' do
@@ -461,7 +462,7 @@ describe Api::V1::OutingsController do
 
           before { request }
 
-          it { expect(response.status).to eq(401) }
+          it { expect(response.status).to eq(403) }
         end
       end
 
@@ -657,7 +658,7 @@ describe Api::V1::OutingsController do
     context 'signed in' do
       context 'user is not creator' do
         before { patch :batch_update, params: { id: outing.to_param, outing: { title: 'new title' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -749,7 +750,7 @@ describe Api::V1::OutingsController do
         context 'using id fails' do
           before { get :show, params: { token: token, id: outing.id, deeplink: true } }
 
-          it { expect(response.status).to eq 400 }
+          it { expect(response.status).to eq 404 }
         end
       end
     end
@@ -785,7 +786,7 @@ describe Api::V1::OutingsController do
       before { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
       before { post :cancel, params: { id: outing.id, outing: { cancellation_message: 'foo' }, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'open' }
     end
 
@@ -865,7 +866,7 @@ describe Api::V1::OutingsController do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: outing.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'open' }
     end
 
@@ -889,19 +890,19 @@ describe Api::V1::OutingsController do
     context 'not as creator' do
       let(:creator) { FactoryBot.create(:public_user) }
       it { expect { request }.to change { Outing.count }.by(0) }
-      it { request ; expect(response.status).to eq(401) }
+      it { request ; expect(response.status).to eq(403) }
     end
 
     context 'without recurrence' do
       let(:recurrence) { nil }
       it { expect { request }.to change { Outing.count }.by(0) }
-      it { request ; expect(response.status).to eq(401) }
+      it { request ; expect(response.status).to eq(422) }
     end
 
     context 'without unactive recurrence' do
       let(:recurrence) { FactoryBot.create(:outing_recurrence, continue: false) }
       it { expect { request }.to change { Outing.count }.by(0) }
-      it { request ; expect(response.status).to eq(401) }
+      it { request ; expect(response.status).to eq(422) }
     end
 
     context 'duplication as creator' do
@@ -949,7 +950,7 @@ describe Api::V1::OutingsController do
         expect_any_instance_of(SlackServices::SignalOuting).not_to receive(:notify)
         post 'report', params: { token: user.token, id: outing.id, report: { signals: [], message: 'bar' } }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
     end
   end
 
@@ -969,13 +970,13 @@ describe Api::V1::OutingsController do
     context 'offline' do
       let(:online) { false }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
 
     context 'wrong title' do
       let(:title) { 'Événement foobar' }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
   end
 
@@ -995,13 +996,13 @@ describe Api::V1::OutingsController do
     context 'offline' do
       let(:online) { false }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
 
     context 'wrong tag' do
       let(:tag) { :passion_sport }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
   end
 
@@ -1021,13 +1022,13 @@ describe Api::V1::OutingsController do
     context 'offline' do
       let(:online) { false }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
 
     context 'wrong tag' do
       let(:tag) { :atelier_femmes }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
   end
 

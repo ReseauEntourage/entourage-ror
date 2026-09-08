@@ -101,7 +101,7 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'member' do
@@ -125,7 +125,7 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(422) }
         end
 
         context do
@@ -143,7 +143,7 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
     end
 
     context 'member' do
@@ -159,7 +159,7 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(404) }
         end
       end
 
