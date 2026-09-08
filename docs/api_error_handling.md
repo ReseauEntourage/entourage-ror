@@ -18,6 +18,23 @@ Toutes les routes `api/v1` renvoient désormais leurs erreurs sous une enveloppe
 
 Implémenté par `Api::V1::BaseController#render_error(code:, status:, message: nil, legacy: {})` (`app/controllers/api/v1/base_controller.rb`).
 
+## Quel champ utiliser, et quand
+
+Une réponse d'erreur peut contenir plusieurs champs à la racine en plus de `error`, hérités de l'ancien format de chaque endpoint. **Règle simple : pour la logique (switch/if), lisez toujours `error.code`. Pour un message générique à afficher, lisez `error.message`. `reasons` est à part : c'est le seul champ qui donne le détail par champ d'une validation, et il vaut le coup de l'exploiter quand il est présent.** Tous les autres champs ci-dessous ne sont là que pour ne pas casser les anciennes versions de l'app.
+
+| Champ | Type | Présent | Contenu | À faire |
+|---|---|---|---|---|
+| `error.code` | string | **Toujours**, sur toute vraie erreur | Identifiant stable, ex. `FORBIDDEN`, `NOT_FOUND`, `USER_NOT_FOUND` | ✅ Utiliser pour toute logique conditionnelle |
+| `error.message` | string | **Toujours**, jamais vide | Une phrase générique, traduite selon `user.lang` | ✅ Utiliser comme message par défaut, surtout hors validation |
+| `reasons` (racine) | array&lt;string&gt; | Quand l'erreur vient d'un modèle invalide (ex. création/mise à jour ratée) | Un message **par champ en erreur** (ex. `["Title can't be blank", "Email n'est pas valide"]`) — **toujours en français**, non lié à `user.lang` (généré par Rails, pas par notre i18n) | ✅ Utiliser en priorité sur un formulaire à plusieurs champs, si un texte français est acceptable ; sinon replier sur `error.message` |
+| `errors` (racine, avec un *s*) | array&lt;string&gt; | Un seul endpoint : `POST /api/v1/messages` | Exactement la même chose que `reasons` (même origine, même limite de langue), nom différent par héritage historique | ✅ Même usage que `reasons` sur cet endpoint précis — piège : ne pas chercher `reasons` dessus, ni `errors` ailleurs |
+| `message` (racine) | string | Selon l'endpoint (hérité) | Texte technique, souvent redondant avec `error.message`, pas forcément traduit | ⛔️ Ignorer dans du code neuf |
+| `code` (racine, **hors** `error`) | string | Une poignée d'endpoints "signaler" (`CANNOT_REPORT_USER`, `CANNOT_REPORT_OUTING`, `CANNOT_REPORT_DONATION`, `CANNOT_REPORT_ENTOURAGE`) | Duplique exactement `error.code` | ⛔️ Ignorer, lire `error.code` à la place |
+
+**Pourquoi `reasons`/`errors` ne sont pas simplement traduits comme `error.message` :** ils viennent de `record.errors.full_messages`, généré par le système de validation de Rails lui-même, indépendant de notre `render_error`. Le localiser proprement (un message par champ, dans la langue de l'utilisateur) demanderait de faire transiter chaque validation par `I18n.with_locale(user.lang)` au moment de la sauvegarde — un chantier à part, pas fait ici. En attendant, ce texte reste en français quel que soit `user.lang`.
+
+**Une exception à la règle "`error` toujours présent" :** `POST /api/v1/entourages/:id/invitations` (envoi groupé de SMS) renvoie, en cas d'échec partiel, `{"successfull_numbers": [...], "failed_numbers": [...]}` en HTTP 400 - ce n'est pas une erreur unique mais un résultat mixte, donc pas d'objet `error`. À traiter au cas par cas sur cet endpoint précis.
+
 ## Registre des codes
 
 Six codes génériques, centralisés dans `lib/api/v1/error_codes.rb` :
@@ -115,6 +132,8 @@ Statuts volontairement **non touchés**, faute de preuve d'un problème réel ou
   }
 }
 ```
+
+Sur ce type d'erreur (`VALIDATION_ERROR`), préférez afficher `reasons` (ici : « Title can't be blank ») plutôt que le générique `error.message` - c'est la seule façon de dire à l'utilisateur *quel* champ corriger.
 
 **401 conservé — vrai échec d'authentification**
 
