@@ -101,7 +101,11 @@ module V1
       def reaction_id
         return false unless scope[:user].present?
 
-        object.reactions.user_reaction_id(scope[:user].id)
+        if scope.key?(:reaction_ids_by_message)
+          scope[:reaction_ids_by_message][object.id]
+        else
+          object.reactions.user_reaction_id(scope[:user].id)
+        end
       end
 
       private
