@@ -12,7 +12,7 @@ module Api
           return render_error(
             code: 'MISSING_PHONE_NUMBERS',
             message: 'phone_numbers must be an array of phone numbers',
-            status: :bad_request
+            status: :unprocessable_entity
           ) if phone_numbers.blank?
 
           sms_invite = EntourageServices::BulkInvitationService.new(phone_numbers: phone_numbers,
@@ -28,7 +28,7 @@ module Api
             end
 
             on.not_authorised do
-              render json: {message: 'You cannot invite another user'}, status: 403
+              render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {message: 'You cannot invite another user'})
             end
           end
         end
@@ -42,7 +42,8 @@ module Api
 
         def restrict_group_types!
           unless @entourage.community == 'entourage' && ['action', 'outing', 'group'].include?(@entourage.group_type)
-            render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+            message = "This operation is not available for groups of type '#{@entourage.group_type}'"
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, message: message, legacy: {message: message})
           end
         end
 

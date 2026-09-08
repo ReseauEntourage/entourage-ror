@@ -1,16 +1,10 @@
 module Api
   module V1
     module Entourages
-      class UnauthorisedEntourage < StandardError; end
-
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_entourage_or_handle_conversation_uuid, only: [:index, :create]
         before_action :set_entourage, except: [:index, :create]
         before_action :authorised_to_see_messages?
-
-        rescue_from Api::V1::Entourages::UnauthorisedEntourage do |exception|
-          render json: {message: 'unauthorized : you are not accepted in this entourage'}, status: :unauthorized
-        end
 
         def index
           before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
@@ -44,7 +38,7 @@ module Api
             end
 
             on.failure do |message|
-              render json: {message: 'Could not create chat message', reasons: message.errors.full_messages}, status: :bad_request
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {message: 'Could not create chat message', reasons: message.errors.full_messages})
             end
           end
         end
@@ -81,7 +75,7 @@ module Api
         end
 
         def authorised_to_see_messages?
-          raise Api::V1::Entourages::UnauthorisedEntourage unless join_request
+          raise Api::V1::ForbiddenResourceError, 'unauthorized : you are not accepted in this entourage' unless join_request
         end
       end
     end

@@ -18,7 +18,7 @@ describe Api::V1::ChatMessagesController do
 
       context 'user is not creator' do
         before { patch :update, params: { id: chat_message.id, chat_message: { content: 'new content' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -47,7 +47,7 @@ describe Api::V1::ChatMessagesController do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: chat_message.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'active' }
     end
 

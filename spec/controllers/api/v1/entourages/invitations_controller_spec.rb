@@ -57,7 +57,7 @@ describe Api::V1::Entourages::InvitationsController do
         context 'invalid params' do
           before { post :create, params: { entourage_id: entourage.to_param, invite: {mode: 'SMS', phone_numbers: nil}, token: user.token } }
           it { expect(result).to eq('error'=>{'code'=>'MISSING_PHONE_NUMBERS', 'message'=>'phone_numbers must be an array of phone numbers'}) }
-          it { expect(response.code).to eq '400' }
+          it { expect(response.code).to eq '422' }
         end
 
 
