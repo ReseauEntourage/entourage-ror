@@ -9,7 +9,7 @@ module Api
         after_action :set_last_message_read, only: [:index]
 
         def index
-          messages = @smalltalk.chat_messages.includes(:translation, :user).ordered.page(page).per(per).reverse
+          messages = @smalltalk.chat_messages.includes(:translation, :user, :chat_message_reactions, :user_reactions).ordered.page(page).per(per).reverse
 
           render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request, user: current_user }
         end
@@ -70,7 +70,7 @@ module Api
 
         def comments
           post = @smalltalk.chat_messages.where(id: @chat_message.id).first
-          messages = post.children.order(created_at: :asc).includes(:translation, :user_reactions)
+          messages = post.children.order(created_at: :asc).includes(:translation, :user, :chat_message_reactions, :user_reactions)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request, user: current_user }
         end
