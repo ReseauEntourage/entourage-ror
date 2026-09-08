@@ -28,7 +28,7 @@ module Api
       def welcome
         @resource = Resource.find_by_tag(:welcome)
 
-        return render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
+        return render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find resource' }) unless @resource.present?
 
         render json: @resource, serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
@@ -38,13 +38,13 @@ module Api
       def set_resource
         @resource = Resource.find_by_id_through_context(params[:id], params)
 
-        render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find resource' }) unless @resource.present?
       end
 
       def set_resource_from_tag
         @resource = Resource.find_by_tag(params[:tag])
 
-        render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find resource' }) unless @resource.present?
       end
 
       def set_as_watched

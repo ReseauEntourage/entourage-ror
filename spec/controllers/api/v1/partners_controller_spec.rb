@@ -97,7 +97,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       before { params[:partner][:name] = nil }
       before { request }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
     end
 
     describe 'same address different name' do
@@ -124,7 +124,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
       before { request }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(422) }
     end
   end
 
@@ -144,7 +144,8 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     describe 'user is not a partner member' do
       let(:users) { [] }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
   end
 
@@ -167,7 +168,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
       before { request }
       before { user.reload }
 
-      it { expect(response.status).to(eq(400)) }
+      it { expect(response.status).to(eq(404)) }
       it { expect(user.partner_id).to be_nil }
     end
 
@@ -201,7 +202,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     describe 'invalid content_type' do
       let(:content_type) { 'image/wrong' }
 
-      it { expect(response.status).to(eq(400)) }
+      it { expect(response.status).to(eq(422)) }
     end
   end
 end

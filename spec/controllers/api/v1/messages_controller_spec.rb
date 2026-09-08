@@ -20,15 +20,16 @@ RSpec.describe Api::V1::MessagesController, type: :controller do
       subject { post 'create', params: { message: {content: ''} } }
 
       it { expect { subject }.to change {Message.count}.by(0) }
-      it 'returns 400' do
+      it 'returns 422' do
         subject
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(422)
       end
 
       it 'returns error mesage' do
         subject
         resp = JSON.parse(response.body)
         expect(resp['errors']).to eq(['Content doit être rempli(e)'])
+        expect(resp['error']['code']).to eq('VALIDATION_ERROR')
       end
     end
   end

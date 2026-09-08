@@ -32,12 +32,12 @@ module Api
             user: current_user
           }
         else
-          render_error code: 'INVALID_PARTNER', message: partner.errors.full_messages, status: 400
+          render_error code: 'INVALID_PARTNER', message: partner.errors.full_messages, status: :unprocessable_entity
         end
       end
 
       def update
-        return render json: { message: 'unauthorized' }, status: :unauthorized unless @partner.user_ids.include?(current_user.id)
+        return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }) unless @partner.user_ids.include?(current_user.id)
 
         @partner.assign_attributes(partner_params)
 
@@ -49,21 +49,21 @@ module Api
 
           render json: @partner, status: 200, serializer: ::V1::PartnerSerializer, scope: { user: current_user }
         else
-          render json: {
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
             message: 'Could not update partner', reasons: @partner.errors.full_messages
-          }, status: 400
+          })
         end
       end
 
       def join
         partner_id = params.require(:partner_id)
 
-        return render_error code: 'PARTNER_NOT_FOUND', message: 'Partner not found', status: 400 unless Partner.exists?(partner_id)
+        return render_error code: 'PARTNER_NOT_FOUND', message: 'Partner not found', status: :not_found unless Partner.exists?(partner_id)
 
         if current_user.update(partner_id: partner_id)
           render json: {}, status: 200
         else
-          render_error(code: 'INVALID_PARTNER_JOIN', message: current_user.errors.full_messages, status: 400)
+          render_error(code: 'INVALID_PARTNER_JOIN', message: current_user.errors.full_messages, status: :unprocessable_entity)
         end
       end
 
@@ -76,7 +76,7 @@ module Api
 
         unless params[:content_type].in? allowed_types
           type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+          return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: :unprocessable_entity)
         end
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
@@ -89,9 +89,9 @@ module Api
       private
 
       def set_partner
+        # Partner.find raises ActiveRecord::RecordNotFound when missing, handled
+        # globally by Api::V1::BaseController as a 404/NOT_FOUND response.
         @partner = Partner.find(params[:id])
-
-        render json: { message: 'Could not find partner' }, status: 400 unless @partner.present?
       end
 
       def partner_params

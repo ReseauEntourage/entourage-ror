@@ -10,7 +10,11 @@ module Api
         if contact_subscription.save
           render json: contact_subscription, status: 201, serializer: ::V1::ContactSubscriptionSerializer
         else
-          render json: { message: "Could not create contact subscription: #{contact_subscription.errors.full_messages}" }, status: 400
+          render_error(
+            status: :unprocessable_entity,
+            code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+            legacy: { message: "Could not create contact subscription: #{contact_subscription.errors.full_messages}" }
+          )
         end
       end
 

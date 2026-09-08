@@ -13,14 +13,18 @@ module Api
       end
 
       def destroy
-        return render json: { message: 'unauthorized' }, status: :unauthorized if @inapp_notification.user != current_user
+        if @inapp_notification.user != current_user
+          return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' })
+        end
 
         if @inapp_notification.update_attribute(:completed_at, Time.zone.now)
           render json: @inapp_notification, status: 200, serializer: ::V1::InappNotificationSerializer
         else
-          render json: {
-            message: 'Could not update inapp_notification', reasons: @inapp_notification.errors.full_messages
-          }, status: 400
+          render_error(
+            status: :unprocessable_entity,
+            code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+            legacy: { message: 'Could not update inapp_notification', reasons: @inapp_notification.errors.full_messages }
+          )
         end
       end
 

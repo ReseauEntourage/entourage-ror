@@ -162,7 +162,7 @@ describe Api::V1::ResourcesController, type: :controller do
       context 'using id fails' do
         before { get :show, params: { token: user.token, id: resource.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
 
@@ -207,7 +207,7 @@ describe Api::V1::ResourcesController, type: :controller do
     context 'outing tag' do
       let(:tag) { :outing }
 
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 404 }
     end
   end
 end

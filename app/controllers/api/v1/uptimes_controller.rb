@@ -16,9 +16,9 @@ module Api
 
         body = JSON.parse(response.read_body)
 
-        return render json: {
+        return render_error(status: :bad_request, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
           message: :no_places
-        }, status: :bad_request unless body.has_key?('places')
+        }) unless body.has_key?('places')
 
         render json: { message: :ok, count: body['places'].count }, status: :ok
       end
@@ -31,19 +31,20 @@ module Api
 
         body = JSON.parse(response.body)
 
-        return render json: {
+        return render_error(status: :bad_request, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
           message: :no_place
-        }, status: :bad_request unless body.has_key?('lieu_id')
+        }) unless body.has_key?('lieu_id')
 
         render json: { message: :ok, lieu_id: body['lieu_id'] }, status: :ok
       end
 
       private
 
+      # Internal ops/monitoring endpoint, not called by the mobile apps - kept at 401.
       def authenticate_super_admin!
-        render json: {
+        render_error(status: :unauthorized, code: Api::V1::ErrorCodes::UNAUTHORIZED, legacy: {
           message: :unauthorized
-        }, status: :unauthorized unless current_user && current_user.super_admin?
+        }) unless current_user && current_user.super_admin?
       end
 
       def validate_response! response
@@ -52,15 +53,15 @@ module Api
       end
 
       def rescue_parse_error
-        render json: { message: :not_parsable }, status: :bad_request
+        render_error(status: :bad_request, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: :not_parsable })
       end
 
       def rescue_unauthorized error
-        render json: { message: error.message }, status: :unauthorized
+        render_error(status: :unauthorized, code: Api::V1::ErrorCodes::UNAUTHORIZED, legacy: { message: error.message })
       end
 
       def rescue_bad_request error
-        render json: { message: error.message }, status: :bad_request
+        render_error(status: :bad_request, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: error.message })
       end
     end
   end

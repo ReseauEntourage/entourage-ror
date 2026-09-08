@@ -10,7 +10,7 @@ module Api
           AdminMailer.received_message(message).deliver_later
           render json: message.as_json, status: 201
         else
-          render json: {errors: message.errors.full_messages }, status: 400
+          render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {errors: message.errors.full_messages})
         end
       end
 

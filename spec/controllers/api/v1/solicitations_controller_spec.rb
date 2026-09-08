@@ -293,7 +293,7 @@ describe Api::V1::SolicitationsController, type: :controller do
           latitude: 4.567
         }, token: user.token } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(Solicitation.count).to eq(0) }
         it { expect(subject).to have_key('message') }
         it { expect(subject).to have_key('reasons') }
@@ -339,7 +339,7 @@ describe Api::V1::SolicitationsController, type: :controller do
     context 'signed in' do
       context 'user is not creator' do
         before { patch :update, params: { id: solicitation.to_param, solicitation: { title: 'new title' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
       end
 
       context 'user is creator' do
@@ -393,7 +393,7 @@ describe Api::V1::SolicitationsController, type: :controller do
       context 'using id fails' do
         before { get :show, params: { token: user.token, id: solicitation.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -419,7 +419,7 @@ describe Api::V1::SolicitationsController, type: :controller do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: params }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'open' }
     end
 
@@ -473,7 +473,7 @@ describe Api::V1::SolicitationsController, type: :controller do
         expect_any_instance_of(SlackServices::SignalSolicitation).not_to receive(:notify)
         post 'report', params: { token: user.token, id: solicitation.id, report: { signals: [], message: 'bar' } }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
     end
   end
 end

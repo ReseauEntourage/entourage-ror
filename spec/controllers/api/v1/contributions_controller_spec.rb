@@ -293,10 +293,11 @@ describe Api::V1::ContributionsController, type: :controller do
           section: 'clothes'
         }, token: user.token } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(422) }
         it { expect(Contribution.count).to eq(0) }
         it { expect(subject).to have_key('message') }
         it { expect(subject).to have_key('reasons') }
+        it { expect(subject['error']['code']).to eq('VALIDATION_ERROR') }
       end
 
       context 'with all required parameters' do
@@ -346,7 +347,8 @@ describe Api::V1::ContributionsController, type: :controller do
 
         before { patch :update, params: { id: contribution.to_param, contribution: { title: 'new title' }, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
+        it { expect(JSON.parse(response.body)['error']['code']).to eq('FORBIDDEN') }
       end
 
       context 'user is creator' do
@@ -406,7 +408,7 @@ describe Api::V1::ContributionsController, type: :controller do
       context 'using id fails' do
         before { get :show, params: { token: user.token, id: contribution.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
       end
     end
   end
@@ -432,7 +434,7 @@ describe Api::V1::ContributionsController, type: :controller do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: params }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'open' }
     end
 
@@ -486,7 +488,8 @@ describe Api::V1::ContributionsController, type: :controller do
         expect_any_instance_of(SlackServices::SignalContribution).not_to receive(:notify)
         post 'report', params: { token: user.token, id: contribution.id, report: { signals: [], message: 'bar' } }
       }
-      it { expect(response.status).to eq 400 }
+      it { expect(response.status).to eq 422 }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('CANNOT_REPORT_DONATION') }
     end
   end
 
