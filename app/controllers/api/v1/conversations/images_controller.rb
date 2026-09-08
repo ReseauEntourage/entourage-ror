@@ -28,19 +28,19 @@ module Api
         def set_conversation
           @conversation = Entourage.find_by_id_through_context(params[:conversation_id], params)
 
-          render json: { message: 'Could not find conversation' }, status: 400 unless @conversation.present?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find conversation' }) unless @conversation.present?
         end
 
         def set_chat_message
           @chat_message = @conversation.chat_messages.find_by_id(params[:id])
 
-          return render json: { message: 'Could not find chat_message in that conversation' }, status: 400 unless @chat_message.present?
+          return render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find chat_message in that conversation' }) unless @chat_message.present?
 
-          render json: { message: 'Image is not visible' }, status: 400 unless @chat_message.visible?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Image is not visible' }) unless @chat_message.visible?
         end
 
         def ensure_is_member
-          render json: { message: 'unauthorized' }, status: :unauthorized unless join_request
+          render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }) unless join_request
         end
 
         def join_request

@@ -29,7 +29,8 @@ describe Api::V1::Conversations::ImagesController do
     context 'signed in but not in conversation' do
       before { get :index, params: { conversation_id: conversation.to_param, token: user.token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context "signed and in conversation" do
@@ -64,7 +65,8 @@ describe Api::V1::Conversations::ImagesController do
     context 'signed in but not in conversation' do
       before { get :show, params: { conversation_id: conversation.to_param, id: chat_message_1.to_param, token: user.token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'signed in, in conversation but not a chat_message from conversation' do
@@ -72,7 +74,8 @@ describe Api::V1::Conversations::ImagesController do
 
       before { get :show, params: { conversation_id: conversation.to_param, id: chat_message_3.to_param, token: user.token } }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(404) }
+      it { expect(result['error']['code']).to eq('NOT_FOUND') }
     end
 
     context 'signed in, in conversation and a chat_message from conversation' do

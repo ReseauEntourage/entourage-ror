@@ -24,7 +24,7 @@ module Api
       def set_smalltalk
         @smalltalk = Smalltalk.find_by_id_through_context(params[:id], params)
 
-        render json: { message: 'Could not find smalltalk' }, status: 400 unless @smalltalk.present?
+        render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find smalltalk' }) unless @smalltalk.present?
       end
 
       def page
@@ -32,7 +32,7 @@ module Api
       end
 
       def ensure_is_member
-        render json: { message: 'unauthorized user' }, status: :unauthorized unless join_request
+        render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized user' }) unless join_request
       end
 
       def join_request

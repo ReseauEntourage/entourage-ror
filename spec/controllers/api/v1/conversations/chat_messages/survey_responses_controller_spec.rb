@@ -23,7 +23,8 @@ describe Api::V1::Conversations::ChatMessages::SurveyResponsesController do
       context 'no survey' do
         let(:chat_message) { create(:chat_message, messageable: conversation) }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(404) }
+        it { expect(result['error']['code']).to eq('NOT_FOUND') }
       end
 
       context 'survey' do
@@ -53,7 +54,8 @@ describe Api::V1::Conversations::ChatMessages::SurveyResponsesController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'member' do
@@ -98,7 +100,8 @@ describe Api::V1::Conversations::ChatMessages::SurveyResponsesController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'member' do
@@ -114,7 +117,8 @@ describe Api::V1::Conversations::ChatMessages::SurveyResponsesController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(404) }
+          it { expect(result['error']['code']).to eq('NOT_FOUND') }
         end
       end
 

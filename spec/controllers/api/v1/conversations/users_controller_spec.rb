@@ -131,7 +131,8 @@ describe Api::V1::Conversations::UsersController do
       context 'join conversation with id' do
         before { post :create, params: { conversation_id: conversation.id, token: user.token } }
 
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
+        it { expect(result['error']['code']).to eq('FORBIDDEN') }
         it { expect(conversation.member_ids).to match_array([conversation.user_id]) }
       end
 

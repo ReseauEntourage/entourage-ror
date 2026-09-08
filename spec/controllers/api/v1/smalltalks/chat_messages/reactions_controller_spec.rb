@@ -101,7 +101,8 @@ describe Api::V1::Smalltalks::ChatMessages::ReactionsController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'member' do
@@ -125,7 +126,8 @@ describe Api::V1::Smalltalks::ChatMessages::ReactionsController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(422) }
+          it { expect(result['error']['code']).to eq('VALIDATION_ERROR') }
         end
 
         context do
@@ -143,7 +145,8 @@ describe Api::V1::Smalltalks::ChatMessages::ReactionsController do
     context 'not member' do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'member' do
@@ -159,7 +162,8 @@ describe Api::V1::Smalltalks::ChatMessages::ReactionsController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(404) }
+          it { expect(result['error']['code']).to eq('NOT_FOUND') }
         end
       end
 

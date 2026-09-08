@@ -166,7 +166,8 @@ describe Api::V1::Conversations::ChatMessagesController do
       context 'using id fails' do
         before { get :index, params: { conversation_id: conversation.id, token: user.token, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
+        it { expect(result['error']['code']).to eq('NOT_FOUND') }
       end
     end
   end
@@ -186,7 +187,8 @@ describe Api::V1::Conversations::ChatMessagesController do
         conversation_id: conversation.to_param, chat_message: { content: 'foobar', message_type: :text }, token: user.token
       } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'signed in and in conversation' do
@@ -319,7 +321,8 @@ describe Api::V1::Conversations::ChatMessagesController do
 
       context 'user is not creator' do
         before { patch :update, params: { id: chat_message.id, conversation_id: conversation.id, chat_message: { content: 'new content' }, token: user.token } }
-        it { expect(response.status).to eq(401) }
+        it { expect(response.status).to eq(403) }
+        it { expect(result['error']['code']).to eq('FORBIDDEN') }
       end
 
       context 'user is creator' do
@@ -348,8 +351,9 @@ describe Api::V1::Conversations::ChatMessagesController do
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: chat_message.id, conversation_id: conversation.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      it { expect(response.status).to eq 403 }
       it { expect(result.status).to eq 'active' }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq('FORBIDDEN') }
     end
 
     describe 'authorized' do
@@ -469,7 +473,8 @@ describe Api::V1::Conversations::ChatMessagesController do
       context 'using id fails' do
         before { get :comments, params: { token: user.token, conversation_id: conversation.to_param, id: chat_message_1.id, deeplink: true } }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response.status).to eq 404 }
+        it { expect(result['error']['code']).to eq('NOT_FOUND') }
       end
     end
   end
@@ -490,7 +495,8 @@ describe Api::V1::Conversations::ChatMessagesController do
 
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(403) }
+      it { expect(result['error']['code']).to eq('FORBIDDEN') }
     end
 
     context 'signed in and in conversation' do

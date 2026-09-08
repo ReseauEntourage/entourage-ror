@@ -26,25 +26,25 @@ module Api
             end
 
             on.failure do |message|
-              render json: {
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
                 message: 'Could not create chat message', reasons: message.errors.full_messages
-              }, status: :bad_request
+              })
             end
           end
         end
 
         def update
-          return render json: { message: 'unauthorized' }, status: :unauthorized if @chat_message.user != current_user
-          return render json: { message: 'chat_message is already deleted' }, status: :bad_request if @chat_message.deleted?
+          return render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }) if @chat_message.user != current_user
+          return render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: { message: 'chat_message is already deleted' }) if @chat_message.deleted?
 
           @chat_message.assign_attributes(chat_message_update_params.merge({ status: :updated }))
 
           if @chat_message.save
             render json: @chat_message, status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
           else
-            render json: {
+            render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
               message: 'Could not update chat_message', reasons: @chat_message.errors.full_messages
-            }, status: 400
+            })
           end
         end
 
@@ -55,15 +55,15 @@ module Api
             end
 
             on.failure do |chat_message|
-              render json: {
+              render_error(status: :unprocessable_entity, code: Api::V1::ErrorCodes::VALIDATION_ERROR, legacy: {
                 message: 'Could not delete chat_message', reasons: chat_message.errors.full_messages
-              }, status: :bad_request
+              })
             end
 
             on.not_authorized do
-              render json: {
+              render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: {
                 message: 'You are not authorized to delete this chat_message'
-              }, status: :unauthorized
+              })
             end
           end
         end
@@ -80,7 +80,7 @@ module Api
 
           unless params[:content_type].in? allowed_types
             type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
-            return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: 400)
+            return render_error(code: 'INVALID_CONTENT_TYPE', message: "Content-Type must be #{type_list}.", status: :unprocessable_entity)
           end
 
           extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
@@ -93,7 +93,7 @@ module Api
         private
 
         def ensure_is_member
-          render json: { message: 'unauthorized' }, status: :unauthorized unless join_request
+          render_error(status: :forbidden, code: Api::V1::ErrorCodes::FORBIDDEN, legacy: { message: 'unauthorized' }) unless join_request
         end
 
         def chat_messages_params
@@ -107,14 +107,14 @@ module Api
         def set_conversation
           @conversation = Entourage.find_by_id_through_context(params[:conversation_id], params)
 
-          render json: { message: 'Could not find conversation' }, status: 400 unless @conversation.present?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find conversation' }) unless @conversation.present?
         end
 
         def set_chat_message
           # we want to force chat_message to belong to Outing
           @chat_message = ChatMessage.where(messageable_type: :Entourage).find_by_id_through_context(params[:chat_message_id] || params[:id], params)
 
-          render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
+          render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find chat_message' }) unless @chat_message.present?
         end
 
         def join_request
