@@ -9,9 +9,9 @@ module Api
         after_action :set_last_message_read, only: [:index]
 
         def index
-          messages = @conversation.chat_messages.includes(:translation, :user, :chat_message_reactions, :user_reactions).ordered.page(page).per(per).reverse
+          messages = @conversation.chat_messages.includes(:translation, :user, :chat_message_reactions).ordered.page(page).per(per).reverse
 
-          render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request, user: current_user }
+          render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request, user: current_user, reaction_ids_by_message: ChatMessage.reaction_ids_by_message(messages, current_user) }
         end
 
         def create
@@ -70,9 +70,9 @@ module Api
 
         def comments
           post = @conversation.chat_messages.where(id: @chat_message.id).first
-          messages = post.children.order(created_at: :asc).includes(:translation, :user, :chat_message_reactions, :user_reactions)
+          messages = post.children.order(created_at: :asc).includes(:translation, :user, :chat_message_reactions).to_a
 
-          render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request, user: current_user }
+          render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request, user: current_user, reaction_ids_by_message: ChatMessage.reaction_ids_by_message(messages, current_user) }
         end
 
         def presigned_upload
