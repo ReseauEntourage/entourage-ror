@@ -44,7 +44,11 @@ module Api
           head :no_content
         rescue => e
           Sentry.capture_exception(e)
-          render json: {message: 'Could not create user_application', reasons: user_application.errors.full_messages}, status: :bad_request
+          render_error(
+            code: Api::V1::ErrorCodes::VALIDATION_ERROR,
+            legacy: {message: 'Could not create user_application', reasons: user_application.errors.full_messages},
+            status: :unprocessable_entity
+          )
         end
       end
 
