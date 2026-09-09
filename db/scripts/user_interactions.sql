@@ -71,6 +71,7 @@ CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_type ON stats.
 CREATE INDEX IF NOT EXISTS index_user_interactions_on_interaction_at ON stats.user_interactions (interaction_at);
 CREATE INDEX IF NOT EXISTS index_user_interactions_on_object ON stats.user_interactions (object_type, object_id);
 
+truncate table stats.user_interactions;
 
 -- ---------------------------------------------------------------------
 -- 0bis. Périmètre utilisateurs : mêmes utilisateurs que stats.user_profile

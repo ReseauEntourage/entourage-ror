@@ -53,7 +53,7 @@ CREATE INDEX IF NOT EXISTS index_uip_on_user_id_2 ON stats.user_interaction_pair
 CREATE INDEX IF NOT EXISTS index_uip_on_interaction_type ON stats.user_interaction_pairs (interaction_type);
 CREATE INDEX IF NOT EXISTS index_uip_on_context ON stats.user_interaction_pairs (context_type, context_id);
 
-
+truncate table stats.user_interaction_pairs;
 -- ---------------------------------------------------------------------
 -- 0bis. Périmètre utilisateurs.
 --       Même base que stats.user_profile / stats.user_interactions
