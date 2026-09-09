@@ -17,16 +17,15 @@
       <th style="width: 10px"></th>
       <th>Prénom / Nom</th>
       <th></th>
-      <th>Statut</th>
+      <th>Genre</th>
       <th>Profil</th>
-      <th>Email</th>
-      <th>Téléphone</th>
+      <th>Date d'adhésion</th>
       <th></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @requests.sort_by(&:created_at).each do |request| %>
+    <% @requests.sort_by(&:accepted_at).reverse.each do |request| %>
       <% member = request.user %>
       <tr>
         <td>
@@ -45,7 +44,7 @@
             <span class="label label-default">invitation</span>
           <% end %>
         </td>
-        <td><%= user_state_label(member.validation_status) %></td>
+        <td><%= UserServices::Options::GENDERS[member.gender.to_s.to_sym] || UserServices::Options::GENDERS[:secret] %></td>
 
         <td>
           <% if member.targeting_profile.present? %>
@@ -59,8 +58,7 @@
           <% end %>
         </td>
 
-        <td><%= member.email %></td>
-        <td><%= member.phone %></td>
+        <td><%= l request.accepted_at, format: "%-d %B %Y à %H h %M" if request.accepted_at %></td>
         <td>
           <% unless member == @entourage.user %>
             <%= link_to "Désinscrire", admin_entourage_user_path(member.id, entourage_id: @entourage.id), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de vouloir désinscrire ce membre ?" } %>
