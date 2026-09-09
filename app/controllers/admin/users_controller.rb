@@ -330,7 +330,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :slack_id, :interest_list, interests: [])
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :slack_id, :interest_list, :gender, interests: [])
     end
 
     def email_preferences_params
