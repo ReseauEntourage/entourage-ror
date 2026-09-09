@@ -124,7 +124,11 @@ module Admin
     end
 
     def show_members
-      @members = @neighborhood.members.page(page).per(per)
+      @requests = @neighborhood.join_requests
+        .accepted
+        .includes(:user)
+        .order(accepted_at: :desc)
+        .page(page).per(per)
     end
 
     def show_outings
