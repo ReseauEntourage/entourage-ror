@@ -479,6 +479,37 @@ RSpec.describe ConversationChannel, type: :channel do
     end
   end
 
+  # ─── Typing ──────────────────────────────────────────────────────────────────
+
+  describe "#typing" do
+    context "abonné et membre accepté" do
+      before do
+        stub_connection current_user: user
+        join(outing)
+        subscribe(instance_type: "Outing", instance_id: outing.id)
+      end
+
+      it "diffuse un événement typing sur le stream de l'outing" do
+        expect {
+          perform :typing
+        }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
+          .with(hash_including(
+            type:          "typing",
+            user_id:       user.id,
+            instance_type: "User",
+            instance_id:   user.id
+          ))
+      end
+
+      it "inclut l'id de l'utilisateur dans les données" do
+        expect {
+          perform :typing
+        }.to have_broadcasted_to("conversation:Outing:#{outing.id}")
+          .with(hash_including(data: hash_including("user_id" => user.id)))
+      end
+    end
+  end
+
   # ─── Déconnexion ─────────────────────────────────────────────────────────────
 
   describe "unsubscribed" do
