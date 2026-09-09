@@ -9,11 +9,22 @@ class ConversationChannel < ApplicationCable::Channel
     reject and return unless instance
     reject and return unless member?(instance)
 
+    @instance = instance
     stream_from self.class.stream_for(instance)
   end
 
   def unsubscribed
     stop_all_streams
+  end
+
+  # Appelé par le client (perform :typing) pendant que l'utilisateur tape son
+  # message. Pas d'événement "stop" explicite : le client réémet régulièrement
+  # tant qu'il tape, et les destinataires masquent l'indicateur après un
+  # timeout local (ex: ~5s) sans nouvel événement.
+  def typing
+    return unless @instance
+
+    self.class.broadcast_typing(@instance, current_user)
   end
 
   class << self
@@ -53,6 +64,17 @@ class ConversationChannel < ApplicationCable::Channel
 
     def broadcast_member_left(join_request)
       broadcast_membership_event(join_request, "member_left")
+    end
+
+    def broadcast_typing(instance, user)
+      broadcast_event(
+        instance,
+        type:          "typing",
+        user_id:       user.id,
+        instance_type: "User",
+        instance_id:   user.id,
+        data:          { user_id: user.id }
+      )
     end
 
     def stream_for(instance)
