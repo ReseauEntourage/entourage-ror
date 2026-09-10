@@ -91,6 +91,14 @@ module Admin
       redirect_to admin_partner_path(user.partner)
     end
 
+    def search
+      @partners = Partner.no_staff.search_by(params[:query]).limit(25).order(:name)
+
+      respond_to do |format|
+        format.json { render json: @partners.map { |partner| { id: partner.id, name: partner.name, address: partner.address } } }
+      end
+    end
+
     private
 
     def partner_params

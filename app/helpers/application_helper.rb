@@ -76,4 +76,50 @@ module ApplicationHelper
   def user_option_label(user)
     "#{user.first_name} #{user.last_name} (#{user.phone})"
   end
+
+  def source_status_label(status)
+    case status
+    when 'exploitable'     then 'Exploitable'
+    when 'not_exploitable' then 'Non exploitable'
+    else                        'Non vérifié'
+    end
+  end
+
+  def select_partner_tag(form_object_name, selected_partner, html_options = {})
+    options = if selected_partner
+      [[selected_partner.name, selected_partner.id]]
+    else
+      []
+    end
+
+    select_tag(
+      "#{form_object_name}[partner_id]",
+      options_for_select(options),
+      {
+        class: 'form-control partner-select',
+        multiple: false,
+        required: false,
+        data: { placeholder: 'association (nom)' }
+      }.merge(html_options)
+    )
+  end
+
+  def select_poi_tag(form_object_name, selected_poi, html_options = {})
+    options = if selected_poi
+      [[selected_poi.name, selected_poi.id]]
+    else
+      []
+    end
+
+    select_tag(
+      "#{form_object_name}[poi_id]",
+      options_for_select(options),
+      {
+        class: 'form-control poi-select',
+        multiple: false,
+        required: false,
+        data: { placeholder: 'lieu (POI)' }
+      }.merge(html_options)
+    )
+  end
 end

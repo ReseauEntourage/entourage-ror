@@ -71,7 +71,8 @@ describe Api::V1::PoisController, type: :controller do
             'languages'=>nil,
             'air_conditioned'=>nil,
             'partner_id'=>nil,
-            'category_ids'=>[poi.category_id]
+            'category_ids'=>[poi.category_id],
+            'events'=>[]
           })
         end
       end
@@ -139,9 +140,19 @@ describe Api::V1::PoisController, type: :controller do
           'languages' => nil,
           'air_conditioned' => nil,
           'partner_id' => nil,
-          'category_ids' => [poi.category_id]
+          'category_ids' => [poi.category_id],
+          'events' => []
         }
       )}
+    end
+
+    describe 'show with a linked upcoming event' do
+      let(:poi) { create :poi }
+      let!(:event) { create(:open_agenda_event, open_agenda_source: create(:open_agenda_source), poi: poi, starts_at: 1.day.from_now, title: 'Café des parents') }
+      before { get 'show', params: { id: poi.id, token: user.token } }
+
+      it { expect(JSON.parse(response.body)['poi']['events'].map { |e| e['id'] }).to eq([event.id]) }
+      it { expect(JSON.parse(response.body)['poi']['events'].first['title']).to eq('Café des parents') }
     end
   end
 

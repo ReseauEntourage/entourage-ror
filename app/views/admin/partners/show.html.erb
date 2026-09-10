@@ -78,6 +78,25 @@
           </tr>
         <% end %>
       </table>
+
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Agendas OpenAgenda liés</div>
+        <%= link_to "Lier un agenda OpenAgenda", new_admin_open_agenda_source_path(partner_id: @partner.id), class: "btn btn-default" %>
+      </div>
+
+      <% if @partner.open_agenda_sources.any? %>
+        <table class="table">
+          <% @partner.open_agenda_sources.each do |source| %>
+            <tr>
+              <td><%= link_to source.name, [:admin, source] %></td>
+              <td><%= render partial: 'admin/open_agenda_sources/status_badge', locals: { source: source } %></td>
+              <td><%= source.upcoming_events_count %> évén. à venir</td>
+            </tr>
+          <% end %>
+        </table>
+      <% else %>
+        <p class="text-muted">Aucun agenda OpenAgenda lié à cette association pour le moment.</p>
+      <% end %>
     </div>
   </div>
 </div>

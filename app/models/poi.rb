@@ -9,12 +9,20 @@ class Poi < ApplicationRecord
   validates :partner_id, presence: true, allow_nil: true
   belongs_to :category, optional: true
   has_and_belongs_to_many :categories, optional: true
+  has_many :open_agenda_events, dependent: :nullify
+  has_many :open_agenda_sources, dependent: :nullify
 
   geocoded_by :adress
 
   scope :validated, -> { where(validated: true) }
   scope :not_source_entourage, -> { where.not(source: Poi.sources[:entourage]) }
   scope :not_source_soliguide, -> { where.not(source: Poi.sources[:soliguide]) }
+
+  scope :search_by, -> (query) {
+    return unless query.present?
+
+    where("name ILIKE :q OR adress ILIKE :q", q: "%#{I18n.transliterate(query).strip}%")
+  }
 
   scope :with_category_ids, -> (category_ids) {
     return unless category_ids.present?
@@ -101,6 +109,10 @@ class Poi < ApplicationRecord
     end
 
     super category_ids
+  end
+
+  def upcoming_events
+    open_agenda_events.upcoming
   end
 
   #

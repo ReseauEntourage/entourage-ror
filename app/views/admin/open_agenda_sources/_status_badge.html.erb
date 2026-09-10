@@ -1,0 +1,8 @@
+<%
+  label_class = case source.status
+  when 'exploitable'     then 'label-success'
+  when 'not_exploitable' then 'label-danger'
+  else                        'label-default'
+  end
+%>
+<span class="label <%= label_class %>"><%= source_status_label(source.status) %></span>

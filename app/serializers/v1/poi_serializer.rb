@@ -23,6 +23,7 @@ module V1
     attribute :category_ids, if: :v2? || :default?
 
     has_one :category, serializer: V1::CategorySerializer, if: :v1_list? || :default?
+    has_many :upcoming_events, serializer: V1::OpenAgendaEventSerializer, key: :events, if: :v2? || :default?
 
     def v1_list?; version == :v1_list; end
     def v2_list?; version == :v2_list; end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_11_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -603,6 +603,47 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
     t.index ["last_join_request_id"], name: "index_old_user_denorms_on_last_join_request_id"
     t.index ["last_private_chat_message_id"], name: "index_old_user_denorms_on_last_private_chat_message_id"
     t.index ["user_id"], name: "index_old_user_denorms_on_user_id"
+  end
+
+  create_table "open_agenda_events", force: :cascade do |t|
+    t.integer "open_agenda_source_id", null: false
+    t.integer "source_event_uid", null: false
+    t.string "title"
+    t.text "description"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.string "location"
+    t.boolean "is_free"
+    t.string "organizer_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "poi_id"
+    t.float "latitude"
+    t.float "longitude"
+    t.index ["open_agenda_source_id", "source_event_uid"], name: "index_open_agenda_events_on_source_and_uid", unique: true
+    t.index ["poi_id"], name: "index_open_agenda_events_on_poi_id"
+    t.index ["starts_at"], name: "index_open_agenda_events_on_starts_at"
+  end
+
+  create_table "open_agenda_sources", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "agenda_uid"
+    t.integer "partner_id"
+    t.string "city"
+    t.string "status", default: "not_checked", null: false
+    t.datetime "last_checked_at"
+    t.datetime "last_synced_at"
+    t.text "last_error"
+    t.integer "upcoming_events_count", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "poi_id"
+    t.index ["agenda_uid"], name: "index_open_agenda_sources_on_agenda_uid", unique: true
+    t.index ["city"], name: "index_open_agenda_sources_on_city"
+    t.index ["partner_id"], name: "index_open_agenda_sources_on_partner_id"
+    t.index ["poi_id"], name: "index_open_agenda_sources_on_poi_id"
+    t.index ["status"], name: "index_open_agenda_sources_on_status"
   end
 
   create_table "openai_assistants", force: :cascade do |t|

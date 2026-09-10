@@ -27,4 +27,13 @@ describe Admin::PoisController do
     before { put :update, params: { id: poi.id, poi: { latitude: 1, longitude: 1, category_ids: [category_1.id, category_2.id] } } }
     it { expect(poi.reload.categories).to eq([category_1, category_2]) }
   end
+
+  describe 'GET #search' do
+    let!(:matching) { create(:poi, name: 'Épicerie solidaire du Breil', adress: '44100 Nantes') }
+    let!(:other) { create(:poi, name: 'Autre lieu', adress: '44100 Nantes') }
+
+    before { get :search, params: { query: 'Breil' }, format: :json }
+
+    it { expect(JSON.parse(response.body).map { |p| p['id'] }).to eq([matching.id]) }
+  end
 end

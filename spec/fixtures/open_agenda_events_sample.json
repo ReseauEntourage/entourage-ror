@@ -1,0 +1,15 @@
+{
+  "total": 1,
+  "success": true,
+  "events": [
+    {
+      "uid": 4509505,
+      "title": { "fr": "Café des parents" },
+      "description": { "fr": "Échanger sur la parentalité autour d'un café" },
+      "firstTiming": { "begin": "2099-12-31T09:00:00.000+01:00", "end": "2099-12-31T11:00:00.000+01:00" },
+      "location": { "name": "Médiathèque Jacques Demy", "address": "24 quai la Fosse", "city": "Nantes", "latitude": 47.2115, "longitude": -1.5615 },
+      "nm-gratuit": true,
+      "originAgenda": { "uid": 97150985, "title": "Bibliothèque municipale de Nantes" }
+    }
+  ]
+}
