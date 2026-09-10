@@ -1,0 +1,133 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+      <ol class="breadcrumb">
+        <li><%= link_to "Agendas OpenAgenda", admin_open_agenda_sources_path %></li>
+        <li><%= @open_agenda_source.name %></li>
+      </ol>
+
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">
+          <%= @open_agenda_source.name %>
+          <%= render partial: 'admin/open_agenda_sources/status_badge', locals: { source: @open_agenda_source } %>
+        </div>
+        <%= button_to "Synchroniser maintenant", sync_admin_open_agenda_source_path(@open_agenda_source), class: "btn btn-default" %>
+        <%= link_to "Modifier", edit_admin_open_agenda_source_path(@open_agenda_source), class: "btn btn-default" %>
+      </div>
+
+      <div class="row">
+        <div class="col-md-5">
+          <table class="table">
+            <tr>
+              <th style="width: 40%;">Ville</th>
+              <td><%= @open_agenda_source.city.presence || '—' %></td>
+            </tr>
+            <tr>
+              <th>Association liée</th>
+              <td>
+                <% if @open_agenda_source.partner %>
+                  <%= link_to @open_agenda_source.partner.name, [:admin, @open_agenda_source.partner] %>
+                <% else %>
+                  <span class="text-muted">Non mappée — </span>
+                  <%= link_to "modifier pour lier une association", edit_admin_open_agenda_source_path(@open_agenda_source) %>
+                <% end %>
+              </td>
+            </tr>
+            <tr>
+              <th>Lieu (POI)</th>
+              <td>
+                <% if @open_agenda_source.poi %>
+                  <%= link_to @open_agenda_source.poi.name, edit_admin_poi_path(@open_agenda_source.poi) %>
+                  <br><span class="text-muted">Tous les événements de cet agenda sont rattachés à ce lieu.</span>
+                <% else %>
+                  <span class="text-muted">Non renseigné — rattachement événement par événement par proximité géographique (<%= @open_agenda_source.open_agenda_events.where.not(poi_id: nil).count %>/<%= @open_agenda_source.open_agenda_events.count %> événements rattachés)</span>
+                <% end %>
+              </td>
+            </tr>
+            <tr>
+              <th>Agenda OpenAgenda</th>
+              <td>
+                <% if @open_agenda_source.agenda_uid? %>
+                  <a href="https://openagenda.com/agendas/<%= @open_agenda_source.agenda_uid %>" target="_blank" rel="noopener">uid <%= @open_agenda_source.agenda_uid %></a>
+                <% else %>
+                  <span class="text-muted">Aucun agenda identifié pour l'instant</span>
+                <% end %>
+              </td>
+            </tr>
+            <tr>
+              <th>Dernière vérification</th>
+              <td><%= @open_agenda_source.last_checked_at&.strftime('%d/%m/%Y %H:%M') || 'jamais' %></td>
+            </tr>
+            <tr>
+              <th>Dernière synchro réussie</th>
+              <td><%= @open_agenda_source.last_synced_at&.strftime('%d/%m/%Y %H:%M') || '—' %></td>
+            </tr>
+            <% if @open_agenda_source.last_error.present? %>
+              <tr>
+                <th>Dernière erreur</th>
+                <td class="text-danger"><%= @open_agenda_source.last_error %></td>
+              </tr>
+            <% end %>
+            <% if @open_agenda_source.notes.present? %>
+              <tr>
+                <th>Notes</th>
+                <td><%= simple_format(@open_agenda_source.notes) %></td>
+              </tr>
+            <% end %>
+          </table>
+
+          <%= link_to "Supprimer cette source", [:admin, @open_agenda_source], method: :delete, class: "text-danger", data: { confirm: "Supprimer la source \"#{@open_agenda_source.name}\" ?" } %>
+        </div>
+
+        <div class="col-md-7">
+          <h2>Calendrier des événements à venir (<%= @upcoming_events.size %>)</h2>
+
+          <% if @open_agenda_source.status != 'exploitable' %>
+            <p class="text-muted">
+              Cet agenda n'est pas marqué comme exploitable — synchronisez-le pour tenter de récupérer ses événements.
+            </p>
+          <% end %>
+
+          <% if @upcoming_events.empty? %>
+            <p class="text-muted">Aucun événement à venir dans cet agenda pour le moment.</p>
+          <% else %>
+            <% @upcoming_events.group_by { |event| event.starts_at.to_date }.each do |date, events_for_day| %>
+              <div style="margin-bottom: 18px;">
+                <strong><%= date.strftime('%A %d %B %Y').capitalize %></strong>
+                <table class="table" style="margin-top: 6px;">
+                  <% events_for_day.each do |event| %>
+                    <tr>
+                      <td style="width: 90px;"><%= event.starts_at.strftime('%H:%Mh') %></td>
+                      <td>
+                        <strong><%= event.title %></strong>
+                        <% if event.is_free == true %>
+                          <span class="label label-success">Gratuit (déclaré)</span>
+                        <% elsif event.is_free == false %>
+                          <span class="label label-danger">Payant (déclaré)</span>
+                        <% else %>
+                          <span class="label label-default">Gratuité non renseignée</span>
+                        <% end %>
+                        <% if event.organizer_name.present? && event.organizer_name != @open_agenda_source.name %>
+                          <br><span class="text-muted">Organisateur d'origine : <%= event.organizer_name %></span>
+                        <% end %>
+                        <% if event.location.present? %>
+                          <br><span class="text-muted"><%= event.location %></span>
+                        <% end %>
+                        <% if event.poi.present? %>
+                          <br><span class="label label-info">POI : <%= link_to event.poi.name, edit_admin_poi_path(event.poi) %></span>
+                        <% end %>
+                        <% if event.description.present? %>
+                          <br><span class="text-muted"><%= truncate(event.description, length: 140) %></span>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

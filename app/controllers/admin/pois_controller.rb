@@ -61,6 +61,14 @@ module Admin
       redirect_to admin_pois_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (pois)" }
     end
 
+    def search
+      @pois = Poi.search_by(params[:query]).limit(25).order(:name)
+
+      respond_to do |format|
+        format.json { render json: @pois.map { |poi| { id: poi.id, name: poi.name, address: poi.adress } } }
+      end
+    end
+
     private
     def poi_params
       params.require(:poi).permit(:name, :adress, :description, :audience, :email, :website, :phone, :category_id, :validated, :longitude, :latitude, category_ids: [])

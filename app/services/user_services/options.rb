@@ -105,6 +105,13 @@ module UserServices
       end
     end
 
+    # overrides the generic setter above: an explicitly blank value must clear
+    # the field (nil), not store an empty string, so it stays distinguishable
+    # from the "secret" (Non renseigné) value
+    def gender=(value)
+      options['gender'] = value.presence
+    end
+
     private
 
     def cast_value(value, type)

@@ -12,6 +12,7 @@ class Partner < ApplicationRecord
   has_many :followers, through: :followings, source: :user
   has_many :partner_invitations, dependent: :delete_all
   has_many :partner_join_requests, dependent: :delete_all
+  has_many :open_agenda_sources, dependent: :nullify
   has_one :poi, dependent: :delete
 
   validates :name, presence: true

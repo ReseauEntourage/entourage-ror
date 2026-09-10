@@ -28,6 +28,16 @@
       </div>
 
       <div class="control-group">
+        <%= f.label :gender, "Genre", class: "control-label" %>
+        <div class="controls">
+          <%= f.select :gender,
+            [:male, :female, :secret].map { |key| [UserServices::Options::GENDERS[key], key] },
+            { include_blank: "(Non défini)" }
+          %>
+        </div>
+      </div>
+
+      <div class="control-group">
         <%= f.label :about, class: "control-label" %>
         <div class="controls">
           <%= f.text_area :about, class: "form-control", maxlength: 200 %>

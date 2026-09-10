@@ -1,0 +1,102 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @open_agenda_source } %>
+
+<%= form_for [:admin, @open_agenda_source] do |f| %>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="form-group">
+        <%= f.label :name, "Nom de l'agenda" %>
+        <%= f.text_field :name, required: true, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :agenda_uid, "Identifiant d'agenda OpenAgenda (UID)" %>
+        <%= f.number_field :agenda_uid, class: "form-control", placeholder: "ex. 82470621" %>
+        <p class="help-block">Trouvable via la recherche <code>/v2/agendas?search=...</code> de l'API OpenAgenda, ou dans l'URL de l'agenda sur openagenda.com. Laisser vide si aucun agenda n'a encore été trouvé pour cette structure.</p>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag :partner_id, "Association liée (dans notre base)" %>
+        <%= select_partner_tag("open_agenda_source", @open_agenda_source.partner) %>
+        <p class="help-block">Laisser vide si l'association n'existe pas encore comme partenaire chez nous.</p>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag :poi_id, "Lieu (POI) associé à cet agenda" %>
+        <%= select_poi_tag("open_agenda_source", @open_agenda_source.poi) %>
+        <p class="help-block">À renseigner uniquement si cet agenda appartient en propre à un seul lieu solidaire (ex. un centre social qui gère son propre agenda). Tous les événements de l'agenda seront alors rattachés à ce POI. Laisser vide pour un agenda agrégateur multi-lieux (ex. agenda d'une métropole) : le rattachement se fera événement par événement, automatiquement, par proximité géographique.</p>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :notes, "Notes" %>
+        <%= f.text_area :notes, rows: 4, class: "form-control", placeholder: "Contexte : réseau d'agendas, fiabilité, remarques..." %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :city, "Ville" %>
+        <%= f.text_field :city, class: "form-control", placeholder: "Nantes" %>
+      </div>
+
+      <% unless @open_agenda_source.new_record? %>
+        <div class="form-group">
+          <label>Statut actuel</label>
+          <div><%= render partial: 'admin/open_agenda_sources/status_badge', locals: { source: @open_agenda_source } %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= f.submit (@open_agenda_source.new_record? ? "Créer et tester l'agenda" : "Enregistrer"), class: "btn btn-success" %>
+  <%= link_to "Annuler", admin_open_agenda_sources_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  $(document).ready(function() {
+    $('.partner-select').select2({
+      placeholder: 'association (nom)',
+      minimumInputLength: 1,
+      ajax: {
+        url: '/partners/search',
+        dataType: 'json',
+        delay: 250,
+        data: function(params) {
+          return { query: params.term };
+        },
+        processResults: function(data) {
+          return {
+            results: data.map(function(partner) {
+              return { id: partner.id, text: partner.name + (partner.address ? ' — ' + partner.address : '') };
+            })
+          };
+        },
+        cache: true
+      }
+    });
+
+    $('.poi-select').select2({
+      placeholder: 'lieu (POI)',
+      minimumInputLength: 2,
+      ajax: {
+        url: '/pois/search',
+        dataType: 'json',
+        delay: 250,
+        data: function(params) {
+          return { query: params.term };
+        },
+        processResults: function(data) {
+          return {
+            results: data.map(function(poi) {
+              return { id: poi.id, text: poi.name + (poi.address ? ' — ' + poi.address : '') };
+            })
+          };
+        },
+        cache: true
+      }
+    });
+  });
+</script>

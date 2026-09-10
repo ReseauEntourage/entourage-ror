@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Agendas OpenAgenda", admin_open_agenda_sources_path %></li>
+        <li>Nouvelle source</li>
+      </ol>
+
+      <h1>Ajouter un agenda OpenAgenda</h1>
+      <p class="text-muted">
+        La création lance immédiatement une tentative de synchronisation pour vérifier si l'agenda est exploitable.
+      </p>
+
+      <%= render 'form' %>
+    </div>
+  </div>
+</div>

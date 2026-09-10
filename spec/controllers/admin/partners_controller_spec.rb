@@ -67,4 +67,13 @@ describe Admin::PartnersController do
       it { expect(partner.name).to eq('new_name')}
     end
   end
+
+  describe 'GET #search' do
+    let!(:matching) { create(:partner, name: 'Le Rocher Oasis des Cités', address: '75000 Paris') }
+    let!(:other) { create(:partner, name: 'Autre association', address: '75000 Paris') }
+
+    before { get :search, params: { query: 'Rocher' }, format: :json }
+
+    it { expect(JSON.parse(response.body).map { |p| p['id'] }).to eq([matching.id]) }
+  end
 end

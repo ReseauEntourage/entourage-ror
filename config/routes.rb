@@ -240,10 +240,17 @@ Rails.application.routes.draw do
       resources :partners do
         collection do
           post :change_admin_role
+          get :search
         end
         member do
           get '/edit/logo', action: :edit_logo
           get '/logo_upload_success', action: :logo_upload_success
+        end
+      end
+
+      resources :open_agenda_sources do
+        member do
+          post :sync
         end
       end
 
@@ -253,6 +260,7 @@ Rails.application.routes.draw do
         collection do
           get :export
           post :import
+          get :search
         end
       end
 

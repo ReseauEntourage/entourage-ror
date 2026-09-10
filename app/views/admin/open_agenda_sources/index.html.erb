@@ -1,0 +1,94 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Agendas OpenAgenda des associations</div>
+        <%= link_to "Ajouter un agenda", new_admin_open_agenda_source_path, class: "btn btn-success" %>
+      </div>
+
+      <p class="text-muted">
+        Une source par agenda OpenAgenda repéré chez une association ou un réseau de quartiers/métropole.
+        La gratuité (<code>nm-gratuit</code> ou équivalent) n'est renseignée par l'organisateur que sur certains événements —
+        vérifier la fiche de l'événement en cas de doute avant relais.
+      </p>
+
+      <div style="margin-bottom: 15px;">
+        <div class="btn-group" role="group">
+          <%= link_to "Toutes (#{@total_count})", admin_open_agenda_sources_path,
+                class: "btn btn-default #{'active' if @status_filter.nil? && @mapped_filter.nil?}" %>
+          <% OpenAgendaSource::STATUSES.each do |status| %>
+            <%= link_to "#{source_status_label(status)} (#{@counts[status] || 0})", admin_open_agenda_sources_path(status: status),
+                  class: "btn btn-default #{'active' if @status_filter == status}" %>
+          <% end %>
+        </div>
+
+        <div class="btn-group" role="group" style="margin-left: 10px;">
+          <%= link_to "Association liée", admin_open_agenda_sources_path(mapped: 'yes'), class: "btn btn-default #{'active' if @mapped_filter == 'yes'}" %>
+          <%= link_to "Sans association", admin_open_agenda_sources_path(mapped: 'no'), class: "btn btn-default #{'active' if @mapped_filter == 'no'}" %>
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Agenda</th>
+            <th>Ville</th>
+            <th>Association liée</th>
+            <th>POI</th>
+            <th>UID</th>
+            <th>Statut</th>
+            <th>Évén. à venir</th>
+            <th>Dernière vérif.</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @open_agenda_sources.each do |source| %>
+            <tr>
+              <td><%= link_to source.name, [:admin, source] %></td>
+              <td><%= source.city %></td>
+              <td>
+                <% if source.partner %>
+                  <%= link_to source.partner.name, [:admin, source.partner] %>
+                <% else %>
+                  <span class="text-muted">— non mappée —</span>
+                <% end %>
+              </td>
+              <td>
+                <% if source.poi %>
+                  <%= link_to source.poi.name, edit_admin_poi_path(source.poi) %>
+                <% else %>
+                  <span class="text-muted"><%= source.open_agenda_events.where.not(poi_id: nil).count %>/<%= source.open_agenda_events.count %> évén. par proximité</span>
+                <% end %>
+              </td>
+              <td>
+                <% if source.agenda_uid? %>
+                  <a href="https://openagenda.com/agendas/<%= source.agenda_uid %>" target="_blank" rel="noopener"><%= source.agenda_uid %></a>
+                <% else %>
+                  <span class="text-muted">— aucun —</span>
+                <% end %>
+              </td>
+              <td><%= render partial: 'admin/open_agenda_sources/status_badge', locals: { source: source } %></td>
+              <td><%= source.upcoming_events_count %></td>
+              <td>
+                <% if source.last_checked_at %>
+                  <%= time_ago_in_words(source.last_checked_at) %>
+                <% else %>
+                  <span class="text-muted">jamais</span>
+                <% end %>
+              </td>
+              <td class="text-right">
+                <%= button_to "Synchroniser", sync_admin_open_agenda_source_path(source), class: "btn btn-xs btn-default" %>
+                <%= link_to "Supprimer", [:admin, source], method: :delete, class: "text-danger", data: { confirm: "Supprimer la source \"#{source.name}\" ?" } %>
+              </td>
+            </tr>
+          <% end %>
+
+          <% if @open_agenda_sources.empty? %>
+            <tr><td colspan="8" class="text-muted">Aucune source pour ces filtres.</td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
