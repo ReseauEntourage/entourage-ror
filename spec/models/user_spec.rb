@@ -127,7 +127,7 @@ describe User, type: :model do
       let(:gender) { "" }
       it { expect { user }.not_to raise_error }
       it { expect(user.errors[:gender]).to be_empty }
-      it { expect(user.gender).to be_empty }
+      it { expect(user.gender).to be_nil }
     end
 
     context "with nil gender" do
