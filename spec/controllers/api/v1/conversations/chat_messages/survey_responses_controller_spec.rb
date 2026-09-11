@@ -116,7 +116,7 @@ describe Api::V1::Conversations::ChatMessages::SurveyResponsesController do
     context 'conversation does not exist' do
       before { post :create, params: { conversation_id: 0, chat_message_id: chat_message.id, token: user.token, responses: [true, false] } }
 
-      it { expect(response.status).to eq(400) }
+      it { expect(response.status).to eq(404) }
       it { expect(result['message']).to eq('Could not find conversation') }
     end
   end
