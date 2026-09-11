@@ -55,7 +55,7 @@ module Api
           private
 
           def set_conversation
-            @conversation = Conversation.find_by_id_through_context(params[:conversation_id], params)
+            @conversation = Entourage.find_by_id_through_context(params[:conversation_id], params)
 
             render_error(status: :not_found, code: Api::V1::ErrorCodes::NOT_FOUND, legacy: { message: 'Could not find conversation' }) unless @conversation.present?
           end
