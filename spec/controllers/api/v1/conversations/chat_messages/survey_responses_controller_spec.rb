@@ -90,6 +90,35 @@ describe Api::V1::Conversations::ChatMessages::SurveyResponsesController do
     end
   end
 
+  describe 'set_conversation' do
+    let(:request) { post :create, params: { conversation_id: conversation.to_param, chat_message_id: chat_message.id, token: user.token, responses: [true, false] } }
+
+    context 'conversation is actually an outing (group_type != conversation)' do
+      let(:conversation) { create(:outing) }
+      let!(:join_request) { create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+    end
+
+    context 'conversation is public (group_type != conversation, public: true)' do
+      let(:conversation) { create(:outing, public: true) }
+      let!(:join_request) { create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+    end
+
+    context 'conversation does not exist' do
+      before { post :create, params: { conversation_id: 0, chat_message_id: chat_message.id, token: user.token, responses: [true, false] } }
+
+      it { expect(response.status).to eq(400) }
+      it { expect(result['message']).to eq('Could not find conversation') }
+    end
+  end
+
   describe 'destroy' do
     let!(:survey_response) { create(:survey_response, user: user, chat_message: chat_message) }
 
