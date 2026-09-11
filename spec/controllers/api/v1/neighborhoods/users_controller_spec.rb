@@ -73,6 +73,43 @@ describe Api::V1::Neighborhoods::UsersController do
         'birthday_today' => be_boolean,
         'badges' => default_badges_json,
       }]) }
+
+      it 'does not return the cancelled join_request user' do
+        expect(result['users'].map { |u| u['id'] }).not_to include(user_cancelled.id)
+      end
+
+      it 'does not return the blocked user' do
+        expect(result['users'].map { |u| u['id'] }).not_to include(user_blocked.id)
+      end
+    end
+
+    context 'user deleted their account' do
+      let(:user_deleted) { create(:public_user, first_name: 'deleted', deleted: true) }
+      let!(:join_request_deleted) { create(:join_request, user: user_deleted, joinable: neighborhood, status: :accepted) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it 'does not return the deleted user even though their join_request is accepted' do
+        expect(result['users'].map { |u| u['id'] }).not_to include(user_deleted.id)
+      end
+    end
+
+    context 'user left the neighborhood (join_request not accepted)' do
+      let(:user_pending) { create(:public_user, first_name: 'pending') }
+      let(:user_rejected) { create(:public_user, first_name: 'rejected') }
+      let(:user_hidden) { create(:public_user, first_name: 'hidden') }
+
+      let!(:join_request_pending) { create(:join_request, user: user_pending, joinable: neighborhood, status: :pending) }
+      let!(:join_request_rejected) { create(:join_request, user: user_rejected, joinable: neighborhood, status: :rejected) }
+      let!(:join_request_hidden) { create(:join_request, user: user_hidden, joinable: neighborhood, status: :hidden) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it 'does not return users whose join_request is not accepted' do
+        expect(result['users'].map { |u| u['id'] }).not_to include(
+          user_pending.id, user_rejected.id, user_hidden.id
+        )
+      end
     end
   end
 
