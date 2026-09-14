@@ -126,14 +126,7 @@ module Api
       end
 
       def community
-        @community ||= begin
-          key_infos = api_request.key_infos
-          if key_infos
-            Community.new(api_request.key_infos[:community])
-          else
-            $server_community
-          end
-        end
+        $server_community
       end
 
       def api_request_platform
@@ -179,7 +172,7 @@ module Api
           return
         end
 
-        if api_request.key_infos.blank? || $server_community != api_request.key_infos[:community]
+        if api_request.key_infos.blank?
           return render json: { message: 'Unauthorized API key' }, status: :unauthorized
         end
       end
