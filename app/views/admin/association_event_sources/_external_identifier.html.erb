@@ -1,0 +1,13 @@
+<% if source.provider == 'open_agenda' %>
+  <% if source.agenda_uid.present? %>
+    <a href="https://openagenda.com/agendas/<%= source.agenda_uid %>" target="_blank" rel="noopener">uid <%= source.agenda_uid %></a>
+  <% else %>
+    <span class="text-muted">— aucun —</span>
+  <% end %>
+<% elsif source.provider == 'hello_asso' %>
+  <% if source.helloasso_organization_slug.present? %>
+    <a href="https://www.helloasso.com/associations/<%= source.helloasso_organization_slug %>" target="_blank" rel="noopener"><%= source.helloasso_organization_slug %></a>
+  <% else %>
+    <span class="text-muted">— aucun —</span>
+  <% end %>
+<% end %>

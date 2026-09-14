@@ -1,13 +1,13 @@
-class OpenAgendaEventPoiMatcher
+class AssociationEventPoiMatcher
   MATCH_RADIUS_KM = 0.1 # 100 metres : suffisant pour matcher un même bâtiment/adresse, évite les faux positifs
   BOUNDING_BOX_DELTA = 0.01 # ~1.1km : pré-filtre grossier (utilise l'index lat/long) avant le calcul exact de distance
 
-  def initialize(open_agenda_event)
-    @event = open_agenda_event
+  def initialize(association_event)
+    @event = association_event
   end
 
   def match!
-    source_poi_id = @event.open_agenda_source.poi_id
+    source_poi_id = @event.association_event_source.poi_id
 
     if source_poi_id.present?
       @event.update!(poi_id: source_poi_id) unless @event.poi_id == source_poi_id

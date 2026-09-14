@@ -236,7 +236,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :open_agenda_sources do
+      resources :association_event_sources do
         member do
           post :sync
         end

@@ -12,15 +12,15 @@ describe V1::PoiSerializer do
     it { expect(serialized[:events]).to eq([]) }
 
     context 'with an upcoming linked event' do
-      let(:source) { create(:open_agenda_source) }
-      let!(:event) { create(:open_agenda_event, open_agenda_source: source, poi: poi, starts_at: 1.day.from_now) }
+      let(:source) { create(:association_event_source) }
+      let!(:event) { create(:association_event, association_event_source: source, poi: poi, starts_at: 1.day.from_now) }
 
       it { expect(serialized[:events].size).to eq(1) }
       it { expect(serialized[:events].first[:id]).to eq(event.id) }
       it { expect(serialized[:events].first[:title]).to eq(event.title) }
 
       context 'event is in the past' do
-        let!(:event) { create(:open_agenda_event, open_agenda_source: source, poi: poi, starts_at: 1.day.ago) }
+        let!(:event) { create(:association_event, association_event_source: source, poi: poi, starts_at: 1.day.ago) }
 
         it { expect(serialized[:events]).to eq([]) }
       end

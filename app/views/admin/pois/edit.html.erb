@@ -4,12 +4,12 @@
 
 <% if @poi.upcoming_events.any? %>
   <div class="alert alert-info">
-    <strong>Événements à venir liés (OpenAgenda) : <%= @poi.upcoming_events.count %></strong>
+    <strong>Événements à venir liés (OpenAgenda / HelloAsso) : <%= @poi.upcoming_events.count %></strong>
     <ul>
       <% @poi.upcoming_events.each do |event| %>
         <li>
           <%= event.starts_at.strftime('%d/%m/%Y %H:%Mh') %> — <%= event.title %>
-          (<%= link_to event.open_agenda_source.name, admin_open_agenda_source_path(event.open_agenda_source) %>)
+          (<%= link_to event.association_event_source.name, admin_association_event_source_path(event.association_event_source) %>)
         </li>
       <% end %>
     </ul>

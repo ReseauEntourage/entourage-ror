@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe OpenAgendaSyncService do
-  let(:source) { create(:open_agenda_source, agenda_uid: 82_470_621) }
+  let(:source) { create(:association_event_source, agenda_uid: 82_470_621) }
 
   subject { OpenAgendaSyncService.new(source).sync! }
 
@@ -11,9 +11,9 @@ describe OpenAgendaSyncService do
   end
 
   context 'no agenda_uid' do
-    let!(:source) { create(:open_agenda_source, agenda_uid: nil) }
+    let!(:source) { create(:association_event_source, agenda_uid: nil) }
 
-    it { expect { subject }.not_to change { OpenAgendaSource.count } }
+    it { expect { subject }.not_to change { AssociationEventSource.count } }
     it do
       subject
       expect(source.reload.status).to eq('not_checked')
@@ -47,11 +47,11 @@ describe OpenAgendaSyncService do
       expect(source.reload.upcoming_events_count).to eq(1)
     end
 
-    it { expect { subject }.to change { OpenAgendaEvent.count }.by(1) }
+    it { expect { subject }.to change { AssociationEvent.count }.by(1) }
 
     it do
       subject
-      event = source.reload.open_agenda_events.first
+      event = source.reload.association_events.first
       expect(event.title).to eq('Café des parents')
       expect(event.is_free).to eq(true)
       expect(event.organizer_name).to eq('Bibliothèque municipale de Nantes')
@@ -62,11 +62,11 @@ describe OpenAgendaSyncService do
 
     context 'source already mapped to a poi' do
       let!(:poi) { create(:poi) }
-      let(:source) { create(:open_agenda_source, agenda_uid: 82_470_621, poi: poi) }
+      let(:source) { create(:association_event_source, agenda_uid: 82_470_621, poi: poi) }
 
       it do
         subject
-        expect(source.reload.open_agenda_events.first.poi_id).to eq(poi.id)
+        expect(source.reload.association_events.first.poi_id).to eq(poi.id)
       end
     end
 
@@ -75,7 +75,7 @@ describe OpenAgendaSyncService do
 
       it do
         subject
-        expect(source.reload.open_agenda_events.first.poi_id).to eq(poi.id)
+        expect(source.reload.association_events.first.poi_id).to eq(poi.id)
       end
     end
 
@@ -93,7 +93,7 @@ describe OpenAgendaSyncService do
       end
 
       it { expect { subject }.not_to raise_error }
-      it { expect { subject }.to change { OpenAgendaEvent.count }.by(1) }
+      it { expect { subject }.to change { AssociationEvent.count }.by(1) }
     end
 
     context 'event removed from a later sync' do
@@ -105,7 +105,7 @@ describe OpenAgendaSyncService do
           .to_return(status: 200, body: '{"total":0,"success":true,"events":[]}')
       end
 
-      it { expect { OpenAgendaSyncService.new(source).sync! }.to change { source.open_agenda_events.count }.from(1).to(0) }
+      it { expect { OpenAgendaSyncService.new(source).sync! }.to change { source.association_events.count }.from(1).to(0) }
     end
   end
 

@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Agendas des associations", admin_association_event_sources_path %></li>
+        <li><%= link_to @association_event_source.name, [:admin, @association_event_source] %></li>
+        <li>Modifier</li>
+      </ol>
+
+      <h1>Modifier « <%= @association_event_source.name %> »</h1>
+
+      <%= render 'form' %>
+    </div>
+  </div>
+</div>

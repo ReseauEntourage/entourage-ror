@@ -1,5 +1,5 @@
 module V1
-  class OpenAgendaEventSerializer < ActiveModel::Serializer
+  class AssociationEventSerializer < ActiveModel::Serializer
     attribute :id
     attribute :title
     attribute :description

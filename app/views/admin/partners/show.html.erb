@@ -80,22 +80,23 @@
       </table>
 
       <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Agendas OpenAgenda liés</div>
-        <%= link_to "Lier un agenda OpenAgenda", new_admin_open_agenda_source_path(partner_id: @partner.id), class: "btn btn-default" %>
+        <div style="flex-grow: 1">Agendas d'événements liés (OpenAgenda / HelloAsso)</div>
+        <%= link_to "Lier une source d'événements", new_admin_association_event_source_path(partner_id: @partner.id), class: "btn btn-default" %>
       </div>
 
-      <% if @partner.open_agenda_sources.any? %>
+      <% if @partner.association_event_sources.any? %>
         <table class="table">
-          <% @partner.open_agenda_sources.each do |source| %>
+          <% @partner.association_event_sources.each do |source| %>
             <tr>
               <td><%= link_to source.name, [:admin, source] %></td>
-              <td><%= render partial: 'admin/open_agenda_sources/status_badge', locals: { source: source } %></td>
+              <td><span class="label label-default"><%= source_provider_label(source.provider) %></span></td>
+              <td><%= render partial: 'admin/association_event_sources/status_badge', locals: { source: source } %></td>
               <td><%= source.upcoming_events_count %> évén. à venir</td>
             </tr>
           <% end %>
         </table>
       <% else %>
-        <p class="text-muted">Aucun agenda OpenAgenda lié à cette association pour le moment.</p>
+        <p class="text-muted">Aucune source d'événements liée à cette association pour le moment.</p>
       <% end %>
     </div>
   </div>

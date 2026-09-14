@@ -9,8 +9,8 @@ class Poi < ApplicationRecord
   validates :partner_id, presence: true, allow_nil: true
   belongs_to :category, optional: true
   has_and_belongs_to_many :categories, optional: true
-  has_many :open_agenda_events, dependent: :nullify
-  has_many :open_agenda_sources, dependent: :nullify
+  has_many :association_events, dependent: :nullify
+  has_many :association_event_sources, dependent: :nullify
 
   geocoded_by :adress
 
@@ -112,7 +112,7 @@ class Poi < ApplicationRecord
   end
 
   def upcoming_events
-    open_agenda_events.upcoming
+    association_events.upcoming
   end
 
   #

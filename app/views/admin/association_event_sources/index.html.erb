@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-1 col-xs-10">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Agendas des associations (OpenAgenda / HelloAsso)</div>
+        <div class="btn-group">
+          <%= link_to "Ajouter un agenda OpenAgenda", new_admin_association_event_source_path(provider: 'open_agenda'), class: "btn btn-success" %>
+          <%= link_to "Ajouter une billetterie HelloAsso", new_admin_association_event_source_path(provider: 'hello_asso'), class: "btn btn-success" %>
+        </div>
+      </div>
+
+      <p class="text-muted">
+        Une source par agenda OpenAgenda ou billetterie HelloAsso repérée chez une association.
+        La gratuité n'est pas toujours garantie par la source (voir la fiche de chaque événement) — vérifier en cas de doute avant relais.
+      </p>
+
+      <div style="margin-bottom: 15px;">
+        <div class="btn-group" role="group">
+          <%= link_to "Toutes (#{@total_count})", admin_association_event_sources_path,
+                class: "btn btn-default #{'active' if @status_filter.nil? && @mapped_filter.nil? && @provider_filter.nil?}" %>
+          <% AssociationEventSource::STATUSES.each do |status| %>
+            <%= link_to "#{source_status_label(status)} (#{@counts[status] || 0})", admin_association_event_sources_path(status: status),
+                  class: "btn btn-default #{'active' if @status_filter == status}" %>
+          <% end %>
+        </div>
+
+        <div class="btn-group" role="group" style="margin-left: 10px;">
+          <% AssociationEventSource::PROVIDERS.each do |provider| %>
+            <%= link_to "#{source_provider_label(provider)} (#{@provider_counts[provider] || 0})", admin_association_event_sources_path(provider: provider),
+                  class: "btn btn-default #{'active' if @provider_filter == provider}" %>
+          <% end %>
+        </div>
+
+        <div class="btn-group" role="group" style="margin-left: 10px;">
+          <%= link_to "Association liée", admin_association_event_sources_path(mapped: 'yes'), class: "btn btn-default #{'active' if @mapped_filter == 'yes'}" %>
+          <%= link_to "Sans association", admin_association_event_sources_path(mapped: 'no'), class: "btn btn-default #{'active' if @mapped_filter == 'no'}" %>
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Agenda</th>
+            <th>Source</th>
+            <th>Ville</th>
+            <th>Association liée</th>
+            <th>POI</th>
+            <th>Identifiant</th>
+            <th>Statut</th>
+            <th>Évén. à venir</th>
+            <th>Dernière vérif.</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @association_event_sources.each do |source| %>
+            <tr>
+              <td><%= link_to source.name, [:admin, source] %></td>
+              <td><span class="label label-default"><%= source_provider_label(source.provider) %></span></td>
+              <td><%= source.city %></td>
+              <td>
+                <% if source.partner %>
+                  <%= link_to source.partner.name, [:admin, source.partner] %>
+                <% else %>
+                  <span class="text-muted">— non mappée —</span>
+                <% end %>
+              </td>
+              <td>
+                <% if source.poi %>
+                  <%= link_to source.poi.name, edit_admin_poi_path(source.poi) %>
+                <% else %>
+                  <span class="text-muted"><%= source.association_events.where.not(poi_id: nil).count %>/<%= source.association_events.count %> évén. par proximité</span>
+                <% end %>
+              </td>
+              <td><%= render partial: 'admin/association_event_sources/external_identifier', locals: { source: source } %></td>
+              <td><%= render partial: 'admin/association_event_sources/status_badge', locals: { source: source } %></td>
+              <td><%= source.upcoming_events_count %></td>
+              <td>
+                <% if source.last_checked_at %>
+                  <%= time_ago_in_words(source.last_checked_at) %>
+                <% else %>
+                  <span class="text-muted">jamais</span>
+                <% end %>
+              </td>
+              <td class="text-right">
+                <%= button_to "Synchroniser", sync_admin_association_event_source_path(source), class: "btn btn-xs btn-default" %>
+                <%= link_to "Supprimer", [:admin, source], method: :delete, class: "text-danger", data: { confirm: "Supprimer la source \"#{source.name}\" ?" } %>
+              </td>
+            </tr>
+          <% end %>
+
+          <% if @association_event_sources.empty? %>
+            <tr><td colspan="9" class="text-muted">Aucune source pour ces filtres.</td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

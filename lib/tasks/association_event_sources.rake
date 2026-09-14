@@ -1,11 +1,11 @@
-namespace :open_agenda_sources do
-  desc 'Resynchronize every registered OpenAgenda source that has a UID (updates status + upcoming events cache)'
+namespace :association_event_sources do
+  desc 'Resynchronize every registered association event source (OpenAgenda or HelloAsso) that has an external identifier'
   task sync_all: :environment do
-    OpenAgendaSource.with_uid.find_each do |source|
+    AssociationEventSource.syncable.find_each do |source|
       source.sync!
-      Rails.logger.info "type=open_agenda_source.sync source_id=#{source.id} name=#{source.name.inspect} status=#{source.status} upcoming=#{source.upcoming_events_count}"
+      Rails.logger.info "type=association_event_source.sync source_id=#{source.id} provider=#{source.provider} name=#{source.name.inspect} status=#{source.status} upcoming=#{source.upcoming_events_count}"
     rescue => e
-      Rails.logger.error "type=open_agenda_source.sync error: source_id=#{source.id} class=#{e.class} message=#{e.message.inspect}"
+      Rails.logger.error "type=association_event_source.sync error: source_id=#{source.id} provider=#{source.provider} class=#{e.class} message=#{e.message.inspect}"
     end
   end
 
@@ -177,15 +177,16 @@ namespace :open_agenda_sources do
         notes: "Vérifié le 10/09/2026 : agenda agrégateur RÉEL et ACTIF — 2268 événements à venir, le plus gros volume constaté. Même profil que les autres métropoles (généraliste, filtrage nécessaire). Non détaillé au niveau quartier par manque de temps."
       },
     ].each do |attrs|
-      source = OpenAgendaSource.find_or_initialize_by(name: attrs[:name])
+      source = AssociationEventSource.find_or_initialize_by(provider: 'open_agenda', name: attrs[:name])
       source.assign_attributes(agenda_uid: attrs[:agenda_uid], city: attrs[:city], notes: attrs[:notes])
       source.status = 'not_checked' if source.new_record?
       source.save!
-      Rails.logger.info "type=open_agenda_source.seed source_id=#{source.id} name=#{source.name.inspect} agenda_uid=#{source.agenda_uid}"
+      Rails.logger.info "type=association_event_source.seed source_id=#{source.id} name=#{source.name.inspect} agenda_uid=#{source.agenda_uid}"
     end
 
-    puts "Seeded #{OpenAgendaSource.count} total OpenAgenda sources " \
-         "(#{OpenAgendaSource.with_uid.count} with a UID to sync). " \
-         "Run `rake open_agenda_sources:sync_all` to (re)test them against the real API."
+    open_agenda_sources = AssociationEventSource.where(provider: 'open_agenda')
+    puts "Seeded #{open_agenda_sources.count} total OpenAgenda sources " \
+         "(#{open_agenda_sources.where.not(agenda_uid: nil).count} with a UID to sync). " \
+         "Run `rake association_event_sources:sync_all` to (re)test them against the real API."
   end
 end

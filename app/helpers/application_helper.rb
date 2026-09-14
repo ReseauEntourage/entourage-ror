@@ -85,6 +85,14 @@ module ApplicationHelper
     end
   end
 
+  def source_provider_label(provider)
+    case provider
+    when 'open_agenda' then 'OpenAgenda'
+    when 'hello_asso'  then 'HelloAsso'
+    else                    provider
+    end
+  end
+
   def select_partner_tag(form_object_name, selected_partner, html_options = {})
     options = if selected_partner
       [[selected_partner.name, selected_partner.id]]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_11_090000) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_12_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -605,9 +605,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_11_090000) do
     t.index ["user_id"], name: "index_old_user_denorms_on_user_id"
   end
 
-  create_table "open_agenda_events", force: :cascade do |t|
-    t.integer "open_agenda_source_id", null: false
-    t.integer "source_event_uid", null: false
+  create_table "association_events", force: :cascade do |t|
+    t.integer "association_event_source_id", null: false
+    t.string "source_uid", null: false
     t.string "title"
     t.text "description"
     t.datetime "starts_at"
@@ -620,12 +620,14 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_11_090000) do
     t.integer "poi_id"
     t.float "latitude"
     t.float "longitude"
-    t.index ["open_agenda_source_id", "source_event_uid"], name: "index_open_agenda_events_on_source_and_uid", unique: true
-    t.index ["poi_id"], name: "index_open_agenda_events_on_poi_id"
-    t.index ["starts_at"], name: "index_open_agenda_events_on_starts_at"
+    t.string "provider", default: "open_agenda", null: false
+    t.index ["association_event_source_id", "source_uid"], name: "index_association_events_on_source_and_uid", unique: true
+    t.index ["poi_id"], name: "index_association_events_on_poi_id"
+    t.index ["provider"], name: "index_association_events_on_provider"
+    t.index ["starts_at"], name: "index_association_events_on_starts_at"
   end
 
-  create_table "open_agenda_sources", force: :cascade do |t|
+  create_table "association_event_sources", force: :cascade do |t|
     t.string "name", null: false
     t.integer "agenda_uid"
     t.integer "partner_id"
@@ -639,11 +641,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_11_090000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "poi_id"
-    t.index ["agenda_uid"], name: "index_open_agenda_sources_on_agenda_uid", unique: true
-    t.index ["city"], name: "index_open_agenda_sources_on_city"
-    t.index ["partner_id"], name: "index_open_agenda_sources_on_partner_id"
-    t.index ["poi_id"], name: "index_open_agenda_sources_on_poi_id"
-    t.index ["status"], name: "index_open_agenda_sources_on_status"
+    t.string "provider", default: "open_agenda", null: false
+    t.string "helloasso_organization_slug"
+    t.index ["agenda_uid"], name: "index_association_event_sources_on_agenda_uid", unique: true
+    t.index ["city"], name: "index_association_event_sources_on_city"
+    t.index ["helloasso_organization_slug"], name: "index_association_event_sources_on_helloasso_organization_slug", unique: true
+    t.index ["partner_id"], name: "index_association_event_sources_on_partner_id"
+    t.index ["poi_id"], name: "index_association_event_sources_on_poi_id"
+    t.index ["provider"], name: "index_association_event_sources_on_provider"
+    t.index ["status"], name: "index_association_event_sources_on_status"
   end
 
   create_table "openai_assistants", force: :cascade do |t|
