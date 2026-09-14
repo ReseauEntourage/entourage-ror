@@ -20,6 +20,25 @@ You can source these environment variables from a `.env` file.
 
 To get started : `cp .env.dist .env` and fill in the missing informations!
 
+## Mobile API keys
+
+`Api::ApplicationKey` (`app/services/api/application_key.rb`) validates the `X-API-KEY` header sent by the mobile apps. Neither the key values nor their app versions are in the source code: they live in two env vars, each a comma-separated list of `version:key` pairs for that platform.
+
+| Variable | Content |
+|---|---|
+| `API_KEYS_IOS` | comma-separated `version:key` pairs for all valid iOS API keys, e.g. `9.0.0:44b2f3f3e7fd9b9c391a2f06,10.0.0:a5cc26940b6f91fa8e462a3f` |
+| `API_KEYS_ANDROID` | same, for Android |
+
+From version `9.0.0` onward (see `HMAC_SINCE` in `application_key.rb`), a key is also given that platform's `HMAC_SECRET_*` — see below.
+
+⚠️ **These must be set in every environment that accepts mobile traffic** (including `development`/`test` if you exercise those flows) — without them, no iOS/Android request can be authenticated at all.
+
+To add a new app version, generate a key and append a `version:key` entry at the end of the list — order doesn't matter, but never remove an entry a shipped app still relies on:
+
+```bash
+ruby -e "require 'securerandom'; puts SecureRandom.hex(12)"
+```
+
 ## HMAC request signing (anti-bot)
 
 Two variables protect the account creation endpoint (`POST /api/v1/users`) against bots.
