@@ -90,14 +90,6 @@ RSpec.describe Api::V1::BaseController, type: :controller do
       end
     end
 
-    context 'with an api key for the wrong community' do
-      context 'on the entourage server' do
-        with_community :entourage
-        let(:api_key) { 'api_debug_pfp' }
-        it { is_expected.to eq(403) }
-      end
-    end
-
     context 'with an invalid api key' do
       let(:api_key) { 'foobar' }
 

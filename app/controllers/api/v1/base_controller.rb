@@ -170,14 +170,7 @@ module Api
       end
 
       def community
-        @community ||= begin
-          key_infos = api_request.key_infos
-          if key_infos
-            Community.new(api_request.key_infos[:community])
-          else
-            $server_community
-          end
-        end
+        $server_community
       end
 
       def api_request_platform
@@ -223,8 +216,8 @@ module Api
           return
         end
 
-        if api_request.key_infos.blank? || $server_community != api_request.key_infos[:community]
-          # 403, not 401: an API key/community mismatch is a client configuration
+        if api_request.key_infos.blank?
+          # 403, not 401: an invalid/unknown API key is a client configuration
           # issue, not an authentication failure - 401 would trigger a forced
           # logout on the mobile apps for a logged-in user hitting this.
           return render_error(code: ErrorCodes::FORBIDDEN, legacy: {message: 'Unauthorized API key'}, status: :forbidden)
