@@ -21,7 +21,10 @@ module V1
         :birthday_today,
         :events,
         :badge,
-        :badges
+        :badges,
+        :engagement_segment,
+        :engagement_sub_segment,
+        :segment_computed_at
 
       def preference
         return :contribution if object.ask_for_help?
@@ -122,6 +125,18 @@ module V1
         UserBadge.all_for_user(object).map do |user_badge|
           V1::UserBadgeSerializer.new(user_badge).as_json
         end
+      end
+
+      def engagement_segment
+        object.user_segment&.engagement_segment
+      end
+
+      def engagement_sub_segment
+        object.user_segment&.engagement_sub_segment
+      end
+
+      def segment_computed_at
+        object.user_segment&.segment_computed_at
       end
 
       private
