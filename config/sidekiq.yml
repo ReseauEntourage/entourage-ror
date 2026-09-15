@@ -6,3 +6,8 @@
     class: "RefreshEngagementLevelsJob"
     queue: default
     description: "Refresh engagement levels materialized view daily at 2am"
+  refresh_engagement_segments:
+    cron: "30 2 * * *"
+    class: "RefreshEngagementSegmentsJob"
+    queue: default
+    description: "Compute and historize user engagement segments daily at 2:30am (after the upstream data pipeline - confirm timing with the data team, see design.md's Open Question)"
