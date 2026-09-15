@@ -31,16 +31,21 @@
 # evaluate to NULL, not TRUE.
 #
 # `eligibility:` picks how "signed in in the last 30 days" is determined:
-#   :last_sign_in_at  - reads `users.last_sign_in_at` directly. Exact match
-#                       to the Metabase reference, but `last_sign_in_at`
-#                       only ever holds its *current* value - this mode is
-#                       only meaningful when `as_of` is today.
-#   :login_histories  - reconstructs it from `login_histories` (a real
-#                       per-login event log) instead, for a past `as_of`
-#                       date. This is an approximation of the live rule,
-#                       not the rule itself: `login_histories` is the best
-#                       available substitute for a column that isn't
-#                       historized. Used by EngagementSegmentBackfillJob.
+#   :last_sign_in_at   - reads `users.last_sign_in_at` directly. Exact
+#                        match to the Metabase reference, but
+#                        `last_sign_in_at` only ever holds its *current*
+#                        value - this mode is only meaningful when `as_of`
+#                        is today.
+#   :session_histories - reconstructs it from `session_histories` instead,
+#                        for a past `as_of` date. This is an approximation
+#                        of the live rule, not the rule itself, but it's
+#                        the best available substitute: `login_histories`
+#                        would be the more literal analogue of "signed in"
+#                        but stopped being written in December 2020, so it
+#                        has no data at all for any recent backfill
+#                        period - confirmed against real data before
+#                        relying on it. `session_histories` is still live.
+#                        Used by BackfillEngagementSegmentsJob.
 #
 # Whichever mode is used, `as_of` in the past cannot recover historical
 # `targeting_profile`/`deleted` values either - neither is historized -
@@ -132,13 +137,13 @@ class EngagementSegmentComputation
     case eligibility
     when :last_sign_in_at
       "last_sign_in_at >= #{as_of_sql}::date - INTERVAL '30 days'"
-    when :login_histories
+    when :session_histories
       <<~SQL.strip
         EXISTS (
-          SELECT 1 FROM login_histories lh
-          WHERE lh.user_id = users.id
-            AND lh.connected_at >= #{as_of_sql}::date - INTERVAL '30 days'
-            AND lh.connected_at < #{as_of_sql}::date + INTERVAL '1 day'
+          SELECT 1 FROM session_histories sh
+          WHERE sh.user_id = users.id
+            AND sh.date >= #{as_of_sql}::date - INTERVAL '30 days'
+            AND sh.date <= #{as_of_sql}::date
         )
       SQL
     else

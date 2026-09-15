@@ -4,14 +4,11 @@ RSpec.describe BackfillEngagementSegmentsJob do
   let(:user) { create(:user, deleted: false, targeting_profile: nil) }
 
   before do
-    # Lifetime session count - unaffected by which day gets replayed.
-    create(:session_history, user: user, date: 40.days.ago.to_date)
-    create(:session_history, user: user, date: 39.days.ago.to_date)
-
-    # Logged in regularly enough to stay eligible (via login_histories) for
-    # every day in the reconstructed range.
-    (0..40).step(5).each do |n|
-      create(:login_history, user: user, connected_at: n.days.ago)
+    # Session activity: feeds both the lifetime session count and (in
+    # backfill mode) the eligibility check, spaced to cover every day in
+    # the reconstructed range below.
+    [40, 35, 30, 25, 20, 15, 10, 5, 0].each do |n|
+      create(:session_history, user: user, date: n.days.ago.to_date)
     end
 
     # A burst of strong engagement 40 days ago - only inside the trailing
@@ -47,12 +44,19 @@ RSpec.describe BackfillEngagementSegmentsJob do
 
   it 'does nothing when there is not enough historical depth for a single reliable day' do
     DenormDailyEngagementsWithType.delete_all
-    LoginHistory.delete_all
+    SessionHistory.delete_all
     create(:denorm_daily_engagements_with_type, user: user, engagement_type: 'create_group', date: 5.days.ago.to_date)
-    create(:login_history, user: user, connected_at: 5.days.ago)
+    create(:session_history, user: user, date: 5.days.ago.to_date)
 
     described_class.perform_now(months: 6)
 
     expect(UserSegmentHistory.count).to eq(0)
+  end
+
+  it 'refuses to run against a stale eligibility source' do
+    SessionHistory.delete_all
+    create(:session_history, user: user, date: 40.days.ago.to_date)
+
+    expect { described_class.perform_now(months: 6) }.to raise_error(/session_histories looks stale/)
   end
 end
