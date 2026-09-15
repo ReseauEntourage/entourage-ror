@@ -1144,6 +1144,25 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_29_160000) do
     t.index ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true
   end
 
+  create_table "user_segment_history", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "engagement_segment"
+    t.string "engagement_sub_segment"
+    t.date "valid_from", null: false
+    t.date "valid_to"
+    t.datetime "computed_at", null: false
+    t.index ["user_id", "valid_from"], name: "index_user_segment_history_on_user_id_and_valid_from", unique: true
+    t.index ["user_id"], name: "index_user_segment_history_on_user_id_where_open", unique: true, where: "(valid_to IS NULL)"
+  end
+
+  create_table "user_segments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "engagement_segment"
+    t.string "engagement_sub_segment"
+    t.datetime "segment_computed_at", null: false
+    t.index ["user_id"], name: "index_user_segments_on_user_id", unique: true
+  end
+
   create_table "user_smalltalks", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "smalltalk_id"
