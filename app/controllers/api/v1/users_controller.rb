@@ -419,6 +419,8 @@ module Api
       private
 
       def verify_request_signature!
+        return # EN-9565: HMAC temporairement non bloquant, à réactiver une fois les apps à jour
+
         secret = api_request.key_infos&.dig(:hmac_secret)
         # Mode transition : si la clé n'a pas encore de secret configuré, on laisse passer.
         # Cela permet de déployer le backend avant les nouvelles versions des apps.
