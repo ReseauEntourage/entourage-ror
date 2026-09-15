@@ -9,6 +9,9 @@
 #   N2 (medium): post_message, smalltalk, post_group
 #   N3 (strong): create_group, create_action, join_event
 #
+# `survey` corresponds to a poll (`surveys`), answered per user via
+# `survey_responses`, tied to a given `chat_message`.
+#
 # Classification order matters (Pilier is evaluated before Contributeur):
 #   1. <= 1 lifetime session AND N1+N2+N3 = 0  -> unclassified (nil)
 #   2. N1+N2+N3 = 0                            -> Silencieux
