@@ -1,10 +1,11 @@
 class ConversationBroadcastObserver < ActiveRecord::Observer
-  observe :chat_message, :user_reaction
+  observe :chat_message, :user_reaction, :join_request
 
   def after_commit(record)
     case record
     when ChatMessage  then handle_chat_message(record)
     when UserReaction then handle_user_reaction(record)
+    when JoinRequest  then handle_join_request(record)
     end
   end
 
@@ -36,6 +37,20 @@ class ConversationBroadcastObserver < ActiveRecord::Observer
     end
   rescue => e
     Rails.logger.error "[ConversationBroadcastObserver] UserReaction broadcast failed: #{e.message}"
+  end
+
+  def handle_join_request(record)
+    return unless record.joinable
+    return unless commit_is?(record, [:create, :update])
+    return unless record.saved_change_to_status?
+
+    if record.status == JoinRequest::ACCEPTED_STATUS
+      ConversationChannel.broadcast_member_joined(record)
+    elsif record.status_before_last_save == JoinRequest::ACCEPTED_STATUS
+      ConversationChannel.broadcast_member_left(record)
+    end
+  rescue => e
+    Rails.logger.error "[ConversationBroadcastObserver] JoinRequest broadcast failed: #{e.message}"
   end
 
   def commit_is?(record, actions)

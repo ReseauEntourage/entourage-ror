@@ -1,6 +1,6 @@
 class ConversationChannel < ApplicationCable::Channel
   STREAM_PREFIX = "conversation"
-  ALLOWED_INSTANCE_TYPES = %w[Entourage Neighborhood].freeze
+  ALLOWED_INSTANCE_TYPES = %w[Outing Conversation Solicitation Contribution Neighborhood Smalltalk].freeze
 
   def subscribed
     reject and return unless current_user
@@ -9,11 +9,22 @@ class ConversationChannel < ApplicationCable::Channel
     reject and return unless instance
     reject and return unless member?(instance)
 
+    @instance = instance
     stream_from self.class.stream_for(instance)
   end
 
   def unsubscribed
     stop_all_streams
+  end
+
+  # Appelé par le client (perform :typing) pendant que l'utilisateur tape son
+  # message. Pas d'événement "stop" explicite : le client réémet régulièrement
+  # tant qu'il tape, et les destinataires masquent l'indicateur après un
+  # timeout local (ex: ~5s) sans nouvel événement.
+  def typing
+    return unless @instance
+
+    self.class.broadcast_typing(@instance, current_user)
   end
 
   class << self
@@ -47,17 +58,46 @@ class ConversationChannel < ApplicationCable::Channel
       broadcast_reaction_event(user_reaction, chat_message, "user_reaction_removed")
     end
 
+    def broadcast_member_joined(join_request)
+      broadcast_membership_event(join_request, "member_joined")
+    end
+
+    def broadcast_member_left(join_request)
+      broadcast_membership_event(join_request, "member_left")
+    end
+
+    def broadcast_typing(instance, user)
+      broadcast_event(
+        instance,
+        type:          "typing",
+        user_id:       user.id,
+        instance_type: "User",
+        instance_id:   user.id,
+        data:          { user_id: user.id }
+      )
+    end
+
     def stream_for(instance)
-      "#{STREAM_PREFIX}:#{instance.class.name}:#{instance.id}"
+      "#{STREAM_PREFIX}:#{stream_type_for(instance)}:#{instance.id}"
     end
 
     private
 
-    def broadcast_event(messageable, type:, user_id:, instance_type:, instance_id:, data:)
-      return unless messageable
+    # For Entourage records, the stream type is derived from group_type/entourage_type
+    # rather than instance.class.name: messageable_type is always stored as the base
+    # class "Entourage", so message.messageable is always a plain Entourage instance.
+    def stream_type_for(instance)
+      return instance.websocket_class&.name if instance.is_a?(Entourage)
+
+      instance.class.name
+    end
+
+    def broadcast_event(subject, type:, user_id:, instance_type:, instance_id:, data:)
+      return unless subject
+      return unless stream_type_for(subject)
 
       ActionCable.server.broadcast(
-        stream_for(messageable),
+        stream_for(subject),
         {
           type:          type,
           user_id:       user_id,
@@ -84,8 +124,23 @@ class ConversationChannel < ApplicationCable::Channel
       )
     end
 
+    def broadcast_membership_event(join_request, type)
+      broadcast_event(
+        join_request.joinable,
+        type:          type,
+        user_id:       join_request.user_id,
+        instance_type: "JoinRequest",
+        instance_id:   join_request.id,
+        data:          serialize_join_request(join_request)
+      )
+    end
+
     def serialize_chat_message(message)
-      V1::ChatMessageSerializer.new(message, scope: {}, root: false).as_json
+      V1::ChatMessageWebsocketSerializer.new(message, scope: {}, root: false).as_json
+    end
+
+    def serialize_join_request(join_request)
+      V1::JoinRequestSerializer.new(join_request, scope: {}, root: false).as_json
     end
   end
 
