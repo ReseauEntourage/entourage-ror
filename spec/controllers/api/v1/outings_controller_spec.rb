@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Api::V1::OutingsController do
   let(:user) { create(:public_user) }
+  let(:user_team) { create(:public_user, partner: create(:partner, staff: true), targeting_profile: :team) }
   let(:association) { create(:public_user, :partner) }
   let(:neighborhood_1) { create :neighborhood }
   let(:neighborhood_2) { create :neighborhood }
@@ -63,6 +64,52 @@ describe Api::V1::OutingsController do
 
           it { expect(response.status).to eq 200 }
           it { expect(subject['outings'].count).to eq(0) }
+        end
+      end
+
+      describe 'filter by reserved_female' do
+        let!(:outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, metadata: { reserved_female: true }) }
+        let!(:other_outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude) }
+        let(:join_request) { nil }
+
+        before { get :index, params: { token: user.token, reserved_female: 'true' } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
+
+      describe 'filter by entourage_only' do
+        let!(:outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, user: user_team) }
+        let!(:other_outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, user: user) }
+        let(:join_request) { nil }
+
+        before { get :index, params: { token: user.token, entourage_only: 'true' } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'].count).to eq(1) }
+        it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+      end
+
+      describe 'filter by format' do
+        let!(:outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, online: false) }
+        let!(:online_outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, online: true) }
+        let(:join_request) { nil }
+
+        context 'in_person' do
+          before { get :index, params: { token: user.token, format: 'in_person' } }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
+
+        context 'online' do
+          before { get :index, params: { token: user.token, format: 'online' } }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(online_outing.id) }
         end
       end
 
@@ -247,6 +294,30 @@ describe Api::V1::OutingsController do
     before { get :webinar, params: { token: user.token, q: 'test' } }
 
     it { expect(response).to redirect_to( api_v1_outings_path(category: 'webinar', q: 'test') ) }
+  end
+
+  describe 'GET reserved_female' do
+    before { get :reserved_female, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(reserved_female: 'true', q: 'test') ) }
+  end
+
+  describe 'GET reserved_female' do
+    before { get :reserved_female, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(reserved_female: 'true', q: 'test') ) }
+  end
+
+  describe 'GET onlines' do
+    before { get :onlines, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(format: 'online', q: 'test') ) }
+  end
+
+  describe 'GET entourage_only' do
+    before { get :entourage_only, params: { token: user.token, q: 'test' } }
+
+    it { expect(response).to redirect_to( api_v1_outings_path(entourage_only: 'true', q: 'test') ) }
   end
 
   describe 'POST create' do
