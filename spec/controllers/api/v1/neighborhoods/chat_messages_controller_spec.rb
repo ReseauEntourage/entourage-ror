@@ -347,7 +347,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             'status' => 'active',
             'survey' => nil,
             'reactions' => [],
-            'reaction_id' => false,
+            'reaction_id' => nil,
           }
         }}
 

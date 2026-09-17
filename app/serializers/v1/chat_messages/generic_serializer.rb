@@ -99,7 +99,7 @@ module V1
       end
 
       def reaction_id
-        return false unless scope[:user].present?
+        return nil unless scope[:user].present?
 
         if scope.key?(:reaction_ids_by_message)
           scope[:reaction_ids_by_message][object.id]
