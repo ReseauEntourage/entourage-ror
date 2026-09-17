@@ -61,7 +61,7 @@ module EntourageBack
     config.lograge.enabled = true
     config.lograge.custom_options = lambda do |event|
       payload = event.payload
-      params = payload[:params].reject { |k| ['controller', 'action'].include? k }
+      params = (payload[:params] || {}).reject { |k| ['controller', 'action'].include? k }
 
       {
         params: params,

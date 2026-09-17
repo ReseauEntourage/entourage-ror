@@ -98,7 +98,7 @@ Rails.application.configure do
   # Lograge : override config de base
   config.lograge.custom_options = lambda do |event|
     payload = event.payload
-    params = payload[:params].reject { |k| ['controller', 'action'].include?(k) }
+    params = (payload[:params] || {}).reject { |k| ['controller', 'action'].include?(k) }
     {
       'params' => params,
       'API_KEY' => payload[:api_key]
