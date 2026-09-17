@@ -34,7 +34,7 @@ module Api
             join_request: join_request
           ).create do |on|
             on.success do |message|
-              render json: message, status: 201, serializer: ::V1::ChatMessages::GenericSerializer
+              render json: message, status: 201, serializer: ::V1::ChatMessages::GenericSerializer, scope: { user: current_user }
             end
 
             on.failure do |message|
