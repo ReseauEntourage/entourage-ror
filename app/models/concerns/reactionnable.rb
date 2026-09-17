@@ -41,7 +41,11 @@ module Reactionnable
     end
 
     def build user:, reaction_id:
-      @instance.user_reactions.build(user: user, reaction_id: reaction_id)
+      # idempotent: reacting again on the same instance updates the existing
+      # reaction instead of hitting the one-reaction-per-user uniqueness validation
+      user_reaction = @instance.user_reactions.find_or_initialize_by(user: user)
+      user_reaction.reaction_id = reaction_id
+      user_reaction
     end
 
     def destroy user:

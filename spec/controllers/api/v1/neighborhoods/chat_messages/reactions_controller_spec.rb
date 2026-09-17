@@ -125,7 +125,7 @@ describe Api::V1::Neighborhoods::ChatMessages::ReactionsController do
         context do
           before { request }
 
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(201) }
         end
 
         context do

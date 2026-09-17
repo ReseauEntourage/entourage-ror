@@ -96,17 +96,20 @@ describe Reactionnable do
       it { expect { subject.save }.to change { UserReaction.count }.by(1) }
     end
 
-    context 'already reacted fails on same reaction' do
+    context 'already reacted updates in place on same reaction' do
       let!(:user_reaction) { create(:user_reaction, instance: instance, reaction: heart, user: user) }
 
-      it { expect(subject.save).to eq(false) }
+      it { expect(subject.save).to eq(true) }
+      it { expect(subject.id).to eq(user_reaction.id) }
       it { expect { subject.save }.not_to change { UserReaction.count } }
     end
 
-    context 'already reacted fails on another reaction' do
+    context 'already reacted updates in place on another reaction' do
       let!(:user_reaction) { create(:user_reaction, instance: instance, reaction: thumb, user: user) }
 
-      it { expect(subject.save).to eq(false) }
+      it { expect(subject.save).to eq(true) }
+      it { expect(subject.id).to eq(user_reaction.id) }
+      it { subject.save; expect(subject.reload.reaction_id).to eq(heart.id) }
       it { expect { subject.save }.not_to change { UserReaction.count } }
     end
   end
