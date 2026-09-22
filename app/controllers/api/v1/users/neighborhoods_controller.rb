@@ -28,6 +28,7 @@ module Api
           else
             User.find_by_id_or_uuid!(params[:user_id])
           end
+          raise ActiveRecord::RecordNotFound unless @user == current_user
         end
 
         def page

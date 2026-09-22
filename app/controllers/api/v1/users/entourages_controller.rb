@@ -26,6 +26,7 @@ module Api
 
         def set_user
           @user = User.find_by_id_or_uuid!(params[:user_id])
+          raise ActiveRecord::RecordNotFound unless @user == current_user
         end
 
         def position_params?
