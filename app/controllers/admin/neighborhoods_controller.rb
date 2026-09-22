@@ -42,7 +42,7 @@ module Admin
       @message_count = ChatMessage
         .with_moderator_reads_for(user: current_user)
         .excluding_scheduled
-        .where(messageable: @neighborhoods.map(&:id))
+        .where(messageable_type: 'Neighborhood', messageable_id: @neighborhoods.map(&:id))
         .group(:messageable_id)
         .select(%{
           messageable_id,
