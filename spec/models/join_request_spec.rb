@@ -93,8 +93,13 @@ RSpec.describe JoinRequest, type: :model do
     let(:member_join_requests) { JoinRequest.where(user: member) }
 
     describe '.with_conversation_type' do
-      it 'returns everything untouched when no type is given' do
-        expect(member_join_requests.with_conversation_type(nil)).to match_array(member_join_requests)
+      it 'returns everything except action membership when no type is given' do
+        expect(member_join_requests.with_conversation_type(nil)).to match_array([
+          outing_join_request,
+          neighborhood_join_request,
+          conversation_join_request,
+          smalltalk_join_request
+        ])
       end
 
       it 'maps "outing" to entourages whose group_type is outing' do
