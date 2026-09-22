@@ -22,6 +22,11 @@ module ModerationServices
       entourage.moderation || entourage.build_moderation
       entourage.moderation.moderator_id = moderator.id
       entourage.moderation.save
+    rescue ActiveRecord::RecordNotUnique
+      # a concurrent request already created the moderation row for this entourage;
+      # reload it and apply our change on top instead of trying to insert a duplicate
+      entourage.association(:moderation).reset
+      entourage.moderation&.update(moderator_id: moderator.id)
     end
 
     def assign_section entourage
@@ -32,6 +37,9 @@ module ModerationServices
       entourage.moderation || entourage.build_moderation
       entourage.moderation.section = section
       entourage.moderation.save
+    rescue ActiveRecord::RecordNotUnique
+      entourage.association(:moderation).reset
+      entourage.moderation&.update(section: section)
     end
 
     module Callback

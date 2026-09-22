@@ -182,6 +182,8 @@ module Experimental::EntourageSlack
       moderator = ModerationServices.moderator_for_entourage(self)
 
       NotificationChannel.broadcast_to_user(moderator, { message: "Une action vient d'être créée : #{title}", type: "success" })
+    rescue => e
+      Sentry.capture_exception(e)
     end
 
     def notify_backoffice_outing
@@ -191,6 +193,8 @@ module Experimental::EntourageSlack
       moderator = ModerationServices.moderator_for_entourage(self)
 
       NotificationChannel.broadcast_to_user(moderator, { message: "Un événement vient d'être créé : #{title}", type: "success" })
+    rescue => e
+      Sentry.capture_exception(e)
     end
   end
 end
