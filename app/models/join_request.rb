@@ -63,18 +63,22 @@ class JoinRequest < ApplicationRecord
     where(user_id: User.search_by_first_name(strip))
   }
 
-  scope :with_joinable_type, -> (joinable_type) {
-    return unless joinable_type.present?
-    return unless joinable_type.respond_to?(:to_s)
+  scope :with_conversation_type, -> (joinable_type) {
+    return without_action_type unless joinable_type.present?
+    return without_action_type unless joinable_type.respond_to?(:to_s)
 
     return where(joinable_type: :Entourage).where(
       joinable_id: Entourage.where(group_type: joinable_type.to_s.downcase)
-    ) if ['action', 'outing', 'conversation'].include?(joinable_type.to_s.downcase)
+    ) if ['outing', 'conversation'].include?(joinable_type.to_s.downcase)
 
     where(joinable_type: joinable_type)
   }
 
-  scope :without_joinable_type, -> (joinable_type) {
+  scope :without_action_type, -> {
+    return where.not(joinable_type: :Entourage, joinable_id: Entourage.where(group_type: :action))
+  }
+
+  scope :without_conversation_type, -> (joinable_type) {
     return unless joinable_type.present?
 
     where.not(joinable_type: joinable_type)

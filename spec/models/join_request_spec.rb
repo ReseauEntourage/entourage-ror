@@ -77,4 +77,60 @@ RSpec.describe JoinRequest, type: :model do
       expect(outing.creators_or_organizers).not_to include(rejected_organizer)
     end
   end
+
+  describe 'scopes' do
+    let!(:member) { create(:user, first_name: 'Member') }
+    let!(:action) { create(:entourage, group_type: :action) }
+    let!(:conversation) { create(:conversation, participants: [member]) }
+    let!(:smalltalk) { create(:smalltalk, participants: [member]) }
+
+    let!(:action_join_request) { create(:join_request, joinable: action, user: member, status: :accepted, role: :member) }
+    let!(:outing_join_request) { create(:join_request, joinable: outing, user: member, status: :accepted, role: :participant) }
+    let!(:neighborhood_join_request) { create(:join_request, joinable: neighborhood, user: member, status: :accepted, role: :member) }
+    let(:conversation_join_request) { conversation.join_requests.find_by(user: member) }
+    let(:smalltalk_join_request) { smalltalk.join_requests.find_by(user: member) }
+
+    let(:member_join_requests) { JoinRequest.where(user: member) }
+
+    describe '.with_conversation_type' do
+      it 'returns everything except action membership when no type is given' do
+        expect(member_join_requests.with_conversation_type(nil)).to match_array([
+          outing_join_request,
+          neighborhood_join_request,
+          conversation_join_request,
+          smalltalk_join_request
+        ])
+      end
+
+      it 'maps "outing" to entourages whose group_type is outing' do
+        expect(member_join_requests.with_conversation_type(:outing)).to contain_exactly(outing_join_request)
+      end
+
+      it 'maps "conversation" to entourages whose group_type is conversation' do
+        expect(member_join_requests.with_conversation_type(:conversation)).to contain_exactly(conversation_join_request)
+      end
+
+      it 'does not map "action": actions have no conversation, so they are excluded' do
+        expect(member_join_requests.with_conversation_type(:action)).to be_empty
+      end
+
+      it 'filters non-Entourage joinable types directly by joinable_type' do
+        expect(member_join_requests.with_conversation_type(:Neighborhood)).to contain_exactly(neighborhood_join_request)
+      end
+    end
+
+    describe '.without_conversation_type' do
+      it 'returns everything untouched when no type is given' do
+        expect(member_join_requests.without_conversation_type(nil)).to match_array(member_join_requests)
+      end
+
+      it 'excludes the given joinable_type' do
+        expect(member_join_requests.without_conversation_type(:Neighborhood)).not_to include(neighborhood_join_request)
+      end
+
+      it 'only filters by joinable_type, so actions are not excluded' do
+        expect(member_join_requests.without_conversation_type(:Neighborhood)).to include(action_join_request)
+      end
+    end
+  end
 end

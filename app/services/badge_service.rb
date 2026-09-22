@@ -118,7 +118,7 @@ class BadgeService
 
     def first_engagement_detected?(user)
       UserReaction.where(user_id: user.id).exists? ||
-      JoinRequest.accepted.with_joinable_type(:outing).where(user_id: user.id).exists? ||
+      JoinRequest.accepted.with_conversation_type(:outing).where(user_id: user.id).exists? ||
       UsersResource.where(user_id: user.id, watched: true).exists? ||
       ChatMessage.where(user_id: user.id).exists?
     end

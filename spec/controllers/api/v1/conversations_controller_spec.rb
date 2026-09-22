@@ -172,6 +172,20 @@ describe Api::V1::ConversationsController do
       it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq("http://foo.bar") }
       it { expect(subject_smalltalk["last_chat_message_datetime"]).to eq(smalltalk_chat_message_recent.created_at.utc.iso8601(3)) }
     end
+
+    context 'filtering by type=action' do
+      let(:request) { get :memberships, params: { token: user.token, type: 'action' } }
+
+      let!(:action) { create :entourage, status: :open, group_type: :action }
+      let!(:join_request) { create :join_request, joinable: action, user: user, status: 'accepted', role: 'member' }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it 'excludes actions: actions have no conversation' do
+        expect(subject).to be_empty
+      end
+    end
   end
 
   describe 'GET private' do
