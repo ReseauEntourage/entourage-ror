@@ -28,8 +28,8 @@ module Api
       def memberships
         memberships = current_user
           .accepted_join_requests
-          .with_joinable_type(params[:type])
-          .without_joinable_type(:Neighborhood)
+          .with_conversation_type(params[:type])
+          .without_conversation_type(:Neighborhood)
           .order_by_joinable_last_chat_message
           .page(page)
           .per(per)
