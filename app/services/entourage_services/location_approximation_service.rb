@@ -15,6 +15,8 @@ module EntourageServices
 
     def expire_cache
       $redis.del(cache_key) if cache_key.present?
+    rescue => e
+      Sentry.capture_exception(e)
     end
 
     private
