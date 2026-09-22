@@ -576,23 +576,10 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :entourages, only: [:index, :show, :create, :update] do
-        collection do
-          get :search
-          get :joined
-          get :owned
-          get :invited
-        end
+      resources :entourages, only: [] do
         resources :users, controller: 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, controller: 'entourages/invitations', only: [:create]
         resources :chat_messages, controller: 'entourages/chat_messages', only: [:index, :create]
-
-        member do
-          put :read
-          get 'update', action: :one_click_update, as: :one_click_update
-          post :report
-          delete :report_prompt, action: :dismiss_report_prompt
-        end
       end
 
       resources :outings do
@@ -873,8 +860,6 @@ Rails.application.routes.draw do
 
       namespace :public do
         resources :stats, only: [:index]
-        resources :entourages, only: [:index]
-        match 'entourages/:uuid' => 'entourages#show', :via => :get
       end
 
       resources :tags, only: [] do
