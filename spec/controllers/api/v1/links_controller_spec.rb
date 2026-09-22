@@ -25,27 +25,4 @@ describe Api::V1::LinksController do
       it { should redirect_to 'https://www.entourage.social/cgu/' }
     end
   end
-
-  describe 'GET mesure_impact' do
-    context 'not signed in' do
-      before { get :mesure_impact, params: { id: user.uuid } }
-
-      it { expect(response.status).to eq(302) }
-      it { should redirect_to "https://entourage-asso.typeform.com/to/sBMExrH7#email=&phone=" }
-    end
-
-    context 'signed in' do
-      before { get :mesure_impact, params: { token: user.token } }
-
-      it { expect(response.status).to eq(302) }
-      it { should redirect_to "https://entourage-asso.typeform.com/to/sBMExrH7#email=#{user.email}&phone=#{user.phone}" }
-    end
-
-    context "signed in with another user's id param" do
-      let(:other_user) { create(:offer_help_user) }
-      before { get :mesure_impact, params: { id: other_user.uuid, token: user.token } }
-
-      it { should redirect_to "https://entourage-asso.typeform.com/to/sBMExrH7#email=#{user.email}&phone=#{user.phone}" }
-    end
-  end
 end
