@@ -29,6 +29,16 @@ describe Api::V1::Users::EntouragesController, type: :controller do
       it { expect(response.status).to eq(200) }
     end
 
+    context "another user's id" do
+      let(:other_user) { FactoryBot.create(:pro_user) }
+
+      it 'raises not found' do
+        expect {
+          get :index, params: { user_id: other_user.id, token: user.token }
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     context 'filter entourage status' do
       let!(:entourage_joined_opened) { FactoryBot.create(:entourage, created_at: 2.day.ago, status: 'open') }
       let!(:join_request1) { FactoryBot.create(:join_request, joinable: entourage_joined_opened, user: user, status: JoinRequest::ACCEPTED_STATUS) }

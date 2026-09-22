@@ -27,6 +27,16 @@ describe Api::V1::Users::NeighborhoodsController, type: :controller do
       it { expect(response.status).to eq(200) }
     end
 
+    context "another user's id" do
+      let(:other_user) { create(:pro_user) }
+
+      it 'raises not found' do
+        expect {
+          get :index, params: { user_id: other_user.id, token: user.token }
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     describe 'filter by interests' do
       before { get :index, params: { user_id: user.id, token: user.token, interests: interests } }
 
