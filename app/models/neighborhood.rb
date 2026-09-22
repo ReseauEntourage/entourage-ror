@@ -94,37 +94,36 @@ class Neighborhood < ApplicationRecord
     where('left(postal_code, 2) = ?', ModerationArea.departement(moderation_area)).where(country: :FR)
   }
 
+  # @caution correlated LATERAL subqueries, not a join across the whole
+  # chat_messages table: with 800+ neighborhoods and millions of chat
+  # messages, the previous implementation (group by over a left join of
+  # every neighborhood against every matching chat_message) forced Postgres
+  # to scan the entire messageable_type='Neighborhood' slice of chat_messages
+  # on every admin listing load, regardless of pagination.
   scope :join_chat_message_with_images, -> {
     joins(%(
-      left join (
-        select #{table_name}.id
-        from #{table_name}
-        left join chat_messages as chat_message_with_images on
-          chat_message_with_images.messageable_id = #{table_name}.id and
-          chat_message_with_images.messageable_type = '#{self.name}'
-        where
-          chat_message_with_images.image_url is not null and
-          chat_message_with_images.status != 'scheduled'
-        group by #{table_name}.id
-      ) as #{table_name}_imageable on
-        #{table_name}_imageable.id = #{table_name}.id
+      left join lateral (
+        select exists (
+          select 1
+          from chat_messages
+          where chat_messages.messageable_id = #{table_name}.id and
+            chat_messages.messageable_type = '#{self.name}' and
+            chat_messages.image_url is not null and
+            chat_messages.status != 'scheduled'
+        ) as has_image
+      ) as #{table_name}_imageable on true
     ))
   }
 
   scope :join_chat_messages_on_max_created_at, -> {
     joins(%(
-      left join (
-        select
-          #{table_name}.id,
-          max(chat_message_on_max_created_at.created_at) as max_created_at
-        from #{table_name}
-        left join chat_messages as chat_message_on_max_created_at on
-          chat_message_on_max_created_at.messageable_id = #{table_name}.id and
-          chat_message_on_max_created_at.messageable_type = '#{self.name}' and
-          chat_message_on_max_created_at.status != 'scheduled'
-        group by #{table_name}.id
-      ) as #{table_name}_messageable on
-        #{table_name}_messageable.id = #{table_name}.id
+      left join lateral (
+        select max(created_at) as max_created_at
+        from chat_messages
+        where chat_messages.messageable_id = #{table_name}.id and
+          chat_messages.messageable_type = '#{self.name}' and
+          chat_messages.status != 'scheduled'
+      ) as #{table_name}_messageable on true
     ))
   }
 

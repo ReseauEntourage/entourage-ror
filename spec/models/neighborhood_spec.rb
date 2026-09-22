@@ -248,7 +248,7 @@ RSpec.describe Neighborhood, type: :model do
     it 'ignores a scheduled post with an image' do
       create(:chat_message, messageable: neighborhood, status: :scheduled, image_url: 'foo')
 
-      result = Neighborhood.where(id: neighborhood.id).join_chat_message_with_images.select('neighborhoods.*, neighborhoods_imageable.id is not null as has_image').first
+      result = Neighborhood.where(id: neighborhood.id).join_chat_message_with_images.select('neighborhoods.*, neighborhoods_imageable.has_image').first
 
       expect(result.has_image).to eq(false)
     end
@@ -256,7 +256,7 @@ RSpec.describe Neighborhood, type: :model do
     it 'picks up a published post with an image' do
       create(:chat_message, messageable: neighborhood, status: :active, image_url: 'foo')
 
-      result = Neighborhood.where(id: neighborhood.id).join_chat_message_with_images.select('neighborhoods.*, neighborhoods_imageable.id is not null as has_image').first
+      result = Neighborhood.where(id: neighborhood.id).join_chat_message_with_images.select('neighborhoods.*, neighborhoods_imageable.has_image').first
 
       expect(result.has_image).to eq(true)
     end

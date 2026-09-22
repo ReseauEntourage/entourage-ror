@@ -24,13 +24,13 @@ module Admin
         .select(%(
           neighborhoods.*,
           moderator_reads is null as unread,
-          moderator_reads is null and neighborhoods_imageable.id is not null as unread_images
+          moderator_reads is null and neighborhoods_imageable.has_image as unread_images
         ))
         .order(Arel.sql("case when status = 'active' then 1 else 2 end"))
         .order(Arel.sql(%(
           case
           when moderator_reads is null then 0
-          when moderator_reads is null and neighborhoods_imageable.id is not null then 1
+          when moderator_reads is null and neighborhoods_imageable.has_image then 1
           when neighborhoods_messageable.max_created_at >= moderator_reads.read_at then 2
           else 3
           end
