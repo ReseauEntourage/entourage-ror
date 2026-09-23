@@ -4,7 +4,7 @@ describe Api::V1::UserSmalltalksController, type: :controller do
   let(:user) { create :pro_user, goal: :offer_help }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : smalltalk, meeting et accepted_members par user_smalltalk (smalltalk non préchargé, SmalltalkSerializer#members/meeting_url)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           smalltalk = create :smalltalk, participants: [user, create(:public_user)]
