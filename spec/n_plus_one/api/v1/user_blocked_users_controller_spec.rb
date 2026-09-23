@@ -4,7 +4,7 @@ describe Api::V1::UserBlockedUsersController, type: :controller do
   let(:user) { create :public_user }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : blocked_user (UserBlockedUserSerializer has_one :blocked_user sans includes)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           create :user_blocked_user, user: user, blocked_user: create(:public_user, avatar_key: "avatar_#{SecureRandom.hex(4)}")
