@@ -100,6 +100,10 @@ module FeedServices
       preload_chat_messages_counts(feeds)
       preload_last_chat_messages(feeds)
       preload_last_join_requests(feeds)
+      # the author of a conversation is its other participant (@see V1::EntourageSerializer#initialize)
+      conversations = feeds.map(&:feedable).grep(Entourage).select(&:conversation?)
+      ActiveRecord::Associations::Preloader.new(records: conversations, associations: { accepted_members: :partner }).call
+
       ::Preloaders::Entourage.preload_authors(feeds.map(&:feedable).grep(Entourage), user: user)
       ::Preloaders::Entourage.preload_user_blocks(feeds.map(&:feedable).grep(Entourage), user: user)
       ::Preloaders::Images.preload_outings(feeds.map(&:feedable).grep(Entourage))
