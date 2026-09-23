@@ -8,7 +8,10 @@ module Api
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
 
+          # same preloads as ActionServices::Finder (@see V1::ActionSerializer)
           actions = Action.active.where(user_id: @user.id)
+            .includes(:user, :translation, :join_requests)
+            .preload(section_taggings: :tag)
             .order(created_at: :desc)
             .page(page)
             .per(per)
