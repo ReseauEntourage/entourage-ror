@@ -39,8 +39,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
     end
 
     context 'actions clôturées (outcome)' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : entourage_moderations (Entourage#outcome, :moderation non préchargée)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             action = create :entourage, :joined, :outcome_oui, user: author, status: :closed, participants: [create(:public_user)]
