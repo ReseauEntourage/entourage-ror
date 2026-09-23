@@ -19,6 +19,7 @@ module Api
           .page(page).per(per)
 
         ::Preloaders::Entourage.preload_current_join_request(conversations, user: current_user)
+        ::Preloaders::Images.preload_outings(conversations, keys: [:portrait_url], size: :small)
 
         render json: conversations, root: :conversations, each_serializer: ::V1::ConversationSerializer, scope: {
           user: current_user

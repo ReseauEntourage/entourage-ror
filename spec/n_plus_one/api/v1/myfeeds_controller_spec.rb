@@ -39,8 +39,7 @@ describe Api::V1::MyfeedsController, type: :controller do
     end
 
     context 'outings' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : images des outings (metadata_with_image_paths -> ImageResizeAction.find_path_for, sans preload_images)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             key = SecureRandom.hex(4)

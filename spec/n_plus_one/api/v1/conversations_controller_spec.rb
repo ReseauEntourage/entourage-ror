@@ -36,8 +36,7 @@ describe Api::V1::ConversationsController, type: :controller do
     end
 
     context 'outings' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : image_resize_actions (image_url_with_size(:portrait_url, :small) -> ImageResizeAction.find_path_for par événement)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             creator = partner_user(avatar_key: 'avatar')

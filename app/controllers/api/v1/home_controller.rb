@@ -15,6 +15,7 @@ module Api
         ask_for_helps = entourages(:ask_for_help).to_a
 
         ::Preloaders::Images.preload_entourage_authors(outings + actions + contributions + ask_for_helps)
+        ::Preloaders::Images.preload_outings(outings)
 
         render json: {
           metadata: {

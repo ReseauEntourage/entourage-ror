@@ -53,7 +53,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
 
     context 'outings' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : image_resize_actions (Entourage#metadata_with_image_paths, 2 par sortie) et followings par partenaire auteur (V1::PartnerSerializer#following)' do
+        pending: 'N+1 : followings par partenaire auteur (V1::PartnerSerializer#following)' do
         def populate(count)
           count.times do
             outing = create :outing, :joined, user: author, participants: [create(:public_user)],

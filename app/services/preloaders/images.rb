@@ -9,6 +9,15 @@ module Preloaders
       ::ImageResizeAction.preload_paths(bucket: ::Partner.bucket_name, paths: partners.map(&:image_url_with_bucket), size: size)
     end
 
+    OUTING_IMAGE_KEYS = [:landscape_url, :portrait_url, :landscape_thumbnail_url, :portrait_thumbnail_url].freeze
+
+    # images des sorties (@see Entourage#metadata_with_image_paths, Entourage#image_url_with_size)
+    def self.preload_outings entourages, keys: OUTING_IMAGE_KEYS, size: :medium
+      paths = entourages.select(&:outing?).flat_map { |outing| keys.map { |key| outing.metadata[key] } }
+
+      ::ImageResizeAction.preload_paths(bucket: ::EntourageImage::BUCKET_NAME, paths: paths, size: size)
+    end
+
     # @see V1::ChatMessages::GenericSerializer#image_url, V1::Images::ChatMessageSerializer#url
     def self.preload_chat_messages chat_messages, size: :medium
       ::ImageResizeAction.preload_paths(bucket: ::ChatMessage.bucket_name, paths: chat_messages.map(&:image_url_with_bucket), size: size)

@@ -4,7 +4,7 @@ describe Api::V1::Users::OutingsController, type: :controller do
   let(:user) { create :pro_user }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : partners (auteur), image_resize_actions (landscape_url), neighborhoods (pluck) et member_ids par événement (includes incomplet, V1::OutingSerializer)' do
+    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : partners (auteur), neighborhoods (pluck) et member_ids par événement (includes incomplet, V1::OutingSerializer)' do
       def populate(count)
         count.times do
           author = create :public_user, partner: create(:partner, name: "Partner #{SecureRandom.hex(4)}")

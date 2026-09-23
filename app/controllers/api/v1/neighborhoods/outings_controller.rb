@@ -12,7 +12,11 @@ module Api
         end
 
         def index
-          render json: @neighborhood.outings_with_admin_online.active.future_or_past_today.default_order.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+          outings = @neighborhood.outings_with_admin_online.active.future_or_past_today.default_order.page(page).per(per)
+
+          ::Preloaders::Images.preload_outings(outings)
+
+          render json: outings, root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
             user: current_user
           }
         end
