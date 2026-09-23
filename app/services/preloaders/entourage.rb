@@ -14,5 +14,19 @@ module Preloaders
         entourage.current_join_request = join_requests_by_entourage_id[entourage.id]
       end
     end
+
+    # partenaire des auteurs, logo et suivi par `user` (@see V1::EntourageSerializer#author) :
+    # l'auteur affiché d'une conversation est l'autre participant, pris dans accepted_members
+    # quand ils sont chargés
+    def self.preload_authors(entourages, user:)
+      partners = entourages.flat_map do |entourage|
+        members = entourage.conversation? && entourage.association(:accepted_members).loaded? ? entourage.accepted_members : []
+
+        [entourage.user, *members].compact.map(&:partner)
+      end
+
+      Preloaders::Images.preload_partners(partners)
+      Preloaders::Partner.preload_following(partners, user: user)
+    end
   end
 end

@@ -37,7 +37,7 @@ module Api
 
           join_requests = join_requests.to_a.sort_by { |r| r.user_id == @entourage.user_id ? Time.at(0) : r.accepted_at || r.created_at }
 
-          ::Preloaders::JoinRequest.preload_members(join_requests)
+          ::Preloaders::JoinRequest.preload_members(join_requests, user: current_user)
 
           render json: join_requests, root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end

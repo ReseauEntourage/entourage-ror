@@ -6,7 +6,7 @@ describe Api::V1::Neighborhoods::UsersController, type: :controller do
 
   describe 'GET index' do
     it_behaves_like 'an endpoint without N+1 queries',
-      pending: 'N+1 : user_badges (UserBadge.all_for_user) et followings (V1::PartnerSerializer#following), 1 requête de chaque par membre' do
+      pending: 'N+1 : user_badges (UserBadge.all_for_user), 1 requête par membre' do
       # chaque membre a son propre partenaire, son badge et son avatar
       def populate(count)
         count.times do

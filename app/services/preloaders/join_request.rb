@@ -75,12 +75,15 @@ module Preloaders
       end
     end
 
-    # listes de membres (@see V1::JoinRequestSerializer)
-    def self.preload_members join_requests
+    # listes de membres vues par `user` (@see V1::JoinRequestSerializer)
+    def self.preload_members join_requests, user:
       join_requests = join_requests.to_a
       return if join_requests.empty?
 
-      Preloaders::Images.preload_partners(join_requests.map { |join_request| join_request.user&.partner })
+      partners = join_requests.map { |join_request| join_request.user&.partner }
+
+      Preloaders::Images.preload_partners(partners)
+      Preloaders::Partner.preload_following(partners, user: user)
     end
 
     def self.sanitize_sql condition

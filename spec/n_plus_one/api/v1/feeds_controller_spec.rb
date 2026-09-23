@@ -24,8 +24,7 @@ describe Api::V1::FeedsController, type: :controller do
 
   describe 'GET index' do
     context 'actions' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: "N+1 : followings (V1::PartnerSerializer#following fait un Following.exists? par auteur rattaché à un partenaire)" do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             action = create :entourage, :joined, user: author, latitude: latitude, longitude: longitude,
@@ -39,8 +38,7 @@ describe Api::V1::FeedsController, type: :controller do
     end
 
     context 'outings' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: "N+1 : followings par partenaire auteur (V1::PartnerSerializer#following)" do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             outing = create :outing, :joined, user: author, latitude: latitude, longitude: longitude,

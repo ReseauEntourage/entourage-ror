@@ -19,7 +19,7 @@ module Api
             .page(page)
             .per(per)
 
-          ::Preloaders::JoinRequest.preload_members(join_requests)
+          ::Preloaders::JoinRequest.preload_members(join_requests, user: current_user)
 
           render json: join_requests, root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end

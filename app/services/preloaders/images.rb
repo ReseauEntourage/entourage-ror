@@ -34,15 +34,5 @@ module Preloaders
     def self.preload_chat_messages chat_messages, size: :medium
       ::ImageResizeAction.preload_paths(bucket: ::ChatMessage.bucket_name, paths: chat_messages.map(&:image_url_with_bucket), size: size)
     end
-
-    # logos des partenaires des auteurs (@see V1::EntourageSerializer#author) : l'auteur affiché
-    # d'une conversation est l'autre participant, pris dans accepted_members quand ils sont chargés
-    def self.preload_entourage_authors entourages
-      preload_partners(entourages.flat_map do |entourage|
-        members = entourage.conversation? && entourage.association(:accepted_members).loaded? ? entourage.accepted_members : []
-
-        [entourage.user, *members].compact.map(&:partner)
-      end)
-    end
   end
 end

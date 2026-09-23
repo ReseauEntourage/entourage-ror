@@ -18,8 +18,7 @@ describe Api::V1::MyfeedsController, type: :controller do
     end
 
     context 'actions' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : followings (PartnerSerializer#following : un Following.exists? par partenaire auteur)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             author = create_partner_author
@@ -85,8 +84,7 @@ describe Api::V1::MyfeedsController, type: :controller do
     context 'actions, pro user (feeds view)' do
       let(:user) { create :pro_user }
 
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : followings (PartnerSerializer#following : un Following.exists? par partenaire auteur)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             author = create_partner_author
