@@ -6,10 +6,13 @@ module Api
       allow_anonymous_access only: [:index]
 
       def index
-        invitations = current_user_or_anonymous.active_invitations.preload(:invitable)
+        invitations = current_user_or_anonymous.active_invitations.preload(:invitable, inviter: :partner)
         if params[:status]
           invitations = invitations.status(params[:status])
         end
+
+        ::Preloaders::EntourageInvitation.preload_join_requests(invitations)
+
         render json: invitations, root: :invitations, each_serializer: ::V1::EntourageInvitationSerializer
       end
 

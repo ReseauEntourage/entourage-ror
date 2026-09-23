@@ -4,7 +4,7 @@ describe Api::V1::InvitationsController, type: :controller do
   let(:user) { create :pro_user }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : users (inviter), partners (inviter.partner) et join_requests (statut) chargés par invitation (V1::EntourageInvitationSerializer#inviter / #status)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           @invitation_index = (@invitation_index || 0) + 1
