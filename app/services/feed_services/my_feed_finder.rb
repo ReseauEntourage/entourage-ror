@@ -101,6 +101,7 @@ module FeedServices
       preload_last_chat_messages(feeds)
       preload_last_join_requests(feeds)
       ::Preloaders::Entourage.preload_authors(feeds.map(&:feedable).grep(Entourage), user: user)
+      ::Preloaders::Entourage.preload_user_blocks(feeds.map(&:feedable).grep(Entourage), user: user)
       ::Preloaders::Images.preload_outings(feeds.map(&:feedable).grep(Entourage))
 
       FeedWithCursor.new(

@@ -21,6 +21,7 @@ module Api
           entourages = entourages.where(status: params[:status]) if params[:status].present?
 
           ::Preloaders::Entourage.preload_authors(entourages, user: current_user)
+          ::Preloaders::Entourage.preload_user_blocks(entourages, user: current_user)
           ::Preloaders::Images.preload_outings(entourages)
 
           render json: entourages, status: 200, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}

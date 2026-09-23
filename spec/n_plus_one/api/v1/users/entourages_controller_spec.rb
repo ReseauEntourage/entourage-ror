@@ -64,8 +64,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
     end
 
     context 'conversations' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : user_blocked_users (V1::Entourages::Blockers#blockers, une requête par conversation)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             other = author

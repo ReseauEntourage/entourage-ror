@@ -9,8 +9,7 @@ describe Api::V1::ConversationsController, type: :controller do
 
   describe 'GET index' do
     context 'private conversations' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : user_blocked_users (V1::Entourages::Blockers#blockers fait une requête UserBlockedUser.with_users par conversation)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             participant = partner_user(avatar_key: 'avatar', targeting_profile: :ambassador)

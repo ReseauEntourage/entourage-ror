@@ -62,7 +62,7 @@ describe Api::V1::MyfeedsController, type: :controller do
 
     context 'conversations' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : accepted_members, member_ids et user_blocked_users par conversation (EntourageSerializer#initialize + Blockers)' do
+        pending: 'N+1 : accepted_members et member_ids par conversation (EntourageSerializer#initialize + Blockers#other_participant_id)' do
         def populate(count)
           count.times do
             other = create(:public_user, avatar_key: 'avatar.jpg')

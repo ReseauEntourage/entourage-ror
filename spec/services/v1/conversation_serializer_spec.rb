@@ -144,5 +144,35 @@ describe V1::ConversationSerializer do
         expect(serialized[:blockers]).to eq([:me])
       end
     end
+
+    context 'user blocks are preloaded (Preloaders::Entourage.preload_user_blocks)' do
+      let(:stranger) { FactoryBot.create(:public_user) }
+      let!(:other_user_blocked_user) { FactoryBot.create(:user_blocked_user, user: participant, blocked_user: user) }
+      let!(:unrelated_user_blocked_user) { FactoryBot.create(:user_blocked_user, user: stranger, blocked_user: user) }
+
+      def blockers_of(conversation, user)
+        V1::ConversationSerializer.new(conversation, scope: { user: user }).serializable_hash[:blockers]
+      end
+
+      it 'serializes the same blockers without querying user_blocked_users' do
+        preloaded = ::Entourage.includes(:accepted_members).where(id: conversation.id).to_a
+        Preloaders::Entourage.preload_user_blocks(preloaded, user: user)
+
+        queries = []
+        callback = lambda { |*, payload| queries << payload[:sql] if payload[:sql] =~ /user_blocked_users/ }
+        result = ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { blockers_of(preloaded.first, user) }
+
+        expect(result).to match_array(blockers_of(::Entourage.find(conversation.id), user))
+        expect(result).to match_array([:me, :participant])
+        expect(queries).to be_empty
+      end
+
+      it 'falls back on a query for another user' do
+        preloaded = ::Entourage.where(id: conversation.id).to_a
+        Preloaders::Entourage.preload_user_blocks(preloaded, user: stranger)
+
+        expect(blockers_of(preloaded.first, user)).to match_array([:me, :participant])
+      end
+    end
   end
 end

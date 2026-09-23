@@ -15,6 +15,20 @@ module Preloaders
       end
     end
 
+    # blocages entre `user` et les participants de ses conversations : une requête pour toute la
+    # page, au lieu d'une par conversation (@see V1::Entourages::Blockers#blockers)
+    def self.preload_user_blocks(entourages, user:)
+      conversations = entourages.select(&:conversation?)
+      return if conversations.empty?
+      return unless user.is_a?(::User)
+
+      user_blocks = ::UserBlockedUser.where(user_id: user.id).or(::UserBlockedUser.where(blocked_user_id: user.id)).pluck(:user_id, :blocked_user_id)
+
+      conversations.each do |conversation|
+        (conversation.preloaded_user_blocks ||= {})[user.id] = user_blocks
+      end
+    end
+
     # partenaire des auteurs, logo et suivi par `user` (@see V1::EntourageSerializer#author) :
     # l'auteur affiché d'une conversation est l'autre participant, pris dans accepted_members
     # quand ils sont chargés
