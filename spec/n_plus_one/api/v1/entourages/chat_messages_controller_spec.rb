@@ -6,7 +6,7 @@ describe Api::V1::Entourages::ChatMessagesController, type: :controller do
   let!(:join_request) { create :join_request, joinable: entourage, user: user, status: 'accepted' }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : translations (contrôleur : includes(user: :partner) sans :translation)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           author = create :partner_user, partner: create(:partner, name: "Partner #{SecureRandom.hex(4)}", image_url: "partner_#{SecureRandom.hex(4)}.jpg"), avatar_key: "avatar_#{SecureRandom.hex(4)}"
