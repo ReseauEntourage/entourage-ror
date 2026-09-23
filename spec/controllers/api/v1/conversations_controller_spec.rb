@@ -144,11 +144,12 @@ describe Api::V1::ConversationsController do
     subject { JSON.parse(response.body)["memberships"] }
 
     let(:request) { get :memberships, params: { token: user.token }}
-    let(:participant) { create :public_user, first_name: :Jane }
+    let(:participant) { create :public_user, first_name: :Jane, avatar_key: 'jane_avatar' }
 
     context 'conversations, outings, neighborhoods and smalltalks' do
       let(:subject_smalltalk) { subject.select { |membership| membership["joinable_id"] == smalltalk.id }.first }
       let(:subject_outing) { subject.select { |membership| membership["joinable_id"] == outing.id }.first }
+      let(:subject_conversation) { subject.select { |membership| membership["joinable_id"] == conversation.id }.first }
 
       let!(:conversation) { create :conversation, participants: [user, participant] }
       let!(:outing) { create :outing, participants: [user] }
@@ -171,6 +172,33 @@ describe Api::V1::ConversationsController do
       it { expect(subject_smalltalk["last_chat_message"]).to eq("smalltalk_message_recent") }
       it { expect(subject_smalltalk["last_chat_message_image_url"]).to eq("http://foo.bar") }
       it { expect(subject_smalltalk["last_chat_message_datetime"]).to eq(smalltalk_chat_message_recent.created_at.utc.iso8601(3)) }
+      it { expect(subject_conversation["image_url"]).to eq(UserServices::Avatar.new(user: participant).thumbnail_url) }
+      it { expect(subject_conversation["image_url"]).to be_present }
+      it { expect(subject_smalltalk["image_url"]).to be_nil }
+    end
+
+    context 'conversation with several other participants' do
+      let(:other_participant) { create :public_user, avatar_key: 'other_avatar' }
+      let!(:conversation) { create :conversation, participants: [user, participant, other_participant] }
+
+      before { request }
+
+      it { expect(subject.first["image_url"]).to be_present }
+    end
+
+    context 'conversation image_url does not trigger N+1 on participants' do
+      let!(:conversations) { 3.times.map { create :conversation, participants: [user, create(:public_user, avatar_key: 'key')] } }
+
+      it do
+        queries = []
+        callback = lambda { |*, payload| queries << payload[:sql] if payload[:sql] =~ /FROM "users"/ }
+
+        ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { request }
+
+        expect(subject.map { |membership| membership["image_url"] }).to all(be_present)
+        # current_user + one batched accepted_members preload, independent of the number of conversations
+        expect(queries.count).to be <= 2
+      end
     end
 
     context 'filtering by type=action' do
