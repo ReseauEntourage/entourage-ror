@@ -5,7 +5,7 @@ describe Api::V1::Neighborhoods::OutingsController, type: :controller do
   let(:neighborhood) { create :neighborhood, participants: [user] }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : translations, users (auteur), partners, tags, neighborhoods, outing_recurrences, member_ids et confirmed_member_ids par événement (aucun preload dans le contrôleur, V1::OutingSerializer)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           author = create :public_user, partner: create(:partner, name: "Partner #{SecureRandom.hex(4)}")

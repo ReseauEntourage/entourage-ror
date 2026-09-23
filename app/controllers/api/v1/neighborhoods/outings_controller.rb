@@ -14,7 +14,7 @@ module Api
         def index
           outings = @neighborhood.outings_with_admin_online.active.future_or_past_today.default_order.page(page).per(per)
 
-          ::Preloaders::Images.preload_outings(outings)
+          ::Preloaders::Outing.preload_for_serializer(outings, user: current_user)
 
           render json: outings, root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
             user: current_user
