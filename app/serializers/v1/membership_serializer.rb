@@ -42,11 +42,8 @@ module V1
     end
 
     def image_url
-      return unless object.outing?
-
-      outing = object.joinable
-
-      outing.preload_image_url || outing.image_url_with_size(outing.metadata[:landscape_url], :medium)
+      return image_url_for_outing if object.outing?
+      return image_url_for_conversation if object.conversation?
     end
 
     def number_of_people
@@ -82,6 +79,19 @@ module V1
     end
 
     private
+
+    def image_url_for_outing
+      outing = object.joinable
+
+      outing.preload_image_url || outing.image_url_with_size(outing.metadata[:landscape_url], :medium)
+    end
+
+    # private conversation: avatar of the other participant (or one of them)
+    def image_url_for_conversation
+      return unless other_participant
+
+      UserServices::Avatar.new(user: other_participant).thumbnail_url
+    end
 
     def name_for_conversation
       return no_other_participant unless other_participant
