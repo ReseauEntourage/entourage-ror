@@ -21,8 +21,7 @@ describe Admin::ConversationsController, type: :controller do
     end
 
     context 'with a regular last message' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : noms des destinataires (conversation_recipients_display_names fait un User.where par conversation)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times { create_conversation }
         end
@@ -38,8 +37,7 @@ describe Admin::ConversationsController, type: :controller do
     end
 
     context 'with a deleted last message' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : noms des destinataires (conversation_recipients_display_names) + last_message.deleter (non préchargé)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times { create_conversation(deleted_last_message: true) }
         end
