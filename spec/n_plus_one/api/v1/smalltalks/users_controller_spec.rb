@@ -5,8 +5,7 @@ describe Api::V1::Smalltalks::UsersController, type: :controller do
   let!(:smalltalk) { create :smalltalk, participants: [user] }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries',
-      pending: 'N+1 : user_badges (UserBadge.all_for_user), 1 requête par membre' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       # chaque membre a son propre partenaire, son badge et son avatar
       def populate(count)
         count.times do

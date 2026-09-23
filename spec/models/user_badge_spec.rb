@@ -33,4 +33,38 @@ RSpec.describe UserBadge, type: :model do
       expect(badge).to be_valid
     end
   end
+
+  describe '.all_for_user' do
+    let(:user) { create(:public_user) }
+    let!(:badge) { create(:user_badge, user: user, badge_tag: 'bienvenue', active: true) }
+
+    def badge_queries
+      queries = []
+      callback = lambda { |*, payload| queries << payload[:sql] if payload[:sql] =~ /FROM "user_badges"/ }
+      result = ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { yield }
+
+      [result, queries.size]
+    end
+
+    it 'returns every badge tag, existing or not' do
+      badges = UserBadge.all_for_user(user)
+
+      expect(badges.map(&:badge_tag)).to eq(UserBadge::ALL_TAGS)
+      expect(badges.first).to eq(badge)
+      expect(badges.drop(1)).to all(be_new_record)
+    end
+
+    it 'uses the user_badges association when it is already loaded' do
+      user = User.includes(:user_badges).find(badge.user_id)
+
+      badges, count = badge_queries { UserBadge.all_for_user(user) }
+
+      expect(badges.first).to eq(badge)
+      expect(count).to eq(0)
+    end
+
+    it 'supports anonymous users' do
+      expect(UserBadge.all_for_user(AnonymousUser.default_user).map(&:badge_tag)).to eq(UserBadge::ALL_TAGS)
+    end
+  end
 end

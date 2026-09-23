@@ -17,7 +17,9 @@ class UserBadge < ApplicationRecord
   scope :active, -> { where(active: true) }
 
   def self.all_for_user(user)
-    existing = where(user_id: user.id).index_by(&:badge_tag)
+    # a list of members preloads user_badges (@see Preloaders::JoinRequest.preload_members)
+    badges = user.is_a?(ActiveRecord::Base) && user.association(:user_badges).loaded? ? user.user_badges : where(user_id: user.id)
+    existing = badges.index_by(&:badge_tag)
 
     ALL_TAGS.map do |tag|
       existing[tag] || new(

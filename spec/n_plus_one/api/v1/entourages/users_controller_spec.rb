@@ -5,7 +5,7 @@ describe Api::V1::Entourages::UsersController, type: :controller do
   let(:entourage) { create :entourage, :joined, user: user }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : user_badges (JoinRequestSerializer#badges appelle UserBadge.all_for_user par membre)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           member = create :public_user,
