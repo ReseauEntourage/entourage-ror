@@ -2,7 +2,11 @@ module Api
   module V1
     class ActionsController < Api::V1::BaseController
       def index
-        render json: ActionServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :actions, each_serializer: ::V1::ActionSerializer, scope: {
+        actions = ActionServices::Finder.new(current_user, index_params).find_all.page(page).per(per)
+
+        ::Preloaders::Images.preload_contributions(actions)
+
+        render json: actions, root: :actions, each_serializer: ::V1::ActionSerializer, scope: {
           user: current_user,
           latitude: latitude,
           longitude: longitude

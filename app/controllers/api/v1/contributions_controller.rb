@@ -8,7 +8,11 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: ContributionServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :contributions, each_serializer: ::V1::ActionSerializer, scope: {
+        contributions = ContributionServices::Finder.new(current_user, index_params).find_all.page(page).per(per)
+
+        ::Preloaders::Images.preload_contributions(contributions)
+
+        render json: contributions, root: :contributions, each_serializer: ::V1::ActionSerializer, scope: {
           user: current_user,
           latitude: latitude,
           longitude: longitude

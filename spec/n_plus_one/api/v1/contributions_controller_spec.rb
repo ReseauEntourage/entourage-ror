@@ -4,7 +4,7 @@ describe Api::V1::ContributionsController, type: :controller do
   let(:user) { create :public_user }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : image_resize_actions (ActionSerializer#image_url -> Storage::Bucket#public_url_with_size -> ImageResizeAction.find_path_for, 1 requête par contribution avec image)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           contribution = create :contribution,

@@ -13,6 +13,8 @@ module Api
             .page(page)
             .per(per)
 
+          ::Preloaders::Images.preload_contributions(actions)
+
           render json: actions, status: 200, each_serializer: ::V1::ActionSerializer, scope: { user: current_user }
         end
 

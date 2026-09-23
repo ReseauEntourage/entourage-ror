@@ -18,6 +18,13 @@ module Preloaders
       ::ImageResizeAction.preload_paths(bucket: ::EntourageImage::BUCKET_NAME, paths: paths, size: size)
     end
 
+    # @see V1::ActionSerializer#image_url
+    def self.preload_contributions actions, size: :medium
+      paths = actions.select { |action| action.contribution? && action.image_url.present? }.map { |action| ::Contribution.path(action.image_url) }
+
+      ::ImageResizeAction.preload_paths(bucket: ::Contribution.bucket.bucket_name, paths: paths, size: size)
+    end
+
     # @see V1::ChatMessages::GenericSerializer#image_url, V1::Images::ChatMessageSerializer#url
     def self.preload_chat_messages chat_messages, size: :medium
       ::ImageResizeAction.preload_paths(bucket: ::ChatMessage.bucket_name, paths: chat_messages.map(&:image_url_with_bucket), size: size)

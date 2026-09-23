@@ -4,7 +4,7 @@ describe Api::V1::Users::ActionsController, type: :controller do
   let(:user) { create :pro_user, avatar_key: 'avatar-key' }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : sections, traductions et membres (aucun préchargement dans le contrôleur : section_list, translation et member_ids requêtent par action) + image_resize_actions (ActionSerializer#image_url)' do
+    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : sections, traductions et membres (aucun préchargement dans le contrôleur : section_list, translation et member_ids requêtent par action)' do
       # l'endpoint liste les actions de l'utilisateur : l'auteur est donc toujours le même,
       # les autres associations (membres, sections, traductions, image) sont distinctes
       def populate(count)
