@@ -35,7 +35,7 @@ describe Admin::ScheduledPublicationsController, type: :controller do
     end
 
     context 'broadcasts' do
-      it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : diffusions (ScheduledPublication#publishable recharge le broadcast via find_with_cast à chaque ligne ; target_label et recipients_count requêtent les groupes destinataires par ligne)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             neighborhoods = create_list :neighborhood, 2, name: "Groupe #{SecureRandom.hex(4)}"

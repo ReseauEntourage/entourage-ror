@@ -14,6 +14,14 @@ class ConversationMessageBroadcast < ApplicationRecord
 
       record
     end
+
+    # the same cast as find_with_cast, without querying the record again
+    def cast record
+      return record.becomes(UserMessageBroadcast) if record.entourage_type?
+      return record.becomes(NeighborhoodMessageBroadcast) if record.neighborhood_type?
+
+      record
+    end
   end
 
   def content_for_user user

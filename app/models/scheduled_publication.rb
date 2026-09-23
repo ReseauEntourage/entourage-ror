@@ -18,9 +18,12 @@ class ScheduledPublication < ApplicationRecord
   # table without a Rails `type` column: Rails' polymorphic association therefore stores/loads them
   # under their base_class name, not the concrete subclass - cast explicitly to get the real behavior
   def publishable
-    return ConversationMessageBroadcast.find_with_cast(publishable_id) if broadcast?
+    record = super
+    return record unless broadcast? && record
 
-    super
+    # memoized: lists preload data on it (@see Preloaders::NeighborhoodMessageBroadcast)
+    @cast_publishable = nil unless @cast_publishable&.id == record.id
+    @cast_publishable ||= ConversationMessageBroadcast.cast(record)
   end
 
   def post?
@@ -56,7 +59,7 @@ class ScheduledPublication < ApplicationRecord
     count = publishable.recipient_ids.count
     return "#{count} groupes" if count.zero?
 
-    names = publishable.recipients.limit(3).pluck(:name)
+    names = publishable.recipient_names(limit: 3)
     label = "#{count} groupes : #{names.sort.join(', ')}"
     label += " et #{count - names.size} autre#{'s' if count - names.size > 1}" if count > names.size
     label
@@ -65,6 +68,6 @@ class ScheduledPublication < ApplicationRecord
   def recipients_count
     return neighborhood&.number_of_people || 0 if post?
 
-    publishable.recipients.sum(:number_of_people)
+    publishable.recipients_number_of_people
   end
 end
