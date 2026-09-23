@@ -27,8 +27,7 @@ describe Admin::UsersController, type: :controller do
     end
 
     context 'pending phone change requests' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : user_phone_changes (user.pending_phone_change_request appelé par ligne dans la vue, association non préchargée)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             listed = create :public_user

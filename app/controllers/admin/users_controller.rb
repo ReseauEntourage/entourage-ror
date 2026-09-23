@@ -11,6 +11,8 @@ module Admin
       @role = get_role
 
       @users = filtered_users.includes(:address).order('created_at DESC').page(params[:page]).per(25)
+      # the pending list shows the date of each phone change request (User#pending_phone_change_request)
+      @users = @users.preload(:user_phone_changes) if @status == :pending
     end
 
     def search
