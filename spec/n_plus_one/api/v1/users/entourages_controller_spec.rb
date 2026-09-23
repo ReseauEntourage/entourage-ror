@@ -28,7 +28,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
   describe 'GET index' do
     context 'actions ouvertes' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : followings (V1::PartnerSerializer#following fait un Following.exists? par auteur rattaché à un partenaire) et image_resize_actions (V1::PartnerSerializer#image_url)' do
+        pending: 'N+1 : followings (V1::PartnerSerializer#following fait un Following.exists? par auteur rattaché à un partenaire)' do
         def populate(count)
           count.times do
             action = create :entourage, :joined, user: author, participants: [create(:public_user)]
@@ -41,7 +41,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
 
     context 'actions clôturées (outcome)' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : entourage_moderations (Entourage#outcome, :moderation non préchargée) et followings / image_resize_actions par partenaire auteur (V1::PartnerSerializer#following, #image_url)' do
+        pending: 'N+1 : entourage_moderations (Entourage#outcome, :moderation non préchargée) et followings par partenaire auteur (V1::PartnerSerializer#following)' do
         def populate(count)
           count.times do
             action = create :entourage, :joined, :outcome_oui, user: author, status: :closed, participants: [create(:public_user)]
@@ -53,7 +53,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
 
     context 'outings' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : image_resize_actions (Entourage#metadata_with_image_paths, 2 par sortie) et followings / image_resize_actions par partenaire auteur (V1::PartnerSerializer#following, #image_url)' do
+        pending: 'N+1 : image_resize_actions (Entourage#metadata_with_image_paths, 2 par sortie) et followings par partenaire auteur (V1::PartnerSerializer#following)' do
         def populate(count)
           count.times do
             outing = create :outing, :joined, user: author, participants: [create(:public_user)],
@@ -67,7 +67,7 @@ describe Api::V1::Users::EntouragesController, type: :controller do
 
     context 'conversations' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : user_blocked_users (V1::Entourages::Blockers#blockers, une requête par conversation) et followings / image_resize_actions par partenaire auteur (V1::PartnerSerializer#following, #image_url)' do
+        pending: 'N+1 : user_blocked_users (V1::Entourages::Blockers#blockers, une requête par conversation) et followings par partenaire auteur (V1::PartnerSerializer#following)' do
         def populate(count)
           count.times do
             other = author

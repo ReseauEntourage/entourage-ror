@@ -75,6 +75,14 @@ module Preloaders
       end
     end
 
+    # listes de membres (@see V1::JoinRequestSerializer)
+    def self.preload_members join_requests
+      join_requests = join_requests.to_a
+      return if join_requests.empty?
+
+      Preloaders::Images.preload_partners(join_requests.map { |join_request| join_request.user&.partner })
+    end
+
     def self.sanitize_sql condition
       ActiveRecord::Base.send(:sanitize_sql_array, condition)
     end

@@ -100,6 +100,7 @@ module FeedServices
       preload_chat_messages_counts(feeds)
       preload_last_chat_messages(feeds)
       preload_last_join_requests(feeds)
+      ::Preloaders::Images.preload_entourage_authors(feeds.map(&:feedable).grep(Entourage))
 
       FeedWithCursor.new(
         feeds,

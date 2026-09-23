@@ -11,13 +11,17 @@ module Api
 
         def index
           # outing members
-          render json: @outing.join_requests
+          join_requests = @outing.join_requests
             .includes(user: :user_badges, user: :partner)
             .search_by_member(params[:query])
             .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            .per(per)
+
+          ::Preloaders::JoinRequest.preload_members(join_requests)
+
+          render json: join_requests, root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create

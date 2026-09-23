@@ -72,11 +72,13 @@ module NPlusOneHelper
 
   # Remet à zéro ce qui, d'un appel à l'autre, pourrait masquer des requêtes :
   # - une instance de contrôleur neuve (variables mémoïsées par un appel précédent) ;
-  # - le cache de BatchLoader (lazy_relationship des serializers), qui n'est vidé par
-  #   aucun middleware en controller spec.
+  # - le cache de BatchLoader (lazy_relationship des serializers) et les CurrentAttributes
+  #   (préchargements limités à la requête), que les middlewares et l'executor Rails remettent
+  #   à zéro à chaque requête, mais qui ne sont pas traversés en controller spec.
   def reset_request_state
     @controller = @controller.class.new if defined?(@controller) && @controller
     BatchLoader::Executor.clear_current if defined?(BatchLoader::Executor)
+    ActiveSupport::CurrentAttributes.reset_all
   end
 
   # Requêtes SQL d'un appel, dans un état "requête HTTP neuve"
@@ -119,6 +121,7 @@ RSpec.shared_examples 'an endpoint without N+1 queries' do |scale: 3, pending: n
 
     if ENV['N_PLUS_ONE_VERBOSE']
       puts "[N+1] #{RSpec.current_example.full_description} : #{small.size} -> #{large.size} requêtes"
+      puts n_plus_one_report(small, large).lines.drop(1).join if large.size > small.size
     end
 
     # N+1 connu : seule l'assertion finale est attendue en échec (une erreur de setup

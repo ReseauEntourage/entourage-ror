@@ -5,7 +5,7 @@ describe Api::V1::Outings::UsersController, type: :controller do
   let(:outing) { create :outing, :outing_class }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : user_badges, followings et image_resize_actions par membre (UserBadge.all_for_user + PartnerSerializer#following/#image_url)' do
+    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : user_badges et followings par membre (UserBadge.all_for_user + PartnerSerializer#following)' do
       def populate(count)
         count.times do
           member = create :public_user,

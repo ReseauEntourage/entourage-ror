@@ -25,7 +25,7 @@ describe Api::V1::FeedsController, type: :controller do
   describe 'GET index' do
     context 'actions' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: "N+1 : followings (V1::PartnerSerializer#following fait un Following.exists? par auteur rattaché à un partenaire) et image_resize_actions (V1::PartnerSerializer#image_url)" do
+        pending: "N+1 : followings (V1::PartnerSerializer#following fait un Following.exists? par auteur rattaché à un partenaire)" do
         def populate(count)
           count.times do
             action = create :entourage, :joined, user: author, latitude: latitude, longitude: longitude,
@@ -40,7 +40,7 @@ describe Api::V1::FeedsController, type: :controller do
 
     context 'outings' do
       it_behaves_like 'an endpoint without N+1 queries',
-        pending: "N+1 : image_resize_actions (Entourage#metadata_with_image_paths, 2 par sortie) et followings / image_resize_actions par partenaire auteur (V1::PartnerSerializer#following, #image_url)" do
+        pending: "N+1 : image_resize_actions (Entourage#metadata_with_image_paths, 2 par sortie) et followings par partenaire auteur (V1::PartnerSerializer#following)" do
         def populate(count)
           count.times do
             outing = create :outing, :joined, user: author, latitude: latitude, longitude: longitude,

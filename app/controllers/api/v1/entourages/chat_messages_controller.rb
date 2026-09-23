@@ -29,6 +29,8 @@ module Api
             messages.to_a.push Onboarding::V1.chat_message_for(current_user)
           end
 
+          ::Preloaders::Images.preload_partners(messages.map { |message| message.user&.partner })
+
           render json: messages, each_serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
         end
 

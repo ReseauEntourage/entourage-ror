@@ -9,6 +9,13 @@ module Api
       before_action :clean_inapp_notifications, only: [:summary]
 
       def index
+        outings = get_outings.to_a
+        actions = entourages([:contribution, :ask_for_help]).to_a
+        contributions = entourages(:contribution).to_a
+        ask_for_helps = entourages(:ask_for_help).to_a
+
+        ::Preloaders::Images.preload_entourage_authors(outings + actions + contributions + ask_for_helps)
+
         render json: {
           metadata: {
             order: metadata_order,
@@ -17,25 +24,25 @@ module Api
           headlines: Hash.new,
 
           outings: ActiveModel::Serializer::CollectionSerializer.new(
-            get_outings,
+            outings,
             serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),
 
           entourages: ActiveModel::Serializer::CollectionSerializer.new(
-            entourages([:contribution, :ask_for_help]),
+            actions,
             serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),
 
           entourage_contributions: ActiveModel::Serializer::CollectionSerializer.new(
-            entourages(:contribution),
+            contributions,
             serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),
 
           entourage_ask_for_helps: ActiveModel::Serializer::CollectionSerializer.new(
-            entourages(:ask_for_help),
+            ask_for_helps,
             serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           )

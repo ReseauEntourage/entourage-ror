@@ -8,15 +8,19 @@ module Api
 
         def index
           # neighborhood members
-          render json: @neighborhood.join_requests
+          join_requests = @neighborhood.join_requests
             .includes(user: :user_badges, user: :partner)
             .search_by_member(params[:query])
             .ordered_by_validated_users
             .accepted
             .page(page)
-            .per(per), root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: {
-              user: current_user
-            }
+            .per(per)
+
+          ::Preloaders::JoinRequest.preload_members(join_requests)
+
+          render json: join_requests, root: 'users', each_serializer: ::V1::JoinRequestSerializer, scope: {
+            user: current_user
+          }
         end
 
         def create
