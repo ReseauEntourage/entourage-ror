@@ -7,7 +7,7 @@ describe Api::V1::Outings::ChatMessagesController, type: :controller do
   let(:reaction) { create :reaction }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : partners (includes(:user) sans :partner) + image_resize_actions (GenericSerializer#image_url -> ChatMessage#image_url_with_size -> ImageResizeAction.find_path_for)' do
+    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : partners (includes(:user) sans :partner)' do
       def populate(count)
         count.times do
           hex = SecureRandom.hex(4)

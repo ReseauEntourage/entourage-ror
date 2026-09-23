@@ -34,7 +34,7 @@ describe Api::V1::Conversations::ImagesController, type: :controller do
 
     # une image pas (encore) redimensionnée en medium retombe sur image_url_with_size(:high)
     context 'images without medium resize (fallback on high size)' do
-      it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : image_resize_actions (V1::Images::ChatMessageSerializer#url retombe sur image_url_with_size(:high) hors preload)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times { create_chat_message_with_image(sizes: [:high]) }
         end

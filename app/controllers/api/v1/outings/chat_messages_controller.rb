@@ -17,6 +17,8 @@ module Api
         def index
           messages = @outing.parent_chat_messages.no_deleted_without_comments.includes(:translation, :user, :chat_message_reactions, :survey, :user_survey_responses).ordered.page(page).per(per).to_a
 
+          ::Preloaders::Images.preload_chat_messages(messages)
+
           render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user, reaction_ids_by_message: ChatMessage.reaction_ids_by_message(messages, current_user) }
         end
 
