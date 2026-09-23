@@ -7,12 +7,27 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
     end
   end
 
+  # lists of broadcasts preload their recipients (@see Preloaders::NeighborhoodMessageBroadcast.preload_recipients)
+  attr_writer :preloaded_recipient_ids, :preloaded_recipients
+
   def recipients
     Neighborhood.where(id: recipient_ids)
   end
 
   def recipient_ids
-    conversation_ids
+    @preloaded_recipient_ids || conversation_ids
+  end
+
+  def recipients_number_of_people
+    return super unless @preloaded_recipients
+
+    @preloaded_recipients.sum { |recipient| recipient[:number_of_people].to_i }
+  end
+
+  def recipient_names limit:
+    return super unless @preloaded_recipients
+
+    @preloaded_recipients.first(limit).map { |recipient| recipient[:name] }
   end
 
   def conversation_ids
@@ -36,10 +51,13 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
     def neighborhood_ids_in_departements_and_area_type departements, area_type
       return [] unless departements.any?
 
+      neighborhoods_in_departements_and_area_type(departements, area_type).pluck(:id)
+    end
+
+    def neighborhoods_in_departements_and_area_type departements, area_type
       Neighborhood
         .where("postal_code LIKE ANY ( array[?] )", departements.map { |departement| "#{departement}%" })
         .with_zone(area_type)
-        .pluck(:id)
     end
   end
 

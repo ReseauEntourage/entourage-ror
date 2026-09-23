@@ -28,6 +28,15 @@ class ConversationMessageBroadcast < ApplicationRecord
     raise NotImplementedError
   end
 
+  # sum of the number_of_people of the recipients
+  def recipients_number_of_people
+    recipients.sum(:number_of_people)
+  end
+
+  def recipient_names limit:
+    recipients.limit(limit).pluck(:name)
+  end
+
   def entourage_type?
     conversation_type == 'Entourage'
   end

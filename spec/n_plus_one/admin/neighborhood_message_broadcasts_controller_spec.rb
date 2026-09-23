@@ -54,8 +54,7 @@ describe Admin::NeighborhoodMessageBroadcastsController, type: :controller do
     end
 
     context 'draft with a departements selection' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : recipient_ids (neighborhood_ids_in_departements_and_area_type fait un pluck par diffusion)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         # un département distinct par diffusion : sinon la requête est identique et servie par le cache SQL
         def populate(count)
           count.times do
@@ -77,8 +76,7 @@ describe Admin::NeighborhoodMessageBroadcastsController, type: :controller do
     end
 
     context 'scheduled' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : nombre de destinataires (recipients.sum(:number_of_people) fait un SUM par diffusion)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             broadcast = create :neighborhood_message_broadcast, status: :scheduled, scheduled_at: 1.day.from_now, conversation_ids: neighborhood_ids

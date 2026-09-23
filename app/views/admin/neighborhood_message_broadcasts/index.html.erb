@@ -56,7 +56,7 @@
               </td>
               <td>
                 <%= pluralize(neighborhood_message_broadcast.recipient_ids.count, 'groupe', 'groupes') %><br>
-                <small class="text-muted"><%= pluralize(neighborhood_message_broadcast.recipients.sum(:number_of_people), 'destinataire', 'destinataires') %></small>
+                <small class="text-muted"><%= pluralize(neighborhood_message_broadcast.recipients_number_of_people, 'destinataire', 'destinataires') %></small>
               </td>
             <% end %>
             <td>
