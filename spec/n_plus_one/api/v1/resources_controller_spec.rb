@@ -6,8 +6,7 @@ describe Api::V1::ResourcesController, type: :controller do
   let(:user) { create :pro_user, lang: 'en' }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries',
-      pending: 'N+1 : image_url (image_url_with_size -> ImageResizeAction.find_path_for, une requête par ressource)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           resource = create :resource, description: '<p>description</p>', image_url: "resources/#{SecureRandom.hex(4)}.jpg", url: 'https://www.entourage.social'
