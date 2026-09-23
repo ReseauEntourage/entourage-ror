@@ -6,8 +6,7 @@ describe Api::V1::Smalltalks::ChatMessagesController, type: :controller do
   let!(:join_request) { create :join_request, joinable: smalltalk, user: user, status: :accepted }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries',
-      pending: 'N+1 : partners et surveys (includes(:user) sans user: :partner ni :survey)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       # chaque message a son propre auteur (avec partenaire), son sondage, son image,
       # sa traduction et ses réactions (dont celle de l'utilisateur courant)
       def populate(count)

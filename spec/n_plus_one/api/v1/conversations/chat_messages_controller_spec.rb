@@ -5,7 +5,7 @@ describe Api::V1::Conversations::ChatMessagesController, type: :controller do
   let(:conversation) { create :conversation, participants: [user] }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : partners des auteurs (GenericSerializer#user appelle object.user.partner, :user est préchargé mais pas user: :partner)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           author = create :public_user, partner: create(:partner, name: "Partenaire #{SecureRandom.hex(4)}"), avatar_key: "avatar-#{SecureRandom.hex(4)}", partner_role_title: 'Bénévole'
