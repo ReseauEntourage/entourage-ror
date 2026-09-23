@@ -7,7 +7,7 @@ describe Admin::SmalltalksController, type: :controller do
   let!(:user) { admin_basic_login }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : tags (UserSmalltalk#interest_names fait Tag.where(id: user_interest_ids) par user_smalltalk dans la vue)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       # centres d'intérêt distincts par membre : sinon Tag.where(id: ...) est servi par le cache de requêtes
       def next_interests
         @interest_combinations ||= Tag.interest_list.combination(2).to_a

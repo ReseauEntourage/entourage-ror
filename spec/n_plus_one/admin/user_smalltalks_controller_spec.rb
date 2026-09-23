@@ -12,7 +12,7 @@ describe Admin::UserSmalltalksController, type: :controller do
   end
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: "N+1 : addresses (user.city, user non préchargé avec :address) et tags (UserSmalltalk#interests fait Tag.where(id: user_interest_ids) par demande)" do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           @interest_index = ((@interest_index || -1) + 1) % interests_pool.size
