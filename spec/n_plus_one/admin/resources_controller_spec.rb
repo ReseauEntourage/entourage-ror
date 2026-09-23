@@ -7,7 +7,7 @@ describe Admin::ResourcesController, type: :controller do
   let!(:user) { admin_basic_login }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : COUNT des vues par ressource (views_for => resource.users.where(admin: false).count, resources_helper.rb:25)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           resource = create :resource, tag: :neighborhood

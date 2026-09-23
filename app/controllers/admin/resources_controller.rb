@@ -6,6 +6,12 @@ module Admin
 
     def index
       @resources = Resource.includes(:translation).page(page).per(per)
+
+      # @see ResourcesHelper#views_for: one grouped count instead of one per resource
+      @views_by_resource_id = UsersResource.watched.joins(:user)
+        .where(resource_id: @resources.map(&:id), users: { admin: false })
+        .group(:resource_id)
+        .count
     end
 
     def new

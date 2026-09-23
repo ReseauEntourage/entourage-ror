@@ -22,6 +22,8 @@ module ResourcesHelper
   end
 
   def views_for resource
+    return @views_by_resource_id.fetch(resource.id, 0) if @views_by_resource_id
+
     resource.users.where(admin: false).count
   end
 end
