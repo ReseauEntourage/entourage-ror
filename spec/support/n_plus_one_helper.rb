@@ -6,6 +6,9 @@
 #   4. le nombre de requêtes doit rester identique : s'il augmente avec le nombre
 #      d'éléments retournés, c'est qu'une requête est faite par élément (N+1).
 #
+# Chaque action index de api/v1 et admin doit avoir son test, dans spec/n_plus_one au même
+# chemin que le contrôleur : spec/n_plus_one/coverage_spec.rb le vérifie.
+#
 # Usage (controller spec) :
 #
 #   it_behaves_like 'an endpoint without N+1 queries' do
