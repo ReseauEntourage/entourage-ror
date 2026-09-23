@@ -7,7 +7,7 @@ describe Api::V1::HomeController, type: :controller do
   let(:longitude) { 2.270340589096274 }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: "N+1 : users/partners par événement (HomeServices::Outing : une requête + preload par créneau)" do
+    it_behaves_like 'an endpoint without N+1 queries' do
       # chaque "élément" = un événement + une demande + une contribution, chacun avec son
       # propre auteur (partenaire, avatar), ses membres et un message
       def populate(count)

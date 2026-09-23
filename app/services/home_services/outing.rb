@@ -39,17 +39,22 @@ module HomeServices
     end
 
     def find_all
-      STRUCTURE[profile].map do |element|
+      outings = STRUCTURE[profile].map do |element|
         find_outing(category: element[:category], offset: element[:offset])
       end.filter do |record|
         record.present?
       end[0..(MAX_LENGTH-1)]
+
+      # one preload for all the slots, instead of one per slot query
+      ActiveRecord::Associations::Preloader.new(records: outings, associations: { user: :partner }).call
+
+      outings
     end
 
     def find_outing category: nil, offset: 0
       return [] unless latitude && longitude
 
-      outing = user.community.entourages.includes(user: :partner)
+      outing = user.community.entourages
         .where(group_type: :outing, status: :open)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .where(Arel.sql("metadata->>'ends_at' >= '#{Time.zone.now}'"))
