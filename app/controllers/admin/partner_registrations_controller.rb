@@ -15,7 +15,7 @@ module Admin
       @users = @users.in_area('dep_' + @params[:q][:postal_code_start]) if @params[:q] && @params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if @params[:q] && @params[:q][:postal_code_in_hors_zone]
 
-      @users = @users.page(params[:page]).per(25)
+      @users = @users.preload(:addresses, partner_join_requests: :partner).page(params[:page]).per(25)
     end
 
     def edit

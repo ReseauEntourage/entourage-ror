@@ -7,7 +7,7 @@ describe Admin::PartnerRegistrationsController, type: :controller do
   let!(:user) { admin_basic_login }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : partner_join_requests, partners et addresses chargés par utilisateur (aucun preload dans le contrôleur, vue partner_registrations/index)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         count.times do
           member = create :public_user, goal: :organization
