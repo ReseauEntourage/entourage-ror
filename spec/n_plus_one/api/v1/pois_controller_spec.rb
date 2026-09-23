@@ -33,7 +33,7 @@ describe Api::V1::PoisController, type: :controller do
     end
 
     context 'v2' do
-      it_behaves_like 'an endpoint without N+1 queries', pending: 'N+1 : categories_pois (V1::PoiSerializer#category_ids fait CategoryPoi.where(poi_id:) par POI, masqué seulement par le cache redis)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def perform_request
           perform_request_with('2')
         end

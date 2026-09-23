@@ -46,7 +46,7 @@ module V1
     end
 
     def category_ids
-      @category_ids ||= CategoryPoi.where(poi_id: object.id).pluck(:category_id)
+      @category_ids ||= object.preloaded_category_ids || CategoryPoi.where(poi_id: object.id).pluck(:category_id)
     end
 
     private
