@@ -33,11 +33,20 @@ class InappNotification < ApplicationRecord
     super(instance)
   end
 
+  attr_writer :record # @see Preloaders::InappNotification.preload_records
+
   def record
+    return @record if defined?(@record)
     return unless instance
     return post if post?
 
-    instance.to_s.classify.constantize.unscoped.find_by_id(instance_id)
+    @record = record_class&.unscoped&.find_by_id(instance_id)
+  end
+
+  def record_class
+    return unless instance
+
+    instance.to_s.classify.constantize
   rescue NameError
     nil
   end

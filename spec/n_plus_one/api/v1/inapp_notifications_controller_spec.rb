@@ -33,8 +33,7 @@ describe Api::V1::InappNotificationsController, type: :controller do
     end
 
     context 'outings updated (record lookup)' do
-      it_behaves_like 'an endpoint without N+1 queries',
-        pending: 'N+1 : entourages (InappNotification#record fait un find_by_id par notification, appelé par le serializer pour image_url)' do
+      it_behaves_like 'an endpoint without N+1 queries' do
         def populate(count)
           count.times do
             sender = create :public_user, avatar_key: 'avatar'
