@@ -4,8 +4,7 @@ describe Api::V1::MapController, type: :controller do
   let(:user) { create :pro_user }
 
   describe 'GET index' do
-    it_behaves_like 'an endpoint without N+1 queries',
-      pending: 'N+1 : categories (V1::PoiSerializer has_one :category en :v1_list, pas de includes(:category) dans MapController#index)' do
+    it_behaves_like 'an endpoint without N+1 queries' do
       def populate(count)
         # chaque POI a sa propre catégorie (V1::PoiSerializer has_one :category en version :v1_list)
         count.times { create :poi, category: create(:category) }
