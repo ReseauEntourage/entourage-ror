@@ -36,6 +36,12 @@ module EntourageBack
     # ActiveJob adapter
     config.active_job.queue_adapter = :sidekiq
 
+    # lazy_relationship (ams_lazy_relationships, serializers V1) s'appuie sur BatchLoader, dont le
+    # cache est stocké dans le thread courant : sans ce middleware, un thread Puma resert les valeurs
+    # chargées par une requête précédente et le cache grossit sans limite.
+    # Hors requête HTTP (job Sidekiq, canal ActionCable), appeler BatchLoader::Executor.clear_current.
+    config.middleware.use BatchLoader::Middleware
+
     # Observers
     config.active_record.observers = [
       :entourage_denorm_observer,
