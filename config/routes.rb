@@ -857,6 +857,8 @@ Rails.application.routes.draw do
         resources :stats, only: [:index]
       end
 
+      post 'slack/events' => 'slack_events#create'
+
       resources :tags, only: [] do
         collection do
           get :interests
