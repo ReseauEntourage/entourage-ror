@@ -11,7 +11,7 @@ development:
 
 test:
   <<: *default
-  database: entourage-test
+  database: entourage-test<%= ENV['TEST_ENV_NUMBER'] %>
 
 production:
   url: <%= ENV.fetch('DATABASE_URL', '').sub(/^postgres/, "postgis") %>

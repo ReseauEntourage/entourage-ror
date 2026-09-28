@@ -127,7 +127,11 @@ class UserSmalltalk < ApplicationRecord
   end
 
   # Interestable
+  attr_writer :interests # @see Preloaders::UserSmalltalk.preload_interests
+
   def interests
+    return @interests if defined?(@interests)
+
     Tag.where(id: user_interest_ids)
   end
 

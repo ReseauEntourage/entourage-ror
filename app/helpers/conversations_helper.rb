@@ -3,10 +3,15 @@ module ConversationsHelper
     [user.first_name, user.last_name].map(&:presence).compact.join(' ')
   end
 
-  def conversation_recipients_display_names recipients, max: 3
+  # @param users optional users ordered by first_name, including the recipients: avoids one query per conversation in a list
+  def conversation_recipients_display_names recipients, max: 3, users: nil
     count = recipients.count
 
-    recipients = User.where(id: recipients).select(:id, :first_name, :last_name).order(:first_name)
+    recipients = if users
+      users.select { |user| recipients.include?(user.id) }
+    else
+      User.where(id: recipients).select(:id, :first_name, :last_name).order(:first_name)
+    end
 
     recipient_names = recipients.first(max).map { |u| [UserPresenter.full_name(u), u.id] }
 

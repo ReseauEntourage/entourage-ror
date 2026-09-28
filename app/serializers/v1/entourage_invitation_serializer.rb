@@ -29,7 +29,7 @@ module V1
     end
 
     def status
-      join_request = JoinRequest.where(joinable: object.invitable, user: object.invitee).first
+      join_request = object.join_request
       join_request.present? ? join_request.status : object.status
     end
   end

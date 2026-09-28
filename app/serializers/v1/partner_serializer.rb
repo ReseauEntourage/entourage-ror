@@ -49,6 +49,9 @@ module V1
     end
 
     def following
+      preloaded = object.preloaded_following&.fetch(scope[:user]&.id, nil)
+      return preloaded unless preloaded.nil?
+
       Following.where(user: scope[:user], partner_id: object.id, active: true).exists?
     end
   end

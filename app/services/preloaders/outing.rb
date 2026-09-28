@@ -36,6 +36,16 @@ module Preloaders
       end
     end
 
+    # @see V1::OutingSerializer, as seen by `user` (member, confirmed_member)
+    def self.preload_for_serializer outings, user:
+      outings = outings.to_a
+      return if outings.empty?
+
+      ActiveRecord::Associations::Preloader.new(records: outings, associations: [:translation, :recurrence, :interests, :neighborhoods, { user: :partner }]).call
+      Preloaders::Entourage.preload_current_join_request(outings, user: user) if user.is_a?(::User)
+      Preloaders::Images.preload_outings(outings)
+    end
+
     def self.sanitize_sql condition
       ActiveRecord::Base.send(:sanitize_sql_array, condition)
     end

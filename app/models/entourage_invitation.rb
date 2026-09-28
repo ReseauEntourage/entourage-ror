@@ -27,6 +27,15 @@ class EntourageInvitation < ApplicationRecord
 
   attribute :metadata, :jsonb_with_schema
 
+  attr_writer :join_request # @see Preloaders::EntourageInvitation.preload_join_requests
+
+  # join request of the invitee to the invitable
+  def join_request
+    return @join_request if defined?(@join_request)
+
+    @join_request = JoinRequest.where(joinable: invitable, user_id: invitee_id).first
+  end
+
   def self.json_schema urn
     JsonSchemaService.base do
       case urn

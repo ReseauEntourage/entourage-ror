@@ -7,11 +7,13 @@ module Admin
       @matched = false
       @matched = ActiveModel::Type::Boolean.new.cast(params[:matched]) if params[:matched].present?
 
-      @user_smalltalks = UserSmalltalk.includes(:user, :smalltalk)
+      @user_smalltalks = UserSmalltalk.includes(:smalltalk, user: :address)
         .with_match_filter(@matched)
         .order(updated_at: :desc)
         .page(page)
         .per(per)
+
+      Preloaders::UserSmalltalk.preload_interests(@user_smalltalks)
     end
 
     def show

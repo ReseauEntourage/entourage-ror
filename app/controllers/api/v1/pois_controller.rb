@@ -28,6 +28,10 @@ module Api
             # manually preload the :category association to prevent n+1 queries
             category_by_id = Hash[@categories.map { |c| [c.id, c] }]
             pois.each { |p| p.category = category_by_id[p.category_id] }
+          else
+            # V1::PoiSerializer#category_ids, in one query instead of one per POI
+            category_ids_by_poi_id = CategoryPoi.where(poi_id: pois.map(&:id)).pluck(:poi_id, :category_id).group_by(&:first)
+            pois.each { |p| p.preloaded_category_ids = (category_ids_by_poi_id[p.id] || []).map(&:last) }
           end
 
           ActiveModel::Serializer::CollectionSerializer.new(pois, serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json

@@ -14,6 +14,14 @@ class ConversationMessageBroadcast < ApplicationRecord
 
       record
     end
+
+    # the same cast as find_with_cast, without querying the record again
+    def cast record
+      return record.becomes(UserMessageBroadcast) if record.entourage_type?
+      return record.becomes(NeighborhoodMessageBroadcast) if record.neighborhood_type?
+
+      record
+    end
   end
 
   def content_for_user user
@@ -26,6 +34,15 @@ class ConversationMessageBroadcast < ApplicationRecord
 
   def recipient_ids
     raise NotImplementedError
+  end
+
+  # sum of the number_of_people of the recipients
+  def recipients_number_of_people
+    recipients.sum(:number_of_people)
+  end
+
+  def recipient_names limit:
+    recipients.limit(limit).pluck(:name)
   end
 
   def entourage_type?

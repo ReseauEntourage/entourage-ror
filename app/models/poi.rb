@@ -8,6 +8,7 @@ class Poi < ApplicationRecord
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
   belongs_to :category, optional: true
+  attr_accessor :preloaded_category_ids # @see Api::V1::PoisController#index
   has_and_belongs_to_many :categories, optional: true
 
   geocoded_by :adress

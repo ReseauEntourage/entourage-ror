@@ -1,4 +1,5 @@
 <% @last_message = ChatMessage.no_deleted_without_comments
+  .includes(:deleter)
   .select('distinct on (messageable_id) *')
   .where(messageable_type: :Entourage)
   .where(messageable_id: @conversations.map(&:id))
@@ -13,6 +14,7 @@
   .group_by(&:first).each { |_, a| a.replace a.map(&:last) }
 %>
 <% @recipient_ids.default = [current_admin.id] # if no recipient, it must be a conversation with self %>
+<% @recipients = User.where(id: (@recipient_ids.values.flatten + @recipient_ids.default).uniq).select(:id, :first_name, :last_name).order(:first_name).to_a %>
 
 
 <div class="row">
@@ -32,7 +34,7 @@
               </div>
               <div class="conversation-details">
                 <div class="conversation-recipients">
-                  <%= conversation_recipients_display_names(recipient_ids).map(&:first).join(', ') %>
+                  <%= conversation_recipients_display_names(recipient_ids, users: @recipients).map(&:first).join(', ') %>
                 </div>
 
                 <div class="conversation-message">

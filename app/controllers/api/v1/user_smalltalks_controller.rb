@@ -7,6 +7,7 @@ module Api
       def index
         render json: UserSmalltalk
           .includes(:user, :join_request)
+          .preload(smalltalk: [:meeting, :accepted_members])
           .where(user: current_user)
           .where("member_status = ? or member_status is null", JoinRequest::ACCEPTED_STATUS)
           .page(page)

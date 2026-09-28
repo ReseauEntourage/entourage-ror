@@ -8,10 +8,15 @@ module Api
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
 
+          # same preloads as ActionServices::Finder (@see V1::ActionSerializer)
           actions = Action.active.where(user_id: @user.id)
+            .includes(:user, :translation, :join_requests)
+            .preload(section_taggings: :tag)
             .order(created_at: :desc)
             .page(page)
             .per(per)
+
+          ::Preloaders::Images.preload_contributions(actions)
 
           render json: actions, status: 200, each_serializer: ::V1::ActionSerializer, scope: { user: current_user }
         end

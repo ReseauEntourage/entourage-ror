@@ -30,6 +30,7 @@ class Partner < ApplicationRecord
   geocoded_by :address
 
   attr_accessor :following # see api/v1/partners#show
+  attr_accessor :preloaded_following # { user_id => boolean } @see Preloaders::Partner.preload_following
 
   # @warning Partner should be deactivable; currently, only erase is possible
   scope :active, -> {}

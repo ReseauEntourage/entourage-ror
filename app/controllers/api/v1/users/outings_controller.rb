@@ -5,27 +5,33 @@ module Api
         before_action :set_user
 
         def index
-          render json: OutingsServices::Finder.new(@user, index_params)
+          outings = OutingsServices::Finder.new(@user, index_params)
             .find_all_participations
             .future_or_past_today
             .default_order
-            .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
             .page(page)
-            .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
-              user: @user
-            }
+            .per(per)
+
+          ::Preloaders::Outing.preload_for_serializer(outings, user: @user)
+
+          render json: outings, root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+            user: @user
+          }
         end
 
         def past
-          render json: OutingsServices::Finder.new(@user, index_params)
+          outings = OutingsServices::Finder.new(@user, index_params)
             .find_all_participations
             .past
             .reversed_order
-            .includes(:translation, :user, :confirmed_members, :interests, :recurrence)
             .page(page)
-            .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
-              user: @user
-            }
+            .per(per)
+
+          ::Preloaders::Outing.preload_for_serializer(outings, user: @user)
+
+          render json: outings, root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+            user: @user
+          }
         end
 
         private

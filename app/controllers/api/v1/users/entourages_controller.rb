@@ -9,7 +9,7 @@ module Api
           per = [(params[:per].try(:to_i) || 25), 25].min
           entourages = Entourage
                            .visible
-                           .includes(user: :partner, accepted_members: :partner)
+                           .includes(:moderation, user: :partner, accepted_members: :partner)
                            .joins(:join_requests)
                            .where(join_requests: {user: @user, status: JoinRequest::ACCEPTED_STATUS})
                            .order(created_at: :desc)
@@ -19,6 +19,11 @@ module Api
             entourages = entourages.around(params[:latitude], params[:longitude], params[:distance])
           end
           entourages = entourages.where(status: params[:status]) if params[:status].present?
+
+          ::Preloaders::Entourage.preload_authors(entourages, user: current_user)
+          ::Preloaders::Entourage.preload_user_blocks(entourages, user: current_user)
+          ::Preloaders::Images.preload_outings(entourages)
+
           render json: entourages, status: 200, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
         end
 

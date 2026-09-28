@@ -61,7 +61,10 @@ module V1
     end
 
     def members
-      object.accepted_members.limit(5).map do |member|
+      # `limit` always queries: read the preloaded association when there is one
+      members = object.association(:accepted_members).loaded? ? object.accepted_members.first(5) : object.accepted_members.limit(5)
+
+      members.map do |member|
         ::V1::Users::BasicSerializer.new(member, scope: scope).as_json
       end
     rescue

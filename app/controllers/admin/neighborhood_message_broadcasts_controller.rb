@@ -10,6 +10,7 @@ module Admin
 
       @neighborhood_message_broadcasts = NeighborhoodMessageBroadcast.with_status(@status).order(created_at: :desc)
       @neighborhood_message_broadcasts = @neighborhood_message_broadcasts.page(page).per(per)
+      Preloaders::NeighborhoodMessageBroadcast.preload_recipients(@neighborhood_message_broadcasts)
 
       if @status == :scheduled
         # @caution includes :failed alongside :pending - a failed broadcast must stay visible

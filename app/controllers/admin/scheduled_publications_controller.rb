@@ -24,6 +24,9 @@ module Admin
       scheduled_publications = scheduled_publications.of_type(TYPES[@type]) if TYPES.key?(@type)
       scheduled_publications = scheduled_publications.select { |sp| sp.matches_search?(params[:search]) }
 
+      # @see ScheduledPublication#target_label, #recipients_count
+      Preloaders::NeighborhoodMessageBroadcast.preload_recipients(scheduled_publications.select(&:broadcast?).map(&:publishable))
+
       @grouped_scheduled_publications = scheduled_publications.group_by do |scheduled_publication|
         @group_by == :week ? scheduled_publication.scheduled_at.in_time_zone('Paris').beginning_of_week : scheduled_publication.scheduled_at.in_time_zone('Paris').beginning_of_month
       end

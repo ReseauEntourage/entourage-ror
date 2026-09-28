@@ -15,7 +15,7 @@ module Api
         def index
           before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
 
-          messages = @entourage.chat_messages.includes(user: :partner).ordered.before(before).limit(25)
+          messages = @entourage.chat_messages.includes(:translation, user: :partner).ordered.before(before).limit(25)
 
           #TODO: move into a LastMessageRead class
           if messages.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.first.created_at)
@@ -28,6 +28,8 @@ module Api
              @entourage.chat_messages.where(user_id: current_user.id).empty?
             messages.to_a.push Onboarding::V1.chat_message_for(current_user)
           end
+
+          ::Preloaders::Images.preload_partners(messages.map { |message| message.user&.partner })
 
           render json: messages, each_serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
         end

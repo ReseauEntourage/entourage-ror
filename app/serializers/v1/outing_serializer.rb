@@ -69,6 +69,7 @@ module V1
 
     def member
       return false unless scope && scope[:user]
+      return !!current_join_request&.accepted? if current_join_request_preloaded?
 
       object.member_ids.include?(scope[:user].id)
     end
@@ -82,6 +83,7 @@ module V1
 
     def confirmed_member
       return false unless scope && scope[:user]
+      return !!current_join_request&.accepted? && current_join_request.confirmed_at.present? if current_join_request_preloaded?
 
       object.confirmed_member_ids.include?(scope[:user].id)
     end
@@ -96,7 +98,9 @@ module V1
     end
 
     def neighborhoods
-      object.neighborhoods.pluck(:id, :name).map do |id, name|
+      neighborhoods = object.association(:neighborhoods).loaded? ? object.neighborhoods.map { |neighborhood| [neighborhood.id, neighborhood.name] } : object.neighborhoods.pluck(:id, :name)
+
+      neighborhoods.map do |id, name|
         {
           id: id,
           name: name,
@@ -117,6 +121,15 @@ module V1
     end
 
     private
+
+    # the join request of scope[:user], @see Preloaders::Outing.preload_for_serializer
+    def current_join_request_preloaded?
+      object.instance_variable_defined?(:@current_join_request)
+    end
+
+    def current_join_request
+      object.current_join_request
+    end
 
     def lang
       return unless scope && scope[:user] && scope[:user].lang

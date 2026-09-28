@@ -75,6 +75,19 @@ module Preloaders
       end
     end
 
+    # listes de membres vues par `user` (@see V1::JoinRequestSerializer)
+    def self.preload_members join_requests, user:
+      join_requests = join_requests.to_a
+      return if join_requests.empty?
+
+      users = join_requests.map(&:user).compact
+      partners = users.map(&:partner)
+
+      ActiveRecord::Associations::Preloader.new(records: users, associations: :user_badges).call
+      Preloaders::Images.preload_partners(partners)
+      Preloaders::Partner.preload_following(partners, user: user)
+    end
+
     def self.sanitize_sql condition
       ActiveRecord::Base.send(:sanitize_sql_array, condition)
     end

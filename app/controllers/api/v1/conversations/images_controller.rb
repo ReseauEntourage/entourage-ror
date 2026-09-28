@@ -14,6 +14,9 @@ module Api
             ::Preloaders::ChatMessage.preload_images(messages, scope: ImageResizeAction.with_size(:medium))
           end
 
+          # V1::Images::ChatMessageSerializer#url falls back on the high size when there is no medium one
+          ::Preloaders::Images.preload_chat_messages(chat_messages.reject(&:preload_image_url), size: :high)
+
           render json: chat_messages, root: "images", each_serializer: ::V1::Images::ChatMessageSerializer
         end
 

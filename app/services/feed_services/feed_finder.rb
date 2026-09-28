@@ -116,6 +116,8 @@ module FeedServices
 
       preload_user_join_requests(feeds)
       preload_chat_messages_counts(feeds)
+      ::Preloaders::Entourage.preload_authors(feeds.map(&:feedable).grep(Entourage), user: user)
+      ::Preloaders::Images.preload_outings(feeds.map(&:feedable).grep(Entourage))
 
       next_cursor =
         if !legacy_pagination

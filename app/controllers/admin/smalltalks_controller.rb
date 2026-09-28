@@ -4,6 +4,7 @@ module Admin
 
     def index
       @smalltalks = Smalltalk.includes(user_smalltalks: { user: :address }).order(updated_at: :desc).page(page).per(per)
+      Preloaders::UserSmalltalk.preload_interests(@smalltalks.flat_map(&:user_smalltalks))
 
       @chart_data = ChatMessage.where(
         message_type: 'text',

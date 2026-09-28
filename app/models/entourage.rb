@@ -52,6 +52,7 @@ class Entourage < ApplicationRecord
   has_one :sensitive_words_check, as: :record, dependent: :destroy
 
   attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
+  attr_accessor :preloaded_user_blocks # { user_id => [[user_id, blocked_user_id], ...] } @see Preloaders::Entourage.preload_user_blocks
   attr_accessor :change_ownership_message
   attr_accessor :user_status
   attr_accessor :cancellation_message
