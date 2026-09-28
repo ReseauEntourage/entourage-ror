@@ -214,6 +214,30 @@ RSpec.describe UserMessageBroadcast, type: :model do
     end
   end
 
+  describe 'signed_in_recently' do
+    let(:subject) { UserMessageBroadcast.signed_in_recently(User.all).pluck(:id) }
+
+    let!(:user) { create(:user, last_sign_in_at: last_sign_in_at) }
+
+    context 'last_sign_in_at is less than 6 months ago' do
+      let(:last_sign_in_at) { 5.months.ago }
+
+      it { expect(subject).to include(user.id) }
+    end
+
+    context 'last_sign_in_at is more than 6 months ago' do
+      let(:last_sign_in_at) { 7.months.ago }
+
+      it { expect(subject).not_to include(user.id) }
+    end
+
+    context 'user never signed in' do
+      let(:last_sign_in_at) { nil }
+
+      it { expect(subject).not_to include(user.id) }
+    end
+  end
+
   describe 'with_gender' do
     let(:subject) { UserMessageBroadcast.with_gender(User.all, :male).pluck(:id) }
 
@@ -256,6 +280,25 @@ RSpec.describe UserMessageBroadcast, type: :model do
 
     context 'national' do
       it { expect(subject_ids).to eq(users.map(&:id).sort) }
+    end
+
+    context 'users who have not signed in for more than 6 months' do
+      before {
+        users[0].update_column(:last_sign_in_at, 7.months.ago)
+        users[1].update_column(:last_sign_in_at, nil)
+      }
+
+      it { expect(subject_ids).to eq(users[2..].map(&:id).sort) }
+    end
+
+    context 'last_sign_in_at filter older than 6 months' do
+      let(:user_message_broadcast) {
+        FactoryBot.create(:user_message_broadcast, area_type: area_type, areas: areas, specific_filters: { last_sign_in_at: 1.year.ago.to_date.to_s })
+      }
+
+      before { users[0].update_column(:last_sign_in_at, 7.months.ago) }
+
+      it { expect(subject_ids).to eq(users[1..].map(&:id).sort) }
     end
 
     context 'sans_zone' do

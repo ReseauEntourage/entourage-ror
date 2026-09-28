@@ -1,5 +1,7 @@
 class UserMessageBroadcast < ConversationMessageBroadcast
   DEFAULT_FILTER_PERIOD = 1.year
+  # recipients must have signed in within this period, whatever the specific filters
+  RECENT_SIGN_IN_PERIOD = 6.months
 
   store_accessor :specific_filters, :has_engagement, :user_creation_date, :last_engagement_date, :interests, :last_sign_in_at, :gender
 
@@ -50,6 +52,10 @@ class UserMessageBroadcast < ConversationMessageBroadcast
       users.where('users.last_sign_in_at > ?', last_sign_in_at)
     end
 
+    def signed_in_recently(users)
+      users.where('users.last_sign_in_at > ?', RECENT_SIGN_IN_PERIOD.ago)
+    end
+
     def with_gender(users, gender)
       return users unless gender
 
@@ -62,6 +68,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
 
     users = User.all
     users = self.class.with_validated_profiles(users, goal)
+    users = self.class.signed_in_recently(users)
     users = self.class.in_area(users, area_type, generic_area?, areas)
     users = self.class.with_engagement(users, has_engagement)
     users = self.class.created_after(users, user_creation_date)
