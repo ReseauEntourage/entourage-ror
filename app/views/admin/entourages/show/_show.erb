@@ -169,7 +169,7 @@
             <label>Conversations <span class="badge">i</span> :</label> <%= entourage.user.conversations.where("entourages.created_at > ?", 6.months.ago).count %>
           </div>
           <div class="col-md-3 form-inline" title="de moins de six mois">
-            <label>Messages <span class="badge">i</span> :</label> <%= entourage.user.chat_messages.where("created_at > ?", 6.months.ago).count %>
+            <label>Messages <span class="badge">i</span> :</label> <%= count_or_unknown(entourage.user.chat_messages.where("created_at > ?", 6.months.ago)) %>
           </div>
         </div>
         <div class="row">

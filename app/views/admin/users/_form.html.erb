@@ -89,7 +89,7 @@
               Messages <span class="badge">i</span>
             </label>
             <div class="controls">
-              <%= @user.chat_messages.where("created_at > ?", 6.months.ago).count %>
+              <%= count_or_unknown(@user.chat_messages.where("created_at > ?", 6.months.ago)) %>
             </div>
           </div>
         </div>

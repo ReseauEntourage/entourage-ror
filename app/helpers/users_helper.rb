@@ -17,6 +17,14 @@ module UsersHelper
     content_tag :span, validation_status, class: "label #{state_to_class[validation_status]}"
   end
 
+  # informative counter: on a very active user, the count may reach the statement timeout,
+  # which must not fail the whole page
+  def count_or_unknown relation
+    relation.count
+  rescue ActiveRecord::QueryCanceled
+    '?'
+  end
+
   def user_avatar_image(user, *)
     url = UserServices::Avatar.new(user: user).thumbnail_url
     return unless url
