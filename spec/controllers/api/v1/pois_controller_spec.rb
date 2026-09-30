@@ -266,6 +266,17 @@ describe Api::V1::PoisController, type: :controller do
         end
       end
 
+      context 'with partners_filters parameter' do
+        let!(:poi1) { create :poi, validated: true }
+        let!(:poi2) { create :poi, validated: true, partner_id: create(:partner, donations_needs: 'Des vêtements').id }
+        let!(:poi3) { create :poi, validated: true, partner_id: create(:partner, name: 'Sans besoins').id }
+
+        before { get 'index', params: { partners_filters: 'donations', format: :json } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(assigns(:pois)).to match_array([poi1, poi2]) }
+      end
+
       context 'with location parameters' do
         let!(:poi1) { create :poi, latitude: 10, longitude: 12 }
         let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1 }
@@ -366,6 +377,15 @@ describe Api::V1::PoisController, type: :controller do
         it { expect(response.status).to eq(200) }
         it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi2.id, poi3.id, poi4.id]) }
       end
+    end
+
+    context 'with partners_filters parameter' do
+      let!(:poi4) { create :poi, latitude: 10.05, longitude: 9.95, partner_id: create(:partner).id }
+
+      before { get :clusters, params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, partners_filters: 'donations', format: :json } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result['clusters'].map{|cluster| cluster['id']}).to match_array([poi2.id, poi3.id]) }
     end
   end
 end
