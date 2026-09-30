@@ -23,6 +23,10 @@ describe Onboarding::EmailerService, type: :service do
       subject
     end
 
+    it "serialise les papotages pour le job d'envoi" do
+      expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    end
+
     context "quand il n'y a pas de papotage a venir" do
       before { papotage.destroy }
 
