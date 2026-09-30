@@ -27,7 +27,11 @@ class Meeting < ApplicationRecord
   private
 
   def create_individual_meet_space
-    auth_token = GOOGLE_CALENDAR_SERVICE.authorization.access_token
+    # the token fetched at boot expires after an hour: the calendar client refreshes it by itself,
+    # this HTTParty call has to do it
+    authorization = GOOGLE_CALENDAR_SERVICE.authorization
+    authorization.fetch_access_token! if authorization.needs_access_token?
+    auth_token = authorization.access_token
 
     space_config = {
       config: {
