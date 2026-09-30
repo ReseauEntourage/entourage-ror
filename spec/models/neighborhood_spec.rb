@@ -161,6 +161,20 @@ RSpec.describe Neighborhood, type: :model do
     let!(:with_outings) { create :neighborhood, outings: [outing_1, outing_2] }
 
     it { expect(subject).to eq([with_outings.id, with_outing.id, without_outing.id]) }
+
+    context 'with outings closed or started more than a month ago' do
+      let(:closed_outing) { create :outing, :outing_class }
+      let(:old_outing) { create :outing, :outing_class }
+      let!(:with_old_outings) { create :neighborhood, outings: [closed_outing, old_outing] }
+
+      before do
+        closed_outing.update_column(:status, 'closed')
+        old_outing.update_column(:metadata, old_outing.metadata.merge(starts_at: 2.months.ago))
+      end
+
+      it { expect(subject.first(2)).to eq([with_outings.id, with_outing.id]) }
+      it { expect(subject.last(2)).to match_array([without_outing.id, with_old_outings.id]) }
+    end
   end
 
   describe 'order_by_chat_messages' do
@@ -176,6 +190,27 @@ RSpec.describe Neighborhood, type: :model do
 
 
     it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
+
+    context 'with chat messages older than a month' do
+      let(:with_old_chat_messages) { create :neighborhood }
+      let!(:old_chat_message_1) { create :chat_message, created_at: 2.months.ago, messageable: with_old_chat_messages }
+      let!(:old_chat_message_2) { create :chat_message, created_at: 2.months.ago, messageable: with_old_chat_messages }
+
+      it { expect(subject.first(2)).to eq([with_chat_messages.id, with_chat_message.id]) }
+      it { expect(subject.last(2)).to match_array([without_chat_message.id, with_old_chat_messages.id]) }
+    end
+  end
+
+  describe 'order_by_activity' do
+    let(:outing) { create :outing, :outing_class }
+    let!(:without_activity) { create :neighborhood, interests: [:sport, :nature] }
+    let!(:with_outing) { create :neighborhood, interests: [:sport, :nature], outings: [outing] }
+    let!(:with_chat_message) { create :neighborhood, interests: [:sport, :nature] }
+    let!(:chat_message) { create :chat_message, messageable: with_chat_message }
+
+    subject { Neighborhood.match_at_least_one_interest([:sport, :nature]).order_by_activity.pluck(:id) }
+
+    it { expect(subject).to eq([with_outing.id, with_chat_message.id, without_activity.id]) }
   end
 
   describe 'status_changed_at' do

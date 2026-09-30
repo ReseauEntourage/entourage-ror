@@ -30,9 +30,6 @@ class Neighborhood < ApplicationRecord
   has_many :neighborhoods_entourages
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
-  has_many :recent_chat_messages, -> {
-    where("chat_messages.created_at > date_trunc('day', NOW() - interval '1 month')")
-  }, as: :messageable, class_name: :ChatMessage
 
   # outings
   has_many :outings, -> {
@@ -53,11 +50,6 @@ class Neighborhood < ApplicationRecord
     where(group_type: :outing).active
     .where("metadata->>'starts_at' <= ?", Time.zone.now)
     .where("metadata->>'ends_at' >= ?", Time.zone.now)
-  }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
-
-  has_many :recent_outings, -> {
-    where(group_type: :outing).active
-    .where("(entourages.metadata->>'starts_at')::date > date_trunc('day', NOW() - interval '1 month')")
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   has_many :image_resize_actions, -> {
@@ -149,14 +141,34 @@ class Neighborhood < ApplicationRecord
     # Code proposé : classé par nombre d'événements puis nombre de messages dans le mois
     order_by_outings.order_by_chat_messages
   }
+  # counts in correlated subqueries: joining both the recent outings and the recent chat messages
+  # multiplied their rows for each neighborhood before counting (neighborhoods#index timeouts).
+  # group keeps deduplicating the rows of joining scopes (eg. match_at_least_one_interest)
   scope :order_by_outings, -> {
-    left_outer_joins(:recent_outings).group('neighborhoods.id').order(Arel.sql(%(
-      count(distinct(entourages.id)) desc
+    group('neighborhoods.id').order(Arel.sql(%(
+      (
+        select count(distinct ne.entourage_id)
+        from neighborhoods_entourages ne
+        where ne.neighborhood_id = neighborhoods.id
+          and exists (
+            select 1 from entourages e
+            where e.id = ne.entourage_id
+              and e.group_type = 'outing'
+              and e.status in ('open', 'full')
+              and (e.metadata->>'starts_at')::date > date_trunc('day', NOW() - interval '1 month')
+          )
+      ) desc
     )))
   }
   scope :order_by_chat_messages, -> {
-    left_outer_joins(:recent_chat_messages).group('neighborhoods.id').order(Arel.sql(%(
-      count(distinct(chat_messages.id)) desc
+    group('neighborhoods.id').order(Arel.sql(%(
+      (
+        select count(*)
+        from chat_messages cm
+        where cm.messageable_type = 'Neighborhood'
+          and cm.messageable_id = neighborhoods.id
+          and cm.created_at > date_trunc('day', NOW() - interval '1 month')
+      ) desc
     )))
   }
   scope :like, -> (search) {
