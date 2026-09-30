@@ -113,12 +113,8 @@ if EnvironmentHelper.production?
 
     ### Notify against matched attack
 
-    self.throttled_response = lambda do |env|
-      request = Rack::Request.new(env)
-      ip = request.ip
-      attack_type = env['rack.attack.matched']
-
-      SlackServices::SignalRackAttack.new(ip: ip, attack_type: env['rack.attack.matched']).notify
+    self.throttled_responder = lambda do |request|
+      SlackServices::SignalRackAttack.new(ip: request.ip, attack_type: request.env['rack.attack.matched']).notify
 
       [429, {}, ['Rate limit exceeded.']]
     end
