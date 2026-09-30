@@ -215,4 +215,28 @@ RSpec.describe UserSmalltalk, type: :model do
       end
     end
   end
+
+  describe 'user_gender' do
+    let(:user) { create(:user, gender: gender) }
+    let(:user_smalltalk) { build(:user_smalltalk, user: user) }
+
+    context 'with a gender handled by user_smalltalks' do
+      let(:gender) { 'female' }
+
+      it { expect(user_smalltalk.user_gender).to eq('female') }
+    end
+
+    context 'with a secret gender' do
+      let(:gender) { 'secret' }
+
+      it { expect(user_smalltalk.user_gender).to be_nil }
+      it { expect(user_smalltalk.save).to be(true) }
+    end
+
+    context 'without gender' do
+      let(:gender) { nil }
+
+      it { expect(user_smalltalk.user_gender).to be_nil }
+    end
+  end
 end

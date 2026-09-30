@@ -152,7 +152,8 @@ class UserSmalltalk < ApplicationRecord
   def assign_user_attributes(user)
     self.user_latitude = user.latitude
     self.user_longitude = user.longitude
-    self.user_gender = user.gender
+    # user genders include "secret", which user_smalltalks do not handle
+    self.user_gender = user.gender.presence_in(self.class.user_genders.keys)
     self.user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
     self.user_interest_ids = user.interest_ids
   end
