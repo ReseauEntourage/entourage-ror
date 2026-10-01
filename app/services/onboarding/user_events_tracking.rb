@@ -1,5 +1,12 @@
 module Onboarding
   module UserEventsTracking
+    SKIPPABLE_STEPS = {
+      'welcome_watched' => :welcome_watched_skipped!,
+      'webinar_or_first_steps' => :webinar_or_first_steps_joined_skipped!,
+      'papotages' => :papotages_joined_skipped!,
+      'neighborhood_national' => :neighborhood_national_joined_skipped!
+    }.freeze
+
     module UserConcern
       extend ActiveSupport::Concern
 
@@ -13,16 +20,40 @@ module Onboarding
         Event.track('onboarding.resource.welcome_watched', user_id: self.id)
       end
 
+      def welcome_watched_skipped!
+        Event.track('onboarding.resource.welcome_watched_skipped', user_id: self.id)
+      end
+
       def webinar_or_first_steps_joined!
         Event.track('onboarding.outing.webinar_or_first_steps', user_id: self.id)
+      end
+
+      def webinar_or_first_steps_joined_skipped!
+        Event.track('onboarding.outing.webinar_or_first_steps_skipped', user_id: self.id)
       end
 
       def papotages_joined!
         Event.track('onboarding.outing.papotages', user_id: self.id)
       end
 
+      def papotages_joined_skipped!
+        Event.track('onboarding.outing.papotages_skipped', user_id: self.id)
+      end
+
       def neighborhood_national_joined!
         Event.track('onboarding.neighborhood.national', user_id: self.id)
+      end
+
+      def neighborhood_national_joined_skipped!
+        Event.track('onboarding.neighborhood.national_skipped', user_id: self.id)
+      end
+
+      def onboarding_step_skipped!(step)
+        method = SKIPPABLE_STEPS[step]
+        return false unless method
+
+        public_send(method)
+        true
       end
 
       private

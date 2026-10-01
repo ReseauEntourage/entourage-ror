@@ -464,6 +464,7 @@ Rails.application.routes.draw do
           post 'lookup'
           post :ethics_charter_signed
           post :request_phone_change
+          post :onboarding_step_skipped
         end
 
         member do
