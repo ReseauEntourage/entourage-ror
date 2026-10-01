@@ -1537,6 +1537,57 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     pending "add some examples to (or delete) #{__FILE__}"
   end
 
+  describe 'POST onboarding_step_skipped' do
+    let!(:user) { create :public_user }
+
+    subject { post :onboarding_step_skipped, params: { step: step, token: user.token } }
+
+    {
+      'welcome_watched' => 'onboarding.resource.welcome_watched_skipped',
+      'webinar_or_first_steps' => 'onboarding.outing.webinar_or_first_steps_skipped',
+      'papotages' => 'onboarding.outing.papotages_skipped',
+      'neighborhood_national' => 'onboarding.neighborhood.national_skipped'
+    }.each do |skipped_step, event_name|
+      context "step #{skipped_step}" do
+        let(:step) { skipped_step }
+
+        it { expect { subject }.to change { Event.where(user: user, name: event_name).count }.by(1) }
+        it { subject; expect(response.status).to eq(200) }
+      end
+    end
+
+    context 'step already skipped' do
+      let(:step) { 'papotages' }
+
+      before { user.papotages_joined_skipped! }
+
+      it { expect { subject }.not_to change { Event.count } }
+      it { subject; expect(response.status).to eq(200) }
+    end
+
+    context 'invalid step' do
+      let(:step) { 'foo' }
+
+      it { expect { subject }.not_to change { Event.count } }
+      it { subject; expect(response.status).to eq(400) }
+      it { subject; expect(result['error']['code']).to eq('INVALID_ONBOARDING_STEP') }
+    end
+
+    context 'missing step' do
+      let(:step) { nil }
+
+      it { subject; expect(response.status).to eq(400) }
+    end
+
+    context 'not signed in' do
+      let(:step) { 'papotages' }
+
+      before { post :onboarding_step_skipped, params: { step: step } }
+
+      it { expect(response.status).to eq(401) }
+    end
+  end
+
   describe 'POST ethics_charter_signed' do
     let(:user) { create :public_user }
 

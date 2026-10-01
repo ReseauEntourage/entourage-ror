@@ -405,6 +405,14 @@ module Api
         head :ok
       end
 
+      def onboarding_step_skipped
+        unless current_user.onboarding_step_skipped!(params[:step])
+          return render_error(code: 'INVALID_ONBOARDING_STEP', message: "step must be one of: #{Onboarding::UserEventsTracking::SKIPPABLE_STEPS.keys.join(', ')}", status: 400)
+        end
+
+        head :ok
+      end
+
       def organization_admin_redirect
         if current_user.partner.nil?
           return head :ok
