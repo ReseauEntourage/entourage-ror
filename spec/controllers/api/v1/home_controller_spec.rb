@@ -201,7 +201,10 @@ describe Api::V1::HomeController do
               'onboarding.profile.first_name.entered',
             ],
             'badge' => UserServices::Engagement::BADGE_LABELS["SILENT"],
-            'badges' => default_badges_json
+            'badges' => default_badges_json,
+            'engagement_segment' => nil,
+            'engagement_sub_segment' => nil,
+            'segment_computed_at' => nil
           }
         }) }
       end
