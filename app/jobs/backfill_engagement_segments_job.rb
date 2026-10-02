@@ -90,7 +90,7 @@ class BackfillEngagementSegmentsJob < ApplicationJob
       )
     end
 
-    UserSegment.where.not(user_id: eligible_user_ids).find_each do |user_segment|
+    UserSegment.where.not(engagement_segment: nil).where.not(user_id: eligible_user_ids).find_each do |user_segment|
       EngagementSegmentApplier.call(
         user_id: user_segment.user_id,
         segment: nil,
