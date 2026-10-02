@@ -9,8 +9,13 @@ namespace :users do
     UserServices::Birthday.send_notifications
   end
 
-  desc 'Generates engagement_levels'
+  desc 'Refresh engagement_levels materialized view (daily, Heroku Scheduler)'
   task engagement_levels: :environment do
-    UserServices::Engagement.generates_engagement_levels
+    RefreshEngagementLevelsJob.perform_now
+  end
+
+  desc 'Compute and historize user engagement segments (daily, Heroku Scheduler)'
+  task engagement_segments: :environment do
+    RefreshEngagementSegmentsJob.perform_now
   end
 end
