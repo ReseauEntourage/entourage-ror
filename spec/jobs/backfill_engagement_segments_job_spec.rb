@@ -42,6 +42,29 @@ RSpec.describe BackfillEngagementSegmentsJob do
     expect(user_segment.engagement_segment).to eq('Silencieux')
   end
 
+  it 'resets a user who drops out of eligibility during the reconstructed period' do
+    # Only signed in 35 and 40 days ago: eligible while the 35-days-ago
+    # session is in the trailing 30-day window (until 5 days ago), then not.
+    leaver = create(:user, deleted: false, targeting_profile: nil)
+    [40, 35].each { |n| create(:session_history, user: leaver, date: n.days.ago.to_date) }
+
+    described_class.perform_now(months: 6)
+
+    expect(UserSegmentHistory.where(user_id: leaver.id).order(:valid_from).pluck(:engagement_segment, :valid_from, :valid_to)).to eq([
+      ['Silencieux', 10.days.ago.to_date, 4.days.ago.to_date],
+      [nil, 4.days.ago.to_date, nil]
+    ])
+    expect(UserSegment.find_by(user_id: leaver.id).engagement_segment).to be_nil
+  end
+
+  it 'does nothing when a source table is empty' do
+    DenormDailyEngagementsWithType.delete_all
+
+    described_class.perform_now(months: 6)
+
+    expect(UserSegmentHistory.count).to eq(0)
+  end
+
   it 'does nothing when there is not enough historical depth for a single reliable day' do
     DenormDailyEngagementsWithType.delete_all
     SessionHistory.delete_all
