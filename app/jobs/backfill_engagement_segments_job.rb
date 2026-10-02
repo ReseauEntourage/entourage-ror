@@ -18,14 +18,30 @@
 # support: a full 30-day trailing window of `denorm_daily_engagements_with_type`
 # needs to exist before the first reconstructed day, and `session_histories`
 # needs to still be an actively-written table - guarded explicitly, given
-# `login_histories` already failed this exact way once. Run via:
+# `login_histories` already failed this exact way once.
+#
+# Replaying over existing rows would corrupt the transition log (closing
+# open rows with a `valid_to` before their `valid_from`, or colliding on the
+# `(user_id, valid_from)` unique index), so the job refuses to run once
+# `user_segments`/`user_segment_history` hold data - i.e. once the nightly
+# job has run, or after a previous backfill. `reset: true` must then be
+# passed explicitly to truncate both tables and rebuild them from scratch
+# (days already computed live get reconstructed with the backfill's
+# approximated eligibility). Don't run it while the nightly
+# `users:engagement_segments` task may fire. Run via:
 #   BackfillEngagementSegmentsJob.perform_now(months: 6)
+#   BackfillEngagementSegmentsJob.perform_now(months: 6, reset: true)
 class BackfillEngagementSegmentsJob < ApplicationJob
   queue_as :default
 
   STALE_SOURCE_THRESHOLD = 7.days
 
-  def perform(months: 6)
+  def perform(months: 6, reset: false)
+    if !reset && (UserSegmentHistory.exists? || UserSegment.exists?)
+      raise "user_segments/user_segment_history already hold data - replaying over them would corrupt " \
+        "the transition history. Pass reset: true to truncate both tables and rebuild them from scratch."
+    end
+
     end_date = Date.yesterday # today is the live job's job to compute
     requested_start = months.months.ago.to_date
 
@@ -46,10 +62,18 @@ class BackfillEngagementSegmentsJob < ApplicationJob
 
     return if start_date > end_date
 
+    # Only once every check above has passed: never wipe the live data for
+    # a backfill that won't run.
+    truncate_segments if reset
+
     (start_date..end_date).each { |as_of| replay_day(as_of) }
   end
 
   private
+
+  def truncate_segments
+    ActiveRecord::Base.connection.execute("TRUNCATE TABLE user_segment_history, user_segments")
+  end
 
   def replay_day(as_of)
     computed_at = as_of.to_time.end_of_day
@@ -66,7 +90,7 @@ class BackfillEngagementSegmentsJob < ApplicationJob
       )
     end
 
-    UserSegment.where.not(user_id: eligible_user_ids).find_each do |user_segment|
+    UserSegment.where.not(engagement_segment: nil).where.not(user_id: eligible_user_ids).find_each do |user_segment|
       EngagementSegmentApplier.call(
         user_id: user_segment.user_id,
         segment: nil,

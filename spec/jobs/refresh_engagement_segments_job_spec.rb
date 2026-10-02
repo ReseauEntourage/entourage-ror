@@ -61,6 +61,19 @@ RSpec.describe RefreshEngagementSegmentsJob do
       expect(entries.last.engagement_segment).to eq('Pilier')
       expect(entries.last.valid_to).to be_nil
     end
+
+    it 'amends the same-day history row in place when a same-day re-run changes the segment' do
+      engagement(user, 'reaction') # Curieux
+      described_class.perform_now
+
+      engagement(user, 'create_group')
+      engagement(user, 'create_action') # now Pilier, e.g. late upstream data then a manual re-run
+      described_class.perform_now
+
+      expect(UserSegmentHistory.where(user_id: user.id).sole)
+        .to have_attributes(engagement_segment: 'Pilier', valid_from: Date.current, valid_to: nil)
+      expect(UserSegment.find_by(user_id: user.id).engagement_segment).to eq('Pilier')
+    end
   end
 
   describe 'eligibility loss' do
@@ -88,6 +101,36 @@ RSpec.describe RefreshEngagementSegmentsJob do
       expect(entries.first.valid_to).to eq(day1 + 1)
       expect(entries.last.engagement_segment).to be_nil
       expect(entries.last.valid_to).to be_nil
+    end
+
+    {
+      'becomes team-targeted' => ->(user) { user.update_column(:targeting_profile, 'team') },
+      'gets deleted' => ->(user) { user.update_column(:deleted, true) }
+    }.each do |cause, drop_out|
+      it "resets a previously-classified user who #{cause}" do
+        engagement(user, 'reaction') # Curieux
+        described_class.perform_now
+
+        travel_to(1.day.from_now) do
+          drop_out.call(user)
+
+          described_class.perform_now
+        end
+
+        expect(UserSegment.find_by(user_id: user.id).engagement_segment).to be_nil
+        expect(UserSegmentHistory.where(user_id: user.id).order(:valid_from).pluck(:engagement_segment, :valid_to))
+          .to eq([['Curieux', Date.current + 1], [nil, nil]])
+      end
+    end
+
+    it 'leaves users already reset to unclassified untouched on later runs' do
+      gone = create(:user, last_sign_in_at: 40.days.ago)
+      create(:user_segment, user: gone, engagement_segment: nil, segment_computed_at: 10.days.ago)
+      create(:user_segment_history, user: gone, engagement_segment: nil, valid_from: 10.days.ago.to_date)
+
+      expect { described_class.perform_now }
+        .not_to change { UserSegment.find_by(user_id: gone.id).segment_computed_at }
+      expect(UserSegmentHistory.where(user_id: gone.id).count).to eq(1)
     end
   end
 end
