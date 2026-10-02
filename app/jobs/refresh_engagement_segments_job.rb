@@ -21,8 +21,9 @@ class RefreshEngagementSegmentsJob < ApplicationJob
     # Users who dropped out of eligibility (inactive > 30 days, became
     # `team`, or got deleted) since the last run: reset to unclassified and
     # record the transition, instead of leaving their last known segment
-    # stale forever.
-    UserSegment.where.not(user_id: eligible_user_ids).find_each do |user_segment|
+    # stale forever. Rows already unclassified are skipped: there's no
+    # transition left to record for them.
+    UserSegment.where.not(engagement_segment: nil).where.not(user_id: eligible_user_ids).find_each do |user_segment|
       EngagementSegmentApplier.call(
         user_id: user_segment.user_id,
         segment: nil,

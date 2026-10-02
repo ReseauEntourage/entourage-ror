@@ -89,5 +89,15 @@ RSpec.describe RefreshEngagementSegmentsJob do
       expect(entries.last.engagement_segment).to be_nil
       expect(entries.last.valid_to).to be_nil
     end
+
+    it 'leaves users already reset to unclassified untouched on later runs' do
+      gone = create(:user, last_sign_in_at: 40.days.ago)
+      create(:user_segment, user: gone, engagement_segment: nil, segment_computed_at: 10.days.ago)
+      create(:user_segment_history, user: gone, engagement_segment: nil, valid_from: 10.days.ago.to_date)
+
+      expect { described_class.perform_now }
+        .not_to change { UserSegment.find_by(user_id: gone.id).segment_computed_at }
+      expect(UserSegmentHistory.where(user_id: gone.id).count).to eq(1)
+    end
   end
 end
