@@ -59,4 +59,55 @@ RSpec.describe BackfillEngagementSegmentsJob do
 
     expect { described_class.perform_now(months: 6) }.to raise_error(/session_histories looks stale/)
   end
+
+  context 'when segments were already computed (nightly job or previous backfill)' do
+    def history_of(user)
+      UserSegmentHistory.where(user_id: user.id).order(:valid_from).pluck(:engagement_segment, :valid_from, :valid_to)
+    end
+
+    before do
+      create(:user_segment, user: user, engagement_segment: 'Curieux')
+      create(:user_segment_history, user: user, engagement_segment: 'Curieux', valid_from: Date.current)
+    end
+
+    it 'refuses to replay over them by default, leaving them untouched' do
+      expect { described_class.perform_now(months: 6) }.to raise_error(/Pass reset: true/)
+
+      expect(history_of(user)).to eq([['Curieux', Date.current, nil]])
+      expect(UserSegment.find_by(user_id: user.id).engagement_segment).to eq('Curieux')
+    end
+
+    it 'truncates and rebuilds both tables with reset: true' do
+      described_class.perform_now(months: 6, reset: true)
+
+      expect(history_of(user)).to eq([
+        ['Pilier', 10.days.ago.to_date, 9.days.ago.to_date],
+        ['Silencieux', 9.days.ago.to_date, nil]
+      ])
+      expect(UserSegment.find_by(user_id: user.id).engagement_segment).to eq('Silencieux')
+    end
+
+    it 'can be run again with reset: true (e.g. after a crash midway)' do
+      described_class.perform_now(months: 6, reset: true)
+
+      expect { described_class.perform_now(months: 6, reset: true) }.not_to change { history_of(user) }
+    end
+
+    it 'does not wipe anything when the backfill then refuses to run' do
+      SessionHistory.delete_all
+      create(:session_history, user: user, date: 40.days.ago.to_date)
+
+      expect { described_class.perform_now(months: 6, reset: true) }.to raise_error(/session_histories looks stale/)
+      expect(history_of(user)).to eq([['Curieux', Date.current, nil]])
+    end
+
+    it 'does not wipe anything when there is not enough depth to replay a single day' do
+      DenormDailyEngagementsWithType.delete_all
+      create(:denorm_daily_engagements_with_type, user: user, engagement_type: 'create_group', date: 5.days.ago.to_date)
+
+      described_class.perform_now(months: 6, reset: true)
+
+      expect(history_of(user)).to eq([['Curieux', Date.current, nil]])
+    end
+  end
 end
