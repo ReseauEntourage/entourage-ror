@@ -143,7 +143,7 @@ module SalesforceServices
       end
 
       def last_engagement_date
-        return unless denorm_daily_engagement_with_type = user.denorm_daily_engagement_with_types.order(id: :desc).first
+        return unless denorm_daily_engagement_with_type = user.denorm_daily_engagements_with_types.order(id: :desc).first
 
         denorm_daily_engagement_with_type.date.strftime('%Y-%m-%d')
       end
