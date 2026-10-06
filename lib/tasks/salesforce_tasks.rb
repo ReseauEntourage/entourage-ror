@@ -10,6 +10,7 @@ module SalesforceTasks
       users = User
         .joins(:address)
         .where(deleted: false)
+        .where(salesforce_id: nil)
         .where('users.updated_at >= :since OR users.last_sign_in_at >= :since OR addresses.updated_at >= :since', since: since)
 
       users = users.where('users.id > ?', after_id) if after_id.present?
