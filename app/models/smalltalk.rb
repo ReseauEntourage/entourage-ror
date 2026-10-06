@@ -2,6 +2,8 @@ class Smalltalk < ApplicationRecord
   include Deeplinkable
   include JoinableScopable
 
+  INACTIVITY_DELAY = 3.months
+
   enum match_format: { one: 0, many: 1 }
 
   after_create :create_meeting
@@ -41,6 +43,19 @@ class Smalltalk < ApplicationRecord
 
   scope :without_event, -> (event) {
     where("events ->> :event IS NULL", event: event)
+  }
+
+  # not closed, and created or with a text message during the last INACTIVITY_DELAY
+  scope :active, -> {
+    where(closed_at: nil).where(%(
+      smalltalks.created_at >= :since OR EXISTS (
+        SELECT 1 FROM chat_messages
+        WHERE chat_messages.messageable_type = 'Smalltalk'
+          AND chat_messages.messageable_id = smalltalks.id
+          AND chat_messages.message_type = 'text'
+          AND chat_messages.created_at >= :since
+      )
+    ), since: INACTIVITY_DELAY.ago)
   }
 
   # @code_legacy

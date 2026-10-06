@@ -660,6 +660,8 @@ en:
       alone: You
 
   smalltalks:
+    errors:
+      quota_reached: "You’re already in %{max} active Good Vibes groups, which is the maximum. To join a new one, please leave one of them first."
     messager:
       new_member: | # first_name
         Welcome %s 🙂 We're thrilled to have you join us! Introduce yourself briefly so the group can get to know you.

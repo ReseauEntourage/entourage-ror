@@ -665,6 +665,8 @@ pl:
     participants:
       alone: Ty
   smalltalks:
+    errors:
+      quota_reached: "Należysz już do %{max} aktywnych grup Dobrych Wibracji – to maksimum. Aby dołączyć do nowej, najpierw opuść jedną z nich."
     messager:
       new_member: "Witamy %s \U0001F642 Cieszymy się, że do nas dołączyłeś! Przedstaw się w kilku słowach, aby grupa mogła Cię lepiej poznać.\n"
       destroy_member: "%s opuścił(a) grupę. Dziękujemy za udział i życzymy Ci powodzenia!\n"

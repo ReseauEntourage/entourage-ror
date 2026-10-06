@@ -651,6 +651,8 @@ ro:
       alone: Tu
 
   smalltalks:
+    errors:
+      quota_reached: "Faci deja parte din %{max} grupuri active de Energii Pozitive, care este numărul maxim. Pentru a te alătura unui grup nou, părăsește mai întâi unul dintre ele."
     messager:
       new_member: | # first_name
         Bun venit, %s 🙂 Ne bucurăm că ni te-ai alăturat! Prezintă-te în câteva cuvinte ca să te cunoască grupul.
