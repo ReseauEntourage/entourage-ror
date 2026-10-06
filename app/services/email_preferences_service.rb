@@ -46,9 +46,20 @@ module EmailPreferencesService
       end
     else
       ensure_category_exists!(category)
-      EmailPreference
-        .find_or_initialize_by(user: user, email_category_id: category_id(category))
-        .update(subscribed: subscribed)
+
+      attempts = 0
+      begin
+        # savepoint: the outer transaction (category :all) survives a RecordNotUnique
+        EmailPreference.transaction(requires_new: true) do
+          EmailPreference
+            .find_or_initialize_by(user: user, email_category_id: category_id(category))
+            .update(subscribed: subscribed)
+        end
+      rescue ActiveRecord::RecordNotUnique
+        # a concurrent request (eg. simultaneous Mailjet unsub events) created the preference first
+        retry if (attempts += 1) < 2
+        raise
+      end
     end
   end
 

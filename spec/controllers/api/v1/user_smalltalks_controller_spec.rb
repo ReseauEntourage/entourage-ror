@@ -152,6 +152,40 @@ describe Api::V1::UserSmalltalksController, type: :controller do
       it { expect(result['user_smalltalk']['user_latitude']).to eq(user.latitude) }
       it { expect(result['user_smalltalk']['user_longitude']).to eq(user.longitude) }
     end
+
+    describe 'quota reached' do
+      let(:lang) { 'fr' }
+
+      before {
+        user.update_column(:lang, lang)
+        create_list(:smalltalk, 3, participants: [user])
+        request
+      }
+
+      it { expect(response.status).to eq(400) }
+      it { expect(result['reasons']).to eq(['Tu fais déjà partie de 3 groupes de Bonnes Ondes actifs, c’est le maximum. Pour en rejoindre un nouveau, quitte d’abord l’un d’entre eux.']) }
+
+      context 'in user lang' do
+        let(:lang) { 'en' }
+
+        it { expect(result['reasons']).to eq(['You’re already in 3 active Good Vibes groups, which is the maximum. To join a new one, please leave one of them first.']) }
+      end
+
+      context 'in default lang when user lang has no translation' do
+        let(:lang) { 'pt' }
+
+        it { expect(result['reasons'].first).to start_with('Tu fais déjà partie de 3 groupes') }
+      end
+    end
+
+    describe 'quota reached with inactive smalltalks' do
+      before {
+        create_list(:smalltalk, 3, participants: [user], created_at: 4.months.ago)
+        request
+      }
+
+      it { expect(response.status).to eq(201) }
+    end
   end
 
   describe 'update' do

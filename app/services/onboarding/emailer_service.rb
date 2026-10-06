@@ -17,7 +17,8 @@ module Onboarding
     end
 
     def self.deliver_papotages_invitation_email
-      upcoming_papotages = Outing.papotages.future_or_ongoing.limit(3)
+      # an array (not a relation) so that deliver_later can serialize it
+      upcoming_papotages = Outing.papotages.future_or_ongoing.limit(3).to_a
       return unless upcoming_papotages.any?
 
       User.where(id: papotages_invitation_user_ids).find_each do |user|

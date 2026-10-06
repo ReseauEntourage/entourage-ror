@@ -6,6 +6,8 @@ class UserSmalltalk < ApplicationRecord
 
   CRITERIA = [:match_format, :match_locality, :match_gender]
 
+  MAX_JOINED_SMALLTALKS = 3
+
   enum match_format: { one: 0, many: 1 }
   enum user_gender: { male: 0, female: 1, not_binary: 2 }
   enum user_profile: { offer_help: 0, ask_for_help: 1 }
@@ -54,12 +56,12 @@ class UserSmalltalk < ApplicationRecord
   end
 
   def quota_reached?
-    joined_smalltalks.count >= 3
+    joined_smalltalks.count >= MAX_JOINED_SMALLTALKS
   end
 
   def quota_must_not_be_reached
     if quota_reached?
-      errors.add(:base, 'Quota has been reached. You can only join up to 3 smalltalks at a time.')
+      errors.add(:base, I18n.t('smalltalks.errors.quota_reached', max: MAX_JOINED_SMALLTALKS, locale: user_locale))
     end
   end
 
@@ -154,9 +156,18 @@ class UserSmalltalk < ApplicationRecord
   def assign_user_attributes(user)
     self.user_latitude = user.latitude
     self.user_longitude = user.longitude
-    self.user_gender = user.gender
+    # user genders include "secret", which user_smalltalks do not handle
+    self.user_gender = user.gender.presence_in(self.class.user_genders.keys)
     self.user_profile = user.is_ask_for_help? ? :ask_for_help : :offer_help
     self.user_interest_ids = user.interest_ids
+  end
+
+  # some users have a lang without translations (e.g. "pt")
+  def user_locale
+    return Translation::DEFAULT_LANG unless user&.lang.present?
+    return Translation::DEFAULT_LANG unless Translation::LANGUAGES.include?(user.lang.to_sym)
+
+    user.lang
   end
 
   def create_smalltalk_with! user_smalltalk
@@ -176,8 +187,10 @@ class UserSmalltalk < ApplicationRecord
     )
   end
 
+  # inactive smalltalks do not count in the quota: users would otherwise be stuck with dead smalltalks
   def joined_smalltalks
     JoinRequest.where(user: user, joinable_type: :Smalltalk, status: JoinRequest::ACCEPTED_STATUS)
+      .where(joinable_id: Smalltalk.active.select(:id))
   end
 
   def build_matches matches, max_unmatch_count = 1
