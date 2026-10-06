@@ -6,30 +6,14 @@ module Experimental::EntourageSlack
   end
 
   def self.notifier entourage
-    # New webhooks can be created at
-    # https://api.slack.com/apps/AAJQG6LDP/general
-    # > Install your app to your workspace
-    #
-    # Existing webhooks are listed here
-    # https://api.slack.com/apps/AAJQG6LDP/install-on-team
-    #
-    # They can be revoked here
-    # https://my.slack.com/apps/AAJQG6LDP
+    return unless url = ModerationServices.slack_app_webhook_url(entourage)
 
-    return if ENV['SLACK_APP_WEBHOOKS'].blank?
-    config = JSON.parse(ENV['SLACK_APP_WEBHOOKS']) rescue nil
-    return if config.nil?
-    channel = nil
-    if entourage.country == 'FR' && entourage.postal_code.present?
-      channel = config[entourage.postal_code.first(2)]
-    end
-    channel ||= config['default']
-    url = config['prefix'] + channel
     Slack::Notifier.new(url)
   end
 
   def self.payload entourage
-    slack_moderator = ModerationServices.slack_moderator_id(entourage.user)
+    # same departement as the channel: the entourage one, not the user one
+    slack_moderator = ModerationServices.slack_moderator_id(entourage)
 
     e = entourage
     subtitle =

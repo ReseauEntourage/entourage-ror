@@ -6,25 +6,8 @@ module Experimental::NeighborhoodSlack
   end
 
   def self.notifier record
-    # New webhooks can be created at
-    # https://api.slack.com/apps/AAJQG6LDP/general
-    # > Install your app to your workspace
-    #
-    # Existing webhooks are listed here
-    # https://api.slack.com/apps/AAJQG6LDP/install-on-team
-    #
-    # They can be revoked here
-    # https://my.slack.com/apps/AAJQG6LDP
+    return unless url = ModerationServices.slack_app_webhook_url(record)
 
-    return if ENV['SLACK_APP_WEBHOOKS'].blank?
-    config = JSON.parse(ENV['SLACK_APP_WEBHOOKS']) rescue nil
-    return if config.nil?
-    channel = nil
-    if record.postal_code.present?
-      channel = config[record.postal_code.first(2)]
-    end
-    channel ||= config['default']
-    url = config['prefix'] + channel
     Slack::Notifier.new(url)
   end
 

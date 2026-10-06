@@ -111,6 +111,29 @@ module ModerationServices
     moderation_area.referent_benevole_with_fallback
   end
 
+  # url of the Slack channel of the object departement, or of the default channel.
+  # The departement is the same as in slack_moderator_id(object): the moderator mentioned
+  # in a message about the object belongs to the channel the message is posted in
+  def self.slack_app_webhook_url object
+    # New webhooks can be created at
+    # https://api.slack.com/apps/AAJQG6LDP/general
+    # > Install your app to your workspace
+    #
+    # Existing webhooks are listed here
+    # https://api.slack.com/apps/AAJQG6LDP/install-on-team
+    #
+    # They can be revoked here
+    # https://my.slack.com/apps/AAJQG6LDP
+
+    return if ENV['SLACK_APP_WEBHOOKS'].blank?
+    config = JSON.parse(ENV['SLACK_APP_WEBHOOKS']) rescue nil
+    return if config.nil?
+
+    channel = config[departement(object)] || config['default']
+
+    config['prefix'] + channel
+  end
+
   def self.slack_moderator_id object
     moderation_area = ModerationServices.moderation_area_for_departement(departement(object), community: $server_community)
     moderation_area = ModerationServices.moderation_area_for_departement('*', community: $server_community) unless moderation_area.present?
