@@ -145,4 +145,74 @@ RSpec.describe UserSmalltalk, type: :model do
       end
     end
   end
+
+  describe 'quota_reached?' do
+    let(:user) { create(:user) }
+    let(:user_smalltalk) { build(:user_smalltalk, user: user) }
+
+    let(:result) { user_smalltalk.quota_reached? }
+
+    context 'with less than 3 smalltalks' do
+      before { create_list(:smalltalk, 2, participants: [user]) }
+
+      it { expect(result).to be(false) }
+      it { expect(user_smalltalk).to be_valid }
+    end
+
+    context 'with 3 active smalltalks' do
+      before { create_list(:smalltalk, 3, participants: [user]) }
+
+      it { expect(result).to be(true) }
+      it { expect(user_smalltalk).not_to be_valid }
+    end
+
+    context 'with a cancelled participation' do
+      before {
+        create_list(:smalltalk, 2, participants: [user])
+        create(:join_request, joinable: create(:smalltalk), user: user, status: :cancelled)
+      }
+
+      it { expect(result).to be(false) }
+    end
+
+    context 'with a closed smalltalk' do
+      before {
+        create_list(:smalltalk, 2, participants: [user])
+        create(:smalltalk, :closed, participants: [user])
+      }
+
+      it { expect(result).to be(false) }
+    end
+
+    context 'with an old smalltalk' do
+      let(:old_smalltalk) { create(:smalltalk, participants: [user], created_at: 4.months.ago) }
+
+      before {
+        create_list(:smalltalk, 2, participants: [user])
+        old_smalltalk
+      }
+
+      context 'without message' do
+        it { expect(result).to be(false) }
+      end
+
+      context 'with an old text message' do
+        before { create(:chat_message, messageable: old_smalltalk, user: user, created_at: 4.months.ago) }
+
+        it { expect(result).to be(false) }
+      end
+
+      context 'with a recent auto message' do
+        before { create(:chat_message, messageable: old_smalltalk, user: user, message_type: :auto) }
+
+        it { expect(result).to be(false) }
+      end
+
+      context 'with a recent text message' do
+        before { create(:chat_message, messageable: old_smalltalk, user: user) }
+
+        it { expect(result).to be(true) }
+      end
+    end
+  end
 end

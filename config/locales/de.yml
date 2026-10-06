@@ -670,6 +670,8 @@ de:
       alone: Sie
 
   smalltalks:
+    errors:
+      quota_reached: "Du bist bereits in %{max} aktiven Gute-Vibes-Gruppen, das ist das Maximum. Um einer neuen Gruppe beizutreten, verlasse bitte zuerst eine davon."
     messager:
       new_member: | # first_name
         Willkommen %s 🙂 Wir freuen uns sehr, dass du dabei bist! Stell dich doch kurz vor, damit die Gruppe dich besser kennenlernen kann.
