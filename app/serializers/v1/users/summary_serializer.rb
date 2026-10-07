@@ -2,6 +2,7 @@ module V1
   module Users
     class SummarySerializer < BasicSerializer
       UNCLOSED_ACTION_ALERT = 15.days
+      UNCOUNTED_OUTING_STATUSES = %w[cancelled blacklisted suspended].freeze
 
       attributes :id,
         :display_name,
@@ -12,6 +13,10 @@ module V1
         :chat_messages_count,
         :outing_participations_count,
         :neighborhood_participations_count,
+        :past_outing_participations_count,
+        :action_creations_count,
+        :neighborhood_messages_count,
+        :conversation_members_count,
         :recommandations,
         :congratulations,
         :unclosed_action,
@@ -37,7 +42,7 @@ module V1
       end
 
       def meetings_count
-        past_outing_memberships(object).count + successful_actions(object).count
+        past_outing_participations_count + successful_actions(object).count
       end
 
       # fake data: deprecated field
@@ -53,6 +58,24 @@ module V1
 
       def neighborhood_participations_count
         object.neighborhood_memberships.count
+      end
+
+      # shared with meetings_count: computed once per serialization
+      def past_outing_participations_count
+        @past_outing_participations_count ||= past_outing_memberships(object).count
+      end
+
+      # @see UserStat
+      def action_creations_count
+        object.user_stat&.action_creations_count || 0
+      end
+
+      def neighborhood_messages_count
+        object.user_stat&.neighborhood_messages_count || 0
+      end
+
+      def conversation_members_count
+        object.user_stat&.conversation_members_count || 0
       end
 
       # @deprecated
@@ -142,7 +165,7 @@ module V1
       private
 
       def past_outing_memberships user
-        user.outing_memberships.where(id: Outing.past)
+        user.outing_memberships.where(id: Outing.past).where.not(status: UNCOUNTED_OUTING_STATUSES)
       end
 
       def successful_actions user
