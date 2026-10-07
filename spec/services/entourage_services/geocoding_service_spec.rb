@@ -8,6 +8,8 @@ describe EntourageServices::GeocodingService do
   context 'callbacks' do
     let(:entourage) { build(:entourage) }
     before { allow(EntourageServices::GeocodingService).to receive(:geocode) }
+    # the Slack notification on create also geocodes, when the entourage has no country yet
+    before { allow(Experimental::EntourageSlack).to receive(:notify) }
     it 'geocodes on create' do
       entourage.save
       expect(EntourageServices::GeocodingService).to have_received(:geocode).with(entourage.id)
