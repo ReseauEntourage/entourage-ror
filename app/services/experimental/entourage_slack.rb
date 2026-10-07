@@ -2,7 +2,21 @@ module Experimental::EntourageSlack
   def self.notify entourage_id
     return unless entourage = Entourage.find_by_id(entourage_id)
 
+    geocode_if_needed(entourage)
+
     notifier(entourage)&.ping(payload(entourage))
+  end
+
+  # the channel and the mentioned moderator depend on the entourage departement, so on its country.
+  # At creation, the country is set by EntourageServices::GeocodingService that may not have run yet
+  def self.geocode_if_needed entourage
+    return if entourage.country.present?
+
+    EntourageServices::GeocodingService.geocode(entourage.id)
+    entourage.reload
+  rescue => e
+    # notify anyway, in the default channel
+    Sentry.capture_exception(e)
   end
 
   def self.notifier entourage
