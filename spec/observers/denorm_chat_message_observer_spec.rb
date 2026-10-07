@@ -25,41 +25,4 @@ RSpec.describe DenormChatMessageObserver do
       }.not_to raise_error
     end
   end
-
-  describe "recalcul des compteurs d'impact" do
-    let(:neighborhood) { create(:neighborhood) }
-    let(:conversation) { create(:conversation, participants: [user, create(:public_user)]) }
-
-    it "planifie neighborhood_messages pour un post de groupe de voisins" do
-      expect(UserImpactStatsJob).to receive(:perform_async).with(user.id, UserStat::NEIGHBORHOOD_MESSAGES)
-      create(:chat_message, messageable: neighborhood, user: user)
-    end
-
-    it "planifie conversation_members pour un message privé" do
-      expect(UserImpactStatsJob).to receive(:perform_async).with(user.id, UserStat::CONVERSATION_MEMBERS)
-      create(:chat_message, messageable: conversation, user: user)
-    end
-
-    it "planifie le recalcul quand un message passe en deleted" do
-      message = create(:chat_message, messageable: neighborhood, user: user)
-
-      expect(UserImpactStatsJob).to receive(:perform_async).with(user.id, UserStat::NEIGHBORHOOD_MESSAGES)
-      message.update!(status: :deleted)
-    end
-
-    it "ne planifie rien pour un message d'événement ou d'entraide" do
-      # the action's own creation enqueues action_creations (UserImpactStatsObserver)
-      action = create(:entourage)
-
-      expect(UserImpactStatsJob).not_to receive(:perform_async)
-      create(:chat_message, messageable: outing, user: user)
-      create(:chat_message, messageable: action, user: user)
-    end
-
-    it "ne planifie rien pour un broadcast" do
-      expect(UserImpactStatsJob).not_to receive(:perform_async)
-      create(:chat_message, messageable: neighborhood, user: user, message_type: :broadcast,
-        metadata: { conversation_message_broadcast_id: create(:neighborhood_message_broadcast).id })
-    end
-  end
 end

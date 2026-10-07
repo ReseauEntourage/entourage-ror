@@ -3,8 +3,8 @@ class UserStat < ApplicationRecord
   #
   # Each counter is recomputed from the source tables, never incremented: a
   # counter left stale by a lost job is repaired by the next trigger for the
-  # same user and counter. Triggers: UserImpactStatsObserver (actions) and
-  # DenormChatMessageObserver (messages), through UserImpactStatsJob.
+  # same user and counter. Triggers: UserImpactStatsObserver, through
+  # UserImpactStatsJob.
 
   COUNTED_ACTION_STATUSES = %w[open closed].freeze
   COUNTED_MESSAGE_STATUSES = %w[active updated].freeze
@@ -54,6 +54,18 @@ class UserStat < ApplicationRecord
   class << self
     def counter? counter
       COUNTERS.include?(counter.to_s)
+    end
+
+    # Users whose conversation_members count depends on the members of this
+    # conversation: the authors of at least one counted message in it.
+    def conversation_author_ids conversation_id, except: nil
+      ChatMessage
+        .where(messageable_type: 'Entourage', messageable_id: conversation_id)
+        .where(status: COUNTED_MESSAGE_STATUSES)
+        .where.not(message_type: UNCOUNTED_MESSAGE_TYPES)
+        .where.not(user_id: except)
+        .distinct
+        .pluck(:user_id)
     end
 
     # Recomputes a single counter of a user in one atomic upsert, leaving the
