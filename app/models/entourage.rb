@@ -181,6 +181,8 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_image_urls
   before_validation :set_outings_place_limit
   before_validation :set_outings_reserved_female
+  before_validation :set_outings_pmr
+  before_validation :set_outings_kids_friendly
   before_validation :set_outings_unsubscribed_participants_offer_help
   before_validation :set_outings_unsubscribed_participants_ask_for_help
   before_validation :set_outings_unsubscribed_participants_female
@@ -309,6 +311,8 @@ class Entourage < ApplicationRecord
           portrait_thumbnail_url: { type: [:string, :null] },
           place_limit: { type: [:string, :integer, :null] },
           reserved_female: { type: [:string, :boolean, :null] },
+          pmr: { type: [:string, :boolean, :null] },
+          kids_friendly: { type: [:string, :boolean, :null] },
           unsubscribed_participants_offer_help: { type: [:string, :integer, :null] },
           unsubscribed_participants_ask_for_help: { type: [:string, :integer, :null] },
           unsubscribed_participants_female: { type: [:string, :integer, :null] },
@@ -744,6 +748,18 @@ class Entourage < ApplicationRecord
     return unless outing?
     return unless metadata[:reserved_female].blank?
     self.metadata[:reserved_female] = nil
+  end
+
+  def set_outings_pmr
+    return unless outing?
+    return unless metadata[:pmr].blank?
+    self.metadata[:pmr] = nil
+  end
+
+  def set_outings_kids_friendly
+    return unless outing?
+    return unless metadata[:kids_friendly].blank?
+    self.metadata[:kids_friendly] = nil
   end
 
   def set_outings_unsubscribed_participants_offer_help

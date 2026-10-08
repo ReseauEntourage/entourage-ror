@@ -531,6 +531,8 @@ describe Api::V1::NeighborhoodsController, type: :controller do
           'google_place_id' => 'foobar',
           'place_limit' => 3,
           'reserved_female' => nil,
+          'pmr' => nil,
+          'kids_friendly' => nil,
           'unsubscribed_participants_offer_help' => 0,
           'unsubscribed_participants_ask_for_help' => 0,
           'unsubscribed_participants_female' => 0,
