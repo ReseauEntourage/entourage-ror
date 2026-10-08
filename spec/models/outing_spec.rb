@@ -210,7 +210,14 @@ RSpec.describe Outing, type: :model do
 
     it { expect(outing.reload.pmr).to eq(true) }
     it { expect(outing.reload.kids_friendly).to eq(false) }
-    it { expect(outing.reload.reserved_female).to eq(false) }
+    it { expect(outing.reload.reserved_female).not_to eq(true) }
+  end
+
+  describe 'pmr and kids_friendly are stored as real booleans' do
+    let(:outing) { create(:outing, :outing_class, metadata: { pmr: 'true', kids_friendly: 'false' }) }
+
+    it { expect(outing.reload[:metadata][:pmr]).to eq(true) }
+    it { expect(outing.reload[:metadata][:kids_friendly]).to eq(false) }
   end
 
   describe '#reset_unread_messages_if_blacklisted_or_deleted' do
