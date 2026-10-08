@@ -752,14 +752,19 @@ class Entourage < ApplicationRecord
 
   def set_outings_pmr
     return unless outing?
-    return unless metadata[:pmr].blank?
-    self.metadata[:pmr] = nil
+    self.metadata[:pmr] = cast_outings_boolean(metadata[:pmr])
   end
 
   def set_outings_kids_friendly
     return unless outing?
-    return unless metadata[:kids_friendly].blank?
-    self.metadata[:kids_friendly] = nil
+    self.metadata[:kids_friendly] = cast_outings_boolean(metadata[:kids_friendly])
+  end
+
+  # params arrive as strings ("true"/"false"): store a real boolean, keep nil when unset
+  def cast_outings_boolean value
+    return nil if value.nil? || value == ''
+
+    ActiveModel::Type::Boolean.new.cast(value)
   end
 
   def set_outings_unsubscribed_participants_offer_help
