@@ -147,6 +147,79 @@ RSpec.describe Outing, type: :model do
     it { expect(outing[:metadata][:reserved_female]).to eq(true) }
   end
 
+  describe '#pmr' do
+    let(:outing) { create(:outing, :outing_class) }
+
+    it { expect(outing.pmr).to eq(false) }
+    it { expect(outing[:metadata]).to have_key(:pmr) }
+    it { expect(outing[:metadata][:pmr]).to be_nil }
+
+    context 'when set to true' do
+      before { outing.pmr = true }
+
+      it { expect(outing[:metadata][:pmr]).to eq(true) }
+      it { expect(outing.pmr).to eq(true) }
+      it { expect(outing).to be_valid }
+    end
+
+    context 'when set from a string (mobile clients)' do
+      before { outing.pmr = 'true' }
+
+      it { expect(outing[:metadata][:pmr]).to eq(true) }
+    end
+
+    context 'when set to false after being true' do
+      before { outing.pmr = true; outing.pmr = false; outing.save! }
+
+      it { expect(outing.reload.pmr).to eq(false) }
+    end
+  end
+
+  describe '#kids_friendly' do
+    let(:outing) { create(:outing, :outing_class) }
+
+    it { expect(outing.kids_friendly).to eq(false) }
+    it { expect(outing[:metadata]).to have_key(:kids_friendly) }
+    it { expect(outing[:metadata][:kids_friendly]).to be_nil }
+
+    context 'when set to true' do
+      before { outing.kids_friendly = true }
+
+      it { expect(outing[:metadata][:kids_friendly]).to eq(true) }
+      it { expect(outing.kids_friendly).to eq(true) }
+      it { expect(outing).to be_valid }
+    end
+
+    context 'when set from a string (mobile clients)' do
+      before { outing.kids_friendly = 'true' }
+
+      it { expect(outing[:metadata][:kids_friendly]).to eq(true) }
+    end
+
+    context 'when set to false after being true' do
+      before { outing.kids_friendly = true; outing.kids_friendly = false; outing.save! }
+
+      it { expect(outing.reload.kids_friendly).to eq(false) }
+    end
+  end
+
+  describe 'pmr and kids_friendly are independent from reserved_female' do
+    let(:outing) { create(:outing, :outing_class) }
+
+    before { outing.pmr = true; outing.save! }
+
+    it { expect(outing.reload.pmr).to eq(true) }
+    it { expect(outing.reload.kids_friendly).to eq(false) }
+    it { expect(outing.reload.reserved_female).not_to eq(true) }
+  end
+
+  describe 'pmr and kids_friendly are stored as real booleans' do
+    let(:outing) { create(:outing, :outing_class, metadata: { pmr: 'true', kids_friendly: 'false' }) }
+
+    it { expect(outing.reload[:metadata][:pmr]).to eq(true) }
+    it { expect(outing.reload[:metadata][:kids_friendly]).to eq(false) }
+  end
+
   describe '#reset_unread_messages_if_blacklisted_or_deleted' do
     let(:outing) { create(:outing, status: 'open') }
     let(:join_request) { create :join_request, joinable: outing }
