@@ -12,7 +12,7 @@ class Outing < Entourage
   WEBINAR_TAGS = %w[atelier_femmes atelier_mdlr atelier_preca].freeze
   WELCOME_TAGS = %w[welcome_entourage_local welcome_entourage_pro].freeze
 
-  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female, :unsubscribed_participants_offer_help, :unsubscribed_participants_ask_for_help, :unsubscribed_participants_female
+  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit, :reserved_female, :pmr, :kids_friendly, :unsubscribed_participants_offer_help, :unsubscribed_participants_ask_for_help, :unsubscribed_participants_female
 
   after_save :generate_initial_recurrences, if: :recurrency
 
@@ -72,6 +72,8 @@ class Outing < Entourage
   validate :validate_member_ids, unless: :new_record?
   validates :exclusive_to, inclusion: { in: User::GOALS }, allow_nil: true
   validates :reserved_female, inclusion: { in: [true, false] }, allow_nil: true
+  validates :pmr, inclusion: { in: [true, false] }, allow_nil: true
+  validates :kids_friendly, inclusion: { in: [true, false] }, allow_nil: true
 
   default_scope { where(group_type: :outing).order(Arel.sql("metadata->>'starts_at'")) }
 
@@ -417,6 +419,26 @@ class Outing < Entourage
 
   def reserved_female= bool
     metadata[:reserved_female] = ActiveModel::Type::Boolean.new.cast(bool)
+  end
+
+  def pmr
+    return false unless metadata.has_key?(:pmr)
+
+    ActiveModel::Type::Boolean.new.cast(metadata[:pmr]) || false
+  end
+
+  def pmr= bool
+    metadata[:pmr] = ActiveModel::Type::Boolean.new.cast(bool)
+  end
+
+  def kids_friendly
+    return false unless metadata.has_key?(:kids_friendly)
+
+    ActiveModel::Type::Boolean.new.cast(metadata[:kids_friendly]) || false
+  end
+
+  def kids_friendly= bool
+    metadata[:kids_friendly] = ActiveModel::Type::Boolean.new.cast(bool)
   end
 
   def unsubscribed_participants_offer_help
