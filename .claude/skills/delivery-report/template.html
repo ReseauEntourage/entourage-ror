@@ -1,0 +1,341 @@
+<title>{{TITRE_COURT}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Gabarit unifié des rapports entourage-ror : une colonne de lecture, un sommaire,
+   puis toujours les mêmes six sections dans le même ordre. Ne pas modifier le style :
+   seul le contenu change d'un rapport à l'autre. */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --ink: #16202e;
+  --muted: #566276;
+  --line: #d9dfe8;
+  --accent: #1d5f86;
+  --accent-soft: #e3eef6;
+  --ok: #1f7a4d;
+  --ok-soft: #e2f2e9;
+  --warn: #9a5b00;
+  --warn-soft: #fbefd9;
+  --crit: #b3261e;
+  --crit-soft: #fbe5e3;
+  --code-bg: #eef1f6;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151e; --surface: #16202c; --ink: #e4e9f0; --muted: #9aa7b8; --line: #2a3747;
+    --accent: #6fb3dc; --accent-soft: #17303f;
+    --ok: #6fcf9a; --ok-soft: #173327; --warn: #e8b35a; --warn-soft: #3a2c12; --crit: #f08a82; --crit-soft: #3d1c1a;
+    --code-bg: #1d2835; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f151e; --surface: #16202c; --ink: #e4e9f0; --muted: #9aa7b8; --line: #2a3747;
+  --accent: #6fb3dc; --accent-soft: #17303f;
+  --ok: #6fcf9a; --ok-soft: #173327; --warn: #e8b35a; --warn-soft: #3a2c12; --crit: #f08a82; --crit-soft: #3d1c1a;
+  --code-bg: #1d2835; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 1rem; line-height: 1.6; }
+.page { max-width: 60rem; margin: 0 auto; padding-inline: 1.25rem; padding-block: 2.5rem 4rem; display: flex; flex-direction: column; gap: 3rem; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 800; font-stretch: 80%; letter-spacing: -0.01em; }
+h2 { font-size: 1.55rem; font-weight: 700; font-stretch: 85%; }
+h3 { font-size: 1.12rem; font-weight: 700; font-stretch: 92%; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--code-bg); padding: 0.08em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+pre { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+header { display: flex; flex-direction: column; gap: 0.9rem; }
+header .lede { font-size: 1.08rem; color: var(--muted); }
+
+.toc { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; padding: 0.7rem 0; border-block: 1px solid var(--line); font-size: 0.92rem; }
+.toc a { text-decoration: none; color: var(--ink); }
+.toc a:hover { color: var(--accent); }
+.toc .mono { color: var(--muted); margin-right: 0.3rem; }
+
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.figure { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.figure + .figure { border-left: 1px solid var(--line); }
+.figure b { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; font-stretch: 80%; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.figure span { font-size: 0.86rem; color: var(--muted); line-height: 1.4; }
+
+section { display: flex; flex-direction: column; gap: 1.1rem; }
+.section-head { display: flex; flex-direction: column; gap: 0.4rem; }
+.section-head p { color: var(--muted); }
+.na { color: var(--muted); font-style: italic; }
+
+.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.25rem 1.2rem; display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.item-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1rem; }
+.item-top h3 { display: flex; gap: 0.6rem; align-items: baseline; min-width: 0; }
+.rank { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+.ref { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); white-space: nowrap; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { font-size: 0.78rem; font-weight: 500; padding: 0.12rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chip.crit { background: var(--crit-soft); color: var(--crit); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.muted { background: var(--code-bg); color: var(--muted); }
+
+.facts { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 0.35rem 1rem; margin: 0; }
+.facts dt { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 0.2rem; }
+.facts dd { margin: 0; min-width: 0; }
+
+.code { font-family: var(--font-mono); font-size: 0.8rem; background: var(--code-bg); border-radius: 6px; padding: 0.5rem 0.7rem; overflow-x: auto; white-space: pre; color: var(--ink); }
+.cmd { display: flex; gap: 0.5rem; align-items: flex-start; min-width: 0; }
+.cmd .code { flex: 1; min-width: 0; }
+.copy { font: 500 0.8rem var(--font-body); color: var(--accent); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; white-space: nowrap; }
+.copy:hover { border-color: var(--accent); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--code-bg); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td .code { margin-top: 0.4rem; }
+
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; counter-reset: step; }
+.step { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.2rem 0.8rem; }
+.step::before { counter-increment: step; content: counter(step); font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); background: var(--accent-soft); border-radius: 999px; width: 1.8rem; height: 1.8rem; display: grid; place-items: center; grid-row: span 3; }
+.step > * { min-width: 0; }
+.step .expect { color: var(--muted); font-size: 0.95rem; }
+
+.notes ul { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.notes li { max-width: 68ch; }
+
+footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--line); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.3rem; }
+
+@media (max-width: 720px) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .figure:nth-child(3) { border-left: 0; }
+  .figure:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+@media (max-width: 480px) {
+  .facts { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  .facts dd { margin-bottom: 0.45rem; }
+  .item { padding-inline: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="page">
+  <!-- EN-TÊTE. eyebrow = type de rapport (Livraison | Audit | Investigation) · branche · ticket · date du jour. -->
+  <header>
+    <span class="eyebrow">{{TYPE}} · entourage-ror · {{BRANCHE}} · {{TICKET}} · {{DATE}}</span>
+    <h1>{{TITRE}}</h1>
+    <p class="lede">{{CHAPEAU : deux phrases, ce que la branche change pour les utilisateurs ou l'équipe, et son état (prête à merger, en cours, bloquée).}}</p>
+    <!-- Puces d'état global : une par fait que le lecteur doit voir tout de suite. -->
+    <div class="chips">
+      <span class="chip ok">{{ex. Prête à merger}}</span>
+      <span class="chip warn">{{ex. Migration à lancer hors release}}</span>
+      <span class="chip">{{ex. Impact apps : champ ajouté}}</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#livre"><span class="mono">1</span>Livré</a>
+    <a href="#tester"><span class="mono">2</span>Comment tester</a>
+    <a href="#controles"><span class="mono">3</span>Contrôles</a>
+    <a href="#deploiement"><span class="mono">4</span>Déploiement</a>
+    <a href="#ouvert"><span class="mono">5</span>Points ouverts</a>
+    <a href="#historique"><span class="mono">6</span>Méthode et historique</a>
+  </nav>
+
+  <!-- CHIFFRES CLÉS : facultatif. Seulement si des chiffres sont le cœur du sujet (volumes, gains mesurés). Sinon supprimer le bloc. Toujours 2 ou 4 chiffres. -->
+  <div class="figures" role="list">
+    <div class="figure" role="listitem"><b>{{chiffre}}</b><span>{{ce qu'il mesure, avec sa source}}</span></div>
+    <div class="figure" role="listitem"><b>{{chiffre}}</b><span>{{…}}</span></div>
+  </div>
+
+  <!-- 1. LIVRÉ : une entrée par changement fonctionnel (pas forcément par commit). Pour un audit ou une investigation : ce qui a été corrigé, ou « Rien de livré : … ». -->
+  <section id="livre">
+    <div class="section-head">
+      <h2>Ce qui a été livré</h2>
+      <p>{{Une phrase de contexte : le besoin ou le ticket d'origine.}}</p>
+    </div>
+    <ol class="items">
+      <!-- RÉPÉTER par changement -->
+      <li class="item">
+        <div class="item-top">
+          <h3><span class="rank">1</span>{{Ce qui change, dit du point de vue de l'utilisateur ou de l'équipe}}</h3>
+          <span class="ref">{{hash court du commit}}</span>
+        </div>
+        <div class="chips"><span class="chip">{{endpoint ou écran BO concerné}}</span><span class="chip ok">{{risque faible}}</span></div>
+        <dl class="facts">
+          <dt>Avant</dt><dd>{{comportement avant}}</dd>
+          <dt>Après</dt><dd>{{comportement après}}</dd>
+          <dt>Fichiers clés</dt><dd><code>{{app/…}}</code></dd>
+        </dl>
+      </li>
+      <!-- /RÉPÉTER -->
+    </ol>
+  </section>
+
+  <!-- 2. COMMENT TESTER : de quoi rejouer la recette sans lire le code. Commandes copiables, résultat attendu explicite. -->
+  <section id="tester">
+    <div class="section-head">
+      <h2>Comment tester</h2>
+      <p>{{Environnement (local, préprod), compte ou données à préparer.}}</p>
+    </div>
+    <ol class="steps">
+      <!-- RÉPÉTER par étape de recette -->
+      <li class="step">
+        <h3>{{Action}}</h3>
+        <div class="cmd">
+          <pre class="code" id="cmd-1">{{commande curl, console Rails ou parcours BO}}</pre>
+          <button class="copy" type="button" data-target="cmd-1">Copier</button>
+        </div>
+        <p class="expect">Attendu : {{résultat attendu, avec les valeurs exactes}}</p>
+      </li>
+      <!-- /RÉPÉTER (incrémenter l'id cmd-N) -->
+    </ol>
+    <h3>Specs</h3>
+    <div class="cmd">
+      <pre class="code" id="cmd-specs">{{bundle exec rspec spec/… spec/…}}</pre>
+      <button class="copy" type="button" data-target="cmd-specs">Copier</button>
+    </div>
+    <p>{{Résultat de la dernière exécution : N exemples, 0 échec, date.}}</p>
+  </section>
+
+  <!-- 3. CONTRÔLES : le tableau garde toujours les 7 lignes, dans cet ordre. Statut : « OK » (chip ok), « À voir » (chip warn), « Bloquant » (chip crit), « Sans objet » (chip muted), « Non fait » (chip muted). -->
+  <section id="controles">
+    <div class="section-head">
+      <h2>Contrôles</h2>
+      <p>{{Périmètre contrôlé : diff master...branche, N fichiers, N commits.}}</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Thème</th><th>Statut</th><th class="num">Constats</th><th>Résumé</th></tr></thead>
+        <tbody>
+          <tr><td>Sécurité</td><td><span class="chip ok">OK</span></td><td class="num">0</td><td>{{…}}</td></tr>
+          <tr><td>Performance</td><td><span class="chip ok">OK</span></td><td class="num">0</td><td>{{…}}</td></tr>
+          <tr><td>Qualité du code</td><td><span class="chip ok">OK</span></td><td class="num">0</td><td>{{…}}</td></tr>
+          <tr><td>Testabilité</td><td><span class="chip ok">OK</span></td><td class="num">0</td><td>{{…}}</td></tr>
+          <tr><td>Données personnelles</td><td><span class="chip muted">Sans objet</span></td><td class="num">0</td><td>{{…}}</td></tr>
+          <tr><td>Compatibilité apps</td><td><span class="chip ok">OK</span></td><td class="num">0</td><td>{{…}}</td></tr>
+          <tr><td>Migrations</td><td><span class="chip muted">Sans objet</span></td><td class="num">0</td><td>{{…}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Constats détaillés, du plus grave au moins grave. Identifiant : S- sécurité, P- performance, Q- qualité, T- testabilité, D- données personnelles, A- compatibilité apps, M- migrations. Si aucun constat : un <p class="na">Aucun constat.</p> à la place de la liste. -->
+    <ol class="items">
+      <!-- RÉPÉTER par constat -->
+      <li class="item">
+        <div class="item-top">
+          <h3><span class="rank">{{S-01}}</span>{{Le défaut, en une phrase}}</h3>
+          <span class="ref">{{app/…/fichier.rb:42}}</span>
+        </div>
+        <div class="chips"><span class="chip crit">{{Bloquant|Important|Mineur|Note}}</span><span class="chip warn">{{À corriger|Corrigé dans abc1234|Accepté|Reporté}}</span></div>
+        <dl class="facts">
+          <dt>Scénario</dt><dd>{{entrées ou état concrets → mauvais résultat}}</dd>
+          <dt>Correction</dt><dd>{{correctif proposé ou appliqué}}</dd>
+        </dl>
+      </li>
+      <!-- /RÉPÉTER -->
+    </ol>
+  </section>
+
+  <!-- 4. DÉPLOIEMENT : toujours les mêmes lignes ; « Aucune » / « Aucun » quand rien à faire. -->
+  <section id="deploiement">
+    <div class="section-head">
+      <h2>Déploiement</h2>
+    </div>
+    <dl class="facts">
+      <dt>Migrations</dt><dd>{{Aucune | liste, et si elles passent dans la release (timeout 90 s)}}</dd>
+      <dt>Données</dt><dd>{{Aucune | rake de reprise à lancer, durée estimée}}</dd>
+      <dt>Configuration</dt><dd>{{Aucune | variables d'environnement à créer sur quelles apps Heroku}}</dd>
+      <dt>Jobs</dt><dd>{{Aucun | nouveaux jobs, files Sidekiq, cron}}</dd>
+      <dt>Apps mobiles</dt><dd>{{Aucun impact | ce que les apps doivent faire, versions concernées}}</dd>
+      <dt>Back-office</dt><dd>{{Aucun impact | écrans modifiés}}</dd>
+      <dt>Retour arrière</dt><dd>{{revert simple | précautions}}</dd>
+      <dt>Après la mise en prod</dt><dd>{{ce qu'il faut surveiller dans Datadog ou Sentry, et le signal attendu}}</dd>
+    </dl>
+  </section>
+
+  <!-- 5. POINTS OUVERTS : décisions attendues, questions, sujets laissés de côté avec la raison. -->
+  <section id="ouvert">
+    <div class="section-head">
+      <h2>Points ouverts</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sujet</th><th>Pourquoi c'est ouvert</th><th>Qui tranche</th></tr></thead>
+        <tbody>
+          <!-- RÉPÉTER -->
+          <tr><td>{{…}}</td><td>{{…}}</td><td>{{produit | tech | DPO | apps}}</td></tr>
+          <!-- /RÉPÉTER -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6. MÉTHODE ET HISTORIQUE : commits, comment les contrôles ont été faits, journal des mises à jour du rapport (le plus récent en haut). -->
+  <section id="historique">
+    <div class="section-head">
+      <h2>Méthode et historique</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Commit</th><th>Message</th></tr></thead>
+        <tbody>
+          <!-- RÉPÉTER par commit (git log --reverse master..HEAD) -->
+          <tr><td class="mono">{{abc1234}}</td><td>{{message}}</td></tr>
+          <!-- /RÉPÉTER -->
+        </tbody>
+      </table>
+    </div>
+    <div class="notes">
+      <ul>
+        <li>{{Méthode : comment les contrôles ont été faits, ce qui n'a pas pu l'être.}}</li>
+      </ul>
+    </div>
+    <h3>Journal</h3>
+    <div class="notes">
+      <ul>
+        <!-- RÉPÉTER, le plus récent en haut -->
+        <li><b>{{date}}</b> : {{ce qui a changé dans le rapport}}</li>
+        <!-- /RÉPÉTER -->
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>{{Suite complète : N exemples, N échecs, N en attente (durée, date).}}</p>
+    <p>Rapport généré avec le skill <code>delivery-report</code> du dépôt entourage-ror.</p>
+  </footer>
+</main>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var source = document.getElementById(button.dataset.target);
+    var text = source.textContent;
+    var done = function () { button.textContent = 'Copié'; setTimeout(function () { button.textContent = 'Copier'; }, 1600); };
+    var fallback = function () {
+      var range = document.createRange();
+      range.selectNodeContents(source);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      button.textContent = 'Sélectionné';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else {
+      fallback();
+    }
+  });
+});
+</script>

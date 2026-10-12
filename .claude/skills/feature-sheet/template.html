@@ -1,0 +1,688 @@
+<title>{{Fiche EN-XXXX sujet court}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Fiche fonctionnalité entourage-ror : contrat back / apps et recette partagée.
+   Même système visuel que les rapports (delivery-report). Ne pas modifier le style
+   ni le script : seul l'objet CONFIG change d'une fiche à l'autre. */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --ink: #16202e;
+  --muted: #566276;
+  --line: #d9dfe8;
+  --accent: #1d5f86;
+  --accent-soft: #e3eef6;
+  --ok: #1f7a4d;
+  --ok-soft: #e2f2e9;
+  --warn: #9a5b00;
+  --warn-soft: #fbefd9;
+  --crit: #b3261e;
+  --crit-soft: #fbe5e3;
+  --code-bg: #eef1f6;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151e; --surface: #16202c; --ink: #e4e9f0; --muted: #9aa7b8; --line: #2a3747;
+    --accent: #6fb3dc; --accent-soft: #17303f;
+    --ok: #6fcf9a; --ok-soft: #173327; --warn: #e8b35a; --warn-soft: #3a2c12; --crit: #f08a82; --crit-soft: #3d1c1a;
+    --code-bg: #1d2835; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f151e; --surface: #16202c; --ink: #e4e9f0; --muted: #9aa7b8; --line: #2a3747;
+  --accent: #6fb3dc; --accent-soft: #17303f;
+  --ok: #6fcf9a; --ok-soft: #173327; --warn: #e8b35a; --warn-soft: #3a2c12; --crit: #f08a82; --crit-soft: #3d1c1a;
+  --code-bg: #1d2835; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 1rem; line-height: 1.6; }
+.page { max-width: 72rem; margin: 0 auto; padding-inline: 1.25rem; padding-block: 2.5rem 4rem; display: flex; flex-direction: column; gap: 3rem; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 800; font-stretch: 80%; letter-spacing: -0.01em; }
+h2 { font-size: 1.55rem; font-weight: 700; font-stretch: 85%; }
+h3 { font-size: 1.12rem; font-weight: 700; font-stretch: 92%; }
+p { margin: 0; max-width: 72ch; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--code-bg); padding: 0.08em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+pre { margin: 0; }
+ul, ol { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+header { display: flex; flex-direction: column; gap: 0.9rem; }
+header .lede { font-size: 1.08rem; color: var(--muted); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.notice { background: var(--warn-soft); border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.92rem; max-width: 72ch; }
+
+.toc { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; padding: 0.7rem 0; border-block: 1px solid var(--line); font-size: 0.92rem; }
+.toc a { text-decoration: none; color: var(--ink); }
+.toc a:hover { color: var(--accent); }
+.toc .mono { color: var(--muted); margin-right: 0.3rem; }
+
+.figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; }
+.figure { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; border-left: 1px solid var(--line); margin-left: -1px; }
+.figure b { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; font-stretch: 80%; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.figure span { font-size: 0.86rem; color: var(--muted); line-height: 1.4; }
+
+section { display: flex; flex-direction: column; gap: 1.1rem; scroll-margin-top: 1rem; }
+.section-head { display: flex; flex-direction: column; gap: 0.4rem; }
+.section-head p { color: var(--muted); }
+.section-head .row { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; justify-content: space-between; }
+.na { color: var(--muted); font-style: italic; }
+.prose { display: flex; flex-direction: column; gap: 0.6rem; }
+.prose ul, .prose ol { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.3rem; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { font-size: 0.78rem; font-weight: 500; padding: 0.12rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; text-decoration: none; }
+a.chip:hover { text-decoration: underline; }
+.chip.crit { background: var(--crit-soft); color: var(--crit); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.muted { background: var(--code-bg); color: var(--muted); }
+
+.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.25rem 1.2rem; display: flex; flex-direction: column; gap: 0.85rem; min-width: 0; }
+.item.changed { border-left: 4px solid var(--warn); }
+.item-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1rem; }
+.item-top h3 { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: baseline; min-width: 0; }
+.verb { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; padding: 0.1rem 0.45rem; border-radius: 4px; background: var(--ink); color: var(--surface); }
+.path { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 500; overflow-wrap: anywhere; }
+.ref { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+.sub { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.block { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+
+.facts { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 0.35rem 1rem; margin: 0; }
+.facts dt { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 0.2rem; }
+.facts dd { margin: 0; min-width: 0; }
+
+.code { font-family: var(--font-mono); font-size: 0.8rem; background: var(--code-bg); border-radius: 6px; padding: 0.5rem 0.7rem; overflow-x: auto; white-space: pre; color: var(--ink); }
+.cmd { display: flex; gap: 0.5rem; align-items: flex-start; min-width: 0; }
+.cmd .code { flex: 1; min-width: 0; }
+.copy, .btn { font: 500 0.8rem var(--font-body); color: var(--accent); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; white-space: nowrap; }
+.copy:hover, .btn:hover { border-color: var(--accent); }
+.btn[aria-pressed="true"] { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+details > summary { cursor: pointer; color: var(--accent); font-size: 0.86rem; width: fit-content; }
+details[open] > summary { margin-bottom: 0.4rem; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.wide table { min-width: 52rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--code-bg); }
+td.id { font-family: var(--font-mono); font-size: 0.82rem; white-space: nowrap; }
+td.center, th.center { text-align: center; }
+.inner table { min-width: 0; font-size: 0.86rem; }
+.inner th, .inner td { padding: 0.4rem 0.6rem; }
+
+.res { display: flex; flex-direction: column; gap: 0.3rem; min-width: 9.5rem; }
+.res select, .res input { font: 0.86rem var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.4rem; width: 100%; }
+.res select { font-weight: 600; }
+.res select.s-ok, .res select.s-validated, .res select.s-released { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.res select.s-ko, .res select.s-blocked { background: var(--crit-soft); color: var(--crit); border-color: transparent; }
+.res select.s-doing, .res select.s-ready { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.res select.s-na { background: var(--code-bg); color: var(--muted); border-color: transparent; }
+.res select:disabled, .res input:disabled { opacity: 0.75; cursor: default; }
+.res .meta { font-size: 0.75rem; color: var(--muted); line-height: 1.35; }
+tr[hidden] { display: none; }
+
+.notes ul { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.notes li { max-width: 72ch; }
+#mdbox .code { max-height: 22rem; overflow: auto; white-space: pre-wrap; }
+
+footer { color: var(--muted); font-size: 0.86rem; border-top: 1px solid var(--line); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.3rem; }
+
+@media (max-width: 480px) {
+  .facts { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  .facts dd { margin-bottom: 0.45rem; }
+  .item { padding-inline: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="page">
+  <header>
+    <span class="eyebrow" id="eyebrow"></span>
+    <h1 id="title"></h1>
+    <p class="lede" id="lede"></p>
+    <div class="chips" id="links"></div>
+    <div class="toolbar">
+      <button class="btn" type="button" id="copy-md">Copier le contrat et les tests en Markdown</button>
+      <span class="eyebrow" id="sync"></span>
+    </div>
+    <details id="mdbox" hidden><summary>Texte Markdown (sélectionné, à copier)</summary><pre class="code" id="md"></pre></details>
+  </header>
+
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#besoin"><span class="mono">1</span>Besoin</a>
+    <a href="#suivi"><span class="mono">2</span>Qui fait quoi</a>
+    <a href="#api"><span class="mono">3</span>Contrat d'API</a>
+    <a href="#autres"><span class="mono">4</span>Hors API</a>
+    <a href="#compat"><span class="mono">5</span>Compatibilité et mise en production</a>
+    <a href="#tests-api"><span class="mono">6</span>Tests API</a>
+    <a href="#tests-apps"><span class="mono">7</span>Tests apps</a>
+    <a href="#ouvert"><span class="mono">8</span>Écarts et questions</a>
+    <a href="#historique"><span class="mono">9</span>Historique</a>
+  </nav>
+
+  <div class="figures" role="list" id="figures"></div>
+
+  <section id="besoin">
+    <div class="section-head"><h2>Le besoin</h2></div>
+    <div class="prose" id="need"></div>
+    <h3>Critères d'acceptation</h3>
+    <p class="na" id="coverage-help">Un critère est rempli quand ses tests sont OK sur l'API et sur chaque app. Un tiret signale qu'aucun test ne le couvre encore.</p>
+    <div class="table-wrap"><table>
+      <thead id="ca-head"></thead>
+      <tbody id="ca-body"></tbody>
+    </table></div>
+    <div class="block" id="oos-block"><span class="sub">Hors périmètre</span><div class="prose"><ul id="oos"></ul></div></div>
+  </section>
+
+  <section id="suivi">
+    <div class="section-head">
+      <h2>Qui fait quoi</h2>
+      <p>Chaque équipe tient sa ligne à jour ici : état, build ou PR à tester.</p>
+    </div>
+    <div class="table-wrap wide"><table>
+      <thead><tr><th>Plateforme</th><th>Ticket</th><th>Qui</th><th>Branche ou PR</th><th>Où tester</th><th>État</th></tr></thead>
+      <tbody id="platforms"></tbody>
+    </table></div>
+  </section>
+
+  <section id="api">
+    <div class="section-head"><h2>Contrat d'API</h2></div>
+    <div class="prose" id="api-intro"></div>
+    <div class="block" id="conventions-block"><span class="sub">Règles communes</span><div class="prose"><ul id="conventions"></ul></div></div>
+    <ol class="items" id="routes"></ol>
+  </section>
+
+  <section id="autres">
+    <div class="section-head">
+      <h2>Hors API</h2>
+      <p>Notifications, temps réel, emails, back-office : ce que les apps reçoivent ou voient sans l'appeler.</p>
+    </div>
+    <div id="side"></div>
+  </section>
+
+  <section id="compat">
+    <div class="section-head"><h2>Compatibilité et mise en production</h2></div>
+    <div class="block"><span class="sub">Apps déjà installées</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Version</th><th>Ce qu'elle voit</th><th>Ce qui se passe si elle agit</th></tr></thead>
+        <tbody id="old-apps"></tbody>
+      </table></div>
+    </div>
+    <div class="block"><span class="sub">Ordre de mise en production</span><div class="prose"><ol id="rollout"></ol></div></div>
+    <div class="prose" id="compat-notes"></div>
+  </section>
+
+  <section id="tests-api">
+    <div class="section-head">
+      <div class="row"><h2>Tests API</h2>
+        <div class="toolbar" role="group" aria-label="Filtrer les tests">
+          <button class="btn filter" type="button" data-filter="all" aria-pressed="true">Tout</button>
+          <button class="btn filter" type="button" data-filter="todo" aria-pressed="false">À tester</button>
+          <button class="btn filter" type="button" data-filter="ko" aria-pressed="false">KO ou bloqués</button>
+        </div>
+      </div>
+      <p id="api-tests-intro"></p>
+    </div>
+    <ol class="items" id="setup"></ol>
+    <div class="block" id="script-block"><span class="sub">Recette automatique</span>
+      <p>Le script rejoue les tests API et affiche une ligne par test. Colle sa sortie dans la conversation avec Claude pour qu'elle soit reportée ici.</p>
+      <details><summary>Afficher le script</summary><div class="cmd"><pre class="code" id="script"></pre><button class="copy" type="button" data-target="script">Copier</button></div></details>
+    </div>
+    <div class="table-wrap wide"><table>
+      <thead><tr><th>Test</th><th>Critère</th><th>Scénario</th><th>Attendu</th><th>Résultat</th></tr></thead>
+      <tbody id="api-tests"></tbody>
+    </table></div>
+  </section>
+
+  <section id="tests-apps">
+    <div class="section-head">
+      <h2>Tests apps</h2>
+      <p id="app-tests-intro"></p>
+    </div>
+    <div class="table-wrap wide"><table>
+      <thead id="app-head"></thead>
+      <tbody id="app-tests"></tbody>
+    </table></div>
+  </section>
+
+  <section id="ouvert">
+    <div class="section-head">
+      <h2>Écarts et questions</h2>
+      <p>Les écarts viennent des tests marqués KO ou bloqués. Les questions sont tenues par Claude ; pour en poser une, laisse un commentaire sur la page.</p>
+    </div>
+    <div class="block"><span class="sub">Écarts constatés</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Test</th><th>Plateforme</th><th>Remarque</th><th>Signalé</th></tr></thead>
+        <tbody id="gaps"></tbody>
+      </table></div>
+    </div>
+    <div class="block"><span class="sub">Questions et décisions</span>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Id</th><th>Sujet</th><th>Pourquoi c'est ouvert</th><th>Qui tranche</th><th>Statut</th></tr></thead>
+        <tbody id="open"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section id="historique">
+    <div class="section-head"><h2>Historique</h2></div>
+    <div class="notes"><ul id="journal"></ul></div>
+  </section>
+
+  <footer>
+    <p>Fiche générée avec le skill <code>feature-sheet</code> du dépôt entourage-ror. Les résultats saisis sont enregistrés avec la page ; le contenu est mis à jour par Claude.</p>
+  </footer>
+</main>
+
+<script>
+/* ================= CONFIGURATION : seule partie à remplir =================
+ * Texte brut partout (échappé à l'affichage), sauf les champs *_html : HTML de confiance écrit
+ * par Claude (p, ul/li, b, code, a). Jamais de donnée de production, de vrai token ni de vraie clé.
+ * Identifiants (CA-n, API-nn, APP-nn, R-n, Q-n) : stables pour toute la vie de la fiche. Les résultats
+ * enregistrés y sont rattachés : ne jamais renuméroter ni réutiliser un identifiant retiré.
+ * Plateformes des tests apps : CONFIG.appPlatforms (clés de CONFIG.platforms).
+ */
+const CONFIG = {
+  ticket: "EN-XXXX",
+  title: "Sujet de la fonctionnalité",
+  updated: "AAAA-MM-JJ",
+  lead: "Ce que la fonctionnalité permet, pour qui, en deux phrases. Son état : contrat stable, en développement, en recette.",
+  links: [
+    {label: "EN-XXXX · Story", url: "https://entourage-asso.atlassian.net/browse/EN-XXXX"},
+    {label: "Maquette", url: "https://www.figma.com/…"}
+  ],
+  need: {
+    summary_html: "<p>Le problème, l'utilisateur concerné et le résultat attendu, d'après le ticket.</p>",
+    criteria: [
+      {id: "CA-1", text: "Fait observable et vérifiable.", source: "EN-XXXX"}
+    ],
+    outOfScope: ["Ce que la fonctionnalité ne fait pas."]
+  },
+  platforms: [
+    {key: "back", name: "Back (API)", ticket: "EN-XXXX", owner: "", branch: "", where: "préprod"},
+    {key: "ios", name: "iOS", ticket: "", owner: "", branch: "", where: ""},
+    {key: "android", name: "Android", ticket: "", owner: "", branch: "", where: ""}
+  ],
+  appPlatforms: ["ios", "android"],
+  api: {
+    intro_html: "<p>Base : <code>$API</code> (préprod : <code>https://entourage-back-preprod.herokuapp.com</code>). Chaque appel porte l'en-tête <code>X-API-KEY</code> et le paramètre <code>token</code> de l'utilisateur connecté.</p>",
+    conventions: ["Règle commune à toutes les routes (null, false et absent, format des dates, codes d'erreur)."],
+    routes: [
+      {id: "R-1", method: "GET", path: "/api/v1/…", change: "modifiée", summary: "À quoi sert la route.",
+       auth: "Utilisateur connecté.",
+       params: [{name: "param", type: "booléen", required: false, rules: "Règle", example: "true"}],
+       response: [{name: "objet.champ", type: "booléen ou null", desc: "Sens", since: "nouveau"}],
+       errors: [{code: "401", when: "Token absent ou invalide (l'app déconnecte l'utilisateur)."}],
+       example: {cmd: "curl -s \"$API/api/v1/…?token=$TOKEN\" -H \"X-API-KEY: $API_KEY\" | jq '.'", response: "{\n  \"objet\": {}\n}"},
+       compat: "Ce que voient les versions déjà installées.",
+       changed: ""}
+    ]
+  },
+  sideEffects: [],
+  sideEffectsNA: "Sans objet : la fonctionnalité ne passe que par les routes ci-dessus.",
+  compat: {
+    oldApps: [{version: "Versions actuelles", sees: "…", does: "…"}],
+    rollout: ["Le back est mis en production et testé en préprod avant la soumission des apps."],
+    notes_html: ""
+  },
+  apiTests: {
+    intro: "Préprod, comptes de test. Les variables $API, $API_KEY et $TOKEN se définissent une fois par terminal.",
+    setup: [{label: "Obtenir un token", cmd: "curl -s -X POST \"$API/api/v1/login\" -H \"X-API-KEY: $API_KEY\" -H 'Content-Type: application/json' \\\n  -d '{\"user\":{\"phone\":\"+33600000000\",\"secret\":\"…\"}}' | jq -r '.user.token'"}],
+    script: "",
+    tests: [
+      {id: "API-01", ca: ["CA-1"], scenario: "Cas nominal.", cmd: "curl …", expect: "200, champ = valeur."}
+    ]
+  },
+  appTests: {
+    intro: "Builds à tester, comptes, données à préparer.",
+    tests: [
+      {id: "APP-01", ca: ["CA-1"], screen: "Écran", steps: "Étapes.", expect: "Ce que l'utilisateur voit."}
+    ]
+  },
+  open: [
+    {id: "Q-1", subject: "Question", why: "Pourquoi elle reste ouverte.", who: "produit", status: "ouvert"}
+  ],
+  journal: [
+    {date: "AAAA-MM-JJ", text: "Première publication."}
+  ]
+};
+/* ======================= fin de la configuration ======================== */
+
+var RESULT = [["todo", "À tester"], ["ok", "OK"], ["ko", "KO"], ["blocked", "Bloqué"], ["na", "Sans objet"]];
+var PSTATE = [["todo", "À faire"], ["doing", "En cours"], ["ready", "Prêt à tester"], ["validated", "Validé"], ["released", "En production"], ["blocked", "Bloqué"], ["na", "Sans objet"]];
+var APPS = CONFIG.appPlatforms || ["ios", "android"];
+var results = {}, pstates = {}, cells = {}, pcells = {}, names = {};
+var db = null, user = null, myId = null, canWrite = false, filter = "all";
+
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]; }); }
+function pname(k) { var p = (CONFIG.platforms || []).find(function (x) { return x.key === k; }); return p ? p.name : ({api: "API", ios: "iOS", android: "Android", web: "Webapp"}[k] || k); }
+function label(list, v) { var e = list.find(function (x) { return x[0] === v; }); return e ? e[1] : v; }
+function textOf(html) { var d = document.createElement("div"); d.innerHTML = html || ""; return d.textContent.trim(); }
+function fmtDate(iso) { try { return new Date(iso).toLocaleString("fr-FR", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } }
+function list(id, items, blockId) {
+  var ul = $(id);
+  ul.innerHTML = (items || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
+  if (blockId) $(blockId).hidden = !(items && items.length);
+}
+function cmdBlock(id, cmd) {
+  return '<div class="cmd"><pre class="code" id="' + esc(id) + '">' + esc(cmd) + '</pre><button class="copy" type="button" data-target="' + esc(id) + '">Copier</button></div>';
+}
+function changeChip(c) {
+  var cls = c === "nouvelle" ? "ok" : c === "modifiée" ? "warn" : "muted";
+  return '<span class="chip ' + cls + '">' + esc(c || "inchangée") + "</span>";
+}
+
+/* ---------- rendu du contenu fixe ---------- */
+function renderStatic() {
+  $("eyebrow").textContent = "Fiche fonctionnalité · " + CONFIG.ticket + " · mise à jour " + CONFIG.updated;
+  $("title").textContent = CONFIG.title;
+  $("lede").textContent = CONFIG.lead;
+  $("links").innerHTML = (CONFIG.links || []).map(function (l) { return '<a class="chip" href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.label) + "</a>"; }).join("");
+
+  var need = CONFIG.need || {};
+  $("need").innerHTML = need.summary_html || "";
+  $("ca-head").innerHTML = "<tr><th>Critère</th><th>Ce qui doit être vrai</th><th class=\"center\">API</th>" + APPS.map(function (k) { return '<th class="center">' + esc(pname(k)) + "</th>"; }).join("") + "</tr>";
+  list("oos", need.outOfScope, "oos-block");
+
+  $("platforms").innerHTML = (CONFIG.platforms || []).map(function (p) {
+    return "<tr><td><b>" + esc(p.name) + "</b></td><td class=\"id\">" + esc(p.ticket || "—") + "</td><td>" + esc(p.owner || "—") + "</td><td><code>" + esc(p.branch || "—") + "</code></td><td>" + esc(p.where || "—") + '</td><td data-pcell="' + esc(p.key) + '"></td></tr>';
+  }).join("");
+  (CONFIG.platforms || []).forEach(function (p) { pcells[p.key] = stateCell(document.querySelector('[data-pcell="' + p.key + '"]'), PSTATE, "État " + p.name, function (c) { savePlatform(p.key, c); }); });
+
+  var api = CONFIG.api || {};
+  $("api-intro").innerHTML = api.intro_html || "";
+  list("conventions", api.conventions, "conventions-block");
+  $("routes").innerHTML = (api.routes || []).map(routeHtml).join("") || '<li class="na">Aucune route ajoutée ni modifiée.</li>';
+
+  $("side").innerHTML = (CONFIG.sideEffects || []).length
+    ? '<ol class="items">' + CONFIG.sideEffects.map(function (s) { return '<li class="item"><h3>' + esc(s.what) + '</h3><div class="prose">' + (s.detail_html || "") + "</div></li>"; }).join("") + "</ol>"
+    : '<p class="na">' + esc(CONFIG.sideEffectsNA || "Sans objet.") + "</p>";
+
+  var compat = CONFIG.compat || {};
+  $("old-apps").innerHTML = (compat.oldApps || []).map(function (o) { return "<tr><td>" + esc(o.version) + "</td><td>" + esc(o.sees) + "</td><td>" + esc(o.does) + "</td></tr>"; }).join("");
+  list("rollout", compat.rollout);
+  $("compat-notes").innerHTML = compat.notes_html || "";
+
+  var at = CONFIG.apiTests || {};
+  $("api-tests-intro").textContent = at.intro || "";
+  $("setup").innerHTML = (at.setup || []).map(function (s, i) { return '<li class="block"><span class="sub">' + esc(s.label) + "</span>" + cmdBlock("setup-" + i, s.cmd) + "</li>"; }).join("");
+  $("script-block").hidden = !at.script;
+  $("script").textContent = at.script || "";
+  $("api-tests").innerHTML = (at.tests || []).map(function (t) {
+    return '<tr data-test="' + esc(t.id) + '"><td class="id">' + esc(t.id) + '</td><td class="id">' + esc((t.ca || []).join(", ")) + "</td><td><div class=\"block\"><span>" + esc(t.scenario) + "</span>" +
+      (t.cmd ? "<details><summary>Commande</summary>" + cmdBlock("cmd-" + t.id, t.cmd) + "</details>" : "") +
+      "</div></td><td>" + esc(t.expect) + '</td><td data-cell="' + esc(t.id) + '.api"></td></tr>';
+  }).join("");
+
+  var ap = CONFIG.appTests || {};
+  $("app-tests-intro").textContent = ap.intro || "";
+  $("app-head").innerHTML = "<tr><th>Test</th><th>Critère</th><th>Écran et étapes</th><th>Attendu</th>" + APPS.map(function (k) { return "<th>" + esc(pname(k)) + "</th>"; }).join("") + "</tr>";
+  $("app-tests").innerHTML = (ap.tests || []).map(function (t) {
+    var on = t.platforms || APPS;
+    return '<tr data-test="' + esc(t.id) + '"><td class="id">' + esc(t.id) + '</td><td class="id">' + esc((t.ca || []).join(", ")) + "</td><td><b>" + esc(t.screen) + "</b><br>" + esc(t.steps) + "</td><td>" + esc(t.expect) + "</td>" +
+      APPS.map(function (k) { return on.indexOf(k) >= 0 ? '<td data-cell="' + esc(t.id) + "." + k + '"></td>' : '<td class="na">Sans objet</td>'; }).join("") + "</tr>";
+  }).join("");
+
+  document.querySelectorAll("[data-cell]").forEach(function (td) {
+    var key = td.dataset.cell, parts = key.split(".");
+    cells[key] = stateCell(td, RESULT, "Résultat " + parts[0] + " " + pname(parts[1]), function (c) { saveResult(parts[0], parts[1], c); });
+  });
+
+  $("open").innerHTML = (CONFIG.open || []).map(function (q) {
+    var cls = /tranch|résolu|fait/i.test(q.status) ? "ok" : "warn";
+    return '<tr><td class="id">' + esc(q.id) + "</td><td>" + esc(q.subject) + "</td><td>" + esc(q.why) + "</td><td>" + esc(q.who) + '</td><td><span class="chip ' + cls + '">' + esc(q.status) + "</span></td></tr>";
+  }).join("") || '<tr><td colspan="5" class="na">Aucune question ouverte.</td></tr>';
+
+  $("journal").innerHTML = (CONFIG.journal || []).map(function (j) { return "<li><b>" + esc(j.date) + "</b> : " + esc(j.text) + "</li>"; }).join("");
+}
+
+function table(head, rows) {
+  return '<div class="table-wrap inner"><table><thead><tr>' + head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+    rows.map(function (r) { return "<tr>" + r.map(function (c, i) { return i === 0 ? "<td><code>" + esc(c) + "</code></td>" : "<td>" + esc(c) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>";
+}
+
+function routeHtml(r) {
+  var parts = [];
+  parts.push('<div class="item-top"><h3><span class="verb">' + esc(r.method) + '</span><span class="path">' + esc(r.path) + "</span></h3>" + changeChip(r.change) + "</div>");
+  if (r.changed) parts.push('<p class="notice"><b>Contrat modifié</b> : ' + esc(r.changed) + "</p>");
+  parts.push('<dl class="facts"><dt>Rôle</dt><dd>' + esc(r.summary) + "</dd><dt>Accès</dt><dd>" + esc(r.auth) + "</dd>" + (r.compat ? "<dt>Anciennes apps</dt><dd>" + esc(r.compat) + "</dd>" : "") + "</dl>");
+  if ((r.params || []).length) parts.push('<div class="block"><span class="sub">Paramètres</span>' + table(["Nom", "Type", "Obligatoire", "Règles", "Exemple"], r.params.map(function (p) { return [p.name, p.type, p.required ? "oui" : "non", p.rules, p.example]; })) + "</div>");
+  if ((r.response || []).length) parts.push('<div class="block"><span class="sub">Réponse</span>' + table(["Champ", "Type", "Sens", "Depuis"], r.response.map(function (f) { return [f.name, f.type, f.desc, f.since || ""]; })) + "</div>");
+  if ((r.errors || []).length) parts.push('<div class="block"><span class="sub">Erreurs</span>' + table(["Code", "Quand"], r.errors.map(function (e) { return [e.code, e.when]; })) + "</div>");
+  if (r.example) {
+    parts.push('<div class="block"><span class="sub">Exemple d\'appel</span>' + cmdBlock("ex-" + r.id, r.example.cmd) +
+      (r.example.response ? '<details><summary>Réponse attendue</summary><pre class="code">' + esc(r.example.response) + "</pre></details>" : "") + "</div>");
+  }
+  return '<li class="item' + (r.changed ? " changed" : "") + '" id="' + esc(r.id) + '">' + parts.join("") + "</li>";
+}
+
+/* ---------- cellules éditables (résultats et états) ---------- */
+function stateCell(td, options, aria, onSave) {
+  td.innerHTML = '<div class="res"><select aria-label="' + esc(aria) + '" disabled>' + options.map(function (o) { return '<option value="' + o[0] + '">' + esc(o[1]) + "</option>"; }).join("") +
+    '</select><input type="text" placeholder="Remarque, build, PR…" aria-label="Remarque ' + esc(aria) + '" disabled><span class="meta"></span></div>';
+  var c = {sel: td.querySelector("select"), note: td.querySelector("input"), meta: td.querySelector(".meta")};
+  c.sel.className = "s-" + c.sel.value;
+  c.sel.addEventListener("change", function () { c.sel.className = "s-" + c.sel.value; onSave(c); });
+  c.note.addEventListener("change", function () { onSave(c); });
+  c.note.addEventListener("keydown", function (e) { if (e.key === "Enter") c.note.blur(); });
+  return c;
+}
+
+function fillCell(c, v, defaultValue) {
+  var status = v ? v.status : defaultValue;
+  if (document.activeElement !== c.sel) { c.sel.value = status; c.sel.className = "s-" + status; }
+  if (document.activeElement !== c.note) c.note.value = v && v.note ? v.note : "";
+  c.meta.textContent = v ? who(v) + " · " + fmtDate(v.at) : "";
+}
+
+function who(v) {
+  if (v.source === "script") return "recette automatique";
+  if (v.source === "claude") return "Claude";
+  return (v.by && names[v.by]) || "quelqu'un";
+}
+
+function setEnabled(on) {
+  Object.keys(cells).forEach(function (k) { cells[k].sel.disabled = !on; cells[k].note.disabled = !on; });
+  Object.keys(pcells).forEach(function (k) { pcells[k].sel.disabled = !on; pcells[k].note.disabled = !on; });
+}
+
+async function write(path, data, c) {
+  if (!db || !canWrite) return;
+  c.meta.textContent = "Enregistrement…";
+  try {
+    await db.doc(path).set(data);
+  } catch (e) {
+    var code = e && e.code;
+    if (code === "unavailable") {
+      try { await new Promise(function (r) { setTimeout(r, 400 + Math.random() * 600); }); await db.doc(path).set(data); return; } catch (e2) { code = e2 && e2.code; }
+    }
+    c.meta.textContent = "Échec de l'enregistrement (" + (code || "erreur") + ").";
+    if (code === "invalid_argument") { canWrite = false; setEnabled(false); showNotice("Ton niveau d'accès ne permet pas d'enregistrer. Demande à la personne qui a partagé la page un accès qui permet d'interagir."); }
+  }
+}
+
+function saveResult(test, platform, c) {
+  var key = test + "." + platform, prev = results[key], note = c.note.value.trim();
+  if (prev ? prev.status === c.sel.value && (prev.note || "") === note : c.sel.value === "todo" && !note) return;
+  write("results/" + key, {test: test, platform: platform, status: c.sel.value, note: note, by: myId, source: "page", at: new Date().toISOString()}, c);
+}
+
+function savePlatform(key, c) {
+  var prev = pstates[key], note = c.note.value.trim();
+  if (prev ? prev.status === c.sel.value && (prev.note || "") === note : c.sel.value === "todo" && !note) return;
+  write("platforms/" + key, {platform: key, status: c.sel.value, note: note, by: myId, source: "page", at: new Date().toISOString()}, c);
+}
+
+/* ---------- synthèse : couverture, chiffres, écarts, filtres ---------- */
+function columnStatus(ca, platform) {
+  if (platform !== "api" && pstates[platform] && pstates[platform].status === "na") return {cls: "muted", text: "Sans objet"};
+  var tests = platform === "api"
+    ? ((CONFIG.apiTests || {}).tests || []).filter(function (t) { return (t.ca || []).indexOf(ca) >= 0; })
+    : ((CONFIG.appTests || {}).tests || []).filter(function (t) { return (t.ca || []).indexOf(ca) >= 0 && (t.platforms || APPS).indexOf(platform) >= 0; });
+  if (!tests.length) return {cls: "muted", text: "—", title: "Aucun test ne couvre ce critère"};
+  var st = tests.map(function (t) { var r = results[t.id + "." + platform]; return r ? r.status : "todo"; });
+  if (st.indexOf("ko") >= 0) return {cls: "crit", text: "KO"};
+  if (st.indexOf("blocked") >= 0) return {cls: "warn", text: "Bloqué"};
+  if (st.every(function (s) { return s === "na"; })) return {cls: "muted", text: "Sans objet"};
+  if (st.every(function (s) { return s === "ok" || s === "na"; })) return {cls: "ok", text: "OK"};
+  var done = st.filter(function (s) { return s === "ok" || s === "na"; }).length;
+  return {cls: "", text: done + "/" + st.length};
+}
+
+function renderSynthesis() {
+  var criteria = (CONFIG.need || {}).criteria || [];
+  var met = 0;
+  $("ca-body").innerHTML = criteria.map(function (c) {
+    var cols = ["api"].concat(APPS).map(function (k) { return columnStatus(c.id, k); });
+    if (cols.every(function (s) { return s.text === "OK" || s.text === "Sans objet"; })) met++;
+    return '<tr><td class="id">' + esc(c.id) + "</td><td>" + esc(c.text) + (c.source ? ' <span class="ref">' + esc(c.source) + "</span>" : "") + "</td>" +
+      cols.map(function (s) { return '<td class="center"><span class="chip ' + s.cls + '"' + (s.title ? ' title="' + esc(s.title) + '"' : "") + ">" + esc(s.text) + "</span></td>"; }).join("") + "</tr>";
+  }).join("") || '<tr><td colspan="' + (3 + APPS.length) + '" class="na">Aucun critère d\'acceptation : à obtenir du produit.</td></tr>';
+
+  function count(platform, tests) {
+    var on = tests.filter(function (t) { return platform === "api" || (t.platforms || APPS).indexOf(platform) >= 0; });
+    var ok = on.filter(function (t) { var r = results[t.id + "." + platform]; return r && (r.status === "ok" || r.status === "na"); }).length;
+    var ko = on.filter(function (t) { var r = results[t.id + "." + platform]; return r && (r.status === "ko" || r.status === "blocked"); }).length;
+    return {ok: ok, ko: ko, n: on.length};
+  }
+  var figs = [{b: met + " / " + criteria.length, s: "critères d'acceptation remplis sur toutes les plateformes"}];
+  var a = count("api", (CONFIG.apiTests || {}).tests || []);
+  figs.push({b: a.ok + " / " + a.n, s: "tests API OK" + (a.ko ? ", " + a.ko + " KO ou bloqués" : "")});
+  APPS.forEach(function (k) {
+    var c = count(k, (CONFIG.appTests || {}).tests || []);
+    figs.push({b: c.ok + " / " + c.n, s: "tests " + pname(k) + " OK" + (c.ko ? ", " + c.ko + " KO ou bloqués" : "")});
+  });
+  $("figures").innerHTML = figs.map(function (f) { return '<div class="figure" role="listitem"><b>' + esc(f.b) + "</b><span>" + esc(f.s) + "</span></div>"; }).join("");
+
+  var gaps = Object.keys(results).map(function (k) { return results[k]; })
+    .filter(function (r) { return (r.status === "ko" || r.status === "blocked") && cells[r.test + "." + r.platform]; })
+    .sort(function (x, y) { return String(y.at).localeCompare(String(x.at)); });
+  $("gaps").innerHTML = gaps.map(function (r) {
+    return '<tr><td class="id"><a href="#' + (r.platform === "api" ? "tests-api" : "tests-apps") + '">' + esc(r.test) + "</a></td><td>" + esc(pname(r.platform)) + ' <span class="chip ' + (r.status === "ko" ? "crit" : "warn") + '">' + esc(label(RESULT, r.status)) + "</span></td><td>" + esc(r.note || "Sans remarque") + "</td><td>" + esc(who(r)) + "<br>" + esc(fmtDate(r.at)) + "</td></tr>";
+  }).join("") || '<tr><td colspan="4" class="na">Aucun écart signalé.</td></tr>';
+  applyFilter();
+}
+
+function applyFilter() {
+  document.querySelectorAll("#api-tests tr[data-test], #app-tests tr[data-test]").forEach(function (tr) {
+    var st = Array.prototype.map.call(tr.querySelectorAll("[data-cell]"), function (td) { var r = results[td.dataset.cell]; return r ? r.status : "todo"; });
+    var show = filter === "all" || (filter === "todo" ? st.indexOf("todo") >= 0 : st.some(function (s) { return s === "ko" || s === "blocked"; }));
+    tr.hidden = !show;
+  });
+}
+
+async function refreshNames() {
+  if (!user || !user.profiles) return;
+  var ids = [];
+  Object.keys(results).concat(Object.keys(pstates)).forEach(function (k) { var v = results[k] || pstates[k]; if (v && v.by && ids.indexOf(v.by) < 0) ids.push(v.by); });
+  if (!ids.length) return;
+  try { var ps = await user.profiles(ids); ids.forEach(function (id) { names[id] = (ps[id] && ps[id].name) || ""; }); } catch (e) { return; }
+  refreshCells();
+}
+
+function refreshCells() {
+  Object.keys(cells).forEach(function (k) { fillCell(cells[k], results[k], "todo"); });
+  Object.keys(pcells).forEach(function (k) { fillCell(pcells[k], pstates[k], "todo"); });
+  renderSynthesis();
+}
+
+function showNotice(text) {
+  var n = $("notice");
+  if (!n) { n = document.createElement("p"); n.id = "notice"; n.className = "notice"; document.querySelector("header").appendChild(n); }
+  n.textContent = text;
+}
+
+/* ---------- Markdown pour un ticket, un message ou l'assistant d'un dev ---------- */
+function buildMarkdown() {
+  var L = [], api = CONFIG.api || {};
+  L.push("# " + CONFIG.ticket + " · " + CONFIG.title, "", CONFIG.lead, "");
+  (CONFIG.links || []).forEach(function (l) { L.push("- " + l.label + " : " + l.url); });
+  L.push("", "## Besoin", "", textOf((CONFIG.need || {}).summary_html), "", "Critères d'acceptation :");
+  ((CONFIG.need || {}).criteria || []).forEach(function (c) { L.push("- " + c.id + " : " + c.text); });
+  L.push("", "## Contrat d'API", "", textOf(api.intro_html));
+  (api.conventions || []).forEach(function (c) { L.push("- " + c); });
+  (api.routes || []).forEach(function (r) {
+    L.push("", "### " + r.method + " " + r.path + " (" + (r.change || "inchangée") + ")", "", r.summary, "", "Accès : " + r.auth);
+    if (r.changed) L.push("", "Contrat modifié : " + r.changed);
+    if ((r.params || []).length) { L.push("", "| Paramètre | Type | Obligatoire | Règles | Exemple |", "|---|---|---|---|---|"); r.params.forEach(function (p) { L.push("| `" + p.name + "` | " + p.type + " | " + (p.required ? "oui" : "non") + " | " + p.rules + " | " + p.example + " |"); }); }
+    if ((r.response || []).length) { L.push("", "| Champ | Type | Sens | Depuis |", "|---|---|---|---|"); r.response.forEach(function (f) { L.push("| `" + f.name + "` | " + f.type + " | " + f.desc + " | " + (f.since || "") + " |"); }); }
+    if ((r.errors || []).length) { L.push("", "Erreurs :"); r.errors.forEach(function (e) { L.push("- " + e.code + " : " + e.when); }); }
+    if (r.compat) L.push("", "Anciennes apps : " + r.compat);
+    if (r.example) { L.push("", "```bash", r.example.cmd, "```"); if (r.example.response) L.push("", "```json", r.example.response, "```"); }
+  });
+  if ((CONFIG.sideEffects || []).length) { L.push("", "## Hors API", ""); CONFIG.sideEffects.forEach(function (s) { L.push("- " + s.what + " : " + textOf(s.detail_html)); }); }
+  var compat = CONFIG.compat || {};
+  L.push("", "## Compatibilité", "");
+  (compat.oldApps || []).forEach(function (o) { L.push("- " + o.version + " : voit " + o.sees + " ; si elle agit : " + o.does); });
+  (compat.rollout || []).forEach(function (s, i) { L.push((i + 1) + ". " + s); });
+  L.push("", "## Tests apps", "", "| Test | Critère | Écran et étapes | Attendu |", "|---|---|---|---|");
+  ((CONFIG.appTests || {}).tests || []).forEach(function (t) { L.push("| " + t.id + " | " + (t.ca || []).join(", ") + " | " + t.screen + " : " + t.steps + " | " + t.expect + " |"); });
+  return L.join("\n");
+}
+
+function copyText(text, button, onFail) {
+  var done = function () { var t = button.textContent; button.textContent = "Copié"; setTimeout(function () { button.textContent = t; }, 1600); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, onFail);
+  else onFail();
+}
+function selectNode(node) { var r = document.createRange(); r.selectNodeContents(node); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+
+document.addEventListener("click", function (e) {
+  var b = e.target.closest(".copy");
+  if (b) { var src = $(b.dataset.target); copyText(src.textContent, b, function () { selectNode(src); b.textContent = "Sélectionné"; }); return; }
+  var f = e.target.closest(".filter");
+  if (f) { filter = f.dataset.filter; document.querySelectorAll(".filter").forEach(function (x) { x.setAttribute("aria-pressed", x === f ? "true" : "false"); }); applyFilter(); return; }
+  if (e.target.id === "copy-md") {
+    var md = buildMarkdown(), box = $("mdbox");
+    $("md").textContent = md;
+    copyText(md, e.target, function () { box.hidden = false; box.open = true; selectNode($("md")); });
+  }
+});
+
+renderStatic();
+refreshCells();
+$("sync").textContent = "Connexion à l'enregistrement…";
+
+(async function () {
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) {
+    $("sync").textContent = "";
+    showNotice("L'enregistrement des résultats n'est pas disponible dans cette vue. Tout reste lisible ; pour signaler un résultat, ouvre la page dans claude.ai en étant connecté, ou envoie-le par message en citant l'identifiant du test (API-01, APP-03…).");
+    return;
+  }
+  canWrite = true;
+  try {
+    user = await window.claude.use("user");
+    if (user) {
+      myId = await user.id();
+      if (user.can) { var w = await user.can("data.write"); if (w === false) canWrite = false; }
+    }
+  } catch (e) {}
+  if (canWrite) { setEnabled(true); $("sync").textContent = "Les résultats saisis sont enregistrés et visibles par tous"; }
+  else { $("sync").textContent = "Lecture seule"; showNotice("Tu peux lire la fiche mais pas enregistrer de résultat : demande un accès qui permet d'interagir."); }
+
+  db.collection("results").onSnapshot(function (snap) {
+    results = {};
+    snap.docs.forEach(function (d) { var v = d.data(); if (v && v.test && v.platform) results[v.test + "." + v.platform] = v; });
+    refreshCells(); refreshNames();
+  }, function () { $("sync").textContent = "Synchronisation interrompue : recharge la page."; });
+  db.collection("platforms").onSnapshot(function (snap) {
+    pstates = {};
+    snap.docs.forEach(function (d) { var v = d.data(); if (v && v.platform) pstates[v.platform] = v; });
+    refreshCells(); refreshNames();
+  }, function () {});
+})();
+</script>
