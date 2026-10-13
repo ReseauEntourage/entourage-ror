@@ -161,6 +161,24 @@ RSpec.describe Neighborhood, type: :model do
     let!(:with_outings) { create :neighborhood, outings: [outing_1, outing_2] }
 
     it { expect(subject).to eq([with_outings.id, with_outing.id, without_outing.id]) }
+
+    context 'with past, closed and duplicated outings' do
+      let(:past_outing) { create :outing, :outing_class }
+      let(:closed_outing) { create :outing, :outing_class, status: :closed }
+
+      let!(:with_old_outings) { create :neighborhood }
+
+      before do
+        past_outing.update_column(:metadata, past_outing.metadata.merge(starts_at: 2.months.ago))
+
+        NeighborhoodsEntourage.create!(neighborhood: with_old_outings, entourage: past_outing)
+        NeighborhoodsEntourage.create!(neighborhood: with_old_outings, entourage: closed_outing)
+        NeighborhoodsEntourage.create!(neighborhood: with_outing, entourage: outing_1)
+      end
+
+      it { expect(subject.first(2)).to eq([with_outings.id, with_outing.id]) }
+      it { expect(subject.last(2)).to match_array([without_outing.id, with_old_outings.id]) }
+    end
   end
 
   describe 'order_by_chat_messages' do
@@ -176,6 +194,12 @@ RSpec.describe Neighborhood, type: :model do
 
 
     it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
+
+    context 'with old chat messages' do
+      before { create_list :chat_message, 3, created_at: 2.months.ago, messageable: with_chat_message }
+
+      it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
+    end
   end
 
   describe 'status_changed_at' do
