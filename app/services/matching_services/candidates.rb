@@ -1,12 +1,14 @@
 module MatchingServices
   # Candidates of an action, selected in SQL around the place of the action.
-  # Actions, outings and neighborhoods go through the existing finders so that their visibility rules apply
-  # (community, reserved_female, exclusive_to, groups already joined...).
+  # Actions and outings go through the existing finders, and neighborhoods through the scopes of their finder,
+  # so that their visibility rules apply (community, reserved_female, exclusive_to, groups already joined...).
   class Candidates
     Candidate = Struct.new(:record, :type, :distance_km, :freshness, :category_match, :similarity, :score, keyword_init: true)
 
     LIMIT_PER_TYPE = 100
     DEFAULT_DAYS = 30
+    # points of interest are places people go to, often on foot
+    POI_MAX_DISTANCE_KM = 5
 
     # sections of an action => ids of the categories of points of interest that can help (see PoiServices::SoliguideFormatter)
     POI_CATEGORY_IDS_BY_SECTION = {
@@ -85,7 +87,17 @@ module MatchingServices
     end
 
     def neighborhoods
-      records = NeighborhoodServices::Finder.new(user, finder_params).find_all
+      # not NeighborhoodServices::Finder: its perimeter (ST_Transform) took up to 1 s to plan and its sort by
+      # activity is useless here, together they hit the 2 s statement timeout on preprod
+      box = Geocoder::Calculations.bounding_box([action.latitude, action.longitude], travel_distance, units: :km)
+
+      records = Neighborhood
+        .where(Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude))
+        .or(Neighborhood.where(national: true))
+        .not_joined_by(user)
+        .public_only
+        .not_reserved_female_for(user)
+        .order(proximity_order(:neighborhoods))
         .limit(LIMIT_PER_TYPE)
         .to_a
       interests = tag_names(records, 'interests')
@@ -105,9 +117,9 @@ module MatchingServices
       category_ids = action_sections.flat_map { |section| POI_CATEGORY_IDS_BY_SECTION.fetch(section, []) }
 
       Poi.validated
-        .around(action.latitude, action.longitude, travel_distance)
+        .around(action.latitude, action.longitude, [travel_distance, POI_MAX_DISTANCE_KM].min)
         .includes(:category, :categories)
-        .order(Arel.sql(PostgisHelper.distance_from(action.latitude, action.longitude, :pois)))
+        .order(proximity_order(:pois))
         .limit(LIMIT_PER_TYPE)
         .map do |record|
           build(record, 'poi', category_match: (([record.category_id] + record.category_ids) & category_ids).any?)
@@ -117,7 +129,10 @@ module MatchingServices
     def resources
       pinned_column = user.is_ask_for_help? ? :pin_ask_for_help : :pin_offer_help
 
-      Resource.all.map do |record|
+      # some descriptions embed their images as data URIs (700 KB for one of them): only their text is used
+      description = Arel.sql(%q{regexp_replace(resources.description, 'data:[^"'' )]+', '', 'g') AS description})
+
+      Resource.select(*(Resource.column_names - ['description']), description).map do |record|
         build(record, 'resource', distance: false, category_match: record[pinned_column] == true)
       end
     end
@@ -141,6 +156,17 @@ module MatchingServices
     # 1 for something new (or about to happen), 0 at the end of the window
     def freshness seconds, days
       (1 - seconds / days.days.to_f).clamp(0, 1)
+    end
+
+    # squared equirectangular distance to the action: enough to sort by proximity, and much cheaper than ST_Distance
+    def proximity_order table
+      return Arel.sql("#{table}.id") unless action.latitude && action.longitude
+
+      latitude = Float(action.latitude)
+      longitude = Float(action.longitude)
+      cosine = Math.cos(latitude * Math::PI / 180)
+
+      Arel.sql("power(#{table}.latitude - #{latitude}, 2) + power((#{table}.longitude - #{longitude}) * #{cosine}, 2), #{table}.id")
     end
 
     # tag names by record id in one query, rather than one query per candidate
