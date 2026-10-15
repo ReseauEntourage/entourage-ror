@@ -52,40 +52,49 @@ module MatchingServices
     def opposite_actions
       finder = action.contribution? ? SolicitationServices::Finder : ContributionServices::Finder
 
-      finder.new(user, finder_params).find_all
+      records = finder.new(user, finder_params).find_all
         .where('entourages.created_at > ?', days_for_actions.days.ago)
         .where.not(user_id: user.id)
         .limit(LIMIT_PER_TYPE)
-        .map do |record|
-          build(record, record.contribution? ? 'contribution' : 'solicitation',
-            freshness: freshness(Time.current - record.created_at, days_for_actions),
-            category_match: (record.section_list & action_sections).any?)
-        end
+        .to_a
+      sections = tag_names(records, 'sections')
+
+      records.map do |record|
+        build(record, record.contribution? ? 'contribution' : 'solicitation',
+          freshness: freshness(Time.current - record.created_at, days_for_actions),
+          category_match: (sections.fetch(record.id, []) & action_sections).any?)
+      end
     end
 
     def outings
-      OutingsServices::Finder.new(user, finder_params).find_all
+      records = OutingsServices::Finder.new(user, finder_params).find_all
         .between(Time.zone.now, days_for_outings.days.from_now)
         .where.not(user_id: user.id)
         .limit(LIMIT_PER_TYPE)
-        .map do |record|
-          starts_at = self.class.starts_at(record)
+        .to_a
+      interests = tag_names(records, 'interests')
 
-          build(record, 'outing',
-            distance: !record.online,
-            freshness: starts_at && freshness(starts_at - Time.current, days_for_outings),
-            category_match: (record.interest_list & user_interests).any?)
-        end
+      records.map do |record|
+        starts_at = self.class.starts_at(record)
+
+        build(record, 'outing',
+          distance: !record.online,
+          freshness: starts_at && freshness(starts_at - Time.current, days_for_outings),
+          category_match: (interests.fetch(record.id, []) & user_interests).any?)
+      end
     end
 
     def neighborhoods
-      NeighborhoodServices::Finder.new(user, finder_params).find_all
+      records = NeighborhoodServices::Finder.new(user, finder_params).find_all
         .limit(LIMIT_PER_TYPE)
-        .map do |record|
-          build(record, 'neighborhood',
-            distance: !record.national,
-            category_match: (record.interest_list & user_interests).any?)
-        end
+        .to_a
+      interests = tag_names(records, 'interests')
+
+      records.map do |record|
+        build(record, 'neighborhood',
+          distance: !record.national,
+          category_match: (interests.fetch(record.id, []) & user_interests).any?)
+      end
     end
 
     # points of interest are only recommended to people who ask for help
@@ -132,6 +141,18 @@ module MatchingServices
     # 1 for something new (or about to happen), 0 at the end of the window
     def freshness seconds, days
       (1 - seconds / days.days.to_f).clamp(0, 1)
+    end
+
+    # tag names by record id in one query, rather than one query per candidate
+    def tag_names records, context
+      return {} if records.empty?
+
+      ActsAsTaggableOn::Tagging
+        .joins(:tag)
+        .where(taggable_type: records.first.class.polymorphic_name, taggable_id: records.map(&:id), context: context)
+        .pluck(:taggable_id, 'tags.name')
+        .group_by(&:first)
+        .transform_values { |pairs| pairs.map(&:last) }
     end
 
     def action_sections

@@ -31,6 +31,17 @@ describe EmbeddingServices::Store do
       ])
     end
 
+    context 'when there are more records than rows written per statement' do
+      before { stub_const('EmbeddingServices::Store::UPSERT_SLICE', 1) }
+
+      it 'writes the embeddings in several statements' do
+        expect(Embedding).to receive(:upsert_all).twice.and_call_original
+
+        expect(subject.size).to eq(2)
+        expect(Embedding.count).to eq(2)
+      end
+    end
+
     context 'when the records were already embedded' do
       before { store.vectors_for([resource, neighborhood]) }
 
