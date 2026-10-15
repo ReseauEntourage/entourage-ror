@@ -1,5 +1,6 @@
 class Resource < ApplicationRecord
   include Recommandable
+  include Embeddable
   include Deeplinkable
   include Translatable
 

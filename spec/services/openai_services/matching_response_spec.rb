@@ -40,4 +40,28 @@ describe OpenaiServices::MatchingResponse do
       it { expect(subject).to eq({ 'key' => 'value' }) }
     end
   end
+
+  describe 'responses of the hybrid matching' do
+    let(:contribution) { create(:contribution) }
+    let(:neighborhood) { create(:neighborhood) }
+    let(:response) { {
+      'engine' => 'hybrid',
+      'recommandations' => [
+        { 'type' => 'contribution', 'id' => contribution.id.to_s, 'score' => 0.8, 'explanation' => 'Proche' },
+        { 'type' => 'neighborhood', 'id' => neighborhood.id.to_s, 'score' => 0.6, 'explanation' => 'Même centre d\'intérêt' }
+      ]
+    } }
+
+    subject { described_class.new(response: response) }
+
+    it { expect(subject.parsed_response).to eq(response) }
+    it { expect(subject).to be_valid }
+    it { expect(subject.display_result).to eq(2) }
+    it 'finds the recommanded records' do
+      records = []
+      subject.each_recommandation { |record, _score, _explanation, _index| records << record }
+
+      expect(records.map { |record| [record.class.base_class, record.id] }).to eq([[Entourage, contribution.id], [Neighborhood, neighborhood.id]])
+    end
+  end
 end

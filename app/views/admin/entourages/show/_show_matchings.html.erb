@@ -32,7 +32,7 @@
       <% @matchings.each do |matching| %>
         <tr id="matching-<%= matching.id %>">
           <td><%= matching.match_type %></td>
-          <td><%= link_to matching.match.name, [:admin, matching.match] %></td>
+          <td><%= link_to matching.match.name, matching.match.is_a?(Neighborhood) ? edit_admin_neighborhood_path(matching.match) : [:admin, matching.match] %></td>
           <td>
             <% if matching.match.respond_to?(:text_description_only) %>
               <%= matching.match.text_description_only %>

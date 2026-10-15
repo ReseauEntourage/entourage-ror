@@ -46,6 +46,7 @@ module NeighborhoodServices
         .order(Arel.sql(%(zone IS NULL DESC)))
         .order_by_activity
         .order_by_distance_from(user.latitude, user.longitude)
+        .order(:id)
     end
 
     def find_all_participations

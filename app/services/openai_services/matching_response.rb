@@ -11,7 +11,7 @@ module OpenaiServices
   # }
 
   class MatchingResponse < BasicResponse
-    TYPES = %w{contribution solicitation outing resource poi}
+    TYPES = %w{contribution solicitation outing neighborhood resource poi}
 
     def valid?
       recommandations.any?
@@ -19,6 +19,13 @@ module OpenaiServices
 
     def display_result
       recommandations.count
+    end
+
+    # MatchingServices::Performer stores the recommandations themselves, not the message of an assistant
+    def parsed_response
+      return @response if @response.is_a?(Hash) && @response['engine'] == 'hybrid'
+
+      super
     end
 
     def recommandations

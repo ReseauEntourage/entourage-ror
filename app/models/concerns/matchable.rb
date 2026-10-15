@@ -2,7 +2,8 @@ module Matchable
   extend ActiveSupport::Concern
 
   included do
-    after_save :match_on_save, if: :matchable_field_changed?
+    # after commit: a job enqueued earlier could run before the new title or description is committed
+    after_commit :match_on_save, on: [:create, :update], if: :matchable_field_changed?
 
     has_one :openai_request, as: :instance
     has_many :matchings, as: :instance
@@ -35,6 +36,8 @@ module Matchable
     end
 
     def on_save
+      return @instance.openai_request.run if @instance.openai_request.present?
+
       ensure_openai_request_exists!
     end
 
