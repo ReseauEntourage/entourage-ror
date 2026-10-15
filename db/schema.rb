@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_15_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -233,6 +233,17 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
     t.boolean "subscribed", null: false
     t.datetime "subscription_changed_at", precision: nil, null: false
     t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true
+  end
+
+  create_table "embeddings", force: :cascade do |t|
+    t.string "embeddable_type", null: false
+    t.integer "embeddable_id", null: false
+    t.string "model", null: false
+    t.string "digest", null: false
+    t.float "vector", null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["embeddable_type", "embeddable_id"], name: "index_embeddings_on_embeddable_type_and_embeddable_id", unique: true
   end
 
   create_table "entourage_areas", force: :cascade do |t|

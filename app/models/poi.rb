@@ -1,5 +1,6 @@
 class Poi < ApplicationRecord
   include Geolocalizable
+  include Embeddable
   include Recommandable
 
   enum source: { entourage: 0, soliguide: 1 }, _prefix: :source

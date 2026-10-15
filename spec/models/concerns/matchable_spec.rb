@@ -53,6 +53,12 @@ RSpec.describe Matchable, type: :module do
         it 'does not create a new openai_request' do
           expect { match_struct.on_save }.not_to change(OpenaiRequest, :count)
         end
+
+        it 'runs the matching again' do
+          expect(OpenaiRequestJob).to receive(:perform_later).with(openai_request.id)
+
+          match_struct.on_save
+        end
       end
 
       context 'when openai_request does not exist' do

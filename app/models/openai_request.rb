@@ -3,7 +3,7 @@ class OpenaiRequest < ApplicationRecord
 
   # when adding a new module_type, it would be required to:
   # 1. create a new openai_assistant instance
-  # 2. create a class that inherits from BasicPerformer. Check MatchingPerformer for example
+  # 2. create a class that inherits from BasicPerformer. Check OffensePerformer for example
   # 3. add this class to performer_instance method
   # 4. create a response class that inherits from BasicResponse. Check MatchingResponse for evample
   # 5. add this class to performer_response method
@@ -56,7 +56,7 @@ class OpenaiRequest < ApplicationRecord
   # add module_type case if needed
   def performer_instance
     if matching?
-      OpenaiServices::MatchingPerformer.new(openai_request: self)
+      MatchingServices::Performer.new(openai_request: self)
     elsif offense?
       OpenaiServices::OffensePerformer.new(openai_request: self)
     end

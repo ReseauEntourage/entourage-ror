@@ -1,5 +1,6 @@
 class Entourage < ApplicationRecord
   include FeedsConcern
+  include Embeddable
   include UpdatedAtSkippable
   include EntourageServices::LocationApproximationService::Callback
   include EntourageServices::GeocodingService::Callback

@@ -1,0 +1,153 @@
+module MatchingServices
+  # Candidates of an action, selected in SQL around the place of the action.
+  # Actions, outings and neighborhoods go through the existing finders so that their visibility rules apply
+  # (community, reserved_female, exclusive_to, groups already joined...).
+  class Candidates
+    Candidate = Struct.new(:record, :type, :distance_km, :freshness, :category_match, :similarity, :score, keyword_init: true)
+
+    LIMIT_PER_TYPE = 100
+    DEFAULT_DAYS = 30
+
+    # sections of an action => ids of the categories of points of interest that can help (see PoiServices::SoliguideFormatter)
+    POI_CATEGORY_IDS_BY_SECTION = {
+      'clothes' => [61, 62, 43], # vêtements, boîtes à dons, laver son linge
+      'equipment' => [61, 62, 63, 6], # vêtements et matériel, boîtes à dons, bagageries, s'occuper de soi
+      'hygiene' => [40, 42, 43], # toilettes, douches, laver son linge
+      'services' => [2, 3, 5, 7], # se loger, se soigner, s'orienter, se réinsérer
+      'social' => [1, 5, 6] # se nourrir, s'orienter, s'occuper de soi
+    }.freeze
+
+    attr_reader :action, :user, :configuration
+
+    def initialize action, configuration = nil
+      @action = action
+      @user = action.user
+      @configuration = configuration
+    end
+
+    def all
+      opposite_actions + outings + neighborhoods + pois + resources
+    end
+
+    def travel_distance
+      @travel_distance ||= user.travel_distance || UserService::DEFAULT_DISTANCE
+    end
+
+    def self.starts_at outing
+      starts_at = outing.starts_at
+
+      starts_at.is_a?(String) ? Time.zone.parse(starts_at) : starts_at
+    end
+
+    private
+
+    def finder_params
+      @finder_params ||= {
+        latitude: action.latitude,
+        longitude: action.longitude,
+        travel_distance: travel_distance
+      }.compact
+    end
+
+    def opposite_actions
+      finder = action.contribution? ? SolicitationServices::Finder : ContributionServices::Finder
+
+      finder.new(user, finder_params).find_all
+        .where('entourages.created_at > ?', days_for_actions.days.ago)
+        .where.not(user_id: user.id)
+        .limit(LIMIT_PER_TYPE)
+        .map do |record|
+          build(record, record.contribution? ? 'contribution' : 'solicitation',
+            freshness: freshness(Time.current - record.created_at, days_for_actions),
+            category_match: (record.section_list & action_sections).any?)
+        end
+    end
+
+    def outings
+      OutingsServices::Finder.new(user, finder_params).find_all
+        .between(Time.zone.now, days_for_outings.days.from_now)
+        .where.not(user_id: user.id)
+        .limit(LIMIT_PER_TYPE)
+        .map do |record|
+          starts_at = self.class.starts_at(record)
+
+          build(record, 'outing',
+            distance: !record.online,
+            freshness: starts_at && freshness(starts_at - Time.current, days_for_outings),
+            category_match: (record.interest_list & user_interests).any?)
+        end
+    end
+
+    def neighborhoods
+      NeighborhoodServices::Finder.new(user, finder_params).find_all
+        .limit(LIMIT_PER_TYPE)
+        .map do |record|
+          build(record, 'neighborhood',
+            distance: !record.national,
+            category_match: (record.interest_list & user_interests).any?)
+        end
+    end
+
+    # points of interest are only recommended to people who ask for help
+    def pois
+      return [] if user.is_offer_help?
+      return [] unless action.latitude && action.longitude
+
+      category_ids = action_sections.flat_map { |section| POI_CATEGORY_IDS_BY_SECTION.fetch(section, []) }
+
+      Poi.validated
+        .around(action.latitude, action.longitude, travel_distance)
+        .includes(:category, :categories)
+        .order(Arel.sql(PostgisHelper.distance_from(action.latitude, action.longitude, :pois)))
+        .limit(LIMIT_PER_TYPE)
+        .map do |record|
+          build(record, 'poi', category_match: (([record.category_id] + record.category_ids) & category_ids).any?)
+        end
+    end
+
+    def resources
+      pinned_column = user.is_ask_for_help? ? :pin_ask_for_help : :pin_offer_help
+
+      Resource.all.map do |record|
+        build(record, 'resource', distance: false, category_match: record[pinned_column] == true)
+      end
+    end
+
+    def build record, type, distance: true, freshness: nil, category_match: false
+      Candidate.new(
+        record: record,
+        type: type,
+        distance_km: distance ? distance_km(record) : nil,
+        freshness: freshness,
+        category_match: category_match
+      )
+    end
+
+    def distance_km record
+      return unless action.latitude && action.longitude && record.latitude && record.longitude
+
+      Geocoder::Calculations.distance_between([action.latitude, action.longitude], [record.latitude, record.longitude], units: :km)
+    end
+
+    # 1 for something new (or about to happen), 0 at the end of the window
+    def freshness seconds, days
+      (1 - seconds / days.days.to_f).clamp(0, 1)
+    end
+
+    def action_sections
+      @action_sections ||= action.section_list
+    end
+
+    def user_interests
+      @user_interests ||= user.interest_list
+    end
+
+    def days_for_actions
+      configuration&.days_for_actions || DEFAULT_DAYS
+    end
+
+    def days_for_outings
+      configuration&.days_for_outings || DEFAULT_DAYS
+    end
+  end
+end
