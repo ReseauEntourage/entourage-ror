@@ -52,6 +52,26 @@ describe MatchingServices::Candidates do
     it 'keeps the neighborhoods around the action' do
       expect(ids_of('neighborhood')).to eq([near_neighborhood.id])
     end
+
+    context 'with national, joined and private neighborhoods' do
+      let!(:national_neighborhood) { create(:neighborhood, user: other_user, national: true, **lyon) }
+      let!(:joined_neighborhood) { create(:neighborhood, user: other_user, participants: [user], **paris) }
+      let!(:private_neighborhood) { create(:neighborhood, user: other_user, public: false, **paris) }
+
+      it 'keeps the national neighborhoods and leaves out the joined and private ones' do
+        expect(ids_of('neighborhood')).to match_array([near_neighborhood.id, national_neighborhood.id])
+      end
+    end
+
+    context 'with several neighborhoods around the action' do
+      let!(:closer_neighborhood) { create(:neighborhood, user: other_user, latitude: 48.8601, longitude: 2.3501) }
+
+      before { near_neighborhood.update_columns(latitude: 48.875, longitude: 2.37) }
+
+      it 'sorts them by proximity' do
+        expect(ids_of('neighborhood')).to eq([closer_neighborhood.id, near_neighborhood.id])
+      end
+    end
   end
 
   describe 'pois' do
@@ -63,6 +83,12 @@ describe MatchingServices::Candidates do
 
     it 'keeps the validated points of interest around the action, closest first' do
       expect(ids_of('poi')).to eq([food_poi.id, clothes_poi.id])
+    end
+
+    context 'when a point of interest is further than 5 km' do
+      let!(:suburb_poi) { create(:poi, category: clothes, latitude: 48.80, longitude: 2.45) }
+
+      it { expect(ids_of('poi')).not_to include(suburb_poi.id) }
     end
 
     it 'matches the categories of points of interest with the sections of the action' do
@@ -81,6 +107,17 @@ describe MatchingServices::Candidates do
   describe 'resources' do
     let!(:pinned_resource) { create(:resource, pin_ask_for_help: true) }
     let!(:resource) { create(:resource) }
+
+    context 'when a description embeds an image' do
+      let!(:resource) { create(:resource, description: %(<p>Bien donner</p><img src="data:image/png;base64,#{'A' * 1000}"/>)) }
+
+      it 'does not load the image' do
+        record = candidates.find { |candidate| candidate.record.id == resource.id }.record
+
+        expect(record.description).to eq('<p>Bien donner</p><img src=""/>')
+        expect(record.text_description_only).to eq('Bien donner')
+      end
+    end
 
     it 'keeps all the active resources and favours the ones pinned for the profile of the user' do
       expect(ids_of('resource')).to match_array([pinned_resource.id, resource.id])
