@@ -63,6 +63,41 @@ describe NeighborhoodServices::Finder do
       end
     end
 
+    describe 'ordered by activity' do
+      # foot is closer to the user than ball
+      let(:latitude) { 0 }
+      let(:longitude) { 0 }
+
+      context 'more recent outings first' do
+        before { create :outing, :outing_class, user: neighborhood_1.user, neighborhoods: [neighborhood_1] }
+
+        it { expect(response).to eq(['ball', 'foot']) }
+      end
+
+      context 'then more recent chat messages' do
+        before { create_list :chat_message, 2, messageable: neighborhood_1 }
+
+        it { expect(response).to eq(['ball', 'foot']) }
+      end
+
+      context 'outings prevail over chat messages' do
+        before do
+          create :outing, :outing_class, user: neighborhood_0.user, neighborhoods: [neighborhood_0]
+          create_list :outing, 2, :outing_class, user: neighborhood_1.user, neighborhoods: [neighborhood_1]
+          create_list :chat_message, 3, messageable: neighborhood_0
+          create_list :chat_message, 2, messageable: neighborhood_1
+        end
+
+        it { expect(response).to eq(['ball', 'foot']) }
+      end
+
+      context 'same activity and same distance' do
+        let!(:neighborhood_2) { create(:neighborhood, latitude: 1, longitude: 1, name: 'ballon', description: 'barre', postal_code: '75001', interest_list: ['jeux']) }
+
+        it { expect(response).to eq(['foot', 'ball', 'ballon']) }
+      end
+    end
+
     describe 'with q' do
       let(:latitude) { 0 }
       let(:longitude) { 0 }
@@ -128,6 +163,14 @@ describe NeighborhoodServices::Finder do
       describe 'interest_list matching one of each' do
         let(:interest_list) { 'sport,jeux' }
         it { expect(response).to match_array(['foot', 'ball']) }
+      end
+
+      describe 'interest_list matching several interests of the same neighborhood' do
+        let(:interest_list) { 'sport,jeux' }
+
+        before { neighborhood_0.update_attribute(:interest_list, ['sport', 'jeux']) }
+
+        it { expect(response).to eq(['foot', 'ball']) }
       end
 
       describe 'interest_list not matching' do
