@@ -5,6 +5,8 @@ module EmbeddingServices
     MODEL = 'text-embedding-3-small'
     DIMENSIONS = 512
     BATCH_SIZE = 500
+    # rows written per statement: 340 vectors in one statement took 1 s against the 2 s statement timeout of production
+    UPSERT_SLICE = 50
 
     attr_reader :client
 
@@ -72,15 +74,17 @@ module EmbeddingServices
     end
 
     def save records, digests, vectors
-      Embedding.upsert_all(records.map { |record|
-        {
-          embeddable_type: record.class.polymorphic_name,
-          embeddable_id: record.id,
-          model: MODEL,
-          digest: digests[record],
-          vector: vectors[record]
-        }
-      }, unique_by: [:embeddable_type, :embeddable_id], update_only: [:model, :digest, :vector])
+      records.each_slice(UPSERT_SLICE) do |slice|
+        Embedding.upsert_all(slice.map { |record|
+          {
+            embeddable_type: record.class.polymorphic_name,
+            embeddable_id: record.id,
+            model: MODEL,
+            digest: digests[record],
+            vector: vectors[record]
+          }
+        }, unique_by: [:embeddable_type, :embeddable_id], update_only: [:model, :digest, :vector])
+      end
     end
   end
 end
