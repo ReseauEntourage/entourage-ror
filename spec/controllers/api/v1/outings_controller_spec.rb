@@ -79,6 +79,17 @@ describe Api::V1::OutingsController do
         it { expect(subject['outings'][0]['id']).to eq(outing.id) }
       end
 
+      describe 'metadata exposes pmr and kids_friendly' do
+        let!(:outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, metadata: { pmr: true, kids_friendly: false }) }
+        let(:join_request) { nil }
+
+        before { get :index, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject['outings'][0]['metadata']['pmr']).to eq(true) }
+        it { expect(subject['outings'][0]['metadata']['kids_friendly']).to eq(false) }
+      end
+
       describe 'filter by entourage_only' do
         let!(:outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, user: user_team) }
         let!(:other_outing) { create(:outing, :outing_class, latitude: latitude, longitude: longitude, user: user) }
@@ -338,7 +349,9 @@ describe Api::V1::OutingsController do
         street_address: '85 bis rue de Ménilmontant, 75020 Paris, France',
         google_place_id: 'ChIJFzXXy-xt5kcRg5tztdINnp0',
         place_limit: 5,
-        reserved_female: true
+        reserved_female: true,
+        pmr: true,
+        kids_friendly: true
       }
     } }
 
@@ -386,6 +399,26 @@ describe Api::V1::OutingsController do
         it { expect(Outing.last.metadata[:place_limit].to_i).to eq(5) }
         it { expect(Outing.last.metadata[:landscape_url]).to eq('path/to/landscape') }
         it { expect(Outing.last.reserved_female).to eq(true) }
+        it { expect(Outing.last.pmr).to eq(true) }
+        it { expect(Outing.last.kids_friendly).to eq(true) }
+        it { expect(subject['outing']['metadata']['pmr']).to eq(true) }
+        it { expect(subject['outing']['metadata']['kids_friendly']).to eq(true) }
+      end
+
+      context 'pmr and kids_friendly are optional' do
+        before { post :create, params: { outing: params.merge(metadata: params[:metadata].except(:pmr, :kids_friendly)), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Outing.last.pmr).to eq(false) }
+        it { expect(Outing.last.kids_friendly).to eq(false) }
+      end
+
+      context 'pmr and kids_friendly sent as strings' do
+        before { post :create, params: { outing: params.merge(metadata: params[:metadata].merge(pmr: 'false', kids_friendly: 'true')), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Outing.last.pmr).to eq(false) }
+        it { expect(Outing.last.kids_friendly).to eq(true) }
       end
 
       context 'interests are optional' do
@@ -489,6 +522,29 @@ describe Api::V1::OutingsController do
           it { expect(subject['outing']['title']).to eq('New title') }
           it { expect(subject['outing']['metadata']['place_limit']).to eq(100) }
           it { expect(subject['outing']['interests']).to eq(['animaux', 'other']) }
+        end
+
+        context 'user is creator and sets pmr and kids_friendly' do
+          let(:params) { { metadata: { pmr: true, kids_friendly: true } } }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(subject['outing']['metadata']['pmr']).to eq(true) }
+          it { expect(subject['outing']['metadata']['kids_friendly']).to eq(true) }
+          it { expect(outing.reload.pmr).to eq(true) }
+          it { expect(outing.reload.kids_friendly).to eq(true) }
+        end
+
+        context 'user is creator and unsets pmr' do
+          let(:outing) { create(:outing, :outing_class, user: user, status: :open, interests: ['animaux', 'other'], metadata: { pmr: true, kids_friendly: true }) }
+          let(:params) { { metadata: { pmr: false } } }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(outing.reload.pmr).to eq(false) }
+          it { expect(outing.reload.kids_friendly).to eq(true) }
         end
 
         context 'user is not creator' do
@@ -748,6 +804,20 @@ describe Api::V1::OutingsController do
 
         it { expect(stranger.reload.title).to eq('Foobar') }
         it { expect(stranger.reload.metadata[:place_limit]).to eq(nil) }
+      end
+
+      context 'sets pmr and kids_friendly on the whole series' do
+        let(:creator) { user }
+
+        before { patch :batch_update, params: { id: outing.to_param, outing: { metadata: { pmr: true, kids_friendly: true } }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(outing.reload.pmr).to eq(true) }
+        it { expect(outing.reload.kids_friendly).to eq(true) }
+        it { expect(sibling.reload.pmr).to eq(true) }
+        it { expect(sibling.reload.kids_friendly).to eq(true) }
+        it { expect(stranger.reload.pmr).to eq(false) }
+        it { expect(stranger.reload.kids_friendly).to eq(false) }
       end
 
       context 'change starts_at or ends_at' do

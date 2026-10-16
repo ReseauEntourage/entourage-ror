@@ -127,6 +127,8 @@ RSpec.describe Entourage, type: :model do
       :portrait_thumbnail_url => nil,
       :place_limit => nil,
       :reserved_female => nil,
+      :pmr => nil,
+      :kids_friendly => nil,
       :unsubscribed_participants_offer_help => 0,
       :unsubscribed_participants_ask_for_help => 0,
       :unsubscribed_participants_female => 0,

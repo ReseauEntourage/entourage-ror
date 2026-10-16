@@ -55,6 +55,8 @@ module V1
           landscape_url: landscape_url,
           portrait_url: "",
           reserved_female: object.reserved_female,
+          pmr: object.pmr,
+          kids_friendly: object.kids_friendly,
           unsubscribed_participants_offer_help: object.unsubscribed_participants_offer_help,
           unsubscribed_participants_ask_for_help: object.unsubscribed_participants_ask_for_help,
           unsubscribed_participants_female: object.unsubscribed_participants_female,
