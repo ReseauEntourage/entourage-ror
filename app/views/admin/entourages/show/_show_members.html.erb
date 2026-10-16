@@ -1,5 +1,9 @@
 <%
   unread = @requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
+
+  # outings: first to join on top
+  requests = @requests.sort_by(&:accepted_at)
+  requests = requests.reverse unless @entourage.outing?
 %>
 
 <h3>Participants <span class="badge"><%= @requests.count %><span></h3>
@@ -28,7 +32,7 @@
   </thead>
 
   <tbody>
-    <% @requests.sort_by(&:accepted_at).reverse.each do |request| %>
+    <% requests.each do |request| %>
       <% member = request.user %>
       <tr>
         <td>
