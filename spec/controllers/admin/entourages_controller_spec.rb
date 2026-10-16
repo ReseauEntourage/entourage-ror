@@ -113,11 +113,17 @@ describe Admin::EntouragesController do
     render_views
 
     let(:member) { create(:public_user, phone: '+33612345678') }
+    let(:first_member) { create(:public_user) }
 
     # outing header links to Salesforce
     before { allow_any_instance_of(SalesforceServices::Outing).to receive(:url).and_return(nil) }
     before { create(:join_request, joinable: entourage, user: member, status: :accepted) }
+    before { create(:join_request, joinable: entourage, user: first_member, status: :accepted).update_column(:accepted_at, 1.day.ago) }
     before { get :show_members, params: { id: entourage.to_param } }
+
+    def row_position user
+      response.body.index("(##{user.id})")
+    end
 
     context 'on an action' do
       let(:entourage) { create(:entourage) }
@@ -125,6 +131,7 @@ describe Admin::EntouragesController do
       it { expect(assigns(:entourage)).to eq(entourage) }
       it { expect(response.body).not_to include('Téléphone') }
       it { expect(response.body).not_to include(member.phone) }
+      it { expect(row_position(member)).to be < row_position(first_member) }
     end
 
     context 'on an outing' do
@@ -132,6 +139,7 @@ describe Admin::EntouragesController do
 
       it { expect(response.body).to include('Téléphone') }
       it { expect(response.body).to include(member.phone) }
+      it { expect(row_position(first_member)).to be < row_position(member) }
     end
   end
 
