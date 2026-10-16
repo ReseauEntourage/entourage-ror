@@ -110,9 +110,29 @@ describe Admin::EntouragesController do
   end
 
   describe 'GET #show_members' do
-    let(:entourage) { FactoryBot.create(:entourage) }
+    render_views
+
+    let(:member) { create(:public_user, phone: '+33612345678') }
+
+    # outing header links to Salesforce
+    before { allow_any_instance_of(SalesforceServices::Outing).to receive(:url).and_return(nil) }
+    before { create(:join_request, joinable: entourage, user: member, status: :accepted) }
     before { get :show_members, params: { id: entourage.to_param } }
-    it { expect(assigns(:entourage)).to eq(entourage) }
+
+    context 'on an action' do
+      let(:entourage) { create(:entourage) }
+
+      it { expect(assigns(:entourage)).to eq(entourage) }
+      it { expect(response.body).not_to include('Téléphone') }
+      it { expect(response.body).not_to include(member.phone) }
+    end
+
+    context 'on an outing' do
+      let(:entourage) { create(:outing) }
+
+      it { expect(response.body).to include('Téléphone') }
+      it { expect(response.body).to include(member.phone) }
+    end
   end
 
   describe 'GET #show_messages' do

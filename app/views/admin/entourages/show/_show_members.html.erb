@@ -17,6 +17,9 @@
       <th style="width: 10px"></th>
       <th>Prénom / Nom</th>
       <th></th>
+      <% if @entourage.outing? %>
+        <th>Téléphone</th>
+      <% end %>
       <th>Genre</th>
       <th>Profil</th>
       <th>Date d'adhésion</th>
@@ -44,6 +47,9 @@
             <span class="label label-default">invitation</span>
           <% end %>
         </td>
+        <% if @entourage.outing? %>
+          <td><%= member.phone %></td>
+        <% end %>
         <td><%= UserServices::Options::GENDERS[member.gender.to_s.to_sym] || UserServices::Options::GENDERS[:secret] %></td>
 
         <td>
