@@ -1588,6 +1588,47 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
   end
 
+  describe 'POST onboarding_journey_hidden' do
+    let!(:user) { create :public_user }
+
+    subject { post :onboarding_journey_hidden, params: { token: user.token } }
+
+    def removed_events
+      Event.where(user: user, name: 'onboarding.parcours.removed')
+    end
+
+    it { expect { subject }.to change { removed_events.count }.by(1) }
+    it { subject; expect(removed_events.first.properties).to eq('reason' => 'hidden') }
+    it { subject; expect(response.status).to eq(200) }
+    it { subject; expect(result).to eq('onboarding_journey' => { 'removed' => true, 'removed_reason' => 'hidden' }) }
+
+    context 'already hidden' do
+      before { user.hide_onboarding_journey! }
+
+      it { expect { subject }.not_to change { Event.count } }
+      it { subject; expect(response.status).to eq(200) }
+      it { subject; expect(result['onboarding_journey']['removed_reason']).to eq('hidden') }
+    end
+
+    context 'already removed for another reason' do
+      before { user.update_columns(created_at: 20.days.ago, first_sign_in_at: 20.days.ago) }
+
+      it 'keeps the first reason' do
+        subject
+
+        expect(removed_events.count).to eq(1)
+        expect(result['onboarding_journey']['removed_reason']).to eq('inactivity')
+      end
+    end
+
+    context 'not signed in' do
+      before { post :onboarding_journey_hidden }
+
+      it { expect(response.status).to eq(401) }
+      it { expect(Event.where(name: 'onboarding.parcours.removed').count).to eq(0) }
+    end
+  end
+
   describe 'POST ethics_charter_signed' do
     let(:user) { create :public_user }
 

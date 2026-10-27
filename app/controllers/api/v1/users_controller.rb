@@ -413,6 +413,12 @@ module Api
         head :ok
       end
 
+      def onboarding_journey_hidden
+        current_user.hide_onboarding_journey!
+
+        render json: { onboarding_journey: Onboarding::Journey.new(current_user).summary }, status: 200
+      end
+
       def organization_admin_redirect
         if current_user.partner.nil?
           return head :ok

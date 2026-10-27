@@ -84,6 +84,70 @@ describe Onboarding::UserEventsTracking do
     end
   end
 
+  describe 'welcome journey removal' do
+    def removed_events
+      Event.where(user: user, name: 'onboarding.parcours.removed')
+    end
+
+    context 'when the last step is crossed' do
+      before do
+        user.welcome_watched!
+        user.neighborhood_national_joined_skipped!
+        user.webinar_or_first_steps_joined!
+      end
+
+      it 'removes the journey with the reason completed' do
+        expect { user.first_event_joined!('visio') }.to change { removed_events.count }.by(1)
+
+        expect(removed_events.first.properties).to eq('reason' => 'completed')
+      end
+
+      it 'removes the journey when the last step is skipped' do
+        expect { user.papotages_joined_skipped! }.to change { removed_events.count }.by(1)
+
+        expect(removed_events.first.properties).to eq('reason' => 'completed')
+      end
+
+      it 'tracks the removal once' do
+        user.papotages_joined_skipped!
+
+        expect { user.first_event_joined!('visio') }.not_to change { removed_events.count }
+      end
+    end
+
+    context 'when a step is crossed before the last one' do
+      it { expect { user.welcome_watched! }.not_to change { removed_events.count } }
+    end
+
+    context 'when the inactivity delay is over' do
+      before { user.update_columns(created_at: 20.days.ago, first_sign_in_at: 20.days.ago) }
+
+      it 'persists the removal before the step, which does not bring the journey back' do
+        user.welcome_watched!
+
+        expect(removed_events.count).to eq(1)
+        expect(removed_events.first.properties).to eq('reason' => 'inactivity')
+        expect(removed_events.first.created_at).to be < 5.days.ago
+        expect(Event.where(user: user, name: 'onboarding.resource.welcome_watched').count).to eq(1)
+        expect(Onboarding::Journey.new(user).removed?).to be(true)
+      end
+    end
+
+    context 'when the journey is hidden' do
+      it 'still tracks the steps' do
+        user.hide_onboarding_journey!
+
+        expect { user.webinar_or_first_steps_joined! }.to change { Event.where(user: user, name: 'onboarding.outing.webinar_or_first_steps').count }.by(1)
+        expect(removed_events.first.properties).to eq('reason' => 'hidden')
+      end
+    end
+
+    describe 'hide_onboarding_journey!' do
+      it { expect { user.hide_onboarding_journey! }.to change { removed_events.count }.by(1) }
+      it { expect { 2.times { user.hide_onboarding_journey! } }.to change { removed_events.count }.by(1) }
+    end
+  end
+
   describe 'onboarding_step_skipped!' do
     let(:subject) { user.onboarding_step_skipped!(step) }
 
