@@ -15,7 +15,7 @@ module Onboarding
   # Inactivity and ceiling are computed when read (see #removal_reason) and persisted
   # lazily (see #sync!), by the summary endpoint, before a step is crossed (so that a late
   # step can not reset the counter of a journey which has already expired), and by the
-  # onboarding_sequence:remove_expired_journeys task (for the members who do not come back).
+  # RemoveExpiredOnboardingJourneysJob, scheduled daily (for the members who do not come back).
   class Journey
     REMOVED_EVENT = 'onboarding.parcours.removed'.freeze
     FIRST_EVENT = 'onboarding.outing.first_event'.freeze
