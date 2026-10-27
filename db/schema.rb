@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages", "onboarding.resource.welcome_unseen", "onboarding.neighborhood.national", "onboarding.resource.welcome_watched_skipped", "onboarding.outing.webinar_or_first_steps_skipped", "onboarding.outing.papotages_skipped", "onboarding.neighborhood.national_skipped"]
+  create_enum "event_name", ["onboarding.profile.first_name.entered", "onboarding.chat_messages.welcome.sent", "onboarding.chat_messages.welcome.skipped", "onboarding.profile.postal_code.entered", "onboarding.push_notifications.welcome.sent", "onboarding.chat_messages.ethical_charter.sent", "onboarding.chat_messages.incomplete_profile.sent", "onboarding.resource.welcome_watched", "onboarding.outing.webinar_or_first_steps", "onboarding.outing.papotages", "onboarding.resource.welcome_unseen", "onboarding.neighborhood.national", "onboarding.resource.welcome_watched_skipped", "onboarding.outing.webinar_or_first_steps_skipped", "onboarding.outing.papotages_skipped", "onboarding.neighborhood.national_skipped", "onboarding.outing.first_event", "onboarding.parcours.removed"]
   create_enum "sms_delivery_provider", ["AWS", "Nexmo", "Slack", "logs"]
   create_enum "sms_delivery_status", ["Ok", "Provider Error", "Sending Error"]
 
@@ -374,6 +374,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_01_120000) do
     t.integer "user_id", null: false
     t.enum "name", null: false, enum_type: "event_name"
     t.datetime "created_at", precision: nil, null: false
+    t.jsonb "properties"
     t.index ["user_id", "name"], name: "index_events_on_user_id_and_name", unique: true
   end
 
