@@ -63,9 +63,4 @@ namespace :onboarding_sequence do
   task papotages_invitation: :environment do
     Onboarding::EmailerService.deliver_papotages_invitation_j7_email
   end
-
-  desc 'remove_expired_journeys'
-  task remove_expired_journeys: :environment do
-    Onboarding::Journey.remove_expired!
-  end
 end
