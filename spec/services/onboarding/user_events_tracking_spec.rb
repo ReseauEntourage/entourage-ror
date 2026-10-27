@@ -24,6 +24,66 @@ describe Onboarding::UserEventsTracking do
     end
   end
 
+  describe 'first_event_joined!' do
+    context 'physical event' do
+      let(:subject) { user.first_event_joined!('physique') }
+
+      it { expect { subject }.to change { Event.where(user: user, name: 'onboarding.outing.first_event').count }.by(1) }
+      it { expect { subject }.not_to change { Event.where(user: user, name: 'onboarding.outing.papotages').count } }
+
+      it 'tracks the outing type' do
+        subject
+
+        expect(Event.find_by(user: user, name: 'onboarding.outing.first_event').properties).to eq('outing_type' => 'physique')
+      end
+    end
+
+    context 'papotage' do
+      let(:subject) { user.first_event_joined!('papotage') }
+
+      it { expect { subject }.to change { Event.where(user: user, name: 'onboarding.outing.first_event').count }.by(1) }
+
+      it 'still tracks the legacy event read by the installed apps' do
+        expect { subject }.to change { Event.where(user: user, name: 'onboarding.outing.papotages').count }.by(1)
+      end
+    end
+  end
+
+  describe '.first_event_type' do
+    let(:online) { true }
+    let(:title) { 'Atelier cuisine' }
+    let(:sf_category) { :convivialite }
+    let(:outing) { create(:outing, :outing_class, online: online, title: title, sf_category: sf_category) }
+
+    subject { described_class.first_event_type(outing) }
+
+    it { is_expected.to eq('visio') }
+
+    context 'physical' do
+      let(:online) { false }
+
+      it { is_expected.to eq('physique') }
+    end
+
+    context 'papotage' do
+      let(:title) { 'Papotage du jeudi' }
+
+      it { is_expected.to eq('papotage') }
+    end
+
+    context 'first steps webinar' do
+      let(:sf_category) { :welcome_entourage_local }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'webinar' do
+      let(:sf_category) { :atelier_mdlr }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe 'onboarding_step_skipped!' do
     let(:subject) { user.onboarding_step_skipped!(step) }
 

@@ -29,15 +29,14 @@ class OnboardingObserver < ActiveRecord::Observer
     # avoid join_request.joinable: we need to cast an Outing, not an Entourage
     outing = Outing.find(join_request.joinable_id)
 
-    return unless outing.online?
-
+    # the first steps webinar only validates the webinar step
     if outing.webinar? || outing.first_steps?
       return join_request.user.webinar_or_first_steps_joined!
     end
 
-    if outing.papotage?
-      return join_request.user.papotages_joined!
-    end
+    # any other event (papotage, visio, physical) validates the last step
+    outing_type = Onboarding::UserEventsTracking.first_event_type(outing)
+    join_request.user.first_event_joined!(outing_type) if outing_type
   end
 
   def action_join_request_neighborhood join_request
