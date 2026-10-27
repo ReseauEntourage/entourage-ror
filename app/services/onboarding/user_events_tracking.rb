@@ -7,6 +7,18 @@ module Onboarding
       'neighborhood_national' => :neighborhood_national_joined_skipped!
     }.freeze
 
+    # Last step of the welcome journey: registering to any event but the first steps webinar.
+    FIRST_EVENT_TYPES = %w[papotage visio physique].freeze
+
+    # @return [String, nil] the type to track for the "first event" step, nil when the outing
+    #   is the first steps webinar (it only validates the webinar step)
+    def self.first_event_type(outing)
+      return if outing.webinar? || outing.first_steps?
+      return 'papotage' if outing.papotage?
+
+      outing.online? ? 'visio' : 'physique'
+    end
+
     module UserConcern
       extend ActiveSupport::Concern
 
@@ -34,6 +46,15 @@ module Onboarding
 
       def papotages_joined!
         Event.track('onboarding.outing.papotages', user_id: self.id)
+      end
+
+      # Registration to an event other than the first steps webinar. The legacy event
+      # onboarding.outing.papotages is still tracked for papotages: the apps already
+      # installed read it to tick the last step.
+      def first_event_joined!(outing_type)
+        Event.track('onboarding.outing.first_event', user_id: self.id, properties: { outing_type: outing_type })
+
+        papotages_joined! if outing_type == 'papotage'
       end
 
       def papotages_joined_skipped!
