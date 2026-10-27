@@ -2,17 +2,17 @@ class Event < ApplicationRecord
   belongs_to :user
 
   INSERT_SQL = <<~SQL.freeze
-    INSERT INTO events (name, user_id, created_at)
-    VALUES (%s, %s, %s)
+    INSERT INTO events (name, user_id, created_at, properties)
+    VALUES (%s, %s, %s, %s)
     ON CONFLICT DO NOTHING
   SQL
 
-  def self.track name, user_id:, at: Time.now
+  def self.track name, user_id:, at: Time.now, properties: nil
     return unless user_id.present?
     return unless valid_event_name?(name)
 
     connection.execute(
-      INSERT_SQL % [name, user_id, at].map { |v| connection.quote(v) }
+      INSERT_SQL % [name, user_id, at, properties&.to_json].map { |v| connection.quote(v) }
     ).clear
   rescue ActiveRecord::StatementInvalid => e
     Rails.logger.warn(e.message)
