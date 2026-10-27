@@ -84,6 +84,16 @@ describe Onboarding::UserEventsTracking do
     end
   end
 
+  # the engagement of a member comes from what he does (messages, registrations, actions...), never
+  # from the onboarding events: a skipped step only writes the events table
+  describe 'a skipped step is not an engagement' do
+    it 'writes nothing but events' do
+      expect {
+        Onboarding::UserEventsTracking::SKIPPABLE_STEPS.each_key { |step| user.onboarding_step_skipped!(step) }
+      }.not_to change { [DenormDailyEngagementsWithType.count, JoinRequest.count, ChatMessage.count, Entourage.count] }
+    end
+  end
+
   describe 'welcome journey removal' do
     def removed_events
       Event.where(user: user, name: 'onboarding.parcours.removed')

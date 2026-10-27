@@ -8,6 +8,8 @@ class UnseenResourceWelcomeJob
     return unless user
     return if user.deleted? || user.blocked?
     return unless user.is_offer_help? || user.is_ask_for_help?
+    # step skipped by the member, or journey removed from the home
+    return unless Onboarding::Journey.new(user).reminders_allowed?('welcome_watched')
 
     welcome_video = Resource.find_by(tag: :welcome)
     return unless welcome_video
