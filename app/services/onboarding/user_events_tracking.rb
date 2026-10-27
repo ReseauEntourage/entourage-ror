@@ -29,44 +29,54 @@ module Onboarding
       end
 
       def welcome_watched!
-        Event.track('onboarding.resource.welcome_watched', user_id: self.id)
+        track_onboarding_step('onboarding.resource.welcome_watched')
       end
 
       def welcome_watched_skipped!
-        Event.track('onboarding.resource.welcome_watched_skipped', user_id: self.id)
+        track_onboarding_step('onboarding.resource.welcome_watched_skipped')
       end
 
       def webinar_or_first_steps_joined!
-        Event.track('onboarding.outing.webinar_or_first_steps', user_id: self.id)
+        track_onboarding_step('onboarding.outing.webinar_or_first_steps')
       end
 
       def webinar_or_first_steps_joined_skipped!
-        Event.track('onboarding.outing.webinar_or_first_steps_skipped', user_id: self.id)
+        track_onboarding_step('onboarding.outing.webinar_or_first_steps_skipped')
       end
 
       def papotages_joined!
-        Event.track('onboarding.outing.papotages', user_id: self.id)
+        track_onboarding_step('onboarding.outing.papotages')
       end
 
       # Registration to an event other than the first steps webinar. The legacy event
       # onboarding.outing.papotages is still tracked for papotages: the apps already
       # installed read it to tick the last step.
       def first_event_joined!(outing_type)
-        Event.track('onboarding.outing.first_event', user_id: self.id, properties: { outing_type: outing_type })
+        track_onboarding_step('onboarding.outing.first_event', properties: { outing_type: outing_type })
 
         papotages_joined! if outing_type == 'papotage'
       end
 
       def papotages_joined_skipped!
-        Event.track('onboarding.outing.papotages_skipped', user_id: self.id)
+        track_onboarding_step('onboarding.outing.papotages_skipped')
       end
 
       def neighborhood_national_joined!
-        Event.track('onboarding.neighborhood.national', user_id: self.id)
+        track_onboarding_step('onboarding.neighborhood.national')
       end
 
       def neighborhood_national_joined_skipped!
-        Event.track('onboarding.neighborhood.national_skipped', user_id: self.id)
+        track_onboarding_step('onboarding.neighborhood.national_skipped')
+      end
+
+      # Removes the welcome journey from the home. Idempotent: the first removal reason is kept.
+      def hide_onboarding_journey!
+        Onboarding::Journey.new(self).hide!
+      end
+
+      # Persists the removal of the welcome journey when it is due
+      def sync_onboarding_journey!
+        Onboarding::Journey.new(self).sync!
       end
 
       def onboarding_step_skipped!(step)
@@ -78,6 +88,17 @@ module Onboarding
       end
 
       private
+
+      # Tracks a step of the welcome journey (done or skipped). The removal of the journey is
+      # persisted before, so that a step crossed after the delay does not restart the inactivity
+      # counter of a journey which has already expired, and after, in case the step completes it.
+      def track_onboarding_step(name, properties: nil)
+        sync_onboarding_journey!
+
+        Event.track(name, user_id: self.id, properties: properties)
+
+        sync_onboarding_journey!
+      end
 
       def filled_blank_attribute?(changes, attribute)
         changes.key?(attribute) &&
