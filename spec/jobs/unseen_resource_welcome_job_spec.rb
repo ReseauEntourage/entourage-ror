@@ -36,6 +36,42 @@ RSpec.describe UnseenResourceWelcomeJob do
       end
     end
 
+    context 'when the member skipped the video step' do
+      before { user.welcome_watched_skipped! }
+
+      it 'does not send' do
+        expect_any_instance_of(PushNotificationService).not_to receive(:send_notification)
+        subject
+      end
+    end
+
+    context 'when the member skipped another step' do
+      before { user.papotages_joined_skipped! }
+
+      it 'sends a push notification' do
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification)
+        subject
+      end
+    end
+
+    context 'when the member hid the journey' do
+      before { user.hide_onboarding_journey! }
+
+      it 'does not send' do
+        expect_any_instance_of(PushNotificationService).not_to receive(:send_notification)
+        subject
+      end
+    end
+
+    context 'when the journey is over' do
+      before { user.update_columns(created_at: 20.days.ago, first_sign_in_at: 20.days.ago) }
+
+      it 'does not send' do
+        expect_any_instance_of(PushNotificationService).not_to receive(:send_notification)
+        subject
+      end
+    end
+
     context 'when notification was already sent' do
       before { Event.track(UnseenResourceWelcomeJob::EVENT_NAME, user_id: user.id) }
 
