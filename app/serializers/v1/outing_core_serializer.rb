@@ -18,6 +18,7 @@ module V1
                :metadata,
                :interests,
                :recurrency,
+               :members_count,
                :created_at,
                :updated_at
 
