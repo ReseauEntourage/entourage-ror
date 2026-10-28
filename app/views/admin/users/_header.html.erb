@@ -13,22 +13,23 @@
   </li>
 </ol>
 
-<div class="h1">
-  <span>
+<h1 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px">
+  <span style="display: flex; align-items: center; gap: 8px">
     <% if [@user.first_name, @user.last_name].any?(&:present?) %>
       <%= @user.first_name %> <%= @user.last_name %>
     <% else %>
       Utilisateur #<%= @user.id %>
     <% end %>
+    <span class="custom-badge <%= @user.engagement.engaged? ? 'success' : 'info' %>" title="Niveau d'engagement"><%= @user.engagement.badge %></span>
   </span>
-  <div class="pull-right">
+  <span>
     <%
       uuid = ConversationService.list_for_participants([current_admin.id, @user.id])
     %>
     <%= link_to "Contacter", admin_conversation_path(uuid), class: "btn btn-primary" %>
     <%= link_to (@user.blocked? ? "Débloquer" : "Bloquer"), edit_block_admin_user_path(@user), class: "btn btn-success" %>
-  </div>
-</div>
+  </span>
+</h1>
 
 <%= render partial: "block_panel", locals: { user: @user } %>
 
@@ -65,6 +66,9 @@
   <li role="presentation" class="<%= :active if tab == :engagement %>">
     <%= link_to "Engagement", engagement_admin_user_path(@user) %>
   </li>
+  <li role="presentation" class="<%= :active if tab == :timeline %>">
+    <%= link_to "Activité", timeline_admin_user_path(@user) %>
+  </li>
   <li role="presentation" class="<%= :active if tab == :neighborhoods %>">
     <%= link_to "Groupes de voisins", neighborhoods_admin_user_path(@user) %>
   </li>
@@ -76,6 +80,9 @@
   </li>
   <li role="presentation" class="<%= :active if tab == :blocked_users %>">
     <%= link_to "Blocages", blocked_users_admin_user_path(@user) %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :notes %>">
+    <%= link_to "Notes internes (#{@user.admin_notes.count})", notes_admin_user_path(@user) %>
   </li>
   <% if current_user.super_admin? %>
     <li role="presentation" class="<%= :active if tab == :rpush_notifications %>">

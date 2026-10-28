@@ -255,6 +255,8 @@ fr:
         action_participations_count: Nombre d'actions rejointes
         outing_participations_count: Nombre d'événements rejoints
         conversation_participations_count: Nombre de conversations rejointes
+        travel_distance: Distance de déplacement acceptée (km)
+        lang: Langue de communication
       user_blocked_user:
         user: Utilisateur
         blocked_user: Utilisateur bloqué
@@ -548,6 +550,7 @@ fr:
         offer_help: Voisin solidaire
         ask_for_help: Personne préca
         organization: Association
+        entourage_volunteer: Bénévole Entourage
         goal_not_known: Non défini
         all: Tous profils
       engagements:

@@ -1,0 +1,13 @@
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Mots sensibles", admin_sensitive_words_path %></li>
+    <li class="active"><%= @word.raw %></li>
+  </ol>
+
+  <%= render partial: 'form' %>
+
+  <div class="text-right">
+    <%= link_to "Supprimer ce mot", [:admin, @word], method: :delete,
+          data: { confirm: "Supprimer #{@word.raw} ?" }, class: "btn btn-danger" %>
+  </div>
+</div>

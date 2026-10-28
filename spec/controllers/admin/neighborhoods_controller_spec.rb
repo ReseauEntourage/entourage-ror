@@ -179,6 +179,19 @@ describe Admin::NeighborhoodsController do
     it { expect(assigns(:scheduled_publications).map(&:id)).to eq([scheduled_publication.id]) }
   end
 
+  describe 'GET #show_posts with a video post' do
+    render_views
+
+    let!(:neighborhood) { create(:neighborhood) }
+    let!(:video_post) { create(:chat_message, messageable: neighborhood, status: :active, content: nil, video_url: 'https://www.youtube.com/embed/abc123') }
+
+    before { get :show_posts, params: { id: neighborhood.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).to include('https://www.youtube.com/embed/abc123') }
+    it { expect(response.body).to include('Modifier la vidéo') }
+  end
+
   describe 'GET #show_posts with a failed scheduled post' do
     render_views
 

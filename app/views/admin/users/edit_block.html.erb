@@ -1,14 +1,12 @@
 <div class="col-md-10 col-md-offset-1">
   <div class="row">
-    <div class="h1">
-      <span>
-        <% if [@user.first_name, @user.last_name].any?(&:present?) %>
-          <%= @user.first_name %> <%= @user.last_name %>
-        <% else %>
-          Utilisateur #<%= @user.id %>
-        <% end %>
-      </span>
-    </div>
+    <h1>
+      <% if [@user.first_name, @user.last_name].any?(&:present?) %>
+        <%= @user.first_name %> <%= @user.last_name %>
+      <% else %>
+        Utilisateur #<%= @user.id %>
+      <% end %>
+    </h1>
 
     <% if @user.blocked? %>
       <%= render partial: "block_panel", locals: { user: @user } %>

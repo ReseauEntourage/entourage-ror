@@ -55,4 +55,10 @@ module UsersHelper
       [t("community.user.roles.#{role}"), role]
     end
   end
+
+  def user_interests
+    Tag.interest_list.map do |interest|
+      [t("tags.interests.#{interest}"), interest]
+    end
+  end
 end

@@ -23,6 +23,7 @@ $buttons-color: #ef662f;
 @import "header";
 @import "components";
 @import 'layout';
+@import "admin_design_system";
 
 
 body.with-navbar { padding-top: $navbar-height; }
@@ -73,7 +74,9 @@ li.user-card {
 }
 
 body.fix-legacy-layout {
-  margin-top: 100px;
+  // the admin navbar shrank from 80px to 60px (see admin_design_system.css.scss);
+  // keep the same ~20px breathing room below it
+  margin-top: 80px;
 }
 
 .entourages.index .table {

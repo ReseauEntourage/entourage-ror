@@ -1,68 +1,33 @@
 <style>
-  /* jobs */
-  .alert-jobs {
-    color: #31708f;
-    background-color: #d9edf7;
-    border-color: #b8daff;
+  .test-alert {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
   }
 
-  .btn-jobs {
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+  .test-alert-body {
+    flex-grow: 1;
   }
+
+  /* jobs */
+  .alert-jobs { color: var(--bo-info); background-color: var(--bo-info-soft); border-color: transparent; }
+  .btn-jobs { color: #fff; background-color: var(--bo-info); border-color: var(--bo-info); }
 
   /* notifications */
-  .alert-notifications {
-    color: #383d41;
-    background-color: #e2e3e5;
-    border-color: #d6d8db;
-  }
-
-  .btn-notifications {
-    color: #ffffff;
-    background-color: #929395;
-    border-color: #727375;
-  }
+  .alert-notifications { color: var(--bo-dark); background-color: var(--bo-dark-soft); border-color: transparent; }
+  .btn-notifications { color: #fff; background-color: var(--bo-dark); border-color: var(--bo-dark); }
 
   /* sms */
-  .alert-sms {
-    color: #8a6d3b;
-    background-color: #fcf8e3;
-    border-color: #faebcc;
-  }
-
-  .btn-sms {
-    color: #fff;
-    background-color: #f0ad4e;
-    border-color: #eea236;
-  }
+  .alert-sms { color: var(--bo-warning); background-color: var(--bo-warning-soft); border-color: transparent; }
+  .btn-sms { color: #fff; background-color: var(--bo-warning); border-color: var(--bo-warning); }
 
   /* emails */
-  .alert-emails {
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #d6e9c6;
-  }
-
-  .btn-emails {
-    color: #fff;
-    background-color: #17a2b8;
-    border-color: #17a2b8;
-  }
+  .alert-emails { color: var(--bo-success); background-color: var(--bo-success-soft); border-color: transparent; }
+  .btn-emails { color: #fff; background-color: var(--bo-success); border-color: var(--bo-success); }
 
   /* salesforce */
-  .alert-salesforces {
-    color: #636464;
-    background-color: #eeeeee;
-    border-color: #ededee;
-  }
-
-  .btn-salesforces {
-    color: #000;
-    background-color: #e8e9ea;
-    border-color: #e8e9ea;
-  }
+  .alert-salesforces { color: var(--bo-ink-soft); background-color: var(--bo-paper); border-color: var(--bo-line); }
+  .btn-salesforces { color: var(--bo-ink); background-color: var(--bo-paper-raised); border-color: var(--bo-line-strong); }
 </style>
 
 <div class="container my-4">
@@ -70,8 +35,8 @@
 
   <!-- Jobs -->
   <div id="push-notification-trigger-job">
-    <div class="alert alert-jobs" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-jobs test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Jobs</b><br/>
         <b>Prérequis</b> : aucun.<br/>
         <b>Attendu</b> : pas de message d'erreur => job créé.
@@ -89,8 +54,8 @@
   </div>
 
   <div id="notification-job">
-    <div class="alert alert-jobs" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-jobs test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Jobs</b><br/>
         <b>Prérequis</b> : aucun.<br/>
         <b>Attendu</b> : pas de message d'erreur => job créé, recevoir une push notif.
@@ -109,8 +74,8 @@
 
   <!-- Notifications -->
   <div id="user-smalltalk-on-almost-match">
-    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-notifications test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Notifications</b><br/>
         <b>Prérequis</b> : avoir créé une demande, qu'elle ait déjà été matchée ou non.<br/>
         <b>Attendu</b> : recevoir une notification.
@@ -128,8 +93,8 @@
   </div>
 
   <div id="user-reaction-on-create">
-    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-notifications test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Notifications</b><br/>
         <b>Prérequis</b> : un utilisateur doit avoir réagi à l'un de nos messages.<br/>
         <b>Attendu</b> : recevoir une notification.
@@ -147,8 +112,8 @@
   </div>
 
   <div id="ios-with-rpush">
-    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-notifications test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Notifications</b><br/>
         <b>Prérequis</b> : avoir un compte sur ios.<br/>
         <b>Attendu</b> : recevoir une notification.
@@ -166,8 +131,8 @@
   </div>
 
   <div id="ios-without-rpush">
-    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-notifications test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Notifications</b><br/>
         <b>Prérequis</b> : avoir un compte sur ios.<br/>
         <b>Attendu</b> : recevoir une notification.
@@ -185,8 +150,8 @@
   </div>
 
   <div id="android-with-rpush">
-    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-notifications test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Notifications</b><br/>
         <b>Prérequis</b> : avoir un compte sur android.<br/>
         <b>Attendu</b> : recevoir une notification.
@@ -204,8 +169,8 @@
   </div>
 
   <div id="android-without-rpush">
-    <div class="alert alert-notifications" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-notifications test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Notifications</b><br/>
         <b>Prérequis</b> : avoir un compte sur android.<br/>
         <b>Attendu</b> : recevoir une notification.
@@ -224,8 +189,8 @@
 
   <!-- Sms -->
   <div id="send-welcome">
-    <div class="alert alert-sms" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-sms test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Sms</b><br/>
         <b>Prérequis</b> : aucun.<br/>
         <b>Attendu</b> : recevoir une notification avec un code "xxxxxx".
@@ -238,8 +203,8 @@
   </div>
 
   <div id="regenerate">
-    <div class="alert alert-sms" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-sms test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Sms</b><br/>
         <b>Prérequis</b> : aucun.<br/>
         <b>Attendu</b> : recevoir une notification avec un nouveau code.
@@ -253,8 +218,8 @@
 
   <!-- Email -->
   <div id="weekly-planning">
-    <div class="alert alert-emails" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-emails test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Email</b><br/>
         <b>Prérequis</b> : des actions et événements doivent exister.<br/>
         <b>Attendu</b> : recevoir un email.
@@ -266,8 +231,8 @@
     <%= link_to "Weekly planning", weekly_planning_admin_testings_emails_path(id: "weekly-planning"), method: :post, class: "btn btn-emails", remote: true %>
   </div>
 
-  <div class="alert alert-success" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-    <div style="flex-grow: 1">
+  <div class="alert alert-success test-alert" role="alert">
+    <div class="test-alert-body">
       <b>Email</b><br/>
       <b>Prérequis</b> : l'admin doit avoir un email en @entourage.social si on est sur la recette.<br/>
       <b>Attendu</b> : recevoir un email de participation à un événement.
@@ -278,8 +243,8 @@
 
   <!-- Salesforce -->
   <div id="outing-sync">
-    <div class="alert alert-salesforces" role="alert" style="display: flex; align-items: center; margin-top: 30px">
-      <div style="flex-grow: 1">
+    <div class="alert alert-salesforces test-alert" role="alert">
+      <div class="test-alert-body">
         <b>Salesforce</b><br/>
         <b>Prérequis</b> : un événement pas encore synchronisé, en présentiel, créé par un admin ou un animateur Entourage, doit exister.<br/>
         <b>Attendu</b> : l'événement doit être créé sur Salesforce.

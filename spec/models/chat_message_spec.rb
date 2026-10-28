@@ -268,6 +268,13 @@ RSpec.describe ChatMessage, type: :model do
     end
   end
 
+  describe 'video_url' do
+    it { expect(build(:chat_message, content: nil, video_url: 'https://www.youtube.com/embed/abc123')).to be_valid }
+    it { expect(build(:chat_message, content: nil, video_url: nil)).not_to be_valid }
+    it { expect(build(:chat_message, content: 'foo', video_url: 'https://vimeo.com/123')).not_to be_valid }
+    it { expect(build(:chat_message, content: 'foo', video_url: nil)).to be_valid }
+  end
+
   describe 'survey' do
     let(:survey) { create :survey }
     let(:chat_message) { create :chat_message, survey: survey }

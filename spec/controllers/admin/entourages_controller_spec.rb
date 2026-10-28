@@ -121,6 +121,57 @@ describe Admin::EntouragesController do
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 
+  describe 'GET #show_messages with a video post' do
+    render_views
+
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    let!(:video_post) { FactoryBot.create(:chat_message, messageable: entourage, content: 'regardez cette vidéo', video_url: 'https://www.youtube.com/embed/abc123') }
+
+    before do
+      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil))
+      get :show_messages, params: { id: entourage.to_param }
+    end
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).to include('https://www.youtube.com/embed/abc123') }
+    it { expect(response.body).to include('Modifier la vidéo') }
+  end
+
+  describe 'POST message' do
+    context 'commenting (parent_id) on an outing' do
+      let(:outing) { FactoryBot.create(:outing) }
+      let(:post_message) { FactoryBot.create(:chat_message, messageable: outing) }
+
+      before {
+        post :message, params: { id: outing.to_param, chat_message: { content: 'nice', parent_id: post_message.id } }
+      }
+
+      it { expect(response).to redirect_to(show_messages_admin_entourage_path(outing)) }
+      it { expect(ChatMessage.where(content: 'nice')).to be_empty }
+    end
+
+    context 'posting a top-level message on an outing' do
+      let(:outing) { FactoryBot.create(:outing) }
+
+      before {
+        post :message, params: { id: outing.to_param, chat_message: { content: 'nice' } }
+      }
+
+      it { expect(ChatMessage.where(content: 'nice')).to be_present }
+    end
+
+    context 'commenting (parent_id) on a regular entourage' do
+      let(:entourage) { FactoryBot.create(:entourage) }
+      let(:post_message) { FactoryBot.create(:chat_message, messageable: entourage) }
+
+      before {
+        post :message, params: { id: entourage.to_param, chat_message: { content: 'nice', parent_id: post_message.id } }
+      }
+
+      it { expect(ChatMessage.where(content: 'nice')).to be_present }
+    end
+  end
+
   describe 'DELETE destroy_message' do
     context 'on chat_message' do
       let(:entourage) { create(:entourage) }
@@ -255,6 +306,120 @@ describe Admin::EntouragesController do
       )}
 
       it { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
+    end
+  end
+
+  describe 'POST bulk_assign_moderator' do
+    let!(:entourage1) { FactoryBot.create(:entourage) }
+    let!(:entourage2) { FactoryBot.create(:entourage) }
+    let!(:moderator) { FactoryBot.create(:pro_user) }
+
+    context 'with a moderator and selected entourages' do
+      before do
+        post :bulk_assign_moderator, params: { entourage_ids: [entourage1.id, entourage2.id], assign_moderator_id: moderator.id }
+      end
+
+      it { expect(entourage1.reload.moderation.moderator_id).to eq(moderator.id) }
+      it { expect(entourage2.reload.moderation.moderator_id).to eq(moderator.id) }
+    end
+
+    context 'without a moderator selected' do
+      before do
+        post :bulk_assign_moderator, params: { entourage_ids: [entourage1.id], assign_moderator_id: '' }
+      end
+
+      it { expect(entourage1.reload.moderation&.moderator_id).not_to eq(moderator.id) }
+    end
+
+    context 'without any selected entourage' do
+      before do
+        post :bulk_assign_moderator, params: { entourage_ids: [], assign_moderator_id: moderator.id }
+      end
+
+      it { expect(entourage1.reload.moderation&.moderator_id).not_to eq(moderator.id) }
+    end
+  end
+
+  describe 'GET show_history' do
+    render_views
+
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    before { get :show_history, params: { id: entourage.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(assigns(:histories).map { |h| h[:kind] }).to include(:creation) }
+  end
+
+  describe 'GET show_notes' do
+    render_views
+
+    let!(:entourage) { FactoryBot.create(:entourage) }
+    before { get :show_notes, params: { id: entourage.id } }
+
+    it { expect(response).to be_successful }
+  end
+
+  describe 'GET show_messages rendering (regression: no comment entry point on outings)' do
+    render_views
+
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:post_message) { FactoryBot.create(:chat_message, messageable: outing, content: 'hello') }
+
+    before do
+      allow_any_instance_of(Entourage).to receive(:sf).and_return(double(url: nil))
+      get :show_messages, params: { id: outing.id }
+    end
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).not_to include('Ajouter un commentaire') }
+  end
+
+  describe 'GET show_comments rendering (regression: no reply form on outings)' do
+    render_views
+
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:post_message) { FactoryBot.create(:chat_message, messageable: outing, content: 'hello') }
+    let!(:comment) { FactoryBot.create(:chat_message, messageable: outing, content: 'a comment', parent: post_message) }
+
+    before do
+      allow_any_instance_of(Entourage).to receive(:sf).and_return(double(url: nil))
+      get :show_comments, params: { id: outing.id, message_id: post_message.id }
+    end
+
+    it { expect(response).to be_successful }
+    it { expect(response.body).not_to include('conversation-message-box') }
+  end
+
+  describe 'GET index rendering (regression: ransack allowlist)' do
+    render_views
+
+    it 'renders with no params' do
+      get :index
+
+      expect(response).to be_successful
+    end
+
+    it 'renders when filtering on moderator_id=none' do
+      get :index, params: { moderator_id: 'none' }
+
+      expect(response).to be_successful
+    end
+
+    it 'renders when filtering on a specific moderator_id' do
+      get :index, params: { moderator_id: user.id }
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe 'Entourage.ransack display_category_eq (regression)' do
+    let!(:social) { FactoryBot.create(:entourage, display_category: 'social') }
+    let!(:other) { FactoryBot.create(:entourage, display_category: 'other') }
+
+    it 'actually filters by display_category' do
+      result = Entourage.ransack(display_category_eq: 'social').result
+      expect(result).to include(social)
+      expect(result).not_to include(other)
     end
   end
 end

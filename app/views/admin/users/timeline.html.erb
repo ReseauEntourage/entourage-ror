@@ -1,0 +1,60 @@
+<div class="col-md-10 col-md-offset-1">
+  <div class="row">
+    <%= render 'header', tab: :timeline %>
+  </div>
+
+  <div class="row">
+    <h2 style="margin: 0 0 10px">Résumé</h2>
+    <div class="stat-grid" style="margin: 0 0 20px">
+      <div class="stat-tile">
+        <div class="n"><%= @user.entourages_count %></div>
+        <div class="l">Entourages créés</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.actions_count %></div>
+        <div class="l">Actions rejointes</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.outings_count %></div>
+        <div class="l">Événements rejoints</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.neighborhoods_count %></div>
+        <div class="l">Groupes de voisins rejoints</div>
+      </div>
+      <div class="stat-tile">
+        <div class="n"><%= @user.engagement.badge %></div>
+        <div class="l">Niveau d'engagement</div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Activité (créations et participations)</div>
+      <div class="panel-body">
+        <% if @timeline.empty? %>
+          <p class="text-muted">Aucune activité enregistrée.</p>
+        <% else %>
+          <ul class="list-unstyled">
+            <% @timeline.each do |item| %>
+              <li style="border-top: 1px solid var(--bo-line); padding: 10px 0">
+                <div>
+                  <% if [:joined_neighborhood, :created_neighborhood].include?(item[:kind]) %>
+                    <%= link_to item[:label], edit_admin_neighborhood_path(item[:record]) %>
+                  <% else %>
+                    <%= link_to item[:label], admin_entourage_path(item[:record]) %>
+                  <% end %>
+                </div>
+                <div class="text-muted" style="font-size: 12px">
+                  <%= l item[:date], format: "%-d %B %Y à %H:%M" %>
+                  <% if item[:moderator] %>
+                    &mdash; Modéré par <%= item[:moderator].full_name %>
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

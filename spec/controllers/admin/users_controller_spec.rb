@@ -115,6 +115,39 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index with profile=entourage_volunteer' do
+    let!(:admin) { admin_basic_login }
+    let!(:staff_partner) { FactoryBot.create(:partner, staff: true) }
+    let!(:ambassador) { FactoryBot.create(:public_user, targeting_profile: 'ambassador') }
+    let!(:riverain) { FactoryBot.create(:public_user, goal: 'offer_help') }
+
+    before { get :index, params: { profile: 'entourage_volunteer' } }
+
+    it { expect(assigns(:users)).to contain_exactly(ambassador) }
+  end
+
+  describe 'GET index with interests filter' do
+    let!(:admin) { admin_basic_login }
+    let!(:cook) { FactoryBot.create(:public_user, interest_list: 'cuisine') }
+    let!(:sporty) { FactoryBot.create(:public_user, interest_list: 'sport') }
+    let!(:no_interest) { FactoryBot.create(:public_user) }
+
+    before { get :index, params: { interests: ['cuisine'] } }
+
+    it { expect(assigns(:users)).to contain_exactly(cook) }
+  end
+
+  describe 'GET index association column' do
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner, name: 'Croix-Rouge') }
+    let!(:with_partner) { FactoryBot.create(:public_user, first_name: 'Ada', partner: partner) }
+    let!(:without_partner) { FactoryBot.create(:public_user, first_name: 'Bob') }
+
+    before { get :index, params: { search: with_partner.first_name } }
+
+    it { expect(assigns(:users).map(&:partner)).to eq([partner]) }
+  end
+
 
 
 
@@ -360,6 +393,169 @@ describe Admin::UsersController do
       before { put :validate, params: { id: blocked_user.to_param } }
       it { should redirect_to moderate_admin_users_path }
       it { expect(blocked_user.reload.validation_status).to eq('validated') }
+    end
+  end
+
+  describe 'POST bulk_block' do
+    let!(:admin) { admin_basic_login }
+    let!(:user1) { FactoryBot.create(:pro_user, validation_status: 'validated') }
+    let!(:user2) { FactoryBot.create(:pro_user, validation_status: 'validated') }
+
+    context 'without cnil_explanation' do
+      before { post :bulk_block, params: { user_ids: [user1.id, user2.id], cnil_explanation: '' } }
+
+      it { expect(user1.reload.validation_status).to eq('validated') }
+      it { expect(user2.reload.validation_status).to eq('validated') }
+    end
+
+    context 'without any selected user' do
+      before { post :bulk_block, params: { user_ids: [], cnil_explanation: 'raison' } }
+
+      it { expect(user1.reload.validation_status).to eq('validated') }
+    end
+
+    context 'with cnil_explanation and selected users' do
+      before { post :bulk_block, params: { user_ids: [user1.id, user2.id], cnil_explanation: 'raison' } }
+
+      it { expect(user1.reload.validation_status).to eq('blocked') }
+      it { expect(user2.reload.validation_status).to eq('blocked') }
+      it { expect(user1.reload.histories.count).to eq(1) }
+    end
+  end
+
+  describe 'GET index with postal_code_start_any' do
+    let!(:admin) { admin_basic_login }
+    let!(:paris_user) { FactoryBot.create(:public_user, community: admin.community) }
+    let!(:paris_address) { FactoryBot.create(:address, user: paris_user, postal_code: '75001', country: 'FR') }
+    let!(:lyon_user) { FactoryBot.create(:public_user, community: admin.community) }
+    let!(:lyon_address) { FactoryBot.create(:address, user: lyon_user, postal_code: '69001', country: 'FR') }
+
+    before { get :index, params: { q: { postal_code_start_any: ['75', '69'] } } }
+
+    it { expect(assigns(:users)).to include(paris_user, lyon_user) }
+  end
+
+  describe 'GET timeline' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, user: user) }
+
+    before { get :timeline, params: { id: user.id } }
+
+    it { expect(response).to be_successful }
+    it { expect(assigns(:timeline).map { |i| i[:record] }).to include(entourage) }
+  end
+
+  describe 'GET neighborhoods' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+    let!(:neighborhood) { FactoryBot.create(:neighborhood, participants: [user]) }
+    let!(:left_neighborhood) { FactoryBot.create(:neighborhood, cancelled_participants: [user]) }
+    let!(:post) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, content: 'hello') }
+
+    before { get :neighborhoods, params: { id: user.id } }
+
+    it { expect(response).to be_successful }
+
+    it 'excludes cancelled memberships' do
+      expect(assigns(:join_requests).map(&:joinable_id)).to contain_exactly(neighborhood.id)
+    end
+
+    it 'exposes the content created by the user' do
+      expect(assigns(:created_content).map { |i| i[:message] }).to contain_exactly(post)
+    end
+  end
+
+  describe 'GET index engagement badge' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:public_user) }
+
+    before { get :index }
+
+    it { expect(assigns(:users)).to include(user) }
+    it { expect { assigns(:users).each(&:engagement) }.not_to raise_error }
+  end
+
+  describe 'GET index with engagement filter (regression: ambiguous created_at)' do
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner) }
+    let!(:user) { FactoryBot.create(:public_user, partner: partner) }
+    let!(:address) { FactoryBot.create(:address, user: user) }
+
+    before do
+      FactoryBot.create(:denorm_daily_engagements_with_type, user: user, engagement_type: 'reaction', date: 1.day.ago.to_date)
+      ActiveRecord::Base.connection.execute("REFRESH MATERIALIZED VIEW engagement_levels")
+    end
+
+    it 'does not raise on ?engagement=engaged (address/partner joins made created_at ambiguous)' do
+      expect { get :index, params: { engagement: 'engaged' } }.not_to raise_error
+      expect(response).to be_successful
+      expect(assigns(:users)).to include(user)
+    end
+
+    it 'does not raise on ?engagement=not_engaged' do
+      expect { get :index, params: { engagement: 'not_engaged' } }.not_to raise_error
+      expect(response).to be_successful
+    end
+  end
+
+  describe 'rendering (regression: missing partial / template errors)' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+    let!(:partner) { FactoryBot.create(:partner) }
+    let!(:user) { FactoryBot.create(:public_user, partner: partner) }
+    let!(:entourage) { FactoryBot.create(:entourage, user: user) }
+    let!(:note) { FactoryBot.create(:admin_note, notable: user, author: admin) }
+
+    before do
+      # _header.html.erb links to Salesforce; stub the live API call, unrelated to what's under test here
+      allow_any_instance_of(User).to receive(:sf).and_return(double(url: nil, is_synchable?: false))
+    end
+
+    it 'renders index' do
+      get :index
+      expect(response).to be_successful
+    end
+
+    it 'renders edit (fiche header: notes tab, timeline tab, engagement badge)' do
+      get :edit, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders edit with clarified labels for travel_distance and lang' do
+      get :edit, params: { id: user.id }
+      expect(response.body).to include('Distance de déplacement')
+      expect(response.body).to include('Langue de communication')
+    end
+
+    it 'renders notes' do
+      get :notes, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders timeline' do
+      get :timeline, params: { id: user.id }
+      expect(response).to be_successful
+    end
+
+    it 'renders neighborhoods (contenus créés section)' do
+      neighborhood = FactoryBot.create(:neighborhood, participants: [user])
+      FactoryBot.create(:chat_message, messageable: neighborhood, user: user, content: 'hello')
+
+      get :neighborhoods, params: { id: user.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Contenus créés par #{user.first_name}")
+    end
+
+    it 'renders timeline with the entourage moderator when present' do
+      entourage.moderation.update!(moderator: admin)
+
+      get :timeline, params: { id: user.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Modéré par #{admin.full_name}")
     end
   end
 end

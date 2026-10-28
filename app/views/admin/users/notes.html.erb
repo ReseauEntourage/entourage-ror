@@ -1,0 +1,9 @@
+<div class="col-md-10 col-md-offset-1">
+  <div class="row">
+    <%= render 'header', tab: :notes %>
+  </div>
+
+  <div class="row">
+    <%= render partial: "admin/admin_notes/notes", locals: { notable: @user } %>
+  </div>
+</div>

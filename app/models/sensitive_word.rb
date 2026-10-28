@@ -5,6 +5,8 @@ class SensitiveWord < ApplicationRecord
   SCOPES = %w(all public)
   OFFENSABLE_CATEGORIES = ['Arme', 'Insulte', 'Violence / Sexualité / Famille']
 
+  belongs_to :created_by, class_name: 'User', optional: true
+
   before_validation do
     next unless raw.present? && match_type.present? && (raw_changed? || match_type_changed?)
     self.pattern = SensitiveWord.pattern(raw, match_type)[:pattern]
@@ -55,6 +57,7 @@ class SensitiveWord < ApplicationRecord
   validates :raw, :pattern, :match_type, :scope, presence: true
   validates :match_type, inclusion: { in: MATCH_TYPES }
   validates :scope, inclusion: { in: SCOPES }
+  validates :pattern, uniqueness: { message: 'existe déjà (mot ou variante déjà présent)' }
 
   scope :with_categories, -> (categories) {
     return unless categories.any?

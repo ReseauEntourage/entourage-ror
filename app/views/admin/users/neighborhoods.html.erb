@@ -11,7 +11,6 @@
   <table class="table">
     <tr>
       <th>Nom</th>
-      <th title="Accepted : l'utilisateur est membre du groupe ; Cancelled : l'utilisateur a quitté le groupe">Statut ⓘ</th>
       <th>Posts créés</th>
       <th>Commentaires créés</th>
       <th>Posts non lus</th>
@@ -23,10 +22,44 @@
 
       <tr>
         <td><%= neighborhood.name %></td>
-        <td><%= join_request.status %></td>
         <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && ancestry.nil? } %></td>
         <td><%= chat_messages.count { |user_id, ancestry| @user.id == user_id && !ancestry.nil? } %></td>
         <td><%= join_request.unread_messages_count %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="row">
+  <label class="control-label">Contenus créés par <%= @user.first_name %></label>
+  <table class="table">
+    <tr>
+      <th>Groupe</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Extrait</th>
+      <th>Statut</th>
+      <th></th>
+    </tr>
+    <% if @created_content.empty? %>
+      <tr>
+        <td colspan="6" class="text-muted">Aucun contenu créé dans un groupe de voisins.</td>
+      </tr>
+    <% end %>
+    <% @created_content.each do |item| %>
+      <tr>
+        <td><%= item[:group].name %></td>
+        <td><%= item[:kind] == :post ? 'Post' : 'Commentaire' %></td>
+        <td><%= l item[:message].created_at, format: "%-d %B %Y à %H:%M" %></td>
+        <td><%= item[:extrait] %></td>
+        <td><%= item[:status_label] %></td>
+        <td>
+          <% if item[:kind] == :post %>
+            <%= link_to "Voir", show_posts_admin_neighborhood_path(item[:group]) %>
+          <% else %>
+            <%= link_to "Voir", show_post_comments_admin_neighborhood_path(item[:group], post_id: item[:message].parent_id) %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </table>
