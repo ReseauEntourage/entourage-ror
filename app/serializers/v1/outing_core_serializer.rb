@@ -17,6 +17,7 @@ module V1
                :online,
                :metadata,
                :interests,
+               :members_count,
                :recurrency,
                :created_at,
                :updated_at
