@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     services:
       db:
@@ -58,7 +58,7 @@ jobs:
 
   deploy-api:
     needs: test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -82,7 +82,7 @@ jobs:
 
   deploy-backoffice:
     needs: test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
