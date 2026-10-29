@@ -200,10 +200,55 @@ describe Api::V1::HomeController do
             'events' => [
               'onboarding.profile.first_name.entered',
             ],
+            'onboarding_journey' => { 'removed' => false, 'removed_reason' => nil },
             'badge' => UserServices::Engagement::BADGE_LABELS["SILENT"],
             'badges' => default_badges_json
           }
         }) }
+      end
+
+      context 'onboarding_journey' do
+        context 'running' do
+          before { request }
+
+          it { expect(subject['user']['onboarding_journey']).to eq('removed' => false, 'removed_reason' => nil) }
+        end
+
+        context 'hidden' do
+          before do
+            user.hide_onboarding_journey!
+            request
+          end
+
+          it { expect(subject['user']['onboarding_journey']).to eq('removed' => true, 'removed_reason' => 'hidden') }
+          it { expect(subject['user']['events']).to include('onboarding.parcours.removed') }
+        end
+
+        context 'expired: the removal is persisted when the summary is read' do
+          before { user.update_columns(created_at: 31.days.ago, first_sign_in_at: 31.days.ago) }
+
+          it 'removes it for good' do
+            expect { request }.to change { Event.where(user_id: user.id, name: 'onboarding.parcours.removed').count }.by(1)
+
+            expect(subject['user']['onboarding_journey']).to eq('removed' => true, 'removed_reason' => 'inactivity')
+            expect(subject['user']['events']).to include('onboarding.parcours.removed')
+          end
+        end
+
+        context 'already registered to an event: the last step is validated' do
+          let(:physical_outing) { FactoryBot.create(:outing, :outing_class, online: false, title: 'Balade', sf_category: :convivialite) }
+
+          before do
+            FactoryBot.create(:join_request, joinable: physical_outing, user: user, status: :accepted)
+            Event.where(user_id: user.id, name: ['onboarding.outing.first_event', 'onboarding.outing.papotages']).delete_all
+          end
+
+          it 'tracks the first event' do
+            request
+
+            expect(subject['user']['events']).to include('onboarding.outing.first_event')
+          end
+        end
       end
 
       context "with signable_permission" do

@@ -1537,6 +1537,98 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     pending "add some examples to (or delete) #{__FILE__}"
   end
 
+  describe 'POST onboarding_step_skipped' do
+    let!(:user) { create :public_user }
+
+    subject { post :onboarding_step_skipped, params: { step: step, token: user.token } }
+
+    {
+      'welcome_watched' => 'onboarding.resource.welcome_watched_skipped',
+      'webinar_or_first_steps' => 'onboarding.outing.webinar_or_first_steps_skipped',
+      'papotages' => 'onboarding.outing.papotages_skipped',
+      'neighborhood_national' => 'onboarding.neighborhood.national_skipped'
+    }.each do |skipped_step, event_name|
+      context "step #{skipped_step}" do
+        let(:step) { skipped_step }
+
+        it { expect { subject }.to change { Event.where(user: user, name: event_name).count }.by(1) }
+        it { subject; expect(response.status).to eq(200) }
+      end
+    end
+
+    context 'step already skipped' do
+      let(:step) { 'papotages' }
+
+      before { user.papotages_joined_skipped! }
+
+      it { expect { subject }.not_to change { Event.count } }
+      it { subject; expect(response.status).to eq(200) }
+    end
+
+    context 'invalid step' do
+      let(:step) { 'foo' }
+
+      it { expect { subject }.not_to change { Event.count } }
+      it { subject; expect(response.status).to eq(400) }
+      it { subject; expect(result['error']['code']).to eq('INVALID_ONBOARDING_STEP') }
+    end
+
+    context 'missing step' do
+      let(:step) { nil }
+
+      it { subject; expect(response.status).to eq(400) }
+    end
+
+    context 'not signed in' do
+      let(:step) { 'papotages' }
+
+      before { post :onboarding_step_skipped, params: { step: step } }
+
+      it { expect(response.status).to eq(401) }
+    end
+  end
+
+  describe 'POST onboarding_journey_hidden' do
+    let!(:user) { create :public_user }
+
+    subject { post :onboarding_journey_hidden, params: { token: user.token } }
+
+    def removed_events
+      Event.where(user: user, name: 'onboarding.parcours.removed')
+    end
+
+    it { expect { subject }.to change { removed_events.count }.by(1) }
+    it { subject; expect(removed_events.first.properties).to eq('reason' => 'hidden') }
+    it { subject; expect(response.status).to eq(200) }
+    it { subject; expect(result).to eq('onboarding_journey' => { 'removed' => true, 'removed_reason' => 'hidden' }) }
+
+    context 'already hidden' do
+      before { user.hide_onboarding_journey! }
+
+      it { expect { subject }.not_to change { Event.count } }
+      it { subject; expect(response.status).to eq(200) }
+      it { subject; expect(result['onboarding_journey']['removed_reason']).to eq('hidden') }
+    end
+
+    context 'already removed for another reason' do
+      before { user.update_columns(created_at: 20.days.ago, first_sign_in_at: 20.days.ago) }
+
+      it 'keeps the first reason' do
+        subject
+
+        expect(removed_events.count).to eq(1)
+        expect(result['onboarding_journey']['removed_reason']).to eq('inactivity')
+      end
+    end
+
+    context 'not signed in' do
+      before { post :onboarding_journey_hidden }
+
+      it { expect(response.status).to eq(401) }
+      it { expect(Event.where(name: 'onboarding.parcours.removed').count).to eq(0) }
+    end
+  end
+
   describe 'POST ethics_charter_signed' do
     let(:user) { create :public_user }
 

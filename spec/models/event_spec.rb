@@ -20,6 +20,29 @@ RSpec.describe Event, type: :model do
       end
     end
 
+    context 'without properties' do
+      it 'stores no properties' do
+        Event.track('onboarding.resource.welcome_watched', user_id: user.id)
+
+        expect(Event.find_by(user_id: user.id).properties).to be_nil
+      end
+    end
+
+    context 'with properties' do
+      it 'stores them as json' do
+        Event.track('onboarding.outing.first_event', user_id: user.id, properties: { outing_type: 'visio' })
+
+        expect(Event.find_by(user_id: user.id, name: 'onboarding.outing.first_event').properties).to eq('outing_type' => 'visio')
+      end
+
+      it 'keeps the first event when the same event is tracked twice' do
+        Event.track('onboarding.outing.first_event', user_id: user.id, properties: { outing_type: 'visio' })
+        Event.track('onboarding.outing.first_event', user_id: user.id, properties: { outing_type: 'physique' })
+
+        expect(Event.where(user_id: user.id, name: 'onboarding.outing.first_event').pluck(:properties)).to eq([{ 'outing_type' => 'visio' }])
+      end
+    end
+
     context 'when event name is invalid (not in enum)' do
       let(:subject) { Event.track('invalid.event.name', user_id: user.id) }
 
@@ -47,6 +70,11 @@ RSpec.describe Event, type: :model do
         Event.valid_event_name?('totally.invalid.event')
       ).to be false
     end
+  end
+
+  describe 'journey event names' do
+    it { expect(Event.valid_event_name?('onboarding.outing.first_event')).to be true }
+    it { expect(Event.valid_event_name?('onboarding.parcours.removed')).to be true }
   end
 
   describe '.valid_event_names' do
