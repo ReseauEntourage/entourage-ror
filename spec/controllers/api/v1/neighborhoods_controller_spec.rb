@@ -543,6 +543,17 @@ describe Api::V1::NeighborhoodsController, type: :controller do
       }]) }
     end
 
+    describe 'with outing and participants' do
+      let(:outing) { create :outing, :outing_class, participants: [create(:pro_user), create(:public_user)] }
+      let(:neighborhood) { create :neighborhood, outings: [outing] }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']['future_outings'].count).to eq(1) }
+      it { expect(result['neighborhood']['future_outings'][0]['members_count']).to eq(2) }
+    end
+
     describe 'with online outing created by admin' do
       let!(:online) { create :outing, :outing_class, online: true, user: admin }
       let(:neighborhood) { create :neighborhood }
