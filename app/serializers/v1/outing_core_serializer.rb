@@ -19,7 +19,6 @@ module V1
                :interests,
                :members_count,
                :recurrency,
-               :members_count,
                :created_at,
                :updated_at
 
