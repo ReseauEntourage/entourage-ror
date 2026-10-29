@@ -47,10 +47,13 @@ module V1
       I18nSerializer.new(object, :description, lang).translations
     end
 
+    # @caution relies on the current user's join request only: loading every
+    # member of the neighborhood (up to ~10,000) to find one was the slowest
+    # part of GET /neighborhoods/:id
     def member
       return false unless scope && scope[:user]
 
-      object.member_ids.include?(scope[:user].id)
+      current_join_request.present?
     end
 
     def members
@@ -63,7 +66,7 @@ module V1
     def unread_posts_count
       return unless member
 
-      object.members.pluck(:user_id, :unread_messages_count).to_h[scope[:user].id]
+      current_join_request.unread_messages_count
     end
 
     def interests
