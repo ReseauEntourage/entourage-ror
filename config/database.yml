@@ -2,7 +2,8 @@ default: &default
   adapter: postgresql
   url: <%= ENV.fetch('DATABASE_URL', '') %>
   encoding: UTF8
-  pool: <%= ENV['MAX_THREADS'] || 5 %>
+  # Puma threads (same default as config/puma.rb) + the 4 threads of the ActionCable worker pool
+  pool: <%= ENV['DB_POOL'] || Integer(ENV['MAX_THREADS'] || 10) + 4 %>
   timeout: 10000
 
 development:
@@ -15,7 +16,8 @@ test:
 
 production:
   url: <%= ENV.fetch('DATABASE_URL', '').sub(/^postgres/, "postgis") %>
-  pool: <%= ENV['MAX_THREADS'] || 5 %>
+  # Puma threads (same default as config/puma.rb) + the 4 threads of the ActionCable worker pool
+  pool: <%= ENV['DB_POOL'] || Integer(ENV['MAX_THREADS'] || 10) + 4 %>
   prepared_statements: false
   checkout_timeout: 3 # active_record: obtaining a connection from the pool
   connect_timeout: 3 # libpq: obtaining a connection from the server
