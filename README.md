@@ -1,7 +1,7 @@
 
 # Prerequisites
 
-Ruby 3.2.0
+Ruby 3.2.11
 Rails 7.1.0
 
 rbenv or rvm recommanded

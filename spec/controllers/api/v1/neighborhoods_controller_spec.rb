@@ -536,6 +536,7 @@ describe Api::V1::NeighborhoodsController, type: :controller do
           'unsubscribed_participants_female' => 0,
         },
         'interests' => ['sport', 'other'],
+        'members_count' => 1,
         'recurrency' => nil,
         'members_count' => 1,
         'created_at' => outing.created_at.iso8601(3),

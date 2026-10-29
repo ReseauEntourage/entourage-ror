@@ -88,8 +88,5 @@ module EntourageBack
     if defined?(Skylight)
       config.skylight.probes += %w(active_model_serializers excon faraday redis)
     end
-
-    # Enable GC profiling
-    GC::Profiler.enable
   end
 end
