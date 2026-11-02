@@ -26,13 +26,17 @@ describe OnboardingObserver do
       it { expect(event_names).not_to include('onboarding.outing.papotages') }
     end
 
-    context 'webinar category' do
-      let(:outing) { create(:outing, :outing_class, online: true, sf_category: :atelier_femmes) }
+    # atelier_femmes, atelier_mdlr, atelier_preca: any event but the first steps webinar
+    # validates the last step, and the workshops keep validating the webinar step
+    %i[atelier_femmes atelier_mdlr atelier_preca].each do |sf_category|
+      context "workshop #{sf_category}" do
+        let(:outing) { create(:outing, :outing_class, online: true, sf_category: sf_category) }
 
-      before { join(outing) }
+        before { join(outing) }
 
-      it { expect(event_names).to include('onboarding.outing.webinar_or_first_steps') }
-      it { expect(event_names).not_to include('onboarding.outing.first_event') }
+        it { expect(event_names).to include('onboarding.outing.webinar_or_first_steps') }
+        it { expect(first_event.properties).to eq('outing_type' => 'visio') }
+      end
     end
 
     context 'papotage' do

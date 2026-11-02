@@ -77,8 +77,15 @@ describe Onboarding::UserEventsTracking do
       it { is_expected.to be_nil }
     end
 
-    context 'webinar' do
+    context 'workshop (webinar category)' do
       let(:sf_category) { :atelier_mdlr }
+
+      it { is_expected.to eq('visio') }
+    end
+
+    context 'papotage in the first steps category' do
+      let(:title) { 'Papotage du jeudi' }
+      let(:sf_category) { :welcome_entourage_local }
 
       it { is_expected.to be_nil }
     end
