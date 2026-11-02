@@ -53,4 +53,9 @@ class Translation < ApplicationRecord
   def self.disable_on_read?
     ENV['DISABLE_TRANSLATIONS_ON_READ'] == 'true'
   end
+
+  # a failed translation is stored as "" or, for html content, as the bare tags ("<p></p>")
+  def self.text_presence value
+    value if value.to_s.gsub(/<[^>]*>|&nbsp;/, '').present?
+  end
 end

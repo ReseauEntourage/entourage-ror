@@ -76,7 +76,7 @@ module Translatable
     return self[field] unless translation
     return self[field] unless t = translation.send(lang)
 
-    t[field] || self[field]
+    Translation.text_presence(t[field]) || self[field]
   end
 
   def completed_translations

@@ -1,6 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe PushNotificationTrigger, type: :service do
+  describe 'I18nStruct#to' do
+    let(:chat_message) { create(:chat_message, content: 'Bonjour') }
+
+    before { Translation.find_or_initialize_by(instance: chat_message).update!(en: { content: translated }) }
+
+    subject { PushNotificationTrigger::I18nStruct.new(instance: chat_message.reload, field: :content).to(:en) }
+
+    context 'translated' do
+      let(:translated) { 'Hello' }
+
+      it { expect(subject).to eq('Hello') }
+    end
+
+    context 'failed translation stored as an empty string' do
+      let(:translated) { '' }
+
+      it { expect(subject).to eq('Bonjour') }
+    end
+
+    context 'failed translation of html content stored as bare tags' do
+      let(:translated) { '<p></p>' }
+
+      it { expect(subject).to eq('Bonjour') }
+    end
+  end
+
   describe '#notify_cable' do
     let(:user) { create(:public_user) }
     let(:user_badge) { create(:user_badge, user: user, badge_tag: 'bienvenue') }

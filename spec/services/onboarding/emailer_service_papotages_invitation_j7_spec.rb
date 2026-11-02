@@ -59,6 +59,30 @@ describe Onboarding::EmailerService, '.deliver_papotages_invitation_j7_email' do
     it { expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(0) }
   end
 
+  context 'user who skipped the papotages step' do
+    let!(:user) { create(:public_user, first_sign_in_at: 7.days.ago.noon) }
+
+    before { user.papotages_joined_skipped! }
+
+    it { expect { subject }.not_to change { ActionMailer::Base.deliveries.count } }
+  end
+
+  context 'user who skipped another step' do
+    let!(:user) { create(:public_user, first_sign_in_at: 7.days.ago.noon) }
+
+    before { user.welcome_watched_skipped! }
+
+    it { expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1) }
+  end
+
+  context 'user who hid the journey' do
+    let!(:user) { create(:public_user, first_sign_in_at: 7.days.ago.noon) }
+
+    before { user.hide_onboarding_journey! }
+
+    it { expect { subject }.not_to change { ActionMailer::Base.deliveries.count } }
+  end
+
   context 'deleted user' do
     let!(:user) { create(:public_user, first_sign_in_at: 7.days.ago.noon, deleted: true) }
 

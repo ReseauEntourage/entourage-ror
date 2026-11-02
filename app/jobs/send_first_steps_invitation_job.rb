@@ -4,6 +4,8 @@ class SendFirstStepsInvitationJob < ApplicationJob
 
     return unless user.present?
     return if already_registered_to_first_steps?(user_id)
+    # step skipped by the member, or journey removed from the home
+    return unless Onboarding::Journey.new(user).reminders_allowed?('webinar_or_first_steps')
 
     MemberMailer.first_steps_invitation(user).deliver_now
   end
