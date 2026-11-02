@@ -11,9 +11,10 @@ module Onboarding
     FIRST_EVENT_TYPES = %w[papotage visio physique].freeze
 
     # @return [String, nil] the type to track for the "first event" step, nil when the outing
-    #   is the first steps webinar (it only validates the webinar step)
+    #   is the first steps webinar (it only validates the webinar step). The workshops
+    #   (Outing#webinar?) are online events: they validate this step as visio.
     def self.first_event_type(outing)
-      return if outing.webinar? || outing.first_steps?
+      return if outing.first_steps?
       return 'papotage' if outing.papotage?
 
       outing.online? ? 'visio' : 'physique'
