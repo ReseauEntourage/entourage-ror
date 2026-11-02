@@ -105,9 +105,22 @@ module Onboarding
       STEPS.each_key.all? { |step| crossed?(step) }
     end
 
+    # @return [String] todo, done or skipped. A skipped step becomes done when the member does it later.
+    def step_status(step)
+      return 'done' if done?(step)
+      return 'skipped' if skipped?(step)
+
+      'todo'
+    end
+
     # Exposed by the summary of the user (home) and by the hide route
     def summary
-      { removed: removed?, removed_reason: removal_reason }
+      {
+        removed: removed?,
+        removed_reason: removal_reason,
+        steps: STEPS.each_key.to_h { |step| [step, step_status(step)] },
+        done_steps_count: STEPS.each_key.count { |step| done?(step) }
+      }
     end
 
     def hide!
