@@ -107,4 +107,37 @@ describe OnboardingObserver do
       end
     end
   end
+
+  describe 'registration to a neighborhood' do
+    context 'national neighborhood' do
+      let(:neighborhood) { create(:neighborhood, national: true) }
+
+      before { join(neighborhood) }
+
+      it { expect(event_names).to include('onboarding.neighborhood.national') }
+      it { expect(event_names).not_to include('onboarding.outing.first_event') }
+    end
+
+    context 'local neighborhood' do
+      let(:neighborhood) { create(:neighborhood, national: false) }
+
+      before { join(neighborhood) }
+
+      it { expect(event_names).not_to include('onboarding.neighborhood.national') }
+    end
+
+    context 'national neighborhood joined after the journey expired' do
+      let(:neighborhood) { create(:neighborhood, national: true) }
+
+      before do
+        user.update_columns(created_at: 20.days.ago, first_sign_in_at: 20.days.ago)
+        join(neighborhood)
+      end
+
+      it 'tracks the step but keeps the removal for inactivity' do
+        expect(event_names).to include('onboarding.neighborhood.national')
+        expect(Event.find_by(user_id: user.id, name: 'onboarding.parcours.removed').properties).to eq('reason' => 'inactivity')
+      end
+    end
+  end
 end
