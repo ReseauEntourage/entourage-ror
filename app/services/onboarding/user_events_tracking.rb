@@ -45,9 +45,8 @@ module Onboarding
         track_onboarding_step('onboarding.outing.webinar_or_first_steps_skipped')
       end
 
-      # Registration to an event other than the first steps webinar. The legacy event
-      # onboarding.outing.papotages is no longer tracked: the summary still exposes it to the
-      # apps already installed, see V1::Users::SummarySerializer#events
+      # Registration to an event other than the first steps webinar. The last step only emits
+      # onboarding.outing.first_event: the legacy event onboarding.outing.papotages is no longer emitted
       def first_event_joined!(outing_type)
         track_onboarding_step(Onboarding::Journey::FIRST_EVENT, properties: { outing_type: outing_type })
       end
