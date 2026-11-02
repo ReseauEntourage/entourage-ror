@@ -64,6 +64,78 @@ describe Onboarding::Journey do
     end
   end
 
+  describe '#step_status' do
+    it { expect(journey.step_status('welcome_watched')).to eq('todo') }
+
+    it 'is done by the done event' do
+      track('onboarding.resource.welcome_watched', at: now - 1.day)
+
+      expect(journey.step_status('welcome_watched')).to eq('done')
+    end
+
+    it 'is skipped by the skipped event' do
+      track('onboarding.resource.welcome_watched_skipped', at: now - 1.day)
+
+      expect(journey.step_status('welcome_watched')).to eq('skipped')
+    end
+
+    it 'a skipped step becomes done when the member does it later' do
+      track('onboarding.resource.welcome_watched_skipped', at: now - 2.days)
+      track('onboarding.resource.welcome_watched', at: now - 1.day)
+
+      expect(journey.step_status('welcome_watched')).to eq('done')
+    end
+
+    it 'last step is done by the legacy papotages event' do
+      track('onboarding.outing.papotages', at: now - 1.day)
+
+      expect(journey.step_status('papotages')).to eq('done')
+    end
+  end
+
+  describe '#summary' do
+    it 'exposes the status of every step and the number of steps done' do
+      track('onboarding.resource.welcome_watched', at: now - 2.days)
+      track('onboarding.neighborhood.national_skipped', at: now - 2.days)
+      track('onboarding.outing.first_event', at: now - 1.day, properties: { outing_type: 'physique' })
+
+      expect(journey.summary).to eq(
+        removed: false,
+        removed_reason: nil,
+        steps: {
+          'welcome_watched' => 'done',
+          'neighborhood_national' => 'skipped',
+          'webinar_or_first_steps' => 'todo',
+          'papotages' => 'done'
+        },
+        done_steps_count: 2
+      )
+    end
+
+    it 'a skipped step is not counted as done' do
+      %w[
+        onboarding.resource.welcome_watched_skipped
+        onboarding.neighborhood.national_skipped
+        onboarding.outing.webinar_or_first_steps_skipped
+        onboarding.outing.papotages_skipped
+      ].each { |name| track(name, at: now - 1.day) }
+
+      expect(journey.summary).to include(removed: true, removed_reason: 'completed', done_steps_count: 0)
+      expect(journey.summary[:steps].values).to all(eq('skipped'))
+    end
+
+    it 'keeps exposing the steps once the journey is removed' do
+      track('onboarding.resource.welcome_watched', at: now - 1.day)
+      journey.hide!
+
+      expect(described_class.new(user, now: now).summary).to include(
+        removed: true,
+        removed_reason: 'hidden',
+        done_steps_count: 1
+      )
+    end
+  end
+
   describe '#completed?' do
     it 'is false when a step is not crossed' do
       track('onboarding.resource.welcome_watched', at: now - 1.day)
@@ -93,7 +165,7 @@ describe Onboarding::Journey do
     context 'running journey' do
       it { expect(journey.removed?).to be(false) }
       it { expect(journey.removal_reason).to be_nil }
-      it { expect(journey.summary).to eq(removed: false, removed_reason: nil) }
+      it { expect(journey.summary).to include(removed: false, removed_reason: nil) }
     end
 
     context 'completed' do
@@ -101,7 +173,7 @@ describe Onboarding::Journey do
 
       it { expect(journey.removed?).to be(true) }
       it { expect(journey.removal_reason).to eq('completed') }
-      it { expect(journey.summary).to eq(removed: true, removed_reason: 'completed') }
+      it { expect(journey.summary).to include(removed: true, removed_reason: 'completed') }
     end
 
     describe 'inactivity' do
@@ -370,7 +442,7 @@ describe Onboarding::Journey do
       expect { journey.hide! }.to change { removed_events.count }.by(1)
 
       expect(removed_events.first.properties).to eq('reason' => 'hidden')
-      expect(described_class.new(user, now: now).summary).to eq(removed: true, removed_reason: 'hidden')
+      expect(described_class.new(user, now: now).summary).to include(removed: true, removed_reason: 'hidden')
     end
 
     it 'is idempotent and tracks the removal once' do

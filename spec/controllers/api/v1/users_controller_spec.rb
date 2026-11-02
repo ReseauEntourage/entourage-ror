@@ -1600,7 +1600,8 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     it { expect { subject }.to change { removed_events.count }.by(1) }
     it { subject; expect(removed_events.first.properties).to eq('reason' => 'hidden') }
     it { subject; expect(response.status).to eq(200) }
-    it { subject; expect(result).to eq('onboarding_journey' => { 'removed' => true, 'removed_reason' => 'hidden' }) }
+    it { subject; expect(result['onboarding_journey']).to include('removed' => true, 'removed_reason' => 'hidden', 'done_steps_count' => 0) }
+    it { subject; expect(result['onboarding_journey']['steps'].keys).to eq(%w[welcome_watched neighborhood_national webinar_or_first_steps papotages]) }
 
     context 'already hidden' do
       before { user.hide_onboarding_journey! }
