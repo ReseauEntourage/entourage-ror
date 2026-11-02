@@ -63,4 +63,9 @@ namespace :onboarding_sequence do
   task papotages_invitation: :environment do
     Onboarding::EmailerService.deliver_papotages_invitation_j7_email
   end
+
+  desc 'Persist the removal of the expired welcome journeys (daily, Heroku Scheduler)'
+  task remove_expired_journeys: :environment do
+    RemoveExpiredOnboardingJourneysJob.perform_now
+  end
 end
