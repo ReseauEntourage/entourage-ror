@@ -47,7 +47,7 @@ describe OnboardingObserver do
       it { expect(first_event.properties).to eq('outing_type' => 'papotage') }
       it { expect(event_names).not_to include('onboarding.outing.webinar_or_first_steps') }
 
-      # no longer tracked: the summary exposes it to the apps already installed
+      # the last step only emits onboarding.outing.first_event
       it { expect(event_names).not_to include('onboarding.outing.papotages') }
     end
 

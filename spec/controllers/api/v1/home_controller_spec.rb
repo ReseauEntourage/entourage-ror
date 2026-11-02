@@ -284,41 +284,30 @@ describe Api::V1::HomeController do
         end
       end
 
-      # the apps already installed tick the last step with onboarding.outing.papotages, no longer tracked
-      context 'legacy event of the last step' do
-        context 'last step not done' do
-          before { request }
+      # the last step only emits onboarding.outing.first_event, never the legacy onboarding.outing.papotages
+      context 'events of the last step' do
+        %w[papotage visio physique].each do |outing_type|
+          context "last step done by a #{outing_type} event" do
+            before do
+              user.first_event_joined!(outing_type)
+              request
+            end
 
-          it { expect(subject['user']['events']).not_to include('onboarding.outing.papotages') }
-        end
-
-        context 'last step done by any event' do
-          before do
-            user.first_event_joined!('physique')
-            request
+            it { expect(subject['user']['events']).to include('onboarding.outing.first_event') }
+            it { expect(subject['user']['events']).not_to include('onboarding.outing.papotages') }
+            it { expect(subject['user']['onboarding_journey']['steps']['papotages']).to eq('done') }
           end
-
-          it { expect(subject['user']['events']).to include('onboarding.outing.first_event', 'onboarding.outing.papotages') }
-          it { expect(Event.where(user_id: user.id, name: 'onboarding.outing.papotages')).not_to exist }
-        end
-
-        context 'last step skipped' do
-          before do
-            user.papotages_joined_skipped!
-            request
-          end
-
-          it { expect(subject['user']['events']).not_to include('onboarding.outing.papotages') }
         end
 
         context 'legacy event tracked before the deployment' do
           before do
             Event.track('onboarding.outing.papotages', user_id: user.id)
-            Event.track('onboarding.outing.first_event', user_id: user.id)
             request
           end
 
-          it { expect(subject['user']['events'].count('onboarding.outing.papotages')).to eq(1) }
+          it 'still validates the last step' do
+            expect(subject['user']['onboarding_journey']['steps']['papotages']).to eq('done')
+          end
         end
       end
 
