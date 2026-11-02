@@ -43,8 +43,8 @@ describe Onboarding::UserEventsTracking do
 
       it { expect { subject }.to change { Event.where(user: user, name: 'onboarding.outing.first_event').count }.by(1) }
 
-      it 'still tracks the legacy event read by the installed apps' do
-        expect { subject }.to change { Event.where(user: user, name: 'onboarding.outing.papotages').count }.by(1)
+      it 'no longer tracks the legacy event' do
+        expect { subject }.not_to change { Event.where(user: user, name: 'onboarding.outing.papotages').count }
       end
     end
   end

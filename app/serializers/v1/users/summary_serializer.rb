@@ -116,7 +116,15 @@ module V1
       end
 
       def events
-        object.events.pluck(:name)
+        names = object.events.pluck(:name)
+
+        # the apps already installed tick the last step with the legacy event, which is no
+        # longer tracked: expose it as soon as the last step is done by any event
+        if names.include?(Onboarding::Journey::FIRST_EVENT)
+          names |= [Onboarding::Journey::LEGACY_FIRST_EVENT]
+        end
+
+        names
       end
 
       # state of the welcome journey, which the apps can no longer deduce from the events: it is

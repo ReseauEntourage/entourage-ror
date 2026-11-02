@@ -19,6 +19,9 @@ module Onboarding
   class Journey
     REMOVED_EVENT = 'onboarding.parcours.removed'.freeze
     FIRST_EVENT = 'onboarding.outing.first_event'.freeze
+    # former event of the last step (papotages only), no longer tracked: still read for the
+    # members who registered before the step was opened to every event
+    LEGACY_FIRST_EVENT = 'onboarding.outing.papotages'.freeze
 
     INACTIVITY_DELAY = 14.days
     MAX_DURATION = 30.days
@@ -41,10 +44,9 @@ module Onboarding
         done: ['onboarding.outing.webinar_or_first_steps'],
         skipped: ['onboarding.outing.webinar_or_first_steps_skipped']
       },
-      # last step: registration to any event but the first steps webinar.
-      # onboarding.outing.papotages is the legacy event of this step.
+      # last step: registration to any event but the first steps webinar
       'papotages' => {
-        done: [FIRST_EVENT, 'onboarding.outing.papotages'],
+        done: [FIRST_EVENT, LEGACY_FIRST_EVENT],
         skipped: ['onboarding.outing.papotages_skipped']
       }
     }.freeze
