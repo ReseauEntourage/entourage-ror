@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.2.11'
+ruby '3.4.12'
 
 gem 'rails', '~> 7.1.0'
 
@@ -105,6 +105,7 @@ group :test do
   gem 'shoulda-matchers'#,             '~> 3.0.1'
   gem 'timecop'#,                      '~> 0.8.0'
   gem 'factory_bot_rails',           '~> 4'
+  gem 'observer' # required by factory_bot 4.x, no longer a default gem since Ruby 3.4
   gem 'webmock'
   gem 'fakeredis'#,                    '~> 0.7.0'
   gem 'super_diff'
