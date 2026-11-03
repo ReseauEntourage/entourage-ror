@@ -200,10 +200,115 @@ describe Api::V1::HomeController do
             'events' => [
               'onboarding.profile.first_name.entered',
             ],
+            'onboarding_journey' => {
+              'removed' => false,
+              'removed_reason' => nil,
+              'steps' => {
+                'welcome_watched' => 'todo',
+                'neighborhood_national' => 'todo',
+                'webinar_or_first_steps' => 'todo',
+                'papotages' => 'todo'
+              },
+              'done_steps_count' => 0
+            },
             'badge' => UserServices::Engagement::BADGE_LABELS["SILENT"],
             'badges' => default_badges_json
           }
         }) }
+      end
+
+      context 'onboarding_journey' do
+        context 'running' do
+          before { request }
+
+          it { expect(subject['user']['onboarding_journey']).to include('removed' => false, 'removed_reason' => nil) }
+        end
+
+        context 'hidden' do
+          before do
+            user.hide_onboarding_journey!
+            request
+          end
+
+          it { expect(subject['user']['onboarding_journey']).to include('removed' => true, 'removed_reason' => 'hidden') }
+          it { expect(subject['user']['events']).to include('onboarding.parcours.removed') }
+        end
+
+        context 'expired: the removal is persisted when the summary is read' do
+          before { user.update_columns(created_at: 31.days.ago, first_sign_in_at: 31.days.ago) }
+
+          it 'removes it for good' do
+            expect { request }.to change { Event.where(user_id: user.id, name: 'onboarding.parcours.removed').count }.by(1)
+
+            expect(subject['user']['onboarding_journey']).to include('removed' => true, 'removed_reason' => 'inactivity')
+            expect(subject['user']['events']).to include('onboarding.parcours.removed')
+          end
+        end
+
+        context 'already registered to an event: the last step is validated' do
+          let(:physical_outing) { FactoryBot.create(:outing, :outing_class, online: false, title: 'Balade', sf_category: :convivialite) }
+
+          before do
+            FactoryBot.create(:join_request, joinable: physical_outing, user: user, status: :accepted)
+            Event.where(user_id: user.id, name: ['onboarding.outing.first_event', 'onboarding.outing.papotages']).delete_all
+          end
+
+          it 'tracks the first event' do
+            request
+
+            expect(subject['user']['events']).to include('onboarding.outing.first_event')
+          end
+
+          it 'exposes the last step as done' do
+            request
+
+            expect(subject['user']['onboarding_journey']['steps']['papotages']).to eq('done')
+            expect(subject['user']['onboarding_journey']['done_steps_count']).to eq(1)
+          end
+        end
+
+        context 'steps' do
+          before do
+            user.welcome_watched!
+            user.neighborhood_national_joined_skipped!
+            request
+          end
+
+          it { expect(subject['user']['onboarding_journey']['steps']).to eq(
+            'welcome_watched' => 'done',
+            'neighborhood_national' => 'skipped',
+            'webinar_or_first_steps' => 'todo',
+            'papotages' => 'todo'
+          ) }
+          it { expect(subject['user']['onboarding_journey']['done_steps_count']).to eq(1) }
+        end
+      end
+
+      # the last step only emits onboarding.outing.first_event, never the legacy onboarding.outing.papotages
+      context 'events of the last step' do
+        %w[papotage visio physique].each do |outing_type|
+          context "last step done by a #{outing_type} event" do
+            before do
+              user.first_event_joined!(outing_type)
+              request
+            end
+
+            it { expect(subject['user']['events']).to include('onboarding.outing.first_event') }
+            it { expect(subject['user']['events']).not_to include('onboarding.outing.papotages') }
+            it { expect(subject['user']['onboarding_journey']['steps']['papotages']).to eq('done') }
+          end
+        end
+
+        context 'legacy event tracked before the deployment' do
+          before do
+            Event.track('onboarding.outing.papotages', user_id: user.id)
+            request
+          end
+
+          it 'still validates the last step' do
+            expect(subject['user']['onboarding_journey']['steps']['papotages']).to eq('done')
+          end
+        end
       end
 
       context "with signable_permission" do

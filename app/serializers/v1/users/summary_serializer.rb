@@ -20,6 +20,7 @@ module V1
         :signable_permission,
         :birthday_today,
         :events,
+        :onboarding_journey,
         :badge,
         :badges
 
@@ -116,6 +117,12 @@ module V1
 
       def events
         object.events.pluck(:name)
+      end
+
+      # state of the welcome journey, which the apps can no longer deduce from the events: it is
+      # removed after a delay, see Onboarding::Journey
+      def onboarding_journey
+        Onboarding::Journey.new(object).summary
       end
 
       def badges

@@ -83,6 +83,35 @@ describe Onboarding::EmailerService, type: :service do
       end
     end
 
+    context "quand l'utilisateur a passe l'etape papotages" do
+      before { user.papotages_joined_skipped! }
+
+      it "n'envoie pas d'email" do
+        expect(MemberMailer).not_to receive(:first_steps_papotages_invitation)
+        subject
+      end
+    end
+
+    context "quand l'utilisateur a passe une autre etape" do
+      before { user.welcome_watched_skipped! }
+
+      it "envoie un email" do
+        mail = double('mail')
+        expect(MemberMailer).to receive(:first_steps_papotages_invitation).with(user, anything).and_return(mail)
+        expect(mail).to receive(:deliver_later)
+        subject
+      end
+    end
+
+    context "quand l'utilisateur a masque le parcours" do
+      before { user.hide_onboarding_journey! }
+
+      it "n'envoie pas d'email" do
+        expect(MemberMailer).not_to receive(:first_steps_papotages_invitation)
+        subject
+      end
+    end
+
     context "quand l'utilisateur est supprime" do
       before { user.update_column(:deleted, true) }
 

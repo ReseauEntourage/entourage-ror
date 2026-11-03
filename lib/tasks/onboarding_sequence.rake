@@ -31,6 +31,8 @@ namespace :onboarding_sequence do
       next unless welcome_video.present?
       next unless user.is_offer_help? || user.is_ask_for_help?
       next if user.has_watched_resource?(welcome_video.id)
+      # step skipped by the member, or journey removed from the home
+      next unless Onboarding::Journey.new(user).reminders_allowed?('welcome_watched')
 
       MemberMailer.unseen_video_day_5(user).deliver_later
     end

@@ -6,3 +6,9 @@
     class: "RefreshEngagementLevelsJob"
     queue: default
     description: "Refresh engagement levels materialized view daily at 2am"
+
+  remove_expired_onboarding_journeys:
+    cron: "30 3 * * *"
+    class: "RemoveExpiredOnboardingJourneysJob"
+    queue: default
+    description: "Persist the removal of the expired welcome journeys daily at 3:30am"

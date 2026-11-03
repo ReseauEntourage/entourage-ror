@@ -4,6 +4,8 @@ module Onboarding
 
     def self.deliver_papotages_invitation_j7_email
       User.where(id: papotages_invitation_user_ids_j7).find_each do |user|
+        next unless Onboarding::Journey.new(user).reminders_allowed?('papotages')
+
         MemberMailer.papotages_invitation_j7(user).deliver_now
       end
     end
@@ -21,6 +23,8 @@ module Onboarding
       return unless upcoming_papotages.any?
 
       User.where(id: papotages_invitation_user_ids).find_each do |user|
+        next unless Onboarding::Journey.new(user).reminders_allowed?('papotages')
+
         MemberMailer.first_steps_papotages_invitation(user, upcoming_papotages).deliver_later
       end
     end

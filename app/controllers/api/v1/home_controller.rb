@@ -62,6 +62,8 @@ module Api
       end
 
       def summary
+        current_user.sync_onboarding_journey!
+
         render json: current_user, serializer: ::V1::Users::SummarySerializer
       end
 
