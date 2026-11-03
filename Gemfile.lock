@@ -365,6 +365,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.10-x86_64-linux-musl)
       racc (~> 1.4)
+    observer (0.1.2)
     openssl (3.3.1)
     optimist (3.2.1)
     os (1.1.4)
@@ -684,9 +685,11 @@ DEPENDENCIES
   aws-sdk-s3 (~> 1)
   aws-sdk-sns (~> 1)
   barnes
+  base64
   bcrypt (~> 3)
   bullet
   chartkick
+  csv
   dotenv-rails
   factory_bot_rails (~> 4)
   fakeredis
@@ -708,6 +711,8 @@ DEPENDENCIES
   mini_magick
   momentjs-rails (~> 2)
   nexmo
+  observer
+  ostruct
   pg (~> 1.1)
   puma
   rack-attack
@@ -751,7 +756,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 3.2.11p268
+   ruby 3.4.12p148
 
 BUNDLED WITH
    2.5.18
