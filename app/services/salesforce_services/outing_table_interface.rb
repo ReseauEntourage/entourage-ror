@@ -14,6 +14,7 @@ module SalesforceServices
       ends_time: 'Heure_de_fin__c',
       ongoing?: 'IsActive',
       online?: 'En_ligne__c',
+      meeting_link: 'MeetingLink__c',
       parent_id: 'ParentId',
       unsubscribed_participants_offer_help: 'B2_nb_riverains_presents_hors_SF__c',
       unsubscribed_participants_ask_for_help: 'Nb_de_personnes_en_pr_ca_touch_es__c',
@@ -140,6 +141,13 @@ module SalesforceServices
         return 'Oui' if outing.online?
 
         'Non'
+      end
+
+      # event_url may remain on legacy in-person outings: only send it for online ones
+      def meeting_link
+        return unless outing.online?
+
+        outing.event_url.presence
       end
 
       def parent_id

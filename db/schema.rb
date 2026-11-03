@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_27_100100) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_29_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -1282,6 +1282,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_27_100100) do
     t.integer "neighborhoods_count", default: 0, null: false
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_blocked_on_email", where: "((validation_status)::text = 'blocked'::text)"
+    t.index ["id"], name: "index_users_on_id_where_admin", where: "admin"
     t.index ["last_sign_in_at"], name: "index_users_last_sign_in_at", where: "(last_sign_in_at IS NOT NULL)"
     t.index ["partner_id"], name: "index_users_on_partner_id_not_null", where: "(partner_id IS NOT NULL)"
     t.index ["phone", "community"], name: "index_users_on_phone_and_community", unique: true

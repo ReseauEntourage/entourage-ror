@@ -26,6 +26,33 @@ describe SalesforceServices::OutingTableInterface do
     end
   end
 
+  describe '#meeting_link' do
+    let(:event_url) { 'https://meet.google.com/abc-defg-hij' }
+    let(:outing) { create :outing, :outing_class, online: true, event_url: event_url }
+
+    subject { described_class.new(instance: outing).mapping.meeting_link }
+
+    it { expect(described_class::INSTANCE_MAPPING[:meeting_link]).to eq('MeetingLink__c') }
+
+    context 'when outing is online' do
+      it { expect(subject).to eq(event_url) }
+    end
+
+    context 'when outing is online without event_url' do
+      let(:event_url) { '' }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context 'when outing is not online but has a legacy event_url' do
+      let(:outing) { create :outing, :outing_class, online: false }
+
+      before { outing.update_column(:event_url, event_url) }
+
+      it { expect(subject).to be_nil }
+    end
+  end
+
   describe "truncate_priority" do
     let(:date) { "2025-08-21" }
 

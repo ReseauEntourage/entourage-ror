@@ -75,7 +75,7 @@ Sidekiq jobs of note: `SalesforceJob`, `OpenaiRequestJob`, `SmsTalkAutoStartChat
 
 ## Used technologies
 
-- **Language**: Ruby 3.2.11.
+- **Language**: Ruby 3.4.12.
 - **Framework**: Rails 7.1.
 - **Datastore**: PostgreSQL 11+ with PostGIS (geographic queries).
 - **Queue**: Sidekiq + Redis.
