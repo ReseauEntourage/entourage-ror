@@ -11,7 +11,7 @@ module Api
         def index
           messages = @conversation.chat_messages.includes(:translation, :user, :chat_message_reactions).ordered.page(page).per(per).reverse
 
-          render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request, user: current_user, reaction_ids_by_message: ChatMessage.reaction_ids_by_message(messages, current_user) }
+          render json: messages, root: :chat_messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request, user: current_user, image_size: params[:image_size], reaction_ids_by_message: ChatMessage.reaction_ids_by_message(messages, current_user) }
         end
 
         def create
