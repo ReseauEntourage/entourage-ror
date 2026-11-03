@@ -181,6 +181,8 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_image_urls
   before_validation :set_outings_place_limit
   before_validation :set_outings_reserved_female
+  before_validation :set_outings_pmr
+  before_validation :set_outings_kids_friendly
   before_validation :set_outings_unsubscribed_participants_offer_help
   before_validation :set_outings_unsubscribed_participants_ask_for_help
   before_validation :set_outings_unsubscribed_participants_female
@@ -309,6 +311,8 @@ class Entourage < ApplicationRecord
           portrait_thumbnail_url: { type: [:string, :null] },
           place_limit: { type: [:string, :integer, :null] },
           reserved_female: { type: [:string, :boolean, :null] },
+          pmr: { type: [:string, :boolean, :null] },
+          kids_friendly: { type: [:string, :boolean, :null] },
           unsubscribed_participants_offer_help: { type: [:string, :integer, :null] },
           unsubscribed_participants_ask_for_help: { type: [:string, :integer, :null] },
           unsubscribed_participants_female: { type: [:string, :integer, :null] },
@@ -744,6 +748,23 @@ class Entourage < ApplicationRecord
     return unless outing?
     return unless metadata[:reserved_female].blank?
     self.metadata[:reserved_female] = nil
+  end
+
+  def set_outings_pmr
+    return unless outing?
+    self.metadata[:pmr] = cast_outings_boolean(metadata[:pmr])
+  end
+
+  def set_outings_kids_friendly
+    return unless outing?
+    self.metadata[:kids_friendly] = cast_outings_boolean(metadata[:kids_friendly])
+  end
+
+  # params arrive as strings ("true"/"false"): store a real boolean, keep nil when unset
+  def cast_outings_boolean value
+    return nil if value.nil? || value == ''
+
+    ActiveModel::Type::Boolean.new.cast(value)
   end
 
   def set_outings_unsubscribed_participants_offer_help
