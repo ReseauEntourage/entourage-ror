@@ -75,6 +75,12 @@ gem 'whenever'
 gem 'rspec_api_documentation'
 gem 'ffi', '~> 1.17'
 
+# standard libraries used directly by the app that are no longer default gems
+# (csv and base64 since Ruby 3.4, ostruct since Ruby 4.0)
+gem 'base64'
+gem 'csv'
+gem 'ostruct'
+
 group :development, :test do
   gem 'foreman'
   gem 'spring',                       '~> 2.1.0'

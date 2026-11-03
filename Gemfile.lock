@@ -685,9 +685,11 @@ DEPENDENCIES
   aws-sdk-s3 (~> 1)
   aws-sdk-sns (~> 1)
   barnes
+  base64
   bcrypt (~> 3)
   bullet
   chartkick
+  csv
   dotenv-rails
   factory_bot_rails (~> 4)
   fakeredis
@@ -710,6 +712,7 @@ DEPENDENCIES
   momentjs-rails (~> 2)
   nexmo
   observer
+  ostruct
   pg (~> 1.1)
   puma
   rack-attack
