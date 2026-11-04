@@ -115,6 +115,15 @@ RSpec.describe UserImpactStatsObserver do
       expect(UserImpactStatsJob).not_to have_received(:perform_async).with(carol.id, anything)
     end
 
+    it 'enqueues conversation_members for a member who wrote, when their membership is removed' do
+      allow(UserImpactStatsJob).to receive(:perform_async)
+
+      conversation.join_requests.find_by(user: alice).destroy
+
+      expect(UserImpactStatsJob).to have_received(:perform_async).with(alice.id, UserStat::CONVERSATION_MEMBERS)
+      expect(UserImpactStatsJob).to have_received(:perform_async).with(user.id, UserStat::CONVERSATION_MEMBERS)
+    end
+
     it 'does not enqueue on a membership status change' do
       expect(UserImpactStatsJob).not_to receive(:perform_async)
 
@@ -135,6 +144,12 @@ RSpec.describe UserImpactStatsObserver do
     it 'updates the count of those who already wrote when a member joins' do
       expect { create(:join_request, joinable: conversation, user: carol, status: :accepted) }
         .to change { user.reload.user_stat.conversation_members_count }.from(2).to(3)
+    end
+
+    it 'updates the counts of the member who leaves and of those who stay' do
+      expect { conversation.join_requests.find_by(user: alice).destroy }
+        .to change { alice.reload.user_stat.conversation_members_count }.from(2).to(0)
+        .and change { user.reload.user_stat.conversation_members_count }.from(2).to(1)
     end
   end
 end

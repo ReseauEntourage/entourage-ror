@@ -6,8 +6,9 @@ class UserImpactStatsObserver < ActiveRecord::Observer
   #   status changed                                    -> its author: neighborhood_messages
   #   conversation message created, destroyed or
   #   status changed                                    -> its author: conversation_members
-  #   conversation member added or removed              -> the other authors of the
-  #                                                        conversation: conversation_members
+  #   conversation member added or removed              -> the authors of the
+  #                                                        conversation, the member
+  #                                                        included: conversation_members
   #
   # past_outing_participations_count has no trigger: it changes as time passes,
   # so V1::Users::SummarySerializer computes it at read time.
@@ -46,13 +47,14 @@ class UserImpactStatsObserver < ActiveRecord::Observer
   end
 
   # members are counted whatever their membership status, so only an added or
-  # removed membership changes the count of those who wrote in the conversation
+  # removed membership changes the count of those who wrote in the conversation,
+  # including the member themselves: only their conversations count
   def membership_changed join_request
     return unless commit_is?(join_request, [:create, :destroy])
     return unless join_request.joinable # the conversation itself was destroyed
     return unless join_request.conversation?
 
-    UserStat.conversation_author_ids(join_request.joinable_id, except: join_request.user_id).each do |user_id|
+    UserStat.conversation_author_ids(join_request.joinable_id).each do |user_id|
       enqueue(user_id, UserStat::CONVERSATION_MEMBERS)
     end
   end

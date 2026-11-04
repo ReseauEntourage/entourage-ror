@@ -179,6 +179,17 @@ RSpec.describe UserStat, type: :model do
         it { expect(subject).to eq(2) }
       end
 
+      context 'when the user is no longer a member of a conversation they wrote in' do
+        let(:conversation) { create(:conversation, participants: [user, alice]) }
+
+        before do
+          create(:chat_message, messageable: conversation, user: user)
+          conversation.join_requests.find_by(user: user).delete
+        end
+
+        it { expect(subject).to eq(0) }
+      end
+
       context "when the user's only message is deleted" do
         before do
           create(:chat_message, messageable: create(:conversation, participants: [user, alice]), user: user)
@@ -251,6 +262,10 @@ RSpec.describe UserStat, type: :model do
       create(:chat_message, messageable: create(:conversation, participants: [bob, alice, user]), user: user)
       create(:chat_message, messageable: neighborhood, user: alice)
       create(:chat_message, messageable: neighborhood, user: outsider)
+      # a conversation the user wrote in and is no longer a member of: not counted
+      left = create(:conversation, participants: [user, outsider])
+      create(:chat_message, messageable: left, user: user)
+      left.join_requests.find_by(user: user).delete
 
       # jobs run inline in specs: start the backfill from an empty table
       UserStat.delete_all
