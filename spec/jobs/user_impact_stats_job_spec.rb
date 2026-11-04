@@ -22,6 +22,26 @@ RSpec.describe UserImpactStatsJob do
     end
   end
 
+  context 'with a staff member' do
+    let!(:team_member) { create(:user, targeting_profile: :team, partner: create(:partner, staff: true)) }
+    let!(:admin) { create(:admin_user) }
+
+    it 'does not recompute their conversation_members' do
+      expect(UserStat).not_to receive(:refresh!)
+
+      described_class.new.perform(team_member.id, UserStat::CONVERSATION_MEMBERS)
+      described_class.new.perform(admin.id, UserStat::CONVERSATION_MEMBERS)
+    end
+
+    it 'still recomputes their other counters' do
+      expect(UserStat).to receive(:refresh!).with(team_member.id, UserStat::ACTION_CREATIONS)
+      expect(UserStat).to receive(:refresh!).with(admin.id, UserStat::NEIGHBORHOOD_MESSAGES)
+
+      described_class.new.perform(team_member.id, UserStat::ACTION_CREATIONS)
+      described_class.new.perform(admin.id, UserStat::NEIGHBORHOOD_MESSAGES)
+    end
+  end
+
   context 'when the user no longer exists' do
     subject { described_class.new.perform(0, UserStat::ACTION_CREATIONS) }
 
