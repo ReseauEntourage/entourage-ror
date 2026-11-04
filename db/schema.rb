@@ -1169,6 +1169,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_29_160000) do
     t.index ["uuid_v2"], name: "index_user_smalltalks_on_uuid_v2", unique: true
   end
 
+  create_table "user_stats", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "action_creations_count", default: 0, null: false
+    t.integer "neighborhood_messages_count", default: 0, null: false
+    t.integer "conversation_members_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_stats_on_user_id", unique: true
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil

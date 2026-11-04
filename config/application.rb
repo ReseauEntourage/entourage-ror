@@ -53,7 +53,8 @@ module EntourageBack
       :denorm_chat_message_observer,
       :conversation_broadcast_observer,
       :smalltalk_observer,
-      :smalltalk_membership_observer
+      :smalltalk_membership_observer,
+      :user_impact_stats_observer
     ]
 
     # Default URL options
