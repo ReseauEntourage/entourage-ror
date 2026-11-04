@@ -13,12 +13,19 @@ RSpec.describe RemoveExpiredOnboardingJourneysJob do
     expect(Event.where(user_id: running.id, name: 'onboarding.parcours.removed')).to be_empty
   end
 
-  it 'is scheduled daily' do
-    schedule = YAML.safe_load(File.read(Rails.root.join('config/sidekiq.yml')), permitted_classes: [Symbol], aliases: true)
+  # scheduled daily from the Heroku Scheduler, see EN-9444
+  it 'is run by the onboarding_sequence:remove_expired_journeys task' do
+    require 'rake'
 
-    job = schedule[:schedule]['remove_expired_onboarding_journeys']
+    unless Rake::Task.task_defined?('onboarding_sequence:remove_expired_journeys')
+      Rake::Task.define_task(:environment)
+      load Rails.root.join('lib/tasks/onboarding_sequence.rake')
+    end
 
-    expect(job['class']).to eq('RemoveExpiredOnboardingJourneysJob')
-    expect(job['cron']).to eq('30 3 * * *')
+    expect(RemoveExpiredOnboardingJourneysJob).to receive(:perform_now)
+
+    task = Rake::Task['onboarding_sequence:remove_expired_journeys']
+    task.reenable
+    task.invoke
   end
 end
