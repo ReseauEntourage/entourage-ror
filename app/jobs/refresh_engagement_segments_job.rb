@@ -1,7 +1,20 @@
+# Runs after the engagement data it reads: `denorm_daily_engagements_with_type`
+# is filled by the user-engagement AWS Lambda (entourage-tasks, `aggregate`,
+# daily at 05:00 UTC), and `rake users:engagement_segments` is scheduled at
+# 06:00 UTC on Heroku Scheduler.
+#
+# If that data stops before yesterday, the pipeline is down: computing anyway
+# would see every user's engagement dry up, turn them Silencieux and record
+# transitions that never happened. The run is refused instead, leaving every
+# segment and `segment_computed_at` untouched.
 class RefreshEngagementSegmentsJob < ApplicationJob
+  class StaleEngagementDataError < StandardError; end
+
   queue_as :default
 
   def perform
+    ensure_engagement_data_is_fresh!
+
     now = Time.current
     today = now.to_date
 
@@ -32,5 +45,20 @@ class RefreshEngagementSegmentsJob < ApplicationJob
         as_of: today
       )
     end
+  end
+
+  private
+
+  def ensure_engagement_data_is_fresh!
+    latest = DenormDailyEngagementsWithType.maximum(:date)
+
+    return if latest && latest >= Date.yesterday
+
+    raise(
+      StaleEngagementDataError,
+      "denorm_daily_engagements_with_type stops at #{latest || 'no date'} - the " \
+      'user-engagement Lambda (entourage-tasks, 05:00 UTC) looks down. Segments left untouched: run ' \
+      '`rake users:engagement_segments` again once the data has caught up.'
+    )
   end
 end

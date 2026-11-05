@@ -9,6 +9,31 @@ RSpec.describe RefreshEngagementSegmentsJob do
     create(:denorm_daily_engagements_with_type, user: user, engagement_type: type, date: date)
   end
 
+  describe 'engagement data freshness' do
+    it 'refuses to run when the engagement data stops before yesterday, leaving segments untouched' do
+      engagement(user, 'reaction', date: 2.days.ago.to_date)
+      user_segment = create(:user_segment, user: user, engagement_segment: 'Observateur', segment_computed_at: 2.days.ago)
+
+      expect { described_class.perform_now }.to raise_error(described_class::StaleEngagementDataError)
+
+      expect(user_segment.reload.engagement_segment).to eq('Observateur')
+      expect(user_segment.segment_computed_at).to be < 1.day.ago
+      expect(UserSegmentHistory.where(user_id: user.id)).to be_empty
+    end
+
+    it 'refuses to run when there is no engagement data at all' do
+      expect { described_class.perform_now }.to raise_error(described_class::StaleEngagementDataError)
+    end
+
+    it 'runs when the latest engagement data is from yesterday' do
+      engagement(user, 'reaction', date: Date.yesterday)
+
+      described_class.perform_now
+
+      expect(UserSegment.find_by(user_id: user.id).engagement_segment).to eq('Curieux')
+    end
+  end
+
   describe 'segment_computed_at freshness' do
     before { engagement(user, 'reaction') } # Curieux, stable across runs
 
@@ -124,6 +149,7 @@ RSpec.describe RefreshEngagementSegmentsJob do
     end
 
     it 'leaves users already reset to unclassified untouched on later runs' do
+      engagement(user, 'reaction') # fresh engagement data, so the run is not refused
       gone = create(:user, last_sign_in_at: 40.days.ago)
       create(:user_segment, user: gone, engagement_segment: nil, segment_computed_at: 10.days.ago)
       create(:user_segment_history, user: gone, engagement_segment: nil, valid_from: 10.days.ago.to_date)
