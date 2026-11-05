@@ -2,13 +2,9 @@ module UserServices
   module Engagement
     extend ActiveSupport::Concern
 
-    BADGE_LABELS = {
-      "SUPER_ENGAGE" => "Super-engagé",
-      "ENGAGE" => "Engagé",
-      "OBSERVE" => "Observateur",
-      "PASSIVE" => "Passif",
-      "SILENT" => "Silencieux"
-    }.freeze
+    # values of engagement_levels.badge for a user with engagement in the window
+    # (a user without any has no engagement_levels row: SILENT)
+    ENGAGED_BADGES = %w[SUPER_ENGAGE ENGAGE OBSERVE PASSIVE].freeze
 
     included do
       has_one :engagement_level
@@ -36,10 +32,6 @@ module UserServices
       engagement.engaged?
     end
 
-    def badge
-      engagement.badge
-    end
-
     EngagementStruct = Struct.new(:user) do
       def initialize(user: nil)
         @user = user
@@ -55,14 +47,8 @@ module UserServices
         level_1 + level_2 + level_3
       end
 
-      def badge
-        return BADGE_LABELS["SILENT"] unless engagement_level
-
-        BADGE_LABELS[engagement_level.badge] || BADGE_LABELS["SILENT"]
-      end
-
       def engaged?
-        badge != BADGE_LABELS["SILENT"]
+        ENGAGED_BADGES.include?(engagement_level&.badge)
       end
 
       def levels

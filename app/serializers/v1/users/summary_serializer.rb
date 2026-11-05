@@ -26,7 +26,6 @@ module V1
         :birthday_today,
         :events,
         :onboarding_journey,
-        :badge,
         :badges,
         :engagement_segment,
         :engagement_sub_segment,

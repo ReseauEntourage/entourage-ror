@@ -24,7 +24,7 @@ describe V1::Users::SummarySerializer do
     it { expect(serialized).to have_key(:congratulations) }
     it { expect(serialized).to have_key(:moderator) }
     it { expect(serialized).to have_key(:referent_benevole) }
-    it { expect(serialized).to have_key(:badge) }
+    it { expect(serialized).not_to have_key(:badge) }
     it { expect(serialized).to have_key(:engagement_segment) }
     it { expect(serialized).to have_key(:engagement_sub_segment) }
     it { expect(serialized).to have_key(:segment_computed_at) }
@@ -42,9 +42,6 @@ describe V1::Users::SummarySerializer do
         end
 
         it { expect(serialized[:engagement_segment]).to eq('Pilier') }
-        it 'does not change the unrelated badge field' do
-          expect(serialized[:badge]).to eq(user.badge)
-        end
       end
     end
 
