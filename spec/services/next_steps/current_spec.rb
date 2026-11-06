@@ -130,6 +130,18 @@ RSpec.describe NextSteps::Current do
   describe 'realisation (5.3, 5.4)' do
     before { welcome_journey_over! }
 
+    # spec/subscribers/badge_subscriber_spec.rb empties the EventBus subscribers:
+    # subscribe here, whatever ran before, and restore them afterwards
+    around do |example|
+      subscribers = EventBus.instance_variable_get(:@subscribers)
+      EventBus.instance_variable_set(:@subscribers, Hash.new { |hash, key| hash[key] = [] })
+      NextStepRealisationSubscriber.register!
+
+      example.run
+    ensure
+      EventBus.instance_variable_set(:@subscribers, subscribers)
+    end
+
     it 'realises the hero when the user joins the proposed event from any screen' do
       event = create(:outing, **nearby)
       hero = current.call
