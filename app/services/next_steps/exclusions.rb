@@ -116,17 +116,30 @@ module NextSteps
     end
 
     def last_private_message_at_by_user_id other_user_id
-      @last_private_message_at ||= {}
-      return @last_private_message_at[other_user_id] if @last_private_message_at.key?(other_user_id)
+      preload_private_messages([other_user_id])
 
-      @last_private_message_at[other_user_id] = ChatMessage
+      @last_private_message_at[other_user_id]
+    end
+
+    public
+
+    # Loads, in one query, when the user last wrote privately to each of these
+    # users: call it before answered_action? on a batch of entraides.
+    def preload_private_messages other_user_ids
+      @last_private_message_at ||= {}
+
+      missing = other_user_ids.uniq - @last_private_message_at.keys
+      return if missing.empty?
+
+      found = ChatMessage
         .joins("INNER JOIN entourages ON entourages.id = chat_messages.messageable_id AND entourages.group_type = 'conversation'")
-        .joins(ActiveRecord::Base.sanitize_sql_array([
-          "INNER JOIN join_requests others ON others.joinable_type = 'Entourage' AND others.joinable_id = entourages.id AND others.user_id = ?",
-          other_user_id
-        ]))
+        .joins("INNER JOIN join_requests others ON others.joinable_type = 'Entourage' AND others.joinable_id = entourages.id")
         .where(messageable_type: 'Entourage', user_id: user.id)
+        .where(others: { user_id: missing })
+        .group('others.user_id')
         .maximum('chat_messages.created_at')
+
+      missing.each { |other_user_id| @last_private_message_at[other_user_id] = found[other_user_id] }
     end
   end
 end
