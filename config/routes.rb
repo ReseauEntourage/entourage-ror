@@ -563,6 +563,19 @@ Rails.application.routes.draw do
         resources :outings, controller: 'neighborhoods/outings', only: [:index, :create]
       end
 
+      # « Votre prochain pas » (EN-9473)
+      resources :next_steps, only: [] do
+        collection do
+          get :current
+          get :others
+          post :interactions
+        end
+
+        member do
+          post :ignore
+        end
+      end
+
       resources :resources, only: [:index, :show] do
         collection do
           get :home
