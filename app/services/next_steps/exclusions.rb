@@ -37,8 +37,18 @@ module NextSteps
       engine_keys.any? { |key| key[0] == kind }
     end
 
-    def joined_outing_ids
-      @joined_outing_ids ||= accepted_joinable_ids('Entourage')
+    # SQL condition on `entourages`: not joined by the user. Checked row by row
+    # through the (user_id, joinable_id) index rather than by loading every
+    # membership: a moderator is a member of hundreds of thousands of
+    # conversations (spike S1, design.md Risks).
+    def not_joined_entourage_sql
+      ActiveRecord::Base.sanitize_sql_array([<<~SQL.squish, user.id, JoinRequest::ACCEPTED_STATUS])
+        NOT EXISTS (
+          SELECT 1 FROM join_requests mine
+          WHERE mine.user_id = ? AND mine.joinable_type = 'Entourage'
+            AND mine.joinable_id = entourages.id AND mine.status = ?
+        )
+      SQL
     end
 
     def joined_neighborhood_ids
@@ -82,10 +92,27 @@ module NextSteps
     # An entraide is answered when the user joined it, or wrote to its author in
     # a private conversation after it was created (design.md, decision 7).
     def answered_action? action
-      return true if accepted_joinable_ids('Entourage').include?(action.id)
+      return true if joined_action_ids([action.id]).include?(action.id)
 
       last_at = last_private_message_at_by_user_id(action.user_id)
       last_at.present? && last_at >= action.created_at
+    end
+
+    # Loads, in one query, which of these entraides the user joined: call it
+    # before answered_action? on a batch of entraides.
+    def joined_action_ids action_ids
+      @joined_action_ids ||= {}
+
+      missing = action_ids.uniq - @joined_action_ids.keys
+      if missing.any?
+        joined = JoinRequest
+          .where(user_id: user.id, joinable_type: 'Entourage', joinable_id: missing, status: JoinRequest::ACCEPTED_STATUS)
+          .pluck(:joinable_id)
+
+        missing.each { |action_id| @joined_action_ids[action_id] = joined.include?(action_id) }
+      end
+
+      action_ids.select { |action_id| @joined_action_ids[action_id] }
     end
 
     private

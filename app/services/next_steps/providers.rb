@@ -86,7 +86,8 @@ module NextSteps
         .for_user(user)
         .future
         .where.not(user_id: user.id)
-        .where.not(id: exclusions.joined_outing_ids + exclusions.excluded_target_ids('outing'))
+        .where(exclusions.not_joined_entourage_sql)
+        .where.not(id: exclusions.excluded_target_ids('outing'))
     end
 
     # Online events whose title says papotage or whose category is papotages
@@ -173,6 +174,7 @@ module NextSteps
       scope = scope.where(id: klass.match_at_least_one_section(sections).select(:id)) if sections
 
       actions = scope.reorder(created_at: :desc).limit(LIMIT).to_a
+      exclusions.joined_action_ids(actions.map(&:id))
       exclusions.preload_private_messages(actions.map(&:user_id))
 
       score.rank(actions.reject { |action| exclusions.answered_action?(action) }.map do |action|
