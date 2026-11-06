@@ -25,10 +25,6 @@ RSpec.describe UserServices::Engagement, type: :model do
         expect(engagement.score).to eq(0)
       end
 
-      it 'returns SILENT badge' do
-        expect(engagement.badge).to eq(UserServices::Engagement::BADGE_LABELS["SILENT"])
-      end
-
       it 'is not engaged' do
         expect(engagement.engaged?).to be false
       end
@@ -59,7 +55,7 @@ RSpec.describe UserServices::Engagement, type: :model do
       end
     end
 
-    describe 'badge mapping' do
+    describe 'engaged for every badge of the view' do
       before do
         level_3_count.times do |time|
           create(:denorm_daily_engagements_with_type, user: user, engagement_type: 'create_group', date: time.day.ago.to_date)
@@ -82,7 +78,8 @@ RSpec.describe UserServices::Engagement, type: :model do
         let(:level_1_count) { 0 }
 
         it do
-          expect(user.badge).to eq(UserServices::Engagement::BADGE_LABELS["SUPER_ENGAGE"])
+          expect(user.engagement_level.badge).to eq('SUPER_ENGAGE')
+          expect(user).to be_engaged
         end
       end
 
@@ -92,7 +89,8 @@ RSpec.describe UserServices::Engagement, type: :model do
         let(:level_1_count) { 0 }
 
         it do
-          expect(user.badge).to eq(UserServices::Engagement::BADGE_LABELS["ENGAGE"])
+          expect(user.engagement_level.badge).to eq('ENGAGE')
+          expect(user).to be_engaged
         end
       end
 
@@ -102,7 +100,8 @@ RSpec.describe UserServices::Engagement, type: :model do
         let(:level_1_count) { 3 }
 
         it do
-          expect(user.badge).to eq(UserServices::Engagement::BADGE_LABELS["OBSERVE"])
+          expect(user.engagement_level.badge).to eq('OBSERVE')
+          expect(user).to be_engaged
         end
       end
 
@@ -112,7 +111,8 @@ RSpec.describe UserServices::Engagement, type: :model do
         let(:level_1_count) { 1 }
 
         it do
-          expect(user.badge).to eq(UserServices::Engagement::BADGE_LABELS["PASSIVE"])
+          expect(user.engagement_level.badge).to eq('PASSIVE')
+          expect(user).to be_engaged
         end
       end
     end

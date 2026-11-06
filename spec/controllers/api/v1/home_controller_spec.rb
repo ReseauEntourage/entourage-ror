@@ -215,8 +215,10 @@ describe Api::V1::HomeController do
               },
               'done_steps_count' => 0
             },
-            'badge' => UserServices::Engagement::BADGE_LABELS["SILENT"],
-            'badges' => default_badges_json
+            'badges' => default_badges_json,
+            'engagement_segment' => nil,
+            'engagement_sub_segment' => nil,
+            'segment_computed_at' => nil
           }
         }) }
       end
