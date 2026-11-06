@@ -57,6 +57,20 @@ module NextSteps
       nil
     end
 
+    # The fallbacks alone (papotage, then Bonnes ondes): used when the full
+    # choice fails.
+    # @return [Choice, nil]
+    def fallback
+      providers = Providers.new(user, Exclusions.new(user, placement: :hero, now: now))
+
+      FALLBACK_TYPES.each do |type|
+        candidate = providers.candidates(type).first
+        return choice(candidate, type, 'segment') if candidate
+      end
+
+      nil
+    end
+
     # Up to 3 suggestions, of different kinds when possible, chosen by the same
     # rules as the hero but with the exclusions of the "others".
     # @return [Array<Choice>]
