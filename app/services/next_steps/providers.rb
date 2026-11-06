@@ -90,18 +90,8 @@ module NextSteps
         .where.not(id: exclusions.excluded_target_ids('outing'))
     end
 
-    # Online events whose title says papotage or whose category is papotages
-    # (design.md, Risks: spike S4).
     def papotage_ids
-      @papotage_ids ||= begin
-        upcoming = Outing.unscope(:order).active.future.where(online: true)
-        tagged = ActsAsTaggableOn::Tagging
-          .joins(:tag)
-          .where(context: 'sf_categories', taggable_type: 'Entourage', tags: { name: 'papotages' })
-          .select(:taggable_id)
-
-        (upcoming.where('entourages.title ILIKE ?', '%papotage%').pluck(:id) + upcoming.where(id: tagged).pluck(:id)).uniq
-      end
+      @papotage_ids ||= Papotages.ids(Outing.active.future)
     end
 
     def rank_outings scope
