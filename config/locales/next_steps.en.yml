@@ -1,0 +1,56 @@
+# "Why this suggestion?" (EN-9473): English version of next_steps.fr.yml, the reference.
+en:
+  next_steps:
+    reasons:
+      answers_your_need:
+        default: "This may answer your request \"%{need_title}\"."
+        gentle: "This may help with your request \"%{need_title}\"."
+      near_you:
+        default: "It's %{distance} from your home."
+        gentle: "It's %{distance} from your home."
+      shared_interests:
+        default: "It's about %{interests}, topics you like."
+        gentle: "It's about %{interests}, topics you like."
+      popular:
+        default: "%{count} people are already taking part."
+        gentle: "Other people are already taking part."
+      upcoming_event:
+        default: "It's on %{date}, a chance to meet people near you."
+        gentle: "It's on %{date}. You can come just as you are."
+      online_event:
+        default: "It's online: you can join from home."
+        gentle: "It's online: you can join from home."
+      local_group:
+        default: "A group of people near you, to talk and help each other."
+        gentle: "A group of people near you, to talk and help each other."
+      national_group:
+        default: "A group open to all of France, about %{interest}."
+        gentle: "A group open to all of France, about %{interest}."
+      neighbor_needs_help:
+        default: "Someone near you needs a helping hand."
+        gentle: "Someone near you needs a helping hand."
+      help_offered:
+        default: "Someone near you is offering help."
+        gentle: "Someone near you is offering help. You can simply write to them."
+      content_path:
+        default: "Three short reads to discover Entourage."
+        gentle: "Three short reads, at your own pace."
+      group_member_message:
+        default: "You are a member of this group: a short message is enough to get to know each other."
+        gentle: "You are a member of this group. If you feel like it, a short note is enough to say hello."
+      smalltalk:
+        default: "Bonnes ondes puts you in touch with a few people to chat."
+        gentle: "Bonnes ondes puts you in touch with a few people to chat, at your own pace."
+      become_ambassador:
+        default: "Would you like to host get-togethers near you? The Entourage Host role is made for that."
+        gentle: "Would you like to host get-togethers near you? The Entourage Host role is made for that."
+      poi_for_need:
+        default: "This place (%{category}) may help with your request \"%{need_title}\"."
+        gentle: "This place (%{category}) may help with your request \"%{need_title}\"."
+      papotage:
+        default: "A friendly online get-together, open to everyone, to chat with no commitment."
+        gentle: "A warm online get-together, to chat with no commitment."
+    distance:
+      meters: "%{count} m"
+      kilometers: "%{count} km"
+    interests_separator: " and "
