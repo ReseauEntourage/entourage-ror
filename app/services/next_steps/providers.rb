@@ -81,13 +81,18 @@ module NextSteps
     end
 
     def upcoming_outings
-      Outing
+      outings = Outing
         .active
         .for_user(user)
         .future
         .where.not(user_id: user.id)
         .where(exclusions.not_joined_entourage_sql)
         .where.not(id: exclusions.excluded_target_ids('outing'))
+
+      # same rule as groups (Neighborhood.not_reserved_female_for): no
+      # women-only event for a man
+      outings = outings.where("COALESCE(entourages.metadata->>'reserved_female', 'false') <> 'true'") if user.male?
+      outings
     end
 
     def papotage_ids

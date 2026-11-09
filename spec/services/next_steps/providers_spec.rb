@@ -37,6 +37,22 @@ RSpec.describe NextSteps::Providers do
       expect(targets('outing').map(&:id)).to eq([far.id, online.id])
     end
 
+    it 'never suggests a women-only event to a man, papotages included' do
+      user.update!(gender: 'male')
+      women_only = create(:outing, :outing_class, latitude: 48.86, longitude: 2.3522, reserved_female: true)
+      women_papotage = create(:outing, :outing_class, online: true, title: 'Papotage entre femmes', reserved_female: true)
+
+      expect(targets('outing').map(&:id)).not_to include(women_only.id)
+      expect(targets('papotage').map(&:id)).not_to include(women_papotage.id)
+    end
+
+    it 'still suggests a women-only event to a woman' do
+      user.update!(gender: 'female')
+      women_only = create(:outing, :outing_class, latitude: 48.86, longitude: 2.3522, reserved_female: true)
+
+      expect(targets('outing').map(&:id)).to include(women_only.id)
+    end
+
     it 'lists the papotages as their own type' do
       expect(targets('papotage').map(&:id)).to eq([papotage.id])
     end
