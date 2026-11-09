@@ -53,6 +53,14 @@ RSpec.describe NextSteps::Providers do
       expect(targets('outing').map(&:id)).to include(women_only.id)
     end
 
+    it 'only suggests events starting within 30 days' do
+      far = create(:outing, latitude: 48.86, longitude: 2.3522, metadata: { starts_at: 45.days.from_now })
+      far_papotage = create(:outing, online: true, title: 'Papotage lointain', metadata: { starts_at: 40.days.from_now })
+
+      expect(targets('outing').map(&:id)).not_to include(far.id)
+      expect(targets('papotage').map(&:id)).not_to include(far_papotage.id)
+    end
+
     it 'lists the papotages as their own type' do
       expect(targets('papotage').map(&:id)).to eq([papotage.id])
     end

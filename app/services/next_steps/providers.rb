@@ -80,11 +80,16 @@ module NextSteps
         .map { |outing| Candidate.for_record('outing', outing, popularity: outing.number_of_people, latitude: nil, longitude: nil) }
     end
 
+    # events starting within HORIZON only: a far event would otherwise stay
+    # the hero for months (decision of 2026-11-09)
+    HORIZON = 30.days
+
     def upcoming_outings
       outings = Outing
         .active
         .for_user(user)
         .future
+        .where("entourages.metadata->>'starts_at' <= ?", exclusions.now + HORIZON)
         .where.not(user_id: user.id)
         .where(exclusions.not_joined_entourage_sql)
         .where.not(id: exclusions.excluded_target_ids('outing'))
@@ -96,7 +101,7 @@ module NextSteps
     end
 
     def papotage_ids
-      @papotage_ids ||= Papotages.ids(Outing.active.future)
+      @papotage_ids ||= Papotages.ids(Outing.active.future.where("entourages.metadata->>'starts_at' <= ?", exclusions.now + HORIZON))
     end
 
     def rank_outings scope
