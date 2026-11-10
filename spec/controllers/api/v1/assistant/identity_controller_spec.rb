@@ -105,6 +105,18 @@ describe Api::V1::Assistant::IdentityController, type: :controller do
       expect_error 401, 'INVALID_TOKEN'
     end
 
+    it 'refuses a valid token of another community, as an unknown token' do
+      other_community = (Community.slugs - [$server_community.slug]).first
+      user.update_columns(community: other_community)
+
+      read_identity
+      refused = [response.status, response.body]
+      read_identity(token: 'unknown')
+
+      expect(other_community).to be_present
+      expect(refused).to eq [401, response.body]
+    end
+
     it 'refuses an Authorization header that is not a Bearer one' do
       request.headers['X-API-KEY'] = assistant_key
       request.headers['Authorization'] = "Token #{user.token}"

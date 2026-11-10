@@ -53,7 +53,8 @@ module Api
             )
           end
 
-          user = User.eager_load(:address).find_by(token: token)
+          # Scoped to the community of the server: a token of another community (same table) is unknown here.
+          user = $server_community.users.eager_load(:address).find_by(token: token)
           # Same refusal as an invalid token: nothing says what the state of the account is.
           return render_invalid_token unless user && usable?(user)
 
