@@ -131,6 +131,19 @@ describe Api::V1::Assistant::IdentityController, type: :controller do
       end
     end
 
+    [
+      '1_anonymous_',
+      '1_anonymous_abc',
+      "1_anonymous_#{'a' * 36}",
+      "1_anonymous_#{'a' * 36}_short"
+    ].each do |malformed|
+      it "refuses the malformed anonymous token #{malformed.inspect} as an invalid token, without error" do
+        read_identity(token: malformed)
+
+        expect_error 401, 'INVALID_TOKEN'
+      end
+    end
+
     it 'refuses an anonymous account, with a refusal of its own' do
       anonymous_token = AnonymousUserService.token_from_uuid(SecureRandom.uuid, community: $server_community)
 
