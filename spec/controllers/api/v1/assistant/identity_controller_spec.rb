@@ -17,6 +17,20 @@ describe Api::V1::Assistant::IdentityController, type: :controller do
     get :read, params: params
   end
 
+  # Fails if any SQL statement reads the users table while the block runs: a stub on a class
+  # method would miss the query, which goes through `Community#users`, a relation.
+  def expect_no_user_query
+    user # created before listening: only the request itself must not read users
+    statements = []
+    subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+      statements << payload[:sql] if payload[:sql] =~ /\bFROM "users"/i
+    end
+    yield
+    expect(statements).to be_empty
+  ensure
+    ActiveSupport::Notifications.unsubscribe(subscriber)
+  end
+
   def expect_error(status, code)
     expect(response.status).to eq status
     expect(body).to eq('error' => { 'code' => code, 'message' => body.dig('error', 'message') })
@@ -30,17 +44,13 @@ describe Api::V1::Assistant::IdentityController, type: :controller do
 
   describe 'API key of the assistant' do
     it 'refuses a missing key, before reading any account' do
-      expect(User).not_to receive(:eager_load)
-
-      read_identity(key: nil)
+      expect_no_user_query { read_identity(key: nil) }
 
       expect_error 401, 'INVALID_API_KEY'
     end
 
     it 'refuses a wrong key, before reading any account' do
-      expect(User).not_to receive(:eager_load)
-
-      read_identity(key: 'another-key')
+      expect_no_user_query { read_identity(key: 'another-key') }
 
       expect_error 401, 'INVALID_API_KEY'
     end
@@ -55,9 +65,7 @@ describe Api::V1::Assistant::IdentityController, type: :controller do
       let(:assistant_key) { nil }
 
       it 'refuses every request, even one that sends an empty key' do
-        expect(User).not_to receive(:eager_load)
-
-        read_identity(key: '')
+        expect_no_user_query { read_identity(key: '') }
 
         expect_error 401, 'INVALID_API_KEY'
       end
