@@ -29,8 +29,20 @@ if EnvironmentHelper.production?
     # Throttle all requests by IP (60rpm)
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
+    # The routes of the AI assistant are out of this limit (see below): the assistant calls
+    # them from a single server, for all its users.
+    assistant_path = %r{\A/api/v1/assistant(/|\z)}
+
     throttle('req/ip', limit: 600, period: 5.minutes) do |req|
-      req.ip # unless req.path.start_with?('/assets')
+      req.ip unless req.path.match?(assistant_path) # unless req.path.start_with?('/assets')
+    end
+
+    # Own limit of the routes of the AI assistant, by IP address of the assistant's server.
+    # The value is provisional: it is to be set from what the spike "adresse vue par Rack::Attack"
+    # of the change add-assistant-tools-endpoints-local measures. The API key is checked first by
+    # the controller, so a request without it is refused without reading any account.
+    throttle('assistant/ip', limit: Integer(ENV.fetch('ASSISTANT_THROTTLE_LIMIT', 3000)), period: 5.minutes) do |req|
+      req.ip if req.path.match?(assistant_path)
     end
 
     ### Prevent Brute-Force Login Attacks ###
