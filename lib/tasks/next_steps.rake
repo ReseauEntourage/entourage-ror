@@ -3,4 +3,11 @@ namespace :next_steps do
   task alert: :environment do
     NextSteps::Alert.call
   end
+
+  desc 'Delete the next steps and the interactions older than 6 months (Heroku Scheduler, daily)'
+  task purge: :environment do
+    deleted = NextSteps::Purge.expired
+
+    puts "next_steps:purge #{deleted.map { |table, count| "#{table}=#{count}" }.join(' ')}"
+  end
 end

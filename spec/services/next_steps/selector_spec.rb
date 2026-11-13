@@ -151,6 +151,16 @@ RSpec.describe NextSteps::Selector do
 
       expect(hero.candidate.kind).to eq('smalltalk')
     end
+
+    it 'suggests nothing when the papotage and the Bonnes ondes are both excluded' do
+      locate!
+      segment!('Curieux')
+      papotage = create(:outing, online: true, title: 'Papotage solidaire')
+      create(:join_request, user: user, joinable: Entourage.find(papotage.id), status: :accepted)
+      create(:user_smalltalk, user: user, created_at: 10.days.ago)
+
+      expect(hero).to be_nil
+    end
   end
 
   describe 'others' do
@@ -183,6 +193,26 @@ RSpec.describe NextSteps::Selector do
       described_class.new(user).others
 
       expect(target_of(hero)).to eq(group)
+    end
+
+    it 'shows no other date of the series of the hero among the others (4.10)' do
+      first = create(:outing, recurrency_identifier: 'serie-a', metadata: { starts_at: 3.days.from_now }, **nearby)
+      create(:outing, recurrency_identifier: 'serie-a', metadata: { starts_at: 10.days.from_now }, **nearby)
+      create(:next_step, user: user, kind: 'outing', target_type: 'Outing', target_id: first.id,
+        status: 'active', first_displayed_at: Time.current, expires_at: 2.days.from_now)
+
+      kinds = described_class.new(user).others.map { |choice| choice.candidate.kind }
+
+      expect(kinds).not_to include('outing')
+    end
+
+    it 'never shows two types of suggestions that belong to the same series (4.10)' do
+      create(:outing, recurrency_identifier: 'serie-a', online: true, title: 'Atelier en visio', metadata: { starts_at: 2.days.from_now })
+      create(:outing, recurrency_identifier: 'serie-a', online: true, title: 'Papotage solidaire', metadata: { starts_at: 5.days.from_now })
+
+      outings = described_class.new(user).others.select { |choice| choice.candidate.kind == 'outing' }
+
+      expect(outings.map { |choice| choice.candidate.target.title }).to eq(['Atelier en visio'])
     end
   end
 end

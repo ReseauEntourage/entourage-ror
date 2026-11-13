@@ -2,6 +2,8 @@
 
 Requêtes de suivi du moteur de suggestions (EN-9473, change OpenSpec `add-next-step-suggestions`). Elles lisent `next_steps` (un prochain pas proposé par ligne, avec le segment de l'utilisateur au moment du choix), `next_step_interactions` (affichages, ouvertures du « pourquoi », taps), `user_segment_history` et `denorm_daily_engagements_with_type`.
 
+**Fenêtre de 6 mois.** `next_steps` et `next_step_interactions` ne gardent que les 6 derniers mois : la tâche `next_steps:purge` (Heroku Scheduler, chaque jour) supprime ce qui est plus ancien, et les lignes d'un compte supprimé partent avec lui (design.md, décision 14). Toute requête sur une période plus longue est tronquée : pour comparer plus long, exporter les résultats avant la suppression.
+
 ## 1. Part des utilisateurs exposés qui interagissent avec une suggestion (objectif 40 %)
 
 Exposé : un prochain pas affiché dans les 30 derniers jours. Interaction : un tap, une ouverture du « pourquoi », une suggestion réalisée ou ignorée.

@@ -36,5 +36,13 @@ module NextSteps
     def key
       [kind, target_type, target_id]
     end
+
+    # Identifier shared by the dates of a recurring event, nil for any other
+    # candidate: one date per series is shown at a time (design.md, decision 5).
+    def series
+      return unless kind == 'outing' && target.respond_to?(:recurrency_identifier)
+
+      target.recurrency_identifier.presence
+    end
   end
 end

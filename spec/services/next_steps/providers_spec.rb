@@ -80,6 +80,63 @@ RSpec.describe NextSteps::Providers do
     end
   end
 
+  describe 'one date per series (4.10)' do
+    before { locate!(user) }
+
+    def series_date identifier, days, **attributes
+      create(:outing, recurrency_identifier: identifier, latitude: 48.86, longitude: 2.3522, metadata: { starts_at: days.days.from_now }, **attributes)
+    end
+
+    it 'proposes only the nearest date of a recurring event' do
+      series_date('serie-a', 17)
+      nearest = series_date('serie-a', 3)
+      series_date('serie-a', 10)
+
+      expect(targets('outing').map(&:id)).to eq([nearest.id])
+    end
+
+    it 'proposes the next date of the series when the nearest one is already joined' do
+      joined = series_date('serie-a', 3)
+      next_date = series_date('serie-a', 10)
+      series_date('serie-a', 17)
+      create(:join_request, user: user, joinable: Entourage.find(joined.id), status: :accepted)
+
+      expect(targets('outing').map(&:id)).to eq([next_date.id])
+    end
+
+    it 'keeps the events that belong to no series, and one date for each series' do
+      alone = series_date(nil, 2)
+      other_alone = series_date(nil, 4)
+      first_a = series_date('serie-a', 5)
+      series_date('serie-a', 12)
+      first_b = series_date('serie-b', 6)
+      series_date('serie-b', 13)
+
+      expect(targets('outing').map(&:id)).to contain_exactly(alone.id, other_alone.id, first_a.id, first_b.id)
+    end
+
+    it 'proposes only the nearest date of a recurring papotage' do
+      nearest = series_date('papotage-hebdo', 2, online: true, title: 'Papotage solidaire')
+      series_date('papotage-hebdo', 9, online: true, title: 'Papotage solidaire')
+      series_date('papotage-hebdo', 16, online: true, title: 'Papotage solidaire')
+
+      expect(targets('papotage').map(&:id)).to eq([nearest.id])
+    end
+
+    it 'leaves the other dates of the hero series out of the others, and only those' do
+      hero = series_date('serie-a', 3)
+      series_date('serie-a', 10)
+      other_series = series_date('serie-b', 5)
+      alone = series_date(nil, 6)
+      create(:next_step, user: user, kind: 'outing', target_type: 'Outing', target_id: hero.id,
+        status: 'active', first_displayed_at: Time.current, expires_at: 2.days.from_now)
+
+      others = providers(placement: :others).candidates('outing').map { |candidate| candidate.target.id }
+
+      expect(others).to contain_exactly(other_series.id, alone.id)
+    end
+  end
+
   describe 'groups (4.3)' do
     before { locate!(user) }
 

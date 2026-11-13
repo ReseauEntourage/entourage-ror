@@ -62,7 +62,7 @@ module NextSteps
 
     # In-person events of the zone, then online events; papotages excluded.
     def outing_candidates
-      outing_nearby_candidates + rank_outings(upcoming_outings.where(online: true).where.not(id: papotage_ids))
+      one_per_series(outing_nearby_candidates + rank_outings(upcoming_outings.where(online: true).where.not(id: papotage_ids)))
     end
 
     # In-person events of the zone only (Dormant).
@@ -74,10 +74,10 @@ module NextSteps
 
     # The next papotages, soonest first: the fallback.
     def papotage_candidates
-      upcoming_outings
+      one_per_series(upcoming_outings
         .where(id: papotage_ids)
         .limit(LIMIT)
-        .map { |outing| Candidate.for_record('outing', outing, popularity: outing.number_of_people, latitude: nil, longitude: nil) }
+        .map { |outing| Candidate.for_record('outing', outing, popularity: outing.number_of_people, latitude: nil, longitude: nil) })
     end
 
     # events starting within HORIZON only: a far event would otherwise stay
@@ -97,7 +97,24 @@ module NextSteps
       # same rule as groups (Neighborhood.not_reserved_female_for): no
       # women-only event for a man
       outings = outings.where("COALESCE(entourages.metadata->>'reserved_female', 'false') <> 'true'") if user.male?
+
+      # the other dates of the series of the current hero are not shown among
+      # the others (NULL-safe: most events belong to no series)
+      series = exclusions.excluded_series_identifiers
+      outings = outings.where('entourages.recurrency_identifier IS NULL OR entourages.recurrency_identifier NOT IN (?)', series) if series.any?
       outings
+    end
+
+    # Of the dates of a recurring event (same recurrency_identifier), only the
+    # nearest in time is a candidate; events without a series stay as they are.
+    # The candidates keep their order (decision of 2026-11-12, task 4.10).
+    def one_per_series candidates
+      nearest = candidates
+        .select(&:series)
+        .group_by(&:series)
+        .transform_values { |dates| dates.min_by { |candidate| candidate.target.starts_at.to_time } }
+
+      candidates.select { |candidate| candidate.series.nil? || nearest[candidate.series].equal?(candidate) }
     end
 
     def papotage_ids
@@ -108,13 +125,13 @@ module NextSteps
       outings = scope.limit(LIMIT).to_a
       interests = interests_by_id('Entourage', outings.map(&:id))
 
-      score.rank(outings.map do |outing|
+      score.rank(one_per_series(outings.map do |outing|
         Candidate.for_record('outing', outing,
           interest_list: interests[outing.id] || [],
           popularity: outing.number_of_people,
           latitude: outing.online? ? nil : outing.latitude,
           longitude: outing.online? ? nil : outing.longitude)
-      end)
+      end))
     end
 
     # --- groups

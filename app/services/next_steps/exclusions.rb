@@ -37,6 +37,19 @@ module NextSteps
       engine_keys.any? { |key| key[0] == kind }
     end
 
+    # Among the others, the series (recurring event) of the active hero: only
+    # one date of a series is shown at a time. Empty for the hero itself, whose
+    # 30-day exclusions stay per date (design.md, decision 5).
+    def excluded_series_identifiers
+      return [] unless placement == :others
+
+      @excluded_series_identifiers ||= begin
+        event_ids = NextStep.where(user_id: user.id, status: 'active', kind: 'outing').pluck(:target_id)
+
+        event_ids.empty? ? [] : Outing.unscoped.where(id: event_ids).where.not(recurrency_identifier: [nil, '']).distinct.pluck(:recurrency_identifier)
+      end
+    end
+
     # SQL condition on `entourages`: not joined by the user. Checked row by row
     # through the (user_id, joinable_id) index rather than by loading every
     # membership: a moderator is a member of hundreds of thousands of

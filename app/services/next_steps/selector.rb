@@ -86,6 +86,8 @@ module NextSteps
             break if chosen.size >= OTHERS_COUNT
             next if chosen.any? { |choice| choice.candidate.key == candidate.key }
             next if one_per_kind && chosen.any? { |choice| choice.candidate.kind == candidate.kind }
+            # one date per series, whatever the type (event, papotage)
+            next if candidate.series && chosen.any? { |choice| choice.candidate.series == candidate.series }
 
             chosen << choice(candidate, type, mode)
             break if one_per_kind
