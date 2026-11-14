@@ -666,6 +666,10 @@ describe Api::V1::OutingsController do
       end
 
       context 'change recurrence' do
+        # frozen at noon (Paris): run late in the evening, end_at fell on the next day
+        # and the recurring dates no longer matched
+        before { Timecop.freeze(Time.zone.now.change(hour: 12)) } # after the global Timecop.return of spec_helper
+
         let(:start_at) { 1.hour.from_now }
         let(:end_at) { 2.hours.from_now }
 

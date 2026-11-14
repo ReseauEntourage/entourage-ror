@@ -1,0 +1,58 @@
+# « Pourquoi cette suggestion ? » (EN-9473, design.md décision 11) : une phrase par code de
+# raison, en variante « default » et « gentle » (personne en précarité). Rédigées par le
+# développeur, à valider par le PM (tâche 8.1). Aucune ne mentionne le profil ni le segment.
+fr:
+  next_steps:
+    reasons:
+      answers_your_need:
+        default: "Cela peut répondre à votre demande « %{need_title} »."
+        gentle: "Cela peut vous aider pour votre demande « %{need_title} »."
+      near_you:
+        default: "C'est à %{distance} de chez vous."
+        gentle: "C'est à %{distance} de chez vous."
+      shared_interests:
+        default: "On y parle de %{interests}, des sujets qui vous plaisent."
+        gentle: "On y parle de %{interests}, des sujets qui vous plaisent."
+      popular:
+        default: "%{count} personnes y participent déjà."
+        gentle: "D'autres personnes y participent déjà."
+      upcoming_event:
+        default: "C'est %{date}, une occasion de rencontrer du monde près de chez vous."
+        gentle: "C'est %{date}. Vous pouvez venir comme vous êtes."
+      online_event:
+        default: "C'est en visio : vous pouvez participer depuis chez vous."
+        gentle: "C'est en visio : vous pouvez participer depuis chez vous."
+      local_group:
+        default: "Un groupe de personnes près de chez vous, pour échanger et s'entraider."
+        gentle: "Un groupe de personnes près de chez vous, pour échanger et s'entraider."
+      national_group:
+        default: "Un groupe ouvert à toute la France, autour de %{interest}."
+        gentle: "Un groupe ouvert à toute la France, autour de %{interest}."
+      neighbor_needs_help:
+        default: "Une personne près de chez vous a besoin d'un coup de pouce."
+        gentle: "Une personne près de chez vous a besoin d'un coup de pouce."
+      help_offered:
+        default: "Quelqu'un près de chez vous propose son aide."
+        gentle: "Quelqu'un près de chez vous propose son aide. Vous pouvez lui écrire simplement."
+      content_path:
+        default: "Trois lectures courtes pour découvrir Entourage."
+        gentle: "Trois lectures courtes, à lire à votre rythme."
+      group_member_message:
+        default: "Vous faites partie de ce groupe : un petit message suffit pour faire connaissance."
+        gentle: "Vous faites partie de ce groupe. Si vous en avez envie, un petit mot suffit pour dire bonjour."
+      smalltalk:
+        default: "Les Bonnes ondes vous mettent en relation avec quelques personnes pour discuter."
+        gentle: "Les Bonnes ondes vous mettent en relation avec quelques personnes pour discuter, à votre rythme."
+      become_ambassador:
+        default: "Envie d'animer des rencontres près de chez vous ? Le rôle d'Animateur Entourage est fait pour ça."
+        gentle: "Envie d'animer des rencontres près de chez vous ? Le rôle d'Animateur Entourage est fait pour ça."
+      poi_for_need:
+        default: "Ce lieu (%{category}) peut vous aider pour votre demande « %{need_title} »."
+        gentle: "Ce lieu (%{category}) peut vous aider pour votre demande « %{need_title} »."
+      papotage:
+        default: "Un moment convivial en visio, ouvert à toutes et tous, pour discuter sans engagement."
+        gentle: "Un moment chaleureux en visio, pour discuter sans engagement."
+    distance:
+      meters: "%{count} m"
+      kilometers: "%{count} km"
+    interests_separator: " et "

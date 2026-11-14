@@ -1,6 +1,7 @@
 class UserSmalltalk < ApplicationRecord
   include Deeplinkable
   include UserSmalltalkable
+  include PublishesEvents
 
   VIRTUAL_ATTRIBUTES = [:has_matched_format, :has_matched_gender, :has_matched_locality, :has_matched_interest, :has_matched_profile, :unmatch_count]
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_29_160000) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_06_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -583,6 +583,47 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_29_160000) do
     t.string "zone"
     t.string "status"
     t.index ["email"], name: "index_newsletter_subscriptions_on_email"
+  end
+
+  create_table "next_step_interactions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "next_step_id"
+    t.string "placement", null: false
+    t.string "kind", null: false
+    t.string "item_kind"
+    t.string "target_type"
+    t.integer "target_id"
+    t.datetime "created_at", null: false
+    t.index ["next_step_id"], name: "index_next_step_interactions_on_next_step_id"
+    t.index ["user_id", "created_at"], name: "index_next_step_interactions_on_user_id_and_created_at"
+  end
+
+  create_table "next_steps", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "kind", null: false
+    t.string "target_type"
+    t.integer "target_id"
+    t.jsonb "target_ids", default: [], null: false
+    t.string "mode", null: false
+    t.integer "need_id"
+    t.string "segment"
+    t.string "sub_segment"
+    t.string "segment_source", null: false
+    t.string "profile"
+    t.float "score"
+    t.jsonb "score_components", default: {}, null: false
+    t.string "reason_codes", default: [], null: false, array: true
+    t.string "status", default: "active", null: false
+    t.datetime "first_displayed_at", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "realised_at"
+    t.datetime "ignored_at"
+    t.datetime "closed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "first_displayed_at"], name: "index_next_steps_on_user_id_and_first_displayed_at"
+    t.index ["user_id", "kind", "target_type", "target_id"], name: "index_next_steps_on_user_id_and_target"
+    t.index ["user_id"], name: "index_next_steps_on_active_user_id", unique: true, where: "((status)::text = 'active'::text)"
   end
 
   create_table "notification_permissions", force: :cascade do |t|
