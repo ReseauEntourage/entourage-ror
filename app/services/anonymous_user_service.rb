@@ -20,6 +20,8 @@ module AnonymousUserService
 
     _version, _prefix, uuid, signature = token.split('_', 4)
 
+    # A token cut short has no signature (nil): it is not a valid one.
+    return false if uuid.nil? || signature.nil?
     return false if uuid.length != 36 || signature.length != 40
 
     return false unless SignatureService.validate(uuid, signature, salt: salt(community))
