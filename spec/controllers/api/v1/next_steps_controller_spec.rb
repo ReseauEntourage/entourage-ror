@@ -56,6 +56,23 @@ describe Api::V1::NextStepsController, type: :controller do
     end
   end
 
+  describe 'the target of a lieu solidaire' do
+    before { ready!(user) }
+
+    it 'has its id and the format of GET /pois/:id' do
+      create(:category, id: 42, name: 'Douches')
+      create(:solicitation, user: user, section_list: ['hygiene'], created_at: 5.days.ago, **nearby)
+      showers = create(:poi, category_id: 42, **nearby)
+
+      get :current, params: { token: user.token }
+
+      target = result['next_step']['target']
+      expect(result['next_step']['kind']).to eq('poi')
+      expect(target['id']).to eq(showers.id)
+      expect(target.except('id').keys).to eq(V1::PoiSerializer.new(showers, scope: { version: :v2 }).as_json.keys.map(&:to_s))
+    end
+  end
+
   describe 'GET others' do
     before { ready!(user) }
 

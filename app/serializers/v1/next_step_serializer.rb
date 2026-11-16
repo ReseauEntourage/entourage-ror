@@ -79,7 +79,8 @@ module V1
       when 'outing' then V1::OutingSerializer.new(target, scope: scope).as_json
       when 'neighborhood', 'post_message' then V1::NeighborhoodSerializer.new(target, scope: scope).as_json
       when 'action' then V1::ActionSerializer.new(target, scope: scope.merge(latitude: user.latitude, longitude: user.longitude)).as_json
-      when 'poi' then V1::PoiSerializer.new(target).as_json
+      # the format of GET /api/v1/pois/:id, plus the id that the interactions need
+      when 'poi' then { id: target.id }.merge(V1::PoiSerializer.new(target, scope: { version: :v2 }).as_json)
       end
     end
 
