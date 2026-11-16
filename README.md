@@ -39,6 +39,21 @@ To add a new app version, generate a key and append a `version:key` entry at the
 ruby -e "require 'securerandom'; puts SecureRandom.hex(12)"
 ```
 
+## AI assistant API key
+
+The routes reserved to the Entourage AI assistant (`/api/v1/assistant/*`, see `app/controllers/api/v1/assistant/base_controller.rb`) have their own key, separate from the mobile API keys above. The assistant sends it in the `X-API-KEY` header, together with the user's token in `Authorization: Bearer <token>`.
+
+| Variable | Content |
+|---|---|
+| `ASSISTANT_API_KEY` | the secret shared with the assistant, which holds the same value in its `LOCAL_API_KEY`. Compared in constant time and checked before any account is read. **When it is empty or unset, every request to the group is refused** (401 `INVALID_API_KEY`) |
+| `ASSISTANT_THROTTLE_LIMIT` | optional: requests per 5 minutes and per IP for these routes (Rack::Attack, production only). Defaults to `3000` |
+
+⚠️ **Set `ASSISTANT_API_KEY` in every environment the assistant calls**, with a different value per environment, before the assistant is deployed:
+
+```bash
+openssl rand -hex 32
+```
+
 ## HMAC request signing (anti-bot)
 
 Two variables protect the account creation endpoint (`POST /api/v1/users`) against bots.
