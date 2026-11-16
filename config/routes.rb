@@ -859,6 +859,11 @@ Rails.application.routes.draw do
         resources :stats, only: [:index]
       end
 
+      # Routes reserved to the AI assistant (see Api::V1::Assistant::BaseController).
+      namespace :assistant do
+        get :identity, to: 'identity#read'
+      end
+
       resources :tags, only: [] do
         collection do
           get :interests
