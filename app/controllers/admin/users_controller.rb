@@ -2,7 +2,7 @@ module Admin
   class UsersController < Admin::BaseController
     LAST_SIGN_IN_AT_EXPORT = 1.year.ago
 
-    before_action :set_user, only: [:show, :messages, :engagement, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
+    before_action :set_user, only: [:show, :messages, :engagement, :next_step, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
@@ -66,6 +66,17 @@ module Admin
     end
 
     def engagement
+    end
+
+    # « Votre prochain pas » (EN-9473): the engine's segment, and the hero
+    # GET /api/v1/next_steps/current would return now, without writing
+    # anything. Loaded apart by the user page, which the engine must not slow
+    # down.
+    def next_step
+      @segment = NextSteps::EffectiveSegment.for(user)
+      @preview = NextSteps::Current.new(user).preview
+
+      render partial: 'next_step'
     end
 
     def rpush_notifications

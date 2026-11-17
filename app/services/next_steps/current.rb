@@ -13,6 +13,13 @@ module NextSteps
     # kinds realised by a tap, since they leave no trace in the domain data
     TAP_REALISED_KINDS = %w[poi become_ambassador].freeze
 
+    # What #call would return now (see #preview):
+    # - state: disabled, welcome_journey, active (the valid hero), to_create (the
+    #   hero the call would create, unsaved), none (nothing to suggest);
+    # - previous: the active hero the call would end first, with the status it
+    #   would get (expired, closed or realised).
+    Preview = Struct.new(:state, :next_step, :previous, :previous_status, keyword_init: true)
+
     def self.enabled?
       ENV.fetch('NEXT_STEPS_ENABLED', 'true').to_s.downcase != 'false'
     end
@@ -32,7 +39,31 @@ module NextSteps
       active = NextStep.active.find_by(user_id: user.id)
       return active if active && still_valid!(active)
 
-      choose(previous_kind: active&.kind || NextStep.where(user_id: user.id).order(created_at: :desc).pick(:kind))
+      choose(previous_kind: previous_kind(active))
+    end
+
+    # The hero #call would return now, without writing anything: neither the
+    # new hero nor the end of the previous one is saved. For the back-office,
+    # to test the engine without starting the 3 days of a hero the user has
+    # not seen.
+    # @return [Preview]
+    def preview
+      return Preview.new(state: 'disabled') unless self.class.enabled?
+      return Preview.new(state: 'welcome_journey') unless Onboarding::Journey.new(user, now: now).removed?
+
+      active = NextStep.active.find_by(user_id: user.id)
+      previous_status = active && ending_status(active)
+      return Preview.new(state: 'active', next_step: active) if active && previous_status.nil?
+
+      selector = Selector.new(user, now: now)
+      choice = hero_choice(selector, previous_kind(active))
+
+      Preview.new(
+        state: choice ? 'to_create' : 'none',
+        next_step: choice ? NextStep.new(attributes(selector, choice)) : nil,
+        previous: active,
+        previous_status: previous_status
+      )
     end
 
     # @return [NextStep, nil] the new hero
@@ -71,17 +102,26 @@ module NextSteps
     private
 
     def still_valid! next_step
-      if next_step.expires_at <= now
-        next_step.expire!(at: now)
-      elsif Realisation.target_gone?(next_step, now: now)
-        next_step.close!(at: now)
-      elsif Realisation.realised?(next_step)
-        next_step.realise!(at: now)
-      else
-        return true
+      case ending_status(next_step)
+      when 'expired' then next_step.expire!(at: now)
+      when 'closed' then next_step.close!(at: now)
+      when 'realised' then next_step.realise!(at: now)
+      else return true
       end
 
       false
+    end
+
+    # @return [String, nil] the status an active hero must end with, nil while it is valid
+    def ending_status next_step
+      return 'expired' if next_step.expires_at <= now
+      return 'closed' if Realisation.target_gone?(next_step, now: now)
+
+      'realised' if Realisation.realised?(next_step)
+    end
+
+    def previous_kind active
+      active&.kind || NextStep.where(user_id: user.id).order(created_at: :desc).pick(:kind)
     end
 
     def choose previous_kind:

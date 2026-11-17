@@ -3,6 +3,20 @@
     <%= render 'header', tab: :edit %>
   </div>
 
+  <% unless @user.deleted? %>
+    <div class="row" id="next-step">
+      <p class="text-muted">Calcul de la suggestion « Votre prochain pas »…</p>
+    </div>
+
+    <script>
+      $('#next-step').load('<%= next_step_admin_user_path(@user) %>', function(response, status) {
+        if (status === 'error') {
+          $(this).html('<p class="text-danger">Impossible de calculer la suggestion « Votre prochain pas ».</p>');
+        }
+      });
+    </script>
+  <% end %>
+
   <div class="row">
     <%= render partial: "form" %>
   </div>

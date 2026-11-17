@@ -94,6 +94,47 @@ RSpec.describe NextSteps::Current do
     end
   end
 
+  describe 'preview (back-office)' do
+    before { welcome_journey_over! }
+
+    let!(:group) { create(:neighborhood, **nearby) }
+
+    it 'returns the hero the call would create, without storing it' do
+      preview = current.preview
+
+      expect(preview.state).to eq('to_create')
+      expect(preview.next_step).to be_new_record
+      expect(preview.next_step).to have_attributes(kind: 'neighborhood', target_id: group.id, segment: 'Contributeur', mode: 'segment')
+      expect(NextStep.count).to eq(0)
+
+      expect(current.call).to have_attributes(kind: 'neighborhood', target_id: group.id)
+    end
+
+    it 'returns the active hero while it is valid' do
+      hero = current.call
+
+      expect(current.preview).to have_attributes(state: 'active', next_step: hero, previous: nil)
+    end
+
+    it 'returns the replacement of an expired hero, and leaves the hero active' do
+      hero = current(at: 4.days.ago).call
+      create(:neighborhood, **nearby)
+
+      preview = current.preview
+
+      expect(preview).to have_attributes(state: 'to_create', previous: hero, previous_status: 'expired')
+      expect([preview.next_step.kind, preview.next_step.target_id]).not_to eq([hero.kind, hero.target_id])
+      expect(hero.reload.status).to eq('active')
+      expect(NextStep.count).to eq(1)
+    end
+
+    it 'returns nothing during the welcome journey' do
+      user.update_columns(first_sign_in_at: Time.zone.now, created_at: Time.zone.now)
+
+      expect(current.preview).to have_attributes(state: 'welcome_journey', next_step: nil)
+    end
+  end
+
   describe 'concurrent calls' do
     before { welcome_journey_over! }
 
@@ -202,6 +243,7 @@ RSpec.describe NextSteps::Current do
 
       expect(current.call).to be_nil
       expect(current.others).to eq([])
+      expect(current.preview.state).to eq('disabled')
 
       expect(NextStep.count).to eq(0)
     end

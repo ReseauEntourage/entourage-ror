@@ -132,6 +132,45 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET next_step' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+    let(:user) { FactoryBot.create(:public_user, first_sign_in_at: 40.days.ago, created_at: 40.days.ago) }
+
+    before { FactoryBot.create(:user_segment, user: user, engagement_segment: 'Silencieux', engagement_sub_segment: 'Dormant') }
+
+    it 'shows the segment and the hero the app would receive, without storing it' do
+      papotage = FactoryBot.create(:outing, online: true, title: 'Papotage solidaire')
+
+      get :next_step, params: { id: user.id }
+
+      expect(response.code).to eq('200')
+      expect(response.body).to include('Silencieux', 'Dormant', 'Papotage solidaire', admin_entourage_path(papotage))
+      expect(response.body).to include('pas encore enregistrée', 'GET /api/v1/next_steps/current')
+      expect(NextStep.count).to eq(0)
+    end
+
+    it 'shows the active hero' do
+      hero = FactoryBot.create(:next_step, user: user)
+
+      get :next_step, params: { id: user.id }
+
+      expect(response.body).to include('Bonnes ondes', "suggestion n°#{hero.id}")
+    end
+
+    it 'is loaded apart by the user page, except for a deleted account' do
+      allow_any_instance_of(SalesforceServices::User).to receive(:url).and_return(nil)
+
+      get :edit, params: { id: user.id }
+      expect(response.body).to include(next_step_admin_user_path(user))
+
+      user.update_columns(deleted: true)
+      get :edit, params: { id: user.id }
+      expect(response.body).not_to include(next_step_admin_user_path(user))
+    end
+  end
+
   describe 'PUT update' do
     let!(:admin) { admin_basic_login }
     let!(:user) { FactoryBot.create(:pro_user, first_name: 'John', phone: '+33600112233') }
