@@ -250,6 +250,12 @@ class User < ApplicationRecord
     end
   }
 
+  # Engagement segment (EN-9444), by key of UserSegment::FILTERS. A plain join:
+  # user_segments has at most one row per user.
+  scope :with_engagement_segment, -> (key) {
+    joins(:user_segment).merge(UserSegment.matching(key))
+  }
+
   scope :in_area, -> (area) {
     if area.to_sym == :sans_zone
       left_joins_addresses.where('addresses.id IS NULL OR addresses.postal_code IS NULL')

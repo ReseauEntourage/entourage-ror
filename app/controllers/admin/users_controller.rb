@@ -5,12 +5,12 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :next_step, :rpush_notifications, :neighborhoods, :outings, :history, :blocked_users, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :edit_reactivate, :reactivate, :destroy_avatar, :banish, :validate, :new_spam_warning, :create_spam_warning]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
+      @params = params.permit([:profile, :engagement, :segment, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
 
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:address).order('created_at DESC').page(params[:page]).per(25)
+      @users = filtered_users.includes(:address).preload(:user_segment).order(created_at: :desc).page(params[:page]).per(25)
     end
 
     def search
@@ -390,13 +390,14 @@ module Admin
     end
 
     def filter_params
-      params.permit(:search, :profile, :engagement, :status, :role, q: {})
+      params.permit(:search, :profile, :engagement, :segment, :status, :role, q: {})
     end
 
     def filtered_users
       status = get_status
       role = get_role
       engagement = get_engagement
+      segment = get_segment
       profile = get_profile
 
       @users = current_user.community.users
@@ -406,6 +407,7 @@ module Admin
 
       @users = @users.engaged if engagement == :engaged
       @users = @users.not_engaged if engagement == :not_engaged
+      @users = @users.with_engagement_segment(segment) if segment
       @users = @users.search_by(params[:search]) if params[:search].present?
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if status == :pending
 
@@ -421,6 +423,10 @@ module Admin
       profile = params[:profile].presence&.to_sym
       profile = :all unless profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
       profile
+    end
+
+    def get_segment
+      params[:segment].presence_in(UserSegment::FILTERS.keys)
     end
 
     def get_engagement

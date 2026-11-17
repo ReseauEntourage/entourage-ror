@@ -92,6 +92,31 @@ table.custom-table {
     }
 }
 
+// engagement segments (EN-9444), from the least to the most engaged
+.segment-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    vertical-align: middle;
+    cursor: help;
+    &.segment-a_activer { background-color: white; border-color: #9e9e9e; }
+    &.segment-silencieux,
+    &.segment-dormant { background-color: #9e9e9e; }
+    &.segment-curieux { background-color: #8ecae6; }
+    &.segment-observateur { background-color: #1e88e5; }
+    &.segment-contributeur { background-color: #43a047; }
+    &.segment-pilier { background-color: #f4a100; }
+}
+
+.segment-legend {
+    margin-right: 15px;
+    white-space: nowrap;
+    .segment-dot { cursor: default; }
+}
+
 
 // Nav tabs
 

@@ -132,6 +132,65 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index: engagement segments' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+
+    def user_with_segment segment, sub_segment = nil
+      FactoryBot.create(:public_user).tap do |user|
+        FactoryBot.create(:user_segment, user: user, engagement_segment: segment, engagement_sub_segment: sub_segment, segment_computed_at: Time.zone.parse('2026-11-17 07:00'))
+      end
+    end
+
+    # queries of a request, without the transaction and schema ones
+    def queries_of
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == 'SCHEMA' || payload[:sql].match?(/\A\s*(BEGIN|COMMIT|ROLLBACK|SAVEPOINT|RELEASE)/) }
+      ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { yield }
+      queries
+    end
+
+    it 'shows the segment of each user as a coloured dot, named on hover' do
+      user_with_segment('Silencieux', 'Dormant')
+
+      get :index
+
+      expect(response.body).to include('segment-dot segment-dormant', 'title="Segment Silencieux / Dormant, calculé le 17/11/2026"')
+    end
+
+    it 'filters the users of a segment, through a join on user_segments' do
+      pilier = user_with_segment('Pilier')
+      user_with_segment('Contributeur')
+      FactoryBot.create(:public_user)
+
+      queries = queries_of { get :index, params: { segment: 'pilier' } }
+
+      expect(assigns(:users)).to eq([pilier])
+      expect(queries.grep(/FROM "users" INNER JOIN "user_segments"/).size).to eq(1)
+    end
+
+    it 'ignores an unknown segment' do
+      users = [user_with_segment('Pilier'), FactoryBot.create(:public_user)]
+
+      get :index, params: { segment: "pilier' OR 1=1" }
+
+      expect(assigns(:users)).to include(*users)
+    end
+
+    it 'loads the segments of the page in one query, whatever the number of users' do
+      2.times { user_with_segment('Curieux') }
+      few = queries_of { get :index }.size
+
+      4.times { user_with_segment('Observateur') }
+      many = queries_of { get :index }.size
+      filtered = queries_of { get :index, params: { segment: 'observateur' } }
+
+      expect(many).to eq(few)
+      expect(filtered.grep(/FROM "user_segments" WHERE "user_segments"."user_id" IN/).size).to eq(1)
+    end
+  end
+
   describe 'GET next_step' do
     render_views
 

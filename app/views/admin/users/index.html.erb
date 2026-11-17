@@ -24,6 +24,9 @@
       <div class='input-group'>
         <%= select_tag :engagement, options_for_select([['Tous les engagements', nil]] + user_engagements, @params[:engagement]), class: 'form-control' %>
       </div>
+      <div class='input-group'>
+        <%= select_tag :segment, options_for_select([['Tous les segments', nil]] + user_segments_for_select, @params[:segment]), class: 'form-control' %>
+      </div>
       <div class="input-group">
         <%= select_tag :role, options_for_select([['Tous les rôles', nil]] + user_roles, @params[:role]), class: 'form-control' %>
       </div>
@@ -78,6 +81,10 @@
   </div>
 <% end %>
 
+<p class="text-muted small" style="clear: both">
+  Segment d'engagement (pastille de la colonne Profil, détail au survol) : <%= user_segment_legend %>
+</p>
+
 <table class="table custom-table" style="table-layout: auto">
   <thead>
     <th>Nom</th>
@@ -128,6 +135,7 @@
 
       <td><%= user.postal_code %></td>
       <td>
+        <%= user_segment_badge(user.user_segment) %>
         <% if user.targeting_profile.present? %>
           <span class="custom-badge info" title="Profil renseigné par la modération">
             <%= t "community.entourage.targeting_profiles.#{user.targeting_profile}" %>
