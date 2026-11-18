@@ -42,8 +42,8 @@ en:
         default: "Bonnes ondes puts you in touch with a few people to chat."
         gentle: "Bonnes ondes puts you in touch with a few people to chat, at your own pace."
       become_ambassador:
-        default: "Would you like to host get-togethers near you? The Entourage Host role is made for that."
-        gentle: "Would you like to host get-togethers near you? The Entourage Host role is made for that."
+        default: "Would you like to volunteer? The Entourage volunteers webinar explains how to get involved."
+        gentle: "Would you like to volunteer? The Entourage volunteers webinar explains how to get involved."
       poi_for_need:
         default: "This place (%{category}) may help with your request \"%{need_title}\"."
         gentle: "This place (%{category}) may help with your request \"%{need_title}\"."

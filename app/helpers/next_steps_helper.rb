@@ -8,7 +8,7 @@ module NextStepsHelper
     'smalltalk' => 'Bonnes ondes',
     'poi' => 'Lieu solidaire',
     'post_message' => 'Écrire dans un groupe',
-    'become_ambassador' => 'Devenir Animateur'
+    'become_ambassador' => 'Devenir bénévole (webinaire)'
   }.freeze
 
   NEXT_STEP_ENDING_STATUSES = {

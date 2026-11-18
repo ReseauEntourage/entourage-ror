@@ -11,7 +11,7 @@ module NextSteps
       'Curieux' => %w[post_message],
       'Observateur' => %w[outing post_message smalltalk neighborhood],
       'Contributeur' => %w[outing neighborhood smalltalk],
-      'Pilier' => %w[become_ambassador action],
+      'Pilier' => %w[become_ambassador outing action],
       'Silencieux / Dormant' => %w[outing_nearby papotage]
     }.freeze
 

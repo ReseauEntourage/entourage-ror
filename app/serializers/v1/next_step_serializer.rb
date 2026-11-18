@@ -4,10 +4,13 @@ module V1
   # is serialized by the v1 serializer of its type, so that the apps reuse their
   # screens and deep links.
   class NextStepSerializer
-    AMBASSADOR_FORM_URL = 'https://forms.example.com/devenir-animateur-entourage'.freeze
+    # The "devenir bénévole" gesture (kind become_ambassador) leads to the
+    # registration page of the volunteers webinar (PM decision of 18/11/2026).
+    # NEXT_STEPS_VOLUNTEER_URL changes it without a deploy.
+    VOLUNTEER_URL = 'https://app.livestorm.co/entourage-2/webinaire-benevoles-entourage'.freeze
 
-    def self.ambassador_form_url
-      ENV['NEXT_STEPS_AMBASSADOR_FORM_URL'].presence || AMBASSADOR_FORM_URL
+    def self.volunteer_url
+      ENV['NEXT_STEPS_VOLUNTEER_URL'].presence || VOLUNTEER_URL
     end
 
     # @param item [NextStep, NextSteps::Selector::Choice, nil]
@@ -28,7 +31,7 @@ module V1
         placement: hero? ? 'hero' : 'others',
         target: target_json,
         targets: targets_json,
-        link: kind == 'become_ambassador' ? self.class.ambassador_form_url : nil,
+        link: kind == 'become_ambassador' ? self.class.volunteer_url : nil,
         reasons: NextSteps::Reasons.new(user).phrases(codes: reason_codes, target: target, need_title: need_title_for_item),
         expires_at: hero? ? item.expires_at : nil
       }

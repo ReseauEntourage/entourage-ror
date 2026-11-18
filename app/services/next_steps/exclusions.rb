@@ -5,7 +5,7 @@ module NextSteps
   # - hero: proposed as hero less than 30 days ago, whatever its outcome, or
   #   ignored less than 30 days ago;
   # - others: the active hero, or ignored less than 30 days ago;
-  # - both: realised through a tap (lieu solidaire, devenir Animateur).
+  # - both: realised through a tap (lieu solidaire, devenir bénévole).
   #
   # From the domain data, so true even outside the engine ("réalisée : jamais"):
   # events and groups joined, contents read, groups already posted in,

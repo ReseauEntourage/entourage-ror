@@ -43,9 +43,10 @@ fr:
       smalltalk:
         default: "Les Bonnes ondes vous mettent en relation avec quelques personnes pour discuter."
         gentle: "Les Bonnes ondes vous mettent en relation avec quelques personnes pour discuter, à votre rythme."
+      # geste « devenir bénévole » : mène au webinaire Bénévoles (décision du PM du 18/11/2026) ; phrase à valider (tâche 8.6)
       become_ambassador:
-        default: "Envie d'animer des rencontres près de chez vous ? Le rôle d'Animateur Entourage est fait pour ça."
-        gentle: "Envie d'animer des rencontres près de chez vous ? Le rôle d'Animateur Entourage est fait pour ça."
+        default: "Envie de devenir bénévole ? Le webinaire Bénévoles Entourage vous explique comment vous engager."
+        gentle: "Envie de devenir bénévole ? Le webinaire Bénévoles Entourage vous explique comment vous engager."
       poi_for_need:
         default: "Ce lieu (%{category}) peut vous aider pour votre demande « %{need_title} »."
         gentle: "Ce lieu (%{category}) peut vous aider pour votre demande « %{need_title} »."

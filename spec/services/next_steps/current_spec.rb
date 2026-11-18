@@ -202,7 +202,7 @@ RSpec.describe NextSteps::Current do
       expect(hero.reload.status).to eq('active')
     end
 
-    it 'realises a become-Animateur hero on a tap' do
+    it 'realises a become-volunteer hero on a tap' do
       user.user_segment.update!(engagement_segment: 'Pilier')
       hero = current.call
       expect(hero.kind).to eq('become_ambassador')

@@ -71,6 +71,34 @@ RSpec.describe NextSteps::Selector do
 
       expect([dormant_kind, new_user_kind]).to eq(['outing', 'action'])
     end
+
+    # PM decision of 18/11/2026: a Pilier is also offered events and entraides
+    describe 'Pilier' do
+      before { segment!('Pilier') }
+
+      let!(:event) { create(:outing, **nearby) }
+      let!(:solicitation) { create(:solicitation, **nearby) }
+
+      it 'suggests becoming a volunteer first, then alternates an event and an entraide' do
+        expect(hero.candidate.kind).to eq('become_ambassador')
+
+        # the gesture, once proposed, is excluded for 30 days
+        create(:next_step, user: user, kind: 'become_ambassador', segment: 'Pilier',
+          status: 'expired', first_displayed_at: 4.days.ago)
+
+        expect(target_of(hero(previous_kind: 'become_ambassador')).id).to eq(event.id)
+        expect(target_of(hero(previous_kind: 'outing')).id).to eq(solicitation.id)
+      end
+
+      it 'suggests an event, then an entraide, to an Animateur Entourage' do
+        user.update_column(:targeting_profile, 'ambassador')
+
+        expect(target_of(hero).id).to eq(event.id)
+
+        event.update_column(:status, 'closed')
+        expect(target_of(described_class.new(user.reload).hero).id).to eq(solicitation.id)
+      end
+    end
   end
 
   describe 'need mode' do

@@ -169,12 +169,22 @@ describe Api::V1::NextStepsController, type: :controller do
       expect(hero['reasons'].map { |reason| reason['text'] }.join(' ')).not_to match(/précarité|isolé|riverain|silencieux|à activer|segment/i)
     end
 
-    it 'gives the form link of the become-Animateur gesture' do
+    it 'gives the volunteers webinar link of the become-volunteer gesture' do
       ready!(user, segment: 'Pilier')
 
       get :current, params: { token: user.token }
 
-      expect(result['next_step']).to include('kind' => 'become_ambassador', 'link' => 'https://forms.example.com/devenir-animateur-entourage')
+      expect(result['next_step']).to include('kind' => 'become_ambassador', 'link' => 'https://app.livestorm.co/entourage-2/webinaire-benevoles-entourage')
+    end
+
+    it 'reads the become-volunteer link from NEXT_STEPS_VOLUNTEER_URL' do
+      ready!(user, segment: 'Pilier')
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with('NEXT_STEPS_VOLUNTEER_URL').and_return('https://example.org/benevoles')
+
+      get :current, params: { token: user.token }
+
+      expect(result['next_step']['link']).to eq('https://example.org/benevoles')
     end
 
     it 'gives the 3 contents of a mini-path' do
