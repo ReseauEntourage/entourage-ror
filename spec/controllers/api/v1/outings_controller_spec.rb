@@ -494,6 +494,110 @@ describe Api::V1::OutingsController do
         it { expect(OutingRecurrence.count).to eq(0) }
         it { expect(Outing.last.recurrence).to be_nil }
       end
+
+      context 'with an uploaded image_url' do
+        let(:image_params) { params.except(:entourage_image_id).merge(image_url: 'my-image.jpg') }
+        let(:image_path) { 'entourage_images/images/my-image.jpg' }
+
+        before { post :create, params: { outing: image_params, token: user.token } }
+
+        shared_examples 'uses the uploaded image' do
+          it { expect(response.status).to eq(201) }
+          it { expect(Outing.last.image_url).to eq('my-image.jpg') }
+          it { expect(Outing.last.metadata[:landscape_url]).to eq(image_path) }
+          it { expect(Outing.last.metadata[:landscape_thumbnail_url]).to eq(image_path) }
+          it { expect(Outing.last.metadata[:portrait_url]).to eq(image_path) }
+          it { expect(Outing.last.metadata[:portrait_thumbnail_url]).to eq(image_path) }
+        end
+
+        shared_examples 'ignores the uploaded image' do
+          it { expect(response.status).to eq(201) }
+          it { expect(Outing.last.image_url).to be_nil }
+          it { expect(Outing.last.metadata[:landscape_url]).to be_nil }
+          it { expect(Outing.last.metadata[:portrait_url]).to be_nil }
+        end
+
+        context 'by an ambassador' do
+          let(:user) { create(:public_user, targeting_profile: :ambassador) }
+
+          it_behaves_like 'uses the uploaded image'
+        end
+
+        context 'by an association' do
+          let(:user) { association }
+
+          it_behaves_like 'uses the uploaded image'
+        end
+
+        context 'by a team member (always linked to a staff partner)' do
+          let(:user) { user_team }
+
+          it_behaves_like 'uses the uploaded image'
+        end
+
+        context 'by a standard user' do
+          it_behaves_like 'ignores the uploaded image'
+        end
+      end
+
+      context 'with both a gallery image and an image_url, by a standard user' do
+        before { post :create, params: { outing: params.merge(image_url: 'my-image.jpg'), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Outing.last.image_url).to be_nil }
+        it { expect(Outing.last.metadata[:landscape_url]).to eq('path/to/landscape') }
+      end
+    end
+  end
+
+  describe 'POST presigned_upload' do
+    let(:content_type) { 'image/jpeg' }
+    let(:request) { post :presigned_upload, params: { token: token, content_type: content_type } }
+
+    before { request }
+
+    context 'not signed in' do
+      let(:token) { nil }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context 'signed in as a standard user' do
+      let(:token) { user.token }
+
+      it { expect(response.status).to eq(403) }
+      it { expect(subject).not_to have_key('presigned_url') }
+    end
+
+    context 'signed in as an ambassador' do
+      let(:token) { create(:public_user, targeting_profile: :ambassador).token }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject['upload_key']).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\.jpeg\z/) }
+      it { expect(subject['presigned_url']).to include('entourage_images/images/') }
+    end
+
+    context 'signed in as a team member (always linked to a staff partner)' do
+      let(:token) { user_team.token }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key('presigned_url') }
+    end
+
+    context 'signed in as an association' do
+      let(:token) { association.token }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key('upload_key') }
+      it { expect(subject).to have_key('presigned_url') }
+    end
+
+    context 'signed in as an ambassador with a forbidden content type' do
+      let(:token) { create(:public_user, targeting_profile: :ambassador).token }
+      let(:content_type) { 'image/gif' }
+
+      it { expect(response.status).to eq(400) }
+      it { expect(subject['error']['code']).to eq('INVALID_CONTENT_TYPE') }
     end
   end
 

@@ -5,7 +5,7 @@ module Api
       before_action :authorised?, only: [:update, :batch_update, :cancel, :destroy]
       before_action :allowed_duplicate?, only: [:duplicate]
 
-      before_action :authenticate_association_or_ambassador!, only: [:presigned_url]
+      before_action :authenticate_association_or_ambassador!, only: [:presigned_upload]
 
       skip_before_action :authenticate_user!, only: [:index, :show]
 
@@ -241,12 +241,16 @@ module Api
 
       private
 
+      # 403 rather than 401: the mobile apps log the user out on any 401
       def authenticate_association_or_ambassador!
-        return unless current_user.team?
-        return unless current_user.association?
-        return unless current_user.ambassador?
+        return if association_or_ambassador?
 
-        render json: { message: :unauthorized }, status: :unauthorized
+        render json: { message: 'only ambassadors and associations can upload an outing image' }, status: 403
+      end
+
+      # ambassadors and associations can set recurrency and upload their own outing image
+      def association_or_ambassador?
+        current_user.ambassador? || current_user.association?
       end
 
       def set_outing
@@ -271,8 +275,7 @@ module Api
           interests: []
         ]
 
-        permitted_attributes << :recurrency if current_user.ambassador? || current_user.association?
-        permitted_attributes << :image_url if current_user.ambassador? || current_user.association?
+        permitted_attributes += [:recurrency, :image_url] if association_or_ambassador?
 
         params.require(:outing).permit(permitted_attributes)
       end
@@ -297,8 +300,7 @@ module Api
           interests: []
         ]
 
-        permitted_attributes << :recurrency if current_user.ambassador? || current_user.association?
-        permitted_attributes << :image_url if current_user.ambassador? || current_user.association?
+        permitted_attributes += [:recurrency, :image_url] if association_or_ambassador?
 
         params.require(:outing).permit(permitted_attributes)
       end
