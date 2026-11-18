@@ -132,6 +132,104 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'GET index: engagement segments' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+
+    def user_with_segment segment, sub_segment = nil
+      FactoryBot.create(:public_user).tap do |user|
+        FactoryBot.create(:user_segment, user: user, engagement_segment: segment, engagement_sub_segment: sub_segment, segment_computed_at: Time.zone.parse('2026-11-17 07:00'))
+      end
+    end
+
+    # queries of a request, without the transaction and schema ones
+    def queries_of
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == 'SCHEMA' || payload[:sql].match?(/\A\s*(BEGIN|COMMIT|ROLLBACK|SAVEPOINT|RELEASE)/) }
+      ActiveSupport::Notifications.subscribed(callback, 'sql.active_record') { yield }
+      queries
+    end
+
+    it 'shows the segment of each user as a coloured dot, named on hover' do
+      user_with_segment('Silencieux', 'Dormant')
+
+      get :index
+
+      expect(response.body).to include('segment-dot segment-dormant', 'title="Segment Silencieux / Dormant, calculé le 17/11/2026"')
+    end
+
+    it 'filters the users of a segment, through a join on user_segments' do
+      pilier = user_with_segment('Pilier')
+      user_with_segment('Contributeur')
+      FactoryBot.create(:public_user)
+
+      queries = queries_of { get :index, params: { segment: 'pilier' } }
+
+      expect(assigns(:users)).to eq([pilier])
+      expect(queries.grep(/FROM "users" INNER JOIN "user_segments"/).size).to eq(1)
+    end
+
+    it 'ignores an unknown segment' do
+      users = [user_with_segment('Pilier'), FactoryBot.create(:public_user)]
+
+      get :index, params: { segment: "pilier' OR 1=1" }
+
+      expect(assigns(:users)).to include(*users)
+    end
+
+    it 'loads the segments of the page in one query, whatever the number of users' do
+      2.times { user_with_segment('Curieux') }
+      few = queries_of { get :index }.size
+
+      4.times { user_with_segment('Observateur') }
+      many = queries_of { get :index }.size
+      filtered = queries_of { get :index, params: { segment: 'observateur' } }
+
+      expect(many).to eq(few)
+      expect(filtered.grep(/FROM "user_segments" WHERE "user_segments"."user_id" IN/).size).to eq(1)
+    end
+  end
+
+  describe 'GET next_step' do
+    render_views
+
+    let!(:admin) { admin_basic_login }
+    let(:user) { FactoryBot.create(:public_user, first_sign_in_at: 40.days.ago, created_at: 40.days.ago) }
+
+    before { FactoryBot.create(:user_segment, user: user, engagement_segment: 'Silencieux', engagement_sub_segment: 'Dormant') }
+
+    it 'shows the segment and the hero the app would receive, without storing it' do
+      papotage = FactoryBot.create(:outing, online: true, title: 'Papotage solidaire')
+
+      get :next_step, params: { id: user.id }
+
+      expect(response.code).to eq('200')
+      expect(response.body).to include('Silencieux', 'Dormant', 'Papotage solidaire', admin_entourage_path(papotage))
+      expect(response.body).to include('pas encore enregistrée', 'GET /api/v1/next_steps/current')
+      expect(NextStep.count).to eq(0)
+    end
+
+    it 'shows the active hero' do
+      hero = FactoryBot.create(:next_step, user: user)
+
+      get :next_step, params: { id: user.id }
+
+      expect(response.body).to include('Bonnes ondes', "suggestion n°#{hero.id}")
+    end
+
+    it 'is loaded apart by the user page, except for a deleted account' do
+      allow_any_instance_of(SalesforceServices::User).to receive(:url).and_return(nil)
+
+      get :edit, params: { id: user.id }
+      expect(response.body).to include(next_step_admin_user_path(user))
+
+      user.update_columns(deleted: true)
+      get :edit, params: { id: user.id }
+      expect(response.body).not_to include(next_step_admin_user_path(user))
+    end
+  end
+
   describe 'PUT update' do
     let!(:admin) { admin_basic_login }
     let!(:user) { FactoryBot.create(:pro_user, first_name: 'John', phone: '+33600112233') }

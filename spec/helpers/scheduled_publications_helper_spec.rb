@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ScheduledPublicationsHelper, type: :helper do
   describe '#scheduled_countdown' do
+    # frozen at noon (Paris): from 21:00, 3.hours.from_now is already tomorrow
+    before { Timecop.freeze(Time.zone.now.change(hour: 12)) } # after the global Timecop.return of spec_helper
+
     it "says 'aujourd'hui' for a time later today" do
       expect(helper.scheduled_countdown(3.hours.from_now)).to eq("aujourd'hui")
     end

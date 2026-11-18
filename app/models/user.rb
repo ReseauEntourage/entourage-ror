@@ -90,6 +90,8 @@ class User < ApplicationRecord
   has_many :email_preferences, dependent: :destroy
   has_one :notification_permission, dependent: :destroy
   has_one :user_stat, dependent: :delete
+  has_many :next_steps
+  has_many :next_step_interactions
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
   has_many :user_smalltalks
 
@@ -246,6 +248,12 @@ class User < ApplicationRecord
     elsif profile.to_sym == :goal_not_known
       goal_not_known
     end
+  }
+
+  # Engagement segment (EN-9444), by key of UserSegment::FILTERS. A plain join:
+  # user_segments has at most one row per user.
+  scope :with_engagement_segment, -> (key) {
+    joins(:user_segment).merge(UserSegment.matching(key))
   }
 
   scope :in_area, -> (area) {

@@ -36,6 +36,32 @@ module UsersHelper
     end
   end
 
+  def user_segments_for_select
+    UserSegment::FILTERS.map do |key, (segment, sub_segment)|
+      [[segment, sub_segment].compact.join(' / '), key]
+    end
+  end
+
+  # A dot coloured by engagement segment (EN-9444), named on hover; nothing
+  # for an unclassified user.
+  def user_segment_badge user_segment
+    key = user_segment&.filter_key
+    return unless key
+
+    title = "Segment #{user_segment.label}, calculé le #{user_segment.segment_computed_at.strftime('%d/%m/%Y')}"
+
+    content_tag :span, '', class: "segment-dot segment-#{key}", title: title, role: 'img', aria: { label: title }
+  end
+
+  # The colour code of user_segment_badge
+  def user_segment_legend
+    entries = user_segments_for_select.reject { |_, key| key == 'silencieux' }.map do |label, key|
+      content_tag(:span, class: 'segment-legend') { content_tag(:span, '', class: "segment-dot segment-#{key}") + label }
+    end
+
+    safe_join(entries)
+  end
+
   def user_statuses
     User::STATUSES.map do |status|
       [t("community.user.statuses.#{status}"), status]

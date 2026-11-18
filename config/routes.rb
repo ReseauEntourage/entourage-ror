@@ -347,6 +347,7 @@ Rails.application.routes.draw do
         member do
           get 'messages'
           get 'engagement'
+          get 'next_step'
           get 'rpush_notifications'
           get 'neighborhoods'
           get 'outings'
@@ -561,6 +562,19 @@ Rails.application.routes.draw do
         end
 
         resources :outings, controller: 'neighborhoods/outings', only: [:index, :create]
+      end
+
+      # « Votre prochain pas » (EN-9473)
+      resources :next_steps, only: [] do
+        collection do
+          get :current
+          get :others
+          post :interactions
+        end
+
+        member do
+          post :ignore
+        end
       end
 
       resources :resources, only: [:index, :show] do

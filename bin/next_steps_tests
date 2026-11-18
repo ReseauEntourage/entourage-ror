@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+#
+# EN-9473 : lance tous les tests automatisés du moteur « Votre prochain pas ».
+#
+# Se lance depuis la racine d'entourage-ror, ou de n'importe où : le script s'y place.
+# Il couvre les scénarios « Automatisé » de la page de scénarios de test, plus la
+# non-régression des specs existantes que le change touche ou expose.
+# Les scénarios manuels (préprod, apps, production) ne se lancent pas ici.
+
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+# Le moteur lui-même : modèles, services, contrôleur (dont l'abonné de réalisation,
+# l'interrupteur NEXT_STEPS_ENABLED, l'alerte quotidienne, la capture Sentry, la
+# purge à 6 mois et la suppression de l'historique avec le compte).
+ENGINE_SPECS=(
+  spec/models/next_step_spec.rb
+  spec/services/next_steps
+  spec/controllers/api/v1/next_steps_controller_spec.rb
+  spec/observers/next_step_account_observer_spec.rb
+  spec/tasks/next_steps_rake_spec.rb
+)
+
+# Non-régression : specs existantes touchées ou exposées par le change.
+REGRESSION_SPECS=(
+  spec/models/user_spec.rb                                 # un nouvel observateur écoute la suppression d'un compte (anonymize!)
+  spec/controllers/api/v1/home_controller_spec.rb         # synthèse utilisateur inchangée, champ recommandations compris
+  spec/subscribers                                         # un nouvel abonné est enregistré dans subscribers.rb
+  spec/controllers/api/v1/outings_controller_spec.rb       # horloge figée à midi dans le change
+  spec/helpers/scheduled_publications_helper_spec.rb       # idem
+)
+
+# Contrôle statique « aucune notification » : le moteur n'envoie ni push, ni mail, ni SMS.
+GUARD_PATHS=(
+  app/services/next_steps
+  app/controllers/api/v1/next_steps_controller.rb
+  app/subscribers/next_step_realisation_subscriber.rb
+  app/observers/next_step_account_observer.rb
+  app/serializers/v1/next_step_serializer.rb
+  lib/tasks/next_steps.rake
+)
+GUARD_PATTERN='PushNotification|Mailer|Mailjet|OneSignal|deliver_(now|later)|\.deliver\b|Sms[A-Z]'
+
+LIST=0
+DOCKER=0
+PREPARE=0
+GUARD=1
+EXAMPLE=""
+EXTRA=()
+
+usage() {
+  cat <<'EOF'
+Usage : bin/next_steps_tests [options] [-- <options rspec>]
+
+  (aucune option)   joue tous les tests automatisés du change
+  --list            liste les exemples sans les jouer (rspec --dry-run)
+  -e <texte>        ne joue que les exemples dont le titre contient <texte>
+  --docker          passe par bin/d (conteneur) au lieu d'un Ruby local
+  --prepare         recrée la base de TEST avant de jouer (db:drop db:create db:migrate)
+  --no-guard        saute le contrôle « aucune notification »
+  -h, --help        affiche cette aide
+
+Tout ce qui suit « -- » est transmis à rspec, par exemple :
+  bin/next_steps_tests -- --fail-fast
+EOF
+}
+
+die() {
+  echo "✗ $*" >&2
+  exit 2
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --list) LIST=1 ;;
+    --docker) DOCKER=1 ;;
+    --prepare) PREPARE=1 ;;
+    --no-guard) GUARD=0 ;;
+    -e)
+      shift
+      [ $# -gt 0 ] || die "-e attend un texte"
+      EXAMPLE="$1"
+      ;;
+    -h|--help) usage; exit 0 ;;
+    --) shift; EXTRA=("$@"); break ;;
+    *) die "option inconnue : $1 (voir --help)" ;;
+  esac
+  shift
+done
+
+for path in "${ENGINE_SPECS[@]}" "${REGRESSION_SPECS[@]}"; do
+  [ -e "$path" ] || die "spec introuvable : $path (la branche claude/add-next-step-suggestions est-elle bien celle en cours ?)"
+done
+
+export RAILS_ENV=test
+
+if [ "$DOCKER" = 1 ]; then
+  RUN=(bin/d bundle exec)
+else
+  RUN=(bundle exec)
+fi
+
+echo "━━ EN-9473 · tests automatisés du moteur « Votre prochain pas » (RAILS_ENV=test)"
+
+if [ "$GUARD" = 1 ]; then
+  echo
+  echo "→ Contrôle statique : aucune notification dans le moteur"
+  if grep -rnE "$GUARD_PATTERN" "${GUARD_PATHS[@]}"; then
+    echo "✗ Le moteur ne doit déclencher ni push, ni mail, ni SMS (exigence « Aucune notification »)." >&2
+    exit 1
+  fi
+  echo "  ✓ aucune référence à un envoi de notification"
+fi
+
+if [ "$PREPARE" = 1 ]; then
+  echo
+  echo "→ Base de test : db:drop db:create db:migrate"
+  "${RUN[@]}" rake db:drop db:create db:migrate
+fi
+
+RSPEC_ARGS=(--format documentation)
+[ "$LIST" = 1 ] && RSPEC_ARGS+=(--dry-run)
+[ -n "$EXAMPLE" ] && RSPEC_ARGS+=(-e "$EXAMPLE")
+[ ${#EXTRA[@]} -gt 0 ] && RSPEC_ARGS+=("${EXTRA[@]}")
+
+echo
+echo "→ rspec : ${ENGINE_SPECS[*]} ${REGRESSION_SPECS[*]}"
+echo
+
+status=0
+"${RUN[@]}" rspec "${RSPEC_ARGS[@]}" "${ENGINE_SPECS[@]}" "${REGRESSION_SPECS[@]}" || status=$?
+
+echo
+if [ "$status" -eq 0 ]; then
+  echo "✓ Tous les tests automatisés passent. Restent les scénarios manuels de la page de scénarios."
+else
+  echo "✗ Des tests échouent (code $status)." >&2
+fi
+exit "$status"

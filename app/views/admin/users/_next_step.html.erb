@@ -1,0 +1,90 @@
+<%
+  next_step = @preview.next_step
+  api = next_step && next_step_api_payload(next_step, @user)
+  need = next_step&.mode == 'need' ? Solicitation.unscoped.find_by(id: next_step.need_id) : nil
+  segment_at_choice = next_step && [next_step.segment, next_step.sub_segment].compact.join(' / ')
+%>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <b>Votre prochain pas</b>
+    <span class="text-muted">: la suggestion principale que l'app afficherait maintenant</span>
+  </div>
+
+  <div class="panel-body">
+    <dl class="dl-horizontal" style="margin-bottom: 0">
+      <dt>Segment</dt>
+      <dd><%= @segment.segment %></dd>
+
+      <dt>Sous-segment</dt>
+      <dd>
+        <%= @segment.sub_segment.presence || content_tag(:span, 'aucun', class: 'text-muted') %>
+        <span class="text-muted">(<%= next_step_segment_source_label(@segment, @user) %>)</span>
+      </dd>
+
+      <dt>Suggestion principale</dt>
+      <dd>
+        <% case @preview.state %>
+        <% when 'disabled' %>
+          <span class="text-muted">aucune : le moteur est désactivé (NEXT_STEPS_ENABLED=false)</span>
+        <% when 'welcome_journey' %>
+          <span class="text-muted">aucune : le parcours de bienvenue est encore affiché</span>
+        <% when 'none' %>
+          <span class="text-muted">aucune : rien à proposer</span>
+        <% else %>
+          <b><%= next_step_kind_label(next_step.kind) %></b>
+          <% targets = next_step_targets_links(next_step) %>
+          <% if targets.present? %>: <%= targets %><% end %>
+        <% end %>
+      </dd>
+
+      <% if next_step %>
+        <dt>Choisie</dt>
+        <dd>
+          <% if need %>
+            en réponse à la demande <%= link_to need.title, admin_entourage_path(need) %>
+          <% elsif next_step.mode == 'need' %>
+            en réponse à la demande n°<%= next_step.need_id %>
+          <% else %>
+            selon le segment
+          <% end %>
+          <span class="text-muted">(score <%= next_step.score.to_f.round(2) %>)</span>
+          <% if @preview.state == 'active' && segment_at_choice != @segment.key %>
+            <span class="text-muted">: le segment était <%= segment_at_choice %> au moment du choix</span>
+          <% end %>
+        </dd>
+
+        <% if api[:next_step][:reasons].any? %>
+          <dt>Pourquoi</dt>
+          <dd><%= api[:next_step][:reasons].map { |reason| reason[:text] }.join(' ') %></dd>
+        <% end %>
+
+        <dt>Statut</dt>
+        <dd>
+          <% if @preview.state == 'active' %>
+            suggestion n°<%= next_step.id %>, affichée depuis le <%= next_step_time(next_step.first_displayed_at) %>,
+            valable jusqu'au <%= next_step_time(next_step.expires_at) %>
+          <% else %>
+            pas encore enregistrée : elle le sera au prochain affichage de l'accueil de l'app
+            (valable jusqu'au <%= next_step_time(next_step.expires_at) %> si c'est maintenant)
+          <% end %>
+        </dd>
+      <% end %>
+
+      <% if @preview.previous %>
+        <dt>Remplace</dt>
+        <dd>
+          la suggestion n°<%= @preview.previous.id %> (<%= next_step_kind_label(@preview.previous.kind) %>),
+          qui sera <%= next_step_ending_status_label(@preview.previous_status) %> au prochain affichage
+        </dd>
+      <% end %>
+    </dl>
+
+    <% if api %>
+      <details style="margin-top: 10px">
+        <summary>Réponse de GET /api/v1/next_steps/current</summary>
+        <pre style="max-height: 400px; overflow: auto"><%= next_step_api_json(api) %></pre>
+      </details>
+    <% end %>
+  </div>
+</div>
