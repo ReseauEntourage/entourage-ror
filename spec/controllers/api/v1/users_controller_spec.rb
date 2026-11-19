@@ -854,6 +854,40 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       it { expect(result).to eq({'error'=>{'code'=>'PHONE_ALREADY_EXIST', 'message'=>"Phone +33612345678 n'est pas disponible"}}) }
     end
 
+    context 'phone of a blocked user who deleted their account' do
+      let!(:moderator) { FactoryBot.create(:pro_user, phone: '+33600000001') }
+      let!(:blocked_user) do
+        FactoryBot.create(:public_user, phone: '+33612345678').tap do |u|
+          u.block! moderator, 'reason'
+          UserServices::DeleteUserService.new(user: u).delete
+        end
+      end
+
+      it 'does not create an account nor send an sms' do
+        expect(SmsSenderJob).not_to receive(:perform_later)
+        expect { post 'create', params: { user: {phone: phone} } }.not_to change { User.count }
+        expect(response.status).to eq(400)
+        expect(result['error']['code']).to eq('CANNOT_CREATE_USER')
+        expect(result['error']['message']).to eq(["Téléphone n'est pas disponible"])
+      end
+
+      it 'creates the account again once the user is unblocked' do
+        blocked_user.unblock! moderator, 'reason'
+        expect { post 'create', params: { user: {phone: phone} } }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+      end
+    end
+
+    context 'phone of a user who deleted their account without being blocked' do
+      before do
+        FactoryBot.create(:public_user, phone: '+33612345678').tap do |u|
+          UserServices::DeleteUserService.new(user: u).delete
+        end
+      end
+
+      it { expect { post 'create', params: { user: {phone: phone} } }.to change { User.count }.by(1) }
+    end
+
     context 'signature verification' do
       context 'with a valid signature' do
         before { post 'create', params: { user: {phone: phone} } }

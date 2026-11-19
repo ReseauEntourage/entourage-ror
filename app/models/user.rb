@@ -24,6 +24,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
   validate :validate_phone!
+  validate :validate_phone_is_not_blocked!, on: :create
   validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
   validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }
@@ -141,6 +142,14 @@ class User < ApplicationRecord
   scope :anonymized, -> { where(validation_status: 'anonymized') }
   scope :blocked, -> { where(validation_status: 'blocked') }
   scope :temporary_blocked, -> { blocked.where('unblock_at is not null') }
+  # Blocked users owning this phone number, whether the account is live ("+33612345678")
+  # or deleted ("+33612345678-2026-01-29 00:09:53", see UserServices::DeleteUserService).
+  # The blocked partial index keeps this cheap.
+  scope :blocked_with_phone, -> (phone) {
+    blocked.where('users.phone = :phone OR users.phone LIKE :deleted_phone',
+                  phone: phone,
+                  deleted_phone: "#{sanitize_sql_like(phone)}-%")
+  }
   scope :status_is, -> (status) {
     return unless status.present?
 
@@ -322,6 +331,20 @@ class User < ApplicationRecord
     unless LegacyPhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, 'devrait être au format +33... ou 06...')
     end
+  end
+
+  # A blocked user must not come back with a new account on the same phone number.
+  # The unique index already refuses a live blocked account; this covers the ones that were
+  # deleted afterwards (their phone carries a deletion suffix, so the index does not see it).
+  def validate_phone_is_not_blocked!
+    return if phone.blank?
+    return if errors.of_kind?(:phone, :taken)
+
+    blocked_user_ids = User.blocked_with_phone(phone).pluck(:id)
+    return if blocked_user_ids.empty?
+
+    Rails.logger.info "SIGNUP_REFUSED: phone of blocked user(s) #{blocked_user_ids.join(', ')}"
+    errors.add(:phone, :taken)
   end
 
   def validate_set_attr attribute
@@ -622,7 +645,7 @@ class User < ApplicationRecord
         temporary: false
       }
     })
-    update(validation_status: 'blocked')
+    update_validation_status!(validation_status: 'blocked')
   end
 
   def temporary_block! updater, cnil_explanation
@@ -635,7 +658,7 @@ class User < ApplicationRecord
         temporary: true
       }
     })
-    update(validation_status: 'blocked', unblock_at: Time.now + TEMPORARY_BLOCK_PERIOD)
+    update_validation_status!(validation_status: 'blocked', unblock_at: Time.now + TEMPORARY_BLOCK_PERIOD)
   end
 
   def unblock! updater, cnil_explanation
@@ -647,8 +670,18 @@ class User < ApplicationRecord
         cnil_explanation: cnil_explanation
       }
     })
-    update(validation_status: 'validated', unblock_at: nil)
+    # a deleted account goes back to the status it had before being blocked
+    update_validation_status!(validation_status: deleted? ? 'deleted' : 'validated', unblock_at: nil)
   end
+
+  # Blocking and unblocking must also work on a deleted account. Its phone and email carry a
+  # deletion suffix that the validations reject: with update, the history was written but the
+  # status silently stayed unchanged.
+  def update_validation_status! attributes
+    assign_attributes(attributes)
+    save(validate: false)
+  end
+  private :update_validation_status!
 
   def validate!
     update(validation_status: 'validated')

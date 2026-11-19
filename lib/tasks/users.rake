@@ -4,6 +4,18 @@ namespace :users do
     UserServices::Unblock.run!
   end
 
+  # One-off. Reads only unless DRY_RUN=false. LIMIT=n restricts the number of accounts.
+  desc 'Set back to blocked the deleted accounts whose last block was silently lost (DRY_RUN=false to write)'
+  task restore_blocked_status: :environment do
+    dry_run = ENV['DRY_RUN'] != 'false'
+    limit = ENV['LIMIT'].presence&.to_i
+
+    user_ids = UserServices::RestoreBlockedStatus.run!(dry_run: dry_run, limit: limit)
+
+    puts "#{dry_run ? 'DRY RUN: would set' : 'Set'} #{user_ids.size} deleted account(s) to blocked"
+    puts "ids: #{user_ids.first(20).join(', ')}#{' …' if user_ids.size > 20}" if user_ids.any?
+  end
+
   desc 'Celebrate a birthday'
   task celebrate_birthday: :environment do
     UserServices::Birthday.send_notifications

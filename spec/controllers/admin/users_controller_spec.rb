@@ -402,6 +402,18 @@ describe Admin::UsersController do
       it { expect(user.reload.unblock_at).to be(nil) }
       it { expect(user.reload.histories.count).to eq(1) }
     end
+
+    context 'user who deleted their account' do
+      before do
+        UserServices::DeleteUserService.new(user: user).delete
+        put :block, params: { id: user.id, user: { cnil_explanation: 'reason' } }
+      end
+
+      it { should redirect_to edit_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq('blocked') }
+      it { expect(user.reload.deleted).to be(true) }
+      it { expect(user.reload.histories.blocked.count).to eq(1) }
+    end
   end
 
   describe 'PUT temporary_block' do
