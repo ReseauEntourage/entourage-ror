@@ -25,6 +25,30 @@ describe 'users rake tasks' do
     end
   end
 
+  describe 'users:restore_blocked_status' do
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'mod') }
+    let!(:user) do
+      create(:public_user, phone: '+33611111111').tap do |u|
+        UserServices::DeleteUserService.new(user: u).delete
+        UserHistory.create!(user_id: u.id, updater_id: moderator.id, kind: 'block', metadata: {})
+      end
+    end
+
+    after { ENV.delete('DRY_RUN') }
+
+    it 'only reports by default' do
+      expect { run_task('users:restore_blocked_status') }.to output(/DRY RUN: would set 1 deleted account/).to_stdout
+      expect(user.reload.validation_status).to eq('deleted')
+    end
+
+    it 'writes with DRY_RUN=false' do
+      ENV['DRY_RUN'] = 'false'
+
+      expect { run_task('users:restore_blocked_status') }.to output(/Set 1 deleted account/).to_stdout
+      expect(user.reload.validation_status).to eq('blocked')
+    end
+  end
+
   describe 'users:engagement_segments' do
     let!(:user) { create(:user, last_sign_in_at: 1.day.ago, targeting_profile: nil, deleted: false) }
 
