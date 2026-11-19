@@ -568,6 +568,141 @@ describe User, type: :model do
     it { expect(UserHistory.last.metadata[:cnil_explanation]).to eq('explanation') }
   end
 
+  describe 'blocking a deleted user' do
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+    let(:user) { create(:public_user, phone: '+33600000000', email: 'foo@bar.com') }
+
+    before { UserServices::DeleteUserService.new(user: user).delete }
+
+    it 'is deleted with a suffixed phone' do
+      expect(user.reload.validation_status).to eq('deleted')
+      expect(user.phone).to match(/\A\+33600000000-\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\z/)
+    end
+
+    describe 'block!' do
+      before { user.block! moderator, 'explanation' }
+
+      it { expect(user.reload.validation_status).to eq('blocked') }
+      it { expect(user.reload.deleted).to eq(true) }
+      it { expect(user.reload.unblock_at).to be_nil }
+      it { expect(User.blocked).to include(user) }
+    end
+
+    describe 'temporary_block!' do
+      before { user.temporary_block! moderator, 'explanation' }
+
+      it { expect(user.reload.validation_status).to eq('blocked') }
+      it { expect(user.reload.deleted).to eq(true) }
+      it { expect(user.reload.unblock_at).not_to be_nil }
+    end
+
+    describe 'unblock!' do
+      before {
+        user.block! moderator, 'explanation'
+        user.unblock! moderator, 'explanation'
+      }
+
+      it 'goes back to deleted, not to validated' do
+        expect(user.reload.validation_status).to eq('deleted')
+        expect(user.deleted).to eq(true)
+        expect(user.unblock_at).to be_nil
+      end
+    end
+  end
+
+  describe 'unblock! on a live blocked user' do
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+    let(:user) { create(:public_user, phone: '+33600000000') }
+
+    before {
+      user.block! moderator, 'explanation'
+      user.unblock! moderator, 'explanation'
+    }
+
+    it { expect(user.reload.validation_status).to eq('validated') }
+  end
+
+  describe 'blocked_with_phone' do
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+    let!(:live_blocked) { create(:public_user, phone: '+33611111111').tap { |u| u.block! moderator, 'reason' } }
+    let!(:deleted_blocked) do
+      create(:public_user, phone: '+33622222222').tap do |u|
+        u.block! moderator, 'reason'
+        UserServices::DeleteUserService.new(user: u).delete
+      end
+    end
+    let!(:deleted_not_blocked) do
+      create(:public_user, phone: '+33633333333').tap { |u| UserServices::DeleteUserService.new(user: u).delete }
+    end
+    let!(:validated) { create(:public_user, phone: '+33644444444') }
+
+    it { expect(User.blocked_with_phone('+33611111111')).to eq([live_blocked]) }
+    it { expect(User.blocked_with_phone('+33622222222')).to eq([deleted_blocked]) }
+    it { expect(User.blocked_with_phone('+33633333333')).to be_empty }
+    it { expect(User.blocked_with_phone('+33644444444')).to be_empty }
+    it { expect(User.blocked_with_phone('+33655555555')).to be_empty }
+
+    it 'does not match a longer phone number that starts with the same digits' do
+      expect(User.blocked_with_phone('+3362222222')).to be_empty
+    end
+
+    it 'does not treat the phone as a LIKE pattern' do
+      expect(User.blocked_with_phone('+3362%')).to be_empty
+    end
+  end
+
+  describe 'creating an account with the phone of a blocked user' do
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+
+    def build_user phone
+      FactoryBot.build(:public_user, phone: phone)
+    end
+
+    context 'the blocked account is live' do
+      before { create(:public_user, phone: '+33611111111').block! moderator, 'reason' }
+
+      it 'is refused, once' do
+        user = build_user('+33611111111')
+        expect(user).not_to be_valid
+        expect(user.errors.full_messages_for(:phone).size).to eq(1)
+      end
+    end
+
+    context 'the blocked account was deleted afterwards' do
+      before do
+        create(:public_user, phone: '+33611111111').tap do |u|
+          u.block! moderator, 'reason'
+          UserServices::DeleteUserService.new(user: u).delete
+        end
+      end
+
+      it { expect(build_user('+33611111111')).not_to be_valid }
+      it { expect(build_user('0611111111')).not_to be_valid }
+      it { expect(build_user('+33611111111').tap(&:valid?).errors.of_kind?(:phone, :taken)).to eq(true) }
+      it { expect(build_user('+33622222222')).to be_valid }
+    end
+
+    context 'the user was deleted but never blocked' do
+      before do
+        create(:public_user, phone: '+33611111111').tap { |u| UserServices::DeleteUserService.new(user: u).delete }
+      end
+
+      it { expect(build_user('+33611111111')).to be_valid }
+    end
+
+    context 'the user was unblocked after being deleted' do
+      before do
+        create(:public_user, phone: '+33611111111').tap do |u|
+          u.block! moderator, 'reason'
+          UserServices::DeleteUserService.new(user: u).delete
+          u.unblock! moderator, 'reason'
+        end
+      end
+
+      it { expect(build_user('+33611111111')).to be_valid }
+    end
+  end
+
   describe 'anonymize!' do
     let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
     let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
