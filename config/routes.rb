@@ -879,6 +879,10 @@ Rails.application.routes.draw do
         get :profile, to: 'profile#read'
         get :activity, to: 'activity#read'
         get :referent, to: 'referent#read'
+        get :outings, to: 'outings#search'
+        get 'outings/:id', to: 'outings#read'
+        get 'outings/:id/participants', to: 'outing_participants#read'
+        get 'outings/:id/participation', to: 'outing_participation#read'
       end
 
       resources :tags, only: [] do
