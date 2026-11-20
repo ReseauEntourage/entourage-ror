@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_11_06_120100) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_20_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -75,6 +75,21 @@ ActiveRecord::Schema[7.1].define(version: 2026_11_06_120100) do
     t.index ["category"], name: "index_announcements_on_category"
     t.index ["image_portrait_url"], name: "index_announcements_on_image_portrait_url"
     t.index ["user_goals"], name: "index_announcements_on_user_goals", using: :gin
+  end
+
+  create_table "assistant_actions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "idempotency_key", null: false
+    t.string "action_type", null: false
+    t.string "request_digest", null: false
+    t.string "status", default: "processing", null: false
+    t.jsonb "result", default: {}, null: false
+    t.string "subject_type"
+    t.integer "subject_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subject_type", "subject_id"], name: "index_assistant_actions_on_subject"
+    t.index ["user_id", "idempotency_key"], name: "index_assistant_actions_on_user_id_and_idempotency_key", unique: true
   end
 
   create_table "categories", id: :serial, force: :cascade do |t|
