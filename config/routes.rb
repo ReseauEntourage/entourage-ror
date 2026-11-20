@@ -896,6 +896,7 @@ Rails.application.routes.draw do
         post 'members/:id/messages', to: 'member_messages#deliver'
         post 'outings/:id/organizer_messages', to: 'organizer_messages#deliver'
         post 'groups/:id/join', to: 'group_memberships#join'
+        post :team_alerts, to: 'team_alerts#raise_alert'
       end
 
       resources :tags, only: [] do
