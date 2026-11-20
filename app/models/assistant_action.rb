@@ -16,7 +16,19 @@ class AssistantAction < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
   validates :idempotency_key, uniqueness: { scope: :user_id }
 
+  FIRST_MESSAGE_TYPES = %w[member.first_message outing.notify_organizer].freeze
+
   scope :succeeded, -> { where(status: SUCCEEDED) }
+
+  # The number of first messages that the assistant sent in the name of a user, for the follow-up of
+  # the team: the messages that started a conversation. Counted from the actions rather than
+  # stored on the user, so that it goes with the rows when the account is deleted.
+  def self.first_messages_count user
+    succeeded
+      .where(user_id: user.id, action_type: FIRST_MESSAGE_TYPES)
+      .where("result->'body'->>'firstMessage' = 'true'")
+      .count
+  end
 
   def processing?
     status == PROCESSING

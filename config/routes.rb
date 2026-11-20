@@ -893,6 +893,9 @@ Rails.application.routes.draw do
         post :help_requests, to: 'help_publications#publish_request'
         post :help_offers, to: 'help_publications#publish_offer'
         post :outings, to: 'outing_publications#publish'
+        post 'members/:id/messages', to: 'member_messages#deliver'
+        post 'outings/:id/organizer_messages', to: 'organizer_messages#deliver'
+        post 'groups/:id/join', to: 'group_memberships#join'
       end
 
       resources :tags, only: [] do
