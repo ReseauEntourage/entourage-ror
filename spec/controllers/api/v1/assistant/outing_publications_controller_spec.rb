@@ -75,7 +75,7 @@ describe Api::V1::Assistant::OutingPublicationsController, type: :controller do
     it 'does not accept the fields that the app does not let a member set (status, user)' do
       publish(valid_params.merge(status: 'closed', user_id: create(:public_user).id))
 
-      outing = Outing.last
+      outing = Outing.find_by!(uuid_v2: JSON.parse(response.body)['id'])
       expect(outing).to have_attributes(status: 'open', user_id: user.id)
     end
   end
