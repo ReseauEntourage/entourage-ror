@@ -64,6 +64,15 @@ class PushNotificationLinker
           instance: 'conversation',
           instance_id: object.messageable_id
         }
+      # @caution do not remove: this branch intentionally shadows is_a_post? for outings (EN-8462).
+      # The referent built from the linker goes through NotificationPermission.notify_push?, whose
+      # PUSH_INSTANCES whitelist does not include outing_post: without it, no push is sent for posts,
+      # comments and mentions in outings.
+      elsif object.is_a?(ChatMessage) && outing?(object.messageable)
+        {
+          instance: "conversation",
+          instance_id: object.messageable_id
+        }
       elsif object.is_a?(UserBadge)
         {
           instance: "user_badge",
