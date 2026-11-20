@@ -29,13 +29,13 @@ RSpec.describe NextSteps::Current do
 
     let!(:group) { create(:neighborhood, **nearby) }
 
-    it 'chooses a hero at the first call, displayed now and valid until the start of D+3 in Paris' do
+    it 'chooses a hero at the first call, displayed now and valid until the start of D+7 in Paris' do
       user.update_columns(goal: 'offer_help')
       now = Time.zone.parse('2026-11-01 10:00 Europe/Paris')
       hero = current(at: now).call
 
       expect(hero).to have_attributes(kind: 'neighborhood', target_id: group.id, status: 'active', first_displayed_at: now)
-      expect(hero.expires_at).to eq(Time.find_zone('Europe/Paris').parse('2026-11-04 00:00'))
+      expect(hero.expires_at).to eq(Time.find_zone('Europe/Paris').parse('2026-11-08 00:00'))
       expect(hero).to have_attributes(segment: 'Contributeur', segment_source: 'computed', mode: 'segment', profile: 'offer_help')
     end
 
@@ -45,12 +45,12 @@ RSpec.describe NextSteps::Current do
       expect(current(at: 1.day.from_now).call).to eq(hero)
     end
 
-    it 'replaces a hero first displayed on the 1st from the 4th' do
+    it 'replaces a hero first displayed on the 1st from the 8th' do
       hero = current(at: Time.zone.parse('2026-11-01 10:00 Europe/Paris')).call
 
-      expect(current(at: Time.zone.parse('2026-11-03 23:00 Europe/Paris')).call).to eq(hero)
+      expect(current(at: Time.zone.parse('2026-11-07 23:00 Europe/Paris')).call).to eq(hero)
 
-      replacement = current(at: Time.zone.parse('2026-11-04 08:00 Europe/Paris')).call
+      replacement = current(at: Time.zone.parse('2026-11-08 08:00 Europe/Paris')).call
 
       expect(hero.reload.status).to eq('expired')
       expect(replacement).to be_present
@@ -61,11 +61,47 @@ RSpec.describe NextSteps::Current do
   describe 'events' do
     before { welcome_journey_over! }
 
-    it 'keeps an event valid until it starts, even after 3 days' do
-      event = create(:outing, metadata: { starts_at: 6.days.from_now }, **nearby)
-      hero = current(at: 4.days.ago).call
+    it 'keeps an event valid until it starts, then stops suggesting it even though the 7 days are not over' do
+      starts_at = 2.days.from_now
+      event = create(:outing, metadata: { starts_at: starts_at }, **nearby)
+      now = Time.zone.now
+      hero = current(at: now).call
 
-      expect([hero.target_id, current.call]).to eq([event.id, hero])
+      expect(hero).to have_attributes(kind: 'outing', target_id: event.id)
+      expect(hero.expires_at).to be_within(1.second).of(starts_at)
+      expect(current(at: now + 1.day).call).to eq(hero)
+
+      replacement = current(at: starts_at + 1.minute).call
+
+      expect(hero.reload.status).to eq('expired')
+      expect(replacement).not_to eq(hero)
+    end
+
+    it 'stops suggesting an event that started before the end of its validity, when its date moves up' do
+      event = create(:outing, metadata: { starts_at: 5.days.from_now }, **nearby)
+      now = Time.zone.now
+      hero = current(at: now).call
+
+      Entourage.find(event.id).update_column(:metadata, event.metadata.merge(starts_at: 1.hour.ago))
+
+      expect(current(at: now + 1.minute).call).not_to eq(hero)
+      expect(hero.reload.status).to eq('closed')
+    end
+
+    it 'does not keep a distant event beyond the 7 days, although it has not started' do
+      event = create(:outing, metadata: { starts_at: 20.days.from_now }, **nearby)
+      now = Time.zone.now
+      hero = current(at: now).call
+      end_of_validity = (now.in_time_zone('Europe/Paris').to_date + 7).in_time_zone('Europe/Paris').beginning_of_day
+
+      expect(hero).to have_attributes(kind: 'outing', target_id: event.id)
+      expect(hero.expires_at).to eq(end_of_validity)
+      expect(current(at: end_of_validity - 1.minute).call).to eq(hero)
+
+      replacement = current(at: end_of_validity + 1.minute).call
+
+      expect(hero.reload.status).to eq('expired')
+      expect(replacement).not_to eq(hero)
     end
 
     it 'replaces a cancelled event at the next call' do
@@ -117,7 +153,7 @@ RSpec.describe NextSteps::Current do
     end
 
     it 'returns the replacement of an expired hero, and leaves the hero active' do
-      hero = current(at: 4.days.ago).call
+      hero = current(at: 8.days.ago).call
       create(:neighborhood, **nearby)
 
       preview = current.preview

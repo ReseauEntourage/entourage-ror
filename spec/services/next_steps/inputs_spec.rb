@@ -76,7 +76,7 @@ RSpec.describe NextSteps::Exclusions do
 
   def proposed kind:, target: nil, displayed_at: Time.zone.now, **attributes
     create(:next_step, user: user, kind: kind, target_type: target&.class&.name, target_id: target&.id,
-      first_displayed_at: displayed_at, expires_at: displayed_at + 3.days, **attributes)
+      first_displayed_at: displayed_at, expires_at: displayed_at + 7.days, **attributes)
   end
 
   describe 'engine history' do
