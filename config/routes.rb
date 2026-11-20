@@ -892,6 +892,7 @@ Rails.application.routes.draw do
         post 'outings/:id/leave', to: 'outing_registrations#leave'
         post :help_requests, to: 'help_publications#publish_request'
         post :help_offers, to: 'help_publications#publish_offer'
+        post :outings, to: 'outing_publications#publish'
       end
 
       resources :tags, only: [] do
