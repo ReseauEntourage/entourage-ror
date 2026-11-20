@@ -886,6 +886,10 @@ Rails.application.routes.draw do
         get 'outings/:id', to: 'outings#read'
         get 'outings/:id/participants', to: 'outing_participants#read'
         get 'outings/:id/participation', to: 'outing_participation#read'
+
+        # Actions in the name of the user (Idempotency-Key header, see ActionsController)
+        post 'outings/:id/join', to: 'outing_registrations#join'
+        post 'outings/:id/leave', to: 'outing_registrations#leave'
       end
 
       resources :tags, only: [] do
