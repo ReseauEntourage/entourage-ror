@@ -6,11 +6,10 @@ module V1
   class NextStepSerializer
     # The "devenir bénévole" gesture (kind become_ambassador) leads to the
     # registration page of the volunteers webinar (PM decision of 18/11/2026).
-    # NEXT_STEPS_VOLUNTEER_URL changes it without a deploy.
-    VOLUNTEER_URL = 'https://app.livestorm.co/entourage-2/webinaire-benevoles-entourage'.freeze
-
+    # The URL comes from NEXT_STEPS_VOLUNTEER_URL, so that it changes without a
+    # deploy. Without it, the gesture has no link.
     def self.volunteer_url
-      ENV['NEXT_STEPS_VOLUNTEER_URL'].presence || VOLUNTEER_URL
+      ENV['NEXT_STEPS_VOLUNTEER_URL'].presence
     end
 
     # @param item [NextStep, NextSteps::Selector::Choice, nil]
