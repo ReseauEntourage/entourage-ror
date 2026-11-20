@@ -77,10 +77,13 @@ module Api
           render json: { error: { code: code, message: message } }, status: status
         end
 
-        # The uuid of the user is the only thing about them that the logs carry (Lograge).
+        # The uuid of the user is the only thing about them that the logs carry (Lograge). The
+        # parameters are not logged at all: they hold the texts of the person (search words, a
+        # message, a publication), and the ids already are in the path.
         def append_info_to_payload(payload)
           super
           payload[:user] = assistant_user&.uuid
+          payload[:params] = {}
         end
       end
     end

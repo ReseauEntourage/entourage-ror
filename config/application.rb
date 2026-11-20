@@ -79,7 +79,7 @@ module EntourageBack
         ip: payload[:ip],
         API_KEY: payload[:api_key],
         request_id: payload[:request_id],
-      }
+      }.merge(payload.slice(:assistant_action, :assistant_result, :assistant_replayed))
     end
     config.lograge.formatter = Lograge::Formatters::Logstash.new
 
