@@ -890,6 +890,8 @@ Rails.application.routes.draw do
         # Actions in the name of the user (Idempotency-Key header, see ActionsController)
         post 'outings/:id/join', to: 'outing_registrations#join'
         post 'outings/:id/leave', to: 'outing_registrations#leave'
+        post :help_requests, to: 'help_publications#publish_request'
+        post :help_offers, to: 'help_publications#publish_offer'
       end
 
       resources :tags, only: [] do
