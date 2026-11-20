@@ -876,6 +876,9 @@ Rails.application.routes.draw do
       # Routes reserved to the AI assistant (see Api::V1::Assistant::BaseController).
       namespace :assistant do
         get :identity, to: 'identity#read'
+        get :profile, to: 'profile#read'
+        get :activity, to: 'activity#read'
+        get :referent, to: 'referent#read'
       end
 
       resources :tags, only: [] do
