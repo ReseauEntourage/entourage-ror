@@ -3,11 +3,11 @@ module NextSteps
   # - off when NEXT_STEPS_ENABLED is "false", and during the welcome journey;
   # - the active hero is returned while valid: neither expired, nor gone, nor
   #   realised; otherwise a new one is chosen in the same call;
-  # - first served = first displayed: expires at the start of D+3 (Paris
-  #   time), or at the start of the event;
+  # - first served = first displayed: expires at the start of D+7 (Paris
+  #   time), or at the start of the event when that comes first;
   # - a concurrent call that loses the race reads the winner's hero.
   class Current
-    VALIDITY_DAYS = 3
+    VALIDITY_DAYS = 7
     TIME_ZONE = 'Europe/Paris'.freeze
 
     # kinds realised by a tap, since they leave no trace in the domain data
@@ -44,7 +44,7 @@ module NextSteps
 
     # The hero #call would return now, without writing anything: neither the
     # new hero nor the end of the previous one is saved. For the back-office,
-    # to test the engine without starting the 3 days of a hero the user has
+    # to test the engine without starting the 7 days of a hero the user has
     # not seen.
     # @return [Preview]
     def preview
@@ -177,10 +177,13 @@ module NextSteps
       }
     end
 
+    # An event is no longer suggested once it has started, even if the
+    # validity is not over; and not kept beyond the validity if it is further away.
     def expires_at candidate
-      return candidate.target.starts_at if candidate.kind == 'outing' && candidate.target&.starts_at
+      validity_end = (now.in_time_zone(TIME_ZONE).to_date + VALIDITY_DAYS).in_time_zone(TIME_ZONE).beginning_of_day
+      starts_at = candidate.target&.starts_at if candidate.kind == 'outing'
 
-      (now.in_time_zone(TIME_ZONE).to_date + VALIDITY_DAYS).in_time_zone(TIME_ZONE).beginning_of_day
+      starts_at ? [starts_at, validity_end].min : validity_end
     end
 
     def profile

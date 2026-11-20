@@ -7,7 +7,7 @@ FactoryBot.define do
     segment_source { 'computed' }
     status { 'active' }
     first_displayed_at { Time.zone.now }
-    expires_at { 3.days.from_now }
+    expires_at { 7.days.from_now }
   end
 
   factory :next_step_interaction do
