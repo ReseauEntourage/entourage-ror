@@ -55,7 +55,8 @@ module EntourageBack
       :smalltalk_observer,
       :smalltalk_membership_observer,
       :user_impact_stats_observer,
-      :next_step_account_observer
+      :next_step_account_observer,
+      :assistant_account_observer
     ]
 
     # Default URL options
