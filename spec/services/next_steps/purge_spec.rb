@@ -5,7 +5,7 @@ RSpec.describe NextSteps::Purge do
 
   # not active: the unique index allows a single active next step per user
   def step_created_at time, user: self.user, **attributes
-    create(:next_step, user: user, status: 'expired', created_at: time, first_displayed_at: time, expires_at: time + 3.days, **attributes)
+    create(:next_step, user: user, status: 'expired', created_at: time, first_displayed_at: time, expires_at: time + 7.days, **attributes)
   end
 
   def interaction_created_at time, next_step:, **attributes
