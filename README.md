@@ -190,9 +190,9 @@ $ rspec
 
 # AI assistant
 
-The Entourage AI assistant reads Local and acts in the name of a user through the routes of `/api/v1/assistant` (`app/controllers/api/v1/assistant`). They are not the routes of the apps: no token in the parameters, no effect on the last sign in, the Salesforce synchronization or the session tracking, and the parameters are never logged.
+The Entourage AI assistant reads Local and acts in the name of a user through the routes of `/api/v1/assistant` (`app/controllers/api/v1/assistant`). They are not the routes of the apps: no token in the parameters, no effect on the last sign in, the Salesforce synchronization or the session tracking, and the parameters are never logged nor sent to Sentry.
 
-Every request carries the API key of the assistant in `X-API-KEY` (`ASSISTANT_API_KEY`) and the token of the user in `Authorization: Bearer <token>`. Anonymous, deleted, blocked and anonymized accounts are refused.
+Every request carries the API key of the assistant in `X-API-KEY` (`ASSISTANT_API_KEY`) and the token of the user in `Authorization: Bearer <token>`. Anonymous, deleted, blocked and anonymized accounts are refused. The JSON is camelCase, the ids are strings, a missing information is `null`. The contract is agreed with the assistant (change `add-assistant-social-link-tools` of entourage-specs).
 
 ## Reads (`GET`)
 
@@ -200,32 +200,34 @@ Each answer is built by a presenter with a closed list of fields (`app/services/
 
 | Route | What it returns |
 |---|---|
-| `identity` | uuid, first name and city of the user |
-| `profile` | what the user declared: city, accepted distance, goal, interests, availability, gender when given |
-| `activity` | outings (upcoming and past), groups, publications, help answered, discussions (never a message) |
-| `referent` | the dedicated contact (the moderator the app shows), or `null` |
-| `outings` | search with `OutingsServices::Finder`: `q`, `latitude`, `longitude`, `distance`, `interests[]`, `within_days`, `reserved_female=true`, `category=papotages`, `meeting_format=online\|in_person`, `limit`. An outing reserved to women is only returned when asked |
-| `outings/:id` | the sheet of an outing, with `measure` (`eventId`, `meetingType`): the subject of the anonymous measures |
-| `outings/:id/participants` | the participants that the app shows to a member |
-| `outings/:id/participation` | whether the registration, confirmation and attendance of the user are recorded |
-| `help_requests`, `help_offers` | search: `q`, `latitude`, `longitude`, `distance`, `section_list`, `limit` |
+| `identity` | `id` (uuid), first name and city of the user |
+| `profile` | what the user declared: `city`, `distanceKm`, `goal` (`seek-help`, `give-help`, `both`), `interests`, `availabilities` (`"monday 09:00-12:00"`), `gender` (`woman`, `man`, `null`) |
+| `activity` | `upcomingOutings` and `pastOutings` (briefs), `groups`, `helpPosts` (requests and offers published), `connectionsCount` (discussions started, never a message) |
+| `referent` | the dedicated contact (the moderator the app shows), or `{ referent: null }` |
+| `outings` | search with `OutingsServices::Finder`: `city`, `interest`, `days` (ISO numbers 1..7, 1 = Monday), `size`, `reserved_female=true`, `chatting=true`. Briefs: `id, title, startsAt, place, participantsCount, placeLimit, reservedFemale, format`. 10 outings, 30 when `size` is given (Local does not filter on the size: the assistant does). An outing reserved to women is only returned when asked. Without `city` or with the one of the profile, the search starts from the address of the user; another city is geocoded (`PLACE_NOT_FOUND` if unknown) |
+| `outings/:id` | the flat sheet: `id, title, description, startsAt, endsAt, durationMinutes, place, organizerName, participantsCount, placeLimit, format, reservedFemale, subjectId, meetingType`. `subjectId` is the subject of the anonymous measures |
+| `outings/:id/participants` | `count` and `people[{ id, displayName, roles }]`: what the app shows to a member |
+| `outings/:id/participation` | `{ registered, attended }`; 404 when the outing is unknown or hidden from the user |
+| `help_requests`, `help_offers` | search: `city`, `category`. `items[{ id, title, category }]`, never the text nor the author |
 | `help_categories` | the categories of help of the app |
+| `groups/:id` | `{ id, name }` |
 
 ## Actions (`POST`)
 
-An action needs an `Idempotency-Key` header (the id of the preview that the person confirmed) and `ASSISTANT_ACTIONS_ENABLED=true`. It uses the services of the app with the model of the user, so the validations and the effects are the ones of the app. `Assistant::ActionRunner` runs it once per key: a replay returns the first answer (`Idempotent-Replayed: true`), the same key for another request is refused (422), a request still running answers 409, and a failed action is not replayed.
+An action needs an `Idempotency-Key` header (the id of the preview that the person confirmed) and `ASSISTANT_ACTIONS_ENABLED=true`. It uses the services of the app with the model of the user, so the validations and the effects are the ones of the app (neither the place limit nor `reserved_female` refuse a registration there, so they do not here). `Assistant::ActionRunner` runs it once per key: a replay returns the first answer (`Idempotent-Replayed: true`), the same key for another request is refused (422), a request still running answers 409, a failed action is not replayed, and a row that stays `processing` for more than 2 minutes is abandoned (410 `ACTION_EXPIRED`, never run under this key: the person asks a new action with a new key).
 
 | Route | Body | Action |
 |---|---|---|
-| `outings/:id/join`, `outings/:id/leave` | | registers, cancels the registration |
-| `outings` | `title`, `description`, `latitude`, `longitude`, `online`, `metadata{starts_at, ends_at, place_name, street_address, ...}` | creates an outing |
-| `help_requests`, `help_offers` | `title`, `description`, `section`, `latitude`, `longitude`, `recipient_consent_obtained` (requests) | publishes |
-| `members/:id/messages` | `content` | first message to a member, in their private conversation |
-| `outings/:id/organizer_messages` | `kind` (`first_time`, `question`, `safety_signal`), `content` | message to the organizer |
-| `groups/:id/join` | | joins a group (immediate in the app) |
-| `team_alerts` | `kind` (`safety_signal`, `negative_feedback`, `handover`), `content` | message to the team on Slack (`SLACK_SIGNAL`) |
+| `outings/:id/register`, `outings/:id/unregister` | `{}` | registers, cancels the registration |
+| `outings` | `title`, `description`, `startsAt`, `endsAt` (ISO 8601), `place` (text), `reservedFemale` | creates an outing. `place` is geocoded (`400 PLACE_NOT_FOUND`) |
+| `help_requests`, `help_offers` | `title`, `category`, `description`, `recipientConsentObtained` (requests) | publishes from the address of the user. A request without consent is `suspended` (moderation), as in the app |
+| `members/:id/messages` | `message` | first message to a member, in their private conversation |
+| `outings/:id/organizer_messages` | `message` | message to the organizer |
+| `outings/:id/discussion_messages` | `message` | message in the discussion of an outing the user is registered to (403 `NOT_A_MEMBER`) |
+| `groups/:id/join_requests` | | joins a group (immediate in the app) |
+| `alerts` | `audience` (`referent`, `team`), `message`, `kind` (`safety_signal`, `negative_feedback`, `handover`) | message to the team on Slack (`SLACK_SIGNAL`). `referent` names the dedicated contact when there is one that Slack can mention. Default kind: `handover` for the referent, `safety_signal` for the team. `status: not_delivered` when Slack fails |
 
-Errors are `{ "error": { "code": ..., "message": ... } }`: `INVALID_API_KEY` (401), `INVALID_TOKEN` (401), `ANONYMOUS_ACCOUNT` (403), `ACTIONS_DISABLED` (503), `IDEMPOTENCY_KEY_REQUIRED` (400), `IDEMPOTENCY_KEY_REUSED` (422), `ACTION_IN_PROGRESS` (409), `INVALID_PARAMS` (400), `NOT_FOUND` (404), `NOT_REGISTERED` (404), `RECIPIENT_UNAVAILABLE` (404), `CANNOT_JOIN`, `CANNOT_LEAVE`, `CANNOT_PUBLISH`, `CANNOT_SEND` (400, with the reasons of the app) and `ACTION_FAILED` (500).
+Errors are `{ "error": { "code": ..., "message": ..., "reasons": ... } }`: `INVALID_API_KEY` (401), `INVALID_TOKEN` (401), `ANONYMOUS_ACCOUNT` (403), `NOT_A_MEMBER` (403), `ACTIONS_DISABLED` (503), `IDEMPOTENCY_KEY_REQUIRED` (400), `IDEMPOTENCY_KEY_REUSED` (422), `ACTION_IN_PROGRESS` (409), `ACTION_EXPIRED` (410), `INVALID_PARAMS` (400), `PLACE_NOT_FOUND` (400 on an action, 404 on a read), `NOT_FOUND` (404), `NOT_REGISTERED` (404), `RECIPIENT_UNAVAILABLE` (404), `CANNOT_JOIN`, `CANNOT_LEAVE`, `CANNOT_PUBLISH`, `CANNOT_SEND` (400, with the reasons of the app) and `ACTION_FAILED` (500). The assistant reads the `code`: it retries twice with the same key on 409 `ACTION_IN_PROGRESS`, 429, 5xx and network errors, never on `ACTIONS_DISABLED` nor `ACTION_FAILED`.
 
 Each action is a row of `assistant_actions` (user, key, type, digest of the request, status, result, subject): the team finds from it what the assistant did, and the other members see no difference. The result only holds identifiers and statuses, never a text. The rows are deleted with the account.
 
@@ -235,18 +237,22 @@ Each action is a row of `assistant_actions` (user, key, type, digest of the requ
 |---|---|
 | `ASSISTANT_API_KEY` | key of the assistant for every route above (see its section if your branch has it) |
 | `ASSISTANT_ACTIONS_ENABLED` | `true` to let the assistant act. **False by default**: every action answers 503 `ACTIONS_DISABLED`, the reads are not affected |
-| `ASSISTANT_API_URL` | URL that receives the events of Local (account deleted or anonymized) |
-| `ASSISTANT_SERVICE_KEY` | key of Local for these events, sent in `X-Service-Key`. Distinct from `ASSISTANT_API_KEY`. Without `ASSISTANT_API_URL` and this key, nothing is sent and nothing fails |
+| `ASSISTANT_API_URL` | **base URL** of the assistant (without `/api`): the events go to `<base>/api/v1/product-events`, the measures are read from `<base>/api/v1/measures` |
+| `ASSISTANT_SERVICE_KEY` | key of Local for these two routes, sent in `X-Service-Key`. Distinct from `ASSISTANT_API_KEY`. Without `ASSISTANT_API_URL` and this key, nothing is sent and nothing fails |
 
-When an account is deleted or anonymized (`deleted` becoming true, whatever the path: app, back-office, `User#anonymize!`), `AssistantAccountObserver` deletes its `assistant_actions` and queues `AssistantAccountEventJob`, which `POST`s `{ event: "account.deleted" | "account.anonymized", product: "local", userId: <uuid>, occurredAt }`, and nothing else about the person. Sidekiq retries it for weeks.
+When an account is deleted or anonymized (`deleted` becoming true, whatever the path: app, back-office, `User#anonymize!`), `AssistantAccountObserver` deletes its `assistant_actions` and queues `AssistantAccountEventJob`, which `POST`s `{ event: "account.deleted" | "account.anonymized", product: "local", userId: <uuid>, occurredAt }`, and nothing else about the person. Sidekiq retries it for weeks on network errors, 5xx and 429; a 400, 401 or 403 is reported to Sentry once and not retried.
+
+The back-office shows the anonymous measures of an event (`admin/outings/:id/measures`, linked from the list): Local reads the aggregate from the assistant and only shows the distribution above its threshold, "too few responses" otherwise. Local keeps and receives no individual answer.
+
+Personal data for the DPO: the text of a city other than the one of the profile, and the place of an outing created by the assistant, are sent to the geocoder of the app (`Assistant::PlaceGeocoder`).
 
 ## Deployment order and rollback
 
 1. Deploy the migration of `assistant_actions` (additive, one table).
 2. Deploy the code with `ASSISTANT_ACTIONS_ENABLED` false: the reads and the account event are active, the actions refuse.
-3. Set `ASSISTANT_API_URL` and `ASSISTANT_SERVICE_KEY` once the assistant has the route that receives the events.
-4. Switch the actions on, after the product decisions on the outings reserved to women and the dedicated contact.
-5. Rollback: set `ASSISTANT_ACTIONS_ENABLED` to false (no deployment). Unset the two other variables to stop the events. The table can stay.
+3. Set `ASSISTANT_API_URL` and `ASSISTANT_SERVICE_KEY` once the assistant is deployed with its receiving route.
+4. Switch the actions on.
+5. Rollback: set `ASSISTANT_ACTIONS_ENABLED` to false (no deployment). Unset the two other variables to stop the events and the reading of the measures. The table can stay.
 
 # Database dump
 
