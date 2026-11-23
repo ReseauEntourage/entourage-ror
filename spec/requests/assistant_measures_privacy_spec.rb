@@ -88,10 +88,10 @@ describe 'Anonymous measures: Local keeps no individual answer', type: :request 
     expect(AssistantAction.pluck(:result, :request_digest, :action_type).to_json).not_to include(marker)
   end
 
-  it 'only designates the subject of the measures: the stable ids of the event and of its type of meeting' do
+  it 'only designates the subject of the measures: the stable id of the event and its type of meeting' do
     get "/api/v1/assistant/outings/#{outing.uuid_v2}", headers: headers
 
-    expect(JSON.parse(response.body)['measure']).to eq('eventId' => outing.uuid_v2, 'meetingType' => 'event')
+    expect(JSON.parse(response.body).slice('subjectId', 'meetingType')).to eq('subjectId' => outing.uuid_v2, 'meetingType' => 'event')
   end
 
   it 'only ever sends the assistant an account event, never an answer' do

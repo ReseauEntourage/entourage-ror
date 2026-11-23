@@ -5,9 +5,13 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
     create :public_user, token: 'user-secret-token', goal: 'offer_help', travel_distance: 15,
                          interests: %w[sport jeux], availability: { '2' => ['09:00-12:00'] }, gender: 'female'
   end
-  let(:body) { JSON.parse(response.body) }
+  # not a `let`: several requests are made in some examples
+  def body
+    JSON.parse(response.body)
+  end
 
   def call_route(key:, token:, params: {})
+    @controller = described_class.new # a controller keeps what it memoized from a previous request
     request.headers['X-API-KEY'] = key if key
     request.headers['Authorization'] = "Bearer #{token}" if token
     get :read, params: params
@@ -31,11 +35,11 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
 
       expect(body).to eq(
         'city' => 'Lyon',
-        'travelDistanceKm' => 15,
-        'goal' => 'offer_help',
+        'distanceKm' => 15,
+        'goal' => 'give-help',
         'interests' => %w[sport jeux],
-        'availability' => { '2' => ['09:00-12:00'] },
-        'gender' => 'female'
+        'availabilities' => ['tuesday 09:00-12:00'],
+        'gender' => 'woman'
       )
     end
 
@@ -50,12 +54,29 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
       end
     end
 
-    it 'returns the goal chosen when the person wants both' do
-      user.update!(goal: 'ask_and_offer_help')
+    it 'returns the goal of the contract: seek-help, give-help or both' do
+      { 'ask_for_help' => 'seek-help', 'offer_help' => 'give-help', 'ask_and_offer_help' => 'both' }.each do |declared, expected|
+        user.update!(goal: declared)
+        call_route(key: 'assistant-secret-key', token: user.token)
+
+        expect(body['goal']).to eq(expected)
+      end
+    end
+
+    it 'returns the availabilities as texts, the day in English, in the order of the week' do
+      user.update!(availability: { '7' => ['10:00-12:00'], '1' => ['09:00-12:00', '14:00-16:00'] })
 
       call_route(key: 'assistant-secret-key', token: user.token)
 
-      expect(body['goal']).to eq('ask_and_offer_help')
+      expect(body['availabilities']).to eq(['monday 09:00-12:00', 'monday 14:00-16:00', 'sunday 10:00-12:00'])
+    end
+
+    it 'never returns the gender "other": the app has no such value' do
+      user.update_columns(options: user.options.to_h.merge('gender' => 'other'))
+
+      call_route(key: 'assistant-secret-key', token: user.token)
+
+      expect(body['gender']).to be_nil
     end
 
     it 'returns missing informations as missing, without error' do
@@ -65,7 +86,7 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
       call_route(key: 'assistant-secret-key', token: bare.token)
 
       expect(response.status).to eq(200)
-      expect(body).to include('city' => nil, 'goal' => nil, 'interests' => [], 'availability' => {}, 'gender' => nil)
+      expect(body).to include('city' => nil, 'goal' => nil, 'interests' => [], 'availabilities' => [], 'gender' => nil)
     end
 
     it 'returns no qualification of the person: no situation, segment or targeting profile' do
@@ -73,7 +94,7 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
 
       call_route(key: 'assistant-secret-key', token: user.token)
 
-      expect(body.keys).to match_array(%w[city travelDistanceKm goal interests availability gender])
+      expect(body.keys).to match_array(%w[city distanceKm goal interests availabilities gender])
       expect(response.body).not_to include('asks_for_help')
     end
 
@@ -82,7 +103,7 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
 
       call_route(key: 'assistant-secret-key', token: other.token)
 
-      expect(body).to include('goal' => 'ask_for_help', 'travelDistanceKm' => 3)
+      expect(body).to include('goal' => 'seek-help', 'distanceKm' => 3)
     end
   end
 end

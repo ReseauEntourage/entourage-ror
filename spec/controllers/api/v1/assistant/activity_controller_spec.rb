@@ -35,8 +35,7 @@ describe Api::V1::Assistant::ActivityController, type: :controller do
       read
 
       expect(body).to eq(
-        'upcomingOutings' => [], 'pastOutings' => [], 'groups' => [], 'helpRequests' => [],
-        'helpOffers' => [], 'answeredHelp' => [], 'conversations' => []
+        'upcomingOutings' => [], 'pastOutings' => [], 'groups' => [], 'helpPosts' => [], 'connectionsCount' => 0
       )
     end
 
@@ -51,9 +50,9 @@ describe Api::V1::Assistant::ActivityController, type: :controller do
       read
 
       expect(body['upcomingOutings'].map { |o| o['title'] }).to eq(['Un café'])
-      expect(body['upcomingOutings'].first).to include('id' => upcoming.uuid_v2, 'role' => 'participant', 'participated' => false)
-      expect(body['upcomingOutings'].first.keys).to match_array(%w[id title startsAt endsAt role participated])
-      expect(body['pastOutings'].map { |o| [o['title'], o['participated']] }).to eq([['Déjà passé', true]])
+      expect(body['upcomingOutings'].first).to include('id' => upcoming.uuid_v2, 'participantsCount' => 2, 'reservedFemale' => false, 'format' => 'in_person')
+      expect(body['upcomingOutings'].first.keys).to match_array(%w[id title startsAt place participantsCount placeLimit reservedFemale format])
+      expect(body['pastOutings'].map { |o| o['title'] }).to eq(['Déjà passé'])
     end
 
     it 'does not return a cancelled registration' do
@@ -65,21 +64,20 @@ describe Api::V1::Assistant::ActivityController, type: :controller do
       expect(body['upcomingOutings']).to eq([])
     end
 
-    it 'returns the groups, the publications and the help answered' do
+    it 'returns the groups and the requests and offers that the user published' do
       group = create :neighborhood, name: 'Foot Paris 17è'
       create :join_request, user: user, joinable: group, status: :accepted, role: :member
       request_published = create :solicitation, user: user, title: 'Besoin de courses'
       offer_published = create :contribution, user: user, title: 'Je prête une perceuse'
-      answered = create :contribution, user: other, title: 'Cours de cuisine'
-      create :join_request, user: user, joinable: answered, status: :accepted, role: :member
+      create :contribution, user: other, title: 'Une offre des autres'
 
       read
 
       expect(body['groups']).to eq([{ 'id' => group.uuid_v2, 'name' => 'Foot Paris 17è' }])
-      expect(body['helpRequests'].map { |h| h['id'] }).to eq([request_published.uuid_v2])
-      expect(body['helpRequests'].first.keys).to match_array(%w[id title status createdAt])
-      expect(body['helpOffers'].map { |h| h['id'] }).to eq([offer_published.uuid_v2])
-      expect(body['answeredHelp']).to eq([{ 'id' => answered.uuid_v2, 'type' => 'offer', 'title' => 'Cours de cuisine' }])
+      expect(body['helpPosts']).to match_array([
+        { 'id' => request_published.uuid_v2, 'kind' => 'request', 'title' => 'Besoin de courses' },
+        { 'id' => offer_published.uuid_v2, 'kind' => 'offer', 'title' => 'Je prête une perceuse' }
+      ])
     end
 
     describe 'the discussions' do
@@ -87,36 +85,36 @@ describe Api::V1::Assistant::ActivityController, type: :controller do
 
       before { create :chat_message, messageable: conversation, user: user, content: 'Un message très privé' }
 
-      it 'returns the fact that a discussion exists and with whom, never its content' do
+      it 'counts the discussions that were started, and never returns what was said nor with whom' do
+        conversation.reload
+
         read
 
-        expect(body['conversations'].size).to eq(1)
-        expect(body['conversations'].first).to eq(
-          'id' => conversation.uuid_v2, 'with' => { 'id' => other.uuid, 'displayName' => 'Sam D.' },
-          'startedAt' => conversation.created_at.iso8601
-        )
+        expect(body['connectionsCount']).to eq(1)
         expect(response.body).not_to include('très privé')
-        expect(response.body).not_to include('content')
+        expect(response.body).not_to include('Sam')
+        expect(response.body).not_to include(other.uuid)
       end
 
-      it 'does not return the discussions of other members' do
+      it 'does not count the discussions of other members, nor an empty discussion' do
         stranger = create :public_user
         create :conversation, user: other, participants: [other, stranger]
+        create :conversation, user: user, participants: [user, create(:public_user)]
 
         read
 
-        expect(body['conversations'].size).to eq(1)
+        expect(body['connectionsCount']).to eq(1)
       end
     end
 
     it 'bounds the lists to the latest items' do
-      (Api::V1::Assistant::ActivityController.name && Assistant::Presenters::Activity::LIMIT + 5).times do
+      (Assistant::Presenters::Activity::LIMIT + 5).times do
         create :solicitation, user: user
       end
 
       read
 
-      expect(body['helpRequests'].size).to eq(Assistant::Presenters::Activity::LIMIT)
+      expect(body['helpPosts'].size).to eq(Assistant::Presenters::Activity::LIMIT)
     end
 
     it 'loads the lists in a number of SQL queries that does not grow with the data' do

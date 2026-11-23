@@ -4,9 +4,13 @@ require 'rails_helper'
 describe Api::V1::Assistant::HelpRequestsController, type: :controller do
   let(:user) { create :public_user, token: 'user-secret-token' }
   let(:author) { create :public_user, first_name: 'Sam', last_name: 'Durand' }
-  let(:body) { JSON.parse(response.body) }
+  # not a `let`: several requests are made in some examples
+  def body
+    JSON.parse(response.body)
+  end
 
   def call_route(key:, token:, params: {})
+    @controller = described_class.new
     request.headers['X-API-KEY'] = key if key
     request.headers['Authorization'] = "Bearer #{token}" if token
     get :search, params: params
@@ -25,23 +29,23 @@ describe Api::V1::Assistant::HelpRequestsController, type: :controller do
       allow(ENV).to receive(:[]).with('ASSISTANT_API_KEY').and_return('assistant-secret-key')
     end
 
+    before { create :address, user: user, city: 'Paris', latitude: 48.85, longitude: 2.35 }
+
     def search(params = {})
-      call_route(key: 'assistant-secret-key', token: user.token, params: { latitude: 48.85, longitude: 2.35 }.merge(params))
+      call_route(key: 'assistant-secret-key', token: user.token, params: params)
     end
 
-    it 'returns the requests close to the place, with exactly these fields' do
+    it 'returns the requests close to the user, with their title and category only: no text, no author' do
       near = create :solicitation, user: author, title: 'Besoin de courses', description: 'Une fois par semaine',
                                    latitude: 48.851, longitude: 2.351, section_list: ['services']
       create :solicitation, user: author, title: 'Trop loin', latitude: 43.3, longitude: 5.4
 
-      search(distance: 10)
+      search
 
-      expect(body['helpRequests'].size).to eq(1)
-      expect(body['helpRequests'].first).to eq(
-        'id' => near.uuid_v2, 'type' => 'request', 'title' => 'Besoin de courses', 'description' => 'Une fois par semaine',
-        'category' => 'services', 'createdAt' => near.created_at.iso8601,
-        'author' => { 'id' => author.uuid, 'displayName' => 'Sam D.' }
-      )
+      expect(body['items']).to eq([{ 'id' => near.uuid_v2, 'title' => 'Besoin de courses', 'category' => 'services' }])
+      expect(response.body).not_to include('Une fois par semaine')
+      expect(response.body).not_to include(author.uuid)
+      expect(response.body).not_to include('Sam')
       expect(response.body).not_to include(author.phone)
     end
 
@@ -49,9 +53,9 @@ describe Api::V1::Assistant::HelpRequestsController, type: :controller do
       create :solicitation, user: author, title: 'Courses', latitude: 48.851, longitude: 2.351, section_list: ['services']
       create :solicitation, user: author, title: 'Café', latitude: 48.851, longitude: 2.351, section_list: ['social']
 
-      search(section_list: 'social')
+      search(category: 'social')
 
-      expect(body['helpRequests'].map { |item| item['title'] }).to eq(['Café'])
+      expect(body['items'].map { |item| item['title'] }).to eq(['Café'])
     end
 
     it 'does not return a closed request' do
@@ -59,15 +63,35 @@ describe Api::V1::Assistant::HelpRequestsController, type: :controller do
 
       search
 
-      expect(body['helpRequests']).to eq([])
+      expect(body['items']).to eq([])
     end
 
-    it 'bounds the number of results' do
-      3.times { create :solicitation, user: author, latitude: 48.851, longitude: 2.351 }
+    it 'bounds the number of results to 10' do
+      12.times { create :solicitation, user: author, latitude: 48.851, longitude: 2.351 }
 
-      search(limit: 2)
+      search
 
-      expect(body['helpRequests'].size).to eq(2)
+      expect(body['items'].size).to eq(10)
+    end
+
+    it 'geocodes a city other than the one of the profile, and not the city of the profile' do
+      allow(Geocoder).to receive(:search)
+      create :solicitation, user: author, title: 'À Lyon', latitude: 45.764, longitude: 4.8357
+      allow(Geocoder).to receive(:search).with('Lyon').and_return([double(latitude: 45.764, longitude: 4.8357)])
+
+      search(city: 'Lyon')
+      expect(body['items'].map { |item| item['title'] }).to eq(['À Lyon'])
+
+      search(city: 'Paris')
+      expect(Geocoder).not_to have_received(:search).with('Paris')
+    end
+
+    it 'answers 404 PLACE_NOT_FOUND for an unknown city' do
+      allow(Geocoder).to receive(:search).with('Atlantis').and_return([])
+
+      search(city: 'Atlantis')
+
+      expect([response.status, body.dig('error', 'code')]).to eq([404, 'PLACE_NOT_FOUND'])
     end
   end
 end
@@ -75,9 +99,13 @@ end
 describe Api::V1::Assistant::HelpOffersController, type: :controller do
   let(:user) { create :public_user, token: 'user-secret-token' }
   let(:author) { create :public_user, first_name: 'Sam', last_name: 'Durand' }
-  let(:body) { JSON.parse(response.body) }
+  # not a `let`: several requests are made in some examples
+  def body
+    JSON.parse(response.body)
+  end
 
   def call_route(key:, token:, params: {})
+    @controller = described_class.new
     request.headers['X-API-KEY'] = key if key
     request.headers['Authorization'] = "Bearer #{token}" if token
     get :search, params: params
@@ -91,10 +119,11 @@ describe Api::V1::Assistant::HelpOffersController, type: :controller do
     offer = create :contribution, user: author, title: 'Je prête ma perceuse', latitude: 48.851, longitude: 2.351, section_list: ['equipment']
     create :solicitation, user: author, title: 'Une demande', latitude: 48.851, longitude: 2.351
 
-    call_route(key: 'assistant-secret-key', token: user.token, params: { latitude: 48.85, longitude: 2.35 })
+    create :address, user: user, city: 'Paris', latitude: 48.85, longitude: 2.35
+    call_route(key: 'assistant-secret-key', token: user.token)
 
-    expect(body.keys).to eq(['helpOffers'])
-    expect(body['helpOffers'].map { |item| [item['id'], item['type'], item['title']] }).to eq([[offer.uuid_v2, 'offer', 'Je prête ma perceuse']])
+    expect(body.keys).to eq(['items'])
+    expect(body['items']).to eq([{ 'id' => offer.uuid_v2, 'title' => 'Je prête ma perceuse', 'category' => 'equipment' }])
   end
 end
 
@@ -102,6 +131,7 @@ describe Api::V1::Assistant::HelpCategoriesController, type: :controller do
   let(:user) { create :public_user, token: 'user-secret-token' }
 
   def call_route(key:, token:, params: {})
+    @controller = described_class.new
     request.headers['X-API-KEY'] = key if key
     request.headers['Authorization'] = "Bearer #{token}" if token
     get :read, params: params

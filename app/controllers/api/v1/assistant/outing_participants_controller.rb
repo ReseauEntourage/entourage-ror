@@ -11,8 +11,8 @@ module Api
           join_requests = outing.join_requests.accepted
 
           render json: {
-            participantsCount: join_requests.count,
-            participants: join_requests.includes(:user).ordered_by_validated_users.limit(LIMIT).map do |join_request|
+            count: join_requests.count,
+            people: join_requests.includes(:user).ordered_by_validated_users.limit(LIMIT).map do |join_request|
               ::Assistant::Presenters::Participant.new(join_request).as_json
             end
           }

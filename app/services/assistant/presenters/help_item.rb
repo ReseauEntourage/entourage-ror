@@ -1,21 +1,14 @@
 module Assistant
   module Presenters
-    # A request for help or an offer of help published by a member, as the app lists it.
+    # A request for help or an offer of help published by a member, as the assistant lists it:
+    # its title and its category, and nothing about its author nor its text.
     class HelpItem
       def initialize action
         @action = action
       end
 
       def as_json(*)
-        {
-          id: @action.uuid_v2,
-          type: @action.contribution? ? 'offer' : 'request',
-          title: @action.title.presence,
-          description: @action.description.presence,
-          category: section,
-          createdAt: Support.iso8601(@action.created_at),
-          author: Support.member(@action.user)
-        }
+        { id: @action.uuid_v2, title: @action.title.presence, category: section }
       end
 
       private

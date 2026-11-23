@@ -3,28 +3,27 @@ module Api
     module Assistant
       # Requests for help close to a place.
       class HelpRequestsController < BaseController
-        MAX_LIMIT = 20
+        LIMIT = 10
 
         def search
-          records = finder.find_all.limit(limit).to_a
+          finder_params = search_params
+          return if finder_params.nil?
 
-          render json: { helpRequests: records.map { |action| ::Assistant::Presenters::HelpItem.new(action).as_json } }
+          records = finder_for(finder_params).find_all.limit(LIMIT).to_a
+          render json: { items: records.map { |action| ::Assistant::Presenters::HelpItem.new(action).as_json } }
         end
 
         private
 
-        def finder
-          ::SolicitationServices::Finder.new(assistant_user, search_params)
+        def finder_for params
+          ::SolicitationServices::Finder.new(assistant_user, params)
         end
 
         def search_params
-          permitted = params.permit(:q, :latitude, :longitude, :section_list, sections: [])
-          permitted[:travel_distance] = params[:distance] if params[:distance].present?
-          permitted
-        end
+          coordinates = coordinates_for_city(params[:city])
+          return if coordinates.nil?
 
-        def limit
-          params[:limit].present? ? params[:limit].to_i.clamp(1, MAX_LIMIT) : 10
+          ActionController::Parameters.new({ section_list: params[:category].to_s.presence }.merge(coordinates)).permit!
         end
       end
     end

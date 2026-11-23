@@ -3,8 +3,8 @@ module Assistant
     # The sheet of an outing: what it contains and nothing more. A missing information is returned
     # as missing (null), never completed. The charte is not here: it lives in the apps.
     #
-    # `measure` is the subject of the anonymous measures kept by the assistant: the stable
-    # identifier of the event and the type of meeting. It does not point to any person.
+    # `subjectId` is the stable identifier of the event, the subject of the anonymous measures kept
+    # by the assistant: it does not point to any person. `meetingType` is the type of meeting.
     class EventSheet
       def initialize outing, participants_count:
         @outing = outing
@@ -19,13 +19,14 @@ module Assistant
           startsAt: Support.iso8601(outing.starts_at),
           endsAt: Support.iso8601(outing.ends_at),
           durationMinutes: duration_minutes,
-          format: outing.online ? 'online' : 'in_person',
-          place: place,
-          organizer: Support.member(outing.user),
+          place: EventBrief.place(outing),
+          organizerName: outing.user && Support.display_name(outing.user),
           participantsCount: @participants_count,
-          placeLimit: place_limit,
+          placeLimit: EventBrief.place_limit(outing),
+          format: outing.online ? 'online' : 'in_person',
           reservedFemale: outing.reserved_female == true,
-          measure: { eventId: outing.uuid_v2, meetingType: meeting_type }
+          subjectId: outing.uuid_v2,
+          meetingType: meeting_type
         }
       end
 
@@ -47,19 +48,6 @@ module Assistant
         value.respond_to?(:to_time) && !value.is_a?(String) ? value.to_time : Time.zone.parse(value.to_s)
       rescue ArgumentError
         nil
-      end
-
-      def place
-        return if outing.online
-
-        place = { name: outing.place_name.presence, address: outing.display_address.presence }
-        place if place.values.any?
-      end
-
-      # The place limit is displayed by the app but does not refuse a registration (see design.md).
-      def place_limit
-        limit = outing.place_limit.to_i
-        limit if limit.positive?
       end
 
       # The category of the event when it has one, a papotage otherwise recognized by the app,

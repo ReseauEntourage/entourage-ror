@@ -34,10 +34,10 @@ describe Api::V1::Assistant::OutingParticipantsController, type: :controller do
 
       call_route(key: 'assistant-secret-key', token: user.token)
 
-      expect(body['participantsCount']).to eq(2)
-      expect(body['participants']).to match_array([
-        { 'id' => organizer.uuid, 'displayName' => 'Léa B.', 'groupRole' => 'organizer', 'communityRoles' => [] },
-        { 'id' => person.uuid, 'displayName' => 'Sam D.', 'groupRole' => 'participant', 'communityRoles' => [] }
+      expect(body['count']).to eq(2)
+      expect(body['people']).to match_array([
+        { 'id' => organizer.uuid, 'displayName' => 'Léa B.', 'roles' => ['organizer'] },
+        { 'id' => person.uuid, 'displayName' => 'Sam D.', 'roles' => ['participant'] }
       ])
       expect(response.body).not_to include(person.phone)
     end
@@ -49,17 +49,17 @@ describe Api::V1::Assistant::OutingParticipantsController, type: :controller do
 
       call_route(key: 'assistant-secret-key', token: user.token)
 
-      names = body['participants'].map { |participant| participant['displayName'] }
+      names = body['people'].map { |participant| participant['displayName'] }
       expect(names).to eq(['Léa B.'])
     end
 
-    it 'returns the community roles that the app shows' do
+    it 'returns the roles in the outing and the community roles that the app shows, as one list' do
       join(create(:public_user, first_name: 'Ana', last_name: 'Petit', targeting_profile: 'ambassador'))
 
       call_route(key: 'assistant-secret-key', token: user.token)
 
-      ambassador = body['participants'].find { |participant| participant['displayName'] == 'Ana P.' }
-      expect(ambassador['communityRoles']).to eq(['Animateur Entourage'])
+      ambassador = body['people'].find { |participant| participant['displayName'] == 'Ana P.' }
+      expect(ambassador['roles']).to eq(['participant', 'Animateur Entourage'])
     end
   end
 end
@@ -94,7 +94,7 @@ describe Api::V1::Assistant::OutingParticipationController, type: :controller do
     it 'says that the user did not join' do
       read
 
-      expect(body).to eq('registered' => false, 'confirmed' => false, 'participated' => false)
+      expect(body).to eq('registered' => false, 'attended' => false)
     end
 
     it 'says that the user is registered' do
@@ -102,7 +102,7 @@ describe Api::V1::Assistant::OutingParticipationController, type: :controller do
 
       read
 
-      expect(body).to eq('registered' => true, 'confirmed' => false, 'participated' => false)
+      expect(body).to eq('registered' => true, 'attended' => false)
     end
 
     it 'says that the attendance is already recorded' do
@@ -111,7 +111,7 @@ describe Api::V1::Assistant::OutingParticipationController, type: :controller do
 
       read
 
-      expect(body).to eq('registered' => true, 'confirmed' => true, 'participated' => true)
+      expect(body).to eq('registered' => true, 'attended' => true)
     end
 
     it 'does not count a cancelled registration' do
@@ -119,7 +119,7 @@ describe Api::V1::Assistant::OutingParticipationController, type: :controller do
 
       read
 
-      expect(body).to eq('registered' => false, 'confirmed' => false, 'participated' => false)
+      expect(body).to eq('registered' => false, 'attended' => false)
     end
 
     it 'only concerns the user of the token, not another registered member' do

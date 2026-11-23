@@ -1,6 +1,7 @@
 module Assistant
   module Presenters
-    # A person that the app shows to a member among the participants of an outing.
+    # A person that the app shows to a member among the participants of an outing: their role in
+    # the outing and their public roles in the community, as one list.
     class Participant
       def initialize join_request
         @join_request = join_request
@@ -9,10 +10,11 @@ module Assistant
       def as_json(*)
         user = @join_request.user
 
-        Support.member(user).merge(
-          groupRole: @join_request.role,
-          communityRoles: UserPresenter.new(user: user).public_targeting_profiles
-        )
+        {
+          id: user.uuid,
+          displayName: Support.display_name(user),
+          roles: [@join_request.role, *UserPresenter.new(user: user).public_targeting_profiles].compact
+        }
       end
     end
   end

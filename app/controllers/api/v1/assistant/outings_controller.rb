@@ -3,26 +3,36 @@ module Api
     module Assistant
       # Outings close to a place, and the sheet of one outing.
       class OutingsController < BaseController
-        MAX_LIMIT = 20
+        DEFAULT_LIMIT = 10
+        # The assistant filters on the size itself (`size`): it needs more outings to choose from.
+        SIZE_LIMIT = 30
 
         def search
-          outings = ::OutingsServices::Finder.new(assistant_user, finder_params).find_all
-          outings = outings.where("COALESCE(entourages.metadata->>'reserved_female', 'false') <> 'true'") unless reserved_female?
-          records = outings.includes(:user, :sf_categories).limit(limit).to_a
+          coordinates = coordinates_for_city(params[:city])
+          return if coordinates.nil?
 
-          counts = participants_counts(records)
+          outings = ::OutingsServices::Finder.new(assistant_user, finder_params.merge(coordinates)).find_all
+          outings = outings.where("COALESCE(entourages.metadata->>'reserved_female', 'false') <> 'true'") unless reserved_female?
+          outings = outings.where(ISO_DAY_SQL, days) if days.any?
+          records = outings.includes(:user, :sf_categories).limit(params[:size].present? ? SIZE_LIMIT : DEFAULT_LIMIT).to_a
+
+          counts = ::Assistant::Presenters::EventBrief.counts(records)
           render json: {
-            outings: records.map { |outing| ::Assistant::Presenters::EventSheet.new(outing, participants_count: counts[outing.id] || 0).as_json }
+            outings: records.map { |outing| ::Assistant::Presenters::EventBrief.new(outing, participants_count: counts[outing.id] || 0).as_json }
           }
         end
 
         def read
           outing = ::Outing.for_user(assistant_user).find_by_id_or_uuid!(params[:id])
+          count = ::Assistant::Presenters::EventBrief.counts([outing])[outing.id] || 0
 
-          render json: ::Assistant::Presenters::EventSheet.new(outing, participants_count: participants_counts([outing])[outing.id] || 0).as_json
+          render json: ::Assistant::Presenters::EventSheet.new(outing, participants_count: count).as_json
         end
 
         private
+
+        # Day of the week (1 = Monday) of the start of the outing, in the time zone of the app.
+        ISO_DAY_SQL = "EXTRACT(ISODOW FROM ((entourages.metadata->>'starts_at')::timestamptz AT TIME ZONE 'Europe/Paris')) IN (?)".freeze
 
         # Reserved to women only when the assistant asks for them: an event reserved to women is
         # never returned otherwise.
@@ -30,20 +40,18 @@ module Api
           params[:reserved_female].to_s == 'true'
         end
 
+        # `days`: ISO numbers 1..7 separated by commas, anything else is ignored.
+        def days
+          @days ||= params[:days].to_s.split(',').map(&:strip).select { |day| day.match?(/\A[1-7]\z/) }.map(&:to_i).uniq
+        end
+
         def finder_params
-          # `format` is a reserved word of Rails routing: the format of the meeting is `meeting_format`.
-          permitted = params.permit(:q, :latitude, :longitude, :within_days, :reserved_female, :category, :meeting_format, :interest_list, interests: [])
-          permitted[:travel_distance] = params[:distance] if params[:distance].present?
-          permitted[:format] = params[:meeting_format] if params[:meeting_format].present?
+          permitted = ActionController::Parameters.new(
+            interest_list: params[:interest].to_s.presence,
+            category: ('papotages' if params[:chatting].to_s == 'true'),
+            reserved_female: params[:reserved_female].to_s
+          ).permit!
           permitted
-        end
-
-        def limit
-          params[:limit].present? ? params[:limit].to_i.clamp(1, MAX_LIMIT) : 10
-        end
-
-        def participants_counts outings
-          JoinRequest.accepted.where(joinable_type: 'Entourage', joinable_id: outings.map(&:id)).group(:joinable_id).count
         end
       end
     end
