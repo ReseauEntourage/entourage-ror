@@ -46,7 +46,7 @@ module Assistant
       # The requests and offers that the user published, the latest first.
       def help_posts
         actions = ::Action.unscoped.where(group_type: :action, entourage_type: %w[ask_for_help contribution], user_id: user.id, status: %w[open full closed])
-          .order(created_at: :desc).limit(LIMIT)
+          .order(created_at: :desc, id: :desc).limit(LIMIT)
 
         actions.map do |action|
           { id: action.uuid_v2, kind: action.entourage_type == 'contribution' ? 'offer' : 'request', title: action.title.presence }

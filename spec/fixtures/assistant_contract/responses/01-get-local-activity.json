@@ -13,13 +13,13 @@
     "helpPosts": [
       {
         "id": "<id>",
-        "kind": "request",
-        "title": "Aide pour mes courses"
+        "kind": "offer",
+        "title": "Je prête mon vélo"
       },
       {
         "id": "<id>",
-        "kind": "offer",
-        "title": "Je prête mon vélo"
+        "kind": "request",
+        "title": "Aide pour mes courses"
       }
     ],
     "connectionsCount": 0
