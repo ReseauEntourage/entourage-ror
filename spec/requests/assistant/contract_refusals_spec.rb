@@ -154,7 +154,7 @@ describe 'Assistant contract: refusals and special answers', type: :request do
 
   it '201 not_delivered: an alert that Slack did not receive is not a success' do
     stub_request(:post, 'https://url.to.slack.com').to_timeout
-    allow(Sentry).to receive(:capture_exception)
+    allow(Sentry).to receive(:capture_message)
 
     send_as_assistant(:post, '/api/v1/assistant/alerts', token: user.token, body: { audience: 'team', message: 'Je ne me sens pas en sécurité.' }, key: key)
 

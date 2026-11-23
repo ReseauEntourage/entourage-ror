@@ -205,7 +205,7 @@ describe Assistant::ActionRunner do
     end
 
     it 'logs the class of an unexpected error and the type of action, never its message nor its backtrace' do
-      allow(Sentry).to receive(:capture_exception)
+      allow(Sentry).to receive(:capture_message)
       allow(Rails.logger).to receive(:error)
 
       runner(action_type: 'outing.publish').call { raise ArgumentError, 'Bonjour, première fois !' }
@@ -214,7 +214,7 @@ describe Assistant::ActionRunner do
     end
 
     it 'stores an unexpected error as failed, reports it, and never leaks its message' do
-      allow(Sentry).to receive(:capture_exception)
+      allow(Sentry).to receive(:capture_message)
 
       response = runner.call { executions << 1; raise StandardError, 'Bonjour, première fois !' }
       replay = runner.call { executions << 2; success }
@@ -224,7 +224,7 @@ describe Assistant::ActionRunner do
       expect(response.body.to_json).not_to include('première fois')
       expect(replay).to have_attributes(status: 500, replayed: true)
       expect(executions).to eq([1])
-      expect(Sentry).to have_received(:capture_exception).once
+      expect(Sentry).to have_received(:capture_message).once
     end
   end
 

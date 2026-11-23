@@ -94,7 +94,7 @@ describe Api::V1::Assistant::HelpPublicationsController, type: :controller do
         publish(valid_params.merge(category: 'unknown'))
 
         expect(response.status).to eq(400)
-        expect(JSON.parse(response.body)['error']).to include('code' => 'INVALID_PARAMS', 'reasons' => ['category unknown is not a category of the app'])
+        expect(JSON.parse(response.body)['error']).to include('code' => 'INVALID_PARAMS', 'reasons' => ['category is not a category of the app'])
         expect(Solicitation.unscoped.where(title: 'Courses')).not_to exist
       end
 

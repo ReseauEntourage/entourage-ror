@@ -13,13 +13,23 @@ module Assistant
 
     module_function
 
+    # The text and the answer are personal: config/initializers/geocoder.rb adds them to the Sentry
+    # breadcrumbs of every search, except while this flag is set.
+    def without_breadcrumbs
+      previous = Thread.current[:geocoder_without_breadcrumbs]
+      Thread.current[:geocoder_without_breadcrumbs] = true
+      yield
+    ensure
+      Thread.current[:geocoder_without_breadcrumbs] = previous
+    end
+
     # @return [Place]
     # @raise [NotFound] when the geocoder knows no such place. An error of the geocoder itself
     #   (network, quota) is not rescued: it is a failure of the action, not an unknown place.
     def locate text
       raise NotFound if text.blank?
 
-      result = ::Geocoder.search(text.to_s.strip).find { |r| r.latitude.present? && r.longitude.present? }
+      result = without_breadcrumbs { ::Geocoder.search(text.to_s.strip) }.find { |r| r.latitude.present? && r.longitude.present? }
       raise NotFound unless result
 
       Place.new(

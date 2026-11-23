@@ -40,7 +40,8 @@ module Assistant
         alert.notify
         true
       rescue StandardError => e
-        Sentry.capture_exception(e)
+        # Never the exception itself: the client errors can carry the payload (the text of the person).
+        Sentry.capture_message("Assistant alert not delivered: #{alert.kind} (#{e.class.name})", level: :error)
         false
       end
     end

@@ -84,7 +84,8 @@ module Assistant
       # Never the message of the error in the answer nor in the log: it could carry a text of the user.
       # The class and the type of action are enough to tell, in a local log, what failed.
       Rails.logger.error("Assistant action failed: #{action.action_type} (#{e.class.name})")
-      Sentry.capture_exception(e)
+      # Sentry gets the same: the exception itself (message, backtrace) could carry a text of the user.
+      Sentry.capture_message("Assistant action failed: #{action.action_type} (#{e.class.name})", level: :error)
       failure = error_body('ACTION_FAILED', 'The action could not be run.')
       finish(action, AssistantAction::FAILED, stored(500, failure))
       Response.new(status: 500, body: failure, result: 'failed', replayed: false)

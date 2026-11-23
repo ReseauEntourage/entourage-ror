@@ -12,7 +12,11 @@ class AssistantAccountObserver < ActiveRecord::Observer
   observe :user
 
   def after_commit user
-    return unless user.saved_change_to_deleted? && user.deleted?
+    # An account that was already deleted can be anonymized afterwards: `deleted` does not change then,
+    # but the status becomes `anonymized`.
+    deleted_now = user.saved_change_to_deleted? && user.deleted?
+    anonymized_now = user.deleted? && user.saved_change_to_validation_status? && user.anonymized?
+    return unless deleted_now || anonymized_now
 
     purge(user)
     notify_assistant(user)

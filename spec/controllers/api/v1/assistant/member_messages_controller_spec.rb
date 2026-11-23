@@ -93,6 +93,15 @@ describe Api::V1::Assistant::MemberMessagesController, type: :controller do
       expect { 2.times { deliver(key: key) } }.to change { ChatMessage.count }.by(1)
     end
 
+    it 'does not write in a conversation that the user left: the membership must be accepted, as in the app' do
+      conversation = create :conversation, participants: [user, member]
+      conversation.join_requests.find_by(user_id: user.id).update_columns(status: 'cancelled')
+
+      expect { deliver }.not_to change { ChatMessage.count }
+
+      expect(response.status).to be >= 400
+    end
+
     it 'writes in the existing conversation of the two members' do
       conversation = create :conversation, participants: [user, member]
 

@@ -94,13 +94,13 @@ describe Api::V1::Assistant::TeamAlertsController, type: :controller do
 
     it 'does not break the action when Slack fails: it is reported and the result says it was not delivered' do
       stub_request(:post, 'https://url.to.slack.com').to_timeout
-      allow(Sentry).to receive(:capture_exception)
+      allow(Sentry).to receive(:capture_message)
 
       alert
 
       expect(response.status).to eq(201)
       expect(body).to include('status' => 'not_delivered')
-      expect(Sentry).to have_received(:capture_exception).once
+      expect(Sentry).to have_received(:capture_message).once
       expect(AssistantAction.last).to be_succeeded
     end
 

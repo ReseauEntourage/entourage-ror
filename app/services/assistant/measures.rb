@@ -38,7 +38,11 @@ module Assistant
       )
       raise Unavailable, "status #{response.code}" unless response.success?
 
-      parse(response.parsed_response)
+      body = response.parsed_response
+      # An aggregate of another subject (cache, routing) is never shown under this one.
+      raise Unavailable, 'unexpected subject' unless body.is_a?(Hash) && body['subject'].to_s == subject.to_s
+
+      parse(body)
     rescue HTTParty::Error, SocketError, Timeout::Error, SystemCallError, OpenSSL::SSL::SSLError => e
       raise Unavailable, e.class.name
     end

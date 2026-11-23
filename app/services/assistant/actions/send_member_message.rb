@@ -26,8 +26,11 @@ module Assistant
         conversation = ::Entourage.findable.find_by(uuid_v2: ::ConversationService.hash_for_participants(participant_ids))
         first_message = conversation.nil? || !conversation.chat_messages.where(user_id: user.id).exists?
         conversation ||= ::ConversationService.build_conversation(participant_ids: participant_ids, creator_id: user.id)
-        join_request = conversation.join_requests.to_a.find { |request| request.user_id == user.id } ||
+        join_request = conversation.join_requests.to_a.find { |request| request.user_id == user.id && request.status == 'accepted' } ||
                        ::JoinRequest.find_by(joinable: conversation, user: user, status: :accepted)
+
+        # The builder does not check the membership itself: a person who left the conversation cannot write in it.
+        refuse!(403, 'NOT_A_MEMBER', 'The user is not a member of this conversation.') unless join_request
 
         message = nil
         ::ChatServices::ChatMessageBuilder.new(

@@ -14,6 +14,8 @@ module SlackServices
       'handover' => 'Passation demandée par l’assistant (personne en détresse)'
     }.freeze
 
+    attr_reader :kind
+
     def initialize user:, kind:, message:, contact: nil
       @user = user
       @kind = kind

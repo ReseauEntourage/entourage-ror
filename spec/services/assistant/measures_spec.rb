@@ -57,16 +57,24 @@ describe Assistant::Measures do
     answer({ metrics: 'nonsense' })
     expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
 
-    answer({ metrics: { fears: { status: 'weird' } } })
+    answer({ subject: subject_id, metrics: { fears: { status: 'weird' } } })
     expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
 
-    answer({ metrics: { fears: { status: 'ok', total: 'not-a-number', distribution: 'bad' } } })
+    answer({ subject: subject_id, metrics: { fears: { status: 'ok', total: 'not-a-number', distribution: 'bad' } } })
     expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
 
-    answer({ metrics: { fears: { status: 'ok', total: 3, distribution: [{ value: 'a' }] } } })
+    answer({ subject: subject_id, metrics: { fears: { status: 'ok', total: 3, distribution: [{ value: 'a' }] } } })
     expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
 
     stub_request(:get, url).with(query: hash_including(product: 'local')).to_timeout
+    expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
+  end
+
+  it 'is unavailable when the answer is about another subject, or about none' do
+    answer(subject: 'another000000', metrics: { fears: { status: 'ok', total: 1, distribution: [{ value: 'a', count: 1 }] } })
+    expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
+
+    answer(metrics: { fears: { status: 'ok', total: 1, distribution: [{ value: 'a', count: 1 }] } })
     expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
   end
 

@@ -29,6 +29,15 @@ RSpec.describe AssistantAccountObserver do
     expect(rows_of(other)).to eq(1)
   end
 
+  it 'deletes the rows when an account that was already deleted is anonymized afterwards' do
+    UserServices::DeleteUserService.new(user: user).delete
+    AssistantAction.create!(user: user, idempotency_key: SecureRandom.uuid, action_type: 'outing.join', request_digest: 'abc')
+
+    user.reload.anonymize!(moderator)
+
+    expect(rows_of(user)).to eq(0)
+  end
+
   it 'keeps the rows when something else changes on the account' do
     user.update!(first_name: 'Jeanne')
 
