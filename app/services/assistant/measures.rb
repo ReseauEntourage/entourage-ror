@@ -59,8 +59,12 @@ module Assistant
       return Metric.new(status: TOO_FEW) if metric['status'] == TOO_FEW
       raise Unavailable, 'unexpected metric' unless metric['status'] == 'ok'
 
-      distribution = Array(metric['distribution']).map { |entry| { value: entry['value'].to_s, count: entry['count'].to_i } }
-      Metric.new(status: 'ok', total: metric['total'].to_i, distribution: distribution)
+      entries = metric['distribution']
+      valid = metric['total'].is_a?(Integer) && entries.is_a?(Array) &&
+        entries.all? { |entry| entry.is_a?(Hash) && entry['value'].present? && entry['count'].is_a?(Integer) }
+      raise Unavailable, 'unexpected metric' unless valid
+
+      Metric.new(status: 'ok', total: metric['total'], distribution: entries.map { |entry| { value: entry['value'].to_s, count: entry['count'] } })
     end
   end
 end

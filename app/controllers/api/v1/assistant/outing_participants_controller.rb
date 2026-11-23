@@ -8,10 +8,11 @@ module Api
 
         def read
           outing = ::Outing.for_user(assistant_user).find_by_id_or_uuid!(params[:id])
+          # The count and the list come from the same relation: a person who is not shown is not counted.
           join_requests = outing.join_requests.accepted
 
           render json: {
-            count: join_requests.count,
+            count: join_requests.joins(:validated_user).count,
             people: join_requests.includes(:user).ordered_by_validated_users.limit(LIMIT).map do |join_request|
               ::Assistant::Presenters::Participant.new(join_request).as_json
             end

@@ -51,6 +51,7 @@ describe Api::V1::Assistant::OutingParticipantsController, type: :controller do
 
       names = body['people'].map { |participant| participant['displayName'] }
       expect(names).to eq(['Léa B.'])
+      expect(body['count']).to eq(1)
     end
 
     it 'returns the roles in the outing and the community roles that the app shows, as one list' do
