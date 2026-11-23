@@ -46,7 +46,7 @@ RSpec.describe AssistantAccountObserver do
   end
 
   describe 'the event sent to the assistant' do
-    let(:url) { 'https://assistant.example.org/events' }
+    let(:url) { 'https://assistant.example.org' }
     let(:enabled) { true }
 
     around { |example| Sidekiq::Testing.fake! { example.run } }

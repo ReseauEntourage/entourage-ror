@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe AssistantAccountEventJob do
-  let(:url) { 'https://assistant.example.org/events' }
+  let(:base_url) { 'https://assistant.example.org' }
+  let(:url) { "#{base_url}/api/v1/product-events" }
   let(:uuid) { '3f2b8c1e-0000-4000-8000-000000000001' }
   let(:occurred_at) { '2026-11-20T10:00:00Z' }
 
   before do
     allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return(url)
+    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return(base_url)
     allow(ENV).to receive(:[]).with('ASSISTANT_SERVICE_KEY').and_return('local-service-key')
     allow(ENV).to receive(:[]).with('ASSISTANT_API_KEY').and_return('assistant-read-key')
   end
@@ -43,12 +44,41 @@ RSpec.describe AssistantAccountEventJob do
     expect(a_request(:post, url).with { |request| JSON.parse(request.body)['event'] == 'account.anonymized' }).to have_been_made.once
   end
 
-  it 'raises when the assistant does not accept the event, so that Sidekiq retries it, and keeps its answer out of the error' do
+  it 'raises when the assistant fails, so that Sidekiq retries it, and keeps its answer out of the error' do
     stub_request(:post, url).to_return(status: 503, body: 'something about a person')
 
     expect { perform }.to raise_error(described_class::DeliveryFailed) { |error|
       expect(error.message).to eq('The assistant answered 503')
     }
+  end
+
+  it 'accepts a base URL with a trailing slash' do
+    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return("#{base_url}/")
+    stub = stub_request(:post, url).to_return(status: 202)
+
+    perform
+
+    expect(stub).to have_been_requested.once
+  end
+
+  it 'raises on a 429, so that Sidekiq retries it' do
+    stub_request(:post, url).to_return(status: 429)
+
+    expect { perform }.to raise_error(described_class::DeliveryFailed, 'The assistant answered 429')
+  end
+
+  [400, 401, 403].each do |status|
+    it "does not retry a #{status}: it is reported once, without data about the person" do
+      allow(Sentry).to receive(:capture_message)
+      stub_request(:post, url).to_return(status: status, body: 'something about a person')
+
+      expect { perform }.not_to raise_error
+
+      expect(a_request(:post, url)).to have_been_made.once
+      expect(Sentry).to have_received(:capture_message).with(
+        'The AI assistant refused an account event', level: :error, extra: { event: 'account.deleted', status: status }
+      )
+    end
   end
 
   it 'raises when the assistant cannot be reached, so that Sidekiq retries it' do
@@ -96,7 +126,7 @@ RSpec.describe AssistantAccountEventJob do
 
         expect { perform }.not_to raise_error
       end
-      expect(a_request(:any, url)).not_to have_been_made
+      expect(a_request(:any, /assistant\.example\.org/)).not_to have_been_made
     end
   end
 end

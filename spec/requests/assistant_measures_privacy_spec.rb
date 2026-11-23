@@ -95,9 +95,9 @@ describe 'Anonymous measures: Local keeps no individual answer', type: :request 
   end
 
   it 'only ever sends the assistant an account event, never an answer' do
-    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return('https://assistant.example.org/events')
+    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return('https://assistant.example.org')
     allow(ENV).to receive(:[]).with('ASSISTANT_SERVICE_KEY').and_return('local-service-key')
-    stub = stub_request(:post, 'https://assistant.example.org/events').to_return(status: 200)
+    stub = stub_request(:post, 'https://assistant.example.org/api/v1/product-events').to_return(status: 200)
 
     simulate_journey
     AssistantAccountEventJob.new.perform(user.uuid, 'account.deleted', Time.current.iso8601)

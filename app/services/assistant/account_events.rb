@@ -5,18 +5,24 @@ module Assistant
   # The assistant receives the identifier of the account (its uuid, the one that the identity route
   # returns), the nature of the event and its date: nothing else about the person.
   #
-  # Two variables switch the sending on: ASSISTANT_API_URL, the URL that receives the events, and
-  # ASSISTANT_SERVICE_KEY, the key of Local for them (header X-Service-Key, distinct from the key
+  # Two variables switch the sending on: ASSISTANT_API_URL, the base URL of the assistant (the events go to
+  # `<base>/api/v1/product-events`), and ASSISTANT_SERVICE_KEY, the key of Local for them (header X-Service-Key, distinct from the key
   # that lets the assistant read Local). Without them, nothing is sent and nothing fails.
   module AccountEvents
     DELETED = 'account.deleted'.freeze
     ANONYMIZED = 'account.anonymized'.freeze
     PRODUCT = 'local'.freeze
+    EVENTS_PATH = '/api/v1/product-events'.freeze
 
     module_function
 
+    # Base URL of the assistant, without a trailing slash.
     def url
-      ENV['ASSISTANT_API_URL'].presence
+      ENV['ASSISTANT_API_URL'].presence&.chomp('/')
+    end
+
+    def events_url
+      "#{url}#{EVENTS_PATH}"
     end
 
     def service_key

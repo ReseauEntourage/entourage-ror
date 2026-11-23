@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Assistant::AccountEvents do
   it 'is enabled only with the URL and the service key' do
     allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return('https://assistant.example.org/events')
+    allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return('https://assistant.example.org')
     allow(ENV).to receive(:[]).with('ASSISTANT_SERVICE_KEY').and_return(nil)
     expect(described_class).not_to be_enabled
 
@@ -12,6 +12,15 @@ describe Assistant::AccountEvents do
 
     allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return('')
     expect(described_class).not_to be_enabled
+  end
+
+  it 'sends the events to the product-events route of the assistant, whatever the trailing slash of the base URL' do
+    allow(ENV).to receive(:[]).and_call_original
+    ['https://assistant.example.org', 'https://assistant.example.org/'].each do |base|
+      allow(ENV).to receive(:[]).with('ASSISTANT_API_URL').and_return(base)
+
+      expect(described_class.events_url).to eq('https://assistant.example.org/api/v1/product-events')
+    end
   end
 
   it 'tells an anonymized account from a deleted one' do
