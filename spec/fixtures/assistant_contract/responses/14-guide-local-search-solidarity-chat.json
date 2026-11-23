@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "outings": [
+      {
+        "id": "<chat-outing-id>",
+        "title": "Papotage solidaire",
+        "startsAt": "<time>",
+        "place": null,
+        "participantsCount": 1,
+        "placeLimit": null,
+        "reservedFemale": false,
+        "format": "online"
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": 410,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "ACTION_EXPIRED",
+      "message": "This action took too long and was abandoned: ask for a new one."
+    }
+  }
+}

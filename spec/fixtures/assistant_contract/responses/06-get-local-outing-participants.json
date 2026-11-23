@@ -1,0 +1,23 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "count": 2,
+    "people": [
+      {
+        "id": "<organizer-uuid>",
+        "displayName": "Léa B.",
+        "roles": [
+          "organizer"
+        ]
+      },
+      {
+        "id": "<paul-uuid>",
+        "displayName": "Paul M.",
+        "roles": [
+          "participant"
+        ]
+      }
+    ]
+  }
+}

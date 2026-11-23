@@ -1,0 +1,8 @@
+{
+  "status": 201,
+  "headers": {},
+  "body": {
+    "messageId": "<message-id>",
+    "outingId": "<outing-id>"
+  }
+}

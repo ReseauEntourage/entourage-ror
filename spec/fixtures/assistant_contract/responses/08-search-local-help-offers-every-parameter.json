@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "items": [
+      {
+        "id": "<id>",
+        "title": "Je prête une perceuse",
+        "category": "equipment"
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": 201,
+  "headers": {
+    "Idempotent-Replayed": "true"
+  },
+  "body": {
+    "status": "registered",
+    "outingId": "<outing-id>"
+  }
+}

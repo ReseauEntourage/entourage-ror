@@ -1,0 +1,10 @@
+{
+  "status": 403,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "NOT_A_MEMBER",
+      "message": "The user is not registered to this outing."
+    }
+  }
+}

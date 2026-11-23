@@ -1,0 +1,9 @@
+{
+  "status": 201,
+  "headers": {},
+  "body": {
+    "kind": "safety_signal",
+    "status": "not_delivered",
+    "withContact": false
+  }
+}

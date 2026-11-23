@@ -1,0 +1,10 @@
+{
+  "status": 409,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "ACTION_IN_PROGRESS",
+      "message": "This action is already being processed."
+    }
+  }
+}

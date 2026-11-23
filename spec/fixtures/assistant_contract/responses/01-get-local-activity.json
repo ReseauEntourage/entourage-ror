@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "upcomingOutings": [],
+    "pastOutings": [],
+    "groups": [],
+    "helpPosts": [],
+    "connectionsCount": 0
+  }
+}

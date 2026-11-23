@@ -1,0 +1,9 @@
+{
+  "status": 201,
+  "headers": {},
+  "body": {
+    "kind": "negative_feedback",
+    "status": "sent",
+    "withContact": false
+  }
+}

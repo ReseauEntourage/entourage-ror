@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "referent": {
+      "id": "<animator-uuid>",
+      "displayName": "Nadia R.",
+      "warnedBy": "team_alert"
+    }
+  }
+}

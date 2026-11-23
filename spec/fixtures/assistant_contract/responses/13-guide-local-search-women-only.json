@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "outings": [
+      {
+        "id": "<women-outing-id>",
+        "title": "Marche entre femmes",
+        "startsAt": "<time>",
+        "place": "Parc, 1 rue du Parc, 69006 Lyon",
+        "participantsCount": 1,
+        "placeLimit": null,
+        "reservedFemale": true,
+        "format": "in_person"
+      }
+    ]
+  }
+}

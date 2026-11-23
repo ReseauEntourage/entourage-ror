@@ -1,0 +1,10 @@
+{
+  "status": 401,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "INVALID_API_KEY",
+      "message": "Missing or invalid API key."
+    }
+  }
+}
