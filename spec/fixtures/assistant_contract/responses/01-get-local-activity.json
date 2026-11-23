@@ -4,8 +4,24 @@
   "body": {
     "upcomingOutings": [],
     "pastOutings": [],
-    "groups": [],
-    "helpPosts": [],
+    "groups": [
+      {
+        "id": "<id>",
+        "name": "Voisins du quartier"
+      }
+    ],
+    "helpPosts": [
+      {
+        "id": "<id>",
+        "kind": "request",
+        "title": "Aide pour mes courses"
+      },
+      {
+        "id": "<id>",
+        "kind": "offer",
+        "title": "Je prête mon vélo"
+      }
+    ],
     "connectionsCount": 0
   }
 }

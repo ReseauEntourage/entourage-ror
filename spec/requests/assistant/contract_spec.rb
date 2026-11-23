@@ -67,6 +67,10 @@ describe 'Assistant contract: the requests of the assistant', type: :request do
     allow(ENV).to receive(:[]).with('ASSISTANT_ACTIONS_ENABLED').and_return('true')
 
     create :join_request, user: paul, joinable: outing, status: :accepted, role: :participant
+    # The activity of the user: a group that it belongs to and a help of each kind that it published.
+    create :join_request, user: user, joinable: create(:neighborhood, name: 'Voisins du quartier', user: organizer), status: :accepted
+    create :solicitation, user: user, title: 'Aide pour mes courses', latitude: 45.764, longitude: 4.8357, section_list: ['services']
+    create :contribution, user: user, title: 'Je prête mon vélo', latitude: 45.764, longitude: 4.8357, section_list: ['equipment']
     create :moderation_area, departement: '*', animator: animator
     create :solicitation, user: paul, title: 'Besoin de courses', latitude: 45.764, longitude: 4.8357, section_list: ['services']
     create :contribution, user: paul, title: 'Je prête une perceuse', latitude: 45.764, longitude: 4.8357, section_list: ['equipment']

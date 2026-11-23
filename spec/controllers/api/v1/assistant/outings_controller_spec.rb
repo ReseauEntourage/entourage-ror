@@ -88,6 +88,21 @@ describe Api::V1::Assistant::OutingsController, type: :controller do
       expect(body['outings'].first['reservedFemale']).to eq(true)
     end
 
+    it 'never returns a papotage without chatting, with or without a size' do
+      create_outing(title: 'Sur place')
+      create_outing(title: 'Papotage solidaire', online: true)
+      create_outing(title: 'Atelier en ligne', online: true)
+
+      search
+      expect(body['outings'].map { |o| o['title'] }).to match_array(['Sur place', 'Atelier en ligne'])
+
+      search(size: 'small-group')
+      expect(body['outings'].map { |o| o['title'] }).to match_array(['Sur place', 'Atelier en ligne'])
+
+      search(chatting: 'false')
+      expect(body['outings'].map { |o| o['title'] }).to match_array(['Sur place', 'Atelier en ligne'])
+    end
+
     it 'returns only the papotages when chatting is asked, with an online format and no place' do
       create_outing(title: 'Sur place')
       create_outing(title: 'Papotage solidaire', online: true)

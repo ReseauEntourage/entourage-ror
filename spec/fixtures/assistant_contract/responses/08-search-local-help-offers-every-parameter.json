@@ -5,6 +5,11 @@
     "items": [
       {
         "id": "<id>",
+        "title": "Je prête mon vélo",
+        "category": "equipment"
+      },
+      {
+        "id": "<id>",
         "title": "Je prête une perceuse",
         "category": "equipment"
       }

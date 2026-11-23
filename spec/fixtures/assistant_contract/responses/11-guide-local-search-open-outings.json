@@ -12,16 +12,6 @@
         "placeLimit": 12,
         "reservedFemale": false,
         "format": "in_person"
-      },
-      {
-        "id": "<chat-outing-id>",
-        "title": "Papotage solidaire",
-        "startsAt": "<time>",
-        "place": null,
-        "participantsCount": 1,
-        "placeLimit": null,
-        "reservedFemale": false,
-        "format": "online"
       }
     ]
   }

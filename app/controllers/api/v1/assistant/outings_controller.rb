@@ -13,6 +13,8 @@ module Api
 
           outings = ::OutingsServices::Finder.new(assistant_user, finder_params.merge(coordinates)).find_all
           outings = outings.where("COALESCE(entourages.metadata->>'reserved_female', 'false') <> 'true'") unless reserved_female?
+          # A solidarity chat is the last resort, never mixed with the outings in person: only when asked for.
+          outings = outings.where.not(id: ::Outing.unscoped.papotages.select(:id)) unless chatting?
           outings = outings.where(ISO_DAY_SQL, days) if days.any?
           records = outings.includes(:user, :sf_categories).limit(params[:size].present? ? SIZE_LIMIT : DEFAULT_LIMIT).to_a
 
@@ -34,6 +36,10 @@ module Api
         # Day of the week (1 = Monday) of the start of the outing, in the time zone of the app.
         ISO_DAY_SQL = "EXTRACT(ISODOW FROM ((entourages.metadata->>'starts_at')::timestamptz AT TIME ZONE 'Europe/Paris')) IN (?)".freeze
 
+        def chatting?
+          params[:chatting].to_s == 'true'
+        end
+
         # Reserved to women only when the assistant asks for them: an event reserved to women is
         # never returned otherwise.
         def reserved_female?
@@ -48,7 +54,7 @@ module Api
         def finder_params
           permitted = ActionController::Parameters.new(
             interest_list: params[:interest].to_s.presence,
-            category: ('papotages' if params[:chatting].to_s == 'true'),
+            category: ('papotages' if chatting?),
             reserved_female: params[:reserved_female].to_s
           ).permit!
           permitted
