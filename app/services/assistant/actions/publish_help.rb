@@ -21,6 +21,10 @@ module Assistant
       def call
         refuse!(400, 'INVALID_PARAMS', 'type must be request or offer.') unless TYPES.include?(@type)
         require_param!(@params[:title], 'title')
+        category = @params[:category].to_s
+        unless ::Tag.sections.key?(category.to_sym) && category.present?
+          refuse!(400, 'INVALID_PARAMS', 'category must be one of the categories of /help_categories.', ["category #{category.presence || 'is missing'} is not a category of the app"])
+        end
         refuse!(400, 'INVALID_PARAMS', 'The user has no address to publish from.') if user.latitude.blank? || user.longitude.blank?
 
         action = nil

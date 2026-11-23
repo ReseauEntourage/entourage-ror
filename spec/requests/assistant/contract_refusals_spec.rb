@@ -30,6 +30,36 @@ describe 'Assistant contract: refusals and special answers', type: :request do
     JSON.parse(response.body).dig('error', 'code')
   end
 
+  describe 'a category of help that does not exist in /help_categories' do
+    before { create :address, user: user, city: 'Lyon', latitude: 45.764, longitude: 4.8357 }
+
+    def publish path, body, index
+      send_as_assistant(:post, "/api/v1/assistant/#{path}", token: user.token, body: body, key: format('a1b2c3d4-0000-4000-8000-%012d', index))
+    end
+
+    { 'unknown' => '3', 'empty' => '', 'absent' => nil }.each_with_index do |(name, value), index|
+      %w[help_requests help_offers].each do |path|
+        it "400 INVALID_PARAMS and nothing created: #{path} with a #{name} category" do
+          body = { title: 'Aide', description: 'Un coup de main', category: value }.compact
+          expect { publish(path, body, index) }.not_to change { Action.unscoped.where(user_id: user.id).count }
+
+          expect(response.status).to eq(400)
+          expect(code).to eq('INVALID_PARAMS')
+          expect(JSON.parse(response.body).dig('error', 'reasons').to_s).to match(/category/)
+          check_snapshot "refusal-#{path.singularize}-#{name}-category", aliases: aliases.merge(format('a1b2c3d4-0000-4000-8000-%012d', index) => '<key>')
+        end
+      end
+    end
+
+    it '200 with an empty list: a search of help requests in a category that does not exist' do
+      send_as_assistant(:get, '/api/v1/assistant/help_requests', token: user.token, query: { category: '3' })
+
+      expect(response.status).to eq(200)
+      expect(JSON.parse(response.body)).to eq('items' => [])
+      check_snapshot 'refusal-help-search-unknown-category', aliases: aliases
+    end
+  end
+
   it '404 RECIPIENT_UNAVAILABLE: a member who cannot be written to' do
     member = create :public_user
     UserBlockedUser.create!(user_id: member.id, blocked_user_id: user.id)

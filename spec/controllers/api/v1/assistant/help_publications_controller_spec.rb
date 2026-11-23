@@ -90,11 +90,11 @@ describe Api::V1::Assistant::HelpPublicationsController, type: :controller do
         expect(JSON.parse(response.body)['error']['code']).to eq('INVALID_PARAMS')
       end
 
-      it 'refuses an invalid section with the reasons of the app' do
+      it 'refuses a category that is not one of the app with the reasons' do
         publish(valid_params.merge(category: 'unknown'))
 
         expect(response.status).to eq(400)
-        expect(JSON.parse(response.body)['error']).to include('code' => 'CANNOT_PUBLISH')
+        expect(JSON.parse(response.body)['error']).to include('code' => 'INVALID_PARAMS', 'reasons' => ['category unknown is not a category of the app'])
         expect(Solicitation.unscoped.where(title: 'Courses')).not_to exist
       end
 
