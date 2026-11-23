@@ -18,7 +18,8 @@ module Assistant
           city: user.address&.city.presence,
           distanceKm: user.travel_distance,
           goal: GOALS[(user.goal_choice.presence || user.goal).to_s],
-          interests: user.interest_list.to_a,
+          # the order of the list of the app: the database gives no order
+          interests: ::Tag.interest_list & user.interest_list.to_a,
           availabilities: availabilities,
           gender: GENDERS[user.gender.to_s]
         }

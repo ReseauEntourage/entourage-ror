@@ -37,7 +37,7 @@ describe Api::V1::Assistant::ProfileController, type: :controller do
         'city' => 'Lyon',
         'distanceKm' => 15,
         'goal' => 'give-help',
-        'interests' => %w[sport jeux],
+        'interests' => Tag.interest_list & %w[sport jeux],
         'availabilities' => ['tuesday 09:00-12:00'],
         'gender' => 'woman'
       )
