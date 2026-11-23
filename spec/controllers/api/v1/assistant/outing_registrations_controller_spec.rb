@@ -9,12 +9,12 @@ describe Api::V1::Assistant::OutingRegistrationsController, type: :controller do
     JoinRequest.find_by(joinable: outing, user: user)
   end
 
-  describe 'join' do
+  describe 'register' do
     def call_action(key:, api_key:, token:, params:)
       request.headers['X-API-KEY'] = api_key if api_key
       request.headers['Authorization'] = "Bearer #{token}" if token
       request.headers['Idempotency-Key'] = key if key
-      post :join, params: params, as: :json
+      post :register, params: params, as: :json
     end
 
     let(:valid_params) { { id: outing.uuid_v2 } }
@@ -24,8 +24,9 @@ describe Api::V1::Assistant::OutingRegistrationsController, type: :controller do
 
     it_behaves_like 'an assistant action'
 
-    it 'is routed to POST /api/v1/assistant/outings/:id/join' do
-      expect(post: '/api/v1/assistant/outings/abc/join').to route_to('api/v1/assistant/outing_registrations#join', id: 'abc')
+    it 'is routed to POST /api/v1/assistant/outings/:id/register and unregister' do
+      expect(post: '/api/v1/assistant/outings/abc/register').to route_to('api/v1/assistant/outing_registrations#register', id: 'abc')
+      expect(post: '/api/v1/assistant/outings/abc/unregister').to route_to('api/v1/assistant/outing_registrations#unregister', id: 'abc')
     end
 
     describe 'the registration' do
@@ -144,12 +145,12 @@ describe Api::V1::Assistant::OutingRegistrationsController, type: :controller do
     end
   end
 
-  describe 'leave' do
+  describe 'unregister' do
     def call_action(key:, api_key:, token:, params:)
       request.headers['X-API-KEY'] = api_key if api_key
       request.headers['Authorization'] = "Bearer #{token}" if token
       request.headers['Idempotency-Key'] = key if key
-      post :leave, params: params, as: :json
+      post :unregister, params: params, as: :json
     end
 
     let(:valid_params) { { id: outing.uuid_v2 } }

@@ -11,8 +11,8 @@ describe Api::V1::Assistant::TeamAlertsController, type: :controller do
     post :raise_alert, params: params, as: :json
   end
 
-  let(:valid_params) { { kind: 'safety_signal', content: message } }
-  let(:other_params) { valid_params.merge(content: 'Autre texte') }
+  let(:valid_params) { { audience: 'team', message: message } }
+  let(:other_params) { valid_params.merge(message: 'Autre texte') }
   let(:action_type) { 'team.alert' }
 
   # The alert has no object of its own: it leaves no subject.
@@ -22,11 +22,13 @@ describe Api::V1::Assistant::TeamAlertsController, type: :controller do
     end
   end
 
-  it 'is routed to POST /api/v1/assistant/team_alerts' do
-    expect(post: '/api/v1/assistant/team_alerts').to route_to('api/v1/assistant/team_alerts#raise_alert')
+  it 'is routed to POST /api/v1/assistant/alerts' do
+    expect(post: '/api/v1/assistant/alerts').to route_to('api/v1/assistant/team_alerts#raise_alert')
   end
 
   context 'when it runs' do
+    let(:animator) { create :public_user, first_name: 'Nadia', slack_id: 'U0NADIA' }
+
     before do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with('ASSISTANT_API_KEY').and_return('assistant-secret-key')
@@ -51,7 +53,9 @@ describe Api::V1::Assistant::TeamAlertsController, type: :controller do
       a_request(:post, 'https://url.to.slack.com').with { |request| slack_payload(request)['attachments'].first['text'].include?('Camille Dupont') }
     end
 
-    it 'passes the exact approved message to the team with the person, without a named contact' do
+    it 'passes the exact approved message to the team, with the person, without a named contact' do
+      create :moderation_area, departement: '*', animator: animator
+
       alert
 
       expect(response.status).to eq(201)
@@ -64,27 +68,28 @@ describe Api::V1::Assistant::TeamAlertsController, type: :controller do
       }).to have_been_made.once
     end
 
-    it 'mentions the dedicated contact for a handover when there is one, and the team alone otherwise' do
-      animator = create :public_user, first_name: 'Nadia', slack_id: 'U0NADIA'
+    it 'names the dedicated contact on Slack when the referent is warned and there is one' do
       create :moderation_area, departement: '*', animator: animator
 
-      alert(valid_params.merge(kind: 'handover'))
+      alert(valid_params.merge(audience: 'referent'))
 
-      expect(body).to include('kind' => 'handover', 'status' => 'sent', 'withContact' => true)
+      expect(body).to eq('kind' => 'handover', 'status' => 'sent', 'withContact' => true)
       expect(a_request(:post, 'https://url.to.slack.com').with { |request| slack_payload(request)['text'].start_with?('<@U0NADIA>') }).to have_been_made.once
     end
 
-    it 'passes a handover to the team alone when the person has no dedicated contact' do
-      alert(valid_params.merge(kind: 'handover'))
+    it 'warns the team alone when the referent is asked and the person has no dedicated contact' do
+      alert(valid_params.merge(audience: 'referent'))
 
-      expect(body).to include('kind' => 'handover', 'status' => 'sent', 'withContact' => false)
+      expect(body).to eq('kind' => 'handover', 'status' => 'sent', 'withContact' => false)
       expect(a_request(:post, 'https://url.to.slack.com').with { |request| slack_payload(request)['text'].start_with?('Team modération') }).to have_been_made.once
     end
 
-    it 'accepts a negative feedback' do
+    it 'keeps the kind sent by the assistant: a negative feedback after a meeting, for the team or the referent' do
       alert(valid_params.merge(kind: 'negative_feedback'))
-
       expect(body['kind']).to eq('negative_feedback')
+
+      alert(valid_params.merge(audience: 'referent', kind: 'safety_signal'))
+      expect(body['kind']).to eq('safety_signal')
     end
 
     it 'does not break the action when Slack fails: it is reported and the result says it was not delivered' do
@@ -107,11 +112,14 @@ describe Api::V1::Assistant::TeamAlertsController, type: :controller do
       expect(slack_requests).to have_been_made.once
     end
 
-    it 'refuses an unknown kind and an empty message, and passes nothing' do
+    it 'refuses an unknown audience, an unknown kind and an empty message, and passes nothing' do
+      alert(valid_params.merge(audience: 'everyone'))
+      expect([response.status, body.dig('error', 'code')]).to eq([400, 'INVALID_PARAMS'])
+
       alert(valid_params.merge(kind: 'spam'))
       expect([response.status, body.dig('error', 'code')]).to eq([400, 'INVALID_PARAMS'])
 
-      alert(valid_params.merge(content: ' '))
+      alert(valid_params.merge(message: ' '))
       expect([response.status, body.dig('error', 'code')]).to eq([400, 'INVALID_PARAMS'])
       expect(slack_requests).not_to have_been_made
     end

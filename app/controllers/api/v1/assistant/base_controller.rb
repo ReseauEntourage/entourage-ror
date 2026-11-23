@@ -77,8 +77,8 @@ module Api
           return {} if city.blank?
           return {} if city.casecmp?(assistant_user.address&.city.to_s)
 
-          latitude, longitude = ::Assistant::PlaceGeocoder.locate(city)
-          { latitude: latitude, longitude: longitude }
+          place = ::Assistant::PlaceGeocoder.locate(city)
+          { latitude: place.latitude, longitude: place.longitude }
         rescue ::Assistant::PlaceGeocoder::NotFound
           render_error(code: 'PLACE_NOT_FOUND', message: 'This place is not known.', status: :not_found)
           nil

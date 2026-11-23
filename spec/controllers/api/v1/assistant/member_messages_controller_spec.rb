@@ -12,8 +12,8 @@ describe Api::V1::Assistant::MemberMessagesController, type: :controller do
     post :deliver, params: params, as: :json
   end
 
-  let(:valid_params) { { id: member.uuid, content: text } }
-  let(:other_params) { valid_params.merge(content: 'Autre texte') }
+  let(:valid_params) { { id: member.uuid, message: text } }
+  let(:other_params) { valid_params.merge(message: 'Autre texte') }
   let(:action_type) { 'member.first_message' }
   let(:subject_class) { ChatMessage }
 
@@ -77,7 +77,7 @@ describe Api::V1::Assistant::MemberMessagesController, type: :controller do
       deliver(key: key)
       expect(AssistantAction.first_messages_count(user)).to eq(1)
 
-      deliver(valid_params.merge(content: 'Un deuxième message'))
+      deliver(valid_params.merge(message: 'Un deuxième message'))
       expect(body['firstMessage']).to eq(false)
       expect(AssistantAction.first_messages_count(user)).to eq(1)
       expect(AssistantAction.first_messages_count(member)).to eq(0)
@@ -121,7 +121,7 @@ describe Api::V1::Assistant::MemberMessagesController, type: :controller do
     end
 
     it 'refuses a message without text' do
-      deliver(valid_params.merge(content: ''))
+      deliver(valid_params.merge(message: ''))
 
       expect([response.status, body.dig('error', 'code')]).to eq([400, 'INVALID_PARAMS'])
     end
@@ -140,8 +140,8 @@ describe Api::V1::Assistant::OrganizerMessagesController, type: :controller do
     post :deliver, params: params, as: :json
   end
 
-  let(:valid_params) { { id: outing.uuid_v2, kind: 'first_time', content: 'Bonjour, ce sera ma première fois.' } }
-  let(:other_params) { valid_params.merge(kind: 'question', content: 'Autre texte') }
+  let(:valid_params) { { id: outing.uuid_v2, message: 'Bonjour, ce sera ma première fois.' } }
+  let(:other_params) { valid_params.merge(message: 'Autre texte') }
   let(:action_type) { 'outing.notify_organizer' }
   let(:subject_class) { ChatMessage }
 
@@ -169,23 +169,12 @@ describe Api::V1::Assistant::OrganizerMessagesController, type: :controller do
       body = JSON.parse(response.body)
       message = ChatMessage.find(body['messageId'])
       expect(response.status).to eq(201)
-      expect(body).to include('outingId' => outing.uuid_v2, 'kind' => 'first_time', 'firstMessage' => true)
+      expect(body).to include('outingId' => outing.uuid_v2, 'firstMessage' => true)
       expect(message).to have_attributes(user_id: user.id, content: 'Bonjour, ce sera ma première fois.')
       expect(message.messageable.members.pluck(:id)).to match_array([user.id, organizer.id])
     end
 
-    %w[first_time question safety_signal].each do |kind|
-      it "accepts the kind #{kind}" do
-        notify(valid_params.merge(kind: kind))
-
-        expect(response.status).to eq(201)
-      end
-    end
-
-    it 'refuses an unknown kind, an unknown outing, and the organizer writing to themselves' do
-      notify(valid_params.merge(kind: 'spam'))
-      expect([response.status, JSON.parse(response.body).dig('error', 'code')]).to eq([400, 'INVALID_PARAMS'])
-
+    it 'refuses an unknown outing, and the organizer writing to themselves' do
       notify(valid_params.merge(id: 'unknown'))
       expect([response.status, JSON.parse(response.body).dig('error', 'code')]).to eq([404, 'NOT_FOUND'])
 

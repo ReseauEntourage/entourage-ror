@@ -889,15 +889,16 @@ Rails.application.routes.draw do
         get 'outings/:id/participation', to: 'outing_participation#read'
 
         # Actions in the name of the user (Idempotency-Key header, see ActionsController)
-        post 'outings/:id/join', to: 'outing_registrations#join'
-        post 'outings/:id/leave', to: 'outing_registrations#leave'
+        post 'outings/:id/register', to: 'outing_registrations#register'
+        post 'outings/:id/unregister', to: 'outing_registrations#unregister'
         post :help_requests, to: 'help_publications#publish_request'
         post :help_offers, to: 'help_publications#publish_offer'
         post :outings, to: 'outing_publications#publish'
         post 'members/:id/messages', to: 'member_messages#deliver'
         post 'outings/:id/organizer_messages', to: 'organizer_messages#deliver'
-        post 'groups/:id/join', to: 'group_memberships#join'
-        post :team_alerts, to: 'team_alerts#raise_alert'
+        post 'outings/:id/discussion_messages', to: 'discussion_messages#deliver'
+        post 'groups/:id/join_requests', to: 'group_memberships#join'
+        post :alerts, to: 'team_alerts#raise_alert'
       end
 
       resources :tags, only: [] do

@@ -18,8 +18,8 @@ describe Api::V1::Assistant::GroupMembershipsController, type: :controller do
 
   it_behaves_like 'an assistant action'
 
-  it 'is routed to POST /api/v1/assistant/groups/:id/join' do
-    expect(post: '/api/v1/assistant/groups/abc/join').to route_to('api/v1/assistant/group_memberships#join', id: 'abc')
+  it 'is routed to POST /api/v1/assistant/groups/:id/join_requests' do
+    expect(post: '/api/v1/assistant/groups/abc/join_requests').to route_to('api/v1/assistant/group_memberships#join', id: 'abc')
   end
 
   context 'when it runs' do

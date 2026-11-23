@@ -45,10 +45,10 @@ describe 'Anonymous measures: Local keeps no individual answer', type: :request 
     get "/api/v1/assistant/profile", params: answers, headers: headers
     get "/api/v1/assistant/outings/#{outing.uuid_v2}", params: answers, headers: headers
     get "/api/v1/assistant/outings/#{outing.uuid_v2}/participation", params: answers, headers: headers
-    post "/api/v1/assistant/outings/#{outing.uuid_v2}/join", params: answers.to_json,
+    post "/api/v1/assistant/outings/#{outing.uuid_v2}/register", params: answers.to_json,
          headers: headers.merge('Idempotency-Key' => SecureRandom.uuid, 'Content-Type' => 'application/json')
     get "/api/v1/assistant/activity", params: answers, headers: headers
-    post "/api/v1/assistant/outings/#{outing.uuid_v2}/leave", params: answers.to_json,
+    post "/api/v1/assistant/outings/#{outing.uuid_v2}/unregister", params: answers.to_json,
          headers: headers.merge('Idempotency-Key' => SecureRandom.uuid, 'Content-Type' => 'application/json')
   end
 

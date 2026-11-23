@@ -4,7 +4,7 @@ module SlackServices
   # same attachments), without a reported user: the person is the one who writes, and the team can
   # find them from the link to their profile.
   #
-  # With a dedicated contact, a handover mentions them; without one, the team is warned alone.
+  # With a dedicated contact, the message mentions them; without one, the team is warned alone.
   class AssistantAlert < Notifier
     KINDS = %w[safety_signal negative_feedback handover].freeze
 
@@ -43,10 +43,10 @@ module SlackServices
       }
     end
 
-    # Whether the dedicated contact is named in the message: for a handover only, and only when
-    # there is a contact that the team can mention on Slack.
+    # Whether the dedicated contact is named in the message: only when one was given (the assistant
+    # warns the referent) and the team can mention them on Slack.
     def contact_mentioned?
-      @kind == 'handover' && @contact&.slack_id.present?
+      @contact&.slack_id.present?
     end
 
     private

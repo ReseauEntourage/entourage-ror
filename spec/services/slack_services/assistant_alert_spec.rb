@@ -30,16 +30,18 @@ describe SlackServices::AssistantAlert do
     expect(alert.payload.to_json).not_to include(user.email.to_s) if user.email.present?
   end
 
-  it 'warns the team alone, without naming a contact, for a signal or a negative feedback' do
-    %w[safety_signal negative_feedback].each do |kind|
-      expect(alert(kind: kind, contact: contact).payload[:text]).to start_with('Team modération')
-      expect(alert(kind: kind, contact: contact).payload[:text]).not_to include('<@')
+  it 'warns the team alone, without naming a contact, when no contact is given' do
+    %w[safety_signal negative_feedback handover].each do |kind|
+      expect(alert(kind: kind).payload[:text]).to start_with('Team modération')
+      expect(alert(kind: kind).payload[:text]).not_to include('<@')
     end
   end
 
-  it 'mentions the dedicated contact for a handover when there is one that Slack can mention' do
-    expect(alert(kind: 'handover', contact: contact).payload[:text]).to start_with('<@U0NADIA> ou team modération')
-    expect(alert(kind: 'handover', contact: contact)).to be_contact_mentioned
+  it 'mentions the dedicated contact, whatever the kind, when one is given that Slack can mention' do
+    %w[safety_signal handover].each do |kind|
+      expect(alert(kind: kind, contact: contact).payload[:text]).to start_with('<@U0NADIA> ou team modération')
+      expect(alert(kind: kind, contact: contact)).to be_contact_mentioned
+    end
   end
 
   it 'names nobody when the contact has no Slack identifier' do
@@ -49,7 +51,7 @@ describe SlackServices::AssistantAlert do
     expect(alert(kind: 'handover', contact: contact)).not_to be_contact_mentioned
   end
 
-  it 'warns the team alone for a handover when the person has no dedicated contact' do
+  it 'says it is a handover, with the team alone, when the person has no dedicated contact' do
     text = alert(kind: 'handover', contact: nil).payload[:text]
 
     expect(text).to start_with('Team modération')

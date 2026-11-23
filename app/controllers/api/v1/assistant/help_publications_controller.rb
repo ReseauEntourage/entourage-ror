@@ -13,8 +13,12 @@ module Api
 
         private
 
+        # `recipientConsentObtained` only counts for a request.
         def publish type, action_type
-          attributes = params.permit(:title, :description, :section, :postal_code, :latitude, :longitude, :recipient_consent_obtained).to_h.symbolize_keys
+          attributes = {
+            title: params[:title], description: params[:description], category: params[:category],
+            recipient_consent_obtained: params[:recipientConsentObtained]
+          }
 
           run_action(action_type, attributes) do
             ::Assistant::Actions::PublishHelp.new(user: assistant_user, type: type, params: attributes).call

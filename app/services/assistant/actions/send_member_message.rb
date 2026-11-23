@@ -11,10 +11,10 @@ module Assistant
     class SendMemberMessage < Base
       ACTION_TYPE = 'member.first_message'.freeze
 
-      def initialize user:, recipient:, content:, extra_result: {}
+      def initialize user:, recipient:, message:, extra_result: {}
         super(user: user)
         @recipient = recipient
-        @content = content
+        @content = message
         @extra_result = extra_result
       end
 

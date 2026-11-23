@@ -1,14 +1,17 @@
 module Assistant
   module Actions
     # Publishes a request or an offer of help in the name of the user, with the services of the app
-    # (EntourageServices::SolicitationBuilder and ContributionBuilder). The text is the one given
-    # by the assistant, untouched.
+    # (EntourageServices::SolicitationBuilder and ContributionBuilder). The title and the description
+    # are the ones given by the assistant (they are in the preview the person confirmed), untouched
+    # but for the normalization of the model, as for any publication of the app.
     #
-    # As in the app, a request is only open (visible) when the person's consent is obtained
-    # (`recipient_consent_obtained`): without it, the request waits for the moderation.
+    # As in the app, a request is only open (visible) when the consent of the person is obtained
+    # (`recipient_consent_obtained`): without it, the request waits for the moderation. The place is
+    # the address of the user.
     class PublishHelp < Base
       TYPES = %w[request offer].freeze
 
+      # @param params [Hash] title, description, category (a category of the app), recipient_consent_obtained
       def initialize user:, type:, params:
         super(user: user)
         @type = type
@@ -18,6 +21,7 @@ module Assistant
       def call
         refuse!(400, 'INVALID_PARAMS', 'type must be request or offer.') unless TYPES.include?(@type)
         require_param!(@params[:title], 'title')
+        refuse!(400, 'INVALID_PARAMS', 'The user has no address to publish from.') if user.latitude.blank? || user.longitude.blank?
 
         action = nil
         builder.create do |on|
@@ -31,13 +35,10 @@ module Assistant
       private
 
       def builder
-        attributes = @params.slice(:title, :description, :section, :postal_code).to_h
+        attributes = { title: @params[:title], description: @params[:description], section: @params[:category] }
         attributes[:recipient_consent_obtained] = @params[:recipient_consent_obtained] if @type == 'request'
-        attributes[:location] = {
-          latitude: @params[:latitude].presence || user.latitude,
-          longitude: @params[:longitude].presence || user.longitude
-        }
-        permitted = ActionController::Parameters.new(attributes).permit!
+        attributes[:location] = { latitude: user.latitude, longitude: user.longitude }
+        permitted = ActionController::Parameters.new(attributes.compact).permit!
 
         if @type == 'request'
           ::EntourageServices::SolicitationBuilder.new(params: permitted, user: user)

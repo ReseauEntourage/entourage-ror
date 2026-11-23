@@ -15,7 +15,7 @@ describe Api::V1::Assistant::HelpPublicationsController, type: :controller do
       post :publish_request, params: params, as: :json
     end
 
-    let(:valid_params) { { title: 'Courses', description: text, section: 'services', recipient_consent_obtained: true } }
+    let(:valid_params) { { title: 'Courses', description: text, category: 'services', recipientConsentObtained: true } }
     let(:other_params) { valid_params.merge(description: 'Bonjour, autre chose') }
     let(:action_type) { 'help_request.publish' }
     let(:subject_class) { Entourage }
@@ -78,7 +78,7 @@ describe Api::V1::Assistant::HelpPublicationsController, type: :controller do
       end
 
       it 'waits for the moderation, as in the app, when the consent of the person is not obtained' do
-        publish(valid_params.except(:recipient_consent_obtained))
+        publish(valid_params.except(:recipientConsentObtained))
 
         expect(Solicitation.unscoped.last.status).to eq('suspended')
       end
@@ -91,17 +91,27 @@ describe Api::V1::Assistant::HelpPublicationsController, type: :controller do
       end
 
       it 'refuses an invalid section with the reasons of the app' do
-        publish(valid_params.merge(section: 'unknown'))
+        publish(valid_params.merge(category: 'unknown'))
 
         expect(response.status).to eq(400)
         expect(JSON.parse(response.body)['error']).to include('code' => 'CANNOT_PUBLISH')
         expect(Solicitation.unscoped.where(title: 'Courses')).not_to exist
       end
 
-      it 'uses the coordinates given by the assistant rather than the address of the user' do
-        publish(valid_params.merge(latitude: 45.76, longitude: 4.83))
+      it 'publishes from the address of the user: the assistant gives no coordinates' do
+        publish
 
-        expect([Solicitation.last.latitude, Solicitation.last.longitude]).to eq([45.76, 4.83])
+        solicitation = Solicitation.last
+        expect([solicitation.latitude, solicitation.longitude]).to eq([48.85, 2.35])
+      end
+
+      it 'refuses to publish when the user has no address to publish from' do
+        user.update_columns(address_id: nil)
+
+        publish
+
+        expect([response.status, JSON.parse(response.body).dig('error', 'code')]).to eq([400, 'INVALID_PARAMS'])
+        expect(Solicitation.unscoped.where(title: 'Courses')).not_to exist
       end
     end
   end
@@ -114,7 +124,7 @@ describe Api::V1::Assistant::HelpPublicationsController, type: :controller do
       post :publish_offer, params: params, as: :json
     end
 
-    let(:valid_params) { { title: 'Prêt de perceuse', description: text, section: 'equipment' } }
+    let(:valid_params) { { title: 'Prêt de perceuse', description: text, category: 'equipment' } }
     let(:other_params) { valid_params.merge(description: 'Bonjour, autre chose') }
     let(:action_type) { 'help_offer.publish' }
     let(:subject_class) { Entourage }

@@ -8,18 +8,25 @@ module Assistant
   module PlaceGeocoder
     class NotFound < StandardError; end
 
+    # What the geocoder knows of a place: coordinates, formatted address and Google place id.
+    Place = Struct.new(:latitude, :longitude, :address, :place_id, keyword_init: true)
+
     module_function
 
-    # @return [Array(Float, Float)] latitude and longitude
+    # @return [Place]
     # @raise [NotFound] when the geocoder knows no such place. An error of the geocoder itself
-    #   (network, quota) is not rescued: it is an failure of the action, not an unknown place.
+    #   (network, quota) is not rescued: it is a failure of the action, not an unknown place.
     def locate text
       raise NotFound if text.blank?
 
       result = ::Geocoder.search(text.to_s.strip).find { |r| r.latitude.present? && r.longitude.present? }
       raise NotFound unless result
 
-      [result.latitude.to_f, result.longitude.to_f]
+      Place.new(
+        latitude: result.latitude.to_f, longitude: result.longitude.to_f,
+        address: (result.address if result.respond_to?(:address)).presence,
+        place_id: (result.place_id if result.respond_to?(:place_id)).presence
+      )
     end
   end
 end
