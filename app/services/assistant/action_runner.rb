@@ -81,7 +81,9 @@ module Assistant
       finish(action, AssistantAction::FAILED, stored(e.status, refused))
       Response.new(status: e.status, body: refused, result: 'failed', replayed: false)
     rescue StandardError => e
-      # Never the message of the error in the answer: it could carry a text of the user.
+      # Never the message of the error in the answer nor in the log: it could carry a text of the user.
+      # The class and the type of action are enough to tell, in a local log, what failed.
+      Rails.logger.error("Assistant action failed: #{action.action_type} (#{e.class.name})")
       Sentry.capture_exception(e)
       failure = error_body('ACTION_FAILED', 'The action could not be run.')
       finish(action, AssistantAction::FAILED, stored(500, failure))

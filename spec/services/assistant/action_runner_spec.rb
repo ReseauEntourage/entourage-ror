@@ -204,6 +204,15 @@ describe Assistant::ActionRunner do
       expect(AssistantAction.last).to be_failed
     end
 
+    it 'logs the class of an unexpected error and the type of action, never its message nor its backtrace' do
+      allow(Sentry).to receive(:capture_exception)
+      allow(Rails.logger).to receive(:error)
+
+      runner(action_type: 'outing.publish').call { raise ArgumentError, 'Bonjour, première fois !' }
+
+      expect(Rails.logger).to have_received(:error).once.with('Assistant action failed: outing.publish (ArgumentError)')
+    end
+
     it 'stores an unexpected error as failed, reports it, and never leaks its message' do
       allow(Sentry).to receive(:capture_exception)
 
