@@ -81,6 +81,7 @@
               <td>
                 <p><%= link_to outing.name, admin_entourage_path(outing, @params) %></p>
                 <p><%= truncate(outing.description, length: 500) %></p>
+                <p><%= link_to 'Mesures anonymisées', measures_admin_outing_path(outing), class: 'small' %></p>
               </td>
               <td><span class="badge <%= outing_temporality_class(outing) %>" title="<%= outing_temporality_title(outing) %>"><%= l outing.starts_at, format: :long %></span></td>
               <td><%= outing.postal_code %></td>

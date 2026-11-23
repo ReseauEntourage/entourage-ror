@@ -8,6 +8,17 @@ module Admin
       @outings = filtered_outings.page(page).per(per)
     end
 
+    # The anonymous measures of an outing, read from the assistant: never an individual answer.
+    def measures
+      @outing = Outing.unscope(:order).find_by_id_or_uuid!(params[:id])
+
+      @measures = begin
+        Assistant::Measures.for_subject(@outing.uuid_v2)
+      rescue Assistant::Measures::Unavailable
+        nil
+      end
+    end
+
     def download_list_export
       outing_ids = filtered_outings.where(%((
         (group_type = 'outing' and metadata->>'starts_at' >= :starts_after) or

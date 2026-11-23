@@ -223,6 +223,10 @@ Rails.application.routes.draw do
         collection do
           get :download_list_export
         end
+
+        member do
+          get :measures
+        end
       end
 
       resources :partners do
