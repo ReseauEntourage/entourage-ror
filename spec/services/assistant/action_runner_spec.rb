@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Assistant::ActionRunner do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user) { create(:public_user) }
   let(:key) { SecureRandom.uuid }
   let(:payload) { { outing_id: 12, text: 'Bonjour, première fois !' } }
@@ -104,6 +106,84 @@ describe Assistant::ActionRunner do
       expect(response).to have_attributes(status: 409, result: 'rejected')
       expect(response.body.dig(:error, :code)).to eq('ACTION_IN_PROGRESS')
       expect(executions).to be_empty
+    end
+  end
+
+  describe 'a row that stays processing' do
+    def processing_row
+      AssistantAction.create!(user: user, idempotency_key: key, action_type: 'test.act', request_digest: runner.send(:digest))
+    end
+
+    it 'answers 409 ACTION_IN_PROGRESS before 2 minutes' do
+      processing_row
+
+      travel(119.seconds) do
+        response = runner.call { executions << 1; success }
+
+        expect(response.status).to eq(409)
+        expect(response.body.dig(:error, :code)).to eq('ACTION_IN_PROGRESS')
+        expect(AssistantAction.last).to be_processing
+      end
+      expect(executions).to be_empty
+    end
+
+    it 'is abandoned after 2 minutes: 410 ACTION_EXPIRED, marked failed, and never run under this key' do
+      processing_row
+
+      travel(121.seconds) do
+        response = runner.call { executions << 1; success }
+
+        expect(response).to have_attributes(status: 410, result: 'failed', replayed: false)
+        expect(response.body.dig(:error, :code)).to eq('ACTION_EXPIRED')
+      end
+      expect(AssistantAction.last).to be_failed
+      expect(AssistantAction.last.result.to_json).not_to include('première fois')
+      expect(executions).to be_empty
+    end
+
+    it 'answers the same 410 to every later request with the same key, which stays failed' do
+      processing_row
+
+      travel(121.seconds) do
+        runner.call { executions << 1; success }
+        later = runner.call { executions << 2; success }
+
+        expect(later).to have_attributes(status: 410, replayed: true)
+        expect(later.body.dig('error', 'code')).to eq('ACTION_EXPIRED')
+      end
+      travel(1.day) { expect(runner.call { executions << 3; success }.status).to eq(410) }
+      expect(executions).to be_empty
+    end
+
+    it 'runs the action of a new key, after the first one expired' do
+      processing_row
+
+      travel(121.seconds) do
+        runner.call { executions << 1; success }
+        fresh = runner(key: SecureRandom.uuid).call { executions << 2; success }
+
+        expect(fresh).to have_attributes(status: 201, result: 'succeeded')
+      end
+      expect(executions).to eq([2])
+    end
+
+    it 'does not turn into a success an action that finishes after it expired' do
+      row = processing_row
+
+      travel(121.seconds) { runner.call { success } }
+      runner.send(:finish, row, AssistantAction::SUCCEEDED, { 'http_status' => 201, 'body' => {} })
+
+      expect(row.reload).to be_failed
+    end
+
+    it 'refuses another request with the same key before looking at the expiry' do
+      processing_row
+
+      travel(121.seconds) do
+        response = runner(payload: payload.merge(text: 'Autre texte')).call { success }
+
+        expect(response.status).to eq(422)
+      end
     end
   end
 

@@ -12,10 +12,14 @@ module Assistant
   #
   # The block returns an Outcome, or raises Refusal when the app would refuse the action too.
   # A failed action (refusal or error) is stored as `failed`: the same key never runs it again,
-  # the assistant has to ask a new preview. Nothing here keeps a text: `payload` is only hashed
+  # the assistant has to ask a new preview. A row that stays `processing` for more than
+  # PROCESSING_TTL (the process died: an action takes seconds, see RACK_TIMEOUT) is dead: the
+  # next request with its key marks it `failed` (ACTION_EXPIRED, 410) and never runs the action,
+  # the person asks a new action with a new key. Nothing here keeps a text: `payload` is only hashed
   # and `body` must only carry identifiers and statuses.
   class ActionRunner
     KEY_FORMAT = /\A[A-Za-z0-9_.:-]{1,128}\z/
+    PROCESSING_TTL = 2.minutes
 
     # What an action produced: HTTP status, JSON body, and the object it created or modified.
     Outcome = Struct.new(:status, :body, :subject, keyword_init: true)
@@ -70,18 +74,26 @@ module Assistant
 
     def execute action
       outcome = yield
-      action.update!(status: AssistantAction::SUCCEEDED, result: stored(outcome.status, outcome.body), subject: outcome.subject)
+      finish(action, AssistantAction::SUCCEEDED, stored(outcome.status, outcome.body), outcome.subject)
       Response.new(status: outcome.status, body: outcome.body, result: 'succeeded', replayed: false)
     rescue Refusal => e
       refused = error_body(e.code, e.message, e.reasons)
-      action.update!(status: AssistantAction::FAILED, result: stored(e.status, refused))
+      finish(action, AssistantAction::FAILED, stored(e.status, refused))
       Response.new(status: e.status, body: refused, result: 'failed', replayed: false)
     rescue StandardError => e
       # Never the message of the error in the answer: it could carry a text of the user.
       Sentry.capture_exception(e)
       failure = error_body('ACTION_FAILED', 'The action could not be run.')
-      action.update_columns(status: AssistantAction::FAILED, result: stored(500, failure), updated_at: Time.current)
+      finish(action, AssistantAction::FAILED, stored(500, failure))
       Response.new(status: 500, body: failure, result: 'failed', replayed: false)
+    end
+
+    # Ends a row that is still `processing`, and only that one: a row that expired meanwhile stays
+    # `failed`, the action is not recorded as done after the person was told it expired.
+    def finish action, status, result, subject = nil
+      AssistantAction.where(id: action.id, status: AssistantAction::PROCESSING).update_all(
+        status: status, result: result, subject_type: subject&.class&.base_class&.name, subject_id: subject&.id, updated_at: Time.current
+      )
     end
 
     def replay action
@@ -89,12 +101,37 @@ module Assistant
         return rejected(422, 'IDEMPOTENCY_KEY_REUSED', 'This Idempotency-Key was used for another request.')
       end
 
-      return rejected(409, 'ACTION_IN_PROGRESS', 'This action is already being processed.') if action.processing?
+      if action.processing?
+        return rejected(409, 'ACTION_IN_PROGRESS', 'This action is already being processed.') unless expired?(action)
+
+        return replay(action.reload) unless expire(action)
+
+        return expired_response
+      end
 
       Response.new(
         status: action.result['http_status'], body: action.result['body'],
         result: action.status, replayed: true
       )
+    end
+
+    def expired? action
+      action.updated_at < PROCESSING_TTL.ago
+    end
+
+    # @return [Boolean] whether this call ended the row (false: it finished meanwhile)
+    def expire action
+      AssistantAction.where(id: action.id, status: AssistantAction::PROCESSING).update_all(
+        status: AssistantAction::FAILED, result: stored(410, expired_body), updated_at: Time.current
+      ) == 1
+    end
+
+    def expired_body
+      error_body('ACTION_EXPIRED', 'This action took too long and was abandoned: ask for a new one.')
+    end
+
+    def expired_response
+      Response.new(status: 410, body: expired_body, result: 'failed', replayed: false)
     end
 
     def rejected status, code, message
