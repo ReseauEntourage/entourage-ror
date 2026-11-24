@@ -91,6 +91,20 @@ describe Api::V1::NextStepsController, type: :controller do
       expect(others.map { |other| other['kind'] }).to eq(['outing', 'neighborhood', 'smalltalk'])
       expect(others.map { |other| other.dig('target', 'id') }).not_to include(ignored.id)
     end
+
+    # recette of 23/11/2026: the apps fetch both routes together, in any order
+    it 'leaves out the hero, even when it is asked before the hero' do
+      create_list(:outing, 2, **nearby)
+
+      get :others, params: { token: user.token }
+      others = JSON.parse(response.body)['next_steps']
+
+      get :current, params: { token: user.token }
+      hero = JSON.parse(response.body)['next_step']
+
+      expect(hero).to include('kind' => 'outing', 'id' => NextStep.active.find_by(user_id: user.id).id)
+      expect(others.map { |other| [other['kind'], other.dig('target', 'id')] }).not_to include(['outing', hero.dig('target', 'id')])
+    end
   end
 
   describe 'POST ignore' do

@@ -184,6 +184,60 @@ RSpec.describe NextSteps::Current do
     end
   end
 
+  # Recette of 23/11/2026 (Alice, Rémi, Théo): the apps fetch the hero and the
+  # others together, and the others may be answered first. They must leave the
+  # hero out whatever the order, so they set it themselves.
+  describe 'others' do
+    before { welcome_journey_over! }
+
+    def key_of hero
+      [hero.kind, hero.target_type, hero.target_id]
+    end
+
+    it 'sets the hero first when the others are asked before it, and leaves it out' do
+      create_list(:outing, 2, **nearby)
+
+      others = current.others
+      hero = NextStep.active.find_by(user_id: user.id)
+
+      expect(hero).to be_present
+      expect(others.map { |choice| choice.candidate.key }).not_to include(key_of(hero))
+      expect(current.call).to eq(hero)
+    end
+
+    it 'leaves out the other dates of the series of the hero, asked before the hero' do
+      first = create(:outing, recurrency_identifier: 'serie-a', metadata: { starts_at: 3.days.from_now }, **nearby)
+      create(:outing, recurrency_identifier: 'serie-a', metadata: { starts_at: 10.days.from_now }, **nearby)
+      create(:neighborhood, **nearby)
+
+      others = current.others
+
+      expect(NextStep.active.find_by(user_id: user.id)).to have_attributes(kind: 'outing', target_id: first.id)
+      expect(others.map { |choice| choice.candidate.kind }).not_to include('outing')
+    end
+
+    it 'ends an expired hero and leaves its replacement out, asked before the hero' do
+      create_list(:outing, 3, **nearby)
+      expired = current(at: 8.days.ago).call
+
+      others = current.others
+      hero = NextStep.active.find_by(user_id: user.id)
+
+      expect(expired.reload.status).to eq('expired')
+      expect(hero).not_to eq(expired)
+      expect(others.map { |choice| choice.candidate.key }).not_to include(key_of(hero))
+    end
+
+    it 'sets nothing during the welcome journey' do
+      user.update_columns(first_sign_in_at: Time.zone.now, created_at: Time.zone.now)
+      create(:neighborhood, **nearby)
+
+      current.others
+
+      expect(NextStep.count).to eq(0)
+    end
+  end
+
   describe 'ignore (5.2)' do
     before { welcome_journey_over! }
 
