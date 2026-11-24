@@ -148,6 +148,9 @@ module NextSteps
 
     def component_reason candidate
       components = (candidate.score_components || {}).select { |_, value| value.to_f.positive? }
+      # the user is already in the group: its distance says nothing about why to
+      # write in it (recette of 23/11/2026); the distance still ranks the groups
+      components = components.except(:distance) if candidate.kind == 'post_message'
       return if components.empty?
 
       strongest, _ = components.max_by { |component, value| Score::WEIGHTS[component] * value }

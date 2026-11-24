@@ -36,6 +36,17 @@ RSpec.describe NextSteps::Selector do
       expect([choice.candidate.kind, target_of(choice)]).to eq(['post_message', group])
     end
 
+    # recette of 23/11/2026: « C'est à 300 m de chez vous » reads oddly for a group the user is already in
+    it 'gives no distance as a reason to write in a group the user already belongs to' do
+      segment!('Curieux')
+      create(:neighborhood, participants: [user], **nearby)
+
+      codes = hero.candidate.reason_codes
+
+      expect(codes.first).to eq('group_member_message')
+      expect(codes).not_to include('near_you')
+    end
+
     it 'suggests a nearby event to a Dormant' do
       segment!('Silencieux', 'Dormant')
       event = create(:outing, **nearby)
