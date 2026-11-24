@@ -73,9 +73,16 @@ module NextSteps
       call
     end
 
+    # The others leave out the active hero (and the other dates of its series).
+    # The apps fetch the hero and the others together, in no set order: the hero
+    # is therefore set here first, as #call does, else the others asked first
+    # would show it a second time (recette of 23/11/2026). Nothing is set during
+    # the welcome journey.
     # @return [Array<Selector::Choice>]
     def others
       return [] unless self.class.enabled?
+
+      call
 
       Selector.new(user, now: now).others
     end
