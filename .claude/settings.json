@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(heroku pg:psql)",
+      "Bash(heroku pg:psql *)",
+      "Bash(rtk heroku pg:psql *)",
+      "Bash(heroku run *)",
+      "Bash(rtk heroku run *)",
+      "Bash(heroku pg:reset *)",
+      "Bash(heroku pg:copy *)",
+      "Bash(heroku pg:push *)",
+      "Bash(heroku pg:pull *)",
+      "Bash(heroku pg:kill*)",
+      "Bash(heroku pg:promote *)",
+      "Bash(heroku pg:upgrade*)",
+      "Bash(heroku pg:credentials*)",
+      "Bash(heroku pg:backups:restore *)",
+      "Bash(heroku pg:backups:download*)",
+      "Bash(heroku pg:backups:url*)",
+      "Bash(heroku releases:info*)",
+      "Bash(rtk heroku releases:info*)"
+    ],
+    "ask": [
+      "Bash(heroku)",
+      "Bash(heroku *)",
+      "Bash(rtk heroku *)",
+      "Bash(timeout * heroku *)"
+    ]
+  }
+}
