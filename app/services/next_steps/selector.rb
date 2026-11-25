@@ -129,6 +129,9 @@ module NextSteps
         type_reason(candidate, type)
       end
 
+      # the user is already in the group: the invitation to write is explanation enough (PM, 25/11/2026)
+      return [main] if candidate.kind == 'post_message'
+
       [main, component_reason(candidate)].compact.uniq.first(2)
     end
 
@@ -148,9 +151,9 @@ module NextSteps
 
     def component_reason candidate
       components = (candidate.score_components || {}).select { |_, value| value.to_f.positive? }
-      # the user is already in the group: its distance says nothing about why to
-      # write in it (recette of 23/11/2026); the distance still ranks the groups
-      components = components.except(:distance) if candidate.kind == 'post_message'
+      # no reason mentions the distance of a group (PM, 25/11/2026); the distance
+      # still ranks the groups
+      components = components.except(:distance) if candidate.kind == 'neighborhood'
       return if components.empty?
 
       strongest, _ = components.max_by { |component, value| Score::WEIGHTS[component] * value }
