@@ -37,7 +37,7 @@ describe Assistant::Measures do
   end
 
   it 'keeps nothing but the indication when there are too few responses, whatever the answer carries' do
-    answer(subject: subject_id, metrics: { fears: { status: 'too_few_responses', total: 3, distribution: [{ value: 'alone', count: 3 }] } })
+    answer(subject: subject_id, metrics: { fears: { status: 'too_few_responses', total: 3, distribution: [{ value: 'alone', count: 3 }] }, fit: { status: 'too_few_responses' }, feeling: { status: 'too_few_responses' } })
 
     metric = described_class.for_subject(subject_id)['fears']
 
@@ -45,9 +45,23 @@ describe Assistant::Measures do
   end
 
   it 'ignores what is not a known measure' do
-    answer(subject: subject_id, metrics: { fears: { status: 'too_few_responses' }, secrets: { status: 'ok', total: 1, distribution: [] } })
+    answer(subject: subject_id, metrics: { fears: { status: 'too_few_responses' }, fit: { status: 'too_few_responses' }, feeling: { status: 'too_few_responses' }, secrets: { status: 'ok', total: 1, distribution: [] } })
 
-    expect(described_class.for_subject(subject_id).keys).to eq(['fears'])
+    expect(described_class.for_subject(subject_id).keys).to eq(%w[fears fit feeling])
+  end
+
+  it 'is unavailable when a known measure is missing, not "too few responses"' do
+    answer(subject: subject_id, metrics: { fears: { status: 'too_few_responses' } })
+    expect { described_class.for_subject(subject_id) }.to raise_error(described_class::Unavailable)
+  end
+
+  it 'adds no Sentry breadcrumb for the call: it carries the service key' do
+    answer(subject: subject_id, metrics: { fears: { status: 'too_few_responses' }, fit: { status: 'too_few_responses' }, feeling: { status: 'too_few_responses' } })
+    allow(Sentry).to receive(:add_breadcrumb)
+
+    described_class.for_subject(subject_id)
+
+    expect(Sentry).not_to have_received(:add_breadcrumb)
   end
 
   it 'is unavailable when the assistant refuses, fails, does not answer, or answers something else' do

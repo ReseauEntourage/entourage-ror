@@ -31,11 +31,13 @@ module Assistant
     def self.for_subject subject
       raise Unavailable, 'not configured' unless AccountEvents.enabled?
 
-      response = HTTParty.get(
-        "#{AccountEvents.url}/api/v1/measures",
-        query: { product: AccountEvents::PRODUCT, subject: subject },
-        headers: { 'X-Service-Key' => AccountEvents.service_key }, timeout: 5
-      )
+      response = Breadcrumbs.suppressed do
+        HTTParty.get(
+          "#{AccountEvents.url}/api/v1/measures",
+          query: { product: AccountEvents::PRODUCT, subject: subject },
+          headers: { 'X-Service-Key' => AccountEvents.service_key }, timeout: 5
+        )
+      end
       raise Unavailable, "status #{response.code}" unless response.success?
 
       body = response.parsed_response
@@ -53,7 +55,8 @@ module Assistant
 
       METRICS.each_with_object({}) do |name, parsed|
         metric = metrics[name]
-        next unless metric.is_a?(Hash)
+        # Every known measure must be there: a missing one is not "too few responses".
+        raise Unavailable, 'missing metric' unless metric.is_a?(Hash)
 
         parsed[name] = metric_from(metric)
       end

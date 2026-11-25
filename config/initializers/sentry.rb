@@ -30,6 +30,9 @@ module HTTParty
 
     def perform_request(http_method, path, options, &block)
       _perform_request(http_method, path, options, &block).tap do |response|
+        # The calls made for the AI assistant carry a secret and personal data: no breadcrumb.
+        next if Assistant::Breadcrumbs.suppressed?
+
         begin
           Sentry.add_breadcrumb(
             Sentry::Breadcrumb.new(

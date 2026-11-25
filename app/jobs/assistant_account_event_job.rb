@@ -28,12 +28,15 @@ class AssistantAccountEventJob
   def perform user_uuid, event, occurred_at
     return unless Assistant::AccountEvents.enabled?
 
-    response = HTTParty.post(
-      Assistant::AccountEvents.events_url,
-      headers: { 'Content-Type' => 'application/json', 'X-Service-Key' => Assistant::AccountEvents.service_key },
-      body: Assistant::AccountEvents.payload(event: event, user_uuid: user_uuid, occurred_at: occurred_at).to_json,
-      timeout: 10
-    )
+    # No Sentry breadcrumb for this call: it carries the service key and the identifier of the account.
+    response = Assistant::Breadcrumbs.suppressed do
+      HTTParty.post(
+        Assistant::AccountEvents.events_url,
+        headers: { 'Content-Type' => 'application/json', 'X-Service-Key' => Assistant::AccountEvents.service_key },
+        body: Assistant::AccountEvents.payload(event: event, user_uuid: user_uuid, occurred_at: occurred_at).to_json,
+        timeout: 10
+      )
+    end
 
     return if response.success?
 

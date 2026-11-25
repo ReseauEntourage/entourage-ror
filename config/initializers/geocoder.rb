@@ -35,7 +35,7 @@ class Geocoder::Lookup::Base
   alias_method :_fetch_data, :fetch_data
 
   def fetch_data(query)
-    breadcrumbs = !Thread.current[:geocoder_without_breadcrumbs]
+    breadcrumbs = !Assistant::Breadcrumbs.suppressed?
     begin
       Sentry.add_breadcrumb(
         Sentry::Breadcrumb.new(
