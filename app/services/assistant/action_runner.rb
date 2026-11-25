@@ -5,6 +5,10 @@ module Assistant
   # inserts a row in assistant_actions (unique on user and key) before doing anything, then runs
   # the block and stores its result. A replayed request gets the stored answer and nothing is
   # done a second time; the unique index, not a read, decides who runs when two requests race.
+  # While the block runs, the process holds a Postgres advisory lock on the row: it is released by
+  # Postgres if the process dies. A row that looks expired but whose lock is still held is running,
+  # not dead: it is never expired then (409), so a slow action cannot finish after the person was
+  # told it expired.
   #
   #   runner = Assistant::ActionRunner.new(user: user, key: key, action_type: 'outing.join',
   #                                        payload: { outing_id: outing.id })
@@ -20,6 +24,8 @@ module Assistant
   class ActionRunner
     KEY_FORMAT = /\A[A-Za-z0-9_.:-]{1,128}\z/
     PROCESSING_TTL = 2.minutes
+    # Namespace of the advisory locks of the rows of assistant_actions (the id is added to it).
+    ADVISORY_LOCK_BASE = 4_000_000_000_000_000_000
 
     # What an action produced: HTTP status, JSON body, and the object it created or modified.
     Outcome = Struct.new(:status, :body, :subject, keyword_init: true)
@@ -73,6 +79,10 @@ module Assistant
     end
 
     def execute action
+      with_advisory_lock(action) { run(action) { yield } }
+    end
+
+    def run action
       outcome = yield
       finish(action, AssistantAction::SUCCEEDED, stored(outcome.status, outcome.body), outcome.subject)
       Response.new(status: outcome.status, body: outcome.body, result: 'succeeded', replayed: false)
@@ -91,6 +101,32 @@ module Assistant
       Response.new(status: 500, body: failure, result: 'failed', replayed: false)
     end
 
+    # Holds the advisory lock of the row while the block runs. The lock and its release use the same
+    # connection (a lock belongs to a database session).
+    def with_advisory_lock action
+      AssistantAction.connection_pool.with_connection do |connection|
+        connection.select_value("SELECT pg_advisory_lock(#{advisory_key(action)})")
+        begin
+          yield
+        ensure
+          connection.select_value("SELECT pg_advisory_unlock(#{advisory_key(action)})")
+        end
+      end
+    end
+
+    # @return [Boolean] whether the lock of the row is held by a running process
+    def running? action
+      AssistantAction.connection_pool.with_connection do |connection|
+        free = connection.select_value("SELECT pg_try_advisory_lock(#{advisory_key(action)})")
+        connection.select_value("SELECT pg_advisory_unlock(#{advisory_key(action)})") if free
+        !free
+      end
+    end
+
+    def advisory_key action
+      ADVISORY_LOCK_BASE + action.id.to_i
+    end
+
     # Ends a row that is still `processing`, and only that one: a row that expired meanwhile stays
     # `failed`, the action is not recorded as done after the person was told it expired.
     def finish action, status, result, subject = nil
@@ -105,7 +141,7 @@ module Assistant
       end
 
       if action.processing?
-        return rejected(409, 'ACTION_IN_PROGRESS', 'This action is already being processed.') unless expired?(action)
+        return rejected(409, 'ACTION_IN_PROGRESS', 'This action is already being processed.') if !expired?(action) || running?(action)
 
         return replay(action.reload) unless expire(action)
 

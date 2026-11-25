@@ -240,6 +240,47 @@ describe Assistant::ActionRunner do
       User.where(id: racing_user.id).delete_all
     end
 
+    it 'never expires a row whose action is still running after 2 minutes: 409, and the action finishes as a success' do
+      started = Queue.new
+      release = Queue.new
+
+      first = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do
+          runner(user: racing_user).call do
+            started << true
+            release.pop
+            success
+          end
+        end
+      end
+      started.pop
+
+      second_response = nil
+      travel(121.seconds) do
+        second_response = Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection { runner(user: racing_user).call { success } }
+        end.value
+      end
+      release << true
+      first_response = first.value
+
+      expect(second_response).to have_attributes(status: 409, result: 'rejected')
+      expect(first_response).to have_attributes(status: 201, result: 'succeeded')
+      expect(AssistantAction.find_by(user_id: racing_user.id)).to be_succeeded
+    end
+
+    it 'releases the lock when the action ends, so that a dead row can be expired' do
+      runner(user: racing_user).call { success }
+      row = AssistantAction.find_by(user_id: racing_user.id)
+      row.update_columns(status: AssistantAction::PROCESSING, updated_at: 3.minutes.ago)
+
+      response = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection { runner(user: racing_user).call { success } }
+      end.value
+
+      expect(response).to have_attributes(status: 410, result: 'failed')
+    end
+
     it 'runs the action once, the other request is told it is in progress' do
       started = Queue.new
       release = Queue.new
