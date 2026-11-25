@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "categories": [
+      {
+        "id": "social",
+        "name": "Temps de partage"
+      },
+      {
+        "id": "services",
+        "name": "Service"
+      },
+      {
+        "id": "clothes",
+        "name": "Vêtement"
+      },
+      {
+        "id": "equipment",
+        "name": "Équipement"
+      },
+      {
+        "id": "hygiene",
+        "name": "Produit d'hygiène"
+      }
+    ]
+  }
+}

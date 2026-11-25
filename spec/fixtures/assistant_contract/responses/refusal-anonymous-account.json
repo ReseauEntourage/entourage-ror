@@ -1,0 +1,10 @@
+{
+  "status": 403,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "ANONYMOUS_ACCOUNT",
+      "message": "Anonymous accounts cannot use the assistant."
+    }
+  }
+}

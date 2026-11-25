@@ -1,0 +1,518 @@
+[
+  {
+    "name": "get-local-profile",
+    "method": "GET",
+    "path": "/profile",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "get-local-activity",
+    "method": "GET",
+    "path": "/activity",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "search-local-outings: no parameter",
+    "method": "GET",
+    "path": "/outings",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "search-local-outings: every parameter",
+    "method": "GET",
+    "path": "/outings",
+    "query": {
+      "chatting": "false",
+      "city": "Lyon",
+      "days": "6,7",
+      "interest": "cuisine",
+      "reserved_female": "true",
+      "size": "small-group"
+    },
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "search-local-outings: chatting",
+    "method": "GET",
+    "path": "/outings",
+    "query": {
+      "chatting": "true"
+    },
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "get-local-outing",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "get-local-outing-participants",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6/participants",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "search-local-help: requests, no parameter",
+    "method": "GET",
+    "path": "/help_requests",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "search-local-help: offers, every parameter",
+    "method": "GET",
+    "path": "/help_offers",
+    "query": {
+      "category": "4",
+      "city": "Lyon"
+    },
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "get-local-help-categories",
+    "method": "GET",
+    "path": "/help_categories",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "get-local-referent",
+    "method": "GET",
+    "path": "/referent",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "guide-local-search: open outings",
+    "method": "GET",
+    "path": "/outings",
+    "query": {
+      "city": "Lyon"
+    },
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "guide-local-search: women only",
+    "method": "GET",
+    "path": "/profile",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "guide-local-search: women only",
+    "method": "GET",
+    "path": "/outings",
+    "query": {
+      "city": "Lyon",
+      "reserved_female": "true",
+      "size": "small-group"
+    },
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "guide-local-search: solidarity chat",
+    "method": "GET",
+    "path": "/outings",
+    "query": {
+      "chatting": "true"
+    },
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "register-local-outing (propose)",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "register-local-outing (execute)",
+    "method": "POST",
+    "path": "/outings/a1b2c3d4e5f6/register",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "unregister-local-outing (propose)",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "unregister-local-outing (execute)",
+    "method": "POST",
+    "path": "/outings/a1b2c3d4e5f6/unregister",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "post-local-outing-discussion (propose)",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6/participation",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "post-local-outing-discussion (propose)",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "post-local-outing-discussion (execute)",
+    "method": "POST",
+    "path": "/outings/a1b2c3d4e5f6/discussion_messages",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "message": "Bonjour à toutes et à tous"
+    }
+  },
+  {
+    "name": "create-local-outing (execute)",
+    "method": "POST",
+    "path": "/outings",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "title": "Marche douce",
+      "description": "Une marche lente de deux heures.",
+      "startsAt": "2026-12-13T10:00:00Z",
+      "endsAt": "2026-12-13T12:00:00.000Z",
+      "place": "Parc de la Tête d’Or, Lyon",
+      "reservedFemale": true
+    }
+  },
+  {
+    "name": "publish-local-help: request for oneself (execute)",
+    "method": "POST",
+    "path": "/help_requests",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "title": "Aide pour mes courses",
+      "category": "3",
+      "description": "J’ai besoin d’aide pour porter mes courses.",
+      "recipientConsentObtained": true
+    }
+  },
+  {
+    "name": "publish-local-help: request for a relative who agrees (execute)",
+    "method": "POST",
+    "path": "/help_requests",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "title": "Aide pour ma tante",
+      "category": "3",
+      "description": "Ma tante a besoin d’aide.",
+      "recipientConsentObtained": true
+    }
+  },
+  {
+    "name": "publish-local-help: request for a relative without agreement (execute)",
+    "method": "POST",
+    "path": "/help_requests",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "title": "Aide pour ma tante",
+      "category": "3",
+      "description": "Ma tante a besoin d’aide."
+    }
+  },
+  {
+    "name": "publish-local-help: offer (execute)",
+    "method": "POST",
+    "path": "/help_offers",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "title": "Trajets en voiture",
+      "category": "4",
+      "description": "Je peux conduire le week-end."
+    }
+  },
+  {
+    "name": "message-local-member (propose)",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6/participants",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "message-local-member (execute)",
+    "method": "POST",
+    "path": "/members/u-9/messages",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "message": "Bonjour Paul"
+    }
+  },
+  {
+    "name": "warn-local-organizer (propose)",
+    "method": "GET",
+    "path": "/outings/a1b2c3d4e5f6",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "warn-local-organizer (execute)",
+    "method": "POST",
+    "path": "/outings/a1b2c3d4e5f6/organizer_messages",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "message": "C’est ma première fois."
+    }
+  },
+  {
+    "name": "join-local-group (propose)",
+    "method": "GET",
+    "path": "/groups/g1abc2def345",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "join-local-group (execute)",
+    "method": "POST",
+    "path": "/groups/g1abc2def345/join_requests",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ]
+  },
+  {
+    "name": "warn-local-referent (execute)",
+    "method": "POST",
+    "path": "/alerts",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "audience": "referent",
+      "message": "Je ne me sens pas bien, merci de me rappeler.",
+      "kind": "handover"
+    }
+  },
+  {
+    "name": "warn-local-team: default kind (execute)",
+    "method": "POST",
+    "path": "/alerts",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "audience": "team",
+      "message": "Je ne me sens pas bien, merci de me rappeler.",
+      "kind": "safety_signal"
+    }
+  },
+  {
+    "name": "warn-local-team: safety signal (execute)",
+    "method": "POST",
+    "path": "/alerts",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "audience": "team",
+      "message": "Je ne me sens pas bien, merci de me rappeler.",
+      "kind": "safety_signal"
+    }
+  },
+  {
+    "name": "warn-local-team: negative feedback (execute)",
+    "method": "POST",
+    "path": "/alerts",
+    "query": {},
+    "headerNames": [
+      "Accept",
+      "Authorization",
+      "Content-Type",
+      "Idempotency-Key",
+      "X-API-KEY"
+    ],
+    "body": {
+      "audience": "team",
+      "message": "Je ne me sens pas bien, merci de me rappeler.",
+      "kind": "negative_feedback"
+    }
+  }
+]

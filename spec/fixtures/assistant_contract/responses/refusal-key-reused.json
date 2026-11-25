@@ -1,0 +1,10 @@
+{
+  "status": 422,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "IDEMPOTENCY_KEY_REUSED",
+      "message": "This Idempotency-Key was used for another request."
+    }
+  }
+}

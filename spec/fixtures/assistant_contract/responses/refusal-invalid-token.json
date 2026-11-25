@@ -1,0 +1,10 @@
+{
+  "status": 401,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "INVALID_TOKEN",
+      "message": "Missing or invalid token."
+    }
+  }
+}

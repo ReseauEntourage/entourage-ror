@@ -1,0 +1,34 @@
+<div class="container">
+  <h1>Mesures anonymisées</h1>
+  <h3><%= link_to @outing.name, admin_entourage_path(@outing) %></h3>
+
+  <p class="text-muted">
+    Ces résultats complètent la mesure du contact humain effectif : ils ne mesurent pas le succès de l'assistant.
+    Ils sont conservés par l'assistant, par événement, sans jamais pouvoir retrouver une personne.
+  </p>
+
+  <% labels = { 'fears' => 'Craintes à l’inscription', 'fit' => 'Se sentir à sa place', 'feeling' => 'Ressenti après la rencontre' } %>
+
+  <% if @measures.nil? %>
+    <div class="alert alert-warning">Les résultats ne sont pas disponibles pour le moment.</div>
+  <% else %>
+    <% labels.each do |name, label| %>
+      <% metric = @measures[name] %>
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong><%= label %></strong></div>
+        <div class="panel-body">
+          <% if metric.nil? || metric.too_few? %>
+            <p>Trop peu de réponses pour garantir l'anonymat.</p>
+          <% else %>
+            <p><%= metric.total %> réponse(s)</p>
+            <table class="table table-condensed">
+              <% metric.distribution.each do |entry| %>
+                <tr><td><%= entry[:value] %></td><td><%= entry[:count] %></td></tr>
+              <% end %>
+            </table>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

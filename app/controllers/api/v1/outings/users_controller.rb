@@ -3,9 +3,8 @@ module Api
     module Outings
       class UsersController < Api::V1::BaseController
         before_action :set_outing, only: [:index, :create, :unsubscribed_participants, :confirm, :participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance, :destroy]
-        before_action :set_current_user_membership, only: [:create, :confirm]
+        before_action :set_current_user_membership, only: [:confirm]
         before_action :set_user_membership, only: [:participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
-        before_action :set_join_request, only: [:destroy]
         before_action :authorised_user?, only: [:destroy]
         before_action :check_management_permission!, only: [:unsubscribed_participants, :participate, :cancel_participation, :photo_acceptance, :cancel_photo_acceptance]
 
@@ -22,7 +21,9 @@ module Api
 
         def create
           # join a outing
-          if @membership.save
+          @membership = participation.join(distance: params[:distance], role: params[:role])
+
+          if @membership.errors.empty?
             render json: @membership, root: 'user', status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
@@ -107,11 +108,13 @@ module Api
         end
 
         def destroy
+          @join_request = participation.leave
+
           return render json: {
             message: 'Could not find outing participation for user'
           }, status: :unauthorized unless @join_request
 
-          if @join_request.update(status: :cancelled)
+          if @join_request.errors.empty?
             render json: @join_request, root: 'user', status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
@@ -126,8 +129,8 @@ module Api
           @outing = Outing.find_by_id_or_uuid!(params[:outing_id])
         end
 
-        def set_join_request
-          @join_request = JoinRequest.where(joinable: @outing, user: current_user).first
+        def participation(user = current_user)
+          OutingsServices::Participation.new(outing: @outing, user: user)
         end
 
         def set_current_user_membership
@@ -139,17 +142,7 @@ module Api
         end
 
         def set_membership_for_user user
-          @membership = JoinRequest.where(joinable: @outing, user: user).first
-
-          @membership ||= JoinRequest.new(joinable: @outing, user: user, distance: params[:distance], role: :participant, status: :accepted)
-          @membership.status = :accepted
-          @membership.role = if user.ambassador? && params[:role] == 'organizer'
-            :organizer
-          else
-            :participant
-          end
-
-          @membership
+          @membership = participation(user).build_membership(distance: params[:distance], role: params[:role])
         end
 
         def authorised_user?

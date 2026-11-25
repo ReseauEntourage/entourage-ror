@@ -1,0 +1,9 @@
+{
+  "status": 201,
+  "headers": {},
+  "body": {
+    "id": "<id>",
+    "type": "request",
+    "status": "suspended"
+  }
+}

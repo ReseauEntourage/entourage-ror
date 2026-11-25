@@ -35,6 +35,7 @@ class Geocoder::Lookup::Base
   alias_method :_fetch_data, :fetch_data
 
   def fetch_data(query)
+    breadcrumbs = !Assistant::Breadcrumbs.suppressed?
     begin
       Sentry.add_breadcrumb(
         Sentry::Breadcrumb.new(
@@ -45,7 +46,7 @@ class Geocoder::Lookup::Base
           },
           level: :info
         )
-      )
+      ) if breadcrumbs
     rescue
     end
     response = _fetch_data(query)
@@ -58,7 +59,7 @@ class Geocoder::Lookup::Base
           },
           level: :info
         )
-      )
+      ) if breadcrumbs
     rescue
     end
     response

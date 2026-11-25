@@ -1,0 +1,20 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "id": "<women-outing-id>",
+    "title": "Marche entre femmes",
+    "description": null,
+    "startsAt": "<time>",
+    "endsAt": "<time>",
+    "durationMinutes": 120,
+    "place": "Parc, 1 rue du Parc, 69006 Lyon",
+    "organizerName": "Léa B.",
+    "participantsCount": 1,
+    "placeLimit": null,
+    "format": "in_person",
+    "reservedFemale": true,
+    "subjectId": "<women-outing-id>",
+    "meetingType": "event"
+  }
+}

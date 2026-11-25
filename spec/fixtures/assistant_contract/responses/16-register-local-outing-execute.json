@@ -1,0 +1,8 @@
+{
+  "status": 201,
+  "headers": {},
+  "body": {
+    "outingId": "<outing-id>",
+    "status": "registered"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "items": [
+      {
+        "id": "<id>",
+        "title": "Aide pour mes courses",
+        "category": "services"
+      },
+      {
+        "id": "<id>",
+        "title": "Besoin de courses",
+        "category": "services"
+      }
+    ]
+  }
+}

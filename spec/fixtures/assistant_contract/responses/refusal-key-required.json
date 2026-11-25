@@ -1,0 +1,10 @@
+{
+  "status": 400,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "IDEMPOTENCY_KEY_REQUIRED",
+      "message": "A valid Idempotency-Key header is required."
+    }
+  }
+}

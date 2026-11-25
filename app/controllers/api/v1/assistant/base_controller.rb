@@ -69,6 +69,21 @@ module Api
           BEARER.match(request.headers['Authorization'].to_s.strip)&.captures&.first
         end
 
+        # Coordinates of a city given by the assistant, as search parameters. Without a city, or with
+        # the city of the profile, the search starts from the address of the user (no geocoding, the
+        # text does not leave Local). Another city is geocoded (Assistant::PlaceGeocoder).
+        def coordinates_for_city city
+          city = city.to_s.strip
+          return {} if city.blank?
+          return {} if city.casecmp?(assistant_user.address&.city.to_s)
+
+          place = ::Assistant::PlaceGeocoder.locate(city)
+          { latitude: place.latitude, longitude: place.longitude }
+        rescue ::Assistant::PlaceGeocoder::NotFound
+          render_error(code: 'PLACE_NOT_FOUND', message: 'This place is not known.', status: :not_found)
+          nil
+        end
+
         def render_invalid_token
           render_error(code: 'INVALID_TOKEN', message: 'Missing or invalid token.', status: :unauthorized)
         end
@@ -77,10 +92,13 @@ module Api
           render json: { error: { code: code, message: message } }, status: status
         end
 
-        # The uuid of the user is the only thing about them that the logs carry (Lograge).
+        # The uuid of the user is the only thing about them that the logs carry (Lograge). The
+        # parameters are not logged at all: they hold the texts of the person (search words, a
+        # message, a publication), and the ids already are in the path.
         def append_info_to_payload(payload)
           super
           payload[:user] = assistant_user&.uuid
+          payload[:params] = {}
         end
       end
     end

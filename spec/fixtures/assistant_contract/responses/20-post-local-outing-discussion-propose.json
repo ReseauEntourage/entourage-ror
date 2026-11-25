@@ -1,0 +1,20 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "id": "<outing-id>",
+    "title": "Café partagé",
+    "description": "Un café, puis une balade",
+    "startsAt": "<time>",
+    "endsAt": "<time>",
+    "durationMinutes": 120,
+    "place": "Café des Lilas, 12 rue des Lilas, 69001 Lyon",
+    "organizerName": "Léa B.",
+    "participantsCount": 3,
+    "placeLimit": 12,
+    "format": "in_person",
+    "reservedFemale": false,
+    "subjectId": "<outing-id>",
+    "meetingType": "event"
+  }
+}

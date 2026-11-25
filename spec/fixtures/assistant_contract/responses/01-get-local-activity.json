@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "upcomingOutings": [],
+    "pastOutings": [],
+    "groups": [
+      {
+        "id": "<id>",
+        "name": "Voisins du quartier"
+      }
+    ],
+    "helpPosts": [
+      {
+        "id": "<id>",
+        "kind": "offer",
+        "title": "Je prête mon vélo"
+      },
+      {
+        "id": "<id>",
+        "kind": "request",
+        "title": "Aide pour mes courses"
+      }
+    ],
+    "connectionsCount": 0
+  }
+}

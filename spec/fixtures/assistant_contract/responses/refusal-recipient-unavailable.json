@@ -1,0 +1,10 @@
+{
+  "status": 404,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "RECIPIENT_UNAVAILABLE",
+      "message": "This member cannot be written to."
+    }
+  }
+}

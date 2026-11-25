@@ -1,0 +1,10 @@
+{
+  "status": 400,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "PLACE_NOT_FOUND",
+      "message": "This place is not known."
+    }
+  }
+}

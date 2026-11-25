@@ -223,6 +223,10 @@ Rails.application.routes.draw do
         collection do
           get :download_list_export
         end
+
+        member do
+          get :measures
+        end
       end
 
       resources :partners do
@@ -876,6 +880,29 @@ Rails.application.routes.draw do
       # Routes reserved to the AI assistant (see Api::V1::Assistant::BaseController).
       namespace :assistant do
         get :identity, to: 'identity#read'
+        get :profile, to: 'profile#read'
+        get :activity, to: 'activity#read'
+        get :referent, to: 'referent#read'
+        get 'groups/:id', to: 'groups#read'
+        get :help_categories, to: 'help_categories#read'
+        get :help_requests, to: 'help_requests#search'
+        get :help_offers, to: 'help_offers#search'
+        get :outings, to: 'outings#search'
+        get 'outings/:id', to: 'outings#read'
+        get 'outings/:id/participants', to: 'outing_participants#read'
+        get 'outings/:id/participation', to: 'outing_participation#read'
+
+        # Actions in the name of the user (Idempotency-Key header, see ActionsController)
+        post 'outings/:id/register', to: 'outing_registrations#register'
+        post 'outings/:id/unregister', to: 'outing_registrations#unregister'
+        post :help_requests, to: 'help_publications#publish_request'
+        post :help_offers, to: 'help_publications#publish_offer'
+        post :outings, to: 'outing_publications#publish'
+        post 'members/:id/messages', to: 'member_messages#deliver'
+        post 'outings/:id/organizer_messages', to: 'organizer_messages#deliver'
+        post 'outings/:id/discussion_messages', to: 'discussion_messages#deliver'
+        post 'groups/:id/join_requests', to: 'group_memberships#join'
+        post :alerts, to: 'team_alerts#raise_alert'
       end
 
       resources :tags, only: [] do

@@ -1,0 +1,13 @@
+{
+  "status": 400,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "INVALID_PARAMS",
+      "message": "category must be one of the categories of /help_categories.",
+      "reasons": [
+        "category is missing"
+      ]
+    }
+  }
+}

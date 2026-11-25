@@ -55,7 +55,8 @@ module EntourageBack
       :smalltalk_observer,
       :smalltalk_membership_observer,
       :user_impact_stats_observer,
-      :next_step_account_observer
+      :next_step_account_observer,
+      :assistant_account_observer
     ]
 
     # Default URL options
@@ -79,7 +80,7 @@ module EntourageBack
         ip: payload[:ip],
         API_KEY: payload[:api_key],
         request_id: payload[:request_id],
-      }
+      }.merge(payload.slice(:assistant_action, :assistant_result, :assistant_replayed))
     end
     config.lograge.formatter = Lograge::Formatters::Logstash.new
 

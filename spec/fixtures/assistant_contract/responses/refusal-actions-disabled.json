@@ -1,0 +1,10 @@
+{
+  "status": 503,
+  "headers": {},
+  "body": {
+    "error": {
+      "code": "ACTIONS_DISABLED",
+      "message": "The actions of the assistant are disabled."
+    }
+  }
+}

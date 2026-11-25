@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "headers": {},
+  "body": {
+    "outings": [
+      {
+        "id": "<outing-id>",
+        "title": "Café partagé",
+        "startsAt": "<time>",
+        "place": "Café des Lilas, 12 rue des Lilas, 69001 Lyon",
+        "participantsCount": 2,
+        "placeLimit": 12,
+        "reservedFemale": false,
+        "format": "in_person"
+      }
+    ]
+  }
+}
