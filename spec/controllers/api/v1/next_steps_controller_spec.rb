@@ -40,7 +40,7 @@ describe Api::V1::NextStepsController, type: :controller do
         expect(hero).to include('kind' => 'neighborhood', 'mode' => 'segment', 'placement' => 'hero')
         expect(hero['id']).to eq(NextStep.active.find_by(user_id: user.id).id)
         expect(hero['target']['id']).to eq(group.id)
-        expect(hero['reasons'].map { |reason| reason['code'] }).to eq(['local_group', 'near_you'])
+        expect(hero['reasons'].map { |reason| reason['code'] }).to eq(['local_group', 'shared_interests'])
         expect(hero['reasons'].first['text']).to eq("Un groupe de personnes près de chez vous, pour échanger et s'entraider.")
         expect(hero['expires_at']).to be_present
       end
